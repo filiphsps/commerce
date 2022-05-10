@@ -1,0 +1,79 @@
+@import "../../scss/app";
+
+.ProductVariants {
+    white-space: nowrap;
+    overflow-x: auto;
+    display: grid;
+    grid-gap: 1rem;
+    grid-auto-flow: row;
+    max-width: calc(100vw - 2rem);
+    padding: 1rem 0px;
+    border-bottom: 0.15rem solid $color-silvery;
+    user-select: none;
+
+    @media (max-width: $width-max-mobile) {
+        max-width: calc(100vw - 2rem);
+    }
+
+    .ProductVariants-Variant {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 2rem auto 1fr;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        padding: 1rem;
+        border-radius: $block-border-radius;
+        background: $color-silvery;
+        border: 0.2rem solid $color-silvery;
+        color: $color-black;
+        cursor: pointer;
+        transition: 250ms ease-in-out;
+        text-transform: uppercase;
+        font-weight: 700;
+        word-wrap: none;
+        white-space: nowrap;
+
+        .VariantIcon {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .ProductVariants-Variant-Title {
+            span {
+                font-size: 0.85rem;
+            }
+        }
+
+        .ProductVariants-Variant-Price {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+
+            &.Sale {
+                color: $color-sale;
+
+                .Sale-Price {
+                    padding-right: 0.5rem;
+                    color: $color-black;
+                    font-size: 0.75rem;
+                    text-decoration: line-through;
+                }
+            }
+        }
+
+        &.ProductVariants-Variant-Selected {
+            border-color: $color-primary;
+            color: $color-primary;
+            fill: $color-primary;
+        }
+
+        @media (min-width: $width-max-mobile) {
+            &:hover, &:active {
+                border-color: $color-primary;
+                color: $color-primary;
+            }
+        }
+    }
+}

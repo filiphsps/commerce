@@ -1,0 +1,67 @@
+@import "../../../../scss/app";
+
+.Slice.Slice-ContentGrid {
+    overflow: hidden;
+    padding: 1rem 0px;
+
+    .ContentGrid {
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-auto-rows: 1fr;
+        grid-gap: 2rem;
+
+        @media (max-width: $width-max-mobile) {
+            grid-template-columns: 1fr;
+        }
+
+        &.ContentGrid-dark {
+            .ContentGrid-Item {
+                background: $color-silvery;
+            }
+        }
+
+        .ContentGrid-Item {
+            padding: 2rem;
+            background: $color-white;
+
+            &.ContentGrid-Item-Href {
+                cursor: pointer;
+
+                @media (min-width: $width-max-mobile) {
+                    transition: 250ms all ease-in-out;
+
+                    &:hover {
+                        background: ($color-primary,);
+
+                        .Slice.Slice-SectionHeader * {
+                            color: $color-text-primary;
+                        }
+                    }
+                }
+            }
+
+            .Slices {
+                width: 100%;
+                height: 100%;
+                padding: 0px;
+
+                .Slice {
+                    width: 100%;
+
+                    &.Slice-SectionHeader {
+                        padding-bottom: 0px;
+                        text-align: center;
+                    }
+
+                    &.Slice-Icon {
+                        width: 12rem;
+                        height: 12rem;
+                        margin: 2rem;
+                        object-fit: contain;
+                    }
+                }
+            }
+        }
+    }
+}

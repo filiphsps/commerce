@@ -1,0 +1,14 @@
+@import '../../scss/app';
+
+.OrderLineItems {
+    border: 0.15rem solid $color-silvery;
+
+    .OrderLineItems-Item {
+        padding: 2rem;
+        font-size: 1.25rem;
+
+        &:nth-child(odd) {
+            background: $color-silvery;
+        }
+    }
+}

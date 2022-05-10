@@ -1,0 +1,21 @@
+@import "../../../../src/scss/app";
+
+.OrderPage {
+    .OrderPage-Content {
+        display: grid;
+        grid-template-columns: 1fr 32rem;
+        grid-gap: 2rem;
+
+        @media (max-width: $width-max-mobile) {
+            grid-template-columns: 1fr;
+            grid-auto-flow: dense;
+        }
+
+        .OrderPage-Content-Meta {
+            padding: 2rem;
+            background: $color-silvery;
+            text-transform: uppercase;
+            font-size: 1.25rem;
+        }
+    }
+}

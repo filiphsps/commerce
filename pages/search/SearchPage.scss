@@ -1,0 +1,9 @@
+@import "../../src/scss/app";
+
+.SearchPage {
+    .Input {
+        padding: 1.15rem;
+        border: 0.15rem solid $color-dark;
+        border-radius: $block-border-radius;
+    }
+}

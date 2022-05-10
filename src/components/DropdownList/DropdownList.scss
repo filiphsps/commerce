@@ -1,0 +1,59 @@
+@import "../../scss/app";
+
+.DropdownList {
+    $dropdown-height: 3rem;
+
+    display: grid;
+    position: relative;
+    height: $dropdown-height;
+    border-radius: 2rem;
+    transition: 250ms all ease-in-out;
+    background: $color-white;
+    color: $color-black;
+    cursor: pointer;
+
+    @media (min-width: $width-max-mobile) {
+        &:hover {
+            background: darken($color-white, 15%);
+        }
+    }
+
+    .DropdownList-Item {
+        display: none;
+        justify-content: flex-start;
+        align-items: center;
+        height: $dropdown-height;
+        padding: 0px 2rem;
+
+        .DropdownList-Item-Icon {
+            width: 2rem;
+            margin-right: 1rem;
+
+            &:empty {
+                width: 0px;
+                margin-right: 0px;
+            }
+        }
+
+        .DropdownList-Item-Title {
+            font-weight: 700;
+        }
+
+        &.DropdownList-Item-Selected {
+            display: flex;
+        }
+    }
+
+    &.DropdownList-Open {
+        .DropdownList-Item {
+            display: flex;
+            background: $color-white;
+
+            @media (min-width: $width-max-mobile) {
+                &:hover {
+                    background: darken($color-white, 15%);
+                }
+            }
+        }
+    }
+}

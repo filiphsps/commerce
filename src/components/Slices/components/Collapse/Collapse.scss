@@ -1,0 +1,48 @@
+@import "../../../../scss/app";
+
+.Slice-Collapse {
+    padding: 0.5rem 0px 0.75rem 0px;
+
+    .Slice-Collapse-Title {
+        $font-size: 1.25rem;
+
+        display: flex;
+        justify-self: flex-start;
+        align-items: center;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: $font-size;
+        line-height: $font-size;
+        text-transform: uppercase;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 0.15rem solid $color-black;
+
+        @media (min-width: $width-max-mobile) {
+            transition: 250ms ease-in-out;
+
+            &:hover {
+                border-color: $color-primary;
+                color: $color-primary;
+
+                .Icon {
+                    color: $color-primary;
+                }
+            }
+        }
+
+        .Icon {
+            margin: 0px 1rem 0px 0px;
+            font-size: $font-size * 1.25;
+            line-height: $font-size;
+        }
+    }
+
+    .Slice-Collapse-Body {
+        margin: 1rem 0px;
+
+        p {
+            font-size: 1.25rem;
+        }
+    }
+}

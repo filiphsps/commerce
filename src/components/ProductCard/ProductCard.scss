@@ -1,0 +1,318 @@
+@import '../../scss/app';
+
+.ProductCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+    min-height: 6rem;
+    padding: 1rem;
+    background: $color-silvery;
+    border: 0.1rem solid darken($color-silvery, 2.5%);
+    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    border-radius: $block-border-radius;
+
+    .ProductCard-Container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: space-between;
+        flex-direction: column;
+        flex-grow: 1;
+        text-transform: uppercase;
+
+        .ProductCard-Container-Content {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: space-between;
+            flex-direction: column;
+            flex-grow: 1;
+            text-transform: uppercase;
+        }
+
+        .ProductCard-Container-Image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            height: 16rem;
+            width: calc(100% - 2rem);
+            padding: 2rem 0px;
+            margin: 0px auto;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            mix-blend-mode: multiply;
+            transition: 250ms all;
+
+            img {
+                max-height: 16rem;
+                max-width: 100%;
+                padding: 1rem;
+                object-fit: contain;
+                object-position: center center;
+            }
+
+            @media (min-width: $width-max-mobile) {
+                &:hover,
+                &:active {
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        .ProductCard-Container-Header {
+            font-weight: 500;
+
+            .ProductCard-Container-Header-Vendor {
+                display: block;
+                font-size: 1rem;
+                color: $color-dark;
+
+                @media (min-width: $width-max-mobile) {
+                    &:hover,
+                    &:active {
+                        color: $color-primary-dark;
+                    }
+                }
+            }
+
+            .ProductCard-Container-Header-Title {
+                display: block;
+                font-size: 1.25rem;
+
+                @media (min-width: $width-max-mobile) {
+                    &:hover,
+                    &:active {
+                        color: $color-primary;
+                    }
+                }
+            }
+        }
+    }
+
+    .ProductCard-Actions {
+        display: flex;
+        justify-content: center;
+        align-items: space-between;
+        flex-direction: column;
+        flex-grow: 1;
+        height: 100%;
+
+        .ProductCard-Actions-Action {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 2.75rem;
+            background: $color-white;
+            font-size: 1rem;
+            font-weight: 400;
+
+            &.ProductCard-Actions-Action-Variants {
+                display: flex;
+                flex-grow: 1;
+                justify-content: flex-end;
+                align-items: flex-end;
+                height: 100%;
+                width: 100%;
+                background: transparent !important;
+
+                .ProductCard-Actions-Action-Variants {
+                    display: grid;
+                    grid-template-columns: auto auto auto auto;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    padding-bottom: 0.5rem;
+
+                    &.Open {
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                    }
+
+                    .ProductCard-Actions-Action-Variant {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        justify-content: center;
+                        align-items: center;
+                        flex-grow: 0;
+                        height: 2.75rem;
+                        max-height: 2.75rem;
+                        padding: 0px 0.55rem;
+                        margin: 0px 0.55rem 0.55rem 0px;
+                        background: $color-white;
+                        border: 0.15rem solid $color-white;
+                        border-width: 0.2rem !important;
+                        border-radius: $block-border-radius;
+                        line-height: 2.45rem;
+                        font-size: 0.85rem;
+                        font-weight: 700;
+                        text-overflow: ellipsis;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: 250ms ease-in-out;
+
+                        &.ProductCard-Actions-Action-Variant-Selected {
+                            border-color: $color-primary !important;
+                            color: $color-primary;
+                        }
+
+                        @media (max-width: $width-max-mobile) {
+                            height: 3rem;
+                            max-height: 3rem;
+                            padding: 0.15rem 0.75rem;
+                            font-size: 0.95rem;
+                        }
+
+                        @media (min-width: $width-max-mobile) {
+                            &:hover,
+                            &:active {
+                                border-color: $color-primary !important;
+                                color: $color-primary;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.ProductCard-Actions-Action-QuantityInput {
+                display: flex;
+                flex-grow: 1;
+                justify-content: flex-end;
+                align-items: flex-end;
+                height: 100%;
+                width: 100%;
+                background: transparent !important;
+                margin-bottom: 1rem;
+
+                .Input {
+                    height: 2.75rem;
+                    max-height: 2.75rem;
+                    margin: 0px 0.5rem;
+                    border: none;
+                    border-radius: none;
+                    text-align: center;
+                    background: $color-white;
+
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                }
+
+                .Action {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 2.75rem;
+                    max-height: 2.75rem;
+                    width: 4.5rem;
+                    background: $color-white;
+                    border: 0.25rem solid $color-white;
+                    border-radius: $block-border-radius;
+                    font-weight: 700;
+                    font-size: 1.25rem;
+                    cursor: pointer;
+                    user-select: none;
+
+                    @media (min-width: $width-max-mobile) {
+                        &:hover {
+                            border-color: $color-primary;
+                        }
+                    }
+                }
+            }
+
+            &.Button {
+                flex-grow: 0;
+                flex-shrink: 0;
+                justify-content: center;
+                height: 4rem;
+                min-height: 4rem;
+                max-height: 4rem;
+                padding: 1rem;
+                background: $color-primary;
+                font-weight: 700;
+                font-size: 1.25rem;
+                transition: 250ms box-shadow ease-in-out;
+                border-radius: $block-border-radius !important;
+
+                &.Button-Disabled {
+                    cursor: not-allowed;
+                }
+
+                @media (min-width: $width-max-mobile) {
+                    &.Button-Disabled:hover {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .ProductCard-TotalPrice {
+        padding: 0px 0px 1rem 0px;
+        font-size: 0.5rem;
+
+        &.Sale {
+            color: $color-sale;
+
+            .Sale-Price {
+                color: $color-black;
+                text-decoration: line-through;
+
+                .Currency {
+                    position: relative;
+                    font-size: 1rem;
+                }
+            }
+        }
+
+        .Currency {
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+    }
+
+    .ProductCard-Price {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        background: $color-secondary-dark;
+        color: $color-text-primary;
+
+        .Currency {
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        &.ProductCard-Price-Sale {
+            background: $color-sale;
+        }
+    }
+
+    &:empty {
+        min-height: 22rem;
+        height: 100%;
+
+        @include placeholder-shimmer;
+    }
+
+    &.Search {
+        .ProductCard-Actions,
+        .ProductCard-Price,
+        .ProductCard-TotalPrice {
+            display: none;
+        }
+    }
+}

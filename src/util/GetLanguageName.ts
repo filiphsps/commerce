@@ -1,0 +1,12 @@
+const ISOtoLanguageName = (language: string) => {
+    switch (language) {
+        case 'de_DE':
+            return 'german';
+        case 'en_US':
+            return 'english';
+        default:
+            return null;
+    }
+};
+
+export default ISOtoLanguageName;

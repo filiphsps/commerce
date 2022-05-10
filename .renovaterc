@@ -1,0 +1,7 @@
+{
+    "extends": [
+        "@bigmichi1",
+        ":automergePatch",
+        ":automergeMinor"
+    ]
+}

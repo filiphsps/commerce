@@ -1,0 +1,16 @@
+@import '../../../../scss/app';
+
+.Slice.Slice-Carousel {
+    width: 100%;
+    overflow-y: hidden;
+
+    .Link {
+        display: block;
+        max-width: 100%;
+
+        .Image {
+            display: block;
+            max-width: 100%;
+        }
+    }
+}

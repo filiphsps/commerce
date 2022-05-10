@@ -1,0 +1,41 @@
+@import '../../scss/app';
+
+.ShopBlock {
+    .ShopBlock-Actions {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        grid-gap: 1rem;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+        border-bottom: 0.05rem solid $color-silvery;
+        color: $color-dark;
+        text-transform: uppercase;
+
+        .ShopBlock-Actions-Action {
+            display: flex;
+
+            .Icon {
+                color: $color-dark;
+                font-size: 2rem;
+                cursor: pointer;
+
+                &:hover {
+                    color: $color-black;
+                }
+            }
+
+            .Checkbox {
+                margin-right: 1rem;
+            }
+
+            .ShopBlock-Actions-Action-SubActions {
+                .ShopBlock-Actions-Action-SubActions-Action {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                }
+            }
+        }
+    }
+}

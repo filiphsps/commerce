@@ -1,0 +1,365 @@
+@import '~react-image-gallery/styles/scss/image-gallery.scss';
+@import '../../../src/scss/app';
+
+.ProductPage {
+    .ProductPage-Content {
+        padding-top: 0px;
+
+        @media (max-width: $width-max-mobile) {
+            overflow-x: hidden;
+        }
+
+        .ProductPage-Content-Header {
+            text-transform: uppercase;
+
+            .ProductPage-Content-Header-Vendor {
+                font-size: 1.65rem;
+                font-weight: 500;
+                color: $color-dark;
+                cursor: pointer;
+
+                @media (min-width: $width-max-mobile) {
+                    &:hover,
+                    &:active {
+                        color: $color-primary-dark;
+                    }
+                }
+            }
+
+            .ProductPage-Content-Header-Title {
+                font-size: 2rem;
+                color: $color-primary;
+            }
+        }
+
+        .ProductPage-Content-Body {
+            .MarkdownBody {
+                padding: 1rem 0px;
+                font-size: 1.25rem;
+
+                a {
+                    color: $color-primary;
+                    font-weight: 600;
+
+                    @media (min-width: $width-max-mobile) {
+                        &:hover {
+                            color: $color-primary-dark;
+                        }
+                    }
+                }
+            }
+
+            .ProductPage-Content-Body-Ingredients {
+                padding-top: 1rem;
+                font-size: 0.95rem;
+                font-style: italic;
+
+                b {
+                    text-transform: capitalize;
+                }
+            }
+        }
+
+        .ProductPage-Content-Actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            @supports (display: grid) {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-gap: 1rem;
+            }
+
+            gap: 1rem;
+            margin-top: 1rem;
+
+            .ProductPage-Content-Actions-Action {
+                width: 50%;
+                height: 100%;
+
+                @supports (display: grid) {
+                    width: unset;
+                }
+
+                .ProductPage-Content-Actions-Action-Button {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+
+                    @media (min-width: $width-max-mobile) {
+                        font-size: 1.45rem;
+                    }
+                }
+
+                &.ProductPage-Content-Actions-Action-Price {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 2rem;
+                    text-transform: uppercase;
+                    background: $color-silvery;
+
+                    .ProductPage-Content-Prices {
+                        .Currency {
+                            font-weight: 700;
+
+                            &:nth-child(1) {
+                                font-size: 1.45rem;
+                            }
+
+                            &:nth-child(2) {
+                                color: $color-dark;
+
+                                .Currency-Prefix {
+                                    padding-right: 0px;
+
+                                    &:after {
+                                        content: ': ';
+                                    }
+                                }
+                            }
+                        }
+
+                        .ProductPage-Content-Prices-Meta {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                    }
+                }
+            }
+
+            /* @media (max-width: $width-max-mobile) {
+                z-index: 10;
+                position: fixed;
+                right: 0px;
+                bottom: 0px;
+                left: 0px;
+                grid-gap: 0px;
+                gap: 0px;
+                height: 6rem;
+                height: calc(6rem + env(safe-area-inset-bottom));
+                background: $color-white;
+                box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.75);
+
+                .ProductPage-Content-Actions-Action {
+                    height: 6rem;
+                    margin-bottom: env(safe-area-inset-bottom);
+                }
+            } */
+        }
+
+        .ProductPage-Content-Blocks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 2rem;
+            margin-bottom: 2rem;
+
+            .ProductPage-Content-Blocks-Block {
+                width: 100%;
+                flex-grow: 1;
+
+                @media (max-width: $width-max-mobile) {
+                    overflow-y: hidden;
+                    width: calc(100vw - 2rem);
+                }
+
+                &.ProductPage-Content-Blocks-Block-Gallery {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    flex-direction: column;
+                    width: 100%;
+
+                    @media (max-width: $width-max-mobile) {
+                        overflow-y: hidden;
+                        width: calc(100vw - 2rem);
+                        padding-bottom: 2rem;
+                    }
+
+                    .ProductPage-Content-Gallery {
+                        $gallery-hight: 38rem;
+                        $gallery-mobile-hight: 26rem;
+
+                        width: 100%;
+                        max-height: $gallery-hight;
+                        min-height: $gallery-hight;
+                        height: $gallery-hight;
+                        margin-bottom: 2rem;
+
+                        @media (max-width: $width-max-mobile) {
+                            width: calc(100vw - 2rem);
+                            max-height: $gallery-mobile-hight;
+                            min-height: $gallery-mobile-hight;
+                            height: $gallery-mobile-hight;
+                        }
+
+                        .image-gallery {
+                            position: relative;
+                            min-width: 100%;
+                            height: $gallery-hight;
+
+                            @media (max-width: $width-max-mobile) {
+                                height: $gallery-mobile-hight;
+                            }
+
+                            .image-gallery-bullet {
+                                padding: 0.5rem;
+                                margin: 0px 0.25rem;
+                                box-shadow: none;
+                                border-color: $color-primary;
+                                border-width: 0.15rem;
+
+                                @media (min-width: $width-max-mobile) {
+                                    &.active,
+                                    &:hover {
+                                        background-color: $color-primary;
+                                    }
+                                }
+                            }
+
+                            .image-gallery-content {
+                                width: 100%;
+                                height: $gallery-hight;
+
+                                @media (max-width: $width-max-mobile) {
+                                    height: $gallery-mobile-hight;
+                                }
+
+                                .image-gallery-slide {
+                                    max-height: 100%;
+                                    height: $gallery-hight;
+
+                                    @media (max-width: $width-max-mobile) {
+                                        height: $gallery-mobile-hight;
+                                    }
+
+                                    img.image-gallery-image {
+                                        padding: 1rem 2rem;
+                                        max-height: $gallery-hight !important;
+
+                                        @media (max-width: $width-max-mobile) {
+                                            max-height: $gallery-mobile-hight !important;
+                                        }
+                                    }
+                                }
+
+                                .image-gallery-thumbnails {
+                                    max-width: 6rem;
+
+                                    .image-gallery-thumbnail {
+                                        max-width: 100%;
+                                        padding: 0.75rem;
+                                        margin: 0px 0.5rem 1rem 0px;
+
+                                        @media (min-width: $width-max-mobile) {
+                                            &.active,
+                                            &:hover {
+                                                border-color: $color-primary;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .ProductPage-Content-Details {
+                        display: grid;
+                        grid-gap: 1rem;
+                        grid-template-columns: 1fr 1fr 1fr;
+                        width: 100%;
+                        overflow-y: hidden;
+
+                        @media (max-width: $width-max-mobile) {
+                            grid-template-columns: repeat(
+                                auto-fill,
+                                minmax(12rem, 1fr)
+                            );
+                            width: calc(100vw - 2rem);
+                        }
+
+                        .ProductPage-Content-Details-Detail {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            align-items: flex-start;
+                            padding: 1rem;
+                            background: $color-silvery;
+                            color: $color-dark;
+                            font-weight: 900;
+                            white-space: nowrap;
+
+                            .ProductPage-Content-Details-Detail-Title {
+                                color: $color-black;
+                                text-transform: uppercase;
+                                white-space: nowrap;
+                                padding-right: 1rem;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @media (max-width: $width-max-mobile) {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        .ProductPage-Content-Recommendations {
+            margin: 2rem 0px;
+
+            .ProductPage-Content-Recommendations-Title {
+                color: $color-dark;
+                font-size: 2rem;
+                font-weight: 700;
+                text-transform: uppercase;
+            }
+
+            .ProductPage-Content-Recommendations-Content {
+                overflow-y: auto;
+                display: grid;
+                width: 100%;
+
+                @media (max-width: 1148px) {
+                    grid-template-columns: 1fr 1fr 1fr;
+                }
+
+                @media (max-width: 950px) {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                @media (max-width: $width-max-mobile) {
+                    grid-template-columns: 1fr;
+                    margin: 2rem 0px 0px 0px;
+                }
+
+                &::-webkit-scrollbar {
+                    height: 1.5rem;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background-clip: content-box;
+                    border-top: 5px solid transparent;
+                    border-bottom: 5px solid transparent;
+                    border-radius: 0px;
+                    box-shadow: inset 0 0 0 5px;
+                    color: rgba(0, 0, 0, 0.15);
+                    cursor: pointer;
+                }
+
+                &::-webkit-scrollbar-button {
+                    width: 0;
+                    height: 0;
+                    display: none;
+                }
+
+                &::-webkit-scrollbar-corner {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}

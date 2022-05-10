@@ -1,0 +1,54 @@
+{
+    "parser": "babel-eslint",
+    "extends": ["eslint:recommended", "next"],
+    "plugins": [
+        "react",
+        "react-hooks",
+        "import",
+        "plugin:@next/next/recommended"
+    ],
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true,
+        "jasmine": true
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        }
+    },
+
+    "ignorePatterns": ["node_modules/"],
+    "rules": {
+        "consistent-return": 2,
+        "no-mixed-operators": 0,
+        "no-useless-constructor": 0,
+        "standard/computed-property-even-spacing": 0,
+        "import/first": 0,
+        "react/no-find-dom-node": 0,
+        "react/prop-types": 1,
+        "react-hooks/rules-of-hooks": 0,
+        "jsx-a11y/anchor-is-valid": 0,
+        "jsx-a11y/alt-text": 0,
+        "no-unused-vars": 1,
+        "no-console": 1,
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "semi": ["error", "always"],
+        "brace-style": [
+            "error",
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
+        ],
+        "radix": ["off"]
+    }
+}

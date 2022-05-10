@@ -1,0 +1,168 @@
+@import "../../scss/app";
+
+.CollectionBlock {
+    .CollectionBlock-Header {
+        padding-bottom: 1rem;
+
+        &:empty {
+            padding-bottom: 0px;
+        }
+
+        .CollectionBlock-Header-Title {
+            margin-bottom: 0px;
+            padding: 0px;
+            color: $color-dark;
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            line-height: 2.5rem;
+        }
+
+        .CollectionBlock-Header-Description {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+    }
+
+    .CollectionBlock-Content {
+        display: grid;
+        grid-gap: 1rem;
+        gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+        @media (max-width: 1356px) {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+
+        @media (max-width: 1148px) {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        @media (max-width: 950px) {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: $width-max-mobile) {
+            grid-template-columns: 1fr;
+        }
+
+        .ProductCard.CollectionBlock-Content-ShowMore {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: $color-primary !important;
+            color: $color-text-primary;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            transition: 250ms all ease-in-out;
+
+            @media (min-width: $width-max-mobile) {
+                &:hover, &:active {
+                    background-color: $color-primary-light !important;
+                }
+            }
+        }
+    }
+
+    &.CollectionBlock-Grid {
+        // FIXME: move to ProductCard
+        @media (max-width: $width-max-mobile) {
+            .CollectionBlock-Content {
+                .ProductCard {
+                    width: 100%;
+
+                    .ProductCard-Container {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-direction: row;
+                        min-height: unset;
+
+                        .ProductCard-Container-Image {
+                            width: 10rem;
+                            height: 10rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.CollectionBlock-List {
+        // FIXME: move to ProductCard
+        @media (min-width: $width-max-mobile) {
+            .CollectionBlock-Content {
+                grid-template-columns: 1fr !important;
+                grid-gap: 0px;
+
+                .ProductCard {
+                    width: 100%;
+                    background: transparent;
+                    border-bottom: 0.05rem solid $color-silvery;
+
+                    .ProductCard-Container {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-direction: row;
+                        min-height: unset;
+
+                        .ProductCard-Container-Image {
+                            width: 10rem;
+                            height: 10rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.CollectionBlock-Horizontal {
+        .CollectionBlock-Content {
+            overflow-x: auto;
+            grid-template-columns: repeat(auto-fill, 1fr);
+            grid-auto-columns: auto;
+            grid-template-rows: 1fr;
+            grid-auto-flow: column;
+            scroll-snap-type: x mandatory;
+
+            &::-webkit-scrollbar {
+                height: 1.5rem;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-clip: content-box;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-radius: 0px;
+                box-shadow: inset 0 0 0 5px;
+                color: rgba(0, 0, 0, 0.15);
+                cursor: pointer;
+            }
+
+            &::-webkit-scrollbar-button {
+                width: 0;
+                height: 0;
+                display: none;
+            }
+
+            &::-webkit-scrollbar-corner {
+                background-color: transparent;
+            }
+
+            .ProductCard {
+                min-width: 22.5rem;
+                scroll-snap-align: start;
+
+                @media (max-width: $width-max-mobile) {
+                    min-width: 25.85rem;
+                }
+            }
+        }
+    }
+}

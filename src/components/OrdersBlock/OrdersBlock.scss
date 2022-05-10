@@ -1,0 +1,42 @@
+@import "../../scss/app";
+
+.OrdersBlock {
+    .OrdersBlock-Order {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+        font-size: 1.25rem;
+        border: 0.15rem solid $color-silvery;
+        cursor: pointer;
+
+        .OrdersBlock-Order-Meta {
+            .OrdersBlock-Order-Meta-Date {
+                font-weight: 500;
+                text-transform: uppercase;
+                color: $color-dark;
+            }
+            .OrdersBlock-Order-Meta-Name {
+                font-size: 1.5rem;
+            }
+        }
+        .OrdersBlock-Order-Price {
+            text-align: right;
+        }
+
+        &:nth-child(odd) {
+            background: $color-silvery;
+        }
+
+        &:hover {
+            background: $color-primary;
+            color: $color-white;
+
+            .OrdersBlock-Order-Meta {
+                .OrdersBlock-Order-Meta-Date {
+                    color: $color-white;
+                }
+            }
+        }
+    }
+}

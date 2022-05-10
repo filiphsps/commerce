@@ -1,0 +1,59 @@
+@import "../../scss/app";
+
+.Breadcrumbs {
+    overflow-x: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: 4rem;
+    margin: 0px;
+    transform: translateZ(0);
+
+    .Breadcrumbs-Content {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0px;
+        margin: 0px;
+        text-transform: uppercase;
+        list-style-type: none;
+
+        .Breadcrumbs-Content-Item {
+            display: flex;
+            flex-wrap: nowrap;
+            width: 100%;
+            padding: 1rem 0px;
+            font-size: 1.15rem;
+            line-height: 1.15rem;
+            white-space: nowrap;
+
+            .Link {
+                display: block;
+                color: lighten($color: $color-dark, $amount: 5%);
+
+                @media (min-width: $width-max-mobile) {
+                    &:hover, &:active {
+                        color: $color-dark;
+                    }
+                }
+            }
+
+            &:last-child {
+                .Link {
+                    color: $color-primary;
+                }
+
+                &:after {
+                    content: none;
+                }
+            }
+
+            &:after {
+                content: '>';
+                margin: 0px 0.5rem;
+            }
+        }
+    }
+}

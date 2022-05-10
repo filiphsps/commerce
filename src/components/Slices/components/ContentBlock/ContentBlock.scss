@@ -1,0 +1,20 @@
+@import "../../../../scss/app";
+
+.Slice.Slice-ContentBlock {
+    overflow: hidden;
+    width: 100vw !important;
+
+    .ContentBlock {
+        overflow: hidden;
+        display: block;
+
+        .Slices {
+            padding: 0px;
+            
+            .Slice {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    }
+}

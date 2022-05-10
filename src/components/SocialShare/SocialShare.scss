@@ -1,0 +1,21 @@
+@import '../../scss/app';
+
+.SocialShare {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    margin: 0.5rem 0px;
+
+    a {
+        display: block;
+        height: 25px;
+
+        img {
+            height: 100%;
+            margin-left: 1rem;
+
+            border-radius: 100%;
+        }
+    }
+}

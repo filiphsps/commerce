@@ -1,0 +1,51 @@
+@import '../../scss/app';
+
+.Vendors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    grid-gap: 1rem;
+    margin: 0px 0px 2rem 0px;
+
+    @media (max-width: $width-max-mobile) {
+        display: flex;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        grid-gap: 0px;
+    }
+
+    .Vendors-Vendor {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem 0.5rem;
+        color: $color-black;
+        background: $color-silvery;
+
+        border: 0.1rem solid darken($color-silvery, 2.5%);
+        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+
+        border-radius: $block-border-radius;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+
+        &.ShowMore {
+            font-weight: 700;
+        }
+
+        &.Selected,
+        &:hover {
+            border-color: $color-primary;
+        }
+
+        @media (max-width: $width-max-mobile) {
+            padding: 1rem 1.25rem;
+            margin-right: 1rem;
+            color: $color-dark;
+        }
+    }
+}

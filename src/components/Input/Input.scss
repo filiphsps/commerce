@@ -1,0 +1,14 @@
+@import "../../scss/app";
+
+.Input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem 1rem;
+    background: $color-white;
+
+    &::placeholder {
+        text-transform: uppercase;
+    }
+}

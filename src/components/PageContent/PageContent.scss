@@ -1,0 +1,16 @@
+@import '../../scss/app';
+
+.PageContent {
+    width: 100%;
+    max-width: calc(#{$width-max-page} - 4rem);
+    margin: 0px auto;
+
+    @media (max-width: $width-max-page) {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    &.PageContent-NoPadding {
+        padding: 0px;
+    }
+}
