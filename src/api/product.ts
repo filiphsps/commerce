@@ -8,6 +8,7 @@ export const PRODUCT_FRAGMENT = `
     handle
     title
     description
+    descriptionHtml
     vendor
     productType
     images(first: 250) {
@@ -55,6 +56,7 @@ export const Convertor = (product: any): ProductModel => {
 
         title: product?.title,
         description: product?.description,
+        body: product?.descriptionHtml,
         type: product?.productType,
 
         vendor: {
@@ -78,8 +80,7 @@ export const Convertor = (product: any): ProductModel => {
                 return {
                     items,
                     from_price: variant?.price,
-                    compare_at_from_price: variant?.compareAtPrice,
-                    price_per_item: variant?.price / items
+                    compare_at_from_price: variant?.compareAtPrice
                 };
             })(variant?.node)
         })),

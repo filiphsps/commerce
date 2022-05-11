@@ -206,8 +206,9 @@ const Product = memo((props: any) => {
 
                                 <div className="ProductPage-Content-Body">
                                     <div
+                                        className="MarkdownBody"
                                         dangerouslySetInnerHTML={{
-                                            __html: product?.description
+                                            __html: product?.body
                                         }}
                                     />
                                     {product?.metadata?.ingredients && (

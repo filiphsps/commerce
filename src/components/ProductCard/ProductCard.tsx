@@ -54,36 +54,34 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const variant = data?.variants?.[selectedVariant] || null;
 
     return (
-        <Link
-            to={data && `/products/${data?.handle}`}
-            as={'/products/[handle]'}
-            className={`ProductCard ${(props?.search && 'Search') || ''}`}
-        >
+        <div className={`ProductCard ${(props?.search && 'Search') || ''}`}>
             <div className="ProductCard-Container">
                 <Link
                     className="ProductCard-Container-Image"
                     to={data && `/products/${data?.handle}`}
                     as={'/products/[handle]'}
                 >
-                    <Image
-                        src={
-                            data?.images?.[variant?.image]?.src ||
-                            data?.images?.[selectedVariant]?.src ||
-                            data?.images?.[0]?.src ||
-                            ''
-                        }
-                        alt={
-                            data?.images?.[variant?.image]?.alt ||
-                            data?.images?.[selectedVariant]?.alt ||
-                            data?.images?.[0]?.alt ||
-                            ''
-                        }
-                        width={150}
-                        height={150}
-                        loading="lazy"
-                        layout="fixed"
-                        placeholder="empty"
-                    />
+                    {data?.images?.length > 0 && (
+                        <Image
+                            src={
+                                data?.images?.[variant?.image]?.src ||
+                                data?.images?.[selectedVariant]?.src ||
+                                data?.images?.[0]?.src ||
+                                ''
+                            }
+                            alt={
+                                data?.images?.[variant?.image]?.alt ||
+                                data?.images?.[selectedVariant]?.alt ||
+                                data?.images?.[0]?.alt ||
+                                ''
+                            }
+                            width={150}
+                            height={150}
+                            loading="lazy"
+                            layout="fixed"
+                            placeholder="empty"
+                        />
+                    )}
                 </Link>
 
                 <div className="ProductCard-Container-Content">
@@ -137,7 +135,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                     </div>
 
                     <div className="ProductCard-Actions">
-                        {(show_variants && (
+                        {show_variants && (
                             <div className="ProductCard-Actions-Action ProductCard-Actions-Action-Variants">
                                 <div
                                     className={`ProductCard-Actions-Action-Variants ${
@@ -191,40 +189,38 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     )}
                                 </div>
                             </div>
-                        )) || (
-                            <div className="ProductCard-Actions-Action ProductCard-Actions-Action-QuantityInput">
-                                <div
-                                    className="Action"
-                                    onClick={() => {
-                                        if (quantity - 1 >= 0)
-                                            return setQuantity(
-                                                parseInt(quantity as any) - 1
-                                            );
-
-                                        setQuantity(0);
-                                    }}
-                                >
-                                    -
-                                </div>
-                                <Input
-                                    type="number"
-                                    value={quantity}
-                                    onChange={(event) => {
-                                        setQuantity(event?.target?.value);
-                                    }}
-                                />
-                                <div
-                                    className="Action"
-                                    onClick={() =>
-                                        setQuantity(
-                                            parseInt(quantity as any) + 1
-                                        )
-                                    }
-                                >
-                                    +
-                                </div>
-                            </div>
                         )}
+
+                        <div className="ProductCard-Actions-Action ProductCard-Actions-Action-QuantityInput">
+                            <div
+                                className="Action"
+                                onClick={() => {
+                                    if (quantity - 1 >= 0)
+                                        return setQuantity(
+                                            parseInt(quantity as any) - 1
+                                        );
+
+                                    setQuantity(0);
+                                }}
+                            >
+                                -
+                            </div>
+                            <Input
+                                type="number"
+                                value={quantity}
+                                onChange={(event) => {
+                                    setQuantity(event?.target?.value);
+                                }}
+                            />
+                            <div
+                                className="Action"
+                                onClick={() =>
+                                    setQuantity(parseInt(quantity as any) + 1)
+                                }
+                            >
+                                +
+                            </div>
+                        </div>
 
                         <Button
                             disabled={
@@ -283,19 +279,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                 </div>
             </div>
 
-            {variant?.price_per_item &&
-                variant?.price_per_item !== variant?.from_price && (
-                    <div className={`ProductCard-Price`}>
-                        {variant?.price_per_item && (
-                            <LanguageString id={'from'} />
-                        )}
-                        <Currency
-                            price={variant?.price_per_item}
-                            currency={variant?.currency}
-                        />
-                    </div>
-                )}
-        </Link>
+            <div className={`ProductCard-Price`}>
+                {data?.variants?.length > 1 && <LanguageString id={'from'} />}
+                <Currency
+                    price={data?.variants?.[0].price}
+                    currency={variant?.currency}
+                />
+            </div>
+        </div>
     );
 };
 
