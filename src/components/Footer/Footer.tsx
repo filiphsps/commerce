@@ -28,13 +28,13 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         />
 
                         <address>
-                            SALT LABS Switzerland AG
+                            SPS Group AB
                             <br />
-                            Grabenstrasse 25
+                            Baldersgatan 3
                             <br />
-                            CH-6340 Baar
+                            411 02 Göteborg
                             <br />
-                            Schweiz
+                            Sweden
                         </address>
                     </div>
 
