@@ -14,7 +14,6 @@ import HTMLParse from 'html-react-parser';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
-import Script from 'next/script';
 import ScrollToTop from '../src/components/ScrollToTop';
 import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
 
@@ -25,23 +24,18 @@ Router.events.on('routeChangeError', (err) => {
     NProgress.done();
 });
 
-const CustomTags = (type: string, tags: any) => {
-    return HTMLParse(tags || '');
-};
-
 const store: any = {
-    title: 'Snushof Shop Snus Online',
-    description:
-        'Wir verkaufen Schwedischen Snus billig und unterstützen die Legalisierung in der Schweiz. Einen kompetenten Kundensupport in Deutsch und Schwedish - Snushof',
+    title: 'Candy By Sweden',
+    description: '',
     favicons: [
         {
             type: 'png',
             src: 'https://cdn.shopify.com/s/files/1/1352/5845/files/favicon_fa097bc7-aa5c-4903-802e-27de4d33a732.png?v=1583742670'
         }
     ],
-    currencies: ['CHF', 'EUR', 'SEK', 'USD'],
-    language: 'de_DE',
-    languages: ['de_DE', 'en_US']
+    currencies: ['USD'],
+    language: 'en_US',
+    languages: ['en_US']
 };
 
 const StoreApp = withStore(
@@ -217,46 +211,7 @@ const StoreApp = withStore(
                         href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=optional"
                         rel="stylesheet"
                     />
-
-                    {/* Lazy-load crappy scripts */}
-                    <Script
-                        strategy="lazyOnload"
-                        id="ze-snippet"
-                        src="https://static.zdassets.com/ekr/snippet.js?key=45242bd7-d1a3-4efd-8990-f2d0dda8105f"
-                    />
-                    <Script
-                        strategy="lazyOnload"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                                })(window,document,'script','dataLayer','GTM-M422M6G');
-                            `
-                        }}
-                    />
                 </Head>
-                {/* Lazy-load crappy scripts */}
-                <Script
-                    strategy="lazyOnload"
-                    src="https://adsby.bidtheatre.com/js/asx_track.min.js"
-                    dangerouslySetInnerHTML={{
-                        __html: `asxtrack.config={cookieGroupId:230,keys:[],values:[]};asxtrack.callCookieGroup();`
-                    }}
-                />
-                <Script
-                    strategy="lazyOnload"
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                            })(window,document,'script','dataLayer','GTM-M422M6G');
-                        `
-                    }}
-                />
 
                 {/* Page */}
                 <PageProvider store={contextStore}>

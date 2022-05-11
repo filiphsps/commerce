@@ -48,11 +48,11 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             {props.prefix && (
                 <span className="Currency-Prefix">{props.prefix}</span>
             )}
-            <Currency
+            {/*<Currency
                 value={Number.parseFloat(price) || 0}
-                currency={currency || props?.currency || store?.currenc}
-                locale="en-US"
-            />
+                currency={currency || props?.currency || store?.currency}
+            />*/}
+            {Number.parseFloat(price)}
             {props.suffix && (
                 <span className="Currency-Suffix">{props.suffix}</span>
             )}

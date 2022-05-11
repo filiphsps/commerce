@@ -54,7 +54,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const variant = data?.variants?.[selectedVariant] || null;
 
     return (
-        <div className={`ProductCard ${(props?.search && 'Search') || ''}`}>
+        <Link
+            to={data && `/products/${data?.handle}`}
+            as={'/products/[handle]'}
+            className={`ProductCard ${(props?.search && 'Search') || ''}`}
+        >
             <div className="ProductCard-Container">
                 <Link
                     className="ProductCard-Container-Image"
@@ -291,7 +295,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                         />
                     </div>
                 )}
-        </div>
+        </Link>
     );
 };
 
