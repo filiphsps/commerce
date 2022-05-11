@@ -159,12 +159,11 @@
             appName: 'storefront',
             development: false,
             defaultAttributes: {
-                shopId: 13525845,
+                shopId: 60485566618,
                 isMerchantRequest: null,
-                themeId: 11069489175,
-                themeCityHash: '2619276539288085730',
-                contentLanguage: 'de',
-                currency: 'CHF'
+                themeId: 129053294746,
+                contentLanguage: 'en',
+                currency: 'USD'
             },
             isServerSideCookieWritingEnabled: true,
             isPixelGateEnabled: true
