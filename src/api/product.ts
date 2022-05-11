@@ -49,70 +49,12 @@ export const Convertor = (product: any): ProductModel => {
         metafields[metafield?.node?.key] = metafield?.node?.value;
     });
 
-    let body = {};
-    if (metafields['body'] && metafields['language']) {
-        const bodies = JSON.parse(metafields['body']);
-        const languages = JSON.parse(metafields['language']);
-
-        languages?.forEach((language, index) => {
-            body[language] = bodies[index]?.html;
-        });
-    }
-
-    let details = [
-        metafields['strength'] && {
-            title: {
-                en_US: 'Strength',
-                de_DE: 'Sträke'
-            },
-            value: metafields['strength'] && `${metafields['strength']}/5`
-        },
-        metafields['flavor'] && {
-            title: {
-                en_US: 'Flavor',
-                de_DE: 'Flavor'
-            },
-            value: metafields['flavor']
-        },
-        metafields['nicotine'] && {
-            title: {
-                en_US: 'Nicotine',
-                de_DE: 'Nikotin'
-            },
-            value: metafields['nicotine'] && `${metafields['nicotine']}mg/g`
-        },
-        metafields['size'] && {
-            title: {
-                en_US: 'Size',
-                de_DE: 'Grösse'
-            },
-            value: metafields['size']
-        },
-        metafields['can_tobacco_weight'] && {
-            title: {
-                en_US: 'Weight/Can',
-                de_DE: 'Inhalt/Dose'
-            },
-            value:
-                metafields['can_tobacco_weight'] &&
-                `${metafields['can_tobacco_weight']}g`
-        },
-        metafields['moisture'] && {
-            title: {
-                en_US: 'Moisture',
-                de_DE: 'Feuchtigkeit'
-            },
-            value: metafields['moisture'] && `${metafields['moisture']}%`
-        }
-    ]?.filter((a) => a);
-
     return {
         id: product?.id,
         handle: product?.handle,
 
         title: product?.title,
         description: product?.description,
-        body,
         type: product?.productType,
 
         vendor: {
@@ -130,41 +72,8 @@ export const Convertor = (product: any): ProductModel => {
             price: variant?.node?.price,
             compare_at_price: variant?.node?.compareAtPrice,
             ...((variant) => {
-                const title = `${variant?.title}`?.split(' / ')[0];
-
                 let items = 1;
-                switch (title) {
-                    case 'can':
-                    case 'dose':
-                    case 'regular':
-                        items = 1;
-                        break;
-                    case 'roll':
-                    case 'stange':
-                    case '1 roll':
-                        items = 10;
-                        break;
-                    case '3 rolls':
-                    case '3 stangen':
-                    case '3 roll':
-                        items = 30;
-                        break;
-                    case '6 rolls':
-                    case '6 stangen':
-                    case '6 roll':
-                        items = 60;
-                        break;
-                    case '12 rolls':
-                    case '12 stangen':
-                    case '12 roll':
-                        items = 120;
-                        break;
-                    case '24 rolls':
-                    case '24 stangen':
-                    case '24 roll':
-                        items = 240;
-                        break;
-                }
+                // TODO: handle packages here
 
                 return {
                     items,
@@ -179,8 +88,7 @@ export const Convertor = (product: any): ProductModel => {
             alt: image?.node?.altText
         })),
 
-        metadata: metafields,
-        details
+        metadata: metafields
     };
 };
 

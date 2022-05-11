@@ -10,7 +10,6 @@ import { useStore, withStore } from 'react-context-hook';
 import Alert from '../src/components/Alert';
 import Cart from '../src/util/cart';
 import Color from 'color';
-import HTMLParse from 'html-react-parser';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';

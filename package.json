@@ -1,6 +1,6 @@
 {
     "name": "candybysweden-frontend",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "private": true,
     "cacheDirectories": [
         ".next/cache"
@@ -26,7 +26,6 @@
         "@liholiho/react-modal-hook": "3.0.0",
         "@prismicio/client": "6.2.0",
         "@prismicio/helpers": "2.1.1",
-        "@techhof-ab/currency-converter": "2.0.0",
         "axios": "0.27.2",
         "color": "4.2.0",
         "core-js": "3.21.0",
@@ -36,7 +35,6 @@
         "cross-env": "7.0.3",
         "destyle.css": "3.0.2",
         "graphql": "16.3.0",
-        "html-react-parser": "1.4.6",
         "isomorphic-unfetch": "3.1.0",
         "mini-css-extract-plugin": "2.5.3",
         "moment": "2.29.1",

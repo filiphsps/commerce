@@ -1,6 +1,5 @@
 const withTM = require('next-transpile-modules')([
     'react-responsive-carousel',
-    '@techhof-ab/currency-converter',
 ]);
 
 var default_locale = (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en-US').replace('_', '-');

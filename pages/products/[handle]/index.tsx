@@ -8,7 +8,6 @@ import Currency from '../../../src/components/Currency';
 import Head from 'next/head';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from '../../../src/components/Link';
-import MarkdownBody from '../../../src/components/MarkdownBody';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageLoader from '../../../src/components/PageLoader';
@@ -64,11 +63,7 @@ const Product = memo((props: any) => {
                 sku={product?.sku || product?.id}
                 mpn={product?.sku || product?.id}
                 images={product?.images?.map?.((image) => image?.src) || []}
-                description={(
-                    product?.body?.[language?.replace('-', '_')] ||
-                    product?.body ||
-                    ''
-                )?.replace?.(/"/gi, '\\"')}
+                description={product?.description || ''}
                 offers={
                     (product?.variants?.map?.((variant) => ({
                         price: variant?.from_price || variant?.price,
@@ -210,14 +205,10 @@ const Product = memo((props: any) => {
                                 </div>
 
                                 <div className="ProductPage-Content-Body">
-                                    <MarkdownBody
-                                        body={
-                                            (product?.body &&
-                                                product?.body?.[
-                                                    language?.replace('-', '_')
-                                                ]) ||
-                                            ''
-                                        }
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: product?.description
+                                        }}
                                     />
                                     {product?.metadata?.ingredients && (
                                         <div className="ProductPage-Content-Body-Ingredients">
