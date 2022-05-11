@@ -1,8 +1,8 @@
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
+import { Currency as Tender } from 'react-tender';
 import currencyConverter from '@techhof-ab/currency-converter';
 import { useStore } from 'react-context-hook';
-import { Currency } from 'react-tender';
 
 interface CurrencyProps {
     price?: any;
@@ -48,11 +48,12 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             {props.prefix && (
                 <span className="Currency-Prefix">{props.prefix}</span>
             )}
-            {/*<Currency
+            <Tender
                 value={Number.parseFloat(price) || 0}
-                currency={currency || props?.currency || store?.currency}
-            />*/}
-            {Number.parseFloat(price)}
+                currency={
+                    currency || props?.currency || store?.currency || 'USD'
+                }
+            />
             {props.suffix && (
                 <span className="Currency-Suffix">{props.suffix}</span>
             )}
