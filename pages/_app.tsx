@@ -29,7 +29,7 @@ const store: any = {
     favicons: [
         {
             type: 'png',
-            src: 'https://cdn.shopify.com/s/files/1/1352/5845/files/favicon_fa097bc7-aa5c-4903-802e-27de4d33a732.png?v=1583742670'
+            src: 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
         }
     ],
     currencies: ['USD'],

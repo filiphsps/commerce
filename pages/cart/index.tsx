@@ -190,8 +190,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     loading
                                 }
                                 onClick={async () => {
-                                    setLoading(true);
-
                                     try {
                                         const url = (
                                             (await CheckoutApi(cart)) as string
@@ -209,8 +207,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         } else window.location.href = url;
                                     } catch (err) {
                                         alert.error(JSON.stringify(err));
-                                    } finally {
-                                        setLoading(false);
                                     }
                                 }}
                             >
