@@ -4,6 +4,7 @@ interface PageContentProps {
     style?: any;
 
     className?: string;
+    children: any;
 }
 const PageContent: FunctionComponent<PageContentProps> = (props) => {
     return (

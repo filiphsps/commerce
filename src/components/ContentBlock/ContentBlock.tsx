@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 interface ContentBlockProps {
     dark?: boolean;
+    children: any;
 }
 const ContentBlock: FunctionComponent<ContentBlockProps> = (props) => {
     return (

@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .Breadcrumbs {
     overflow-x: auto;
@@ -6,9 +6,10 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
-    height: 4rem;
-    margin: 0px;
+    height: 2.5rem;
+    margin: -0.25rem 0px 1rem 0px;
     transform: translateZ(0);
+    opacity: 0.75;
 
     .Breadcrumbs-Content {
         display: flex;
@@ -34,7 +35,8 @@
                 color: lighten($color: $color-dark, $amount: 5%);
 
                 @media (min-width: $width-max-mobile) {
-                    &:hover, &:active {
+                    &:hover,
+                    &:active {
                         color: $color-dark;
                     }
                 }

@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 interface PageProps {
     className?: string;
+    children: any;
 }
 const Page: FunctionComponent<PageProps> = (props) => {
     return (

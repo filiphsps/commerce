@@ -12,10 +12,9 @@ const Content = styled.div`
     align-items: center;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 1.75rem;
-    line-height: 2rem;
+    font-size: 2.75rem;
     color: #404756;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.5rem;
 `;
 
 const Action = styled.div`
@@ -43,7 +42,7 @@ const PageHeader: FunctionComponent<PageHeaderProps> = (props) => {
     return (
         <Wrapper>
             <Content>
-                {props?.title}
+                <h1>{props?.title}</h1>
                 <Action>{props?.action}</Action>
             </Content>
             <Description>{props?.description}</Description>

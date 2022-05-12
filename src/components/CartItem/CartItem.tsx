@@ -3,7 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import Cart from '../../util/cart';
 import Currency from '../Currency';
 import { FiTrash } from 'react-icons/fi';
-import { Img } from 'react-image';
+import Image from 'next/image';
 import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
@@ -72,7 +72,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
     return (
         <div className="CartItem">
             <div className="CartItem-ProductImage">
-                <Img src={product?.images?.[variant?.image]?.src} />
+                <img src={product?.images?.[variant?.image]?.src} />
             </div>
             <div className="CartItem-Content">
                 <div className="CartItem-Content-Subtitle">
