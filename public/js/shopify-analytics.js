@@ -172,18 +172,6 @@
             navigationTimingApiMeasurementsEnabled: true,
             navigationTimingApiMeasurementsSampleRate: 1
         },
-        'Google Analytics': {
-            trackingId: 'UA-135777877-1',
-            domain: 'auto',
-            siteSpeedSampleRate: '10',
-            enhancedEcommerce: true,
-            doubleClick: true,
-            includeSearch: true
-        },
-        'Facebook Pixel': {
-            pixelIds: ['283944132512876'],
-            agent: 'plshopify1.2'
-        },
         'Session Attribution': {},
         'Customer Events API': {}
     });
