@@ -1,12 +1,13 @@
 const withTM = require('next-transpile-modules')([
     'react-responsive-carousel',
 ]);
+const { withSentryConfig } = require('@sentry/nextjs');
 
 var default_locale = (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en-US').replace('_', '-');
 var languages = process.env.NEXT_PUBLIC_LANGUAGE?.split(',');
 if (!languages || languages.length <= 0) languages = ['en-US'];
 
-module.exports = withTM({
+module.exports = withSentryConfig(withTM({
     projectRoot: __dirname,
     poweredByHeader: false,
     strictMode: true,
@@ -23,4 +24,4 @@ module.exports = withTM({
     compiler: {
         styledComponents: true,
     },
-});
+}), { silent: true });

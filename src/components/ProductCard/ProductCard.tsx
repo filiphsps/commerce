@@ -11,7 +11,6 @@ import Link from '../Link';
 import { ProductApi } from '../../api';
 import ProductBadges from '../ProductBadges';
 import { ProductModel } from '../../models/ProductModel';
-import { useAlert } from 'react-alert';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
@@ -28,7 +27,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const [loading, setLoading] = useState(false);
     const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
     const [cart, setCart] = useStore<any>('cart');
-    const alert = useAlert();
 
     const {
         data,
@@ -244,27 +242,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                 })
                                     .then(() => {
                                         setLoading(false);
-
-                                        alert.success(
-                                            <div>
-                                                <LanguageString
-                                                    id={
-                                                        'successfully_added_to_cart'
-                                                    }
-                                                />
-                                            </div>
-                                        );
                                     })
-                                    .catch(() => {
+                                    .catch((err) => {
+                                        console.error(err);
                                         setLoading(false);
-
-                                        alert.error(
-                                            <div>
-                                                <LanguageString
-                                                    id={'cart_failed_to_add'}
-                                                />
-                                            </div>
-                                        );
                                     });
                             }}
                         >

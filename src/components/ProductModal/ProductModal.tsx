@@ -9,7 +9,6 @@ import Modal from '../Modal';
 import PageLoader from '../PageLoader';
 import VariantIcon from '../VariantIcon';
 import fetcher from '../../api/fetcher';
-import { useAlert } from 'react-alert';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
@@ -22,7 +21,6 @@ interface ProductModalProps {
 }
 const ProductModal: FunctionComponent<ProductModalProps> = (props) => {
     const router = useRouter();
-    const alert = useAlert();
     const { data, error } = useSWR(
         `/product/${props.handle}`,
         fetcher,
@@ -53,7 +51,6 @@ const ProductModal: FunctionComponent<ProductModalProps> = (props) => {
             })
             .catch((err) => {
                 console.error(err);
-                alert.error(JSON.stringify(err));
                 return props?.close();
             });
     }, [currentStep]);

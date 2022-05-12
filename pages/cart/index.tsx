@@ -13,7 +13,6 @@ import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
 import { StoreModel } from '../../src/models/StoreModel';
-import { useAlert } from 'react-alert';
 import { useStore } from 'react-context-hook';
 
 interface CartPageProps {
@@ -21,7 +20,6 @@ interface CartPageProps {
 }
 const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
-    const alert = useAlert();
     const [cart] = useStore<any>('cart');
     const [loading, setLoading] = useState(false);
 
@@ -206,7 +204,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             });
                                         } else window.location.href = url;
                                     } catch (err) {
-                                        alert.error(JSON.stringify(err));
+                                        console.error(err);
                                     }
                                 }}
                             >

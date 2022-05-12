@@ -9,7 +9,6 @@ import LanguageString from '../LanguageString';
 import Link from '../Link';
 import Loader from '../Loader';
 import { ProductIdApi } from '../../api';
-import { useAlert } from 'react-alert';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
@@ -18,7 +17,6 @@ interface CartItemProps {
     data?: any;
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
-    const alert = useAlert();
     const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
     const [isLoading, setIsLoading] = useState(false);
     const { data: product } = useSWR([props?.data?.id], (url) =>
@@ -50,9 +48,6 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         })
             .catch((err) => {
                 console.error(err);
-                alert.show(
-                    <LanguageString id={'cart_failed_to_update_quantity'} />
-                );
                 setIsLoading(false);
             })
             .then(() => setIsLoading(false));
@@ -154,7 +149,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                         quantity: props.data?.quantity
                     })
                         .catch((err) => {
-                            alert.show(JSON.stringify(err));
+                            console.error(err);
                         })
                         .then(() => setIsLoading(false));
                 }}

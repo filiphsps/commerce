@@ -1,13 +1,11 @@
 import 'destyle.css';
 import './app.scss';
 
-import { Provider as AlertProvider, positions, transitions } from 'react-alert';
 import { NavigationApi, StoreApi } from '../src/api';
 import React, { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
-import Alert from '../src/components/Alert';
 import Cart from '../src/util/cart';
 import Color from 'color';
 import Head from 'next/head';
@@ -99,15 +97,7 @@ const StoreApp = withStore(
         if (!contextStore) return null;
 
         return (
-            <AlertProvider
-                template={Alert}
-                {...{
-                    position: positions.TOP_LEFT,
-                    timeout: 6500,
-                    offset: '1rem',
-                    transition: transitions.FADE
-                }}
-            >
+            <>
                 <Head>
                     <script
                         dangerouslySetInnerHTML={{
@@ -216,7 +206,7 @@ const StoreApp = withStore(
                 </PageProvider>
                 <ScrollToTop />
                 <ShopifyAnalytics />
-            </AlertProvider>
+            </>
         );
     },
     {
