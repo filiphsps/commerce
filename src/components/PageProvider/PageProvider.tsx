@@ -10,6 +10,7 @@ import { useStore } from 'react-context-hook';
 
 interface PageProviderProps {
     store: StoreModel;
+    children: any;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const [search] = useStore<any>('search');

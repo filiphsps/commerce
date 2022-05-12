@@ -2,9 +2,9 @@
 @import '../../../src/scss/app';
 
 .ProductPage {
-    .ProductPage-Content {
-        padding-top: 0px;
+    padding-top: 1rem;
 
+    .ProductPage-Content {
         @media (max-width: $width-max-mobile) {
             overflow-x: hidden;
         }

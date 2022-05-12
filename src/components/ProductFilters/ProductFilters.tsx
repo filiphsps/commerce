@@ -103,6 +103,7 @@ const ProductFilters: FunctionComponent<ProductFiltersProps> = (props) => {
                 <LanguageString id={'filters'} />
             </div>
 
+            {/* @ts-ignore: Type error */}
             <Scroll
                 showUnder={10}
                 style={{

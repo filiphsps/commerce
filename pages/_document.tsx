@@ -23,7 +23,7 @@ class App extends Document {
                         {sheet.getStyleElement()}
                     </>
                 )
-            };
+            } as any;
         } finally {
             sheet.seal();
         }
