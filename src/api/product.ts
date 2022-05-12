@@ -11,7 +11,8 @@ export const PRODUCT_FRAGMENT = `
     descriptionHtml
     vendor
     productType
-    images(first: 250) {
+    tags
+    images(first: 5) {
         edges {
             node {
                 altText
@@ -27,6 +28,8 @@ export const PRODUCT_FRAGMENT = `
                 price
                 compareAtPrice
                 availableForSale
+                weight
+                weightUnit
             }
         }
     }
@@ -50,6 +53,8 @@ export const Convertor = (product: any): ProductModel => {
         metafields[metafield?.node?.key] = metafield?.node?.value;
     });
 
+    console.log(product);
+
     return {
         id: product?.id,
         handle: product?.handle,
@@ -67,7 +72,6 @@ export const Convertor = (product: any): ProductModel => {
         variants: product?.variants?.edges?.map((variant, index) => ({
             id: variant?.node?.id,
             available: variant?.node?.availableForSale,
-            title: variant?.node?.title,
             type: product?.productType,
             image: 0, //index
 
@@ -75,10 +79,21 @@ export const Convertor = (product: any): ProductModel => {
             compare_at_price: variant?.node?.compareAtPrice,
             ...((variant) => {
                 let items = 1;
+                let title = variant?.title;
                 // TODO: handle packages here
+
+                switch (title) {
+                    case '100g':
+                        title += ' (3.5oz)';
+                        break;
+                    case '200g':
+                        title += ' (7.1oz)';
+                        break;
+                }
 
                 return {
                     items,
+                    title,
                     from_price: variant?.price,
                     compare_at_from_price: variant?.compareAtPrice
                 };
