@@ -12,7 +12,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = (props) => {
 
     useEffect(() => {
         setSearch({ ...search, open: false });
-    }, [router.asPath]);
+    }, [router?.asPath]);
 
     return (
         <div className="SearchBar">
