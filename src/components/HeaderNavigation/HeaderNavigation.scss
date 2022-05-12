@@ -29,17 +29,20 @@
         }
 
         .Link {
-            padding-right: 2.5rem;
+            margin-right: 2.5rem;
+            margin-bottom: -0.2rem;
             text-transform: uppercase;
             color: $color-text-primary;
             font-size: 1.25rem;
             font-weight: 600;
             letter-spacing: 0.05rem;
+            transition: 150ms;
+            border-bottom: 0.2rem solid transparent;
 
             @media (min-width: $width-max-mobile) {
                 &:hover,
                 &:active {
-                    text-decoration: underline;
+                    border-bottom-color: $color-text-primary;
                 }
             }
         }

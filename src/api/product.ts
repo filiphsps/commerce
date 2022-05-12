@@ -53,8 +53,6 @@ export const Convertor = (product: any): ProductModel => {
         metafields[metafield?.node?.key] = metafield?.node?.value;
     });
 
-    console.log(product);
-
     return {
         id: product?.id,
         handle: product?.handle,

@@ -204,12 +204,6 @@ const StoreApp = withStore(
                             content={contextStore?.accent?.primary}
                         />
                     )}
-
-                    {/* font-family, this should be dynamically defined in the future */}
-                    <link
-                        href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=optional"
-                        rel="stylesheet"
-                    />
                 </Head>
 
                 {/* Page */}

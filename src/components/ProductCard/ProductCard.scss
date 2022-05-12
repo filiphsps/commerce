@@ -67,7 +67,7 @@
 
             .ProductCard-Container-Header-Vendor {
                 display: block;
-                font-size: 1rem;
+                font-size: 1.15rem;
                 color: $color-dark;
 
                 @media (min-width: $width-max-mobile) {
@@ -80,7 +80,8 @@
 
             .ProductCard-Container-Header-Title {
                 display: block;
-                font-size: 1.25rem;
+                font-size: 1.5rem;
+                padding-bottom: 0.5rem;
 
                 @media (min-width: $width-max-mobile) {
                     &:hover,
@@ -146,7 +147,7 @@
                         border-width: 0.2rem !important;
                         border-radius: $block-border-radius;
                         line-height: 2.45rem;
-                        font-size: 0.85rem;
+                        font-size: 1rem;
                         font-weight: 700;
                         text-overflow: ellipsis;
                         text-align: center;
@@ -191,7 +192,7 @@
                     max-height: 2.75rem;
                     margin: 0px 0.5rem;
                     border: none;
-                    border-radius: none;
+                    border-radius: $block-border-radius;
                     text-align: center;
                     background: $color-white;
 
@@ -210,7 +211,7 @@
                     max-height: 2.75rem;
                     width: 4.5rem;
                     background: $color-white;
-                    border: 0.25rem solid $color-white;
+                    border: 0.2rem solid $color-white;
                     border-radius: $block-border-radius;
                     font-weight: 700;
                     font-size: 1.25rem;
