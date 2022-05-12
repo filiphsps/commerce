@@ -61,6 +61,7 @@ export const Convertor = (product: any): ProductModel => {
         description: product?.description,
         body: product?.descriptionHtml,
         type: product?.productType,
+        tags: product?.tags,
 
         vendor: {
             title: product?.vendor,

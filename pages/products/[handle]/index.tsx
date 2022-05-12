@@ -15,6 +15,7 @@ import { ProductJsonLd } from 'next-seo';
 import { ProductModel } from '../../../src/models/ProductModel';
 import ProductVariants from '../../../src/components/ProductVariants';
 import dynamic from 'next/dynamic';
+import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
@@ -24,6 +25,22 @@ const ImageGallery: any = dynamic(() => import('react-image-gallery'), {
 const CollectionBlock: any = dynamic(
     () => import('../../../src/components/CollectionBlock')
 );
+
+const ProductTags = styled.div`
+    display: flex;
+    grid-gap: 0.55rem;
+    padding: 1rem 0px;
+`;
+const ProductTag = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    background: var(--accent-secondary-dark);
+    color: var(--color-text-primary);
+    //border-radius: var(--block-border-radius);
+`;
 
 const Product = memo((props: any) => {
     const { store } = props;
@@ -121,6 +138,7 @@ const Product = memo((props: any) => {
                                             showNav={false}
                                             showFullscreenButton={false}
                                             showPlayButton={false}
+                                            showThumbnails={false}
                                             items={
                                                 product?.images?.map?.(
                                                     (image) => {
@@ -202,6 +220,11 @@ const Product = memo((props: any) => {
                                             ] ||
                                                 product?.title)}
                                     </h1>
+                                    <ProductTags>
+                                        {product?.tags?.map((tag) => (
+                                            <ProductTag>{tag}</ProductTag>
+                                        ))}
+                                    </ProductTags>
                                 </div>
 
                                 <div className="ProductPage-Content-Body">

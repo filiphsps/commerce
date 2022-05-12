@@ -25,9 +25,6 @@ const ProductVariants: FunctionComponent<ProductVariantsProps> = (props) => {
                         }`}
                         onClick={() => props?.onSelect(index || 0)}
                     >
-                        <div className="ProductVariants-Variant-Icon">
-                            <VariantIcon id={variant?.title} />
-                        </div>
                         <div className="ProductVariants-Variant-Title">
                             <LanguageString id={variant?.title} />
                         </div>

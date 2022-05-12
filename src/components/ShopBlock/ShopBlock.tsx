@@ -2,11 +2,9 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import LanguageString from '../LanguageString';
 import Loader from '../Loader';
-import Paginatior from '../Paginatior';
 import ProductCard from '../ProductCard';
 import { ProductsApi } from '../../api';
 import Vendors from '../Vendors';
-import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 interface ShopBlockProps {

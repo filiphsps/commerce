@@ -9,6 +9,7 @@ export interface ProductModel {
     description?: string;
     body?: any;
     type?: string;
+    tags?: string[];
 
     vendor: VendorModel;
     producer?: {

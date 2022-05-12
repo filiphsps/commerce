@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .ProductVariants {
     white-space: nowrap;
@@ -18,11 +18,11 @@
     .ProductVariants-Variant {
         display: grid;
         grid-gap: 1rem;
-        grid-template-columns: 2rem auto 1fr;
+        grid-template-columns: auto 1fr;
         justify-content: flex-start;
         align-items: center;
         width: 100%;
-        padding: 1rem;
+        padding: 1.5rem 1rem;
         border-radius: $block-border-radius;
         background: $color-silvery;
         border: 0.2rem solid $color-silvery;
@@ -40,9 +40,7 @@
         }
 
         .ProductVariants-Variant-Title {
-            span {
-                font-size: 0.85rem;
-            }
+            font-size: 1.25rem;
         }
 
         .ProductVariants-Variant-Price {
@@ -50,6 +48,7 @@
             justify-content: flex-end;
             align-items: center;
             width: 100%;
+            font-size: 1.25rem;
 
             &.Sale {
                 color: $color-sale;
@@ -57,7 +56,7 @@
                 .Sale-Price {
                     padding-right: 0.5rem;
                     color: $color-black;
-                    font-size: 0.75rem;
+                    font-size: 1rem;
                     text-decoration: line-through;
                 }
             }
@@ -70,7 +69,8 @@
         }
 
         @media (min-width: $width-max-mobile) {
-            &:hover, &:active {
+            &:hover,
+            &:active {
                 border-color: $color-primary;
                 color: $color-primary;
             }

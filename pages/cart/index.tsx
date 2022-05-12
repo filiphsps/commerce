@@ -85,9 +85,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         </div>
                     )) || (
                         <div className="CartPage-Content-Items">
-                            {(!cart?.items && <PageLoader />) || (
-                                <LanguageString id={'shopping_cart_is_empty'} />
-                            )}
+                            {!cart?.items && <PageLoader />}
                         </div>
                     )}
 
