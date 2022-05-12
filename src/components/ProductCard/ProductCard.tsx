@@ -50,7 +50,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
 
     if (!data) return <div className="ProductCard" />;
 
-    const show_variants = data?.variants?.length > 1;
+    const show_variants = data?.variants?.length > 0;
     const variant = data?.variants?.[selectedVariant] || null;
 
     return (

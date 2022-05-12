@@ -13,8 +13,6 @@ interface ProductVariantsProps {
 const ProductVariants: FunctionComponent<ProductVariantsProps> = (props) => {
     const { data } = props;
 
-    if (data?.length <= 1) return null;
-
     return (
         <div className="ProductVariants">
             {data?.map((variant, index) => {
@@ -31,18 +29,7 @@ const ProductVariants: FunctionComponent<ProductVariantsProps> = (props) => {
                             <VariantIcon id={variant?.title} />
                         </div>
                         <div className="ProductVariants-Variant-Title">
-                            <LanguageString id={variant?.title} />{' '}
-                            {variant?.items > 1 && (
-                                <span>
-                                    ({variant?.items}{' '}
-                                    <LanguageString
-                                        id={
-                                            variant?.items <= 1 ? 'can' : 'cans'
-                                        }
-                                    />
-                                    )
-                                </span>
-                            )}
+                            <LanguageString id={variant?.title} />
                         </div>
                         <div
                             className={`ProductVariants-Variant-Price ${

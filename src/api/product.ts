@@ -80,9 +80,16 @@ export const Convertor = (product: any): ProductModel => {
                 let title = variant?.title;
                 // TODO: handle packages here
 
+                // TODO: automate this
                 switch (title) {
+                    case '56g':
+                        title += ' (2.0oz)';
+                        break;
                     case '100g':
                         title += ' (3.5oz)';
+                        break;
+                    case '125g':
+                        title += ' (4.4oz)';
                         break;
                     case '200g':
                         title += ' (7.1oz)';
