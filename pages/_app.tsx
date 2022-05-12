@@ -11,6 +11,7 @@ import Color from 'color';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
+import Script from 'next/script';
 import ScrollToTop from '../src/components/ScrollToTop';
 import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
 
@@ -121,11 +122,7 @@ const StoreApp = withStore(
                             content={contextStore?.name}
                         />
                     )}
-                    <script
-                        defer
-                        src="https://shynet.sandstromsandberg.com/ingress/74dc21f9-f1bf-4add-8833-c0364673e40b/script.js"
-                    />
-                    <script defer src="/js/shopify-analytics.js" />
+                    <Script defer src="/js/shopify-analytics.js" />
 
                     {contextStore?.favicons?.map((favicon, index) => {
                         return (

@@ -240,7 +240,7 @@
             window.BOOMR.application = 'storefront-renderer';
             window.BOOMR.themeName = '';
             window.BOOMR.themeVersion = '';
-            window.BOOMR.shopId = 13525845;
+            window.BOOMR.shopId = 60485566618;
             window.BOOMR.themeId = 11069489175;
             window.BOOMR.url =
                 'https://cdn.shopify.com/shopifycloud/boomerang/shopify-boomerang-1.0.0.min.js';
