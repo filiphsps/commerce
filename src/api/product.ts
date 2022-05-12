@@ -86,6 +86,9 @@ export const Convertor = (product: any): ProductModel => {
                     case '56g':
                         title += ' (2.0oz)';
                         break;
+                    case '80g':
+                        title += ' (2.8oz)';
+                        break;
                     case '100g':
                         title += ' (3.5oz)';
                         break;

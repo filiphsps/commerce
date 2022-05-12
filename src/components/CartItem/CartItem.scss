@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .CartItem {
     display: grid;
@@ -44,6 +44,7 @@
         .CartItem-Content-Subtitle {
             text-transform: uppercase;
             font-weight: 700;
+            font-size: 1rem;
             color: $color-dark;
 
             @media (max-width: $width-max-mobile) {
@@ -54,7 +55,7 @@
         }
 
         .CartItem-Content-Title {
-            padding: 0.5rem 0px 0.65rem 0px;
+            padding: 0.25rem 0px 1rem 0px;
             text-transform: uppercase;
             font-size: 1.5rem;
             line-height: 1.75rem;
@@ -78,11 +79,11 @@
                 margin-right: 0.5rem;
                 padding: 0.25rem 0.5rem;
                 color: $color-text-primary;
-                background: $color-primary;
+                background: $color-secondary-dark;
                 font-weight: 700;
                 font-size: 0.85rem;
                 text-transform: uppercase;
-                border-radius: $block-border-radius;
+                //border-radius: $block-border-radius;
 
                 &:empty {
                     background: transparent;
@@ -108,7 +109,7 @@
         color: $color-dark;
         text-transform: uppercase;
         text-align: right;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
 
         @media (max-width: $width-max-mobile) {
             align-items: flex-end;
@@ -173,7 +174,7 @@
 
         .Icon {
             cursor: pointer;
-            
+
             @media (min-width: $width-max-mobile) {
                 &:hover {
                     color: $color-primary;

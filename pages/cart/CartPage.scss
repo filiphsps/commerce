@@ -26,12 +26,13 @@
 
             .CartPage-Content-Items-Header {
                 display: grid;
-                grid-template-columns: 7rem 1fr 0rem 12rem 2rem;
+                grid-template-columns: 7rem 1fr 4rem 13rem 0.5rem;
                 grid-gap: 1rem;
                 height: 3.5rem;
                 width: 100%;
                 text-transform: uppercase;
                 font-weight: 700;
+                font-size: 1.25rem;
                 color: $color-dark;
 
                 div {
@@ -93,11 +94,12 @@
                         justify-content: space-between;
                         align-items: flex-start;
                         padding: 0.5rem 0px;
-                        font-size: 1rem;
-                        border-bottom: 0.05rem solid $color-silvery;
+                        font-size: 1.25rem;
+                        border-bottom: 0.1rem solid $color-silvery;
 
                         .CartPage-Content-Total-Content-Items-Item-Meta {
                             .CartPage-Content-Total-Content-Items-Item-Meta-Variant {
+                                line-height: 2rem;
                             }
 
                             .CartPage-Content-Total-Content-Items-Item-Meta-Product {
@@ -134,7 +136,7 @@
             }
 
             .CartPage-Content-Total-Total {
-                font-size: 1.25rem;
+                font-size: 1.5rem;
                 font-weight: 700;
             }
 

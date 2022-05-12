@@ -17,7 +17,6 @@ interface CollectionPageProps {
 }
 const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
     const { store, data } = props;
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
 
     const router = useRouter();
 
@@ -31,19 +30,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
         <Page className="CollectionPage">
             <Head>
                 <title>
-                    {props.data?.title || router.query.handle} |{' '}
+                    {data?.collection?.title || router.query.handle} |{' '}
                     {store?.name || ''}
                 </title>
                 <meta
                     name="description"
-                    content={
-                        (data?.body &&
-                            (data?.body[language] ||
-                                data?.body['en_US'] ||
-                                data?.body)) ||
-                        data?.description ||
-                        ''
-                    }
+                    content={data?.body || data?.description || ''}
                 />
             </Head>
 
