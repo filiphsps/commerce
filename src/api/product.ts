@@ -81,23 +81,16 @@ export const Convertor = (product: any): ProductModel => {
                 let title = variant?.title;
                 // TODO: handle packages here
 
-                // TODO: automate this
-                switch (title) {
-                    case '56g':
-                        title += ' (2.0oz)';
-                        break;
-                    case '80g':
-                        title += ' (2.8oz)';
-                        break;
-                    case '100g':
-                        title += ' (3.5oz)';
-                        break;
-                    case '125g':
-                        title += ' (4.4oz)';
-                        break;
-                    case '200g':
-                        title += ' (7.1oz)';
-                        break;
+                if (title.toLowerCase().endsWith('g')) {
+                    let weight = Number.parseInt(title.replace('g', ''));
+
+                    // Convert g to oz
+                    weight *= 0.035274;
+
+                    // Round to one decimal
+                    weight = Math.round(weight * 10) / 10;
+
+                    title += ` (${weight}oz)`;
                 }
 
                 return {
