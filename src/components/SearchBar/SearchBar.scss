@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .SearchBar {
     position: relative;
@@ -21,7 +21,10 @@
         cursor: pointer;
 
         @media (min-width: $width-max-mobile) {
-            &:hover, &:active {
+            top: -0.25rem;
+
+            &:hover,
+            &:active {
                 color: rgba(0, 0, 0, 0.75);
             }
         }

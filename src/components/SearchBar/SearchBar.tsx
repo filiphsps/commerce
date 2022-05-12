@@ -1,12 +1,18 @@
-import React, { FunctionComponent, memo, useState } from 'react';
+import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { FiX } from 'react-icons/fi';
 import Input from '../Input';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 interface SearchBarProps {}
 const SearchBar: FunctionComponent<SearchBarProps> = (props) => {
     const [search, setSearch] = useStore<any>('search');
+    const router = useRouter();
+
+    useEffect(() => {
+        setSearch({ ...search, open: false });
+    }, [router.asPath]);
 
     return (
         <div className="SearchBar">
@@ -18,6 +24,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = (props) => {
                 onChange={(e) =>
                     setSearch({ ...search, phrase: e?.target?.value || '' })
                 }
+                onFocus={() => setSearch({ ...search, open: true })}
                 spellCheck={false}
             />
             {(search?.phrase && search?.open && (

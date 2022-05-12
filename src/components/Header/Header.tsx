@@ -27,9 +27,11 @@ const Header: FunctionComponent<HeaderProps> = (props) => {
                         <SearchBar />
                     </div>
                     <div className="Header-Content-Actions">
-                        <Link to={'/account'}>
-                            <FiUser className="Icon" />
-                        </Link>
+                        {false && (
+                            <Link to={'/account'}>
+                                <FiUser className="Icon" />
+                            </Link>
+                        )}
 
                         {/*<Link to={'/search'} className="Hide-Desktop">
                             <FiSearch className="Icon" />

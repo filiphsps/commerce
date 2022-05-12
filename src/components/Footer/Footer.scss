@@ -1,40 +1,27 @@
 @import '../../scss/app';
 
-.WarningBlock {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 6rem;
-    width: 100%;
-    padding: 2rem;
-    margin-top: 2rem;
-    background: rgb(217, 30, 24);
-    color: #fff;
-    font-size: 2rem;
-    font-weight: 700;
-
-    .Badge {
-        height: 2.5rem;
-        margin-right: 2rem;
-    }
-}
-
 .Footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    padding-bottom: 12rem;
     background: $color-primary-dark;
+    color: $color-text-primary;
+
+    .Footer-Wrapper {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        grid-gap: 2rem;
+        width: $width-max-page;
+        max-width: 100%;
+        padding: 2rem;
+    }
 
     .Footer-Blocks {
         display: flex;
         justify-content: space-between;
-        max-width: $width-max-page;
-        padding: 4rem 2rem;
         flex-grow: 1;
         text-align: left;
-        color: $color-text-primary;
 
         @media (max-width: $width-max-mobile) {
             display: grid;
@@ -64,12 +51,13 @@
 
             &.Footer-Blocks-Block-About {
                 flex-grow: 1;
-                line-height: 1.25rem;
+                line-height: 1.5rem;
                 letter-spacing: 0.05rem;
+                font-size: 1.25rem;
 
                 .Footer-Blocks-Block-About-Logo {
                     width: 15vw;
-                    height: 50px;
+                    height: 6rem;
                     max-width: 250px;
                     margin-bottom: 1rem;
                     background-size: contain;
