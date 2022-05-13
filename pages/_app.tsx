@@ -201,7 +201,6 @@ const StoreApp = withStore(
                     />
                 </PageProvider>
                 <ScrollToTop />
-                <ShopifyAnalytics />
             </>
         );
     },
