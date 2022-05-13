@@ -122,7 +122,6 @@ const StoreApp = withStore(
                             content={contextStore?.name}
                         />
                     )}
-                    <Script defer src="/js/shopify-analytics.js" />
 
                     {contextStore?.favicons?.map((favicon, index) => {
                         return (

@@ -222,7 +222,9 @@ const Product = memo((props: any) => {
                                     </h1>
                                     <ProductTags>
                                         {product?.tags?.map((tag) => (
-                                            <ProductTag>{tag}</ProductTag>
+                                            <ProductTag key={tag}>
+                                                {tag}
+                                            </ProductTag>
                                         ))}
                                     </ProductTags>
                                 </div>
