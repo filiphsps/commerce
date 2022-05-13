@@ -63,7 +63,7 @@
         "@types/react": "18.0.9",
         "@types/styled-components": "5.1.22",
         "enzyme": "3.11.0",
-        "eslint": "8.8.0",
+        "eslint": "8.15.0",
         "eslint-plugin-import": "2.26.0",
         "eslint-plugin-react": "7.29.4",
         "eslint-plugin-react-hooks": "4.5.0",
