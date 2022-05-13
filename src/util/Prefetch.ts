@@ -81,7 +81,7 @@ const Prefetch = (
                         };
                     }
                     break;
-                case 'ShopBlock':
+                case 'shopblock':
                     shop = (await ProductsApi()) ?? {};
                     vendors = (await VendorsApi()) ?? {};
                     break;
