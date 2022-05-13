@@ -97,7 +97,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     {props?.showDescription && (
                         <div className="CollectionBlock-Header-Description">
                             <Markdown
-                                source={
+                                children={
                                     (data?.body &&
                                         (data?.body[language] ||
                                             data?.body['en_US'] ||

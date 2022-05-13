@@ -4,7 +4,6 @@ import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import ProductFilter from '../ProductFilter';
-import Vendors from '../Vendors';
 
 interface ShopBlockProps {
     store?: any;
@@ -12,7 +11,6 @@ interface ShopBlockProps {
 }
 const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
     const [filter, setFilter] = useState({ tags: [], vendors: [] });
-    console.log(data);
 
     return (
         <div className="ShopBlock">

@@ -9,11 +9,10 @@ const MarkdownBody: FunctionComponent<MarkdownBodyProps> = (props) => {
     return (
         <div className="MarkdownBody">
             <ReactMarkdown
-                source={(props.body || '').replace(
+                children={(props.body || '').replace(
                     new RegExp('\r\n', 'gi'),
                     '  '
                 )}
-                escapeHtml={false}
             />
         </div>
     );
