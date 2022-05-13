@@ -1,38 +1,34 @@
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import React, { FunctionComponent, memo } from 'react';
 
 import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
-import { ProductsApi } from '../../api';
+import ProductFilter from '../ProductFilter';
 import Vendors from '../Vendors';
-import useSWR from 'swr';
 
 interface ShopBlockProps {
     store?: any;
     data?: any;
 }
-const ShopBlock: FunctionComponent<ShopBlockProps> = (props) => {
-    const { data, error } = useSWR([``], () => ProductsApi(), {
-        fallbackData: props?.data
-    }) as any;
-
+const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
     return (
         <div className="ShopBlock">
             <Vendors />
+            {data && <ProductFilter products={data} />}
             {(data && (
                 <div className={`CollectionBlock CollectionBlock-Grid`}>
                     <div className="CollectionBlock-Content">
-                        {data?.items?.map((product) => {
+                        {data?.map((product) => {
                             return (
                                 <ProductCard
-                                    key={product?.handle}
-                                    data={product || undefined}
+                                    key={product?.id}
+                                    data={product}
                                     handle={product?.handle}
                                 />
                             );
                         })}
 
-                        {!data?.items?.length && (
+                        {!data?.length && (
                             <LanguageString id="search_no_results" />
                         )}
                     </div>

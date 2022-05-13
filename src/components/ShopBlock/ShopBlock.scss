@@ -1,6 +1,8 @@
 @import '../../scss/app';
 
 .ShopBlock {
+    padding-bottom: 2rem;
+
     .ShopBlock-Actions {
         display: grid;
         grid-template-columns: 1fr auto auto;

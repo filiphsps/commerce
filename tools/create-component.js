@@ -46,11 +46,6 @@ describe('Components', () => {
 });
 `;
 
-const scssFile = `@import '../../scss/app';
-
-.${component} { }
-`;
-
 // Make the directory
 fs.mkdirSync('./src/components/' + component);
 
@@ -58,7 +53,5 @@ fs.mkdirSync('./src/components/' + component);
 fs.writeFileSync('./src/components/' + component + '/index.tsx', indexFile, 'utf8');
 fs.writeFileSync('./src/components/' + component + '/' + component + '.tsx', componentFile, 'utf8');
 fs.writeFileSync('./src/components/' + component + '/' + component + '.test.tsx', testFile, 'utf8');
-
-fs.writeFileSync('./src/components/' + component + '/' + component + '.scss', scssFile, 'utf8');
 
 console.log('Wrote 3 files...');

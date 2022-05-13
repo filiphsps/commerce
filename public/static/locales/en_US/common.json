@@ -111,5 +111,6 @@
     "18_plus_warning": "No sale of nicotine products to minors!",
 
     "filter_hide_unavailable": "Hide unavailable",
-    "filter_hide_out_of_stock": "Hide out of stock"
+    "filter_hide_out_of_stock": "Hide out of stock",
+    "filter_show": "Filter products"
 }

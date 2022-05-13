@@ -39,7 +39,11 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
                 />
             </Head>
 
-            <PageContent>
+            <PageContent
+                style={{
+                    marginTop: '1rem'
+                }}
+            >
                 <Breadcrumbs
                     pages={[
                         {
