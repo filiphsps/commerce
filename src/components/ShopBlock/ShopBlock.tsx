@@ -4,6 +4,7 @@ import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import ProductFilter from '../ProductFilter';
+import { useRouter } from 'next/router';
 
 interface ShopBlockProps {
     store?: any;
@@ -11,13 +12,19 @@ interface ShopBlockProps {
 }
 const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
     const [filter, setFilter] = useState({ tags: [], vendors: [] });
+    const router = useRouter();
 
     return (
         <div className="ShopBlock">
             {data && (
                 <ProductFilter
                     products={data}
-                    onChange={(filter) => setFilter(filter)}
+                    onChange={(filter) => {
+                        /* router.query.tags = filter.tags.join(',');
+                        router.query.vendors = filter.vendors.join(',');
+                        router.push(router, undefined, { shallow: true }); */
+                        setFilter(filter);
+                    }}
                 />
             )}
             {(data && (

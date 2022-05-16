@@ -1,21 +1,19 @@
-# snushof-frontend-nextjs
+# ecommerce-frontend
 
-![Unit & Integration Testing](https://github.com/snushof-ab/techhof-frontend-nextjs/workflows/Unit%20&%20Integration%20Testing/badge.svg?branch=master)
-
-snushof-frontend-nextjs is a modern implementation of a B2C storefront.
+# ecommerce-frontend is a modern implementation of a B2C storefront.
 
 * Complete SSR-support
 * Per-component testing
 * Always targeting **lts** nodejs (currently **16.x**)
-* Yarn
+* npm
 
 ## Usage
 
 1. Configure the STORE and DOMAIN values (In HEROKU its Settings->Config Vars).
 
 ```bash
-STORE=snushof.myshopify.com
-DOMAIN=snushof.ch
+STORE=candy-by-sweden.myshopify.com
+DOMAIN=candybysweden.com
 NEXT_PUBLIC_DEFAULT_LANGUAGE=en_US
 
 # shopify storefront
