@@ -1,6 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 
-import LanguageString from '../LanguageString';
 import Link from '../Link';
 import Loader from '../Loader';
 import { VendorModel } from '../../models/VendorModel';
@@ -15,7 +14,6 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
     const { data: vendors } = useSWR([''], () => VendorsApi(), {
         fallbackData: props?.data
     }) as any;
-    const [ShowAll, SetShowAll] = useState(false);
     const router = useRouter();
 
     if (!vendors)
@@ -29,8 +27,6 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
         <div className="Vendors">
             {vendors?.map?.((vendor: VendorModel, index) => {
                 if (!vendor?.handle) return null;
-
-                if (!ShowAll && index > 7) return null;
 
                 return (
                     <Link
@@ -49,16 +45,6 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                     </Link>
                 );
             })}
-            {vendors?.length > 7 && (
-                <div
-                    className="Vendors-Vendor ShowMore"
-                    onClick={() => SetShowAll(!ShowAll)}
-                >
-                    <LanguageString
-                        id={(ShowAll && 'show_less') || 'show_more'}
-                    />
-                </div>
-            )}
         </div>
     );
 };

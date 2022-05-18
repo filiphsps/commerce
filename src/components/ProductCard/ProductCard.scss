@@ -96,6 +96,8 @@
     .ProductCard-Actions {
         display: flex;
         justify-content: center;
+        justify-self: flex-end;
+        align-self: flex-end;
         align-items: space-between;
         flex-direction: column;
         flex-grow: 1;
