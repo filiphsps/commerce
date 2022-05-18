@@ -9,37 +9,51 @@ const FilterWrapper = styled.div`
 `;
 const Filter = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     grid-gap: 2rem;
     transition: 250ms;
 
-    &.Closed {
-        opacity: 0;
-        height: 0px;
-        pointer-events: none;
+    @media (max-width: 720px) {
+        flex-direction: row;
+
+        &.Closed {
+            opacity: 0;
+            height: 0px;
+            pointer-events: none;
+        }
     }
 `;
 const Toggle = styled.div`
     cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: -2rem;
     text-transform: uppercase;
     font-size: 1.25rem;
-    font-weight: 600;
-    user-select: none;
-    opacity: 0.65;
+    background: #efefef;
     transition: 250ms;
+    border-radius: var(--block-border-radius);
 
     &.Open {
-        color: var(--accent-primary);
-        border-left: 0.2rem solid var(--accent-primary);
-        padding-left: 0.25rem;
+        background: var(--accent-primary);
+        color: var(--color-text-primary);
         opacity: 1;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    @media (min-width: 720px) {
+        display: none;
     }
 `;
 
 const Options = styled.div`
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     grid-gap: 0.5rem;
 `;
 
@@ -78,10 +92,15 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
     products,
     onChange
 }) => {
-    const [filters, setFilters] = useState({ tags: [], vendors: [] });
+    const [filters, setFilters] = useState({
+        tags: [],
+        vendors: [],
+        sorting: 'none'
+    });
     const [showFilters, setShowFilters] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
     const [vendors, setVendors] = useState<string[]>([]);
+    const [sorting, setSorting] = useState<string[]>([]);
 
     useEffect(() => {
         let new_tags = [];
@@ -116,6 +135,28 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                 <LanguageString id="filter_show" />
             </Toggle>
             <Filter className={!showFilters && 'Closed'}>
+                <Options>
+                    <OptionsTitle>
+                        <LanguageString id="sorting" />
+                    </OptionsTitle>
+                    <Option
+                        className={filters.sorting == 'none' && 'Selected'}
+                        onClick={() =>
+                            setFilters({ ...filters, sorting: 'none' })
+                        }
+                    >
+                        Popular
+                    </Option>
+                    <Option
+                        className={filters.sorting == 'abcAsc' && 'Selected'}
+                        onClick={() =>
+                            setFilters({ ...filters, sorting: 'abcAsc' })
+                        }
+                    >
+                        Ascending
+                    </Option>
+                </Options>
+
                 <Options>
                     <OptionsTitle>
                         <LanguageString id="tags" />

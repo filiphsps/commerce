@@ -10,9 +10,19 @@ module.exports = withTM({
     projectRoot: __dirname,
     poweredByHeader: false,
     strictMode: true,
+    reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
     target: 'server',
+    async redirects() {
+        return [
+            {
+                source: '/about/',
+                destination: `https://${process.env.STORE}/admin`,
+                permanent: false,
+            },
+        ]
+    },
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io'],
     },

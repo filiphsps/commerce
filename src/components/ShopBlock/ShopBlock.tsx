@@ -4,29 +4,35 @@ import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import ProductFilter from '../ProductFilter';
-import { useRouter } from 'next/router';
+import styled from 'styled-components';
+
+const ShopBlockWrapper = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 12rem;
+    grid-gap: 2rem;
+
+    @media (max-width: 720px) {
+        grid-template-columns: 1fr;
+
+        & > div:nth-child(2) {
+            grid-row: 1;
+        }
+    }
+`;
 
 interface ShopBlockProps {
     store?: any;
     data?: any;
 }
 const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
-    const [filter, setFilter] = useState({ tags: [], vendors: [] });
-    const router = useRouter();
+    const [filter, setFilter] = useState({
+        tags: [],
+        vendors: [],
+        sorting: 'none'
+    });
 
     return (
-        <div className="ShopBlock">
-            {data && (
-                <ProductFilter
-                    products={data}
-                    onChange={(filter) => {
-                        /* router.query.tags = filter.tags.join(',');
-                        router.query.vendors = filter.vendors.join(',');
-                        router.push(router, undefined, { shallow: true }); */
-                        setFilter(filter);
-                    }}
-                />
-            )}
+        <ShopBlockWrapper className="ShopBlock">
             {(data && (
                 <div className={`CollectionBlock CollectionBlock-Grid`}>
                     <div className="CollectionBlock-Content">
@@ -54,6 +60,17 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
 
                                 return result;
                             })
+                            .sort((a, b) => {
+                                switch (filter.sorting) {
+                                    case 'abcAsc':
+                                        return a.vendor.handle.localeCompare(
+                                            b.vendor.handle
+                                        );
+                                    case 'none':
+                                    default:
+                                        return;
+                                }
+                            })
                             .map((product) => {
                                 return (
                                     <ProductCard
@@ -70,7 +87,13 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
                     </div>
                 </div>
             )) || <Loader />}
-        </div>
+            {data && (
+                <ProductFilter
+                    products={data}
+                    onChange={(filter) => setFilter(filter)}
+                />
+            )}
+        </ShopBlockWrapper>
     );
 };
 
