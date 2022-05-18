@@ -153,7 +153,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                             setFilters({ ...filters, sorting: 'abcAsc' })
                         }
                     >
-                        Ascending
+                        Brand Asc.
                     </Option>
                 </Options>
 

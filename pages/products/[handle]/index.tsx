@@ -384,7 +384,7 @@ export async function getStaticProps({ params, locale }) {
                     related_products
                 }
             },
-            revalidate: 60 * 5
+            revalidate: 1
         };
     } catch (err) {
         return {
