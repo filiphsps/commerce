@@ -196,13 +196,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             'checkout.candybysweden.com'
                                         );
 
-                                        if ((window as any)?.ga) {
+                                        /* if ((window as any)?.ga) {
                                             (window as any).ga((tracker) => {
                                                 window.location.href = `${url}&${tracker.get(
                                                     'linkerParam'
                                                 )}`;
                                             });
-                                        } else window.location.href = url;
+                                        } else */
+                                        window.location.href = url;
                                         console.log(url);
                                     } catch (err) {
                                         console.error(err);
