@@ -205,6 +205,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         } else window.location.href = url;
                                     } catch (err) {
                                         console.error(err);
+                                        alert(err.message);
                                     }
                                 }}
                             >
