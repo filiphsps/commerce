@@ -53,8 +53,6 @@ const Product = memo((props: any) => {
     const product: ProductModel = props?.data?.product || null;
     const related_products: Array<ProductModel> = props?.data?.related_products;
 
-    console.log(product);
-
     useEffect(() => {
         if (selectedVariant || !product) return;
 
@@ -70,10 +68,15 @@ const Product = memo((props: any) => {
         <Page className="ProductPage">
             <Head>
                 <title>
-                    {product?.vendor?.title} {product?.title} |{' '}
-                    {store?.name || ''}
+                    {product?.seo?.title ? product?.seo?.title : product?.title}{' '}
+                    | {product?.vendor?.title} | {store?.name || ''}
                 </title>
-                <meta name="description" content={product?.description || ''} />
+                <meta
+                    name="description"
+                    content={
+                        product?.seo?.description || product?.description || ''
+                    }
+                />
                 <meta name="canonical" ref="/shop" />
             </Head>
             <ProductJsonLd

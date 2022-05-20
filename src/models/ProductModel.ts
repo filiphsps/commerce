@@ -11,6 +11,11 @@ export interface ProductModel {
     type?: string;
     tags?: string[];
 
+    seo?: {
+        title: string;
+        description: string;
+    };
+
     vendor: VendorModel;
     producer?: {
         title: string;

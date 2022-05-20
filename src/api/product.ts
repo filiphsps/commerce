@@ -12,6 +12,10 @@ export const PRODUCT_FRAGMENT = `
     vendor
     productType
     tags
+    seo {
+        title
+        description
+    }
     images(first: 5) {
         edges {
             node {
@@ -62,6 +66,10 @@ export const Convertor = (product: any): ProductModel => {
         body: product?.descriptionHtml,
         type: product?.productType,
         tags: product?.tags,
+        seo: {
+            title: product?.seo?.title,
+            description: product?.seo?.description
+        },
 
         vendor: {
             title: product?.vendor,
