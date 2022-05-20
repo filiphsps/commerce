@@ -12,6 +12,7 @@ node_modules/
 .next/
 out/
 dist/
+public/sitemap*
 
 # production
 build/
