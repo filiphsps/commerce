@@ -105,6 +105,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                     )}
                                                 </div>
                                                 <div className="CartPage-Content-Total-Content-Items-Item-Meta-Variant">
+                                                    {`${line_item?.quantity} - `}
                                                     <LanguageString
                                                         id={
                                                             line_item?.variant_title ||
@@ -117,7 +118,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 {line_item?.total_compare_at_price && (
                                                     <Currency
                                                         price={
-                                                            line_item?.total_compare_at_price
+                                                            line_item?.total_compare_at_price *
+                                                            line_item?.quantity
                                                         }
                                                         currency={
                                                             cart?.currency
@@ -127,7 +129,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 )}
                                                 <Currency
                                                     price={
-                                                        line_item?.total_price
+                                                        line_item?.total_price *
+                                                        line_item?.quantity
                                                     }
                                                     currency={cart?.currency}
                                                     className={

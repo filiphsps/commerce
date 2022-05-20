@@ -69,7 +69,7 @@ const AccountLoginPage = (props: any) => {
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                         />
-                        <button
+                        <Button
                             className="Button"
                             type="submit"
                             disabled={loading || !email || !password}
@@ -96,7 +96,7 @@ const AccountLoginPage = (props: any) => {
                             <LanguageString
                                 id={(loading && 'loading') || 'login'}
                             />
-                        </button>
+                        </Button>
                     </form>
                     {/*<Link to={'/account/register'}>
                         <LanguageString id={'create_account'} />

@@ -50,7 +50,7 @@ const get_cart = async () => {
         price += parseFloat(item.total_price) * item.quantity;
 
         price_with_savings += parseFloat(item.total_price) * item.quantity;
-        total_items += item.quantity;
+        total_items += Number.parseInt(item.quantity, 10);
     });
 
     cart.price = price;

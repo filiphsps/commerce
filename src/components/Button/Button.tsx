@@ -36,6 +36,7 @@ const ButtonWrapper = styled.button`
 interface ButtonProps {
     disabled?: boolean;
     onClick?: any;
+    type?: any;
 
     className?: string;
     children?: any;
@@ -43,6 +44,7 @@ interface ButtonProps {
 const Button: FunctionComponent<ButtonProps> = (props) => {
     return (
         <ButtonWrapper
+            type={props.type}
             className={`${props.className} ${
                 props.disabled && 'Button-Disabled'
             }`}
