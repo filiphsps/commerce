@@ -17,7 +17,7 @@ module.exports = withTM({
     async redirects() {
         return [
             {
-                source: '/about/',
+                source: '/admin/',
                 destination: `https://${process.env.STORE}/admin`,
                 permanent: false,
             },
