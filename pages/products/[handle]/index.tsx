@@ -53,6 +53,8 @@ const Product = memo((props: any) => {
     const product: ProductModel = props?.data?.product || null;
     const related_products: Array<ProductModel> = props?.data?.related_products;
 
+    console.log(product);
+
     useEffect(() => {
         if (selectedVariant || !product) return;
 
@@ -213,13 +215,23 @@ const Product = memo((props: any) => {
                                                     product?.vendor?.title)}
                                         </h2>
                                     </Link>
-                                    <h1 className="ProductPage-Content-Header-Title">
-                                        {product?.title &&
-                                            (product?.title?.[
-                                                language.replace('-', '_')
-                                            ] ||
-                                                product?.title)}
-                                    </h1>
+                                    {product?.body?.includes('<h1>') ? (
+                                        <h3 className="ProductPage-Content-Header-Title">
+                                            {product?.title &&
+                                                (product?.title?.[
+                                                    language.replace('-', '_')
+                                                ] ||
+                                                    product?.title)}
+                                        </h3>
+                                    ) : (
+                                        <h1 className="ProductPage-Content-Header-Title">
+                                            {product?.title &&
+                                                (product?.title?.[
+                                                    language.replace('-', '_')
+                                                ] ||
+                                                    product?.title)}
+                                        </h1>
+                                    )}
                                     <ProductTags>
                                         {product?.tags?.map((tag) => (
                                             <ProductTag key={tag}>
