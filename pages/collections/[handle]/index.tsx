@@ -70,8 +70,22 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
     );
 };
 
-export async function getStaticPaths() {
-    return { paths: [], fallback: true };
+export async function getStaticPaths({ locales }) {
+    const vendors = ((await VendorsApi()) as any) || null;
+
+    let paths = [];
+    locales.forEach((locale) => {
+        paths.push(
+            ...vendors
+                ?.map((vendor) => ({
+                    params: { handle: vendor?.handle },
+                    locale: locale
+                }))
+                .filter((a) => a.params.handle)
+        );
+    });
+
+    return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params }) {

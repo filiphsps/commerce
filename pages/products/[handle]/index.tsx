@@ -318,25 +318,21 @@ const Product = memo((props: any) => {
 });
 
 export async function getStaticPaths({ locales }) {
-    try {
-        const products = ((await ProductsApi()) as any) || null;
+    const products = ((await ProductsApi()) as any) || null;
 
-        let paths = [];
-        locales.forEach((locale) => {
-            paths.push(
-                ...products
-                    ?.map((product) => ({
-                        params: { handle: product?.handle },
-                        locale: locale
-                    }))
-                    .filter((a) => a.params.handle)
-            );
-        });
+    let paths = [];
+    locales.forEach((locale) => {
+        paths.push(
+            ...products
+                ?.map((product) => ({
+                    params: { handle: product?.handle },
+                    locale: locale
+                }))
+                .filter((a) => a.params.handle)
+        );
+    });
 
-        return { paths, fallback: 'blocking' };
-    } catch {
-        return { paths: [], fallback: 'blocking' };
-    }
+    return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params }) {

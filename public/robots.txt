@@ -1,4 +1,14 @@
+# Misc
 User-agent: *
+
+# Paths
+Allow: /
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /account/
+
+# Host
+Host: https://candybysweden.com
+
+# Sitemaps
+Sitemap: https://candybysweden.com/sitemap.xml
