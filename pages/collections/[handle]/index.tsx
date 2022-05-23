@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
+import Error from 'next/error';
 import Head from 'next/head';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
@@ -25,6 +26,8 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
 
         if (window) (window as any).resourceId = data?.collection?.id;
     }, [data?.collection]);
+
+    if (!data?.collection) return <Error statusCode={404} />;
 
     return (
         <Page className="CollectionPage">
@@ -72,23 +75,22 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-    try {
-        return {
-            props: {
-                data: {
-                    collection:
-                        (await CollectionApi(params?.handle?.join(''))) ?? null,
-                    vendors: (await VendorsApi()) ?? null
-                }
-            },
-            revalidate: 1
-        };
-    } catch (err) {
-        return {
-            props: {},
-            revalidate: 1
-        };
+    let handle = '';
+    if (Array.isArray(params.handle)) {
+        handle = params?.handle?.join('');
+    } else {
+        handle = params?.handle;
     }
+
+    return {
+        props: {
+            data: {
+                collection: (await CollectionApi(handle)) ?? null,
+                vendors: (await VendorsApi()) ?? null
+            }
+        },
+        revalidate: 1
+    };
 }
 
 export default CollectionPage;
