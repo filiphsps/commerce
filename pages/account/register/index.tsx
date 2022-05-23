@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import Button from '../../../src/components/Button';
-import { CustomerRegisterApi } from '../../../src/api';
+import { CustomerRegisterApi } from '../../../src/api/customer';
 import Head from 'next/head';
 import Input from '../../../src/components/Input';
 import LanguageString from '../../../src/components/LanguageString';
@@ -10,7 +10,6 @@ import Link from '../../../src/components/Link';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageHeader from '../../../src/components/PageHeader';
-import { StoreToken } from '../../../src/util/customer/token';
 import { useRouter } from 'next/router';
 
 const AccountLoginPage = (props: any) => {

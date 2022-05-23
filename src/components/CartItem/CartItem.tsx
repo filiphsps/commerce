@@ -8,7 +8,7 @@ import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import Loader from '../Loader';
-import { ProductIdApi } from '../../api';
+import { ProductIdApi } from '../../api/product';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
@@ -92,12 +92,6 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                             product?.title)}
                 </Link>
                 <div className="CartItem-Content-Meta">
-                    <div className="CartItem-Content-Badge">
-                        <Currency
-                            price={variant?.price * props?.data?.quantity}
-                            currency={variant?.currency}
-                        />
-                    </div>
                     <div className="CartItem-Content-Badge">
                         <LanguageString
                             id={

@@ -1,7 +1,6 @@
 import 'destyle.css';
 import './app.scss';
 
-import { NavigationApi, StoreApi } from '../src/api';
 import React, { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
@@ -20,80 +19,23 @@ Router.events.on('routeChangeError', (err) => {
     NProgress.done();
 });
 
-const store: any = {
-    title: 'Candy By Sweden',
-    description:
-        'Ahlgreens Bilar, Marabou, Cloetta, Malaco, Fazer and way way more. Only at Candy By Sweden',
-    currencies: ['USD'],
-    language: 'en_US',
-    languages: ['en_US']
-};
-
 const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
-        const [contextStore, setStore] = useStore<any>('store');
-        const [currency, setCurrency] = useStore<any>('currency');
+        const [contextStore] = useStore<any>('store');
         const [cart, setCart] = useStore<any>('cart');
 
-        // FIXME: use app.getStaticProps when it's supported by nextjs.
         useEffect(() => {
-            try {
-                // Configure the frontend to the specific store we're serving
-                // TODO: await for App.getStaticProps to be supported!
-                if (!contextStore) {
-                    StoreApi(router.locale).then(async (data: any) => {
-                        const navigation: any = await NavigationApi(
-                            router.locale
-                        );
-
-                        setStore({
-                            ...store,
-                            name: data.store_name,
-                            currency: data.currency,
-                            logo: {
-                                src: data.logo
-                            },
-                            accent: {
-                                primary: data.primary,
-                                secondary: data.secondary
-                            },
-                            color: {
-                                primary: data.primary_text_color,
-                                secondary: data.secondary_text_color
-                            },
-                            block: {
-                                border_radius: data.border_radius
-                            },
-                            navigation: navigation.map((item) => ({
-                                title: item.title,
-                                href: `/${item.handle || ''}`
-                            }))
-                        });
-                    });
-                }
-
-                if (!currency) setCurrency(store?.currency);
-                if (!cart)
-                    Cart.Get()
-                        .then(setCart)
-                        .catch((error) => error && console.warn(error));
-
-                // Handle currency settings
-                if (window?.localStorage?.getItem('currency')) {
-                    setCurrency(window?.localStorage?.getItem('currency'));
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }, [store, contextStore]);
-
-        if (!contextStore) return null;
+            console.log('!!');
+            Cart.Get()
+                .then(setCart)
+                .catch((error) => error && console.warn(error));
+        }, []);
 
         return (
             <>
                 <Head>
-                    {<title>{contextStore?.title}</title>}
+                    <title>Candy By Sweden</title>
                     <meta
                         name="viewport"
                         content="initial-scale=1, viewport-fit=cover, width=device-width, user-scalable=no"
@@ -103,12 +45,10 @@ const StoreApp = withStore(
                         name="apple-mobile-web-app-status-bar-style"
                         content="black-translucent"
                     />
-                    {contextStore && (
-                        <meta
-                            name="apple-mobile-web-app-title"
-                            content={contextStore?.name}
-                        />
-                    )}
+                    <meta
+                        name="apple-mobile-web-app-title"
+                        content="Candy By Sweden"
+                    />
                     <link
                         rel="icon"
                         type="image/png"
@@ -123,58 +63,35 @@ const StoreApp = withStore(
                     {/* eslint-disable indent */}
                     <style>{`
                         body {
-                            --color-text-primary: ${Color(
-                                contextStore?.color?.primary
-                            )
+                            --color-text-primary: #ffffff;
+                            --accent-primary: ${Color('#0476D9')
                                 .hex()
                                 .toString()};
-                            --accent-primary: ${Color(
-                                contextStore?.accent?.primary
-                            )
-                                .hex()
-                                .toString()};
-                            --accent-primary-dark: ${Color(
-                                contextStore?.accent?.primary
-                            )
+                            --accent-primary-dark: ${Color('#0476D9')
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-primary-light: ${Color(
-                                contextStore?.accent?.primary
-                            )
+                            --accent-primary-light: ${Color('#0476D9')
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary: ${Color(
-                                contextStore?.accent?.secondary
-                            )
+                            --accent-secondary: ${Color('#F7D435')
                                 .hex()
                                 .toString()};
-                            --accent-secondary-dark: ${Color(
-                                contextStore?.accent?.secondary
-                            )
+                            --accent-secondary-dark: ${Color('#F7D435')
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary-light: ${Color(
-                                contextStore?.accent?.secondary
-                            )
+                            --accent-secondary-light: ${Color('#F7D435')
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --block-border-radius: ${
-                                contextStore?.block?.border_radius
-                            }rem;
+                            --block-border-radius: 0.5rem;
                         }
                     `}</style>
                     {/* eslint-enable indent */}
 
-                    {contextStore && (
-                        <meta
-                            name="theme-color"
-                            content={contextStore?.accent?.primary}
-                        />
-                    )}
+                    <meta name="theme-color" content={'#0476D9'} />
                 </Head>
 
                 <noscript
@@ -196,8 +113,26 @@ const StoreApp = withStore(
         );
     },
     {
-        store: null,
-        currency: null,
+        store: {
+            name: 'Candy By Sweden',
+            currency: 'USD',
+            logo: {
+                src: 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
+            },
+            accent: {
+                primary: '#0476D9',
+                secondary: '#F7D435'
+            },
+            color: {
+                primary: '#ffffff',
+                secondary: '#ffffff'
+            },
+            block: {
+                border_radius: 0.5
+            },
+            navigation: []
+        },
+        currency: 'USD',
         cart: null,
         search: {
             open: false,

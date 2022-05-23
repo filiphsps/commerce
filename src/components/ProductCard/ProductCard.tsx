@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
-import { ProductApi } from '../../api';
+import { ProductApi } from '../../api/product';
 import ProductBadges from '../ProductBadges';
 import { ProductModel } from '../../models/ProductModel';
 import useSWR from 'swr';

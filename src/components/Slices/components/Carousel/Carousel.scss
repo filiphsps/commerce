@@ -4,6 +4,11 @@
     width: 100%;
     overflow-y: hidden;
 
+    &.Index-0 {
+        margin-top: -2rem;
+        margin-bottom: -1.15rem;
+    }
+
     .Link {
         display: block;
         max-width: 100%;

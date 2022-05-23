@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import { CustomerApi } from '../../src/api';
+import { CustomerApi } from '../../src/api/customer';
 import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
 import OrdersBlock from '../../src/components/OrdersBlock';
@@ -9,7 +9,7 @@ import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import { RemoveToken } from '../../src/util/customer/token';
-import moment from 'moment';
+//import moment from 'moment';
 import { useRouter } from 'next/router';
 
 const AccountPage = (props: any) => {
@@ -67,9 +67,9 @@ const AccountPage = (props: any) => {
                         </div>
                         <div className="AccountPage-Content-Meta-Date">
                             <LanguageString id={'customer_since'} />{' '}
-                            {moment(customer?.createdAt).format(
+                            {/*moment(customer?.createdAt).format(
                                 'MMMM Do, YYYY'
-                            )}
+                            )*/}
                         </div>
 
                         <div className="AccountPage-Content-Meta-Address">

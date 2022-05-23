@@ -6,6 +6,7 @@ import PageContent from '../../../PageContent';
 
 interface CarouselProps {
     data?: any;
+    index: number;
 }
 const Carousel: FunctionComponent<CarouselProps> = (props) => {
     const speed = props?.data?.delay || 3000;
@@ -21,7 +22,7 @@ const Carousel: FunctionComponent<CarouselProps> = (props) => {
     }, []);
 
     return (
-        <div className="Slice Slice-Carousel">
+        <div className={`Slice Slice-Carousel Index-${props.index}`}>
             <PageContent
                 style={{
                     padding: '1rem 0px'

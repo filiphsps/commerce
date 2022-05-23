@@ -1,4 +1,6 @@
-import { CollectionApi, ProductsApi, VendorsApi } from '../api';
+import { CollectionApi } from '../api/collection';
+import { ProductsApi } from '../api/product';
+import { VendorsApi } from '../api/vendor';
 
 const Prefetch = (
     page: {
@@ -88,7 +90,7 @@ const Prefetch = (
             }
         }
 
-        resolve({
+        return resolve({
             collections,
             products,
             shop,

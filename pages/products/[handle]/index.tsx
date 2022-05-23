@@ -1,4 +1,4 @@
-import { ProductApi, ProductsApi, RecommendationApi } from '../../../src/api';
+import { ProductApi, ProductsApi } from '../../../src/api/product';
 import React, { memo, useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
@@ -15,6 +15,7 @@ import PageLoader from '../../../src/components/PageLoader';
 import { ProductJsonLd } from 'next-seo';
 import { ProductModel } from '../../../src/models/ProductModel';
 import ProductVariants from '../../../src/components/ProductVariants';
+import { RecommendationApi } from '../../../src/api/recommendation';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';

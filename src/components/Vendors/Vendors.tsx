@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import Link from '../Link';
 import Loader from '../Loader';
 import { VendorModel } from '../../models/VendorModel';
-import { VendorsApi } from '../../api';
+import { VendorsApi } from '../../api/vendor';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

@@ -1,22 +1,20 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import Link from '../Link';
+import { NavigationApi } from '../../api/navigation';
+import useSWR from 'swr';
 
-interface HeaderNavigationProps {
-    data?: any;
-}
-const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = (props) => {
+interface HeaderNavigationProps {}
+const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = () => {
+    const { data } = useSWR([`navigation`], () => NavigationApi() as any, {});
+
     return (
         <div className="HeaderNavigation">
             <nav className="HeaderNavigation-Content">
-                {props?.data?.map((item: any, index: number) => {
+                {data?.map((item: any, index: number) => {
                     return (
-                        <Link key={index} to={item?.href}>
-                            {item?.title &&
-                                (item?.title?.[
-                                    process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE
-                                ] ||
-                                    item?.title)}
+                        <Link key={index} to={`/${item?.handle || ''}`}>
+                            {item?.title}
                         </Link>
                     );
                 })}

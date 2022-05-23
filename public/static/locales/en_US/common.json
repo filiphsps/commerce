@@ -39,6 +39,7 @@
     "taxes": "taxes",
     "incl_vat": "Incl. VAT",
     "excl_vat": "Excl. VAT",
+    "excl_shipping": "Excl. Shipping",
     "reviews": "Reviews",
     "no_reviews": "There are no reviews for this product yet, but you can be the first to submit one!",
     "review_product": "Review product",

@@ -1,4 +1,4 @@
-import { CustomerApi, CustomerLoginApi } from '../../../src/api';
+import { CustomerApi, CustomerLoginApi } from '../../../src/api/customer';
 import React, { useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';

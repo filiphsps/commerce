@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
-import { CheckoutApi } from '../../src/api';
+import { CheckoutApi } from '../../src/api/checkout';
 import Currency from '../../src/components/Currency';
 import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
@@ -39,6 +39,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         }
                     ]}
                     store={store}
+                    hideSocial={true}
                 />
 
                 <PageHeader
@@ -146,32 +147,39 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 })}
                             </div>
 
-                            <Currency
-                                className="CartPage-Content-Total-Before"
-                                price={cart?.price}
-                                currency={cart?.currency}
-                            />
                             {savings > 0 && (
-                                <Currency
-                                    className="CartPage-Content-Total-Discount"
-                                    price={savings}
-                                    currency={cart?.currency}
-                                    prefix={'-'}
-                                    suffix={
-                                        <>
-                                            (
-                                            {Math.ceil(
-                                                (savings / cart?.price) * 100
-                                            ) || 0}
-                                            % <LanguageString id={'discount'} />
-                                            )
-                                        </>
-                                    }
-                                />
+                                <>
+                                    <Currency
+                                        className="CartPage-Content-Total-Before"
+                                        price={cart?.price}
+                                        currency={cart?.currency}
+                                    />
+
+                                    <Currency
+                                        className="CartPage-Content-Total-Discount"
+                                        price={savings}
+                                        currency={cart?.currency}
+                                        prefix={'-'}
+                                        suffix={
+                                            <>
+                                                (
+                                                {Math.ceil(
+                                                    (savings / cart?.price) *
+                                                        100
+                                                ) || 0}
+                                                %{' '}
+                                                <LanguageString
+                                                    id={'discount'}
+                                                />
+                                                )
+                                            </>
+                                        }
+                                    />
+                                </>
                             )}
 
                             <div className="CartPage-Content-Total-Div" />
-                            <LanguageString id={'incl_vat'} />
+                            <LanguageString id={'excl_shipping'} />
                             <Currency
                                 className="CartPage-Content-Total-Total"
                                 price={cart?.price_with_savings}
@@ -207,7 +215,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             });
                                         } else */
                                         window.location.href = url;
-                                        console.log(url);
                                     } catch (err) {
                                         console.error(err);
                                         alert(err.message);

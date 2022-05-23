@@ -2,7 +2,7 @@ import * as PrismicDOM from '@prismicio/helpers';
 
 import React, { FunctionComponent } from 'react';
 
-import { FooterApi } from '../../api';
+import { FooterApi } from '../../api/footer';
 import styled from 'styled-components';
 import useSWR from 'swr';
 

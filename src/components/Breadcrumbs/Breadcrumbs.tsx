@@ -9,9 +9,10 @@ interface BreadcrumbsProps {
     pages?: Array<any>;
     store?: any;
     country?: string;
+    hideSocial?: boolean;
 }
 const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
-    const { store } = props;
+    const { store, hideSocial } = props;
 
     return (
         <div className="Breadcrumbs">
@@ -58,7 +59,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     );
                 })}
             </ol>
-            <SocialShare />
+            {!hideSocial && <SocialShare />}
         </div>
     );
 };

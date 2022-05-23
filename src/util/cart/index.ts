@@ -1,10 +1,10 @@
-import { ProductIdApi } from '../../api';
+import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 
 const get_cart = async () => {
     const cart = {
         items: [],
-        ...JSON.parse(window.localStorage.getItem('new_cart') || '{}')
+        ...JSON.parse(window.localStorage.getItem('cart') || '{}')
     };
 
     const errors = [];
@@ -45,7 +45,7 @@ const get_cart = async () => {
         price_with_savings = 0,
         total_items = 0;
     cart.items.forEach((item) => {
-        if (!item) return null;
+        if (!item) return;
 
         price += parseFloat(item.total_price) * item.quantity;
 
@@ -72,7 +72,7 @@ const save_cart = async ([, setCart], cart) => {
         }))
     };
 
-    window.localStorage.setItem('new_cart', JSON.stringify(new_cart));
+    window.localStorage.setItem('cart', JSON.stringify(new_cart));
     setCart(await get_cart());
 };
 
@@ -88,7 +88,7 @@ const Add = ([, setCart], item) => {
 
         if (!cart) return reject();
 
-        resolve(
+        return resolve(
             await Set([cart, setCart], {
                 ...item,
                 quantity: (cart_item?.quantity || 0) + item.quantity
@@ -102,7 +102,7 @@ const Remove = ([, setCart], item) => {
 
         if (!cart) return reject();
 
-        resolve(
+        return resolve(
             await Set([cart, setCart], {
                 ...item,
                 quantity: 0
@@ -135,7 +135,7 @@ const Set = ([, setCart], item) => {
             });
 
         await save_cart([cart, setCart], cart);
-        resolve(cart);
+        return resolve(cart);
     });
 };
 

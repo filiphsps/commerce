@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from 'react';
 
 import CollectionBlock from '../CollectionBlock';
-import { NewFetcher } from '../../api/fetcher';
 import PageLoader from '../PageLoader';
-import { SearchApi } from '../../api';
+import { SearchApi } from '../../api/search';
 import useSWR from 'swr';
 
 interface SearchHeaderProps {

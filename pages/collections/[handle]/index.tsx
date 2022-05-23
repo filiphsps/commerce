@@ -1,7 +1,7 @@
-import { CollectionApi, VendorsApi } from '../../../src/api';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
+import { CollectionApi } from '../../../src/api/collection';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
 import Error from 'next/error';
@@ -10,6 +10,7 @@ import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import { StoreModel } from '../../../src/models/StoreModel';
 import Vendors from '../../../src/components/Vendors';
+import { VendorsApi } from '../../../src/api/vendor';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {

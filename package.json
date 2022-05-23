@@ -37,7 +37,6 @@
         "graphql": "16.5.0",
         "isomorphic-unfetch": "3.1.0",
         "mini-css-extract-plugin": "2.6.0",
-        "moment": "2.29.3",
         "next": "12.1.6",
         "next-seo": "5.4.0",
         "next-transpile-modules": "9.0.0",

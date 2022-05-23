@@ -4,7 +4,7 @@ import Breadcrumbs from '../../../../src/components/Breadcrumbs';
 import Button from '../../../../src/components/Button';
 import Head from 'next/head';
 import LanguageString from '../../../../src/components/LanguageString';
-import { OrderApi } from '../../../../src/api';
+import { OrderApi } from '../../../../src/api/orders';
 import OrderLineItems from '../../../../src/components/OrderLineItems';
 import Page from '../../../../src/components/Page';
 import PageContent from '../../../../src/components/PageContent';

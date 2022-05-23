@@ -2,9 +2,7 @@ import React, { FunctionComponent, memo } from 'react';
 
 import dynamic from 'next/dynamic';
 
-const Carousel = dynamic(
-    () => import(/* webpackChunkName: "carousel" */ `./components/Carousel`)
-);
+const Carousel = dynamic(() => import(`./components/Carousel`));
 const Collapse = dynamic(() => import(`./components/Collapse`));
 const CollectionBlock = dynamic(() => import(`./components/CollectionBlock`));
 const ContentBlock = dynamic(() => import(`./components/ContentBlock`));
@@ -98,6 +96,7 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                                     items: item?.items
                                 }
                             }
+                            index={index}
                             prefetch={props?.prefetch}
                         />
                     );

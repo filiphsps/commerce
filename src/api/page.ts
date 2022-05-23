@@ -7,7 +7,7 @@ export const PageApi = async (handle: string, locale = 'en-US') => {
                 lang: locale
             });
 
-            resolve(page?.data);
+            return resolve(page?.data);
         } catch (err) {
             console.error(err);
 
@@ -15,7 +15,7 @@ export const PageApi = async (handle: string, locale = 'en-US') => {
                 return resolve(await PageApi(handle, 'en-US'));
             }
 
-            reject(err);
+            return reject(err);
         }
     });
 };

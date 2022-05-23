@@ -2,17 +2,14 @@ import React, { FunctionComponent, memo } from 'react';
 
 import Currency from '../Currency';
 import Loader from '../Loader';
-import { OrdersApi } from '../../api';
-import moment from 'moment';
-import { useRouter } from 'next/router';
+import { OrdersApi } from '../../api/orders';
+//import moment from 'moment';
 import useSWR from 'swr';
 
 interface OrdersBlockProps {}
 const OrdersBlock: FunctionComponent<OrdersBlockProps> = (props) => {
-    const router = useRouter();
     const {
-        data,
-        error
+        data
     }: {
         data?: any;
         error?: any;
@@ -32,7 +29,7 @@ const OrdersBlock: FunctionComponent<OrdersBlockProps> = (props) => {
                 >
                     <div className="OrdersBlock-Order-Meta">
                         <div className="OrdersBlock-Order-Meta-Date">
-                            {moment(order?.created_at).format('MMM Do, YYYY')}
+                            {/*moment(order?.created_at).format('MMM Do, YYYY')*/}
                         </div>
                         <div className="OrdersBlock-Order-Meta-Name">
                             {order?.name}

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
-import { CollectionApi } from '../../api';
+import { CollectionApi } from '../../api/collection';
 import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
