@@ -5,6 +5,7 @@ import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import Button from '../../../src/components/Button';
 import Cart from '../../../src/util/cart';
 import Currency from '../../../src/components/Currency';
+import Error from 'next/error';
 import Head from 'next/head';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from '../../../src/components/Link';
@@ -63,6 +64,8 @@ const Product = memo((props: any) => {
 
     const variant = product?.variants?.[selectedVariant] || null;
     const packages = product?.variants?.[selectedVariant]?.packages || [];
+
+    if (!product) return <Error statusCode={404} />;
 
     return (
         <Page className="ProductPage">

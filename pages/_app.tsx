@@ -100,12 +100,6 @@ const StoreApp = withStore(
         return (
             <>
                 <Head>
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `console.log('Developed by Filiph Sandström https://github.com/filiphsandstrom');`
-                        }}
-                    />
-
                     {<title>{contextStore?.title}</title>}
                     <meta
                         name="viewport"
