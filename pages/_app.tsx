@@ -119,51 +119,56 @@ const StoreApp = withStore(
                         rel="apple-touch-icon"
                         href="https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115"
                     />
-                    {/* General application styling */}c
+                    {/* General application styling */}
+                    {/* eslint-disable indent */}
                     <style>{`
-                    body {
-                        --color-text-primary: ${Color(
-                            contextStore?.color?.primary
-                        )
-                            .hex()
-                            .toString()};
-                        --accent-primary: ${Color(contextStore?.accent?.primary)
-                            .hex()
-                            .toString()};
-                        --accent-primary-dark: ${Color(
-                            contextStore?.accent?.primary
-                        )
-                            .darken(0.25)
-                            .hex()
-                            .toString()};
-                        --accent-primary-light: ${Color(
-                            contextStore?.accent?.primary
-                        )
-                            .lighten(0.25)
-                            .hex()
-                            .toString()};
-                        --accent-secondary: ${Color(
-                            contextStore?.accent?.secondary
-                        )
-                            .hex()
-                            .toString()};
-                        --accent-secondary-dark: ${Color(
-                            contextStore?.accent?.secondary
-                        )
-                            .darken(0.25)
-                            .hex()
-                            .toString()};
-                        --accent-secondary-light: ${Color(
-                            contextStore?.accent?.secondary
-                        )
-                            .lighten(0.25)
-                            .hex()
-                            .toString()};
-                        --block-border-radius: ${
-                            contextStore?.block?.border_radius
-                        }rem;
-                    }
-                `}</style>
+                        body {
+                            --color-text-primary: ${Color(
+                                contextStore?.color?.primary
+                            )
+                                .hex()
+                                .toString()};
+                            --accent-primary: ${Color(
+                                contextStore?.accent?.primary
+                            )
+                                .hex()
+                                .toString()};
+                            --accent-primary-dark: ${Color(
+                                contextStore?.accent?.primary
+                            )
+                                .darken(0.25)
+                                .hex()
+                                .toString()};
+                            --accent-primary-light: ${Color(
+                                contextStore?.accent?.primary
+                            )
+                                .lighten(0.25)
+                                .hex()
+                                .toString()};
+                            --accent-secondary: ${Color(
+                                contextStore?.accent?.secondary
+                            )
+                                .hex()
+                                .toString()};
+                            --accent-secondary-dark: ${Color(
+                                contextStore?.accent?.secondary
+                            )
+                                .darken(0.25)
+                                .hex()
+                                .toString()};
+                            --accent-secondary-light: ${Color(
+                                contextStore?.accent?.secondary
+                            )
+                                .lighten(0.25)
+                                .hex()
+                                .toString()};
+                            --block-border-radius: ${
+                                contextStore?.block?.border_radius
+                            }rem;
+                        }
+                    `}</style>
+                    {/* eslint-enable indent */}
+
                     {contextStore && (
                         <meta
                             name="theme-color"

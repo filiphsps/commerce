@@ -2,11 +2,15 @@ const withTM = require('next-transpile-modules')([
     'react-responsive-carousel',
 ]);
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: process.env.ANALYZE === "true",
+});
+
 var default_locale = (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en-US').replace('_', '-');
 var languages = process.env.NEXT_PUBLIC_LANGUAGE?.split(',');
 if (!languages || languages.length <= 0) languages = ['en-US'];
 
-module.exports = withTM({
+module.exports = withBundleAnalyzer(withTM({
     projectRoot: __dirname,
     poweredByHeader: false,
     strictMode: true,
@@ -21,7 +25,7 @@ module.exports = withTM({
                 destination: `https://${process.env.STORE}/admin`,
                 permanent: false,
             },
-        ]
+        ];
     },
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io'],
@@ -33,4 +37,4 @@ module.exports = withTM({
     compiler: {
         styledComponents: true,
     },
-});
+}));

@@ -17,7 +17,7 @@ const OrderLineItems: FunctionComponent<OrderLineItemsProps> = (props) => {
         <div className="OrderLineItems">
             {data?.map((line_item) => {
                 return (
-                    <div className="OrderLineItems-Item">
+                    <div className="OrderLineItems-Item" key={line_item?.title}>
                         {line_item?.quantity}x {line_item?.title}
                     </div>
                 );

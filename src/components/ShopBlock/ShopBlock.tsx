@@ -68,7 +68,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
                                         );
                                     case 'none':
                                     default:
-                                        return;
+                                        return null;
                                 }
                             })
                             .map((product) => {

@@ -198,7 +198,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                             parseInt(quantity as any) - 1
                                         );
 
-                                    setQuantity(0);
+                                    return setQuantity(0);
                                 }}
                             >
                                 -

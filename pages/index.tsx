@@ -26,10 +26,7 @@ const HomePage = (props: any) => {
     return (
         <Page className="HomePage">
             <Head>
-                {(title &&
-                    title?.toLowerCase() === store?.name?.toLowerCase() && (
-                        <title>{store?.name}</title>
-                    )) || (
+                {title && (
                     <title>
                         {title} | {store?.name}
                     </title>

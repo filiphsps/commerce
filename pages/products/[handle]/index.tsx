@@ -43,7 +43,7 @@ const ProductTag = styled.div`
     //border-radius: var(--block-border-radius);
 `;
 
-const Product = memo((props: any) => {
+const Product = (props: any) => {
     const { store } = props;
 
     const router = useRouter();
@@ -315,7 +315,7 @@ const Product = memo((props: any) => {
             </PageContent>
         </Page>
     );
-});
+};
 
 export async function getStaticPaths({ locales }) {
     const products = ((await ProductsApi()) as any) || null;
@@ -363,4 +363,4 @@ export async function getStaticProps({ params }) {
     };
 }
 
-export default Product;
+export default memo(Product);

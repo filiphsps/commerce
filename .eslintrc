@@ -1,26 +1,5 @@
 {
-    "parser": "babel-eslint",
-    "extends": ["eslint:recommended", "next"],
-    "plugins": [
-        "react",
-        "react-hooks",
-        "import",
-        "plugin:@next/next/recommended"
-    ],
-    "env": {
-        "es6": true,
-        "browser": true,
-        "node": true,
-        "jasmine": true
-    },
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true,
-            "modules": true
-        }
-    },
-
-    "ignorePatterns": ["node_modules/"],
+    "extends": ["next/core-web-vitals", "prettier"],
     "rules": {
         "consistent-return": 2,
         "no-mixed-operators": 0,
@@ -30,6 +9,9 @@
         "react/no-find-dom-node": 0,
         "react/prop-types": 1,
         "react-hooks/rules-of-hooks": 0,
+        "react/no-children-prop": 0,
+        "react/no-string-refs": 0,
+        "react-hooks/exhaustive-deps": 0,
         "jsx-a11y/anchor-is-valid": 0,
         "jsx-a11y/alt-text": 0,
         "no-unused-vars": 1,
@@ -48,7 +30,6 @@
             {
                 "allowSingleLine": true
             }
-        ],
-        "radix": ["off"]
+        ]
     }
 }

@@ -24,6 +24,7 @@ const OrdersBlock: FunctionComponent<OrdersBlockProps> = (props) => {
         <div className="OrdersBlock">
             {data?.map((order) => (
                 <a
+                    key={order?.id}
                     className="OrdersBlock-Order"
                     href={order?.status_url}
                     target="_blank"

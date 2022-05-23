@@ -34,10 +34,7 @@ const CustomPage = (props: any) => {
     return (
         <Page className={`CustomPage CustomPage-${data?.type}`}>
             <Head>
-                {(title &&
-                    title?.toLowerCase() === store?.name?.toLowerCase() && (
-                        <title>{store?.name}</title>
-                    )) || (
+                {title && (
                     <title>
                         {title} | {store?.name}
                     </title>
