@@ -24,7 +24,8 @@ Router.events.on('routeChangeError', (err) => {
 
 const store: any = {
     title: 'Candy By Sweden',
-    description: '',
+    description:
+        'Ahlgreens Bilar, Marabou, Cloetta, Malaco, Fazer and way way more. Only at Candy By Sweden',
     favicons: [
         {
             type: 'png',

@@ -1,5 +1,7 @@
+import Error from 'next/error';
+
 const Products = () => {
-    return null;
+    return <Error statusCode={404} />;
 };
 
 export default Products;
