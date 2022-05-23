@@ -1,8 +1,9 @@
+import React, { memo } from 'react';
+
 import Head from 'next/head';
 import Page from '../src/components/Page';
 import { PageApi } from '../src/api/page';
 import { Prefetch } from '../src/util/Prefetch';
-import React from 'react';
 import Slices from '../src/components/Slices';
 
 const HomePage = (props: any) => {
@@ -45,4 +46,4 @@ export async function getStaticProps({ query, locale }) {
     };
 }
 
-export default HomePage;
+export default memo(HomePage);

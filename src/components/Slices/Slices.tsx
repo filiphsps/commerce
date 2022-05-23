@@ -1,22 +1,18 @@
 import React, { FunctionComponent, memo } from 'react';
 
-import dynamic from 'next/dynamic';
-
-const Carousel = dynamic(() => import(`./components/Carousel`));
-const Collapse = dynamic(() => import(`./components/Collapse`));
-const CollectionBlock = dynamic(() => import(`./components/CollectionBlock`));
-const ContentBlock = dynamic(() => import(`./components/ContentBlock`));
-const ContentGrid = dynamic(() => import(`./components/ContentGrid`));
-const ContentWithImage = dynamic(() => import(`./components/ContentWithImage`));
-const HtmlBlock = dynamic(() => import(`./components/HtmlBlock`), {
-    ssr: false
-});
-const Icon = dynamic(() => import(`./components/Icon`));
-const ProductCard = dynamic(() => import(`./components/ProductCard`));
-const SectionHeader = dynamic(() => import(`./components/SectionHeader`));
-const ShopBlock = dynamic(() => import(`./components/ShopBlock`));
-const TextBlock = dynamic(() => import(`./components/TextBlock`));
-const Vendors = dynamic(() => import(`./components/Vendors`));
+import Carousel from './components/Carousel';
+import Collapse from './components/Collapse';
+import CollectionBlock from './components/CollectionBlock';
+import ContentBlock from './components/ContentBlock';
+import ContentGrid from './components/ContentGrid';
+import ContentWithImage from './components/ContentWithImage';
+import HtmlBlock from './components/HtmlBlock';
+import Icon from './components/Icon';
+import ProductCard from './components/ProductCard';
+import SectionHeader from './components/SectionHeader';
+import ShopBlock from './components/ShopBlock';
+import TextBlock from './components/TextBlock';
+import Vendors from './components/Vendors';
 
 interface SlicesProps {
     store?: any;

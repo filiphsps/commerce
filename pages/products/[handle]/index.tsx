@@ -318,20 +318,16 @@ const Product = (props: any) => {
     );
 };
 
-export async function getStaticPaths({ locales }) {
+export async function getStaticPaths() {
     const products = ((await ProductsApi()) as any) || null;
 
-    let paths = [];
-    locales.forEach((locale) => {
-        paths.push(
-            ...products
-                ?.map((product) => ({
-                    params: { handle: product?.handle },
-                    locale: locale
-                }))
-                .filter((a) => a.params.handle)
-        );
-    });
+    let paths = [
+        ...products
+            ?.map((product) => ({
+                params: { handle: product?.handle }
+            }))
+            .filter((a) => a.params.handle)
+    ];
 
     return { paths, fallback: 'blocking' };
 }

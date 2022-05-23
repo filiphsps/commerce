@@ -6,10 +6,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true",
 });
 
-var default_locale = (process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en-US').replace('_', '-');
-var languages = process.env.NEXT_PUBLIC_LANGUAGE?.split(',');
-if (!languages || languages.length <= 0) languages = ['en-US'];
-
 module.exports = withBundleAnalyzer(withTM({
     projectRoot: __dirname,
     poweredByHeader: false,
@@ -29,10 +25,6 @@ module.exports = withBundleAnalyzer(withTM({
     },
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io'],
-    },
-    i18n: {
-        locales: languages,
-        defaultLocale: default_locale
     },
     compiler: {
         styledComponents: true,

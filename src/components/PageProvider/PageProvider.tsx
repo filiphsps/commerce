@@ -1,14 +1,12 @@
 import React, { FunctionComponent } from 'react';
 
 import CartHeader from '../CartHeader';
+import Footer from '../Footer';
+import Header from '../Header';
+import HeaderNavigation from '../HeaderNavigation';
 import SearchHeader from '../SearchHeader';
 import { StoreModel } from '../../models/StoreModel';
-import dynamic from 'next/dynamic';
 import { useStore } from 'react-context-hook';
-
-const Header = dynamic(() => import('../Header'));
-const Footer = dynamic(() => import('../Footer'));
-const HeaderNavigation = dynamic(() => import('../HeaderNavigation'));
 
 interface PageProviderProps {
     store: StoreModel;

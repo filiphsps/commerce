@@ -26,7 +26,8 @@ const StoreApp = withStore(
         const [cart, setCart] = useStore<any>('cart');
 
         useEffect(() => {
-            console.log('!!');
+            if (cart) return;
+
             Cart.Get()
                 .then(setCart)
                 .catch((error) => error && console.warn(error));
