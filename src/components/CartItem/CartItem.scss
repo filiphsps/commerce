@@ -7,6 +7,16 @@
     height: 10rem;
     max-height: 10rem;
 
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+    }
+
     @media (max-width: $width-max-mobile) {
         grid-template-columns: 4rem 1fr 1fr 1fr 2rem;
         max-width: calc(100vw - 2rem);

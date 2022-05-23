@@ -94,7 +94,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                 <div className="CartItem-Content-Meta">
                     <div className="CartItem-Content-Badge">
                         <Currency
-                            price={variant?.price}
+                            price={variant?.price * props?.data?.quantity}
                             currency={variant?.currency}
                         />
                     </div>
@@ -127,14 +127,17 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                 {discount > 0 && (
                     <span>
                         <Currency
-                            price={variant?.compare_at_price}
+                            price={
+                                variant?.compare_at_price *
+                                props?.data?.quantity
+                            }
                             currency={variant?.currency}
                             className="Currency-Sale"
                         />
                     </span>
                 )}
                 <Currency
-                    price={variant?.price}
+                    price={variant?.price * props?.data?.quantity}
                     currency={variant?.currency}
                     className={discount > 0 && 'Currency-Discount'}
                 />
