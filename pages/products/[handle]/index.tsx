@@ -139,8 +139,12 @@ const Product = memo((props: any) => {
                                     {product?.images && (
                                         <ImageGallery
                                             lazyLoad={true}
-                                            showBullets={true}
-                                            showNav={true}
+                                            showBullets={
+                                                product?.images?.length > 0
+                                            }
+                                            showNav={
+                                                product?.images?.length > 0
+                                            }
                                             showFullscreenButton={false}
                                             showPlayButton={false}
                                             showThumbnails={false}
