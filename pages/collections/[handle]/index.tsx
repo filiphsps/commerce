@@ -29,10 +29,11 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
     return (
         <Page className="CollectionPage">
             <Head>
-                <title>
-                    {data?.collection?.title || router.query.handle} |{' '}
-                    {store?.name || ''}
-                </title>
+                {data?.collection?.title && (
+                    <title>
+                        {data?.collection?.title} | {store?.name || ''}
+                    </title>
+                )}
                 <meta
                     name="description"
                     content={data?.body || data?.description || ''}

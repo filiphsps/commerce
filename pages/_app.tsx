@@ -11,9 +11,7 @@ import Color from 'color';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
-import Script from 'next/script';
 import ScrollToTop from '../src/components/ScrollToTop';
-import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
 
 Router.events.on('routeChangeStart', (url) => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -26,12 +24,6 @@ const store: any = {
     title: 'Candy By Sweden',
     description:
         'Ahlgreens Bilar, Marabou, Cloetta, Malaco, Fazer and way way more. Only at Candy By Sweden',
-    favicons: [
-        {
-            type: 'png',
-            src: 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
-        }
-    ],
     currencies: ['USD'],
     language: 'en_US',
     languages: ['en_US']
@@ -117,24 +109,17 @@ const StoreApp = withStore(
                             content={contextStore?.name}
                         />
                     )}
-
-                    {contextStore?.favicons?.map((favicon, index) => {
-                        return (
-                            <React.Fragment key={index}>
-                                <link
-                                    rel="icon"
-                                    type={`image/${favicon?.type}`}
-                                    href={favicon?.src}
-                                />
-                                <link
-                                    rel="apple-touch-icon"
-                                    href={favicon?.src}
-                                />
-                            </React.Fragment>
-                        );
-                    })}
-
-                    {/* General application styling */}
+                    <link
+                        rel="icon"
+                        type="image/png"
+                        href="https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115"
+                    />
+                    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+                    <link
+                        rel="apple-touch-icon"
+                        href="https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115"
+                    />
+                    {/* General application styling */}c
                     <style>{`
                     body {
                         --color-text-primary: ${Color(
