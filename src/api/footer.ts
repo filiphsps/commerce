@@ -3,12 +3,11 @@ import { prismic } from './prismic';
 export const FooterApi = async (locale = 'en-US') => {
     return new Promise(async (resolve, reject) => {
         try {
-            const footer = await prismic().getSingle('footer', {
+            const res = await prismic().getSingle('footer', {
                 lang: locale
             });
 
-            console.log(footer);
-            resolve(null);
+            resolve(res.data);
         } catch (err) {
             console.error(err);
             reject(err);

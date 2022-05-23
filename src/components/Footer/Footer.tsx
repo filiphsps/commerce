@@ -1,11 +1,10 @@
+import * as PrismicDOM from '@prismicio/helpers';
+
 import React, { FunctionComponent } from 'react';
 
-import Image from 'next/image';
-import LanguageString from '../LanguageString';
-import Link from '../Link';
+import { FooterApi } from '../../api';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { useStore } from 'react-context-hook';
+import useSWR from 'swr';
 
 const Copyright = styled.div`
     text-transform: uppercase;
@@ -17,8 +16,7 @@ interface FooterProps {
 }
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const { store } = props;
-    const [currency, setCurrency] = useStore<any>('currency');
-    const router = useRouter();
+    const { data } = useSWR([`footer`], () => FooterApi() as any, {});
 
     return (
         <>
@@ -33,15 +31,14 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                 }}
                             />
 
-                            <address>
-                                SPS Group AB
-                                <br />
-                                Baldersgatan 3
-                                <br />
-                                411 02 Göteborg
-                                <br />
-                                Sweden
-                            </address>
+                            <address
+                                dangerouslySetInnerHTML={{
+                                    __html: PrismicDOM.asText(
+                                        data?.address,
+                                        '<br />'
+                                    )
+                                }}
+                            />
                         </div>
 
                         <div className="Footer-Blocks-Block"></div>

@@ -134,233 +134,184 @@ const Product = memo((props: any) => {
             </PageContent>
 
             <PageContent className="ProductPage-Content">
-                {(product && (
-                    <>
-                        <div className="ProductPage-Content-Blocks">
-                            <div className="ProductPage-Content-Blocks-Block ProductPage-Content-Blocks-Block-Gallery">
-                                <div className="ProductPage-Content-Gallery">
-                                    {product?.images && (
-                                        <ImageGallery
-                                            lazyLoad={true}
-                                            showBullets={
-                                                product?.images?.length > 0
-                                            }
-                                            showNav={
-                                                product?.images?.length > 0
-                                            }
-                                            showFullscreenButton={false}
-                                            showPlayButton={false}
-                                            showThumbnails={false}
-                                            items={
-                                                product?.images?.map?.(
-                                                    (image) => {
-                                                        return {
-                                                            original:
-                                                                image?.src,
-                                                            thumbnail:
-                                                                image?.src
-                                                        };
-                                                    }
-                                                ) || []
-                                            }
-                                        />
-                                    )}
-                                </div>
-                                {(product?.details &&
-                                    product?.details?.length > 0 && (
-                                        <div className="ProductPage-Content-Details">
-                                            {product?.details?.map?.(
-                                                (detail, index) => {
-                                                    if (!detail) return null;
-
-                                                    return (
-                                                        <div
-                                                            key={index}
-                                                            className="ProductPage-Content-Details-Detail"
-                                                        >
-                                                            <div className="ProductPage-Content-Details-Detail-Title">
-                                                                {detail
-                                                                    ?.title?.[
-                                                                    language
-                                                                ] ||
-                                                                    detail
-                                                                        ?.title?.[
-                                                                        'en_US'
-                                                                    ] ||
-                                                                    detail?.title}
-                                                            </div>
-                                                            <div>
-                                                                {detail
-                                                                    ?.value?.[
-                                                                    language
-                                                                ] ||
-                                                                    detail
-                                                                        ?.value?.[
-                                                                        'en_US'
-                                                                    ] ||
-                                                                    detail?.value}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
-                                        </div>
-                                    )) ||
-                                    null}
-                            </div>
-                            <div className="ProductPage-Content-Blocks-Block">
-                                <div className="ProductPage-Content-Header">
-                                    <Link
-                                        to={`/collections/${product?.vendor?.handle}`}
-                                        className="ProductPage-Content-Header-Vendor"
-                                    >
-                                        <h2>
-                                            {product?.vendor?.title &&
-                                                (product?.vendor?.title?.[
-                                                    language
-                                                ] ||
-                                                    product?.vendor?.title?.[
-                                                        'en_US'
-                                                    ] ||
-                                                    product?.vendor?.title)}
-                                        </h2>
-                                    </Link>
-                                    {product?.body?.includes('<h1>') ? (
-                                        <h3 className="ProductPage-Content-Header-Title">
-                                            {product?.title &&
-                                                (product?.title?.[
-                                                    language.replace('-', '_')
-                                                ] ||
-                                                    product?.title)}
-                                        </h3>
-                                    ) : (
-                                        <h1 className="ProductPage-Content-Header-Title">
-                                            {product?.title &&
-                                                (product?.title?.[
-                                                    language.replace('-', '_')
-                                                ] ||
-                                                    product?.title)}
-                                        </h1>
-                                    )}
-                                    <ProductTags>
-                                        {product?.tags?.map((tag) => (
-                                            <ProductTag key={tag}>
-                                                {tag}
-                                            </ProductTag>
-                                        ))}
-                                    </ProductTags>
-                                </div>
-
-                                <div className="ProductPage-Content-Body">
-                                    <div
-                                        className="MarkdownBody"
-                                        dangerouslySetInnerHTML={{
-                                            __html: product?.body
-                                        }}
-                                    />
-                                    {product?.metadata?.ingredients && (
-                                        <div className="ProductPage-Content-Body-Ingredients">
-                                            <b>
-                                                <LanguageString
-                                                    id={'ingredients'}
-                                                />
-                                                :{' '}
-                                            </b>
-                                            {product?.metadata?.ingredients}.
-                                        </div>
-                                    )}
-                                </div>
-
-                                <ProductVariants
-                                    data={product?.variants}
-                                    selected={selectedVariant}
-                                    onSelect={(variant) => {
-                                        setSelectedVariant(variant);
-                                    }}
+                <div className="ProductPage-Content-Blocks">
+                    <div className="ProductPage-Content-Blocks-Block ProductPage-Content-Blocks-Block-Gallery">
+                        <div className="ProductPage-Content-Gallery">
+                            {product?.images && (
+                                <ImageGallery
+                                    lazyLoad={true}
+                                    showBullets={product?.images?.length > 1}
+                                    showNav={product?.images?.length > 1}
+                                    showFullscreenButton={false}
+                                    showPlayButton={false}
+                                    showThumbnails={false}
+                                    items={
+                                        product?.images?.map?.((image) => {
+                                            return {
+                                                original: image?.src,
+                                                thumbnail: image?.src
+                                            };
+                                        }) || []
+                                    }
                                 />
+                            )}
+                        </div>
+                        {(product?.details && product?.details?.length > 0 && (
+                            <div className="ProductPage-Content-Details">
+                                {product?.details?.map?.((detail, index) => {
+                                    if (!detail) return null;
 
-                                <div className="ProductPage-Content-Actions">
-                                    <div className="ProductPage-Content-Actions-Action ProductPage-Content-Actions-Action-Price">
-                                        <div className="ProductPage-Content-Prices">
-                                            {(packages?.length && (
-                                                <>
-                                                    <Currency
-                                                        price={variant?.price}
-                                                        currency={
-                                                            variant?.currency
-                                                        }
-                                                    />
-                                                </>
-                                            )) || (
-                                                <Currency
-                                                    price={variant?.price}
-                                                    currency={variant?.currency}
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="ProductPage-Content-Prices-Meta">
-                                            <div>
-                                                <LanguageString
-                                                    id={'total_price'}
-                                                />
-                                            </div>
-                                            <div>
-                                                <LanguageString
-                                                    id={'incl_vat'}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="ProductPage-Content-Actions-Action">
-                                        <Button
-                                            className="ProductPage-Content-Actions-Action-Button"
-                                            disabled={!variant?.available}
-                                            onClick={async () => {
-                                                await Cart.Add(
-                                                    [cart, setCart],
-                                                    {
-                                                        id: product?.id,
-                                                        variant_id: variant?.id,
-                                                        quantity: 1
-                                                    }
-                                                );
-                                                await router.push('/cart');
-                                            }}
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="ProductPage-Content-Details-Detail"
                                         >
-                                            {(variant?.available && (
-                                                <LanguageString
-                                                    id={'add_to_cart'}
-                                                />
-                                            )) || (
-                                                <LanguageString
-                                                    id={'out_of_stock'}
-                                                />
-                                            )}
-                                        </Button>
-                                    </div>
-                                </div>
+                                            <div className="ProductPage-Content-Details-Detail-Title">
+                                                {detail?.title?.[language] ||
+                                                    detail?.title?.['en_US'] ||
+                                                    detail?.title}
+                                            </div>
+                                            <div>
+                                                {detail?.value?.[language] ||
+                                                    detail?.value?.['en_US'] ||
+                                                    detail?.value}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
+                        )) ||
+                            null}
+                    </div>
+                    <div className="ProductPage-Content-Blocks-Block">
+                        <div className="ProductPage-Content-Header">
+                            <Link
+                                to={`/collections/${product?.vendor?.handle}`}
+                                className="ProductPage-Content-Header-Vendor"
+                            >
+                                <h2>
+                                    {product?.vendor?.title &&
+                                        (product?.vendor?.title?.[language] ||
+                                            product?.vendor?.title?.['en_US'] ||
+                                            product?.vendor?.title)}
+                                </h2>
+                            </Link>
+                            {product?.body?.includes('<h1>') ? (
+                                <h3 className="ProductPage-Content-Header-Title">
+                                    {product?.title &&
+                                        (product?.title?.[
+                                            language.replace('-', '_')
+                                        ] ||
+                                            product?.title)}
+                                </h3>
+                            ) : (
+                                <h1 className="ProductPage-Content-Header-Title">
+                                    {product?.title &&
+                                        (product?.title?.[
+                                            language.replace('-', '_')
+                                        ] ||
+                                            product?.title)}
+                                </h1>
+                            )}
+                            <ProductTags>
+                                {product?.tags?.map((tag) => (
+                                    <ProductTag key={tag}>{tag}</ProductTag>
+                                ))}
+                            </ProductTags>
                         </div>
 
-                        {related_products?.length >= 1 && (
-                            <div className="ProductPage-Content-Recommendations">
-                                <div className="ProductPage-Content-Recommendations-Title">
-                                    <LanguageString id={'recommendations'} />
+                        <div className="ProductPage-Content-Body">
+                            <div
+                                className="MarkdownBody"
+                                dangerouslySetInnerHTML={{
+                                    __html: product?.body
+                                }}
+                            />
+                            {product?.metadata?.ingredients && (
+                                <div className="ProductPage-Content-Body-Ingredients">
+                                    <b>
+                                        <LanguageString id={'ingredients'} />:{' '}
+                                    </b>
+                                    {product?.metadata?.ingredients}.
                                 </div>
-                                <div className="ProductPage-Content-Recommendations-Content">
-                                    {related_products && (
-                                        <CollectionBlock
-                                            data={{
-                                                items: related_products
-                                            }}
-                                            isHorizontal
+                            )}
+                        </div>
+
+                        <ProductVariants
+                            data={product?.variants}
+                            selected={selectedVariant}
+                            onSelect={(variant) => {
+                                setSelectedVariant(variant);
+                            }}
+                        />
+
+                        <div className="ProductPage-Content-Actions">
+                            <div className="ProductPage-Content-Actions-Action ProductPage-Content-Actions-Action-Price">
+                                <div className="ProductPage-Content-Prices">
+                                    {(packages?.length && (
+                                        <>
+                                            <Currency
+                                                price={variant?.price}
+                                                currency={variant?.currency}
+                                            />
+                                        </>
+                                    )) || (
+                                        <Currency
+                                            price={variant?.price}
+                                            currency={variant?.currency}
                                         />
                                     )}
                                 </div>
+                                <div className="ProductPage-Content-Prices-Meta">
+                                    <div>
+                                        <LanguageString id={'total_price'} />
+                                    </div>
+                                    <div>
+                                        <LanguageString id={'incl_vat'} />
+                                    </div>
+                                </div>
                             </div>
-                        )}
-                    </>
-                )) || <PageLoader />}
+                            <div className="ProductPage-Content-Actions-Action">
+                                <Button
+                                    className="ProductPage-Content-Actions-Action-Button"
+                                    disabled={!variant?.available}
+                                    onClick={async () => {
+                                        await Cart.Add([cart, setCart], {
+                                            id: product?.id,
+                                            variant_id: variant?.id,
+                                            quantity: 1
+                                        });
+                                        await router.push('/cart');
+                                    }}
+                                >
+                                    {(variant?.available && (
+                                        <LanguageString id={'add_to_cart'} />
+                                    )) || (
+                                        <LanguageString id={'out_of_stock'} />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {related_products?.length >= 1 && (
+                    <div className="ProductPage-Content-Recommendations">
+                        <div className="ProductPage-Content-Recommendations-Title">
+                            <LanguageString id={'recommendations'} />
+                        </div>
+                        <div className="ProductPage-Content-Recommendations-Content">
+                            {related_products && (
+                                <CollectionBlock
+                                    data={{
+                                        items: related_products
+                                    }}
+                                    isHorizontal
+                                />
+                            )}
+                        </div>
+                    </div>
+                )}
             </PageContent>
         </Page>
     );
@@ -388,32 +339,32 @@ export async function getStaticPaths({ locales }) {
     }
 }
 
-export async function getStaticProps({ params, locale }) {
-    try {
-        const product: ProductModel = (await ProductApi(params?.handle)) as any;
-        let related_products: Array<ProductModel> = null;
-
-        try {
-            related_products = (await RecommendationApi(product?.id)) as any;
-        } catch (err) {
-            console.warn(err);
-        }
-
-        return {
-            props: {
-                data: {
-                    product,
-                    related_products
-                }
-            },
-            revalidate: 1
-        };
-    } catch (err) {
-        return {
-            props: {},
-            revalidate: 1
-        };
+export async function getStaticProps({ params }) {
+    let handle = '';
+    if (Array.isArray(params.handle)) {
+        handle = params?.handle?.join('');
+    } else {
+        handle = params?.handle;
     }
+
+    const product: ProductModel = (await ProductApi(handle)) as any;
+    let related_products: Array<ProductModel> = null;
+
+    try {
+        related_products = (await RecommendationApi(product?.id)) as any;
+    } catch (err) {
+        console.warn(err);
+    }
+
+    return {
+        props: {
+            data: {
+                product,
+                related_products
+            }
+        },
+        revalidate: 1
+    };
 }
 
 export default Product;
