@@ -1,9 +1,10 @@
+import { PageApi, PagesApi } from '../../src/api/page';
+
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
 import Page from '../../src/components/Page';
-import { PageApi } from '../../src/api/page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
@@ -56,7 +57,17 @@ const CustomPage = (props: any) => {
 };
 
 export async function getStaticPaths() {
-    return { paths: [], fallback: true };
+    const pages = (await PagesApi()) as any;
+
+    let paths = [
+        ...pages
+            ?.map((page) => {
+                return { params: { handle: [page] } };
+            })
+            .filter((a) => a.params.handle && a.params.handle != 'home')
+    ];
+
+    return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {

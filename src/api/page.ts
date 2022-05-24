@@ -19,3 +19,16 @@ export const PageApi = async (handle: string, locale = 'en-US') => {
         }
     });
 };
+
+export const PagesApi = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pages = await prismic().getAllByType('page');
+
+            return resolve(pages.map((page) => page.uid));
+        } catch (err) {
+            console.error(err);
+            return reject(err);
+        }
+    });
+};
