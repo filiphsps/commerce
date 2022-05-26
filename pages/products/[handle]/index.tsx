@@ -93,17 +93,14 @@ const Product = (props: any) => {
                 offers={
                     (product?.variants?.map?.((variant) => ({
                         price: variant?.from_price || variant?.price,
-                        priceCurrency:
-                            variant?.currency ||
-                            product?.currency ||
-                            store?.currency,
+                        priceCurrency: 'USD',
                         priceValidUntil: `${new Date().getFullYear()}-12-31`,
                         itemCondition: 'https://schema.org/NewCondition',
                         availability:
                             (variant?.available &&
                                 'https://schema.org/InStock') ||
                             'https://schema.org/SoldOut',
-                        url: `https://${process.env.DOMAIN}/${
+                        url: `https://candybysweden.com/${
                             (props?.country && `${props?.country}/`) || ''
                         }products/${product?.handle}`
                     })) || []) as any
