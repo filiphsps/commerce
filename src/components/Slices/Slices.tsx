@@ -8,6 +8,7 @@ import ContentGrid from './components/ContentGrid';
 import ContentWithImage from './components/ContentWithImage';
 import HtmlBlock from './components/HtmlBlock';
 import Icon from './components/Icon';
+import Notification from './components/Notification';
 import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
 import ShopBlock from './components/ShopBlock';
@@ -77,6 +78,9 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             break;
                         case 'vendors':
                             Component = Vendors;
+                            break;
+                        case 'notification':
+                            Component = Notification;
                             break;
                         default:
                             return null;
