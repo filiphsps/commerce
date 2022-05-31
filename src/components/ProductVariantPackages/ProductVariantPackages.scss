@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .ProductVariantPackages {
     display: flex;
@@ -16,7 +16,7 @@
         margin-bottom: 1rem;
         border-radius: $block-border-radius;
         background: $color-silvery;
-        border: 0.2rem solid $color-silvery;
+        border: 0.15rem solid $color-silvery;
         color: $color-black;
         cursor: pointer;
         transition: 250ms ease-in-out;
@@ -65,7 +65,8 @@
         }
 
         @media (min-width: $width-max-mobile) {
-            &:hover, &:active {
+            &:hover,
+            &:active {
                 border-color: $color-primary;
                 color: $color-primary;
             }
