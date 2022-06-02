@@ -71,20 +71,29 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params, locale }) {
-    const page =
-        ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
-    const prefetch = (page && (await Prefetch(page, params))) || null;
+    try {
+        const page =
+            ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
+        const prefetch = (page && (await Prefetch(page, params))) || null;
 
-    return {
-        props: {
-            handle: params?.handle?.join('/'),
-            data: {
-                page,
-                prefetch
-            }
-        },
-        revalidate: 1
-    };
+        return {
+            props: {
+                handle: params?.handle?.join('/'),
+                data: {
+                    page,
+                    prefetch
+                }
+            },
+            revalidate: 1
+        };
+    } catch (err) {
+        console.error(err);
+
+        return {
+            props: {},
+            revalidate: 1
+        };
+    }
 }
 
 export default CustomPage;
