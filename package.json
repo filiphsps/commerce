@@ -71,6 +71,6 @@
         "jest-environment-jsdom": "28.1.0",
         "next-sitemap": "2.5.28",
         "prettier": "2.6.2",
-        "webpack": "5.72.1"
+        "webpack": "5.73.0"
     }
 }
