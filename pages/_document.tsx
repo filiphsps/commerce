@@ -32,7 +32,7 @@ class App extends Document {
 
     render() {
         return (
-            <Html>
+            <Html lang="en">
                 <Head>
                     <link
                         rel="preconnect"
