@@ -64,7 +64,7 @@
         "@types/react": "18.0.14",
         "@types/styled-components": "5.1.25",
         "enzyme": "3.11.0",
-        "eslint": "8.17.0",
+        "eslint": "8.18.0",
         "eslint-config-next": "12.1.6",
         "eslint-config-prettier": "8.5.0",
         "jest": "28.1.1",
