@@ -7,9 +7,11 @@ import { useStore, withStore } from 'react-context-hook';
 
 import Cart from '../src/util/cart';
 import Color from 'color';
+import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
+import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
 
 Router.events.on('routeChangeStart', (url) => NProgress.start());
@@ -35,8 +37,8 @@ const StoreApp = withStore(
 
         return (
             <>
+                <DefaultSeo {...SEO} />
                 <Head>
-                    <title>Candy By Sweden</title>
                     <meta
                         name="viewport"
                         content="initial-scale=1, viewport-fit=cover, width=device-width, user-scalable=no"
@@ -91,8 +93,6 @@ const StoreApp = withStore(
                         }
                     `}</style>
                     {/* eslint-enable indent */}
-
-                    <meta name="theme-color" content={'#0476D9'} />
                 </Head>
 
                 <noscript

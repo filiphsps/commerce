@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { CustomerApi } from '../../src/api/customer';
-import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
+import { NextSeo } from 'next-seo';
 import OrdersBlock from '../../src/components/OrdersBlock';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
@@ -29,9 +29,7 @@ const AccountPage = (props: any) => {
 
     return (
         <Page className="AccountPage">
-            <Head>
-                <title>Account | {store?.name}</title>
-            </Head>
+            <NextSeo title="Account" />
 
             <PageContent>
                 <Breadcrumbs

@@ -2,8 +2,8 @@ import { PageApi, PagesApi } from '../../src/api/page';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
+import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
@@ -23,12 +23,10 @@ const CustomPage = (props: any) => {
 
     return (
         <Page className={`CustomPage CustomPage-${data?.type}`}>
-            <Head>
-                <title>
-                    {data?.title} | {store?.name}
-                </title>
-                <meta name="description" content={data?.description || ''} />
-            </Head>
+            <NextSeo
+                title={data?.title}
+                description={data?.description || ''}
+            />
 
             <PageContent>
                 <Breadcrumbs

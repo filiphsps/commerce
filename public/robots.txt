@@ -6,6 +6,7 @@ Allow: /
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /account/
+Disallow: /beta-products/
 
 # Host
 Host: https://candybysweden.com

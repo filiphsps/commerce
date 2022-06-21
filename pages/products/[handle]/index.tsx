@@ -1,3 +1,4 @@
+import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../../src/api/product';
 import React, { memo, useEffect, useState } from 'react';
 
@@ -6,13 +7,10 @@ import Button from '../../../src/components/Button';
 import Cart from '../../../src/util/cart';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
-import Head from 'next/head';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from '../../../src/components/Link';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
-import PageLoader from '../../../src/components/PageLoader';
-import { ProductJsonLd } from 'next-seo';
 import { ProductModel } from '../../../src/models/ProductModel';
 import ProductVariants from '../../../src/components/ProductVariants';
 import { RecommendationApi } from '../../../src/api/recommendation';
@@ -70,19 +68,14 @@ const Product = (props: any) => {
 
     return (
         <Page className="ProductPage">
-            <Head>
-                <title>
-                    {product?.seo?.title ? product?.seo?.title : product?.title}{' '}
-                    | {product?.vendor?.title} | {store?.name || ''}
-                </title>
-                <meta
-                    name="description"
-                    content={
-                        product?.seo?.description || product?.description || ''
-                    }
-                />
-                <meta name="canonical" ref="/shop" />
-            </Head>
+            <NextSeo
+                title={`${
+                    product?.seo?.title ? product?.seo?.title : product?.title
+                } | ${product?.vendor?.title}`}
+                description={
+                    product?.seo?.description || product?.description || ''
+                }
+            />
             <ProductJsonLd
                 productName={product?.title?.replace?.(/"/gi, '\\"')}
                 brand={product?.vendor?.title?.replace?.(/"/gi, '\\"')}

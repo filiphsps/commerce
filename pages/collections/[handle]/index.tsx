@@ -5,7 +5,7 @@ import { CollectionApi } from '../../../src/api/collection';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
 import Error from 'next/error';
-import Head from 'next/head';
+import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import { StoreModel } from '../../../src/models/StoreModel';
@@ -32,17 +32,10 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
 
     return (
         <Page className="CollectionPage">
-            <Head>
-                {data?.collection?.title && (
-                    <title>
-                        {data?.collection?.title} | {store?.name || ''}
-                    </title>
-                )}
-                <meta
-                    name="description"
-                    content={data?.body || data?.description || ''}
-                />
-            </Head>
+            <NextSeo
+                title={data?.collection?.title}
+                description={data?.body || data?.description || ''}
+            />
 
             <PageContent
                 style={{
