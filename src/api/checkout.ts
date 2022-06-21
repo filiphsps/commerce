@@ -33,10 +33,10 @@ export const CheckoutApi = async (cart: any) => {
             if (!data?.checkoutCreate?.checkout)
                 return reject(data?.checkoutCreate?.checkoutUserErrors);
 
-            resolve(data?.checkoutCreate?.checkout?.webUrl);
+            return resolve(data?.checkoutCreate?.checkout?.webUrl);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };

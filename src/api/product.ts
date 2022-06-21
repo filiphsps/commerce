@@ -142,10 +142,10 @@ export const ProductApi = async (handle: string) => {
             const result = Convertor(data?.productByHandle);
             if (!result) return reject();
 
-            resolve(result);
+            return resolve(result);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
@@ -172,10 +172,10 @@ export const ProductIdApi = async (id: string) => {
 
             if (!data?.node) return reject();
 
-            resolve(Convertor(data?.node));
+            return resolve(Convertor(data?.node));
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
