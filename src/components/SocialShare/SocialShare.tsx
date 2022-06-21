@@ -3,7 +3,7 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 import Image from 'next/image';
 
 interface SocialShareProps {}
-const SocialShare: FunctionComponent<SocialShareProps> = (props) => {
+const SocialShare: FunctionComponent<SocialShareProps> = () => {
     const [href, setHref] = useState('');
     useEffect(() => {
         setHref(window.location.href);

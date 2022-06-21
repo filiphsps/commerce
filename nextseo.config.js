@@ -7,6 +7,6 @@ export default {
         {
             property: 'theme-color',
             content: '#0476D9',
-        },
+        }
     ]
 };

@@ -15,7 +15,7 @@
         "jsx-a11y/anchor-is-valid": 0,
         "jsx-a11y/alt-text": 0,
         "no-unused-vars": 1,
-        "no-console": 1,
+        "no-console": ["error", { "allow": ["warn", "error"] }],
         "indent": [
             "error",
             4,

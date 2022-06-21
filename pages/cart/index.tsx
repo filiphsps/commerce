@@ -4,6 +4,7 @@ import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
 import { CheckoutApi } from '../../src/api/checkout';
+import { Config } from '../../src/util/Config';
 import Currency from '../../src/components/Currency';
 import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
@@ -106,13 +107,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                     )}
                                                 </div>
                                                 <div className="CartPage-Content-Total-Content-Items-Item-Meta-Variant">
-                                                    {`${line_item?.quantity} - `}
-                                                    <LanguageString
-                                                        id={
-                                                            line_item?.variant_title ||
-                                                            'variant'
-                                                        }
-                                                    />
+                                                    {`${line_item?.quantity}pc(s) - ${line_item?.variant_title}`}
                                                 </div>
                                             </div>
                                             <div className="CartPage-Content-Total-Content-Items-Item-Prices">
@@ -179,7 +174,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             )}
 
                             <div className="CartPage-Content-Total-Div" />
-                            <LanguageString id={'excl_shipping'} />
+                            <div className="CartPage-Content-Total-Notice">
+                                <LanguageString id={'excl_shipping'} />
+                            </div>
                             <Currency
                                 className="CartPage-Content-Total-Total"
                                 price={cart?.price_with_savings}
@@ -199,11 +196,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     loading
                                 }
                                 onClick={async () => {
+                                    setLoading(true);
+
                                     try {
                                         const url = (
                                             (await CheckoutApi(cart)) as string
                                         ).replace(
-                                            'candy-by-sweden.myshopify.com',
+                                            Config.shopify.domain,
                                             'checkout.candybysweden.com'
                                         );
 
@@ -218,6 +217,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     } catch (err) {
                                         console.error(err);
                                         alert(err.message);
+                                        setLoading(false);
                                     }
                                 }}
                             >

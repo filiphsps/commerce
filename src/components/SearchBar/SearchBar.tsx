@@ -1,22 +1,16 @@
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import React, { FunctionComponent, memo } from 'react';
 
 import { FiX } from 'react-icons/fi';
-import Input from '../Input';
-import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 interface SearchBarProps {}
-const SearchBar: FunctionComponent<SearchBarProps> = (props) => {
+const SearchBar: FunctionComponent<SearchBarProps> = () => {
     const [search, setSearch] = useStore<any>('search');
-    const router = useRouter();
-
-    useEffect(() => {
-        setSearch({ ...search, open: false });
-    }, [router?.asPath]);
 
     return (
         <div className="SearchBar">
-            <Input
+            <input
+                className="Input"
                 type={'text'}
                 placeholder={'Search...'}
                 value={search?.phrase}

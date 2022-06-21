@@ -1,12 +1,11 @@
-import Page from '../../src/components/Page';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import PageContent from '../../src/components/PageContent';
-import LanguageString from '../../src/components/LanguageString';
-import Input from '../../src/components/Input';
-import { useState } from 'react';
-import fetcher from '../../src/api/fetcher';
-
 import CollectionBlock from '../../src/components/CollectionBlock';
+import Input from '../../src/components/Input';
+import LanguageString from '../../src/components/LanguageString';
+import Page from '../../src/components/Page';
+import PageContent from '../../src/components/PageContent';
+import fetcher from '../../src/api/fetcher';
+import { useState } from 'react';
 
 const SearchPage = (props: any) => {
     const { store } = props;
@@ -40,7 +39,6 @@ const SearchPage = (props: any) => {
                             })
                         });
                     }}
-                    store={store}
                 />
 
                 {items && <CollectionBlock data={items} />}

@@ -25,7 +25,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
 
     return (
         <div className="Vendors">
-            {vendors?.map?.((vendor: VendorModel, index) => {
+            {vendors?.map?.((vendor: VendorModel) => {
                 if (!vendor?.handle) return null;
 
                 return (

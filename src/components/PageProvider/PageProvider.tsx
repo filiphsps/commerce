@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
+import Router, { useRouter } from 'next/router';
 
 import CartHeader from '../CartHeader';
 import Footer from '../Footer';
@@ -13,7 +14,22 @@ interface PageProviderProps {
     children: any;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const [search] = useStore<any>('search');
+    const router = useRouter();
+    const [search, setSearch] = useStore<any>('search');
+
+    const onRouteChangeStart = useCallback(() => {
+        if (!search.open) return;
+
+        setSearch({ ...search, open: false });
+    }, []);
+
+    React.useEffect(() => {
+        router.events.on('routeChangeStart', onRouteChangeStart);
+
+        return () => {
+            router.events.off('routeChangeStart', onRouteChangeStart);
+        };
+    }, [onRouteChangeStart, router.events]);
 
     return (
         <div className="PageProvider">
@@ -24,7 +40,17 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 <HeaderNavigation />
                 <CartHeader />
             </div>
-            {props.children}
+            <div
+                onClick={() => {
+                    // Make sure we close the search ui if the customer
+                    // clicks/taps outside of it
+                    if (!search.open) return;
+
+                    setSearch({ ...search, open: false });
+                }}
+            >
+                {props.children}
+            </div>
             <Footer store={props?.store} />
         </div>
     );

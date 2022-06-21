@@ -13,9 +13,9 @@ const Filter = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     grid-gap: 2rem;
-    transition: 250ms;
+    transition: 250ms all ease-in-out;
 
-    @media (max-width: 720px) {
+    @media (max-width: 950px) {
         flex-direction: row;
 
         &.Closed {
@@ -36,7 +36,7 @@ const Toggle = styled.div`
     text-transform: uppercase;
     font-size: 1.25rem;
     background: #efefef;
-    transition: 250ms;
+    transition: 250ms all ease-in-out;
     border-radius: var(--block-border-radius);
 
     &.Open {
@@ -67,7 +67,7 @@ const Option = styled.div`
     cursor: pointer;
     user-select: none;
     opacity: 0.65;
-    transition: 250ms;
+    transition: 250ms all ease-in-out;
 
     &.Selected {
         color: var(--accent-primary);
@@ -100,7 +100,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
     const [showFilters, setShowFilters] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
     const [vendors, setVendors] = useState<string[]>([]);
-    const [sorting, setSorting] = useState<string[]>([]);
+    // const [sorting, setSorting] = useState<string[]>([]);
 
     useEffect(() => {
         let new_tags = [];

@@ -17,8 +17,13 @@ const ButtonWrapper = styled.button`
     text-transform: uppercase;
     text-align: center;
     cursor: pointer;
+    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
     user-select: none;
-    transition: 250ms;
+    transition: 250ms all ease-in-out;
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
+    }
 
     &:hover,
     &:active {
@@ -28,6 +33,7 @@ const ButtonWrapper = styled.button`
 
     &.Button-Disabled {
         background: rgba(0, 0, 0, 0.15) !important;
+        box-shadow: none;
         color: $color-dark;
         cursor: not-allowed;
     }

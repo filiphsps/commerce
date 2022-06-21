@@ -6,7 +6,7 @@ import React, { FunctionComponent, memo } from 'react';
 interface ScrollToTopProps {
     className?: string;
 }
-const ScrollToTop: FunctionComponent<ScrollToTopProps> = (props) => {
+const ScrollToTop: FunctionComponent<ScrollToTopProps> = () => {
     return (
         <>
             {/* @ts-ignore: Type error */}

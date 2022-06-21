@@ -1,4 +1,6 @@
 import { ProductModel } from '../models/ProductModel';
+import { ProductVariantModel } from '../models/ProductVariantModel';
+import { ShopifyWeightUnit } from '../models/WeightModel';
 import TitleToHandle from '../util/TitleToHandle';
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
@@ -16,24 +18,54 @@ export const PRODUCT_FRAGMENT = `
         title
         description
     }
-    images(first: 5) {
-        edges {
-            node {
-                altText
-                transformedSrc
-            }
+    priceRange {
+        maxVariantPrice {
+            amount
+            currencyCode
         }
+        minVariantPrice {
+            amount
+            currencyCode
+        }
+    }
+    options(first: 250) {
+        id
+        name
+        values
     }
     variants(first: 250) {
         edges {
             node {
                 id
                 title
-                price
-                compareAtPrice
+                priceV2 {
+                    amount
+                    currencyCode
+                }
+                compareAtPriceV2 {
+                    amount
+                }
                 availableForSale
                 weight
                 weightUnit
+                image {
+                    id
+                }
+                selectedOptions {
+                    name
+                    value
+                }
+            }
+        }
+    }
+    images(first: 250) {
+        edges {
+            node {
+                id
+                altText
+                originalSrc
+                height
+                width
             }
         }
     }
@@ -57,8 +89,16 @@ export const Convertor = (product: any): ProductModel => {
         metafields[metafield?.node?.key] = metafield?.node?.value;
     });
 
+    const images = product?.images.edges.map(({ node }) => ({
+        id: atob(node.id).split('/').at(-1),
+        alt: node.altText ?? null,
+        src: node.originalSrc,
+        height: node.height,
+        width: node.width
+    }));
+
     return {
-        id: product?.id,
+        id: atob(product?.id).split('/').at(-1),
         handle: product?.handle,
 
         title: product?.title,
@@ -76,44 +116,83 @@ export const Convertor = (product: any): ProductModel => {
             handle: TitleToHandle(product?.vendor)
         },
 
-        variants: product?.variants?.edges?.map((variant, index) => ({
-            id: variant?.node?.id,
-            available: variant?.node?.availableForSale,
-            type: product?.productType,
-            image: 0, //index
+        pricing: {
+            currency: product?.priceRange.maxVariantPrice.currencyCode,
+            range: {
+                min: Number.parseFloat(
+                    product?.priceRange.minVariantPrice.amount
+                ),
+                max: Number.parseFloat(
+                    product?.priceRange.maxVariantPrice.amount
+                )
+            }
+        },
+        options: product?.options.map((option) => ({
+            id: option.name,
+            title: option.name,
+            type: 'multi_choice',
+            default: option.values[0],
+            values: option.values.map((value) => ({
+                id: value,
+                title: value
+            }))
+        })),
+        variants: product?.variants.edges.map(
+            ({ node: variant }): ProductVariantModel => {
+                const imageId = atob(variant.image?.id).split('/').at(-1);
+                const defaultImage = images.findIndex(
+                    (image) => image.id === imageId
+                );
 
-            price: variant?.node?.price,
-            compare_at_price: variant?.node?.compareAtPrice,
-            ...((variant) => {
-                let items = 1;
-                let title = variant?.title;
-                // TODO: handle packages here
-
-                if (title.toLowerCase().endsWith('g')) {
-                    let weight = Number.parseInt(title.replace('g', ''));
-
-                    // Convert g to oz
-                    weight *= 0.035274;
-
-                    // Round to one decimal
-                    weight = Math.round(weight * 10) / 10;
-
-                    title += ` (${weight}oz)`;
+                // FIXME: do this in some weight component.
+                let weight = {
+                    value: null,
+                    unit: null
+                };
+                switch (variant.weightUnit as ShopifyWeightUnit) {
+                    case 'KILOGRAMS':
+                        weight.value = variant.weight * 1000;
+                        weight.unit = 'g';
+                        break;
+                    case 'GRAMS':
+                        weight.value = variant.weight;
+                        weight.unit = 'g';
+                        break;
+                    case 'POUNDS':
+                        weight.value = variant.weight * 16;
+                        weight.unit = 'oz';
+                        break;
+                    case 'OUNCES':
+                        weight.value = variant.weight;
+                        weight.unit = 'oz';
+                        break;
+                    default:
+                        throw new Error(
+                            `Invalid weight unit "${variant.weightUnit}"`
+                        );
                 }
 
                 return {
-                    items,
-                    title,
-                    from_price: variant?.price,
-                    compare_at_from_price: variant?.compareAtPrice
+                    id: atob(variant.id).split('/').at(-1),
+                    title: variant.title,
+                    sku: '',
+                    default_image: defaultImage ?? 0,
+                    pricing: {
+                        currency: variant.priceV2.currencyCode,
+                        range: variant.priceV2.amount,
+                        compare_at_range:
+                            variant.compareAtPriceV2?.amount || null
+                    },
+                    options: variant.selectedOptions.map(({ name, value }) => ({
+                        id: name,
+                        value
+                    })),
+                    weight,
+                    available: variant.availableForSale
                 };
-            })(variant?.node)
-        })),
-        images: product?.images?.edges?.map((image) => ({
-            src: image?.node?.transformedSrc,
-            alt: image?.node?.altText
-        })),
-
+            }
+        ),
+        images,
         metadata: metafields
     };
 };
@@ -166,7 +245,7 @@ export const ProductIdApi = async (id: string) => {
                 }
                 `,
                 variables: {
-                    id
+                    id: btoa(`gid://shopify/Product/${id}`)
                 }
             });
 
@@ -180,7 +259,7 @@ export const ProductIdApi = async (id: string) => {
     });
 };
 
-export const ProductsApi = async () => {
+export const ProductsApi = async (): Promise<ProductModel[]> => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data } = await shopify.query({
@@ -205,10 +284,10 @@ export const ProductsApi = async () => {
                 ?.filter((a) => a);
             if (!result) return reject();
 
-            resolve(result);
+            return resolve(result);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };

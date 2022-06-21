@@ -1,8 +1,8 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .CollectionBlock {
     .CollectionBlock-Header {
-        padding-bottom: 1rem;
+        padding-bottom: 0.5rem;
 
         &:empty {
             padding-bottom: 0px;
@@ -60,7 +60,8 @@
             transition: 250ms all ease-in-out;
 
             @media (min-width: $width-max-mobile) {
-                &:hover, &:active {
+                &:hover,
+                &:active {
                     background-color: $color-primary-light !important;
                 }
             }
@@ -130,30 +131,6 @@
             grid-template-rows: 1fr;
             grid-auto-flow: column;
             scroll-snap-type: x mandatory;
-
-            &::-webkit-scrollbar {
-                height: 1.5rem;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-clip: content-box;
-                border-top: 5px solid transparent;
-                border-bottom: 5px solid transparent;
-                border-radius: 0px;
-                box-shadow: inset 0 0 0 5px;
-                color: rgba(0, 0, 0, 0.15);
-                cursor: pointer;
-            }
-
-            &::-webkit-scrollbar-button {
-                width: 0;
-                height: 0;
-                display: none;
-            }
-
-            &::-webkit-scrollbar-corner {
-                background-color: transparent;
-            }
 
             .ProductCard {
                 min-width: 22.5rem;

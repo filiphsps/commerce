@@ -7,7 +7,7 @@ import { OrdersApi } from '../../api/orders';
 import useSWR from 'swr';
 
 interface OrdersBlockProps {}
-const OrdersBlock: FunctionComponent<OrdersBlockProps> = (props) => {
+const OrdersBlock: FunctionComponent<OrdersBlockProps> = () => {
     const {
         data
     }: {

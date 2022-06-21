@@ -4,7 +4,11 @@ export const Config = {
     environment: process.env.NODE_ENV || 'production',
     git_sha: process.env.GIT_SHA,
     domain: process.env.DOMAIN || 'candybysweden.com',
-    beta_features: process.env.BETA_FEATURES === 'true',
+
+    features: {
+        accounts: process.env.FEATURE_ACCOUNTS === 'true',
+        reviews: process.env.FEATURE_REVIEWS === 'true'
+    },
 
     shopify: {
         domain: process.env.SHOPIFY_DOMAIN || 'candy-by-sweden.myshopify.com',

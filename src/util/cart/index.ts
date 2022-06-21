@@ -7,6 +7,17 @@ const get_cart = async () => {
         ...JSON.parse(window.localStorage.getItem('cart') || '{}')
     };
 
+    // Remove pre 1.1 carts
+    if (
+        cart?.items?.[0]?.id.includes('=') ||
+        cart?.items?.[0]?.variant_id.includes('=')
+    ) {
+        // TODO: use app version in cart to detect version
+        console.warn('Cart from previous version detected, removing...');
+        window.localStorage.removeItem('cart');
+        throw new Error('Old cart version');
+    }
+
     const errors = [];
     cart.items = (
         await Promise.all(
@@ -30,8 +41,11 @@ const get_cart = async () => {
                 return {
                     ...item,
                     total_compare_at_price:
-                        parseFloat(variant?.compare_at_price) || null,
-                    total_price: parseFloat(variant?.price) || 0,
+                        variant?.pricing.range !==
+                        variant?.pricing.compare_at_range
+                            ? variant?.pricing.compare_at_range
+                            : null,
+                    total_price: variant?.pricing.range || 0,
 
                     title: product.title,
                     variant_title: variant.title,

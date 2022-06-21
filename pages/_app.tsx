@@ -18,7 +18,7 @@ import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
 
-Router.events.on('routeChangeStart', (url) => NProgress.start());
+Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', (err) => {
     console.error(err);
@@ -34,7 +34,10 @@ const StoreApp = withStore(
         useEffect(() => {
             /* eslint-disable no-console */
             // Log build info
-            console.log('`headless e-commerce` by Filiph Siitam Sandström');
+            console.log('Shoppy by Filiph Siitam Sandström');
+            console.log(
+                'Licensed under MIT. See https://github.com/filiphsandstrom/Shoppy'
+            );
             console.log(`Build: ${Config.git_sha}. Domain: ${Config.domain}`);
             /* eslint-enable no-console */
 
@@ -46,14 +49,13 @@ const StoreApp = withStore(
             }
 
             // Setup sentry
-            if (Config.sentry) {
+            if (Config.sentry && Config.environment === 'production') {
                 Sentry.init({
                     dsn: Config.sentry,
                     release: Config.git_sha,
                     integrations: [new BrowserTracing()],
                     environment: Config.environment,
-                    tracesSampleRate:
-                        Config.environment === 'production' ? 0.2 : 1.0
+                    tracesSampleRate: 0.2
                 });
             }
         }, []);
@@ -64,7 +66,7 @@ const StoreApp = withStore(
                 <Head>
                     <meta
                         name="viewport"
-                        content="initial-scale=1, viewport-fit=cover, width=device-width, user-scalable=no"
+                        content="width=device-width, initial-scale=1"
                     />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
                     <meta

@@ -21,6 +21,10 @@ module.exports = withBundleAnalyzer(withTM({
     trailingSlash: true,
     swcMinify: true,
     target: 'server',
+    /*i18n: {
+        locales: ['en-US'],
+        defaultLocale: 'en-US',
+    },*/
     generateBuildId: async () => {
         return git_sha;
     },

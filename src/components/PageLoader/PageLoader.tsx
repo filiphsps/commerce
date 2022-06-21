@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 interface PageLoaderProps {}
-const PageLoader: FunctionComponent<PageLoaderProps> = (props) => {
+const PageLoader: FunctionComponent<PageLoaderProps> = () => {
     return (
         <Wrapper className="PageLoader">
             <Loader />

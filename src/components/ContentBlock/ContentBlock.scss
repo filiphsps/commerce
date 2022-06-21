@@ -2,7 +2,7 @@
 
 .ContentBlock {
     display: flex;
-    padding: 1rem 0px;
+    padding: 0rem 0px 1rem 0px;
     background: $color-white;
     background-size: cover;
     background-position: center;
@@ -30,14 +30,14 @@
 
                             .ProductCard-Actions-Action-Variant {
                                 background: $color-silvery;
-                                border: 0.15rem solid $color-silvery;
+                                border: 0.2rem solid $color-silvery;
                             }
                         }
 
                         .ProductCard-Actions-Action-QuantityInput {
                             .Action {
                                 background: $color-silvery;
-                                border: 0.15rem solid $color-silvery;
+                                border: 0.2rem solid $color-silvery;
 
                                 @media (min-width: $width-max-mobile) {
                                     &:hover {

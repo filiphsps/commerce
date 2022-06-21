@@ -20,7 +20,7 @@
             width: 100%;
 
             @media (max-width: $width-max-mobile) {
-                border: 0.15rem solid $color-silvery;
+                border: 0.2rem solid $color-silvery;
                 border-bottom: none;
             }
 
@@ -80,8 +80,7 @@
             grid-template-rows: auto 1fr;
             grid-gap: 1rem;
             padding: 2rem;
-            border: 0.15rem solid $color-silvery;
-            text-transform: uppercase;
+            border: 0.2rem solid $color-silvery;
 
             .CartPage-Content-Total-Content {
                 .CartPage-Content-Total-Content-Items {
@@ -95,7 +94,7 @@
                         align-items: flex-start;
                         padding: 0.5rem 0px;
                         font-size: 1.25rem;
-                        border-bottom: 0.1rem solid $color-silvery;
+                        border-bottom: 0.2rem solid $color-silvery;
 
                         .CartPage-Content-Total-Content-Items-Item-Meta {
                             .CartPage-Content-Total-Content-Items-Item-Meta-Variant {
@@ -105,17 +104,24 @@
                             .CartPage-Content-Total-Content-Items-Item-Meta-Product {
                                 font-weight: 700;
                                 color: $color-dark;
+                                text-transform: uppercase;
                             }
                         }
 
                         .CartPage-Content-Total-Content-Items-Item-Prices {
                             font-weight: 700;
                             text-align: right;
+                            text-transform: uppercase;
 
                             .Currency-Sale {
                                 font-size: 1rem;
                             }
                         }
+                    }
+
+                    & > *:last-child {
+                        padding-bottom: 0px;
+                        border-bottom: none;
                     }
                 }
             }
@@ -135,9 +141,15 @@
                 border-top: 0.05rem solid $color-dark;
             }
 
+            .CartPage-Content-Total-Notice {
+                text-transform: uppercase;
+            }
+
             .CartPage-Content-Total-Total {
                 font-size: 1.5rem;
+                line-height: 2rem;
                 font-weight: 700;
+                text-transform: uppercase;
             }
 
             .CartPage-Content-Total-Actions {

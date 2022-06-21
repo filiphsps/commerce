@@ -6,12 +6,7 @@ interface ProductCardProps {
     data?: any;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
-    return (
-        <ProductCardComponent
-            handle={props?.data?.handle}
-            search={props?.data?.small}
-        />
-    );
+    return <ProductCardComponent handle={props?.data?.handle} />;
 };
 
 export default memo(ProductCard);

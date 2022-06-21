@@ -3,77 +3,48 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import Button from '../Button';
 import Cart from '../../util/cart';
-import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/image';
 import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
-import { ProductApi } from '../../api/product';
-import ProductBadges from '../ProductBadges';
 import { ProductModel } from '../../models/ProductModel';
-import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
 interface ProductCardProps {
     handle?: string;
     data?: ProductModel;
-
-    search?: boolean;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
+    const { data: product } = props;
+
     const [showAll, setShowAll] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedVariant, setSelectedVariant] = useState(0);
+    const [selectedVariant, setSelectedVariant] = useState(
+        product?.variants?.length - 1
+    );
     const [loading, setLoading] = useState(false);
-    const language = Config.i18n.locales[0];
     const [cart, setCart] = useStore<any>('cart');
 
-    const {
-        data,
-        error
-    }: {
-        data?: any;
-        error?: any;
-    } = useSWR(
-        props?.handle ? [`${props.handle}`] : null,
-        (url) => ProductApi(url),
-        {
-            fallbackData: props?.data
-        }
-    );
-
     useEffect(() => {
-        setSelectedVariant(data?.variants?.length - 1);
-    }, [props.data]);
+        setSelectedVariant(product?.variants?.length - 1);
+    }, [product]);
 
-    if (!data) return <div className="ProductCard" />;
-
-    const show_variants = data?.variants?.length > 0;
-    const variant = data?.variants?.[selectedVariant] || null;
+    const show_variants = product?.variants?.length > 0;
+    const variant = product?.variants?.[selectedVariant] || null;
 
     return (
-        <div className={`ProductCard ${(props?.search && 'Search') || ''}`}>
+        <div className={`ProductCard`}>
             <div className="ProductCard-Container">
                 <Link
                     className="ProductCard-Container-Image"
-                    to={data && `/products/${data?.handle}`}
+                    to={product && `/products/${product?.handle}`}
                     as={'/products/[handle]'}
                 >
-                    {data?.images?.length > 0 && (
+                    {product?.images?.length > 0 && (
                         <Image
-                            src={
-                                data?.images?.[variant?.image]?.src ||
-                                data?.images?.[selectedVariant]?.src ||
-                                data?.images?.[0]?.src ||
-                                ''
-                            }
-                            alt={
-                                data?.images?.[variant?.image]?.alt ||
-                                data?.images?.[selectedVariant]?.alt ||
-                                data?.images?.[0]?.alt ||
-                                ''
-                            }
+                            src={product?.images?.[variant?.default_image]}
+                            alt={product?.images?.[variant?.default_image]?.alt}
                             width={150}
                             height={150}
                             loading="lazy"
@@ -87,49 +58,41 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                     <div className="ProductCard-Container-Header">
                         <Link
                             className="ProductCard-Container-Header-Vendor"
-                            to={data && `/collections/${data?.vendor?.handle}`}
+                            to={
+                                product &&
+                                `/collections/${product?.vendor?.handle}`
+                            }
                         >
-                            {data?.vendor?.title &&
-                                (data?.vendor?.title?.[language] ||
-                                    data?.vendor?.title?.['en_US'] ||
-                                    data?.vendor?.title)}
+                            {product?.vendor?.title}
                         </Link>
                         <Link
                             className="ProductCard-Container-Header-Title"
-                            to={data && `/products/${data?.handle}`}
+                            to={product && `/products/${product?.handle}`}
                             as={'/products/[handle]'}
                         >
-                            {data?.title &&
-                                (data?.title?.[language] ||
-                                    data?.title?.['en_US'] ||
-                                    data?.title)}
+                            {product?.title}
                         </Link>
                     </div>
 
-                    <ProductBadges data={data} />
-
                     <div
                         className={`ProductCard-TotalPrice ${
-                            !!variant?.compare_at_price &&
-                            variant?.compare_at_price !== variant?.price &&
-                            'Sale'
+                            variant?.pricing.compare_at_range ? 'Sale' : ''
                         }`}
                     >
-                        {(variant?.compare_at_price ||
-                            variant?.compare_at_from_price) && (
+                        {variant?.pricing?.compare_at_range && (
                             <div className="Sale-Price">
                                 <Currency
                                     price={
-                                        variant?.compare_at_price ||
-                                        variant?.compare_at_from_price
+                                        variant?.pricing?.compare_at_range ||
+                                        variant?.pricing?.compare_at_range
                                     }
-                                    currency={variant?.currency}
+                                    currency={variant?.pricing?.currency}
                                 />
                             </div>
                         )}
                         <Currency
-                            price={variant?.from_price || variant?.price}
-                            currency={variant?.currency}
+                            price={variant?.pricing?.range}
+                            currency={variant?.pricing?.currency}
                         />
                     </div>
 
@@ -141,32 +104,38 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                         (showAll && 'Open') || ''
                                     }`}
                                 >
-                                    {data?.variants?.map((variant, index) => {
-                                        if (!showAll && index >= 3) return null;
+                                    {product?.variants?.map(
+                                        (variant, index) => {
+                                            if (!showAll && index >= 3)
+                                                return null;
 
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`ProductCard-Actions-Action-Variant ${
-                                                    index === selectedVariant &&
-                                                    'ProductCard-Actions-Action-Variant-Selected'
-                                                }`}
-                                                onClick={() =>
-                                                    setSelectedVariant(index)
-                                                }
-                                            >
-                                                <LanguageString
-                                                    id={
-                                                        variant?.title?.split(
-                                                            ' /'
-                                                        )[0]
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className={`ProductCard-Actions-Action-Variant ${
+                                                        index ===
+                                                            selectedVariant &&
+                                                        'ProductCard-Actions-Action-Variant-Selected'
+                                                    }`}
+                                                    onClick={() =>
+                                                        setSelectedVariant(
+                                                            index
+                                                        )
                                                     }
-                                                />
-                                            </div>
-                                        );
-                                    })}
+                                                >
+                                                    <LanguageString
+                                                        id={
+                                                            variant?.title?.split(
+                                                                ' /'
+                                                            )[0]
+                                                        }
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                    )}
 
-                                    {data?.variants?.length > 3 && (
+                                    {product?.variants?.length > 3 && (
                                         <div
                                             className="ProductCard-Actions-Action-Variant"
                                             onClick={() => setShowAll(!showAll)}
@@ -205,10 +174,16 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                 -
                             </div>
                             <Input
+                                className="Input"
                                 type="number"
                                 value={quantity}
                                 onChange={(event) => {
-                                    setQuantity(event?.target?.value);
+                                    setQuantity(
+                                        Number.parseInt(
+                                            event?.target?.value,
+                                            10
+                                        )
+                                    );
                                 }}
                             />
                             <div
@@ -233,13 +208,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                 setLoading(true);
 
                                 Cart.Add([cart, setCart], {
-                                    id: data?.id,
+                                    id: product?.id,
                                     variant_id:
-                                        data?.variants[selectedVariant]?.id,
+                                        product?.variants[selectedVariant]?.id,
                                     quantity: quantity,
-                                    price: parseInt(
-                                        data?.variants[selectedVariant]?.price
-                                    )
+                                    price: product?.variants[selectedVariant]
+                                        ?.pricing.range
                                 })
                                     .then(() => {
                                         setLoading(false);
@@ -262,10 +236,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
             </div>
 
             <div className={`ProductCard-Price`}>
-                {data?.variants?.length > 1 && <LanguageString id={'from'} />}
+                {product?.variants?.length > 1 && (
+                    <LanguageString id={'from'} />
+                )}
                 <Currency
-                    price={data?.variants?.[0].price}
-                    currency={variant?.currency}
+                    price={product?.variants?.[0].pricing.range}
+                    currency={variant?.pricing.currency}
                 />
             </div>
         </div>

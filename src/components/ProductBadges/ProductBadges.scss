@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .ProductBadges {
     display: flex;
@@ -12,5 +12,6 @@
         margin-right: 0.5rem;
         color: $color-primary-dark;
         border-radius: 2rem;
+        font-size: 1.25rem;
     }
 }

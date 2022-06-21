@@ -2,32 +2,30 @@
 
 .ProductCard {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    display: grid;
     scroll-snap-align: start;
     min-height: 6rem;
     padding: 1rem;
     background: $color-silvery;
-    border: 0.15rem solid darken($color-silvery, 2.5%);
+    border: 0.2rem solid darken($color-silvery, 2.5%);
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
     border-radius: $block-border-radius;
 
     .ProductCard-Container {
         position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: space-between;
-        flex-direction: column;
+        display: grid;
         flex-grow: 1;
+        grid-template-rows: 16rem 1fr;
+        width: 100%;
         text-transform: uppercase;
 
         .ProductCard-Container-Content {
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: space-between;
-            flex-direction: column;
-            flex-grow: 1;
+            display: grid;
+            align-items: center;
+            grid-template-rows: 1fr auto auto;
+            height: 100%;
+            width: 100%;
             text-transform: uppercase;
         }
 
@@ -37,7 +35,8 @@
             align-items: center;
             flex-shrink: 0;
             height: 16rem;
-            width: calc(100% - 2rem);
+            max-height: 100%;
+            width: 100%;
             padding: 2rem 0px;
             margin: 0px auto;
             background-position: center;
@@ -63,25 +62,33 @@
         }
 
         .ProductCard-Container-Header {
-            font-weight: 500;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            justify-content: left;
+            align-items: flex-start;
+            height: 100%;
 
             .ProductCard-Container-Header-Vendor {
                 display: block;
-                font-size: 1.15rem;
+                font-size: 1.25rem;
+                font-weight: 600;
                 color: $color-dark;
 
                 @media (min-width: $width-max-mobile) {
                     &:hover,
                     &:active {
-                        color: $color-primary-dark;
+                        color: $color-secondary-dark;
                     }
                 }
             }
 
             .ProductCard-Container-Header-Title {
                 display: block;
-                font-size: 1.5rem;
-                padding-bottom: 0.5rem;
+                font-size: 1.65rem;
+                line-height: 2rem;
+                font-weight: 700;
+                padding-bottom: 0.25rem;
+                color: $color-primary;
 
                 @media (min-width: $width-max-mobile) {
                     &:hover,
@@ -94,6 +101,7 @@
     }
 
     .ProductCard-Actions {
+        overflow: hidden;
         display: flex;
         justify-content: center;
         justify-self: flex-end;
@@ -102,6 +110,8 @@
         flex-direction: column;
         flex-grow: 1;
         height: 100%;
+        max-width: 100%;
+        width: 100%;
 
         .ProductCard-Actions-Action {
             display: flex;
@@ -145,8 +155,7 @@
                         padding: 0px 0.55rem;
                         margin: 0px 0.55rem 0.55rem 0px;
                         background: $color-white;
-                        border: 0.15rem solid $color-white;
-                        border-width: 0.2rem !important;
+                        border: 0.2rem solid $color-white;
                         border-radius: $block-border-radius;
                         line-height: 2.45rem;
                         font-size: 1rem;
@@ -154,7 +163,7 @@
                         text-overflow: ellipsis;
                         text-align: center;
                         cursor: pointer;
-                        transition: 250ms ease-in-out;
+                        transition: 250ms all ease-in-out;
 
                         &.ProductCard-Actions-Action-Variant-Selected {
                             border-color: $color-primary !important;
@@ -162,10 +171,10 @@
                         }
 
                         @media (max-width: $width-max-mobile) {
-                            height: 3rem;
-                            max-height: 3rem;
-                            padding: 0.15rem 0.75rem;
-                            font-size: 0.95rem;
+                            height: 3.25rem;
+                            max-height: 3.25rem;
+                            padding: 0.25rem 0.75rem;
+                            font-size: 1.25rem;
                         }
 
                         @media (min-width: $width-max-mobile) {
@@ -180,19 +189,20 @@
             }
 
             &.ProductCard-Actions-Action-QuantityInput {
-                display: flex;
-                flex-grow: 1;
-                justify-content: flex-end;
-                align-items: flex-end;
-                height: 100%;
+                display: grid;
+                grid-template-columns: 4.5rem 1fr 4.5rem;
+                grid-gap: 0.5rem;
+                height: 3rem;
                 width: 100%;
+                max-width: 100%;
                 background: transparent !important;
                 margin-bottom: 1rem;
 
-                .Input {
+                input {
                     height: 2.75rem;
                     max-height: 2.75rem;
-                    margin: 0px 0.5rem;
+                    width: 100%;
+                    max-width: 100%;
                     border: none;
                     border-radius: $block-border-radius;
                     text-align: center;
@@ -213,7 +223,7 @@
                     max-height: 2.75rem;
                     width: 4.5rem;
                     background: $color-white;
-                    border: 0.15rem solid $color-white;
+                    border: 0.2rem solid $color-white;
                     border-radius: $block-border-radius;
                     font-weight: 700;
                     font-size: 1.25rem;
@@ -257,7 +267,7 @@
 
     .ProductCard-TotalPrice {
         padding: 0px 0px 1rem 0px;
-        font-size: 0.5rem;
+        font-size: 1rem;
 
         &.Sale {
             color: $color-sale;
@@ -275,7 +285,7 @@
 
         .Currency {
             font-weight: 700;
-            font-size: 1.15rem;
+            font-size: 1.5rem;
         }
     }
 
@@ -309,13 +319,5 @@
         height: 100%;
 
         @include placeholder-shimmer;
-    }
-
-    &.Search {
-        .ProductCard-Actions,
-        .ProductCard-Price,
-        .ProductCard-TotalPrice {
-            display: none;
-        }
     }
 }

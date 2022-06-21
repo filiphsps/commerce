@@ -9,10 +9,10 @@ const LanguageString = (props) => {
 
     switch (router?.locale || 'en-US') {
         case 'de-DE':
-            return de[props.id] || props.id;
+            return de[props.id ?? props.key] || (props.id ?? props.key);
         case 'en-US':
         default:
-            return en[props.id] || props.id;
+            return en[props.id ?? props.key] || (props.id ?? props.key);
     }
 };
 

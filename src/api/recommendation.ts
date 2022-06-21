@@ -20,7 +20,7 @@ export const RecommendationApi = async (id: string) => {
                 }
                 `,
                 variables: {
-                    id
+                    id: btoa(`gid://shopify/Product/${id}`)
                 }
             });
 
@@ -29,10 +29,10 @@ export const RecommendationApi = async (id: string) => {
             );
             if (!result) return reject();
 
-            resolve(result);
+            return resolve(result);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };

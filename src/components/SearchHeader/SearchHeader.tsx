@@ -11,8 +11,7 @@ interface SearchHeaderProps {
 }
 const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
     const {
-        data,
-        error
+        data
     }: {
         data?: any;
         error?: any;
@@ -36,7 +35,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                         hideTitle
                         search
                         data={{
-                            items: data.map((item) => item.handle) || []
+                            items: data || []
                         }}
                         isHorizontal
                     />

@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .Checkbox {
     display: flex;
@@ -6,7 +6,7 @@
     align-items: center;
     width: 2rem;
     height: 2rem;
-    border: 0.15rem solid $color-dark;
+    border: 0.2rem solid $color-dark;
     color: $color-dark;
     font-size: 1.5rem;
     font-weight: 700;

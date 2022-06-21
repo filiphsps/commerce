@@ -14,6 +14,7 @@ body {
         sans-serif;
     transition: 250ms opacity ease-in-out;
     touch-action: manipulation;
+    color: $color-black;
 
     @media screen and (max-width: 1024px) {
         font-size: 10px;

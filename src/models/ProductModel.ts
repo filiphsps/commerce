@@ -1,3 +1,5 @@
+import { PricingModel } from './PricingModel';
+import { ProductVariantModel } from './ProductVariantModel';
 import { VendorModel } from './VendorModel';
 
 export interface ProductModel {
@@ -11,52 +13,64 @@ export interface ProductModel {
     type?: string;
     tags?: string[];
 
+    /**
+     * Pricing rules.
+     */
+    pricing: PricingModel;
+
     seo?: {
         title: string;
         description: string;
     };
 
     vendor: VendorModel;
-    producer?: {
-        title: string;
-        handle: string | null;
-    };
 
-    variants: Array<{
-        available: boolean;
-        position: number;
-        items?: number;
+    /**
+     * Product variants.
+     */
+    variants: ProductVariantModel[];
 
-        id: string | number;
-        type: string;
-        title: string;
+    /**
+     * Product Images.
+     */
+    images: Array<{
+        id: string;
+        height: number;
+        width: number;
+        src: string;
 
-        sku: string;
-        barcode: string | number;
-        currency: string;
-        vat?: any;
-
-        image: number;
-        price: any;
-        price_per_item?: any;
-        from_price: any;
-        compare_at_price: any;
-        compare_at_from_price: any;
-
-        packages: any;
-
-        weight: {
-            value: number;
-            unit: string;
-        };
-
-        inventory_quantity: number;
-        inventory_policy: string;
+        /**
+         * Descriptive alt text for the image.
+         */
+        alt: string;
     }>;
-    images: Array<any>;
 
-    currency?: string;
+    /**
+     * Product options.
+     */
+    options?: ProductOptionsType;
 
     details?: any;
     metadata?: any;
+}
+
+export type ProductOptionsType = Array<
+    ProductOptionCheckbox | ProductOptionMultiChoice
+>;
+interface ProductOptionGeneric {
+    id: string;
+    title: string;
+    required: boolean;
+}
+export interface ProductOptionCheckbox extends ProductOptionGeneric {
+    type: 'checkbox';
+    default: boolean;
+}
+export interface ProductOptionMultiChoice extends ProductOptionGeneric {
+    type: 'multi_choice';
+    default?: string;
+    values: Array<{
+        id: string;
+        title: string;
+    }>;
 }

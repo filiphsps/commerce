@@ -1,6 +1,6 @@
 {
     "name": "candybysweden-frontend",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "private": true,
     "cacheDirectories": [
         ".next/cache"
@@ -49,6 +49,7 @@
         "react-icons": "4.4.0",
         "react-image-gallery": "1.2.8",
         "react-markdown": "8.0.3",
+        "react-rating-stars-component": "2.2.0",
         "react-responsive-carousel": "3.2.23",
         "react-tender": "1.1.0",
         "sass": "1.52.3",

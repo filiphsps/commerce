@@ -109,6 +109,7 @@
         justify-content: flex-start;
         align-items: center;
         font-weight: 700;
+        max-width: 100%;
     }
 
     .CartItem-Price {
@@ -136,15 +137,16 @@
         font-size: 1.25rem;
         text-align: center;
 
-        .Input {
+        input {
             height: 2rem;
+            width: 100%;
             padding: 1rem 0px;
             background-color: $color-silvery;
 
-            @media (min-width: $width-max-mobile) {
-                &:hover {
-                    color: $color-primary;
-                }
+            &:hover,
+            &:focus {
+                color: $color-primary;
+                border: 0.2rem solid $color-primary;
             }
 
             @media (max-width: $width-max-mobile) {

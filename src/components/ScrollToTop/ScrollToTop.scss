@@ -1,4 +1,4 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .ScrollToTop {
     z-index: 1;
@@ -11,7 +11,7 @@
     border-radius: 100%;
     background: $color-primary;
     color: $color-text-primary;
-    transition: 250ms ease-in-out;
+    transition: 250ms all ease-in-out;
 
     svg {
         height: 2rem;
@@ -23,7 +23,7 @@
         height: 4.5rem;
 
         svg {
-            padding: 0.25rem
+            padding: 0.25rem;
         }
     }
 

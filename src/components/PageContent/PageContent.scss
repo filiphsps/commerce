@@ -6,8 +6,11 @@
     margin: 1rem auto 0px auto;
 
     @media (max-width: $width-max-page) {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding: 0px 2rem;
+    }
+
+    @media (max-width: 950px) {
+        padding: 0px 1.5rem;
     }
 
     &.PageContent-NoPadding {

@@ -5,8 +5,12 @@
     overflow-y: hidden;
 
     &.Index-0 {
-        margin-top: -2rem;
+        margin-top: -1rem;
         margin-bottom: -1.15rem;
+
+        @media (max-width: 950px) {
+            margin-top: -2rem;
+        }
     }
 
     .Link {

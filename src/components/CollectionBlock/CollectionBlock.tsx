@@ -1,7 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import { CollectionApi } from '../../api/collection';
-import { Config } from '../../util/Config';
 import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
@@ -23,7 +22,6 @@ interface CollectionBlockProps {
     search?: boolean;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
-    const language = Config.i18n.locales[0];
     const {
         data,
         error
@@ -47,7 +45,6 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     key={item?.handle || item}
                     handle={item?.handle || item}
                     data={typeof item !== 'string' ? item : null}
-                    search={props?.search}
                 />
             );
         }
@@ -80,32 +77,19 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                             as={'/collections/[handle]'}
                         >
                             <h2 className="CollectionBlock-Header-Title">
-                                {data?.title &&
-                                    (data?.title[language] ||
-                                        data?.title['en_US'] ||
-                                        data?.title)}
+                                {data?.title}
                             </h2>
                         </Link>
                     ) : (
                         <h1 className="CollectionBlock-Header-Title">
-                            {data?.title &&
-                                (data?.title[language] ||
-                                    data?.title['en_US'] ||
-                                    data?.title)}
+                            {data?.title}
                         </h1>
                     )}
 
                     {props?.showDescription && (
                         <div className="CollectionBlock-Header-Description">
                             <Markdown
-                                children={
-                                    (data?.body &&
-                                        (data?.body[language] ||
-                                            data?.body['en_US'] ||
-                                            data?.body)) ||
-                                    data?.description ||
-                                    ''
-                                }
+                                children={data?.body || data?.description || ''}
                             />
                         </div>
                     )}
