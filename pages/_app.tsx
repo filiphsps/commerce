@@ -32,6 +32,12 @@ const StoreApp = withStore(
         const [cart, setCart] = useStore<any>('cart');
 
         useEffect(() => {
+            /* eslint-disable no-console */
+            // Log build info
+            console.log('`headless e-commerce` by Filiph Siitam Sandström');
+            console.log(`Build: ${Config.git_sha}. Domain: ${Config.domain}`);
+            /* eslint-enable no-console */
+
             // Create a new cart if we don't already have one
             if (!cart) {
                 Cart.Get()
