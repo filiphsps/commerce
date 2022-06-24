@@ -27,6 +27,8 @@
         "@liholiho/react-modal-hook": "3.0.0",
         "@prismicio/client": "6.6.1",
         "@prismicio/helpers": "2.3.1",
+        "@sentry/browser": "7.2.0",
+        "@sentry/tracing": "7.2.0",
         "axios": "0.27.2",
         "color": "4.2.3",
         "countries-list": "2.6.1",

@@ -8,6 +8,11 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true",
 });
 
+const git_sha = child_process.execSync('git rev-parse HEAD', {
+    cwd: __dirname,
+    encoding: 'utf8'
+}).replace(/\n/, '');
+
 module.exports = withBundleAnalyzer(withTM({
     projectRoot: __dirname,
     poweredByHeader: false,
@@ -17,10 +22,7 @@ module.exports = withBundleAnalyzer(withTM({
     swcMinify: true,
     target: 'server',
     generateBuildId: async () => {
-        return child_process.execSync('git rev-parse --short HEAD', {
-            cwd: __dirname,
-            encoding: 'utf8'
-        });
+        return git_sha;
     },
     async redirects() {
         return [
@@ -37,4 +39,7 @@ module.exports = withBundleAnalyzer(withTM({
     compiler: {
         styledComponents: true,
     },
+    env: {
+        GIT_SHA: git_sha
+    }
 }));

@@ -1,12 +1,16 @@
 import 'destyle.css';
 import './app.scss';
 
+import * as Sentry from '@sentry/browser';
+
 import React, { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
+import { BrowserTracing } from '@sentry/tracing';
 import Cart from '../src/util/cart';
 import Color from 'color';
+import { Config } from '../src/util/Config';
 import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 import NProgress from 'nprogress';
@@ -28,11 +32,24 @@ const StoreApp = withStore(
         const [cart, setCart] = useStore<any>('cart');
 
         useEffect(() => {
-            if (cart) return;
+            // Create a new cart if we don't already have one
+            if (!cart) {
+                Cart.Get()
+                    .then(setCart)
+                    .catch((error) => error && console.warn(error));
+            }
 
-            Cart.Get()
-                .then(setCart)
-                .catch((error) => error && console.warn(error));
+            // Setup sentry
+            if (Config.sentry) {
+                Sentry.init({
+                    dsn: Config.sentry,
+                    release: Config.git_sha,
+                    integrations: [new BrowserTracing()],
+                    environment: Config.environment,
+                    tracesSampleRate:
+                        Config.environment === 'production' ? 0.2 : 1.0
+                });
+            }
         }, []);
 
         return (

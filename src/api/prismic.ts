@@ -2,7 +2,7 @@ import * as Prismic from '@prismicio/client';
 
 import { Config } from '../util/Config';
 
-export const apiEndpoint = Config.prismic.domain;
+export const apiEndpoint = Config.prismic.repo;
 export const accessToken = '';
 
 // Client method to query documents from the Prismic repo
