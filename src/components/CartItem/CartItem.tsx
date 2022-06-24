@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import Cart from '../../util/cart';
+import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import { FiTrash } from 'react-icons/fi';
-import Image from 'next/image';
 import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
@@ -17,7 +17,7 @@ interface CartItemProps {
     data?: any;
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
+    const language = Config.i18n.locales[0];
     const [isLoading, setIsLoading] = useState(false);
     const { data: product } = useSWR([props?.data?.id], (url) =>
         ProductIdApi(url)

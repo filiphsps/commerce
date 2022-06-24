@@ -1,6 +1,7 @@
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import React, { FunctionComponent, memo, useState } from 'react';
 
+import { Config } from '../../../../util/Config';
 import Slices from '../../Slices';
 import TextBlock from '../../../TextBlock';
 
@@ -10,7 +11,7 @@ interface CollapseProps {
     prefetch?: any;
 }
 const Collapse: FunctionComponent<CollapseProps> = (props) => {
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
+    const language = Config.i18n.locales[0];
     const [open, setOpen] = useState(false);
     const { store, data, prefetch } = props;
 

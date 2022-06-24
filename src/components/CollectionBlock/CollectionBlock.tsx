@@ -1,6 +1,7 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import { CollectionApi } from '../../api/collection';
+import { Config } from '../../util/Config';
 import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
@@ -22,7 +23,7 @@ interface CollectionBlockProps {
     search?: boolean;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
+    const language = Config.i18n.locales[0];
     const {
         data,
         error

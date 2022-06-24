@@ -3,6 +3,7 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import Button from '../Button';
 import Cart from '../../util/cart';
+import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/image';
 import Input from '../Input';
@@ -25,7 +26,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState(0);
     const [loading, setLoading] = useState(false);
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
+    const language = Config.i18n.locales[0];
     const [cart, setCart] = useStore<any>('cart');
 
     const {

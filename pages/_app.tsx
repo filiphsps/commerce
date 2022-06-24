@@ -142,7 +142,7 @@ const StoreApp = withStore(
     },
     {
         listener: () => {},
-        logging: false //process.env.NODE_ENV !== 'production'
+        logging: false
     }
 );
 

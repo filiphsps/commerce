@@ -10,8 +10,6 @@ interface TextBlockProps {
     data?: any;
 }
 const TextBlock: FunctionComponent<TextBlockProps> = (props) => {
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
-
     return (
         <div className="Slice Slice-TextBlock">
             <ContentBlock dark={props?.data?.primary?.theme === 'dark'}>

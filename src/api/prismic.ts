@@ -1,7 +1,8 @@
 import * as Prismic from '@prismicio/client';
 
-export const apiEndpoint =
-    process.env.PRISMIC || 'https://candy-by-sweden.cdn.prismic.io/api/v2';
+import { Config } from '../util/Config';
+
+export const apiEndpoint = Config.prismic.domain;
 export const accessToken = '';
 
 // Client method to query documents from the Prismic repo

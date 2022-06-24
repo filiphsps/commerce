@@ -18,7 +18,7 @@ module.exports = withBundleAnalyzer(withTM({
         return [
             {
                 source: '/admin/',
-                destination: `https://${process.env.STORE}/admin`,
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: false,
             },
         ];

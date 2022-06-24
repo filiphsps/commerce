@@ -1,5 +1,7 @@
 import React, { FunctionComponent, memo } from 'react';
 
+import { Config } from '../../../../util/Config';
+
 interface SectionHeaderProps {
     data?: {
         title?: any;
@@ -7,7 +9,7 @@ interface SectionHeaderProps {
     };
 }
 const SectionHeader: FunctionComponent<SectionHeaderProps> = (props) => {
-    const language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE;
+    const language = Config.i18n.locales[0];
     const { data } = props;
 
     return (
