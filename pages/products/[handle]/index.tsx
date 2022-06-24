@@ -14,6 +14,7 @@ import PageContent from '../../../src/components/PageContent';
 import { ProductModel } from '../../../src/models/ProductModel';
 import ProductVariants from '../../../src/components/ProductVariants';
 import { RecommendationApi } from '../../../src/api/recommendation';
+import { RedirectProductApi } from '../../../src/api/redirects';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -43,7 +44,7 @@ const ProductTag = styled.div`
 `;
 
 const Product = (props: any) => {
-    const { store } = props;
+    const { store, redirect } = props;
 
     const router = useRouter();
     const language = router.locale || 'en-US';
@@ -60,6 +61,13 @@ const Product = (props: any) => {
 
         if (window) (window as any).resourceId = product.id;
     }, [product]);
+
+    // Handle redirect.
+    useEffect(() => {
+        if (!redirect) return;
+
+        router.replace(redirect);
+    }, []);
 
     const variant = product?.variants?.[selectedVariant] || null;
     const packages = product?.variants?.[selectedVariant]?.packages || [];
@@ -328,6 +336,16 @@ export async function getStaticProps({ params }) {
         handle = params?.handle?.join('');
     } else {
         handle = params?.handle;
+    }
+
+    const redirect = await RedirectProductApi(handle);
+    if (redirect) {
+        return {
+            props: {
+                redirect: redirect
+            },
+            revalidate: 1
+        };
     }
 
     const product: ProductModel = (await ProductApi(handle)) as any;

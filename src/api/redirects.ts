@@ -14,7 +14,6 @@ export const Convertor = (
 
     // Remove duplicates and create a proper object
     return Array.from(new Set(entries)).map((redirect) => ({
-        id: redirect.id,
         path: redirect.path,
         target: redirect.target
     }));
@@ -29,7 +28,6 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
                         urlRedirects(first: 250) {
                             edges {
                                 node {
-                                    id
                                     path
                                     target
                                 }
@@ -44,5 +42,19 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
             console.error(err);
             return reject(err);
         }
+    });
+};
+
+export const RedirectProductApi = async (handle: string) => {
+    return new Promise(async (resolve) => {
+        const redirects = await RedirectsApi();
+        for (let i = 0; i < redirects.length; i++) {
+            const redirect = redirects[i];
+
+            if (!redirect.path.includes(`/${handle}`)) continue;
+
+            return resolve(redirect.target);
+        }
+        return resolve(null);
     });
 };
