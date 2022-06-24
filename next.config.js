@@ -1,3 +1,5 @@
+const child_process = require('child_process');
+
 const withTM = require('next-transpile-modules')([
     'react-responsive-carousel',
 ]);
@@ -14,6 +16,12 @@ module.exports = withBundleAnalyzer(withTM({
     trailingSlash: true,
     swcMinify: true,
     target: 'server',
+    generateBuildId: async () => {
+        return child_process.execSync('git rev-parse --short HEAD', {
+            cwd: __dirname,
+            encoding: 'utf8'
+        });
+    },
     async redirects() {
         return [
             {
