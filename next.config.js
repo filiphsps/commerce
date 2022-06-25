@@ -1,4 +1,5 @@
 const child_process = require('child_process');
+const manifest = require('./package.json');
 
 const withTM = require('next-transpile-modules')([
     'react-responsive-carousel',
@@ -44,6 +45,7 @@ module.exports = withBundleAnalyzer(withTM({
         styledComponents: true,
     },
     env: {
-        GIT_SHA: git_sha
+        GIT_SHA: git_sha,
+        VERSION: manifest.version
     }
 }));

@@ -1,21 +1,18 @@
+import { Config } from '../Config';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 
 const get_cart = async () => {
     const cart = {
         items: [],
+        version: !window.localStorage.getItem('cart') ? Config.version : null,
         ...JSON.parse(window.localStorage.getItem('cart') || '{}')
     };
 
-    // Remove pre 1.1 carts
-    if (
-        cart?.items?.[0]?.id.includes('=') ||
-        cart?.items?.[0]?.variant_id.includes('=')
-    ) {
-        // TODO: use app version in cart to detect version
-        console.warn('Cart from previous version detected, removing...');
+    // Remove carts from previous versions
+    if (cart.version !== Config.version) {
         window.localStorage.removeItem('cart');
-        throw new Error('Old cart version');
+        return null;
     }
 
     const errors = [];
@@ -79,6 +76,7 @@ const get_cart = async () => {
 };
 const save_cart = async ([, setCart], cart) => {
     let new_cart = {
+        version: Config.version,
         items: cart?.items?.map((item) => ({
             id: item?.id,
             variant_id: item?.variant_id,

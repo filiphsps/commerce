@@ -1,6 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
 
 class App extends Document {

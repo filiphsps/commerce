@@ -24,9 +24,7 @@ export const CheckoutApi = async (cart: any) => {
                     input: {
                         lineItems: cart?.items?.map((line_item) => ({
                             quantity: line_item?.quantity,
-                            variantId: btoa(
-                                `gid://shopify/ProductVariant/${line_item?.variant_id}`
-                            )
+                            variantId: btoa(line_item?.variant_id)
                         }))
                     }
                 }

@@ -90,7 +90,7 @@ export const Convertor = (product: any): ProductModel => {
     });
 
     const images = product?.images.edges.map(({ node }) => ({
-        id: atob(node.id).split('/').at(-1),
+        id: atob(node.id),
         alt: node.altText ?? null,
         src: node.originalSrc,
         height: node.height,
@@ -98,7 +98,7 @@ export const Convertor = (product: any): ProductModel => {
     }));
 
     return {
-        id: atob(product?.id).split('/').at(-1),
+        id: atob(product?.id),
         handle: product?.handle,
 
         title: product?.title,
@@ -139,7 +139,7 @@ export const Convertor = (product: any): ProductModel => {
         })),
         variants: product?.variants.edges.map(
             ({ node: variant }): ProductVariantModel => {
-                const imageId = atob(variant.image?.id).split('/').at(-1);
+                const imageId = atob(variant.image?.id);
                 const defaultImage = images.findIndex(
                     (image) => image.id === imageId
                 );
@@ -173,7 +173,7 @@ export const Convertor = (product: any): ProductModel => {
                 }
 
                 return {
-                    id: atob(variant.id).split('/').at(-1),
+                    id: atob(variant.id),
                     title: variant.title,
                     sku: '',
                     default_image: defaultImage ?? 0,
@@ -245,7 +245,7 @@ export const ProductIdApi = async (id: string) => {
                 }
                 `,
                 variables: {
-                    id: btoa(`gid://shopify/Product/${id}`)
+                    id: btoa(id)
                 }
             });
 

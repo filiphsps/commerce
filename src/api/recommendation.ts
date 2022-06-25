@@ -20,7 +20,7 @@ export const RecommendationApi = async (id: string) => {
                 }
                 `,
                 variables: {
-                    id: btoa(`gid://shopify/Product/${id}`)
+                    id: btoa(id)
                 }
             });
 

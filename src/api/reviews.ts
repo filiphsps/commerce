@@ -1,19 +1,18 @@
+import { Config } from '../util/Config';
 import { ReviewsModel } from '../models/ReviewsModel';
 
 export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
     try {
         const data = await (
             await fetch(
-                `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?shop=${
-                    process.env.STORE || 'candy-by-sweden.myshopify.com'
-                }&product_id=${id}`
+                `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?shop=${Config.shopify.domain}&product_id=${id}`
             )
         ).json();
 
         if (!data.aggregate_rating) {
             return {
                 id: null,
-                product_id: id,
+                product_id: id.split('/').at(-1),
                 rating: 0,
                 count: 0,
                 reviews: []
