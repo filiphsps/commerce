@@ -1,5 +1,6 @@
 const child_process = require('child_process');
 const manifest = require('./package.json');
+const { i18n } = require('./next-i18next.config');
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true",
@@ -18,22 +19,8 @@ module.exports = withBundleAnalyzer({
     trailingSlash: true,
     swcMinify: true,
     target: 'server',
-    /*i18n: {
-        locales: ['en-US'],
-        defaultLocale: 'en-US',
-    },*/
-    generateBuildId: async () => {
-        return git_sha;
-    },
-    async redirects() {
-        return [
-            {
-                source: '/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
-                permanent: false,
-            },
-        ];
-    },
+    i18n,
+
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io'],
     },
@@ -57,5 +44,18 @@ module.exports = withBundleAnalyzer({
 
         GIT_SHA: git_sha,
         VERSION: manifest.version
-    }
+    },
+
+    generateBuildId: async () => {
+        return git_sha;
+    },
+    async redirects() {
+        return [
+            {
+                source: '/admin/',
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                permanent: false,
+            },
+        ];
+    },
 });

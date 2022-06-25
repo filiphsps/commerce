@@ -6,14 +6,15 @@ import CartItem from '../../src/components/CartItem';
 import { CheckoutApi } from '../../src/api/checkout';
 import { Config } from '../../src/util/Config';
 import Currency from '../../src/components/Currency';
-import Head from 'next/head';
 import LanguageString from '../../src/components/LanguageString';
+import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
 import { StoreModel } from '../../src/models/StoreModel';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useStore } from 'react-context-hook';
 
 interface CartPageProps {
@@ -27,9 +28,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const savings = cart?.price - (cart?.price_with_savings || 0);
     return (
         <Page className="CartPage">
-            <Head>
-                <title>Cart | {store?.name}</title>
-            </Head>
+            <NextSeo title="Cart" />
 
             <PageContent>
                 <Breadcrumbs
@@ -233,5 +232,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         </Page>
     );
 };
+
+export async function getStaticProps({ locale }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common', 'product']))
+        },
+        revalidate: 5
+    };
+}
 
 export default CartPage;

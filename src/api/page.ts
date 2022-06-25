@@ -9,12 +9,11 @@ export const PageApi = async (handle: string, locale = 'en-US') => {
 
             return resolve(page?.data);
         } catch (err) {
-            console.error(err);
-
             if (locale != 'en-US') {
                 return resolve(await PageApi(handle, 'en-US'));
             }
 
+            console.error(err);
             return reject(err);
         }
     });

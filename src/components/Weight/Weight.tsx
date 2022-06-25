@@ -1,5 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
-
+import { FunctionComponent } from 'react';
 import { WeightModel } from '../../models/WeightModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -13,17 +12,7 @@ interface WeightProps {
 }
 const Weight: FunctionComponent<WeightProps> = ({ data }) => {
     const router = useRouter();
-    const [locale, setLocale] = useState(router.locale || 'en-US');
-
-    // FIXME: proper i18n support.
-    useEffect(() => {
-        const locale =
-            navigator.languages && navigator.languages.length
-                ? navigator.languages[0]
-                : navigator.language;
-
-        setLocale(locale || 'en-US');
-    }, []);
+    const locale = router.locale || 'en-US';
 
     switch (locale) {
         case 'en-US':

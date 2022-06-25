@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { CustomerApi } from '../../src/api/customer';
-import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import OrdersBlock from '../../src/components/OrdersBlock';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import { RemoveToken } from '../../src/util/customer/token';
-//import moment from 'moment';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 const AccountPage = (props: any) => {
     const { store } = props;
     const router = useRouter();
     const [customer, setCustomer] = useState(null);
+    const { t } = useTranslation('product');
 
     useEffect(() => {
         CustomerApi()
@@ -35,7 +36,7 @@ const AccountPage = (props: any) => {
                 <Breadcrumbs
                     pages={[
                         {
-                            title: <LanguageString id={'account'} />,
+                            title: t('account'),
                             url: '/account'
                         }
                     ]}
@@ -43,7 +44,7 @@ const AccountPage = (props: any) => {
                 />
 
                 <PageHeader
-                    title={<LanguageString id={'account'} />}
+                    title={t('account')}
                     action={
                         <div
                             className="AccountPage-Header-Action"
@@ -52,7 +53,7 @@ const AccountPage = (props: any) => {
                                 await router.push('/account/login');
                             }}
                         >
-                            <LanguageString id={'logout'} />
+                            {t('logout')}
                         </div>
                     }
                 />
@@ -68,9 +69,6 @@ const AccountPage = (props: any) => {
                             {new Date(
                                 Date.parse(customer?.createdAt)
                             ).toLocaleDateString()}
-                            {/*moment(customer?.createdAt).format(
-                                'MMMM Do, YYYY'
-                            )*/}
                         </div>
 
                         <div className="AccountPage-Content-Meta-Address">
@@ -88,5 +86,14 @@ const AccountPage = (props: any) => {
         </Page>
     );
 };
+
+export async function getStaticProps({ locale }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common', 'product']))
+        },
+        revalidate: false
+    };
+}
 
 export default AccountPage;

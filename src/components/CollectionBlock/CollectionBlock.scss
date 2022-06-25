@@ -11,16 +11,15 @@
         .CollectionBlock-Header-Title {
             margin-bottom: 0px;
             padding: 0px;
-            color: $color-dark;
-            font-size: 2rem;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 3rem;
+            color: var(--accent-primary);
             text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            line-height: 2.5rem;
         }
 
         .CollectionBlock-Header-Description {
-            font-size: 1.25rem;
+            padding-bottom: 1rem;
+            font-size: 1.35rem;
             line-height: 1.75rem;
         }
     }

@@ -9,8 +9,9 @@ import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import { StoreModel } from '../../../src/models/StoreModel';
-import Vendors from '../../../src/components/Vendors';
+import Vendors from '../../../src/components/Slices/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
@@ -39,7 +40,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
 
             <PageContent
                 style={{
-                    marginTop: '1rem'
+                    margin: '1rem auto 2rem auto'
                 }}
             >
                 <Breadcrumbs
@@ -52,7 +53,6 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
                     store={store}
                 />
 
-                <Vendors data={props?.data?.vendors} />
                 <CollectionBlock
                     handle={`${router.query.handle}`}
                     data={data?.collection}
@@ -60,6 +60,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
                     noLink
                 />
             </PageContent>
+            <Vendors data={{ theme: 'dark' }} />
         </Page>
     );
 };
@@ -78,7 +79,7 @@ export async function getStaticPaths() {
     return { paths, fallback: 'blocking' };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ locale, params }) {
     let handle = '';
     if (Array.isArray(params.handle)) {
         handle = params?.handle?.join('');
@@ -93,6 +94,7 @@ export async function getStaticProps({ params }) {
 
     return {
         props: {
+            ...(await serverSideTranslations(locale, ['common', 'product'])),
             data: {
                 collection: (await CollectionApi(handle)) ?? null,
                 vendors: (await VendorsApi()) ?? null

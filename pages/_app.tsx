@@ -17,6 +17,7 @@ import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
+import { appWithTranslation } from 'next-i18next';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -171,4 +172,4 @@ const StoreApp = withStore(
     }
 );
 
-export default StoreApp;
+export default appWithTranslation(StoreApp);

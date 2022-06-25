@@ -21,9 +21,11 @@ import ReviewStars from '../../../src/components/ReviewStars';
 import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
+import { useTranslation } from 'next-i18next';
 
 // TODO: replace this with generic label.
 const Label = styled.label`
@@ -243,6 +245,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [variant, setVariant] = useState(product.variants.length - 1);
     const [loading, setLoading] = useState(false);
     const [cart, setCart] = useStore<any>('cart');
+    const { t } = useTranslation('product');
 
     // Handle redirect.
     useEffect(() => {
@@ -366,7 +369,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 </Variant>
                             ))}
                             <VariantQuantity>
-                                <Label>Quantity</Label>
+                                <Label>{t('quantity')}</Label>
                                 <Quantity
                                     type="number"
                                     value={quantity}
@@ -405,13 +408,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                         });
                                 }}
                             >
-                                Add To Cart
+                                {t('add_to_cart')}
                             </Button>
                         </Actions>
 
                         {product?.metadata?.ingredients && (
                             <Ingredients>
-                                <Label>Ingredients</Label>
+                                <Label>{t('ingredients')}</Label>
                                 {product?.metadata?.ingredients}
                             </Ingredients>
                         )}
@@ -451,7 +454,7 @@ export async function getStaticPaths() {
     return { paths, fallback: 'blocking' };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, locale }) {
     let handle = '';
     if (Array.isArray(params.handle)) {
         handle = params?.handle?.join('');
@@ -493,6 +496,7 @@ export async function getStaticProps({ params }) {
 
     return {
         props: {
+            ...(await serverSideTranslations(locale, ['common', 'product'])),
             product,
             recommendations,
             reviews

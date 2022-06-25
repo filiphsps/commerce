@@ -10,6 +10,7 @@ import LanguageString from '../LanguageString';
 import Link from '../Link';
 import { ProductModel } from '../../models/ProductModel';
 import { useStore } from 'react-context-hook';
+import { useTranslation } from 'next-i18next';
 
 interface ProductCardProps {
     handle?: string;
@@ -25,6 +26,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     );
     const [loading, setLoading] = useState(false);
     const [cart, setCart] = useStore<any>('cart');
+    const { t } = useTranslation('product');
 
     useEffect(() => {
         setSelectedVariant(product?.variants?.length - 1);
@@ -224,12 +226,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     });
                             }}
                         >
-                            {(loading && (
-                                <LanguageString id={'adding_to_cart'} />
-                            )) ||
-                                (!variant?.available && (
-                                    <LanguageString id={'out_of_stock'} />
-                                )) || <LanguageString id={'add_to_cart'} />}
+                            {(loading && t('adding_to_cart')) ||
+                            !variant?.available
+                                ? t('out_of_stock')
+                                : t('add_to_cart')}
                         </Button>
                     </div>
                 </div>

@@ -1,10 +1,10 @@
-import React, { memo } from 'react';
-
 import { NextSeo } from 'next-seo';
 import Page from '../src/components/Page';
 import { PageApi } from '../src/api/page';
 import { Prefetch } from '../src/util/Prefetch';
+import React from 'react';
 import Slices from '../src/components/Slices';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const HomePage = (props: any) => {
     const { store, data } = props;
@@ -32,6 +32,7 @@ export async function getStaticProps({ query, locale }) {
 
     return {
         props: {
+            ...(await serverSideTranslations(locale, ['common', 'product'])),
             data: {
                 page,
                 prefetch
@@ -41,4 +42,4 @@ export async function getStaticProps({ query, locale }) {
     };
 }
 
-export default memo(HomePage);
+export default HomePage;

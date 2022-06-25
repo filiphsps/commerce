@@ -11,6 +11,7 @@ import PageLoader from '../../src/components/PageLoader';
 import { Prefetch } from '../../src/util/Prefetch';
 import React from 'react';
 import Slices from '../../src/components/Slices';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 const CustomPage = (props: any) => {
@@ -76,6 +77,10 @@ export async function getStaticProps({ params, locale }) {
 
         return {
             props: {
+                ...(await serverSideTranslations(locale, [
+                    'common',
+                    'product'
+                ])),
                 handle: params?.handle?.join('/'),
                 data: {
                     page,
@@ -88,7 +93,9 @@ export async function getStaticProps({ params, locale }) {
         console.error(err);
 
         return {
-            props: {},
+            props: {
+                ...(await serverSideTranslations(locale, ['common', 'product']))
+            },
             revalidate: 1
         };
     }
