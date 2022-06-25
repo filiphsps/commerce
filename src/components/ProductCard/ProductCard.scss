@@ -85,9 +85,9 @@
             .ProductCard-Container-Header-Title {
                 display: block;
                 font-size: 1.65rem;
-                line-height: 2rem;
+                line-height: 1.75rem;
                 font-weight: 700;
-                padding-bottom: 0.25rem;
+                padding-bottom: 1rem;
                 color: $color-primary;
 
                 @media (min-width: $width-max-mobile) {
@@ -158,7 +158,7 @@
                         border: 0.2rem solid $color-white;
                         border-radius: $block-border-radius;
                         line-height: 2.45rem;
-                        font-size: 1rem;
+                        font-size: 1.15rem;
                         font-weight: 700;
                         text-overflow: ellipsis;
                         text-align: center;
@@ -266,7 +266,7 @@
     }
 
     .ProductCard-TotalPrice {
-        padding: 0px 0px 1rem 0px;
+        margin-bottom: 0.5rem;
         font-size: 1rem;
 
         &.Sale {

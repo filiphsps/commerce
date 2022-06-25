@@ -46,7 +46,7 @@ const Toggle = styled.div`
         margin-bottom: 1rem;
     }
 
-    @media (min-width: 720px) {
+    @media (min-width: 950px) {
         display: none;
     }
 `;

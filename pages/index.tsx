@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import Head from 'next/head';
+import { NextSeo } from 'next-seo';
 import Page from '../src/components/Page';
 import { PageApi } from '../src/api/page';
 import { Prefetch } from '../src/util/Prefetch';
@@ -11,17 +11,12 @@ const HomePage = (props: any) => {
 
     return (
         <Page className="HomePage">
-            <Head>
-                <title>
-                    {data?.page?.title} | {store?.name}
-                </title>
-                <meta
-                    name="description"
-                    content={
-                        data?.page?.description || store?.description || ''
-                    }
-                />
-            </Head>
+            <NextSeo
+                title={data?.page?.title}
+                description={
+                    data?.page?.description || store?.description || ''
+                }
+            />
             <Slices
                 store={store}
                 data={data?.page?.body}

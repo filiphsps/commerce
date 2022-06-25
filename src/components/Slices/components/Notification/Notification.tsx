@@ -7,14 +7,14 @@ const Content = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 4rem;
-    padding: 1rem;
+    padding: 1.25rem;
     margin-bottom: 1rem;
     background: var(--accent-primary);
     color: var(--color-text-primary);
     text-transform: uppercase;
     font-size: 1.5rem;
-    font-weight: 800;
+    font-weight: 600;
+    letter-spacing: 0.05rem;
 `;
 
 interface NotificationProps {
@@ -26,7 +26,7 @@ interface NotificationProps {
 }
 const Notification: FunctionComponent<NotificationProps> = (props) => {
     return (
-        <div className="Slice Slice-Vendors">
+        <div className="Slice Slice-Notification">
             <PageContent>
                 <Content>{props.data.primary.content}</Content>
             </PageContent>

@@ -117,7 +117,7 @@ const Description = styled.div`
     font-size: 1.5rem;
     line-height: 2.25rem;
 
-    @media (min-width: 720px) {
+    @media (min-width: 950px) {
         margin-top: 2rem;
     }
 `;
