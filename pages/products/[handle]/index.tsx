@@ -459,6 +459,11 @@ export async function getStaticProps({ params }) {
         handle = params?.handle;
     }
 
+    if (handle === 'undefined')
+        return {
+            revalidate: false
+        };
+
     const redirect = await RedirectProductApi(handle);
     if (redirect) {
         return {

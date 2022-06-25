@@ -46,7 +46,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
                     pages={[
                         {
                             title: props.data?.title || router.query.handle,
-                            url: '/collections/' + router.query.handle
+                            url: `/collections/${router.query.handle}`
                         }
                     ]}
                     store={store}
@@ -85,6 +85,11 @@ export async function getStaticProps({ params }) {
     } else {
         handle = params?.handle;
     }
+
+    if (handle === 'undefined')
+        return {
+            revalidate: false
+        };
 
     return {
         props: {

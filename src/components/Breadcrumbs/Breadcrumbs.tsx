@@ -39,6 +39,9 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     <meta itemProp="position" content="1" />
                 </li>
                 {props?.pages?.map((item: any, index: any) => {
+                    // FIXME: Hotfix.
+                    if (item.url.includes('undefined')) return null;
+
                     return (
                         <li
                             key={index}
