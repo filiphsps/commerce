@@ -1,8 +1,8 @@
+/* eslint-disable import/no-anonymous-default-export */
 export default {
     titleTemplate: '%s | Candy By Sweden',
     defaultTitle: 'Chocolate, Gummies & Candy',
-    description: 'Buy Swedish aand scandinavian candy, chocolate and sweets online. Fast and easy delivery directly to your door.',
-    canonical: 'https://candybysweden.com',
+    description: 'Buy Swedish and scandinavian candy, chocolate and sweets online. Fast and easy delivery directly to your door.',
     additionalMetaTags: [
         {
             property: 'theme-color',
