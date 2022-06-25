@@ -1,5 +1,9 @@
 @import '../../../../scss/app';
 
-.Slice-Vendors {
-    margin-top: 1rem;
+.Slice.Slice-Vendors {
+    width: 100vw !important;
+
+    .Vendors {
+        margin: 0px;
+    }
 }
