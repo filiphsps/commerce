@@ -56,7 +56,7 @@ const AccountLoginPage = (props: any) => {
                             <LanguageString id={error} />
                         </div>
                     )}
-                    <form>
+                    <div>
                         <Input
                             placeholder="email"
                             type="email"
@@ -71,7 +71,6 @@ const AccountLoginPage = (props: any) => {
                         />
                         <Button
                             className="Button"
-                            type="submit"
                             disabled={loading || !email || !password}
                             onClick={async () => {
                                 try {
@@ -97,7 +96,7 @@ const AccountLoginPage = (props: any) => {
                                 id={(loading && 'loading') || 'login'}
                             />
                         </Button>
-                    </form>
+                    </div>
                     {/*<Link to={'/account/register'}>
                         <LanguageString id={'create_account'} />
                     </Link>*/}

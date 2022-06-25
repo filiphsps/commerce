@@ -64,7 +64,10 @@ const AccountPage = (props: any) => {
                             {customer?.displayName}
                         </div>
                         <div className="AccountPage-Content-Meta-Date">
-                            <LanguageString id={'customer_since'} />{' '}
+                            Customer since{' '}
+                            {new Date(
+                                Date.parse(customer?.createdAt)
+                            ).toLocaleDateString()}
                             {/*moment(customer?.createdAt).format(
                                 'MMMM Do, YYYY'
                             )*/}

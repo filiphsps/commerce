@@ -35,10 +35,12 @@ export const CustomerLoginApi = async (customer: any) => {
                     data?.customerAccessTokenCreate?.customerUserErrors
                 );
 
-            resolve(data?.customerAccessTokenCreate?.customerAccessToken);
+            return resolve(
+                data?.customerAccessTokenCreate?.customerAccessToken
+            );
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
@@ -74,10 +76,10 @@ export const CustomerRegisterApi = async (customer: any) => {
             if (data?.customerCreate?.customerUserErrors)
                 return reject(data?.customerCreate?.customerUserErrors);
 
-            resolve(null);
+            return resolve(null);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
@@ -107,10 +109,10 @@ export const CustomerRecoverApi = async (email: any) => {
                     data?.customerRecover?.customerUserErrors || errors
                 );
 
-            resolve(null);
+            return resolve(null);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
@@ -146,10 +148,10 @@ export const CustomerApi = async () => {
 
             if (!data?.customer) return reject();
 
-            resolve(data?.customer);
+            return resolve(data?.customer);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
