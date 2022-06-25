@@ -8,6 +8,7 @@ import Cart from '../../../src/util/cart';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
+import Error from 'next/error';
 import Image from 'next/image';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
@@ -249,6 +250,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
         router.replace(redirect);
     }, []);
+
+    if (!product) return <Error statusCode={404} />;
 
     return (
         <Page className="ProductPage">

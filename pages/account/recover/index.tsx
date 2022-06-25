@@ -10,7 +10,6 @@ import Link from '../../../src/components/Link';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageHeader from '../../../src/components/PageHeader';
-import { StoreToken } from '../../../src/util/customer/token';
 import { useRouter } from 'next/router';
 
 const AccountLoginPage = (props: any) => {

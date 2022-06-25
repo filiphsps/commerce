@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 interface LoaderProps {}
-const Loader: FunctionComponent<LoaderProps> = (props) => {
+const Loader: FunctionComponent<LoaderProps> = () => {
     return <Wrapper></Wrapper>;
 };
 

@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 const Header: FunctionComponent<HeaderProps> = (props) => {
     const { store } = props;
-    const [cart, setCart] = useStore<any>('cart');
+    const [cart] = useStore<any>('cart');
 
     return (
         <header className="Header">

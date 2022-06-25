@@ -7,7 +7,6 @@ import ContentBlock from './components/ContentBlock';
 import ContentGrid from './components/ContentGrid';
 import ContentWithImage from './components/ContentWithImage';
 import HtmlBlock from './components/HtmlBlock';
-import Icon from './components/Icon';
 import Notification from './components/Notification';
 import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
@@ -61,9 +60,6 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                         case 'HtmlBlock':
                             Component = HtmlBlock;
                             break;
-                        case 'Icon':
-                            Component = Icon;
-                            break;
                         case 'ProductCard':
                             Component = ProductCard;
                             break;
@@ -83,6 +79,7 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             Component = Notification;
                             break;
                         default:
+                            console.error(`Invalid slice "${type}"`);
                             return null;
                     }
 
