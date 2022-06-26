@@ -14,6 +14,7 @@ import Input from '../../../src/components/Input';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
+import PageHeader from '../../../src/components/PageHeader';
 import { ProductModel } from '../../../src/models/ProductModel';
 import { RecommendationApi } from '../../../src/api/recommendation';
 import { RedirectProductApi } from '../../../src/api/redirects';
@@ -80,28 +81,6 @@ const Details = styled.div`
     }
 `;
 
-// TODO: replace this with generic header component(s).
-const Name = styled.h2`
-    margin: 0px 0px 0.75rem -0.05rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 3rem;
-    color: var(--accent-primary);
-`;
-const Brand = styled.h3`
-    color: #404756;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 1.75rem;
-    margin-left: 0.05rem;
-
-    cursor: pointer;
-
-    &:hover,
-    :focus {
-        color: var(--accent-primary-dark);
-    }
-`;
 const Tags = styled.div`
     display: flex;
     grid-gap: 0.55rem;
@@ -321,14 +300,17 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         </Carousel>
                     </Assets>
                     <Details>
-                        <Brand>
-                            <Link
-                                href={`/collections/${product?.vendor?.handle}`}
-                            >
-                                {product?.vendor?.title}
-                            </Link>
-                        </Brand>
-                        <Name>{product?.title}</Name>
+                        <PageHeader
+                            title={product?.title}
+                            subtitle={
+                                <Link
+                                    href={`/collections/${product?.vendor?.handle}`}
+                                >
+                                    {product?.vendor?.title}
+                                </Link>
+                            }
+                            reverse
+                        />
                         {Config.features.reviews && (
                             <ReviewStars
                                 score={reviews?.rating}

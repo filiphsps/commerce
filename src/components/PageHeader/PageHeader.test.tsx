@@ -9,7 +9,7 @@ describe('Components', () => {
         it('should render without throwing an error', () => {
             const component = render(
                 <ProviderWrapper>
-                    <Component />
+                    <Component title="" />
                 </ProviderWrapper>
             );
             expect(component);

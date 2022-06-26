@@ -40,7 +40,7 @@ const AccountLoginPage = (props: any) => {
                     store={store}
                 />
 
-                <PageHeader title={<LanguageString id={'register'} />} />
+                {/*<PageHeader title={<LanguageString id={'register'} />} />*/}
 
                 <div className="AccountLoginPage-Container-Box">
                     <Input

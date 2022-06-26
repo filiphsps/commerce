@@ -48,7 +48,7 @@ const AccountLoginPage = (props: any) => {
                     store={store}
                 />
 
-                <PageHeader title={<LanguageString id={'login'} />} />
+                {/*<PageHeader title={<LanguageString id={'login'} />} />*/}
 
                 <div className="AccountLoginPage-Container-Box">
                     {error && (

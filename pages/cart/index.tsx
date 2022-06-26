@@ -42,14 +42,17 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     hideSocial={true}
                 />
 
-                <PageHeader
-                    title={
-                        <>
-                            <LanguageString id={'cart'} />{' '}
-                            {cart?.total_items >= 1 && `(${cart?.total_items})`}
-                        </>
-                    }
-                />
+                {
+                    <PageHeader
+                        title={
+                            <>
+                                <LanguageString id={'cart'} />{' '}
+                                {cart?.total_items >= 1 &&
+                                    `(${cart?.total_items})`}
+                            </>
+                        }
+                    />
+                }
 
                 <div className="CartPage-Content">
                     {(cart?.items?.length >= 1 && (

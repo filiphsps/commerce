@@ -45,7 +45,7 @@ const AccountLoginPage = (props: any) => {
                     store={store}
                 />
 
-                <PageHeader title={<LanguageString id={'forgot_password'} />} />
+                {/*<PageHeader title={<LanguageString id={'forgot_password'} />} />*/}
 
                 <div className="AccountLoginPage-Container-Box">
                     <Input

@@ -6,46 +6,51 @@ const Wrapper = styled.div`
     margin-bottom: 1rem;
 `;
 
-const Content = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+// TODO: replace this with generic header component(s).
+const Title = styled.h2`
+    margin: 0px 0px 0.75rem -0.05rem;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 2.75rem;
-    color: #404756;
-    padding-bottom: 0.5rem;
+    font-size: 3rem;
+    color: var(--accent-primary);
 `;
+const SubTitle = styled.h3`
+    color: #404756;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-left: 0.05rem;
 
-const Action = styled.div`
-    font-size: 1.15rem;
     cursor: pointer;
 
-    &:hover {
-        color: var(--accent-primary);
+    &:hover,
+    :focus {
+        color: var(--accent-primary-dark);
     }
 `;
 
-const Description = styled.div`
-    color: #404756;
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-transform: uppercase;
-`;
-
 interface PageHeaderProps {
-    title?: any;
-    description?: any;
-    action?: any;
+    title: string | JSX.Element;
+    subtitle?: string | JSX.Element;
+    reverse?: boolean;
 }
-const PageHeader: FunctionComponent<PageHeaderProps> = (props) => {
+const PageHeader: FunctionComponent<PageHeaderProps> = ({
+    title,
+    subtitle,
+    reverse
+}) => {
+    let Primary = Title;
+    let Secondary = SubTitle;
+
+    if (reverse) {
+        Primary = SubTitle;
+        Secondary = Title;
+    }
+
     return (
         <Wrapper>
-            <Content>
-                <h1>{props?.title}</h1>
-                <Action>{props?.action}</Action>
-            </Content>
-            <Description>{props?.description}</Description>
+            <Primary>{title}</Primary>
+            <Secondary>{subtitle}</Secondary>
         </Wrapper>
     );
 };

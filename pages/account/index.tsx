@@ -43,7 +43,7 @@ const AccountPage = (props: any) => {
                     store={store}
                 />
 
-                <PageHeader
+                {/*<PageHeader
                     title={t('account')}
                     action={
                         <div
@@ -56,7 +56,7 @@ const AccountPage = (props: any) => {
                             {t('logout')}
                         </div>
                     }
-                />
+                />*/}
 
                 <div className="AccountPage-Content">
                     <OrdersBlock />

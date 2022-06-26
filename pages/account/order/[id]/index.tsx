@@ -45,7 +45,7 @@ const OrderPage = (props: any) => {
                     store={store}
                 />
 
-                <PageHeader
+                {/*<PageHeader
                     title={
                         <>
                             <LanguageString id={'order'} />
@@ -59,7 +59,7 @@ const OrderPage = (props: any) => {
                             </>
                         )
                     }
-                />
+                />*/}
 
                 <div className="OrderPage-Content">
                     <OrderLineItems data={order?.line_items} />
