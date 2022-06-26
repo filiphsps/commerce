@@ -14,6 +14,10 @@
 
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
+    @media (min-width: $width-max-mobile) {
+        display: none;
+    }
+
     .HeaderNavigation-Content {
         display: flex;
         justify-content: flex-start;

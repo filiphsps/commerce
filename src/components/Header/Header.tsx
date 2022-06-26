@@ -8,9 +8,9 @@ import { useStore } from 'react-context-hook';
 
 interface HeaderProps {
     store?: any;
+    navigation?: any;
 }
-const Header: FunctionComponent<HeaderProps> = (props) => {
-    const { store } = props;
+const Header: FunctionComponent<HeaderProps> = ({ store, navigation }) => {
     const [cart] = useStore<any>('cart');
 
     return (
@@ -24,6 +24,15 @@ const Header: FunctionComponent<HeaderProps> = (props) => {
                     }}
                 />
                 <nav>
+                    <div className="Header-Content-Nav">
+                        {navigation?.map((item: any, index: number) => {
+                            return (
+                                <Link key={index} to={`/${item?.handle || ''}`}>
+                                    {item?.title}
+                                </Link>
+                            );
+                        })}
+                    </div>
                     <div className="Header-Content-Search">
                         <SearchBar />
                     </div>
@@ -34,9 +43,6 @@ const Header: FunctionComponent<HeaderProps> = (props) => {
                             </Link>
                         )}
 
-                        {/*<Link to={'/search'} className="Hide-Desktop">
-                            <FiSearch className="Icon" />
-                        </Link>*/}
                         <Link
                             to={'/cart'}
                             className={`Cart ${

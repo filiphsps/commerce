@@ -5,6 +5,7 @@ import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import Markdown from 'react-markdown';
+import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
 import useSWR from 'swr';
 
@@ -71,28 +72,29 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
         >
             {!props.hideTitle && (
                 <div className="CollectionBlock-Header">
-                    {!props.noLink ? (
-                        <Link
-                            to={`/collections/${props.handle}`}
-                            as={'/collections/[handle]'}
-                        >
-                            <h2 className="CollectionBlock-Header-Title">
-                                {data?.title}
-                            </h2>
-                        </Link>
-                    ) : (
-                        <h1 className="CollectionBlock-Header-Title">
-                            {data?.title}
-                        </h1>
-                    )}
-
-                    {props?.showDescription && (
-                        <div className="CollectionBlock-Header-Description">
-                            <Markdown
-                                children={data?.body || data?.description || ''}
-                            />
-                        </div>
-                    )}
+                    <PageHeader
+                        title={
+                            props.noLink ? (
+                                <h1>{data?.title}</h1>
+                            ) : (
+                                <Link
+                                    to={`/collections/${props.handle}`}
+                                    as={'/collections/[handle]'}
+                                >
+                                    <h2>{data?.title}</h2>
+                                </Link>
+                            )
+                        }
+                        subtitle={
+                            props?.showDescription && (
+                                <Markdown
+                                    children={
+                                        data?.body || data?.description || ''
+                                    }
+                                />
+                            )
+                        }
+                    />
                 </div>
             )}
             <div className="CollectionBlock-Content">

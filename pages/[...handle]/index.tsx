@@ -39,10 +39,7 @@ const CustomPage = (props: any) => {
                     })}
                     store={store}
                 />
-                <PageHeader
-                    title={data?.title}
-                    description={data?.description}
-                />
+                <PageHeader title={data?.title} subtitle={data?.description} />
             </PageContent>
             {(data && (
                 <Slices

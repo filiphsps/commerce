@@ -1,17 +1,17 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import Link from '../Link';
-import { NavigationApi } from '../../api/navigation';
-import useSWR from 'swr';
 
-interface HeaderNavigationProps {}
-const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = () => {
-    const { data } = useSWR([`navigation`], () => NavigationApi() as any, {});
-
+interface HeaderNavigationProps {
+    navigation: any;
+}
+const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
+    navigation
+}) => {
     return (
         <div className="HeaderNavigation">
             <nav className="HeaderNavigation-Content">
-                {data?.map((item: any, index: number) => {
+                {navigation?.map((item: any, index: number) => {
                     return (
                         <Link key={index} to={`/${item?.handle || ''}`}>
                             {item?.title}

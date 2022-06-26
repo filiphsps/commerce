@@ -21,11 +21,14 @@ const SubTitle = styled.h3`
     font-size: 1.75rem;
     margin-left: 0.05rem;
 
-    cursor: pointer;
+    a {
+        transition: 250ms ease-in-out all;
+        cursor: pointer;
 
-    &:hover,
-    :focus {
-        color: var(--accent-primary-dark);
+        &:hover,
+        :focus {
+            color: var(--accent-primary-dark);
+        }
     }
 `;
 
@@ -39,18 +42,18 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
     subtitle,
     reverse
 }) => {
-    let Primary = Title;
-    let Secondary = SubTitle;
-
-    if (reverse) {
-        Primary = SubTitle;
-        Secondary = Title;
-    }
+    if (reverse)
+        return (
+            <Wrapper>
+                <SubTitle>{subtitle}</SubTitle>
+                <Title>{title}</Title>
+            </Wrapper>
+        );
 
     return (
         <Wrapper>
-            <Primary>{title}</Primary>
-            <Secondary>{subtitle}</Secondary>
+            <Title>{title}</Title>
+            {subtitle && <SubTitle>{subtitle}</SubTitle>}
         </Wrapper>
     );
 };

@@ -15,6 +15,10 @@
         padding: 1rem 0px;
     }
 
+    @media (min-width: 950px) {
+        border-bottom: 1rem solid $color-primary;
+    }
+
     .SearchHeader-Content {
         overflow-y: auto;
         display: grid;

@@ -1,12 +1,14 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import Router, { useRouter } from 'next/router';
 
 import CartHeader from '../CartHeader';
 import Footer from '../Footer';
 import Header from '../Header';
 import HeaderNavigation from '../HeaderNavigation';
+import { NavigationApi } from '../../api/navigation';
 import SearchHeader from '../SearchHeader';
 import { StoreModel } from '../../models/StoreModel';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
 interface PageProviderProps {
@@ -16,6 +18,11 @@ interface PageProviderProps {
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const router = useRouter();
     const [search, setSearch] = useStore<any>('search');
+    const { data: navigation } = useSWR(
+        [`navigation`],
+        () => NavigationApi() as any,
+        {}
+    );
 
     const onRouteChangeStart = useCallback(() => {
         if (!search.open) return;
@@ -34,10 +41,10 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     return (
         <div className="PageProvider">
             <div className="HeaderWrapper">
-                <Header store={props?.store} />
+                <Header store={props?.store} navigation={navigation} />
                 {(search?.open && <SearchHeader query={search?.phrase} />) ||
                     null}
-                <HeaderNavigation />
+                <HeaderNavigation navigation={navigation} />
                 <CartHeader />
             </div>
             <div
