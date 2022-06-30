@@ -28,9 +28,17 @@ export const Convertor = (collection: any): CollectionModel => {
         title: collection?.title,
         body: collection?.description,
 
-        items: collection?.products?.edges?.map((product) =>
-            ProductConvertor(product.node)
-        )
+        items: collection?.products?.edges
+            ?.map((product) => ProductConvertor(product.node))
+            .map((product) => ({
+                id: product.id,
+                handle: product.handle,
+                title: product.title,
+                vendor: product.vendor,
+                images: product.images,
+                pricing: product.pricing,
+                variants: product.variants
+            }))
     };
 };
 
@@ -58,10 +66,10 @@ export const CollectionApi = async (handle: string) => {
             const result = Convertor(data?.collectionByHandle);
             if (!result) return reject(new Error('404'));
 
-            resolve(result);
+            return resolve(result);
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
