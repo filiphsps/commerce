@@ -205,7 +205,7 @@ export const ProductApi = async (handle: string) => {
             const { data } = await shopify.query({
                 query: gql`
                 fragment product on Product {
-                ${PRODUCT_FRAGMENT}
+                    ${PRODUCT_FRAGMENT}
                 }
                 query product($handle: String!) {
                     productByHandle(handle: $handle) {
@@ -259,20 +259,76 @@ export const ProductIdApi = async (id: string) => {
     });
 };
 
-export const ProductsApi = async (): Promise<ProductModel[]> => {
+export const ProductsCountApi = async (): Promise<number> => {
+    const count_products = async (count: number = 0, cursor?: string) => {
+        const { data } = await shopify.query({
+            query: gql`
+                query products {
+                    products(
+                        first: 250,
+                        sortKey: BEST_SELLING
+                        ${cursor ? `, after: "${cursor}"` : ''})
+                    {
+                        edges {
+                            cursor
+                            node {
+                                id
+                            }
+                        }
+                        pageInfo {
+                            hasNextPage
+                        }
+                    }
+                }
+            `
+        });
+
+        if (data.products.pageInfo.hasNextPage)
+            count += await count_products(
+                count,
+                data.products.edges.at(-1).cursor
+            );
+
+        return count + data.products.edges.length;
+    };
+
+    const count = await count_products();
+    return count;
+};
+
+export const ProductsApi = async (
+    limit: number = 250,
+    cursor?: string
+): Promise<{
+    products: ProductModel[];
+    cursor?: string;
+    pagination: {
+        next: boolean;
+        previous: boolean;
+    };
+}> => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data } = await shopify.query({
                 query: gql`
                 fragment product on Product {
-                ${PRODUCT_FRAGMENT}
+                    ${PRODUCT_FRAGMENT}
                 }
                 query products {
-                    products(first: 250, sortKey: BEST_SELLING) {
+                    products(
+                        first: ${limit},
+                        sortKey: BEST_SELLING
+                        ${cursor ? `, after: "${cursor}"` : ''}) 
+                    {
                         edges {
+                            cursor
                             node {
                                 ...product
                             }
+                        }
+                        pageInfo {
+                            hasNextPage
+                            hasPreviousPage
                         }
                     }
                 }
@@ -284,7 +340,14 @@ export const ProductsApi = async (): Promise<ProductModel[]> => {
                 ?.filter((a) => a);
             if (!result) return reject();
 
-            return resolve(result);
+            return resolve({
+                products: result,
+                cursor: data.products.edges.at(-1).cursor,
+                pagination: {
+                    next: data.products.pageInfo.hasNextPage,
+                    previous: data.products.pageInfo.hasPreviousPage
+                }
+            });
         } catch (err) {
             console.error(err);
             return reject(err);

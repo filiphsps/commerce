@@ -25,6 +25,7 @@ interface ShopBlockProps {
     data?: any;
 }
 const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
+    const { products } = data;
     const [filter, setFilter] = useState({
         tags: [],
         vendors: [],
@@ -33,10 +34,10 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
 
     return (
         <ShopBlockWrapper className="ShopBlock">
-            {(data && (
+            {(products && (
                 <div className={`CollectionBlock CollectionBlock-Grid`}>
                     <div className="CollectionBlock-Content">
-                        {data
+                        {products
                             ?.filter?.((product) => {
                                 if (
                                     !filter ||
@@ -81,15 +82,15 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
                                 );
                             })}
 
-                        {!data?.length && (
+                        {!products?.length && (
                             <LanguageString id="search_no_results" />
                         )}
                     </div>
                 </div>
             )) || <Loader />}
-            {data && (
+            {products && (
                 <ProductFilter
-                    products={data}
+                    products={products}
                     onChange={(filter) => setFilter(filter)}
                 />
             )}

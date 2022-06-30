@@ -423,10 +423,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 };
 
 export async function getStaticPaths() {
-    const products = await ProductsApi();
+    const products_data = await ProductsApi();
 
     let paths = [
-        ...products
+        ...products_data.products
             ?.map((product) => ({
                 params: { handle: product?.handle }
             }))

@@ -38,7 +38,7 @@ export async function getStaticProps({ query, locale }) {
                 prefetch
             }
         },
-        revalidate: 5
+        revalidate: 1
     };
 }
 
