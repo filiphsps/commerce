@@ -5,6 +5,7 @@ import { ProductModel } from '../../models/ProductModel';
 import styled from 'styled-components';
 
 const FilterWrapper = styled.div`
+    position: relative;
     margin: 0px 0px 2rem 0px;
 `;
 const Filter = styled.div`
@@ -23,6 +24,10 @@ const Filter = styled.div`
             height: 0px;
             pointer-events: none;
         }
+    }
+
+    @media (max-width: 950px) {
+        position: fixed;
     }
 `;
 const Toggle = styled.div`

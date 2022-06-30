@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { CollectionApi } from '../../api/collection';
 import ErrorPage from 'next/error';
@@ -7,7 +7,14 @@ import Link from '../Link';
 import Markdown from 'react-markdown';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
+import styled from 'styled-components';
 import useSWR from 'swr';
+
+const SubTitle = styled.h2`
+    font-size: 1.65rem;
+    line-height: 2rem;
+    margin: -0.5rem 0px 2rem 0px;
+`;
 
 interface CollectionBlockProps {
     handle?: string;
@@ -85,16 +92,14 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                                 </Link>
                             )
                         }
-                        subtitle={
-                            props?.showDescription && (
-                                <Markdown
-                                    children={
-                                        data?.body || data?.description || ''
-                                    }
-                                />
-                            )
-                        }
                     />
+                    {props?.showDescription && (
+                        <SubTitle>
+                            <Markdown
+                                children={data?.body || data?.description || ''}
+                            />
+                        </SubTitle>
+                    )}
                 </div>
             )}
             <div className="CollectionBlock-Content">
@@ -114,4 +119,4 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     );
 };
 
-export default memo(CollectionBlock);
+export default CollectionBlock;

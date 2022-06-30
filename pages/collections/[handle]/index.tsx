@@ -16,17 +16,20 @@ import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
     store: StoreModel;
-    data: CollectionModel;
+    data: {
+        collection: CollectionModel;
+    };
 }
-const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
+const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
     const { store, data } = props;
+    const { collection } = data;
 
     const router = useRouter();
 
     useEffect(() => {
         if (!data?.collection) return;
 
-        if (window) (window as any).resourceId = data?.collection?.id;
+        if (window) (window as any).resourceId = collection?.id;
     }, [data?.collection]);
 
     if (!data?.collection) return <Error statusCode={404} />;
@@ -34,8 +37,13 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
     return (
         <Page className="CollectionPage">
             <NextSeo
-                title={data?.collection?.title}
-                description={data?.body || data?.description || ''}
+                title={collection?.seo?.title || collection?.title}
+                description={
+                    collection?.seo?.description ||
+                    collection?.body ||
+                    (data as any)?.collection?.description ||
+                    null
+                }
             />
 
             <PageContent
@@ -46,7 +54,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
                 <Breadcrumbs
                     pages={[
                         {
-                            title: props.data?.title || router.query.handle,
+                            title: collection?.title || router.query.handle,
                             url: `/collections/${router.query.handle}`
                         }
                     ]}
@@ -55,7 +63,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props: any) => {
 
                 <CollectionBlock
                     handle={`${router.query.handle}`}
-                    data={data?.collection}
+                    data={collection}
                     showDescription
                     noLink
                 />

@@ -9,6 +9,13 @@ export const COLLECTION_FRAGMENT = `
     handle
     title
     description
+    image {
+        id
+        altText
+        originalSrc
+        height
+        width
+    }
     products(first: 250) {
         edges {
             node {
@@ -25,8 +32,24 @@ export const Convertor = (collection: any): CollectionModel => {
         id: collection?.id,
         handle: collection?.handle,
 
+        seo:
+            (collection.seo && {
+                title: collection?.seo?.title,
+                description: collection?.seo?.description
+            }) ||
+            null,
+
         title: collection?.title,
         body: collection?.description,
+        image:
+            (collection.image && {
+                id: atob(collection.image.id),
+                alt: collection.image.altText ?? null,
+                src: collection.image.originalSrc,
+                height: collection.image.height,
+                width: collection.image.width
+            }) ||
+            null,
 
         items: collection?.products?.edges
             ?.map((product) => ProductConvertor(product.node))
@@ -48,7 +71,7 @@ export const CollectionApi = async (handle: string) => {
             const { data, errors } = await shopify.query({
                 query: gql`
                 fragment collection on Collection {
-                ${COLLECTION_FRAGMENT}
+                    ${COLLECTION_FRAGMENT}
                 }
                 query collection($handle: String!) {
                     collectionByHandle(handle: $handle) {

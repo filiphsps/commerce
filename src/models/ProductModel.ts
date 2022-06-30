@@ -18,7 +18,10 @@ export interface ProductModel {
      */
     pricing: PricingModel;
 
-    seo?: {
+    /**
+     * SEO.
+     */
+    seo: {
         title: string;
         description: string;
     };

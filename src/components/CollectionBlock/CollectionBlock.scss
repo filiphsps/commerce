@@ -2,8 +2,6 @@
 
 .CollectionBlock {
     .CollectionBlock-Header {
-        padding-bottom: 0.5rem;
-
         &:empty {
             padding-bottom: 0px;
         }
@@ -18,7 +16,7 @@
         }
 
         .CollectionBlock-Header-Description {
-            padding-bottom: 1rem;
+            padding: 0.5rem 0px 1rem 0px;
             font-size: 1.35rem;
             line-height: 1.75rem;
         }
