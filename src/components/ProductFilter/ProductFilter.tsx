@@ -13,7 +13,7 @@ const Filter = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    grid-gap: 2rem;
+    grid-gap: 1.5rem;
     transition: 250ms all ease-in-out;
 
     @media (max-width: 950px) {

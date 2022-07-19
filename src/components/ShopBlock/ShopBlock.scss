@@ -1,7 +1,7 @@
 @import '../../scss/app';
 
 .ShopBlock {
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
 
     .ShopBlock-Actions {
         display: grid;
@@ -19,7 +19,7 @@
 
             .Icon {
                 color: $color-dark;
-                font-size: 2rem;
+                font-size: 1.5rem;
                 cursor: pointer;
 
                 &:hover {

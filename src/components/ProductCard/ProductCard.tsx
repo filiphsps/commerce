@@ -49,9 +49,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                             alt={product?.images?.[variant?.default_image]?.alt}
                             width={150}
                             height={150}
-                            loading="lazy"
                             layout="fixed"
                             placeholder="empty"
+                            priority
                         />
                     )}
                 </Link>

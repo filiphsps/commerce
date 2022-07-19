@@ -2,7 +2,7 @@
 
 .CartItem {
     display: grid;
-    grid-template-columns: 7rem 1fr 8rem 9rem 2rem;
+    grid-template-columns: 7rem 1fr 8rem 9rem 1.5rem;
     grid-gap: 1rem;
     height: 10rem;
     max-height: 10rem;
@@ -18,7 +18,7 @@
     }
 
     @media (max-width: $width-max-mobile) {
-        grid-template-columns: 4rem 1fr 1fr 1fr 2rem;
+        grid-template-columns: 4rem 1fr 1fr 1fr 1.5rem;
         max-width: calc(100vw - 2rem);
         padding: 0px 1rem;
     }
@@ -139,7 +139,7 @@
         text-align: center;
 
         input {
-            height: 2rem;
+            height: 1.5rem;
             width: 100%;
             padding: 1rem 0px;
             background-color: $color-silvery;

@@ -54,7 +54,7 @@
             max-width: calc(#{$width-max-page} / 1.5);
             height: 100%;
             max-height: 85vh;
-            padding: 2rem;
+            padding: 1.5rem;
             padding-bottom: 6.5rem;
             padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
             margin: 0px auto;
@@ -83,7 +83,7 @@
                     font-weight: 600;
 
                     .Icon {
-                        width: 2rem;
+                        width: 1.5rem;
                         cursor: pointer;
                         transform: translateY(0.25rem);
                     }
@@ -91,7 +91,7 @@
 
                 .Modal-Block-Header-Action {
                     .Icon {
-                        font-size: 2rem;
+                        font-size: 1.5rem;
                         font-weight: 700;
                         cursor: pointer;
                     }

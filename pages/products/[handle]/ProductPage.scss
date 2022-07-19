@@ -25,14 +25,14 @@
             }
 
             .ProductPage-Content-Header-Title {
-                font-size: 2rem;
+                font-size: 1.5rem;
                 color: $color-primary;
             }
         }
 
         .ProductPage-Content-Body {
             font-size: 1.5rem;
-            line-height: 2rem;
+            line-height: 1.5rem;
 
             .MarkdownBody {
                 padding: 1rem 0px;
@@ -99,7 +99,7 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 2rem;
+                    padding: 1.5rem;
                     text-transform: uppercase;
                     background: $color-silvery;
 
@@ -155,8 +155,8 @@
         .ProductPage-Content-Blocks {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-gap: 2rem;
-            margin-bottom: 2rem;
+            grid-gap: 1.5rem;
+            margin-bottom: 1.5rem;
 
             .ProductPage-Content-Blocks-Block {
                 width: 100%;
@@ -177,7 +177,7 @@
                     @media (max-width: $width-max-mobile) {
                         overflow-y: hidden;
                         width: calc(100vw - 2rem);
-                        padding-bottom: 2rem;
+                        padding-bottom: 1.5rem;
                     }
 
                     .ProductPage-Content-Gallery {
@@ -188,7 +188,7 @@
                         max-height: $gallery-hight;
                         min-height: $gallery-hight;
                         height: $gallery-hight;
-                        margin-bottom: 2rem;
+                        margin-bottom: 1.5rem;
 
                         @media (max-width: $width-max-mobile) {
                             width: calc(100vw - 2rem);
@@ -238,7 +238,7 @@
                                     }
 
                                     img.image-gallery-image {
-                                        padding: 1rem 2rem;
+                                        padding: 1rem 1.5rem;
                                         max-height: $gallery-hight !important;
 
                                         @media (max-width: $width-max-mobile) {
@@ -315,7 +315,7 @@
 
             .ProductPage-Content-Recommendations-Title {
                 color: $color-dark;
-                font-size: 2rem;
+                font-size: 1.5rem;
                 font-weight: 700;
                 text-transform: uppercase;
             }

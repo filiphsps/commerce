@@ -9,7 +9,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
         grid-auto-rows: 1fr;
-        grid-gap: 2rem;
+        grid-gap: 1.5rem;
 
         @media (max-width: $width-max-mobile) {
             grid-template-columns: 1fr;
@@ -22,7 +22,7 @@
         }
 
         .ContentGrid-Item {
-            padding: 2rem;
+            padding: 1.5rem;
             background: $color-white;
 
             &.ContentGrid-Item-Href {
@@ -57,7 +57,7 @@
                     &.Slice-Icon {
                         width: 12rem;
                         height: 12rem;
-                        margin: 2rem;
+                        margin: 1.5rem;
                         object-fit: contain;
                     }
                 }

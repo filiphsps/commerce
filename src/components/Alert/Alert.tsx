@@ -6,7 +6,7 @@ const AlertWrapper = styled.div`
     z-index: $int-max;
     width: auto;
     max-width: calc(100vw - 16rem);
-    padding: 2rem;
+    padding: 1.5rem;
     color: var(--color-text-primary);
     background-color: var(--accent-secondary);
     border-radius: var(--block-border-radius);

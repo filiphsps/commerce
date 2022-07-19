@@ -11,10 +11,10 @@
     .Footer-Wrapper {
         display: grid;
         grid-template-rows: auto 1fr;
-        grid-gap: 2rem;
+        grid-gap: 1.5rem;
         width: $width-max-page;
         max-width: 100%;
-        padding: 2rem;
+        padding: 1.5rem;
     }
 
     .Footer-Blocks {
@@ -41,11 +41,11 @@
             color: $color-text-primary !important;
 
             @media (max-width: $width-max-mobile) {
-                padding-bottom: 2rem;
+                padding-bottom: 1.5rem;
             }
 
             h2 {
-                font-size: 2rem;
+                font-size: 1.5rem;
                 padding-bottom: 0.5rem;
             }
 
@@ -79,7 +79,7 @@
                     @media (max-width: $width-max-mobile) {
                         display: grid;
                         grid-template-columns: 1fr 1fr;
-                        grid-gap: 2rem;
+                        grid-gap: 1.5rem;
 
                         .DropdownList {
                             margin-left: 0px;

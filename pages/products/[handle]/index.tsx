@@ -45,11 +45,11 @@ const ProductContainer = styled.div`
     overflow: hidden;
     display: grid;
     grid-template-columns: 53% 1fr;
-    grid-gap: 2rem;
+    grid-gap: 1.5rem;
     min-height: calc(100vh - 42rem);
     width: calc(1465px - 4rem);
     max-width: calc(100vw - 4rem);
-    margin: 0px 2rem;
+    margin: 0px 1.5rem;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
@@ -69,7 +69,7 @@ const Assets = styled.div`
     @media (max-width: 950px) {
         height: 28rem;
         max-height: 30vh;
-        padding: 2rem;
+        padding: 1.5rem;
     }
 `;
 const Details = styled.div`
@@ -100,7 +100,7 @@ const Description = styled.div`
     line-height: 2.25rem;
 
     @media (min-width: 950px) {
-        margin-top: 2rem;
+        margin-top: 1.5rem;
     }
 `;
 const Actions = styled.div`
@@ -112,11 +112,11 @@ const Actions = styled.div`
 const Quantity = styled(Input)`
     max-width: 10rem;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 `;
 const Ingredients = styled.div`
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     font-size: 1.05rem;
     line-height: 1.5rem;
     letter-spacing: -0.065rem;
@@ -159,7 +159,7 @@ const Variant = styled.div`
     align-items: center;
     grid-gap: 0.25rem;
     max-width: 18rem;
-    padding: 1rem 2rem;
+    padding: 1rem 1.5rem;
     margin: 0px 0px 0.5rem 0px;
     text-transform: uppercase;
     background: #efefef;

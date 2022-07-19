@@ -6,7 +6,7 @@
     display: grid;
     position: relative;
     height: $dropdown-height;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     transition: 250ms all ease-in-out;
     background: $color-white;
     color: $color-black;
@@ -23,10 +23,10 @@
         justify-content: flex-start;
         align-items: center;
         height: $dropdown-height;
-        padding: 0px 2rem;
+        padding: 0px 1.5rem;
 
         .DropdownList-Item-Icon {
-            width: 2rem;
+            width: 1.5rem;
             margin-right: 1rem;
 
             &:empty {
