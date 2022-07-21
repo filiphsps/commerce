@@ -6,8 +6,8 @@
     align-items: center;
     z-index: 10;
     position: sticky;
-    top: 6rem;
-    top: calc(6rem + env(safe-area-inset-top));
+    top: 5rem;
+    top: calc(5rem + env(safe-area-inset-top));
     width: 100%;
     background: $color-primary-light;
     border-bottom: 0.05rem solid $color-primary-dark;
@@ -24,7 +24,7 @@
         align-items: center;
         width: 100%;
         max-width: $width-max-page;
-        height: 5rem;
+        height: 4rem;
         padding: 0px 1.5rem;
         overflow-x: auto;
 

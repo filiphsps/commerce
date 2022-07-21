@@ -11,7 +11,7 @@ const Title = styled.h2`
     margin: 0px 0px 0.75rem -0.05rem;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 3rem;
+    font-size: 2.45rem;
     color: var(--accent-primary);
 `;
 const SubTitle = styled.h3`

@@ -199,6 +199,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                         </div>
 
                         <Button
+                            className="ProductCard-Actions-Action Button"
                             disabled={
                                 !variant?.available ||
                                 !parseInt(quantity as any) ||
