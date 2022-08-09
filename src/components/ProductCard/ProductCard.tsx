@@ -227,10 +227,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     });
                             }}
                         >
-                            {(loading && t('adding_to_cart')) ||
-                            !variant?.available
-                                ? t('out_of_stock')
-                                : t('add_to_cart')}
+                            {loading ? t('adding_to_cart') : (!variant?.available ? t('out_of_stock') : t('add_to_cart'))}
                         </Button>
                     </div>
                 </div>

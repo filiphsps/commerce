@@ -36,9 +36,9 @@ const StoreApp = withStore(
             /* eslint-disable no-console */
             // Log build info
             console.log('Shoppy by Filiph Siitam Sandström');
-            console.log(
+            /*console.log(
                 'Licensed under MIT. See https://github.com/filiphsandstrom/Shoppy'
-            );
+            );*/
             console.log(`Build: ${Config.git_sha}. Domain: ${Config.domain}`);
             /* eslint-enable no-console */
 

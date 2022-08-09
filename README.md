@@ -1,6 +1,6 @@
-# ecommerce-frontend
+# Shoppy
 
-# ecommerce-frontend is a modern implementation of a B2C storefront.
+# Shoppy is a modern implementation of a B2C storefront.
 
 * Complete SSR-support
 * Per-component testing
