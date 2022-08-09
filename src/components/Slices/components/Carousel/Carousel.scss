@@ -1,7 +1,7 @@
 @import '../../../../scss/app';
 
 .Slice.Slice-Carousel {
-    width: 100%;
+    width: 100vw !important;
     overflow-y: hidden;
 
     &.Index-0 {

@@ -1,5 +1,5 @@
 import NextLink from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import React from 'react';
 
 const Link = (props) => {
