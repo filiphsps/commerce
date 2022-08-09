@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import React, { FunctionComponent, memo } from 'react';
 
 import { Currency as Tender } from 'react-tender';
 import { useStore } from 'react-context-hook';

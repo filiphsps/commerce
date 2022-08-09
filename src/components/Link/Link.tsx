@@ -1,12 +1,15 @@
 import NextLink from 'next/link';
+import { useRouter } from 'next/router'
 import React from 'react';
 
 const Link = (props) => {
+    const router = useRouter();
+
     return (
         <NextLink
             href={props.as || props.to}
             as={props.as ? props.to : undefined}
-            locale={props.locale}
+            locale={props.locale ? props.locale : router.locale}
         >
             <a
                 {...props}

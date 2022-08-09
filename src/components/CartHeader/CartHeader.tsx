@@ -1,7 +1,7 @@
 import React, { FunctionComponent, memo } from 'react';
 
 interface CartHeaderProps {}
-const CartHeader: FunctionComponent<CartHeaderProps> = (props) => {
+const CartHeader: FunctionComponent<CartHeaderProps> = () => {
     return <div className="CartHeader"></div>;
 };
 

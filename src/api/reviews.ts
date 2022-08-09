@@ -7,7 +7,7 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
             await fetch(
                 `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?shop=${Config.shopify.domain}&product_id=${id}`
             )
-        ).json();
+        ).json() as any;
 
         if (!data.aggregate_rating) {
             return {

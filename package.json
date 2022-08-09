@@ -2,9 +2,9 @@
     "name": "candybysweden-frontend",
     "version": "1.2.0",
     "private": true,
-    "engines" : { 
-        "npm" : ">=8",
-        "node" : ">=16"
+    "engines": {
+        "npm": ">=8",
+        "node": ">=16"
     },
     "cacheDirectories": [
         ".next/cache"
@@ -41,14 +41,13 @@
         "cross-env": "7.0.3",
         "destyle.css": "3.0.2",
         "graphql": "16.5.0",
-        "isomorphic-unfetch": "3.1.0",
         "mini-css-extract-plugin": "2.6.1",
         "next": "12.2.0",
         "next-i18next": "11.0.0",
         "next-seo": "5.4.0",
         "nprogress": "0.2.0",
         "react": "18.2.0",
-        "react-context-hook": "github:spsgroupab/react-context-hook",
+        "react-context-hook": "github:filiphsps/react-context-hook",
         "react-dom": "18.2.0",
         "react-icons": "4.4.0",
         "react-image-gallery": "1.2.8",
