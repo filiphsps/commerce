@@ -10,14 +10,18 @@ const Wrapper = styled.div`
 const Title = styled.h2`
     margin: 0px 0px 0.75rem -0.05rem;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 2.45rem;
-    color: var(--accent-primary);
+
+    color: #404756;
+    &:not(.plain-title) {
+        color: var(--accent-primary);
+    }
 `;
 const SubTitle = styled.h3`
     color: #404756;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 1.75rem;
     margin-left: 0.05rem;
 
@@ -36,11 +40,13 @@ interface PageHeaderProps {
     title: string | JSX.Element;
     subtitle?: string | JSX.Element;
     reverse?: boolean;
+    plainTitle?: boolean;
 }
 const PageHeader: FunctionComponent<PageHeaderProps> = ({
     title,
     subtitle,
-    reverse
+    reverse,
+    plainTitle
 }) => {
     if (reverse)
         return (
@@ -52,7 +58,7 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
 
     return (
         <Wrapper>
-            <Title>{title}</Title>
+            <Title className={plainTitle && 'plain-title'}>{title}</Title>
             {subtitle && <SubTitle>{subtitle}</SubTitle>}
         </Wrapper>
     );

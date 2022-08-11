@@ -26,6 +26,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                         limit={limit}
                         data={props?.prefetch?.collections[handle]}
                         hideTitle={hide_title}
+                        plainTitle
                     />
                 </PageContent>
             </ContentBlock>

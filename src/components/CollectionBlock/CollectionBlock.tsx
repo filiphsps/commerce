@@ -28,6 +28,7 @@ interface CollectionBlockProps {
     showDescription?: boolean;
     brand?: boolean;
     search?: boolean;
+    plainTitle?: boolean;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     const {
@@ -92,6 +93,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                                 </Link>
                             )
                         }
+                        plainTitle={props.plainTitle}
                     />
                     {props?.showDescription && (
                         <SubTitle>
