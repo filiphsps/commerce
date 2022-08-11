@@ -13,6 +13,7 @@ const ShopBlockWrapper = styled.div`
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
 
         & > div:nth-child(2) {
             grid-row: 1;

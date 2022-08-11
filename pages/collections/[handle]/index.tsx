@@ -108,20 +108,23 @@ export async function getStaticProps({ locale, params }) {
     let errors = [];
 
     try {
-        translation = await serverSideTranslations(locale, ['common', 'product']);
+        translation = await serverSideTranslations(locale ?? 'en-US', ['common', 'product']);
     } catch (err) {
+        console.error(err);
         errors.push(err);
     }
 
     try {
         collection = await CollectionApi(handle);
     } catch (err) {
+        console.error(err);
         errors.push(err);
     }
 
     try {
         vendors = await VendorsApi();
     } catch (err) {
+        console.error(err);
         errors.push(err);
     }
 

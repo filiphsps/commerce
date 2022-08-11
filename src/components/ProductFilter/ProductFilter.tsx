@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import LanguageString from '../LanguageString';
 import { ProductModel } from '../../models/ProductModel';
@@ -26,7 +26,7 @@ const Filter = styled.div`
         }
     }
 
-    @media (max-width: 950px) {
+    @media (min-width: 950px) {
         position: fixed;
     }
 `;
@@ -226,4 +226,4 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
     );
 };
 
-export default memo(ProductFilter);
+export default ProductFilter;
