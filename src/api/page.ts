@@ -1,13 +1,14 @@
+import { PageModel } from '../models/PageModel';
 import { prismic } from './prismic';
 
-export const PageApi = async (handle: string, locale = 'en-US') => {
+export const PageApi = async (handle: string, locale = 'en-US'): Promise<PageModel> => {
     return new Promise(async (resolve, reject) => {
         try {
             const page = await prismic().getByUID('page', handle, {
                 lang: locale
             });
 
-            return resolve(page?.data);
+            return resolve(page?.data as PageModel);
         } catch (err) {
             if (locale != 'en-US') {
                 return resolve(await PageApi(handle, 'en-US'));

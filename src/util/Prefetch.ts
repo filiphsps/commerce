@@ -1,15 +1,10 @@
 import { CollectionApi } from '../api/collection';
+import { PageModel } from '../models/PageModel';
 import { ProductsApi } from '../api/product';
 import { VendorsApi } from '../api/vendor';
 
 const Prefetch = (
-    page: {
-        slices?: Array<{
-            type: string;
-            data?: any;
-        }>;
-        body?: any;
-    },
+    page: PageModel,
     query: any
 ) => {
     return new Promise<{
@@ -42,7 +37,7 @@ const Prefetch = (
                     const res = await Prefetch(
                         {
                             slices: slice?.data?.slices
-                        },
+                        } as any,
                         query
                     );
 
@@ -65,7 +60,7 @@ const Prefetch = (
                         const res = await Prefetch(
                             {
                                 slices
-                            },
+                            } as any,
                             query
                         );
 

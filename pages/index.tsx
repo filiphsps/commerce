@@ -1,12 +1,22 @@
+import React, { FunctionComponent } from 'react';
+
 import { NextSeo } from 'next-seo';
 import Page from '../src/components/Page';
 import { PageApi } from '../src/api/page';
+import type { PageModel } from '../src/models/PageModel';
 import { Prefetch } from '../src/util/Prefetch';
-import React from 'react';
 import Slices from '../src/components/Slices';
+import type { StoreModel } from '../src/models/StoreModel';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-const HomePage = (props: any) => {
+interface HomePageProps {
+    store: StoreModel;
+    data: {
+        page: PageModel,
+        prefetch: any
+    }
+}
+const HomePage: FunctionComponent<HomePageProps> = (props) => {
     const { store, data } = props;
 
     return (
@@ -15,6 +25,14 @@ const HomePage = (props: any) => {
                 title={data?.page?.title}
                 description={
                     data?.page?.description || store?.description || ''
+                }
+                additionalMetaTags={
+                    data?.page?.keywords ? [
+                        {
+                            property: 'keywords',
+                            content: data?.page?.keywords
+                        }
+                    ] : null
                 }
             />
             <Slices
@@ -27,7 +45,7 @@ const HomePage = (props: any) => {
 };
 
 export async function getStaticProps({ query, locale }) {
-    const page = (await PageApi('home', locale)) as any;
+    const page = (await PageApi('home', locale));
     const prefetch = page && (await Prefetch(page, query));
 
     return {

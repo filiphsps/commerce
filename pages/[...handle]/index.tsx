@@ -1,4 +1,5 @@
 import { PageApi, PagesApi } from '../../src/api/page';
+import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import ErrorPage from 'next/error';
@@ -8,13 +9,21 @@ import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
+import type { PageModel } from '../../src/models/PageModel';
 import { Prefetch } from '../../src/util/Prefetch';
-import React from 'react';
 import Slices from '../../src/components/Slices';
+import type { StoreModel } from '../../src/models/StoreModel';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
-const CustomPage = (props: any) => {
+interface CustomPageProps {
+    store: StoreModel;
+    data: {
+        page: PageModel,
+        prefetch: any
+    }
+}
+const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
     const { store } = props;
     const router = useRouter();
 
@@ -27,6 +36,14 @@ const CustomPage = (props: any) => {
             <NextSeo
                 title={data?.title}
                 description={data?.description || ''}
+                additionalMetaTags={
+                    data?.keywords ? [
+                        {
+                            property: 'keywords',
+                            content: data?.keywords
+                        }
+                    ] : null
+                }
             />
 
             <PageContent>
