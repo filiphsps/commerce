@@ -15,16 +15,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
+    errors?: any;
     store: StoreModel;
     data: {
         collection: CollectionModel;
     };
 }
 const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
-    const { store, data } = props;
+    const { store, data, errors } = props;
     const { collection } = data;
 
     const router = useRouter();
+
+    if (errors)
+        console.error(errors);
 
     useEffect(() => {
         if (!data?.collection) return;
@@ -100,12 +104,34 @@ export async function getStaticProps({ locale, params }) {
             revalidate: false
         };
 
+    let translation, collection, vendors;
+    let errors = [];
+
+    try {
+        translation = await serverSideTranslations(locale, ['common', 'product']);
+    } catch (err) {
+        errors.push(err);
+    }
+
+    try {
+        collection = await CollectionApi(handle);
+    } catch (err) {
+        errors.push(err);
+    }
+
+    try {
+        vendors = await VendorsApi();
+    } catch (err) {
+        errors.push(err);
+    }
+
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'product'])),
+            ...translation,
             data: {
-                collection: (await CollectionApi(handle)) ?? null,
-                vendors: (await VendorsApi()) ?? null
+                collection: collection ?? null,
+                vendors: vendors ?? null,
+                errors
             }
         },
         revalidate: 1
