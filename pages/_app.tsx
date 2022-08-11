@@ -121,12 +121,6 @@ const StoreApp = withStore(
                     {/* eslint-enable indent */}
                 </Head>
 
-                <noscript
-                    dangerouslySetInnerHTML={{
-                        __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KL4HWGJ" height="0" width="0" style="display:none;visibility:hidden"></iframe>`
-                    }}
-                ></noscript>
-
                 {/* Page */}
                 <PageProvider store={contextStore}>
                     <Component

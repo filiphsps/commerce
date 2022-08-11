@@ -36,6 +36,7 @@ module.exports = withBundleAnalyzer({
         STORE_LOCALES: process.env.STORE_LOCALES,
         STORE_CURRENCIES: process.env.STORE_CURRENCIES,
         SENTRY_DSN: process.env.SENTRY_DSN,
+        GTM: process.env.GTM,
 
         // Feature flags
         FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,
