@@ -216,7 +216,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                         product?.variants[selectedVariant]?.id,
                                     quantity: quantity,
                                     price: product?.variants[selectedVariant]
-                                        ?.pricing.range
+                                        ?.pricing.range,
+                                    data: {
+                                        product,
+                                        variant: product?.variants[selectedVariant]
+                                    }
                                 })
                                     .then(() => {
                                         setLoading(false);

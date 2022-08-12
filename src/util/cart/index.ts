@@ -100,6 +100,29 @@ const Add = ([, setCart], item) => {
 
         if (!cart) return reject();
 
+        if ((window as any)?.dataLayer && item.data?.product && item.data?.variant) {
+            const product = item.data?.product;
+            const variant = item.data?.variant;
+
+            (window as any)?.dataLayer?.push({ ecommerce: null });
+            (window as any)?.dataLayer?.push({
+                event: "add_to_cart",
+                currency: product.pricing.currency,
+                value: parseFloat(variant.pricing.range),
+                ecommerce: {
+                    items: [{
+                        item_id: variant.sku || variant.id.split('/').at(-1),
+                        item_name: product.title,
+                        item_variant: variant.title,
+                        item_brand: product.vendor?.title ?? product.brand,
+                        currency: product.pricing.currency,
+                        quantity: item.quantity,
+                        price: parseFloat(variant.pricing.range)
+                    }]
+                }
+            });
+        }
+
         return resolve(
             await Set([cart, setCart], {
                 ...item,

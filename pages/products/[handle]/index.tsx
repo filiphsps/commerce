@@ -228,9 +228,32 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
     // Handle redirect.
     useEffect(() => {
+        setVariant(product.variants.length - 1);
         if (!redirect) return;
 
         router.replace(redirect);
+    }, []);
+
+    useEffect(() => {
+        if ((window as any)?.dataLayer) return;
+
+        (window as any)?.dataLayer?.push({ ecommerce: null });
+        (window as any)?.dataLayer?.push({
+            event: "view_item",
+            currency: product.pricing.currency,
+            value: parseFloat(product.variants[variant].pricing.range as any),
+            ecommerce: {
+                items: [{
+                    item_id: product.variants[variant].sku || product.variants[variant].id.split('/').at(-1),
+                    item_name: product.title,
+                    item_variant: product.variants[variant].title,
+                    item_brand: product.vendor.title,
+                    currency: product.pricing.currency,
+                    price: parseFloat(product.variants[variant].pricing.range as any),
+                    quantity
+                }]
+            }
+        });
     }, []);
 
     if (!product) return <Error statusCode={404} />;
@@ -379,7 +402,11 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                             product?.variants[variant]?.id,
                                         quantity: quantity,
                                         price: product?.variants[variant]
-                                            ?.pricing.range
+                                            ?.pricing.range,
+                                        data: {
+                                            product,
+                                            variant: product?.variants[variant]
+                                        }
                                     })
                                         .then(() => {
                                             setLoading(false);

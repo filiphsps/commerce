@@ -80,6 +80,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
 export async function getStaticPaths() {
     const vendors = ((await VendorsApi()) as any) || null;
 
+    // FIXME: Add non-vendor collections
     let paths = [
         ...vendors
             ?.map((vendor) => ({

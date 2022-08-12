@@ -1,8 +1,20 @@
+import React, { FunctionComponent } from 'react';
+
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
 
-const Link = (props) => {
+interface LinkProps {
+    as?: string,
+    to?: string,
+    locale?: any,
+    style?: any,
+    className?: string,
+    children?: any,
+
+    itemType?: any,
+    itemProp?: any
+}
+const Link: FunctionComponent<LinkProps> = (props) => {
     const router = useRouter();
 
     return (

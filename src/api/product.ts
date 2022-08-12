@@ -37,6 +37,7 @@ export const PRODUCT_FRAGMENT = `
         edges {
             node {
                 id
+                sku
                 title
                 priceV2 {
                     amount
@@ -175,7 +176,7 @@ export const Convertor = (product: any): ProductModel => {
                 return {
                     id: atob(variant.id),
                     title: variant.title,
-                    sku: '',
+                    sku: variant.sku,
                     default_image: defaultImage ?? 0,
                     pricing: {
                         currency: variant.priceV2.currencyCode,
