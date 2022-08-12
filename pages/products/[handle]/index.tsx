@@ -235,23 +235,29 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     }, []);
 
     useEffect(() => {
-        if ((window as any)?.dataLayer) return;
+        if (redirect || (window as any)?.dataLayer) return;
 
         (window as any)?.dataLayer?.push({ ecommerce: null });
         (window as any)?.dataLayer?.push({
-            event: "view_item",
+            event: 'view_item',
             currency: product.pricing.currency,
             value: parseFloat(product.variants[variant].pricing.range as any),
             ecommerce: {
-                items: [{
-                    item_id: product.variants[variant].sku || product.variants[variant].id.split('/').at(-1),
-                    item_name: product.title,
-                    item_variant: product.variants[variant].title,
-                    item_brand: product.vendor.title,
-                    currency: product.pricing.currency,
-                    price: parseFloat(product.variants[variant].pricing.range as any),
-                    quantity
-                }]
+                items: [
+                    {
+                        item_id:
+                            product.variants[variant].sku ||
+                            product.variants[variant].id.split('/').at(-1),
+                        item_name: product.title,
+                        item_variant: product.variants[variant].title,
+                        item_brand: product.vendor.title,
+                        currency: product.pricing.currency,
+                        price: parseFloat(
+                            product.variants[variant].pricing.range as any
+                        ),
+                        quantity
+                    }
+                ]
             }
         });
     }, []);
@@ -269,23 +275,22 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 }
             />
             <ProductJsonLd
-                productName={product?.title?.replace?.(/"/gi, '\\"')}
-                brand={product?.vendor?.title?.replace?.(/"/gi, '\\"')}
-                sku={product?.sku || product?.id}
-                mpn={product?.sku || product?.id}
-                images={product?.images?.map?.((image) => image?.src) || []}
-                description={product?.description || ''}
+                productName={product.title.replace(/"/gi, '\\"')}
+                brand={product.vendor.title.replace(/"/gi, '\\"')}
+                sku={product.sku || product.id}
+                mpn={product.sku || product.id}
+                images={product.images?.map?.((image) => image.src) || []}
+                description={product.description || ''}
                 offers={
-                    (product?.variants?.map?.((variant) => ({
-                        price: variant?.pricing?.range,
+                    (product.variants?.map?.((variant) => ({
+                        price: variant.pricing.range,
                         priceCurrency: 'USD',
                         priceValidUntil: `${new Date().getFullYear()}-12-31`,
                         itemCondition: 'https://schema.org/NewCondition',
-                        availability:
-                            (variant?.available &&
-                                'https://schema.org/InStock') ||
-                            'https://schema.org/SoldOut',
-                        url: `https://${Config.domain}/products/${product?.handle}`
+                        availability: variant.available
+                            ? 'https://schema.org/InStock'
+                            : 'https://schema.org/SoldOut',
+                        url: `https://${Config.domain}/products/${product.handle}`
                     })) || []) as any
                 }
             />
