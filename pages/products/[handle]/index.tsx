@@ -391,6 +391,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             <Button
                                 disabled={
                                     !product?.variants[variant]?.available ||
+                                    quantity < 1 ||
                                     loading
                                 }
                                 onClick={() => {
