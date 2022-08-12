@@ -101,7 +101,7 @@ export async function getStaticProps({ params, locale }) {
                     prefetch
                 }
             },
-            revalidate: 1
+            revalidate: 10
         };
     } catch (err) {
         console.error(err);

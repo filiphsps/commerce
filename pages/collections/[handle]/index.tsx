@@ -138,7 +138,7 @@ export async function getStaticProps({ locale, params }) {
                 errors
             }
         },
-        revalidate: 1
+        revalidate: 10
     };
 }
 

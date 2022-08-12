@@ -50,7 +50,7 @@ const SearchPage = (props: any) => {
 export async function getStaticProps() {
     return {
         props: {},
-        revalidate: 1
+        revalidate: 10
     };
 }
 

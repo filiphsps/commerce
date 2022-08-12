@@ -488,7 +488,7 @@ export async function getStaticProps({ params, locale }) {
             props: {
                 redirect: redirect
             },
-            revalidate: 1
+            revalidate: 10
         };
     }
 
@@ -516,7 +516,7 @@ export async function getStaticProps({ params, locale }) {
             recommendations,
             reviews
         },
-        revalidate: 1
+        revalidate: 10
     };
 }
 
