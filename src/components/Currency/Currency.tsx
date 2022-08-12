@@ -23,7 +23,7 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             <Tender
                 value={Number.parseFloat(props?.price) || 0}
                 currency={
-                    currency || props?.currency || store?.currency || 'USD'
+                    props?.currency || store?.currency || currency || 'USD'
                 }
             />
             {props.suffix && (

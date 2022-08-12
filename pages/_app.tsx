@@ -44,7 +44,7 @@ const StoreApp = withStore(
 
             // Create a new cart if we don't already have one
             if (!cart) {
-                Cart.Get()
+                Cart.Get('en-US')
                     .then(setCart)
                     .catch((error) => error && console.warn(error));
             }

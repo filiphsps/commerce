@@ -284,7 +284,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 offers={
                     (product.variants?.map?.((variant) => ({
                         price: variant.pricing.range,
-                        priceCurrency: 'USD',
+                        priceCurrency: variant.pricing.currency,
                         priceValidUntil: `${new Date().getFullYear()}-12-31`,
                         itemCondition: 'https://schema.org/NewCondition',
                         availability: variant.available
@@ -413,7 +413,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                             product,
                                             variant: product?.variants[variant]
                                         }
-                                    })
+                                    }, router.locale)
                                         .then(() => {
                                             setLoading(false);
                                         })
@@ -492,13 +492,13 @@ export async function getStaticProps({ params, locale }) {
         };
     }
 
-    const product: ProductModel = (await ProductApi(handle)) as any;
+    const product: ProductModel = (await ProductApi({ handle, locale })) as any;
 
     let recommendations: Array<ProductModel> = null;
     let reviews: ReviewsModel = null;
 
     try {
-        recommendations = (await RecommendationApi(product?.id)) as any;
+        recommendations = (await RecommendationApi({ id: product?.id, locale })) as any;
     } catch (err) {
         console.warn(err);
     }

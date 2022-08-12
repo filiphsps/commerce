@@ -2,7 +2,7 @@ import { Config } from '../Config';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 
-const get_cart = async () => {
+const get_cart = async (locale = 'en-US') => {
     const cart = {
         items: [],
         version: !window.localStorage.getItem('cart') ? Config.version : null,
@@ -19,11 +19,25 @@ const get_cart = async () => {
     cart.items = (
         await Promise.all(
             cart.items.map(async (item) => {
-                const product: ProductModel = (await ProductIdApi(
-                    `${item.id}`
-                )) as any;
+                // FIXME: ASAP
+                let product_id = item.id;
+                if (product_id.includes('=')) {
+                    product_id = atob(product_id);
+                }
+
+                const product: ProductModel = (await ProductIdApi({
+                    id: product_id,
+                    locale: locale
+                })) as any;
+
+                // FIXME: ASAP
+                let variant_id = item.variant_id;
+                if (variant_id.includes('=')) {
+                    variant_id = atob(variant_id);
+                }
+
                 const variant = product?.variants?.find(
-                    (variant) => variant.id === item.variant_id
+                    (variant) => variant.id === variant_id
                 );
 
                 if (!product || !variant) return null;
@@ -31,8 +45,8 @@ const get_cart = async () => {
                 if (!variant?.available)
                     errors.push({
                         type: 'out_of_stock',
-                        id: item.id,
-                        variant_id: item.variant_id
+                        id: product_id,
+                        variant_id: variant_id
                     });
 
                 return {
@@ -74,7 +88,7 @@ const get_cart = async () => {
     cart.items.sort((a, b) => (a?.id > b?.id ? 1 : b?.id > a?.id ? -1 : 0));
     return cart;
 };
-const save_cart = async ([, setCart], cart) => {
+const save_cart = async ([, setCart], cart, locale = 'en-US') => {
     let new_cart = {
         version: Config.version,
         items: cart?.items?.map((item) => ({
@@ -85,40 +99,47 @@ const save_cart = async ([, setCart], cart) => {
     };
 
     window.localStorage.setItem('cart', JSON.stringify(new_cart));
-    setCart(await get_cart());
+    setCart(await get_cart(locale));
 };
 
-const Get = async () => {
-    return await get_cart();
+const Get = async (locale = 'en-US') => {
+    return await get_cart(locale);
 };
-const Add = ([, setCart], item) => {
+const Add = ([, setCart], item, locale = 'en-US') => {
     return new Promise(async (resolve, reject) => {
-        let cart = await get_cart();
+        let cart = await get_cart(locale);
         let cart_item = cart?.items?.find(
             (cart_item) => cart_item?.variant_id === item?.variant_id
         );
 
         if (!cart) return reject();
 
-        if ((window as any)?.dataLayer && item.data?.product && item.data?.variant) {
+        if (
+            (window as any)?.dataLayer &&
+            item.data?.product &&
+            item.data?.variant
+        ) {
             const product = item.data?.product;
             const variant = item.data?.variant;
 
             (window as any)?.dataLayer?.push({ ecommerce: null });
             (window as any)?.dataLayer?.push({
-                event: "add_to_cart",
+                event: 'add_to_cart',
                 currency: product.pricing.currency,
                 value: parseFloat(variant.pricing.range),
                 ecommerce: {
-                    items: [{
-                        item_id: variant.sku || variant.id.split('/').at(-1),
-                        item_name: product.title,
-                        item_variant: variant.title,
-                        item_brand: product.vendor?.title ?? product.brand,
-                        currency: product.pricing.currency,
-                        quantity: item.quantity,
-                        price: parseFloat(variant.pricing.range)
-                    }]
+                    items: [
+                        {
+                            item_id:
+                                variant.sku || variant.id.split('/').at(-1),
+                            item_name: product.title,
+                            item_variant: variant.title,
+                            item_brand: product.vendor?.title ?? product.brand,
+                            currency: product.pricing.currency,
+                            quantity: item.quantity,
+                            price: parseFloat(variant.pricing.range)
+                        }
+                    ]
                 }
             });
         }
@@ -131,9 +152,9 @@ const Add = ([, setCart], item) => {
         );
     });
 };
-const Remove = ([, setCart], item) => {
+const Remove = ([, setCart], item, locale = 'en-US') => {
     return new Promise(async (resolve, reject) => {
-        let cart = await get_cart();
+        let cart = await get_cart(locale);
 
         if (!cart) return reject();
 
@@ -145,9 +166,9 @@ const Remove = ([, setCart], item) => {
         );
     });
 };
-const Set = ([, setCart], item) => {
+const Set = ([, setCart], item, locale = 'en-US') => {
     return new Promise(async (resolve, reject) => {
-        let cart = await get_cart();
+        let cart = await get_cart(locale);
 
         if (!cart) return reject();
 

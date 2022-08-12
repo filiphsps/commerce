@@ -9,6 +9,7 @@ import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import { ProductModel } from '../../models/ProductModel';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 import { useTranslation } from 'next-i18next';
 
@@ -19,6 +20,7 @@ interface ProductCardProps {
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
 
+    const router = useRouter();
     const [showAll, setShowAll] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState(
@@ -222,7 +224,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                         product,
                                         variant: product?.variants[selectedVariant]
                                     }
-                                })
+                                }, router.locale)
                                     .then(() => {
                                         setLoading(false);
                                     })

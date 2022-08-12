@@ -10,6 +10,7 @@ import Loader from '../Loader';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 import { ProductVariantModel } from '../../models/ProductVariantModel';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
@@ -19,8 +20,9 @@ interface CartItemProps {
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { data } = useSWR([props?.data?.id], (url) =>
-        ProductIdApi(url)
+    const router = useRouter();
+    const { data } = useSWR([props?.data?.id], (id) =>
+        ProductIdApi({ id, locale: router.locale })
     ) as any;
     const product: ProductModel = data;
     const [variant, setVariant] = useState<ProductVariantModel>(null);

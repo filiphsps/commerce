@@ -1,9 +1,10 @@
+import { newShopify, shopify } from './shopify';
+
 import { ProductModel } from '../models/ProductModel';
 import { ProductVariantModel } from '../models/ProductVariantModel';
 import { ShopifyWeightUnit } from '../models/WeightModel';
 import TitleToHandle from '../util/TitleToHandle';
 import { gql } from '@apollo/client';
-import { shopify } from './shopify';
 
 export const PRODUCT_FRAGMENT = `
     id
@@ -70,28 +71,24 @@ export const PRODUCT_FRAGMENT = `
             }
         }
     }
-    metafields(first: 250) {
-        edges {
-            node {
-                id
-                key
-                namespace
-                value
-            }
-        }
+    ingredients: metafield(namespace: "store", key: "ingredients") {
+        value
+        type
     }
 `;
 
 export const Convertor = (product: any): ProductModel => {
     if (!product) return null;
 
-    let metafields = {};
-    product?.metafields?.edges?.forEach((metafield) => {
+    let metafields = {
+        ingredients: product.ingredients?.value ?? null
+    };
+    /*product?.metafields?.edges?.forEach((metafield) => {
         metafields[metafield?.node?.key] = metafield?.node?.value;
-    });
+    });*/
 
     const images = product?.images.edges.map(({ node }) => ({
-        id: atob(node.id),
+        id: node.id?.includes('=') ? atob(node?.id) : node?.id,
         alt: node.altText ?? null,
         src: node.originalSrc,
         height: node.height,
@@ -99,7 +96,7 @@ export const Convertor = (product: any): ProductModel => {
     }));
 
     return {
-        id: atob(product?.id),
+        id: product?.id?.includes('=') ? atob(product.id) : product.id,
         handle: product?.handle,
 
         title: product?.title,
@@ -140,7 +137,9 @@ export const Convertor = (product: any): ProductModel => {
         })),
         variants: product?.variants.edges.map(
             ({ node: variant }): ProductVariantModel => {
-                const imageId = atob(variant.image?.id);
+                const imageId = variant.image?.id?.includes('=')
+                    ? atob(variant.image?.id)
+                    : variant.image?.id;
                 const defaultImage = images.findIndex(
                     (image) => image.id === imageId
                 );
@@ -174,7 +173,9 @@ export const Convertor = (product: any): ProductModel => {
                 }
 
                 return {
-                    id: atob(variant.id),
+                    id: variant?.id?.includes('=')
+                        ? atob(variant.id)
+                        : variant.id,
                     title: variant.title,
                     sku: variant.sku,
                     default_image: defaultImage ?? 0,
@@ -198,17 +199,26 @@ export const Convertor = (product: any): ProductModel => {
     };
 };
 
-export const ProductApi = async (handle: string) => {
+export const ProductApi = async ({
+    handle,
+    locale
+}: {
+    handle: string;
+    locale?: string;
+}) => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject();
 
+        const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
+        const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
+
         try {
-            const { data } = await shopify.query({
+            const { data, errors } = await newShopify.query({
                 query: gql`
                 fragment product on Product {
                     ${PRODUCT_FRAGMENT}
                 }
-                query product($handle: String!) {
+                query product($handle: String!) @inContext(language: ${language}, country: ${country}) {
                     productByHandle(handle: $handle) {
                         ...product
                     }
@@ -218,6 +228,11 @@ export const ProductApi = async (handle: string) => {
                     handle
                 }
             });
+
+            if (errors) {
+                console.error(errors);
+                reject(errors);
+            }
 
             const result = Convertor(data?.productByHandle);
             if (!result) return reject();
@@ -230,14 +245,23 @@ export const ProductApi = async (handle: string) => {
     });
 };
 
-export const ProductIdApi = async (id: string) => {
+export const ProductIdApi = async ({
+    id,
+    locale
+}: {
+    id: string;
+    locale?: string;
+}) => {
     return new Promise(async (resolve, reject) => {
         if (!id) return reject();
 
+        const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
+        const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
+
         try {
-            const { data } = await shopify.query({
+            const { data, errors } = await newShopify.query({
                 query: gql`
-                query getProduct($id: ID!) {
+                query getProduct($id: ID!) @inContext(language: ${language}, country: ${country}) {
                     node(id: $id) {
                         ...on Product {
                             ${PRODUCT_FRAGMENT}
@@ -249,6 +273,11 @@ export const ProductIdApi = async (id: string) => {
                     id: btoa(id)
                 }
             });
+
+            if (errors) {
+                console.error(errors);
+                reject(errors);
+            }
 
             if (!data?.node) return reject();
 
@@ -310,7 +339,7 @@ export const ProductsApi = async (
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data } = await shopify.query({
+            const { data } = await newShopify.query({
                 query: gql`
                 fragment product on Product {
                     ${PRODUCT_FRAGMENT}
