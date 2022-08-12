@@ -12,6 +12,7 @@ const Content = styled.div`
     background: var(--accent-primary);
     color: var(--color-text-primary);
     text-transform: uppercase;
+    text-align: center;
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: 0.05rem;
