@@ -124,6 +124,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                                             index
                                                         )
                                                     }
+                                                    data-nosnippet
                                                 >
                                                     <LanguageString
                                                         id={
@@ -231,7 +232,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     });
                             }}
                         >
-                            {loading ? t('adding_to_cart') : (!variant?.available ? t('out_of_stock') : t('add_to_cart'))}
+                            <span data-nosnippet>
+                                {loading ? t('adding_to_cart') : (!variant?.available ? t('out_of_stock') : t('add_to_cart'))}
+                            </span>
                         </Button>
                     </div>
                 </div>
