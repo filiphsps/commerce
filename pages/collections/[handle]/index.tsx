@@ -15,7 +15,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
-    errors?: any;
+    errors?: any[];
     store: StoreModel;
     data: {
         collection: CollectionModel;
@@ -134,9 +134,9 @@ export async function getStaticProps({ locale, params }) {
             ...translation,
             data: {
                 collection: collection ?? null,
-                vendors: vendors ?? null,
-                errors
-            }
+                vendors: vendors ?? null
+            },
+            errors
         },
         revalidate: 10
     };

@@ -206,6 +206,7 @@ const Recommendations = styled.div`
 `;
 
 interface ProductPageProps {
+    errors?: any[];
     product: ProductModel;
     recommendations?: ProductModel[];
     reviews?: ReviewsModel;
@@ -213,6 +214,7 @@ interface ProductPageProps {
     store: any;
 }
 const ProductPage: FunctionComponent<ProductPageProps> = ({
+    errors,
     product,
     recommendations,
     reviews,
@@ -225,6 +227,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [loading, setLoading] = useState(false);
     const [cart, setCart] = useStore<any>('cart');
     const { t } = useTranslation('product');
+
+    if (errors)
+        console.error(errors);
 
     // Handle redirect.
     useEffect(() => {
@@ -492,29 +497,47 @@ export async function getStaticProps({ params, locale }) {
         };
     }
 
-    const product: ProductModel = (await ProductApi({ handle, locale })) as any;
-
+    let translation;
+    let product: ProductModel = null;
     let recommendations: Array<ProductModel> = null;
     let reviews: ReviewsModel = null;
+    let errors = [];
+
+    try {
+        translation = await serverSideTranslations(locale ?? 'en-US', ['common', 'product']);
+    } catch (err) {
+        console.error(err);
+        errors.push(err);
+    }
+
+    try {
+        product = (await ProductApi({ handle, locale })) as any;
+    } catch (err) {
+        console.warn(err);
+        errors.push(err);
+    }
 
     try {
         recommendations = (await RecommendationApi({ id: product?.id, locale })) as any;
     } catch (err) {
         console.warn(err);
+        errors.push(err);
     }
 
     try {
         reviews = await ReviewsProductApi(product.id);
     } catch (err) {
         console.warn(err);
+        errors.push(err);
     }
 
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'product'])),
+            ...translation,
             product,
             recommendations,
-            reviews
+            reviews,
+            errors
         },
         revalidate: 10
     };
