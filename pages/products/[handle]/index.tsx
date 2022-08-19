@@ -23,9 +23,9 @@ import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
-import { useStore } from 'react-context-hook';
 import { useTranslation } from 'next-i18next';
 
 // TODO: replace this with generic label.
@@ -415,7 +415,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                         variant_title: product?.variants[variant].title
                                     });
 
-                                    // FIXME: Popup
+                                    toast.success(t('added_to_cart'), {
+                                        theme: 'dark',
+                                        position: toast.POSITION.TOP_LEFT
+                                    });
                                 }}
                             >
                                 {t('add_to_cart')}
