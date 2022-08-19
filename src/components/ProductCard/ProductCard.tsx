@@ -2,15 +2,13 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import Button from '../Button';
-import Cart from '../../util/cart';
 import Currency from '../Currency';
 import Image from 'next/image';
 import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import { ProductModel } from '../../models/ProductModel';
-import { useRouter } from 'next/router';
-import { useStore } from 'react-context-hook';
+import { useCart } from 'react-use-cart';
 import { useTranslation } from 'next-i18next';
 
 interface ProductCardProps {
@@ -20,14 +18,12 @@ interface ProductCardProps {
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
 
-    const router = useRouter();
+    const cart = useCart();
     const [showAll, setShowAll] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState(
         product?.variants?.length - 1
     );
-    const [loading, setLoading] = useState(false);
-    const [cart, setCart] = useStore<any>('cart');
     const { t } = useTranslation('product');
 
     useEffect(() => {
@@ -205,37 +201,24 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                             className="ProductCard-Actions-Action Button"
                             disabled={
                                 !variant?.available ||
-                                !parseInt(quantity as any) ||
-                                loading
+                                !parseInt(quantity as any)
                             }
                             onClick={() => {
-                                if (loading) return;
-
-                                setLoading(true);
-
-                                Cart.Add([cart, setCart], {
-                                    id: product?.id,
-                                    variant_id:
-                                        product?.variants[selectedVariant]?.id,
-                                    quantity: quantity,
+                                cart.addItem({
+                                    id: `${product?.id}#${product?.variants[selectedVariant]?.id}`,
                                     price: product?.variants[selectedVariant]
                                         ?.pricing.range,
-                                    data: {
-                                        product,
-                                        variant: product?.variants[selectedVariant]
-                                    }
-                                }, router.locale)
-                                    .then(() => {
-                                        setLoading(false);
-                                    })
-                                    .catch((err) => {
-                                        console.error(err);
-                                        setLoading(false);
-                                    });
+                                    quantity: quantity,
+
+                                    title: product?.title,
+                                    variant_title: product?.variants[selectedVariant].title
+                                });
+
+                                // FIXME: Popup
                             }}
                         >
                             <span data-nosnippet>
-                                {loading ? t('adding_to_cart') : (!variant?.available ? t('out_of_stock') : t('add_to_cart'))}
+                                {!variant?.available ? t('out_of_stock') : t('add_to_cart')}
                             </span>
                         </Button>
                     </div>

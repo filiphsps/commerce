@@ -8,7 +8,7 @@ import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
 import { BrowserTracing } from '@sentry/tracing';
-import Cart from '../src/util/cart';
+import { CartProvider } from 'react-use-cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
 import { DefaultSeo } from 'next-seo';
@@ -30,7 +30,6 @@ const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
         const [contextStore] = useStore<any>('store');
-        const [cart, setCart] = useStore<any>('cart');
 
         useEffect(() => {
             /* eslint-disable no-console */
@@ -41,13 +40,6 @@ const StoreApp = withStore(
             );*/
             console.log(`Build: ${Config.git_sha}. Domain: ${Config.domain}`);
             /* eslint-enable no-console */
-
-            // Create a new cart if we don't already have one
-            if (!cart) {
-                Cart.Get('en-US')
-                    .then(setCart)
-                    .catch((error) => error && console.warn(error));
-            }
 
             // Setup sentry
             if (Config.sentry && Config.environment === 'production') {
@@ -122,13 +114,15 @@ const StoreApp = withStore(
                 </Head>
 
                 {/* Page */}
-                <PageProvider store={contextStore}>
-                    <Component
-                        key={router.asPath}
-                        {...pageProps}
-                        store={contextStore}
-                    />
-                </PageProvider>
+                <CartProvider>
+                    <PageProvider store={contextStore}>
+                        <Component
+                            key={router.asPath}
+                            {...pageProps}
+                            store={contextStore}
+                        />
+                    </PageProvider>
+                </CartProvider>
                 <ScrollToTop />
             </>
         );
@@ -154,7 +148,6 @@ const StoreApp = withStore(
             navigation: []
         },
         currency: 'USD',
-        cart: null,
         search: {
             open: false,
             phrase: ''

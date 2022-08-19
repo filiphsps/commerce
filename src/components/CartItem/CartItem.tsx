@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import Cart from '../../util/cart';
 import Currency from '../Currency';
 import { FiTrash } from 'react-icons/fi';
 import Image from 'next/image';
@@ -10,50 +9,40 @@ import Loader from '../Loader';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 import { ProductVariantModel } from '../../models/ProductVariantModel';
+import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useStore } from 'react-context-hook';
 
 interface CartItemProps {
     total_items?: number;
     data?: any;
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
+    const product_id = props.data.id.split('#')[0];
+    const variant_id = props.data.id.split('#')[1];
+
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const { data } = useSWR([props?.data?.id], (id) =>
-        ProductIdApi({ id, locale: router.locale })
+    const cart = useCart();
+    const { data } = useSWR([product_id], (id) =>
+        ProductIdApi({ id: id, locale: router.locale })
     ) as any;
     const product: ProductModel = data;
     const [variant, setVariant] = useState<ProductVariantModel>(null);
-    const [cart, setCart] = useStore<any>('cart');
 
     useEffect(() => {
         if (!product) return;
 
         setVariant(
             product?.variants?.find(
-                (variant) => variant?.id === props?.data?.variant_id
+                (variant) => variant?.id === variant_id
             )
         );
     }, [product]);
 
     const changeAmount = (event: any) => {
         if (event?.target?.value == props?.data?.quantity) return;
-
-        setIsLoading(true);
-
-        Cart.Set([cart, setCart], {
-            id: product?.id,
-            variant_id: variant?.id,
-            price: variant?.pricing.range,
-            quantity: parseInt(event?.target?.value) || 0
-        })
-            .catch((err) => {
-                console.error(err);
-                setIsLoading(false);
-            })
-            .then(() => setIsLoading(false));
+        cart.updateItemQuantity(`${product?.id}#${variant?.id}`, parseInt(event?.target?.value) || 0);
     };
 
     if (!product || !variant || isLoading) {
@@ -134,16 +123,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
             <div
                 className="CartItem-Remove"
                 onClick={() => {
-                    setIsLoading(true);
-                    Cart.Remove([cart, setCart], {
-                        id: product?.id,
-                        variant_id: variant?.id,
-                        quantity: props.data?.quantity
-                    })
-                        .catch((err) => {
-                            console.error(err);
-                        })
-                        .then(() => setIsLoading(false));
+                    cart.removeItem(`${product?.id}#${variant?.id}`);
                 }}
             >
                 <FiTrash className="Icon" />

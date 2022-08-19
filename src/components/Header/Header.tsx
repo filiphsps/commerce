@@ -4,14 +4,14 @@ import React, { FunctionComponent } from 'react';
 import { Config } from '../../util/Config';
 import Link from '../Link';
 import SearchBar from '../SearchBar';
-import { useStore } from 'react-context-hook';
+import { useCart } from 'react-use-cart';
 
 interface HeaderProps {
     store?: any;
     navigation?: any;
 }
 const Header: FunctionComponent<HeaderProps> = ({ store, navigation }) => {
-    const [cart] = useStore<any>('cart');
+    const cart = useCart();
 
     return (
         <header className="Header">
@@ -46,12 +46,12 @@ const Header: FunctionComponent<HeaderProps> = ({ store, navigation }) => {
                         <Link
                             to={'/cart'}
                             className={`Cart ${
-                                cart?.items?.length >= 1 && 'Cart-Active'
+                                cart?.totalItems >= 1 && 'Cart-Active'
                             }`}
                         >
-                            {cart?.items?.length >= 1 && (
+                            {cart?.totalItems >= 1 && (
                                 <span className="Header-Content-CartBadge">
-                                    {cart?.total_items || cart?.items?.length}
+                                    {cart.totalItems}
                                 </span>
                             )}
                             <FiShoppingCart className="Icon" />

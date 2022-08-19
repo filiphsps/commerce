@@ -4,7 +4,6 @@ import { ProductApi, ProductsApi } from '../../../src/api/product';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import Button from '../../../src/components/Button';
-import Cart from '../../../src/util/cart';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
@@ -24,6 +23,7 @@ import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
+import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 import { useTranslation } from 'next-i18next';
@@ -222,10 +222,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     store
 }) => {
     const router = useRouter();
+    const cart = useCart();
     const [quantity, setQuantity] = useState(1);
     const [variant, setVariant] = useState(product.variants.length - 1);
     const [loading, setLoading] = useState(false);
-    const [cart, setCart] = useStore<any>('cart');
     const { t } = useTranslation('product');
 
     if (errors)
@@ -405,27 +405,17 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     loading
                                 }
                                 onClick={() => {
-                                    setLoading(true);
-
-                                    Cart.Add([cart, setCart], {
-                                        id: product?.id,
-                                        variant_id:
-                                            product?.variants[variant]?.id,
-                                        quantity: quantity,
+                                    cart.addItem({
+                                        id: `${product?.id}#${product?.variants[variant]?.id}`,
                                         price: product?.variants[variant]
                                             ?.pricing.range,
-                                        data: {
-                                            product,
-                                            variant: product?.variants[variant]
-                                        }
-                                    }, router.locale)
-                                        .then(() => {
-                                            setLoading(false);
-                                        })
-                                        .catch((err) => {
-                                            console.error(err);
-                                            // FIXME: notify error
-                                        });
+                                        quantity: quantity,
+
+                                        title: product?.title,
+                                        variant_title: product?.variants[variant].title
+                                    });
+
+                                    // FIXME: Popup
                                 }}
                             >
                                 {t('add_to_cart')}

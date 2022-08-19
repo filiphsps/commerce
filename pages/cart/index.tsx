@@ -15,17 +15,19 @@ import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
 import { StoreModel } from '../../src/models/StoreModel';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useStore } from 'react-context-hook';
+import { useCart } from 'react-use-cart';
 
 interface CartPageProps {
     store: StoreModel;
 }
 const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
-    const [cart] = useStore<any>('cart');
+    const cart = useCart();
     const [loading, setLoading] = useState(false);
 
-    const savings = cart?.price - (cart?.price_with_savings || 0);
+    const currency = 'USD';
+    const price = cart.items.reduce((previousValue, item) => previousValue + item.price * item.quantity, 0);
+
     return (
         <Page className="CartPage">
             <NextSeo title="Cart" />
@@ -47,15 +49,15 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         title={
                             <>
                                 <LanguageString id={'cart'} />{' '}
-                                {cart?.total_items >= 1 &&
-                                    `(${cart?.total_items})`}
+                                {cart.totalItems >= 1 &&
+                                    `(${cart.totalItems})`}
                             </>
                         }
                     />
                 }
 
                 <div className="CartPage-Content">
-                    {(cart?.items?.length >= 1 && (
+                    {(cart.items?.length >= 1 && (
                         <div className="CartPage-Content-Items">
                             <div className="CartPage-Content-Items-Header">
                                 <div>
@@ -75,26 +77,26 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 </div>
                             </div>
 
-                            {cart?.items?.map((item) => {
+                            {cart.items?.map((item) => {
                                 return (
                                     <CartItem
                                         key={`${item.id}_${item.variant_id}`}
                                         data={item}
-                                        total_items={cart?.total_items}
+                                        total_items={cart.totalItems}
                                     />
                                 );
                             })}
                         </div>
                     )) || (
                         <div className="CartPage-Content-Items">
-                            {!cart?.items && <PageLoader />}
+                            {!cart.items && <PageLoader />}
                         </div>
                     )}
 
                     <div className="CartPage-Content-Total">
                         <div className="CartPage-Content-Total-Content">
                             <div className="CartPage-Content-Total-Content-Items">
-                                {cart?.items?.map((line_item) => {
+                                {cart.items?.map((line_item) => {
                                     return (
                                         <div
                                             key={line_item.id}
@@ -120,20 +122,20 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                             line_item?.quantity
                                                         }
                                                         currency={
-                                                            cart?.currency
+                                                            line_item.currency
                                                         }
                                                         className="Currency-Sale"
                                                     />
                                                 )}
                                                 <Currency
                                                     price={
-                                                        line_item?.total_price *
+                                                        line_item?.price *
                                                         line_item?.quantity
                                                     }
-                                                    currency={cart?.currency}
+                                                    currency={line_item.currency}
                                                     className={
                                                         line_item.total_compare_at_price &&
-                                                        line_item?.total_price !==
+                                                        line_item?.price !==
                                                             line_item?.total_compare_at_price &&
                                                         'Currency-Discount'
                                                     }
@@ -144,45 +146,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 })}
                             </div>
 
-                            {savings > 0 && (
-                                <>
-                                    <Currency
-                                        className="CartPage-Content-Total-Before"
-                                        price={cart?.price}
-                                        currency={cart?.currency}
-                                    />
-
-                                    <Currency
-                                        className="CartPage-Content-Total-Discount"
-                                        price={savings}
-                                        currency={cart?.currency}
-                                        prefix={'-'}
-                                        suffix={
-                                            <>
-                                                (
-                                                {Math.ceil(
-                                                    (savings / cart?.price) *
-                                                        100
-                                                ) || 0}
-                                                %{' '}
-                                                <LanguageString
-                                                    id={'discount'}
-                                                />
-                                                )
-                                            </>
-                                        }
-                                    />
-                                </>
-                            )}
-
                             <div className="CartPage-Content-Total-Div" />
                             <div className="CartPage-Content-Total-Notice">
                                 <LanguageString id={'excl_shipping'} />
                             </div>
                             <Currency
                                 className="CartPage-Content-Total-Total"
-                                price={cart?.price_with_savings}
-                                currency={cart?.currency}
+                                price={price}
+                                currency={currency}
                                 prefix={
                                     <>
                                         <LanguageString id={'total'} />:{' '}
@@ -193,8 +164,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         <div className="CartPage-Content-Total-Actions">
                             <Button
                                 disabled={
-                                    cart?.items?.length <= 0 ||
-                                    !cart?.items ||
+                                    cart.items?.length <= 0 ||
+                                    !cart.items ||
                                     loading
                                 }
                                 onClick={async () => {
@@ -202,7 +173,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                                     try {
                                         const url = (
-                                            (await CheckoutApi(cart)) as string
+                                            (await CheckoutApi(cart.items)) as string
                                         ).replace(
                                             Config.shopify.domain,
                                             'checkout.candybysweden.com'

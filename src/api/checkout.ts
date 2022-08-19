@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
 
-export const CheckoutApi = async (cart: any) => {
+export const CheckoutApi = async (items: any) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data } = await shopify.query({
@@ -22,9 +22,9 @@ export const CheckoutApi = async (cart: any) => {
                 `,
                 variables: {
                     input: {
-                        lineItems: cart?.items?.map((line_item) => ({
+                        lineItems: items?.map((line_item) => ({
                             quantity: line_item?.quantity,
-                            variantId: btoa(line_item?.variant_id)
+                            variantId: btoa(line_item?.id.split('#')[1])
                         }))
                     }
                 }
