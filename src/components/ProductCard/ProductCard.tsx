@@ -8,7 +8,6 @@ import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import { ProductModel } from '../../models/ProductModel';
-import { toast } from 'react-toastify';
 import { useCart } from 'react-use-cart';
 import { useTranslation } from 'next-i18next';
 
@@ -215,10 +214,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     variant_title: product?.variants[selectedVariant].title
                                 });
 
-                                toast.success(t('added_to_cart'), {
-                                    theme: 'dark',
-                                    position: toast.POSITION.TOP_LEFT
-                                });
+                                // TODO: Toast
                             }}
                         >
                             <span data-nosnippet>

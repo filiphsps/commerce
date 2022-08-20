@@ -1,6 +1,5 @@
 import 'destyle.css';
 import './app.scss';
-import 'react-toastify/dist/ReactToastify.css';
 
 import * as Sentry from '@sentry/browser';
 
@@ -18,7 +17,6 @@ import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
-import { ToastContainer } from 'react-toastify';
 import { appWithTranslation } from 'next-i18next';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
@@ -123,7 +121,6 @@ const StoreApp = withStore(
                             {...pageProps}
                             store={contextStore}
                         />
-                        <ToastContainer />
                     </PageProvider>
                 </CartProvider>
                 <ScrollToTop />

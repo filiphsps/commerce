@@ -23,7 +23,6 @@ import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
-import { toast } from 'react-toastify';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -415,10 +414,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                         variant_title: product?.variants[variant].title
                                     });
 
-                                    toast.success(t('added_to_cart'), {
-                                        theme: 'dark',
-                                        position: toast.POSITION.TOP_LEFT
-                                    });
+                                    // TODO: Toast
                                 }}
                             >
                                 {t('add_to_cart')}
