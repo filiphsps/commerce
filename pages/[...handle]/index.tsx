@@ -80,7 +80,7 @@ export async function getStaticPaths() {
             .filter((a) => a.params.handle && a.params.handle != 'home')
     ];
 
-    return { paths, fallback: 'blocking' };
+    return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params, locale }) {
