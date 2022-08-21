@@ -32,15 +32,6 @@ const StoreApp = withStore(
         const [contextStore] = useStore<any>('store');
 
         useEffect(() => {
-            /* eslint-disable no-console */
-            // Log build info
-            console.log('Shoppy by Filiph Siitam Sandström');
-            /*console.log(
-                'Licensed under MIT. See https://github.com/filiphsandstrom/Shoppy'
-            );*/
-            console.log(`Build: ${Config.git_sha}. Domain: ${Config.domain}`);
-            /* eslint-enable no-console */
-
             // Setup sentry
             if (Config.sentry && Config.environment === 'production') {
                 Sentry.init({
