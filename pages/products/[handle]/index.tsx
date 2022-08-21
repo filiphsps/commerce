@@ -271,9 +271,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     return (
         <Page className="ProductPage">
             <NextSeo
-                title={`${product?.seo?.title || product?.title} | ${
-                    product?.vendor?.title
-                }`}
+                title={`${product?.seo?.title || product?.title}`}
                 description={
                     product?.seo?.description || product?.description || ''
                 }
