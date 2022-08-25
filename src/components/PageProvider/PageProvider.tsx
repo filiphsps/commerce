@@ -2,15 +2,18 @@ import React, { FunctionComponent, useCallback } from 'react';
 
 import CartHeader from '../CartHeader';
 import Footer from '../Footer';
-import Header from '../Header';
 import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import SearchHeader from '../SearchHeader';
 import { StoreModel } from '../../models/StoreModel';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
+const Header = dynamic(() => import('../Header'), {
+    ssr: false
+});
 interface PageProviderProps {
     store: StoreModel;
     children: any;

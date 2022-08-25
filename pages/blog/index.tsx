@@ -19,7 +19,10 @@ const Article = styled.div`
     grid-gap: 2rem;
     padding-bottom: 2rem;
     cursor: pointer;
-    max-width: 64rem;
+
+    @media (min-width: 950px) {
+        max-width: 64rem;
+    }
 
     h2 {
         font-size: 2rem;

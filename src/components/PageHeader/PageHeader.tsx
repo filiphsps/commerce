@@ -23,6 +23,7 @@ const SubTitle = styled.h3`
     text-transform: uppercase;
     font-weight: 500;
     font-size: 1.75rem;
+    line-height: 2rem;
     margin-left: 0.05rem;
 
     a {
