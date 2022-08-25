@@ -12,13 +12,10 @@ const git_sha = child_process.execSync('git rev-parse HEAD', {
 }).replace(/\n/, '');
 
 module.exports = withBundleAnalyzer({
-    projectRoot: __dirname,
     poweredByHeader: false,
-    strictMode: true,
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    target: 'server',
     i18n,
 
     images: {
