@@ -59,10 +59,10 @@ export const OrdersApi = async () => {
 
             if (!data?.customer) return reject();
 
-            resolve(Convertor(data?.customer?.orders?.edges));
+            return resolve(Convertor(data?.customer?.orders?.edges));
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };
@@ -114,14 +114,14 @@ export const OrderApi = async (id: string) => {
             if (!data?.customer) return reject();
 
             // HACK
-            resolve(
+            return resolve(
                 Convertor(data?.customer?.orders?.edges)?.filter(
                     (a) => a?.name === `#${id}`
                 )[0]
             );
         } catch (err) {
             console.error(err);
-            reject(err);
+            return reject(err);
         }
     });
 };

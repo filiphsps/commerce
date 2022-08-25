@@ -227,8 +227,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation('product');
 
-    if (errors)
-        console.error(errors);
+    if (errors.length) console.error(errors);
 
     // Handle redirect.
     useEffect(() => {
@@ -409,7 +408,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                         quantity: quantity,
 
                                         title: product?.title,
-                                        variant_title: product?.variants[variant].title
+                                        variant_title:
+                                            product?.variants[variant].title
                                     });
 
                                     // TODO: Toast
@@ -491,7 +491,10 @@ export async function getStaticProps({ params, locale }) {
     let errors = [];
 
     try {
-        translation = await serverSideTranslations(locale ?? 'en-US', ['common', 'product']);
+        translation = await serverSideTranslations(locale ?? 'en-US', [
+            'common',
+            'product'
+        ]);
     } catch (err) {
         console.error(err);
         errors.push(err);
@@ -505,7 +508,10 @@ export async function getStaticProps({ params, locale }) {
     }
 
     try {
-        recommendations = (await RecommendationApi({ id: product?.id, locale })) as any;
+        recommendations = (await RecommendationApi({
+            id: product?.id,
+            locale
+        })) as any;
     } catch (err) {
         console.warn(err);
         errors.push(err);

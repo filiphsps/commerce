@@ -27,8 +27,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
 
     const router = useRouter();
 
-    if (errors)
-        console.error(errors);
+    if (errors.length) console.error(errors);
 
     useEffect(() => {
         if (!data?.collection) return;
@@ -109,7 +108,10 @@ export async function getStaticProps({ locale, params }) {
     let errors = [];
 
     try {
-        translation = await serverSideTranslations(locale ?? 'en-US', ['common', 'product']);
+        translation = await serverSideTranslations(locale ?? 'en-US', [
+            'common',
+            'product'
+        ]);
     } catch (err) {
         console.error(err);
         errors.push(err);
