@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
+import Image from 'next/image';
 import LanguageString from '../../src/components/LanguageString';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -13,11 +14,21 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
 
 const Article = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-gap: 2rem;
+    padding-bottom: 2rem;
+    cursor: pointer;
+    max-width: 64rem;
+
     h2 {
-        cursor: pointer;
         font-size: 2rem;
         padding-bottom: 0.5rem;
     }
+`;
+const ArticleImage = styled.div`
+    height: 12rem;
+    width: 12rem;
 `;
 const ArticleContent = styled.div`
     font-size: 1.5rem;
@@ -50,12 +61,24 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
 
                 <div>
                     {blog.articles.map((article) => (
-                        <Article key={article.id}>
-                            <Link href={`/blog/${article.handle}`}>
-                                <h2>{article.title}</h2>
-                            </Link>
-                            <ArticleContent>{article.excerpt}</ArticleContent>
-                        </Article>
+                        <Link key={article.id} href={`/blog/${article.handle}`}>
+                            <Article>
+                                <ArticleImage>
+                                    <Image
+                                        src={article.image.url}
+                                        layout="responsive"
+                                        width={article.image.width}
+                                        height={article.image.height}
+                                    />
+                                </ArticleImage>
+                                <div>
+                                    <h2>{article.title}</h2>
+                                    <ArticleContent>
+                                        {article.excerpt}
+                                    </ArticleContent>
+                                </div>
+                            </Article>
+                        </Link>
                     ))}
                 </div>
             </PageContent>

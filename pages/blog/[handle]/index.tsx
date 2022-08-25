@@ -3,7 +3,6 @@ import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import LanguageString from '../../../src/components/LanguageString';
-import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
@@ -13,8 +12,28 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
 
 const Content = styled.div`
+    font-size: 1.45rem;
+    max-width: 78rem;
+
+    a {
+        color: var(--accent-primary);
+        transition: 250ms;
+
+        &:hover {
+            color: var(--accent-primary-light);
+        }
+    }
+
+    h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 2.5rem;
+        letter-spacing: 0.05rem;
+        text-transform: uppercase;
+    }
     h3 {
         font-size: 1.75rem;
+        line-height: 2rem;
     }
 `;
 
@@ -27,7 +46,10 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
 
     return (
         <Page className="CartPage">
-            <NextSeo title={article.title} />
+            <NextSeo
+                title={article.seo.title || article.title}
+                description={article.seo.description || article.excerpt}
+            />
 
             <PageContent>
                 <Breadcrumbs
@@ -45,7 +67,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                     hideSocial={true}
                 />
 
-                <PageHeader title={article.title} />
+                <PageHeader title={article.title} plainTitle />
 
                 <Content
                     dangerouslySetInnerHTML={{ __html: article.content }}

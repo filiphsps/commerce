@@ -30,6 +30,13 @@ export const BlogApi = async ({
                                         title
                                         excerpt
                                         publishedAt
+
+                                        image {
+                                            url
+                                            height
+                                            width
+                                            altText
+                                        }
                                     }
                                 }
                             }
@@ -48,7 +55,14 @@ export const BlogApi = async ({
                 handle: i.node.handle,
                 title: i.node.title,
                 excerpt: i.node.excerpt,
-                published_at: i.node.publishedAt
+                published_at: i.node.publishedAt,
+
+                image: {
+                    url: i.node.image.url,
+                    width: i.node.image.width,
+                    height: i.node.image.height,
+                    alt: i.node.image.altText
+                }
             }));
 
             return resolve(result);
@@ -84,7 +98,20 @@ export const ArticleApi = async ({
                                 handle
 
                                 title
+                                excerpt
                                 contentHtml
+
+                                image {
+                                    url
+                                    height
+                                    width
+                                    altText
+                                }
+
+                                seo {
+                                    title
+                                    description
+                                }
                             }
                         }
                     }
@@ -102,7 +129,19 @@ export const ArticleApi = async ({
                 handle: result.handle,
 
                 title: result.title,
-                content: result.contentHtml
+                excerpt: result.excerpt,
+                content: result.contentHtml,
+
+                image: {
+                    url: result.image.url,
+                    width: result.image.width,
+                    height: result.image.height,
+                    alt: result.image.altText
+                },
+                seo: {
+                    title: result.seo.title,
+                    description: result.seo.description
+                }
             });
         } catch (err) {
             console.error(err);
