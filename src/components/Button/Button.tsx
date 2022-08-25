@@ -25,10 +25,12 @@ const ButtonWrapper = styled.button`
         font-size: 1.5rem;
     }
 
-    &:hover,
+    &:hover {
+        background: var(--accent-primary-light);
+    }
+
     &:active {
-        background: $color-primary-light !important;
-        color: $color-text-primary;
+        background: var(--accent-primary-dark);
     }
 
     &.Button-Disabled {

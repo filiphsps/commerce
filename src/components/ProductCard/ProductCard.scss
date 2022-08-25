@@ -231,22 +231,6 @@
                     user-select: none;
                 }
             }
-
-            &.Button {
-                flex-grow: 0;
-                flex-shrink: 0;
-                justify-content: center;
-                padding: 1.75rem 1rem;
-                background: $color-primary;
-                font-weight: 700;
-                font-size: 1.25rem;
-                transition: 250ms box-shadow ease-in-out;
-                border-radius: $block-border-radius !important;
-
-                &.Button-Disabled {
-                    cursor: not-allowed;
-                }
-            }
         }
     }
 

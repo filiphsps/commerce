@@ -198,7 +198,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                         </div>
 
                         <Button
-                            className="ProductCard-Actions-Action Button"
+                            className="Button"
                             disabled={
                                 !variant?.available ||
                                 !parseInt(quantity as any)
@@ -214,7 +214,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                     variant_title: product?.variants[selectedVariant].title
                                 });
 
-                                // TODO: Toast
+                                setTimeout(() => {
+                                    
+                                }, 3000);
                             }}
                         >
                             <span data-nosnippet>
