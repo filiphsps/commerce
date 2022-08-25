@@ -1,4 +1,5 @@
 module.exports = {
     siteUrl: 'https://candybysweden.com',
-    generateRobotsTxt: false
+    generateRobotsTxt: false,
+    exclude: ['/admin', '/blog*', '/account*']
 };
