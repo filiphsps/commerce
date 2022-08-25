@@ -12,7 +12,8 @@ export const shopify = new ApolloClient({
         }
     }),
     cache: new InMemoryCache({
-        canonizeResults: true
+        canonizeResults: true,
+        addTypename: false
     }),
     defaultOptions: {
         watchQuery: {
@@ -39,7 +40,8 @@ export const newShopify = new ApolloClient({
         }
     }),
     cache: new InMemoryCache({
-        canonizeResults: true
+        canonizeResults: true,
+        addTypename: false
     }),
     defaultOptions: {
         watchQuery: {
