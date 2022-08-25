@@ -1,20 +1,16 @@
 import 'destyle.css';
 import './app.scss';
 
-import * as Sentry from '@sentry/browser';
-
-import React, { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
-import { BrowserTracing } from '@sentry/tracing';
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
-import { Config } from '../src/util/Config';
 import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
+import React from 'react';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
 import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
@@ -31,19 +27,6 @@ const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
         const [contextStore] = useStore<any>('store');
-
-        useEffect(() => {
-            // Setup sentry
-            if (Config.sentry && Config.environment === 'production') {
-                Sentry.init({
-                    dsn: Config.sentry,
-                    release: Config.git_sha,
-                    integrations: [new BrowserTracing()],
-                    environment: Config.environment,
-                    tracesSampleRate: 0.2
-                });
-            }
-        }, []);
 
         return (
             <>
