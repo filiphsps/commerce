@@ -17,6 +17,7 @@ import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
+import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
 import { appWithTranslation } from 'next-i18next';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
@@ -115,6 +116,7 @@ const StoreApp = withStore(
                     </PageProvider>
                 </CartProvider>
                 <ScrollToTop />
+                <ShopifyAnalytics />
             </>
         );
     },
