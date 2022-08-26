@@ -16,6 +16,7 @@ module.exports = withBundleAnalyzer({
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
+    largePageDataBytes: 256 * 1000,
     i18n,
 
     images: {
