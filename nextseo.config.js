@@ -2,7 +2,7 @@
 export default {
     titleTemplate: '%s | Candy By Sweden',
     defaultTitle: 'Chocolate, Gummies & Candy',
-    description: 'Buy Swedish and Scandinavian candy, chocolate and sweets online. Fast and easy delivery directly to your door.',
+    description: 'Buy Swedish and Scandinavian candy, chocolate and sweets online. Fast and easy delivery directly to your door. All popular Swedish candy brands with worldwide shipping.',
     additionalMetaTags: [
         {
             property: 'theme-color',
