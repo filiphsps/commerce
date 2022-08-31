@@ -3,11 +3,27 @@ import * as PrismicDOM from '@prismicio/helpers';
 import React, { FunctionComponent } from 'react';
 
 import { FooterApi } from '../../api/footer';
+import Image from 'next/image';
+import Link from 'next/link';
+import PaymentIcons from '../../../public/assets/payments/icons.png';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Copyright = styled.div`
     text-transform: uppercase;
+`;
+const PaymentIconsContainer = styled.div`
+    max-width: 24rem;
+    width: 100%;
+    height: 4rem;
+    margin-top: -1.5rem;
+`;
+const PaymentIconsWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    margin: 1rem 0px;
 `;
 
 interface FooterProps {
@@ -20,6 +36,11 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
     return (
         <>
+            <PaymentIconsWrapper>
+                <PaymentIconsContainer>
+                    <Image src={PaymentIcons} layout="responsive" />
+                </PaymentIconsContainer>
+            </PaymentIconsWrapper>
             <footer className="Footer">
                 <div className="Footer-Wrapper">
                     <div className="Footer-Blocks">
@@ -41,9 +62,24 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             />
                         </div>
 
-                        <div className="Footer-Blocks-Block"></div>
-                        <div className="Footer-Blocks-Block"></div>
-                        <div className="Footer-Blocks-Block"></div>
+                        <div className="Footer-Blocks-Block">
+                            <h2>Information</h2>
+                            <Link href="/shipping">Shipping Policy</Link>
+                            <Link href="/about">Returns</Link>
+                        </div>
+                        <div className="Footer-Blocks-Block">
+                            <h2>Contact</h2>
+                            <Link href="/about">About us</Link>
+                            <Link href="mailto:hi@spsgroup.se">
+                                hi@spsgroup.se
+                            </Link>
+                        </div>
+                        <div className="Footer-Blocks-Block">
+                            <h2>Social</h2>
+                            <Link href="https://www.instagram.com/candybysweden/">
+                                Instagram
+                            </Link>
+                        </div>
                     </div>
 
                     <Copyright>
