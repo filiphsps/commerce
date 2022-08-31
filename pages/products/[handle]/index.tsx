@@ -236,8 +236,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     }, []);
 
     useEffect(() => {
-        if (redirect || (window as any)?.dataLayer) return;
-
         (window as any)?.dataLayer?.push({ ecommerce: null });
         (window as any)?.dataLayer?.push({
             event: 'view_item',

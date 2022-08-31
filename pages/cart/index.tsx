@@ -15,6 +15,7 @@ import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
 import { StoreModel } from '../../src/models/StoreModel';
 import { useCart } from 'react-use-cart';
+import { useEffect } from 'react';
 
 interface CartPageProps {
     store: StoreModel;
@@ -29,6 +30,28 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         (previousValue, item) => previousValue + item.price * item.quantity,
         0
     );
+
+    useEffect(() => {
+        (window as any).dataLayer.push({
+            ecommerce: null
+        });
+        (window as any).dataLayer.push({
+            event: 'view_cart',
+            currency: 'USD',
+            value: price,
+            ecommerce: {
+                items: cart.items.map((item) => ({
+                    item_id: item.id,
+                    item_name: item.title,
+                    item_variant: item.variant_title,
+                    item_brand: item.brand,
+                    currency: 'USD',
+                    quantity: item.quantity,
+                    price: item.price
+                }))
+            }
+        });
+    }, []);
 
     return (
         <Page className="CartPage">
@@ -180,13 +203,63 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             'checkout.candybysweden.com'
                                         );
 
-                                        /* if ((window as any)?.ga) {
-                                            (window as any).ga((tracker) => {
-                                                window.location.href = `${url}&${tracker.get(
-                                                    'linkerParam'
-                                                )}`;
-                                            });
-                                        } else */
+                                        (window as any).dataLayer.push({
+                                            ecommerce: null
+                                        });
+                                        (window as any).dataLayer.push({
+                                            event: 'begin_checkout',
+                                            currency: 'USD',
+                                            value: price,
+                                            ecommerce: {
+                                                items: cart.items.map(
+                                                    (item) => ({
+                                                        item_id: item.id,
+                                                        item_name: item.title,
+                                                        item_variant:
+                                                            item.variant_title,
+                                                        item_brand: item.brand,
+                                                        currency: 'USD',
+                                                        quantity: item.quantity,
+                                                        price: item.price
+                                                    })
+                                                )
+                                            }
+                                        });
+
+                                        // Microsoft Ads tracking
+                                        if ((window as any).uetq) {
+                                            (window as any).uetq.push(
+                                                'event',
+                                                'begin_checkout',
+                                                {
+                                                    ecomm_prodid:
+                                                        cart.items.map((item) =>
+                                                            item.id
+                                                                .replaceAll(
+                                                                    'gid://shopify/Product/',
+                                                                    ''
+                                                                )
+                                                                .replaceAll(
+                                                                    'gid://shopify/ProductVariant',
+                                                                    ''
+                                                                )
+                                                        ),
+                                                    ecomm_pagetype: 'cart',
+                                                    ecomm_totalvalue: price,
+                                                    revenue_value: 1,
+                                                    currency: 'USD',
+                                                    items: cart.items.map(
+                                                        (item) => ({
+                                                            id: item.id,
+                                                            quantity:
+                                                                item.quantity,
+                                                            price: item.price
+                                                        })
+                                                    )
+                                                }
+                                            );
+                                        }
+
                                         window.location.href = url;
                                     } catch (err) {
                                         console.error(err);

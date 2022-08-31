@@ -113,6 +113,10 @@
         max-width: 100%;
     }
 
+    .CartItem-Actions {
+        user-select: none;
+    }
+
     .CartItem-Price {
         position: relative;
         flex-direction: column;
