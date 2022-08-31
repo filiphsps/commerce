@@ -18,6 +18,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
 
     const cart = useCart();
+    const [addedToCart, setAddedToCart] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [selectedVariant, setSelectedVariant] = useState(
@@ -196,12 +197,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                         </div>
 
                         <Button
-                            className="Button"
+                            className={`Button ${addedToCart ? 'Added' : ''}`}
                             disabled={
                                 !variant?.available ||
                                 !parseInt(quantity as any)
                             }
                             onClick={() => {
+                                setAddedToCart(true);
                                 cart.addItem({
                                     id: `${product?.id}#${product?.variants[selectedVariant]?.id}`,
                                     price: product?.variants[selectedVariant]
@@ -213,13 +215,16 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                                         product?.variants[selectedVariant].title
                                 });
 
-                                setTimeout(() => {}, 3000);
+                                setTimeout(() => {
+                                    setAddedToCart(false);
+                                }, 3000);
                             }}
                         >
                             <span data-nosnippet>
                                 {!variant?.available
                                     ? 'Out of stock'
-                                    : 'Add to Cart'}
+                                    : (addedToCart && 'Added!') ||
+                                      'Add to Cart'}
                             </span>
                         </Button>
                     </div>
