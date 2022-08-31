@@ -13,7 +13,6 @@ import type { PageModel } from '../../src/models/PageModel';
 import { Prefetch } from '../../src/util/Prefetch';
 import Slices from '../../src/components/Slices';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 interface CustomPageProps {
@@ -91,10 +90,6 @@ export async function getStaticProps({ params, locale }) {
 
         return {
             props: {
-                ...(await serverSideTranslations(locale, [
-                    'common',
-                    'product'
-                ])),
                 handle: params?.handle?.join('/'),
                 data: {
                     page,
@@ -107,9 +102,7 @@ export async function getStaticProps({ params, locale }) {
         console.error(err);
 
         return {
-            props: {
-                ...(await serverSideTranslations(locale, ['common', 'product']))
-            },
+            props: {},
             revalidate: 1
         };
     }

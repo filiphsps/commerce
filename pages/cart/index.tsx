@@ -14,7 +14,6 @@ import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
 import { StoreModel } from '../../src/models/StoreModel';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCart } from 'react-use-cart';
 
 interface CartPageProps {
@@ -216,9 +215,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
 export async function getStaticProps({ locale }) {
     return {
-        props: {
-            ...(await serverSideTranslations(locale, ['common', 'product']))
-        },
+        props: {},
         revalidate: 5
     };
 }

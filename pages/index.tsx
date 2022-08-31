@@ -7,7 +7,6 @@ import type { PageModel } from '../src/models/PageModel';
 import { Prefetch } from '../src/util/Prefetch';
 import Slices from '../src/components/Slices';
 import type { StoreModel } from '../src/models/StoreModel';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 interface HomePageProps {
     store: StoreModel;
@@ -50,7 +49,6 @@ export async function getStaticProps({ query, locale }) {
 
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'product'])),
             data: {
                 page,
                 prefetch

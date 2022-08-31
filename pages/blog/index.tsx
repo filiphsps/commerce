@@ -10,7 +10,6 @@ import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import { StoreModel } from '../../src/models/StoreModel';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
 
 const Article = styled.div`
@@ -90,19 +89,8 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
 };
 
 export async function getStaticProps({ params, locale }) {
-    let translation;
     let blog: any = null;
     let errors = [];
-
-    try {
-        translation = await serverSideTranslations(locale ?? 'en-US', [
-            'common',
-            'product'
-        ]);
-    } catch (err) {
-        console.error(err);
-        errors.push(err);
-    }
 
     try {
         blog = (await BlogApi({ handle: 'news', locale })) as any;
@@ -113,7 +101,6 @@ export async function getStaticProps({ params, locale }) {
 
     return {
         props: {
-            ...translation,
             blog,
             errors
         },

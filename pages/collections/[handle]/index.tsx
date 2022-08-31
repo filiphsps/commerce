@@ -11,7 +11,6 @@ import PageContent from '../../../src/components/PageContent';
 import { StoreModel } from '../../../src/models/StoreModel';
 import Vendors from '../../../src/components/Slices/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
@@ -104,18 +103,8 @@ export async function getStaticProps({ locale, params }) {
             revalidate: false
         };
 
-    let translation, collection, vendors;
+    let collection, vendors;
     let errors = [];
-
-    try {
-        translation = await serverSideTranslations(locale ?? 'en-US', [
-            'common',
-            'product'
-        ]);
-    } catch (err) {
-        console.error(err);
-        errors.push(err);
-    }
 
     try {
         collection = await CollectionApi(handle);
@@ -133,7 +122,6 @@ export async function getStaticProps({ locale, params }) {
 
     return {
         props: {
-            ...translation,
             data: {
                 collection: collection ?? null,
                 vendors: vendors ?? null
