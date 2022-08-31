@@ -18,8 +18,13 @@ interface CartItemProps {
     data?: any;
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
-    const product_id = props.data.id.split('#')[0];
-    const variant_id = props.data.id.split('#')[1];
+    // TODO: remove replace once we've cleared all broken carts
+    const product_id = props.data.id
+        .split('#')[0]
+        .replace('gid://shopify/Product/', '');
+    const variant_id = props.data.id
+        .split('#')[1]
+        .replace('gid://shopify/ProductVariant/', '');
 
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -34,15 +39,16 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         if (!product) return;
 
         setVariant(
-            product?.variants?.find(
-                (variant) => variant?.id === variant_id
-            )
+            product?.variants?.find((variant) => variant?.id === variant_id)
         );
     }, [product]);
 
     const changeAmount = (event: any) => {
         if (event?.target?.value == props?.data?.quantity) return;
-        cart.updateItemQuantity(`${product?.id}#${variant?.id}`, parseInt(event?.target?.value) || 0);
+        cart.updateItemQuantity(
+            `${product?.id}#${variant?.id}`,
+            parseInt(event?.target?.value) || 0
+        );
     };
 
     if (!product || !variant || isLoading) {

@@ -1,5 +1,5 @@
 import { FiShoppingCart, FiUser } from 'react-icons/fi';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 
 import { Config } from '../../util/Config';
 import Link from '../Link';
@@ -12,6 +12,15 @@ interface HeaderProps {
 }
 const Header: FunctionComponent<HeaderProps> = ({ store, navigation }) => {
     const cart = useCart();
+
+    useEffect(() => {
+        cart.items.forEach((item) => {
+            if (!item.id.includes('/')) return;
+
+            // Clear cart if we find old product ids
+            cart.emptyCart();
+        });
+    }, []);
 
     return (
         <header className="Header">

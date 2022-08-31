@@ -96,7 +96,9 @@ export const Convertor = (product: any): ProductModel => {
     }));
 
     return {
-        id: product?.id?.includes('=') ? atob(product.id) : product.id,
+        id: (product?.id?.includes('=') ? atob(product.id) : product.id)
+            .split('/')
+            .at(-1),
         handle: product?.handle,
 
         title: product?.title,
@@ -173,9 +175,12 @@ export const Convertor = (product: any): ProductModel => {
                 }
 
                 return {
-                    id: variant?.id?.includes('=')
+                    id: (variant?.id?.includes('=')
                         ? atob(variant.id)
-                        : variant.id,
+                        : variant.id
+                    )
+                        .split('/')
+                        .at(-1),
                     title: variant.title,
                     sku: variant.sku,
                     default_image: defaultImage ?? 0,
@@ -258,6 +263,9 @@ export const ProductIdApi = async ({
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
         const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
 
+        let formatted_id = id;
+        if (!id.includes('/')) formatted_id = `gid://shopify/Product/${id}`;
+
         try {
             const { data, errors } = await newShopify.query({
                 query: gql`
@@ -270,14 +278,11 @@ export const ProductIdApi = async ({
                 }
                 `,
                 variables: {
-                    id: btoa(id)
+                    id: btoa(formatted_id)
                 }
             });
 
-            if (errors) {
-                console.error(errors);
-                reject(errors);
-            }
+            if (errors && errors.length > 0) return reject(errors);
 
             if (!data?.node) return reject();
 

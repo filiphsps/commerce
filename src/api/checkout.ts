@@ -4,7 +4,16 @@ import { shopify } from './shopify';
 export const CheckoutApi = async (items: any) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data } = await shopify.query({
+            const line_items = items?.map((line_item) => ({
+                quantity: line_item?.quantity,
+                variantId: btoa(
+                    `gid://shopify/ProductVariant/${line_item?.id
+                        .split('#')[1]
+                        .replace('gid://shopify/ProductVariant/', '')}`
+                )
+            }));
+
+            const { data, errors } = await shopify.query({
                 query: gql`
                     mutation checkoutCreate($input: CheckoutCreateInput!) {
                         checkoutCreate(input: $input) {
@@ -22,13 +31,12 @@ export const CheckoutApi = async (items: any) => {
                 `,
                 variables: {
                     input: {
-                        lineItems: items?.map((line_item) => ({
-                            quantity: line_item?.quantity,
-                            variantId: btoa(line_item?.id.split('#')[1])
-                        }))
+                        lineItems: line_items
                     }
                 }
             });
+
+            if (errors && errors.length > 0) return reject(errors[0]);
 
             if (!data?.checkoutCreate?.checkout)
                 return reject(data?.checkoutCreate?.checkoutUserErrors);

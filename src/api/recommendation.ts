@@ -16,8 +16,11 @@ export const RecommendationApi = async ({
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
         const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
 
+        let formatted_id = id;
+        if (!id.includes('/')) formatted_id = `gid://shopify/Product/${id}`;
+
         try {
-            const { data } = await newShopify.query({
+            const { data, errors } = await newShopify.query({
                 query: gql`
                 fragment product on Product {
                     ${PRODUCT_FRAGMENT}
@@ -29,9 +32,11 @@ export const RecommendationApi = async ({
                 }
                 `,
                 variables: {
-                    id: btoa(id)
+                    id: btoa(formatted_id)
                 }
             });
+
+            if (errors && errors.length > 0) return reject(errors);
 
             const result = data?.productRecommendations?.map((product) =>
                 ProductConvertor(product)

@@ -48,12 +48,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                 {
                     <PageHeader
-                        title={
-                            <>
-                                <LanguageString id={'cart'} />{' '}
-                                {cart.totalItems >= 1 && `(${cart.totalItems})`}
-                            </>
-                        }
+                        title="Cart"
                         subtitle="Free shipping on orders above $75!"
                     />
                 }

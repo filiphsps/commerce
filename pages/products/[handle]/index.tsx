@@ -489,7 +489,7 @@ export async function getStaticProps({ params, locale }) {
     try {
         product = (await ProductApi({ handle, locale })) as any;
     } catch (err) {
-        console.warn(err);
+        console.error(err);
         errors.push(err);
     }
 
@@ -509,6 +509,8 @@ export async function getStaticProps({ params, locale }) {
         console.warn(err);
         errors.push(err);
     }
+
+    console.log(errors);
 
     return {
         props: {
