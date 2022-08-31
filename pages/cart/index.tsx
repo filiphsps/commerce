@@ -26,7 +26,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const [loading, setLoading] = useState(false);
 
     const currency = 'USD';
-    const price = cart.items.reduce((previousValue, item) => previousValue + item.price * item.quantity, 0);
+    const price = cart.items.reduce(
+        (previousValue, item) => previousValue + item.price * item.quantity,
+        0
+    );
 
     return (
         <Page className="CartPage">
@@ -49,10 +52,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         title={
                             <>
                                 <LanguageString id={'cart'} />{' '}
-                                {cart.totalItems >= 1 &&
-                                    `(${cart.totalItems})`}
+                                {cart.totalItems >= 1 && `(${cart.totalItems})`}
                             </>
                         }
+                        subtitle="Free shipping on orders above $75!"
                     />
                 }
 
@@ -132,7 +135,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         line_item?.price *
                                                         line_item?.quantity
                                                     }
-                                                    currency={line_item.currency}
+                                                    currency={
+                                                        line_item.currency
+                                                    }
                                                     className={
                                                         line_item.total_compare_at_price &&
                                                         line_item?.price !==
@@ -173,7 +178,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                                     try {
                                         const url = (
-                                            (await CheckoutApi(cart.items)) as string
+                                            (await CheckoutApi(
+                                                cart.items
+                                            )) as string
                                         ).replace(
                                             Config.shopify.domain,
                                             'checkout.candybysweden.com'
