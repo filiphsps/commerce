@@ -131,25 +131,6 @@
                     }
                 }
             }
-
-            /* @media (max-width: $width-max-mobile) {
-                z-index: 10;
-                position: fixed;
-                right: 0px;
-                bottom: 0px;
-                left: 0px;
-                grid-gap: 0px;
-                gap: 0px;
-                height: 6rem;
-                height: calc(6rem + env(safe-area-inset-bottom));
-                background: $color-white;
-                box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.75);
-
-                .ProductPage-Content-Actions-Action {
-                    height: 6rem;
-                    margin-bottom: env(safe-area-inset-bottom);
-                }
-            } */
         }
 
         .ProductPage-Content-Blocks {
@@ -338,6 +319,14 @@
                     margin: 2rem 0px 0px 0px;
                 }
             }
+        }
+    }
+
+    .Button {
+        transition: 250ms ease-in-out;
+        &.Added {
+            background: var(--accent-secondary-dark);
+            font-weight: 700;
         }
     }
 }

@@ -220,6 +220,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 }) => {
     const router = useRouter();
     const cart = useCart();
+    const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [variant, setVariant] = useState(product.variants.length - 1);
     const [loading, setLoading] = useState(false);
@@ -392,12 +393,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         </Variants>
                         <Actions>
                             <Button
+                                className={`Button ${
+                                    addedToCart ? 'Added' : ''
+                                }`}
                                 disabled={
                                     !product?.variants[variant]?.available ||
                                     quantity < 1 ||
                                     loading
                                 }
                                 onClick={() => {
+                                    setAddedToCart(true);
                                     cart.addItem({
                                         id: `${product?.id}#${product?.variants[variant]?.id}`,
                                         price: product?.variants[variant]
@@ -409,10 +414,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                             product?.variants[variant].title
                                     });
 
-                                    // TODO: Toast
+                                    setTimeout(() => {
+                                        setAddedToCart(false);
+                                    }, 3000);
                                 }}
                             >
-                                Add to Cart
+                                {addedToCart ? 'Added!' : 'Add to Cart'}
                             </Button>
                         </Actions>
 
@@ -509,8 +516,6 @@ export async function getStaticProps({ params, locale }) {
         console.warn(err);
         errors.push(err);
     }
-
-    console.log(errors);
 
     return {
         props: {
