@@ -508,11 +508,13 @@ export async function getStaticProps({ params, locale }) {
         errors.push(err);
     }
 
-    try {
-        reviews = await ReviewsProductApi(product.id);
-    } catch (err) {
-        console.warn(err);
-        errors.push(err);
+    if (Config.features.reviews) {
+        try {
+            reviews = await ReviewsProductApi(product.id);
+        } catch (err) {
+            console.warn(err);
+            errors.push(err);
+        }
     }
 
     return {

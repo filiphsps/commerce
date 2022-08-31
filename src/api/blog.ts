@@ -99,7 +99,15 @@ export const ArticleApi = async ({
 
                                 title
                                 excerpt
+                                content
                                 contentHtml
+                                publishedAt
+                                tags
+
+                                authorV2 {
+                                    name
+                                    bio
+                                }
 
                                 image {
                                     url
@@ -130,7 +138,15 @@ export const ArticleApi = async ({
 
                 title: result.title,
                 excerpt: result.excerpt,
-                content: result.contentHtml,
+                content: result.content,
+                content_html: result.contentHtml,
+                published_at: result.publishedAt,
+                tags: result.tags,
+
+                author: {
+                    name: result.authorV2.name,
+                    bio: result.authorV2.bio
+                },
 
                 image: {
                     url: result.image.url,

@@ -1,9 +1,9 @@
 import { ArticleApi, BlogApi } from '../../../src/api/blog';
+import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import LanguageString from '../../../src/components/LanguageString';
-import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageHeader from '../../../src/components/PageHeader';
@@ -49,6 +49,20 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
             />
+            <NewsArticleJsonLd
+                url={`https://candybysweden.com/blog/${article.handle}`}
+                description={article.seo.description || article.excerpt}
+                body={article.content}
+                title={article.title}
+                section="news"
+                images={[]}
+                keywords={article.tags}
+                dateCreated={article.published_at}
+                datePublished={article.published_at}
+                authorName={article.author.name}
+                publisherName="Candy by Sweden"
+                publisherLogo=""
+            />
 
             <PageContent>
                 <Breadcrumbs
@@ -66,10 +80,14 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                     hideSocial={true}
                 />
 
-                <PageHeader title={article.title} plainTitle />
+                <PageHeader
+                    title={article.title}
+                    plainTitle
+                    subtitle={new Date(article.published_at).toDateString()}
+                />
 
                 <Content
-                    dangerouslySetInnerHTML={{ __html: article.content }}
+                    dangerouslySetInnerHTML={{ __html: article.content_html }}
                 />
             </PageContent>
         </Page>

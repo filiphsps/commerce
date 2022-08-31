@@ -32,6 +32,14 @@ const ArticleImage = styled.div`
     height: 12rem;
     width: 12rem;
 `;
+const ArticleDate = styled.div`
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    margin: -0.15rem 0px 0.25rem 0px;
+    text-transform: uppercase;
+    opacity: 0.85;
+`;
 const ArticleContent = styled.div`
     font-size: 1.5rem;
 `;
@@ -75,6 +83,11 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
                                 </ArticleImage>
                                 <div>
                                     <h2>{article.title}</h2>
+                                    <ArticleDate>
+                                        {new Date(
+                                            article.published_at
+                                        ).toDateString()}
+                                    </ArticleDate>
                                     <ArticleContent>
                                         {article.excerpt}
                                     </ArticleContent>

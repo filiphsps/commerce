@@ -18,6 +18,8 @@ const ReviewsWrapper = styled.div`
     grid-template-columns: auto 1fr;
     justify-content: center;
     align-items: center;
+    margin: -1.5rem 0px 0px 0px;
+    padding: 1rem 0px;
 
     ${ReviewsLabel} {
         padding-left: 1rem;
