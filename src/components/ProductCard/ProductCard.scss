@@ -291,6 +291,12 @@
         }
     }
 
+    &.Sale {
+        .ProductCard-Price {
+            background: #d91e18;
+        }
+    }
+
     &:empty {
         min-height: 22rem;
         height: 100%;

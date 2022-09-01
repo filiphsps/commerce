@@ -8,6 +8,7 @@ import Markdown from 'react-markdown';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const SubTitle = styled.h2`
@@ -44,6 +45,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     );
 
     if (error?.message === '404') return <ErrorPage statusCode={404} />;
+
+    const router = useRouter();
 
     const products = (data?.items || props?.data?.items || []).map(
         (item, index) => {
@@ -89,7 +92,11 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                                     to={`/collections/${props.handle}`}
                                     as={'/collections/[handle]'}
                                 >
-                                    <h2>{data?.title}</h2>
+                                    {router.pathname == '/' ? (
+                                        <h1>{data?.title}</h1>
+                                    ) : (
+                                        <h2>{data?.title}</h2>
+                                    )}
                                 </Link>
                             )
                         }

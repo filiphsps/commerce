@@ -31,9 +31,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
 
     const show_variants = product?.variants?.length > 0;
     const variant = product?.variants?.[selectedVariant] || null;
+    const sale = variant?.pricing.compare_at_range > 0;
 
     return (
-        <div className={`ProductCard`}>
+        <div className={`ProductCard ${sale ? 'Sale' : ''}`}>
             <div className="ProductCard-Container">
                 <Link
                     className="ProductCard-Container-Image"
