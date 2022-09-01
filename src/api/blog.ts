@@ -21,7 +21,7 @@ export const BlogApi = async ({
                                 title
                                 description
                             }
-                            articles(first: 250) {
+                            articles(first: 250, reverse: true) {
                                 edges {
                                     node {
                                         id
