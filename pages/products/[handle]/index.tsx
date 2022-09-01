@@ -112,8 +112,8 @@ const Quantity = styled(Input)`
     font-size: 1.5rem;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 `;
-const Ingredients = styled.div`
-    margin-top: 1.5rem;
+const Metadata = styled.div`
+    margin-top: 0.75rem;
     font-size: 1.05rem;
     line-height: 1.5rem;
     letter-spacing: -0.065rem;
@@ -422,10 +422,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         </Actions>
 
                         {product?.metadata?.ingredients && (
-                            <Ingredients>
+                            <Metadata>
                                 <Label>Ingredients</Label>
                                 {product?.metadata?.ingredients}
-                            </Ingredients>
+                            </Metadata>
+                        )}
+                        {product?.variants[variant].sku && (
+                            <Metadata>
+                                <Label>SKU</Label>
+                                {product?.variants[variant].sku}
+                            </Metadata>
                         )}
                     </Details>
                 </ProductContainer>

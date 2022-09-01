@@ -13,16 +13,16 @@ const Copyright = styled.div`
     text-transform: uppercase;
 `;
 const PaymentIconsContainer = styled.div`
-    max-width: 24rem;
+    max-width: 28rem;
     width: 100%;
-    height: 4rem;
+    height: 6rem;
     margin-top: -1.5rem;
 `;
 const PaymentIconsWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 4rem;
+    height: 6rem;
     margin: 1rem 0px;
 `;
 
