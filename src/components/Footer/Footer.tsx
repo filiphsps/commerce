@@ -70,13 +70,16 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         <div className="Footer-Blocks-Block">
                             <h2>Contact</h2>
                             <Link href="/about">About us</Link>
-                            <Link href="mailto:hi@spsgroup.se">
+                            <Link href="mailto:hi@spsgroup.se" target="_blank">
                                 hi@spsgroup.se
                             </Link>
                         </div>
                         <div className="Footer-Blocks-Block">
                             <h2>Social</h2>
-                            <Link href="https://www.instagram.com/candybysweden/">
+                            <Link
+                                href="https://www.instagram.com/candybysweden/"
+                                target="_blank"
+                            >
                                 Instagram
                             </Link>
                         </div>
