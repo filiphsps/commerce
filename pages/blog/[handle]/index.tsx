@@ -11,6 +11,7 @@ import { StoreModel } from '../../../src/models/StoreModel';
 import styled from 'styled-components';
 
 const Content = styled.div`
+    overflow: hidden;
     font-size: 1.45rem;
     max-width: 78rem;
 
@@ -33,6 +34,11 @@ const Content = styled.div`
     h3 {
         font-size: 1.75rem;
         line-height: 2rem;
+    }
+
+    img {
+        max-width: 100vw !important;
+        object-fit: contain;
     }
 `;
 
