@@ -9,7 +9,7 @@ const Content = styled.div`
     align-items: center;
     padding: 1.25rem;
     margin-bottom: 1rem;
-    background: var(--accent-primary);
+    background: var(--accent-secondary-dark);
     color: var(--color-text-primary);
     text-transform: uppercase;
     text-align: center;

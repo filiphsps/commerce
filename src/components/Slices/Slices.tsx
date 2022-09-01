@@ -7,6 +7,7 @@ import ContentBlock from './components/ContentBlock';
 import ContentGrid from './components/ContentGrid';
 import ContentWithImage from './components/ContentWithImage';
 import HtmlBlock from './components/HtmlBlock';
+import IconGrid from './components/IconGrid';
 import Notification from './components/Notification';
 import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
@@ -77,6 +78,9 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             break;
                         case 'notification':
                             Component = Notification;
+                            break;
+                        case 'icon_grid':
+                            Component = IconGrid;
                             break;
                         default:
                             console.error(`Invalid slice "${type}"`);
