@@ -207,7 +207,6 @@ interface ProductPageProps {
     product: ProductModel;
     recommendations?: ProductModel[];
     reviews?: ReviewsModel;
-    redirect?: string;
     store: any;
 }
 const ProductPage: FunctionComponent<ProductPageProps> = ({
@@ -215,25 +214,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     product,
     recommendations,
     reviews,
-    redirect,
     store
 }) => {
     const router = useRouter();
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [variant, setVariant] = useState(product.variants.length - 1);
+    const [variant, setVariant] = useState(
+        product ? product.variants.length - 1 : 0
+    );
     const [loading, setLoading] = useState(false);
 
-    if (errors.length) console.error(errors);
-
-    // Handle redirect.
-    useEffect(() => {
-        setVariant(product.variants.length - 1);
-        if (!redirect) return;
-
-        router.replace(redirect);
-    }, []);
+    if (errors?.length) console.error(errors);
 
     useEffect(() => {
         (window as any)?.dataLayer?.push({ ecommerce: null });
@@ -485,8 +477,9 @@ export async function getStaticProps({ params, locale }) {
     const redirect = await RedirectProductApi(handle);
     if (redirect) {
         return {
-            props: {
-                redirect: redirect
+            redirect: {
+                permanent: true,
+                destination: redirect
             },
             revalidate: 10
         };
