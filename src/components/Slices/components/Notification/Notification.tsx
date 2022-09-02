@@ -25,11 +25,15 @@ interface NotificationProps {
         };
     };
 }
-const Notification: FunctionComponent<NotificationProps> = (props) => {
+const Notification: FunctionComponent<NotificationProps> = ({ data }) => {
     return (
         <div className="Slice Slice-Notification">
             <PageContent>
-                <Content>{props.data.primary.content}</Content>
+                <Content
+                    dangerouslySetInnerHTML={{
+                        __html: data.primary.content
+                    }}
+                />
             </PageContent>
         </div>
     );

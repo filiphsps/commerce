@@ -80,7 +80,11 @@ const IconGrid: FunctionComponent<IconGridProps> = ({ data }) => {
                                     />
                                 )}
                             </ItemIcon>
-                            <ItemContent>{item.title1[0].text}</ItemContent>
+                            <ItemContent
+                                dangerouslySetInnerHTML={{
+                                    __html: item.title1[0].text
+                                }}
+                            />
                         </Item>
                     ))}
                 </Content>
