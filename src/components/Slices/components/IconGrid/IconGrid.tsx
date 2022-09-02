@@ -16,6 +16,11 @@ const Content = styled.div`
     border: 0.2rem solid var(--accent-primary-dark);
     color: var(--color-text-primary);
 
+    &.Secondary {
+        background: var(--accent-secondary);
+        border: 0.2rem solid var(--accent-secondary-dark);
+    }
+
     @media (max-width: 950px) {
         flex-direction: column;
     }
@@ -43,9 +48,11 @@ const ItemContent = styled.h3`
 
 interface IconGridProps {
     data: {
-        primary: {};
+        primary: {
+            secondary: boolean;
+        };
         items: Array<{
-            icon: {
+            icon?: {
                 alt?: string;
                 url: string;
             };
@@ -59,15 +66,19 @@ const IconGrid: FunctionComponent<IconGridProps> = ({ data }) => {
     return (
         <div className="Slice Slice-IconGrid">
             <PageContent>
-                <Content>
+                <Content
+                    className={data.primary.secondary ? 'Secondary' : 'Primary'}
+                >
                     {data.items.map((item, index) => (
                         <Item key={index}>
                             <ItemIcon>
-                                <Image
-                                    src={item.icon.url}
-                                    alt={item.icon.alt}
-                                    layout="fill"
-                                />
+                                {item.icon?.url && (
+                                    <Image
+                                        src={item.icon.url}
+                                        alt={item.icon.alt}
+                                        layout="fill"
+                                    />
+                                )}
                             </ItemIcon>
                             <ItemContent>{item.title1[0].text}</ItemContent>
                         </Item>
