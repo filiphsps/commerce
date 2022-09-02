@@ -28,6 +28,59 @@ const StoreApp = withStore(
         const router = useRouter();
         const [contextStore] = useStore<any>('store');
 
+        const reportItem = (item) => {
+            if (!window || !(window as any)?.dataLayer) return;
+
+            (window as any).dataLayer.push({ ecommerce: null });
+            (window as any).dataLayer.push({
+                event: 'add_to_cart',
+                currency: 'USD',
+                value: item.price * item.quantity,
+                ecommerce: {
+                    items: [
+                        {
+                            item_id: item.id
+                                .replaceAll('gid://shopify/Product/', '')
+                                .replaceAll('gid://shopify/ProductVariant', ''),
+                            item_name: item.title,
+                            item_variant: item.variant_title,
+                            item_brand: item.brand,
+                            currency: 'USD',
+                            quantity: item.quantity,
+                            price: item.price
+                        }
+                    ]
+                }
+            });
+
+            // Microsoft Ads tracking
+            if ((window as any).uetq) {
+                let page_type = 'home';
+                if (router.pathname.includes('products')) page_type = 'product';
+                else if (router.pathname.includes('collections'))
+                    page_type = 'collection';
+
+                (window as any).uetq.push('event', 'add_to_cart', {
+                    ecomm_prodid: [
+                        item.id
+                            .replaceAll('gid://shopify/Product/', '')
+                            .replaceAll('gid://shopify/ProductVariant', '')
+                    ],
+                    ecomm_pagetype: page_type,
+                    ecomm_totalvalue: item.price * item.quantity,
+                    revenue_value: 1,
+                    currency: 'USD',
+                    items: [
+                        {
+                            id: item.id,
+                            quantity: item.quantity,
+                            price: item.price
+                        }
+                    ]
+                });
+            }
+        };
+
         return (
             <>
                 <DefaultSeo {...SEO} />
@@ -89,65 +142,7 @@ const StoreApp = withStore(
                 </Head>
 
                 {/* Page */}
-                <CartProvider
-                    onItemAdd={(item) => {
-                        if (!window || !(window as any)?.dataLayer) return;
-
-                        (window as any).dataLayer.push({ ecommerce: null });
-                        (window as any).dataLayer.push({
-                            event: 'add_to_cart',
-                            currency: 'USD',
-                            value: item.price,
-                            ecommerce: {
-                                items: [
-                                    {
-                                        item_id: item.id,
-                                        item_name: item.title,
-                                        item_variant: item.variant_title,
-                                        item_brand: item.brand,
-                                        currency: 'USD',
-                                        quantity: item.quantity,
-                                        price: item.price
-                                    }
-                                ]
-                            }
-                        });
-
-                        // Microsoft Ads tracking
-                        if ((window as any).uetq) {
-                            let page_type = 'home';
-                            if (router.pathname.includes('products'))
-                                page_type = 'product';
-                            else if (router.pathname.includes('collections'))
-                                page_type = 'collection';
-
-                            (window as any).uetq.push('event', 'add_to_cart', {
-                                ecomm_prodid: [
-                                    item.id
-                                        .replaceAll(
-                                            'gid://shopify/Product/',
-                                            ''
-                                        )
-                                        .replaceAll(
-                                            'gid://shopify/ProductVariant',
-                                            ''
-                                        )
-                                ],
-                                ecomm_pagetype: page_type,
-                                ecomm_totalvalue: item.price,
-                                revenue_value: 1,
-                                currency: 'USD',
-                                items: [
-                                    {
-                                        id: item.id,
-                                        quantity: item.quantity,
-                                        price: item.price
-                                    }
-                                ]
-                            });
-                        }
-                    }}
-                >
+                <CartProvider onItemAdd={reportItem} onItemUpdate={reportItem}>
                     <PageProvider store={contextStore}>
                         <Component
                             key={router.asPath}
