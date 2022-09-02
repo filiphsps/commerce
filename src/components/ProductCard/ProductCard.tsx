@@ -13,6 +13,7 @@ import { useCart } from 'react-use-cart';
 interface ProductCardProps {
     handle?: string;
     data?: ProductModel;
+    isHorizontal?: boolean;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
@@ -97,7 +98,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
 
                     <div
                         className={`ProductCard-Actions ${
-                            product?.variants?.length <= 1 ? 'Only-One' : ''
+                            product?.variants?.length <= 1 &&
+                            !props.isHorizontal
+                                ? 'Only-One'
+                                : ''
                         }`}
                     >
                         <div className="ProductCard-Actions-Action ProductCard-Actions-Action-Variants">

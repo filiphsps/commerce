@@ -57,6 +57,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     key={item?.handle || item}
                     handle={item?.handle || item}
                     data={typeof item !== 'string' ? item : null}
+                    isHorizontal={props.isHorizontal}
                 />
             );
         }

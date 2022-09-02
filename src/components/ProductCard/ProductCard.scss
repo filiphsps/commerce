@@ -83,8 +83,8 @@
 
             .ProductCard-Container-Header-Title {
                 display: block;
-                font-size: 1.65rem;
-                line-height: 1.75rem;
+                font-size: 1.75rem;
+                line-height: 2rem;
                 font-weight: 700;
                 color: $color-primary;
 
@@ -119,6 +119,10 @@
 
         .Button {
             transition: 250ms ease-in-out;
+            font-weight: 700;
+            font-size: 1.25rem;
+            padding: 1rem;
+
             &.Added {
                 background: var(--accent-secondary-dark);
                 font-weight: 700;
