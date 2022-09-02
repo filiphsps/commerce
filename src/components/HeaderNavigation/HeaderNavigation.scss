@@ -10,7 +10,7 @@
     top: calc(5rem + env(safe-area-inset-top));
     width: 100%;
     background: $color-primary-light;
-    border-bottom: 0.05rem solid $color-primary-dark;
+    border-bottom: 0.2rem solid $color-primary-dark;
 
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
@@ -37,7 +37,7 @@
             margin-bottom: -0.2rem;
             text-transform: uppercase;
             color: $color-text-primary;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
             letter-spacing: 0.05rem;
             transition: 150ms;

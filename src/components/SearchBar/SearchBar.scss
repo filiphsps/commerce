@@ -31,9 +31,10 @@
         position: absolute;
         right: 1rem;
         height: 100%;
-        margin: 2rem 0px;
+        margin: 0.95rem 0px;
         font-size: 1.5rem;
         cursor: pointer;
+        color: #0e0e0e;
 
         @media (min-width: $width-max-mobile) {
             top: -0.25rem;

@@ -111,6 +111,12 @@
         max-width: 100%;
         width: 100%;
 
+        @media (max-width: 950px) {
+            &.Only-One .ProductCard-Actions-Action-Variants {
+                display: none !important;
+            }
+        }
+
         .Button {
             transition: 250ms ease-in-out;
             &.Added {
@@ -214,6 +220,7 @@
                     border-radius: $block-border-radius;
                     text-align: center;
                     background: $color-white;
+                    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
                     &::-webkit-outer-spin-button,
                     &::-webkit-inner-spin-button {
@@ -226,8 +233,8 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: 2.5rem;
-                    max-height: 2.5rem;
+                    height: 2.75rem;
+                    max-height: 2.75rem;
                     width: 4.5rem;
                     background: $color-white;
                     border-radius: $block-border-radius;

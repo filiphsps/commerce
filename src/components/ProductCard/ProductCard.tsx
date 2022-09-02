@@ -29,7 +29,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
         setSelectedVariant(product?.variants?.length - 1);
     }, [product]);
 
-    const show_variants = product?.variants?.length > 0;
     const variant = product?.variants?.[selectedVariant] || null;
     const sale = variant?.pricing.compare_at_range > 0;
 
@@ -96,69 +95,65 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                         />
                     </div>
 
-                    <div className="ProductCard-Actions">
-                        {show_variants && (
-                            <div className="ProductCard-Actions-Action ProductCard-Actions-Action-Variants">
-                                <div
-                                    className={`ProductCard-Actions-Action-Variants ${
-                                        (showAll && 'Open') || ''
-                                    }`}
-                                >
-                                    {product?.variants?.map(
-                                        (variant, index) => {
-                                            if (!showAll && index >= 3)
-                                                return null;
+                    <div
+                        className={`ProductCard-Actions ${
+                            product?.variants?.length <= 1 ? 'Only-One' : ''
+                        }`}
+                    >
+                        <div className="ProductCard-Actions-Action ProductCard-Actions-Action-Variants">
+                            <div
+                                className={`ProductCard-Actions-Action-Variants ${
+                                    (showAll && 'Open') || ''
+                                }`}
+                            >
+                                {product?.variants?.map((variant, index) => {
+                                    if (!showAll && index >= 3) return null;
 
-                                            return (
-                                                <div
-                                                    key={index}
-                                                    className={`ProductCard-Actions-Action-Variant ${
-                                                        index ===
-                                                            selectedVariant &&
-                                                        'ProductCard-Actions-Action-Variant-Selected'
-                                                    }`}
-                                                    onClick={() =>
-                                                        setSelectedVariant(
-                                                            index
-                                                        )
-                                                    }
-                                                    data-nosnippet
-                                                >
-                                                    <LanguageString
-                                                        id={
-                                                            variant?.title?.split(
-                                                                ' /'
-                                                            )[0]
-                                                        }
-                                                    />
-                                                </div>
-                                            );
-                                        }
-                                    )}
-
-                                    {product?.variants?.length > 3 && (
+                                    return (
                                         <div
-                                            className="ProductCard-Actions-Action-Variant"
-                                            onClick={() => setShowAll(!showAll)}
+                                            key={index}
+                                            className={`ProductCard-Actions-Action-Variant ${
+                                                index === selectedVariant &&
+                                                'ProductCard-Actions-Action-Variant-Selected'
+                                            }`}
+                                            onClick={() =>
+                                                setSelectedVariant(index)
+                                            }
+                                            data-nosnippet
                                         >
-                                            {showAll ? (
-                                                <FiMinus
-                                                    className="Icon"
-                                                    style={{ marginBottom: 10 }}
-                                                />
-                                            ) : (
-                                                <FiPlus
-                                                    className="Icon"
-                                                    style={{
-                                                        marginBottom: 10
-                                                    }}
-                                                />
-                                            )}
+                                            <LanguageString
+                                                id={
+                                                    variant?.title?.split(
+                                                        ' /'
+                                                    )[0]
+                                                }
+                                            />
                                         </div>
-                                    )}
-                                </div>
+                                    );
+                                })}
+
+                                {product?.variants?.length > 3 && (
+                                    <div
+                                        className="ProductCard-Actions-Action-Variant"
+                                        onClick={() => setShowAll(!showAll)}
+                                    >
+                                        {showAll ? (
+                                            <FiMinus
+                                                className="Icon"
+                                                style={{ marginBottom: 10 }}
+                                            />
+                                        ) : (
+                                            <FiPlus
+                                                className="Icon"
+                                                style={{
+                                                    marginBottom: 10
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
 
                         <div className="ProductCard-Actions-Action ProductCard-Actions-Action-QuantityInput">
                             <div

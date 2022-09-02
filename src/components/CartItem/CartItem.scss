@@ -73,6 +73,10 @@
             line-height: 1.75rem;
             color: $color-primary;
 
+            &:hover {
+                color: $color-primary-dark;
+            }
+
             @media (max-width: $width-max-mobile) {
                 padding: 0px;
                 font-size: 1.25rem;
