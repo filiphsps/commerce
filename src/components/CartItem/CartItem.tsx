@@ -191,6 +191,15 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                         className="Input"
                         defaultValue={props?.data?.quantity}
                         onBlur={(event) => changeAmount(event)}
+                        onInput={(event) => {
+                            event.target.value = event.target.value
+                                .replace(/[^0-9.]/g, '')
+                                .replace(/(\..*?)\..*/g, '$1');
+
+                            // TODO: Figure out a good max
+                            if (Number.parseInt(event.target.value, 10) > 500)
+                                event.target.value = 500;
+                        }}
                         onKeyPress={(event) => {
                             if (event.key !== 'Enter') return;
 
