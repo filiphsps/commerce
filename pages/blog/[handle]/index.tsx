@@ -14,6 +14,9 @@ const Content = styled.div`
     overflow: hidden;
     font-size: 1.45rem;
     max-width: 78rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+    padding: 2rem;
 
     a {
         color: var(--accent-primary);
@@ -39,6 +42,7 @@ const Content = styled.div`
     img {
         max-width: 100vw !important;
         object-fit: contain;
+        mix-blend-mode: multiply;
     }
 `;
 

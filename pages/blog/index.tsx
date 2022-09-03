@@ -29,8 +29,15 @@ const Article = styled.div`
     }
 `;
 const ArticleImage = styled.div`
+    overflow: hidden;
     height: 12rem;
     width: 12rem;
+    border-radius: var(--block-border-radius);
+    background: #efefef;
+
+    img {
+        mix-blend-mode: multiply;
+    }
 `;
 const ArticleDate = styled.div`
     font-size: 1.25rem;
