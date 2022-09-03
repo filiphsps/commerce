@@ -23,6 +23,7 @@ const Content = styled.div`
 
     @media (max-width: 950px) {
         flex-direction: column;
+        gap: 1rem;
     }
 `;
 const Item = styled.div`
@@ -30,7 +31,7 @@ const Item = styled.div`
     grid-template-columns: auto 1fr;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 `;
 const ItemIcon = styled.div`
     position: relative;
@@ -44,6 +45,11 @@ const ItemContent = styled.h3`
     letter-spacing: 0.05rem;
     text-transform: uppercase;
     text-align: center;
+
+    @media (max-width: 950px) {
+        text-align: left;
+        font-size: 1.25rem;
+    }
 `;
 
 interface IconGridProps {
