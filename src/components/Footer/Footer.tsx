@@ -6,6 +6,7 @@ import { FooterApi } from '../../api/footer';
 import Image from 'next/image';
 import Input from '../Input';
 import Link from 'next/link';
+import { NewsletterApi } from '../../api/newsletter';
 import PaymentIcons from '../../../public/assets/payments/icons.png';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -102,31 +103,48 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                 </PaymentIconsContainer>
             </PaymentIconsWrapper>
 
-            {false && (
-                <EmailCapture>
-                    <EmailCaptureContent>
-                        <EmailCaptureTitle>
-                            Join our newsletter for <b>15% off</b> your first
-                            purchase
-                        </EmailCaptureTitle>
-                        <EmailCaptureInput>
-                            <Input
-                                type="email"
-                                placeholder="candy@example.com"
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </EmailCaptureInput>
-                        <EmailCaptureSubmit
-                            disabled={email.length <= 0}
-                            onClick={() => {
-                                alert('Hello world');
-                            }}
-                        >
-                            OK
-                        </EmailCaptureSubmit>
-                    </EmailCaptureContent>
-                </EmailCapture>
-            )}
+            <EmailCapture>
+                <EmailCaptureContent>
+                    <EmailCaptureTitle>
+                        Join our newsletter for <b>15% off</b> your first
+                        purchase
+                    </EmailCaptureTitle>
+                    <EmailCaptureInput>
+                        <Input
+                            type="email"
+                            placeholder="candy@example.com"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </EmailCaptureInput>
+                    <EmailCaptureSubmit
+                        disabled={
+                            email.length <= 4 ||
+                            !(email.includes('@') && email.includes('.'))
+                        }
+                        onClick={async () => {
+                            try {
+                                const res = await NewsletterApi({
+                                    email: email
+                                });
+                                alert(
+                                    'Thanks! An email with your coupon code has been sent to you! :)'
+                                );
+                            } catch (error) {
+                                if (error.code == 'duplicate_parameter')
+                                    alert(
+                                        'You have already subscribed to the newsletter :)'
+                                    );
+                                else
+                                    alert(
+                                        'Something went wrong please try again!'
+                                    );
+                            }
+                        }}
+                    >
+                        OK
+                    </EmailCaptureSubmit>
+                </EmailCaptureContent>
+            </EmailCapture>
 
             <footer className="Footer">
                 <div className="Footer-Wrapper">
