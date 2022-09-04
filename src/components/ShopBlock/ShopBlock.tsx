@@ -7,6 +7,7 @@ import ProductFilter from '../ProductFilter';
 import styled from 'styled-components';
 
 const ShopBlockWrapper = styled.div`
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 12rem;
     grid-gap: 1.5rem;

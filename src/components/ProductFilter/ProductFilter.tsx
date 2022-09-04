@@ -8,6 +8,10 @@ const FilterWrapper = styled.div`
     position: relative;
     margin: 0px 0px 2rem 0px;
 `;
+const Filters = styled.div`
+    position: sticky;
+    top: 0rem;
+`;
 const Filter = styled.div`
     display: flex;
     flex-direction: column;
@@ -24,10 +28,6 @@ const Filter = styled.div`
             height: 0px;
             pointer-events: none;
         }
-    }
-
-    @media (min-width: 950px) {
-        position: fixed;
     }
 `;
 const Toggle = styled.div`
@@ -139,89 +139,94 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
             >
                 <LanguageString id="filter_show" />
             </Toggle>
-            <Filter className={!showFilters && 'Closed'}>
-                <Options>
-                    <OptionsTitle>
-                        <LanguageString id="sorting" />
-                    </OptionsTitle>
-                    <Option
-                        className={filters.sorting == 'none' && 'Selected'}
-                        onClick={() =>
-                            setFilters({ ...filters, sorting: 'none' })
-                        }
-                    >
-                        Popular
-                    </Option>
-                    <Option
-                        className={filters.sorting == 'abcAsc' && 'Selected'}
-                        onClick={() =>
-                            setFilters({ ...filters, sorting: 'abcAsc' })
-                        }
-                    >
-                        Brand Asc.
-                    </Option>
-                </Options>
-
-                <Options>
-                    <OptionsTitle>
-                        <LanguageString id="tags" />
-                    </OptionsTitle>
-                    {tags.sort().map((item) => (
+            <Filters>
+                <Filter className={!showFilters && 'Closed'}>
+                    <Options>
+                        <OptionsTitle>
+                            <LanguageString id="sorting" />
+                        </OptionsTitle>
                         <Option
-                            key={`tags_${item}`}
-                            className={
-                                filters.tags.includes(item) && 'Selected'
+                            className={filters.sorting == 'none' && 'Selected'}
+                            onClick={() =>
+                                setFilters({ ...filters, sorting: 'none' })
                             }
-                            onClick={() => {
-                                let new_filter = filters.tags;
-
-                                if (filters.tags.includes(item))
-                                    new_filter = filters.tags.filter(
-                                        (tag) => tag !== item
-                                    );
-                                else new_filter = [...filters.tags, item];
-
-                                setFilters({
-                                    ...filters,
-                                    tags: new_filter
-                                });
-                            }}
                         >
-                            {item}
+                            Popular
                         </Option>
-                    ))}
-                </Options>
-
-                <Options>
-                    <OptionsTitle>
-                        <LanguageString id="brand" />
-                    </OptionsTitle>
-                    {vendors.sort().map((item) => (
                         <Option
-                            key={`brand_${item}`}
                             className={
-                                filters.vendors.includes(item) && 'Selected'
+                                filters.sorting == 'abcAsc' && 'Selected'
                             }
-                            onClick={() => {
-                                let new_filter = filters.vendors;
-
-                                if (filters.vendors.includes(item))
-                                    new_filter = filters.vendors.filter(
-                                        (tag) => tag !== item
-                                    );
-                                else new_filter = [...filters.vendors, item];
-
-                                setFilters({
-                                    ...filters,
-                                    vendors: new_filter
-                                });
-                            }}
+                            onClick={() =>
+                                setFilters({ ...filters, sorting: 'abcAsc' })
+                            }
                         >
-                            {item}
+                            Brand Asc.
                         </Option>
-                    ))}
-                </Options>
-            </Filter>
+                    </Options>
+
+                    <Options>
+                        <OptionsTitle>
+                            <LanguageString id="tags" />
+                        </OptionsTitle>
+                        {tags.sort().map((item) => (
+                            <Option
+                                key={`tags_${item}`}
+                                className={
+                                    filters.tags.includes(item) && 'Selected'
+                                }
+                                onClick={() => {
+                                    let new_filter = filters.tags;
+
+                                    if (filters.tags.includes(item))
+                                        new_filter = filters.tags.filter(
+                                            (tag) => tag !== item
+                                        );
+                                    else new_filter = [...filters.tags, item];
+
+                                    setFilters({
+                                        ...filters,
+                                        tags: new_filter
+                                    });
+                                }}
+                            >
+                                {item}
+                            </Option>
+                        ))}
+                    </Options>
+
+                    <Options>
+                        <OptionsTitle>
+                            <LanguageString id="brand" />
+                        </OptionsTitle>
+                        {vendors.sort().map((item) => (
+                            <Option
+                                key={`brand_${item}`}
+                                className={
+                                    filters.vendors.includes(item) && 'Selected'
+                                }
+                                onClick={() => {
+                                    let new_filter = filters.vendors;
+
+                                    if (filters.vendors.includes(item))
+                                        new_filter = filters.vendors.filter(
+                                            (tag) => tag !== item
+                                        );
+                                    else
+                                        new_filter = [...filters.vendors, item];
+
+                                    setFilters({
+                                        ...filters,
+                                        vendors: new_filter
+                                    });
+                                }}
+                            >
+                                {item}
+                            </Option>
+                        ))}
+                    </Options>
+                </Filter>
+            </Filters>
         </FilterWrapper>
     );
 };
