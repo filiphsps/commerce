@@ -27,8 +27,10 @@ const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
         const [contextStore] = useStore<any>('store');
+        const [cartStore, setCartStore] = useStore<any>('cart');
 
         const reportItem = (item) => {
+            setCartStore({ open: true, item });
             if (!window || !(window as any)?.dataLayer) return;
 
             (window as any).dataLayer.push({ ecommerce: null });
@@ -181,6 +183,10 @@ const StoreApp = withStore(
         search: {
             open: false,
             phrase: ''
+        },
+        cart: {
+            open: false,
+            item: null
         }
     },
     {

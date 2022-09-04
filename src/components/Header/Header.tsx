@@ -1,13 +1,17 @@
-import { FiShoppingCart, FiUser } from 'react-icons/fi';
-import React, { FunctionComponent, useEffect } from 'react';
+import { FiShoppingCart, FiUser, FiX } from 'react-icons/fi';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 
+import Button from '../Button';
 import { Config } from '../../util/Config';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ProductIdApi } from '../../api/product';
 import SearchBar from '../SearchBar';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
+import { useStore } from 'react-context-hook';
 
 const Header = styled.header`
     display: flex;
@@ -99,7 +103,8 @@ const Actions = styled.div`
 `;
 
 const CartIconWrapper = styled.div`
-    div {
+    position: relative;
+    .Wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -107,7 +112,7 @@ const CartIconWrapper = styled.div`
         padding: 0.5rem 1rem;
         border-radius: 1.5rem;
         cursor: pointer;
-        border: 0.2rem solid #404756;
+        border: 0.2rem solid transparent;
     }
 
     .Icon {
@@ -119,7 +124,7 @@ const CartIconWrapper = styled.div`
         &:hover,
         &:active {
             transform: scale(1.15);
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--accent-primary);
         }
     }
 
@@ -128,9 +133,10 @@ const CartIconWrapper = styled.div`
             margin-left: 0.75rem;
         }
 
-        div {
-            background: #fefefe;
-            color: #0e0e0e;
+        .Wrapper {
+            background: var(--accent-primary);
+            color: var(--color-text-primary);
+            border-color: var(--accent-primary);
             box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
             &:hover,
@@ -153,6 +159,92 @@ const CartIcon = styled.span`
     transition: 250ms all ease-in-out;
 `;
 
+const CartPopup = styled.section`
+    z-index: 999;
+    position: absolute;
+    width: 32rem;
+    padding: 1rem;
+    right: -1rem;
+    top: 4rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.75);
+    border: 0.2rem solid var(--accent-primary);
+    opacity: 0;
+    transition: 250ms ease-in-out;
+    pointer-events: none;
+
+    &.Open {
+        opacity: 1;
+        pointer-events: unset;
+    }
+`;
+const CartPopupItem = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+`;
+const CartPopupItemHeader = styled.div`
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    margin-bottom: 1rem;
+
+    svg {
+        font-size: 2rem;
+    }
+`;
+const CartPopupItemTitle = styled.div`
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 700;
+`;
+const CartPopupItemImageWrapper = styled.div`
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+    overflow: hidden;
+    padding: 1rem;
+`;
+const CartPopupItemImage = styled.div`
+    position: relative;
+    width: 6rem;
+    height: 6rem;
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+`;
+const CartPopupItemMeta = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`;
+const CartPopupItemMetaVendor = styled.div`
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    opacity: 0.75;
+`;
+const CartPopupItemMetaTitle = styled.div`
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+`;
+const CartPopupItemMetaVariant = styled.div`
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+`;
+const Badge = styled.div`
+    padding: 0.5rem 1rem;
+    background: var(--accent-secondary-dark);
+    color: var(--color-text-primary);
+`;
+
 interface HeaderProps {
     store?: any;
     navigation?: any;
@@ -163,6 +255,17 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 }) => {
     const cart = useCart();
     const router = useRouter();
+    const [cartStore, setCartStore] = useStore<any>('cart');
+    const timer = useRef(null);
+
+    const { data: added_product } = useSWR(
+        [cartStore.item?.id?.split('#')[0] || ''],
+        () =>
+            ProductIdApi({
+                id: cartStore.item?.id?.split('#')[0],
+                locale: router.locale
+            })
+    ) as any;
 
     useEffect(() => {
         cart.items.forEach((item) => {
@@ -172,6 +275,26 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
             cart.emptyCart();
         });
     }, []);
+
+    useEffect(() => {
+        if (router.asPath === '/cart/')
+            return setCartStore({ ...cartStore, open: false });
+
+        if (timer.current) clearTimeout(timer.current);
+
+        if (cartStore.open) {
+            timer.current = setTimeout(() => {
+                if (!cartStore.open) return;
+
+                setCartStore({ ...cartStore, open: false });
+            }, 5000);
+        }
+
+        return () => {
+            clearInterval(timer.current);
+            timer.current = null;
+        };
+    }, [cartStore]);
 
     return (
         <Header>
@@ -217,7 +340,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             className={cart?.totalItems > 0 ? 'Active' : ''}
                         >
                             <Link href={'/cart'}>
-                                <div>
+                                <div className="Wrapper">
                                     {cart?.totalItems > 0 && (
                                         <CartIcon className="Header-Content-CartBadge">
                                             {cart.totalItems}
@@ -226,6 +349,65 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                     <FiShoppingCart className="Icon" />
                                 </div>
                             </Link>
+                            {added_product && cartStore.item ? (
+                                <CartPopup
+                                    className={cartStore.open ? 'Open' : ''}
+                                >
+                                    <CartPopupItemHeader>
+                                        <CartPopupItemTitle>
+                                            Added to the cart
+                                        </CartPopupItemTitle>
+                                        <FiX
+                                            onClick={() =>
+                                                setCartStore({
+                                                    ...cartStore,
+                                                    open: false
+                                                })
+                                            }
+                                        />
+                                    </CartPopupItemHeader>
+                                    <CartPopupItem>
+                                        <CartPopupItemImageWrapper>
+                                            <CartPopupItemImage>
+                                                <Image
+                                                    src={
+                                                        added_product.images[0]
+                                                            .src
+                                                    }
+                                                    layout="fill"
+                                                />
+                                            </CartPopupItemImage>
+                                        </CartPopupItemImageWrapper>
+                                        <CartPopupItemMeta>
+                                            <CartPopupItemMetaVendor>
+                                                {added_product.vendor.title}
+                                            </CartPopupItemMetaVendor>
+                                            <CartPopupItemMetaTitle>
+                                                {cartStore.item.title}
+                                            </CartPopupItemMetaTitle>
+                                            <CartPopupItemMetaVariant>
+                                                <Badge>
+                                                    {
+                                                        cartStore.item
+                                                            .variant_title
+                                                    }
+                                                </Badge>
+                                            </CartPopupItemMetaVariant>
+                                        </CartPopupItemMeta>
+                                    </CartPopupItem>
+                                    <Button
+                                        onClick={() => {
+                                            setCartStore({
+                                                ...cartStore,
+                                                open: false
+                                            });
+                                            router.push('/cart');
+                                        }}
+                                    >
+                                        View cart
+                                    </Button>
+                                </CartPopup>
+                            ) : null}
                         </CartIconWrapper>
                     </div>
                 </Actions>

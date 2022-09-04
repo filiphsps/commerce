@@ -103,7 +103,7 @@ const SummaryContainer = styled.div`
 `;
 const SummaryContent = styled.div`
     position: sticky;
-    top: 2rem;
+    top: 8rem;
     padding: 1rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
