@@ -16,7 +16,7 @@ const Content = styled.div`
     max-width: 78rem;
     background: #efefef;
     border-radius: var(--block-border-radius);
-    padding: 2rem;
+    padding: 1rem;
 
     a {
         color: var(--accent-primary);

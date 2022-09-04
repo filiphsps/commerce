@@ -28,13 +28,14 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     className="Breadcrumbs-Content-Item"
                 >
                     <Link
+                        className="Link"
                         itemType="https://schema.org/Thing"
                         itemProp="item"
                         href={'/'}
                     >
-                        <span itemProp="name">
+                        <a itemProp="name" className="Link">
                             {store?.name || store?.title}
-                        </span>
+                        </a>
                     </Link>
                     <meta itemProp="position" content="1" />
                 </li>
@@ -55,7 +56,9 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                                 itemProp="item"
                                 href={item.url}
                             >
-                                <span itemProp="name">{item.title}</span>
+                                <a itemProp="name" className="Link">
+                                    {item.title}
+                                </a>
                             </Link>
                             <meta itemProp="position" content={index + 2} />
                         </li>

@@ -29,27 +29,46 @@ const SectionContent = styled.div`
     margin: 1rem 0px;
     margin-left: 1rem;
 `;
-const ProductImage = styled(Section)`
-    background: #efefef;
-    border-radius: var(--block-border-radius);
-    border: 0.2rem solid #efefef;
-    cursor: pointer;
-    transition: 250ms ease-in-out;
 
-    &:hover {
-        border-color: var(--accent-primary);
-    }
-`;
 const ImageWrapper = styled.div`
     max-width: 8rem;
     height: 8rem;
     width: 8rem;
+    max-width: 8rem;
     padding: 0.5rem;
 
     img {
         mix-blend-mode: multiply;
         width: 100%;
         height: 100%;
+    }
+`;
+const ProductImage = styled(Section)`
+    display: block;
+    height: 8rem;
+    width: 100%;
+    max-width: 8rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+    border: 0.2rem solid #fefefe;
+    cursor: pointer;
+    transition: 250ms ease-in-out;
+
+    &:hover {
+        border-color: var(--accent-primary);
+    }
+
+    ${ImageWrapper} {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+
+        span {
+            width: 100% !important;
+            height: 100% !important;
+        }
     }
 `;
 
@@ -101,6 +120,10 @@ const DetailsTitle = styled.div`
 `;
 const DetailsVariant = styled.div`
     margin-top: 0.5rem;
+
+    @media (max-width: 950px) {
+        display: none;
+    }
 `;
 
 const Badge = styled.div`

@@ -8,10 +8,7 @@ const FilterWrapper = styled.div`
     position: relative;
     margin: 0px 0px 2rem 0px;
 `;
-const Filters = styled.div`
-    position: sticky;
-    top: 0rem;
-`;
+const Filters = styled.div``;
 const Filter = styled.div`
     display: flex;
     flex-direction: column;

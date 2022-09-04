@@ -7,15 +7,14 @@ import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
+import { useRouter } from 'next/router';
 
 const Header = styled.header`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--accent-primary);
-    border-bottom: 0.2rem solid var(--accent-primary-dark);
-    color: var(--color-text-primary);
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    background: #fefefe;
+    border-bottom: 0.5rem solid var(--accent-primary);
 
     @media (max-width: 950px) {
         border-bottom: none;
@@ -30,7 +29,7 @@ const Content = styled.div`
     gap: 4rem;
     max-width: 1465px;
     width: 100%;
-    padding: 0.75rem 2rem;
+    padding: 0.75rem 1.5rem;
 
     @media (max-width: 950px) {
         grid-template-columns: auto 1fr;
@@ -40,12 +39,15 @@ const Logo = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
     cursor: pointer;
+    background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
 
     div {
         position: relative;
         height: 2.5rem;
-        width: 7.5rem;
+        width: 7rem;
     }
 `;
 const Navigation = styled.nav`
@@ -66,11 +68,17 @@ const Navigation = styled.nav`
         cursor: pointer;
         border-bottom: solid 0.2rem transparent;
         transform: translateY(0.2rem);
+        transition: 250ms ease-in-out;
 
         &:hover,
         &:active {
-            border-bottom: solid 0.2rem var(--color-text-primary);
+            border-bottom: solid 0.2rem var(--accent-primary);
             transform: translateY(0px);
+        }
+
+        &.Active {
+            color: var(--accent-primary);
+            font-weight: 700;
         }
     }
 `;
@@ -96,9 +104,10 @@ const CartIconWrapper = styled.div`
         justify-content: center;
         align-items: center;
         position: relative;
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 1rem;
         border-radius: 1.5rem;
         cursor: pointer;
+        border: 0.2rem solid #404756;
     }
 
     .Icon {
@@ -153,6 +162,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     navigation
 }) => {
     const cart = useCart();
+    const router = useRouter();
 
     useEffect(() => {
         cart.items.forEach((item) => {
@@ -178,7 +188,17 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                     {navigation?.map((item: any, index: number) => {
                         return (
                             <Link key={index} href={`/${item?.handle || ''}`}>
-                                {item?.title}
+                                <a
+                                    className={
+                                        (router.asPath === '/' &&
+                                            item?.handle === null) ||
+                                        `/${item?.handle}` === router.asPath
+                                            ? 'Active'
+                                            : ''
+                                    }
+                                >
+                                    {item?.title}
+                                </a>
                             </Link>
                         );
                     })}

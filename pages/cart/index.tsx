@@ -14,7 +14,6 @@ import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
-import PaymentProviders from '../../src/components/PaymentProviders';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';
@@ -81,21 +80,22 @@ const Progress = styled.div`
     }
 `;
 
+const ItemsContainerWrapper = styled.div`
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+    padding: 0px 1rem;
+`;
 const ItemsContainer = styled.table`
     min-width: 100%;
     border-collapse: separate;
-    border-spacing: 0px 2rem;
+    border-spacing: 0px 1rem;
     font-size: 1.25rem;
-    margin-top: -2rem;
     table-layout: fixed;
 `;
 
 const SummaryContainer = styled.div`
     position: relative;
-    padding: 1rem;
     max-width: calc(100vw - 2rem);
-    border-radius: var(--block-border-radius);
-    background: #efefef;
 
     button {
         box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
@@ -103,7 +103,10 @@ const SummaryContainer = styled.div`
 `;
 const SummaryContent = styled.div`
     position: sticky;
-    top: 6rem;
+    top: 2rem;
+    padding: 1rem;
+    border-radius: var(--block-border-radius);
+    background: #efefef;
 `;
 const SummaryItems = styled.div`
     padding-bottom: 1rem;
@@ -119,6 +122,7 @@ const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
     font-size: 1.5rem;
     font-weight: 700;
+    color: #404756;
 `;
 const SummaryItemVendor = styled.div`
     padding-top: 0.25rem;
@@ -170,6 +174,16 @@ const HeaderItem = styled.th`
 
     @media (max-width: 950px) {
         font-size: 1rem;
+    }
+`;
+const HeaderItemImage = styled(HeaderItem)`
+    display: block;
+    width: 6rem;
+    max-width: 6rem;
+    padding-left: 0px;
+    @media (max-width: 950px) {
+        width: 2rem;
+        max-width: 2rem;
     }
 `;
 
@@ -268,6 +282,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             <NextSeo title="Cart" />
 
             <PageContent>
+                <div style={{ paddingTop: '1rem' }} />
                 <Breadcrumbs
                     pages={[
                         {
@@ -283,55 +298,54 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                 <Content>
                     <ContentWrapper>
-                        <ItemsContainer>
-                            {cart.items?.length >= 1 ? (
-                                <>
-                                    <thead>
-                                        <Header>
-                                            <HeaderItem
-                                                style={{
-                                                    width: '6rem',
-                                                    paddingLeft: '0px'
-                                                }}
-                                            >
-                                                <LanguageString
-                                                    id={'product'}
-                                                />
-                                            </HeaderItem>
-                                            <HeaderItem></HeaderItem>
-                                            <HeaderItem>
-                                                <LanguageString
-                                                    id={'quantity'}
-                                                />
-                                            </HeaderItem>
-                                            <HeaderItem>
-                                                <LanguageString id={'price'} />
-                                            </HeaderItem>
-                                            <HeaderItem
-                                                style={{
-                                                    width: '2rem'
-                                                }}
-                                            ></HeaderItem>
-                                        </Header>
-                                    </thead>
-                                    <tbody>
-                                        {cart.items?.map((item) => {
-                                            return (
-                                                <CartItem
-                                                    key={`${item.id}_${item.variant_id}`}
-                                                    data={item}
-                                                    total_items={
-                                                        cart.totalItems
-                                                    }
-                                                />
-                                            );
-                                        })}
-                                    </tbody>
-                                </>
-                            ) : (
-                                !cart.items && <PageLoader />
-                            )}
-                        </ItemsContainer>
+                        <ItemsContainerWrapper>
+                            <ItemsContainer>
+                                {cart.items?.length >= 1 ? (
+                                    <>
+                                        <thead>
+                                            <Header>
+                                                <HeaderItemImage>
+                                                    <LanguageString
+                                                        id={'product'}
+                                                    />
+                                                </HeaderItemImage>
+                                                <HeaderItem></HeaderItem>
+                                                <HeaderItem>
+                                                    <LanguageString
+                                                        id={'quantity'}
+                                                    />
+                                                </HeaderItem>
+                                                <HeaderItem>
+                                                    <LanguageString
+                                                        id={'price'}
+                                                    />
+                                                </HeaderItem>
+                                                <HeaderItem
+                                                    style={{
+                                                        width: '2rem'
+                                                    }}
+                                                ></HeaderItem>
+                                            </Header>
+                                        </thead>
+                                        <tbody>
+                                            {cart.items?.map((item) => {
+                                                return (
+                                                    <CartItem
+                                                        key={`${item.id}_${item.variant_id}`}
+                                                        data={item}
+                                                        total_items={
+                                                            cart.totalItems
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                        </tbody>
+                                    </>
+                                ) : (
+                                    !cart.items && <PageLoader />
+                                )}
+                            </ItemsContainer>
+                        </ItemsContainerWrapper>
 
                         <FreeShippingBanner>
                             <FreeShippingBannerMeta>
@@ -539,7 +553,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         }
                                     />
                                 </Button>
-                                <PaymentProviders />
                             </div>
                         </SummaryContent>
                     </SummaryContainer>

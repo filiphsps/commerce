@@ -4,15 +4,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 100;
     position: sticky;
     top: 5rem;
     top: calc(5rem + env(safe-area-inset-top));
     width: 100%;
-    background: $color-primary-light;
-    border-bottom: 0.2rem solid $color-primary-dark;
-
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    //background: #efefef;
+    border-bottom: 0.5rem solid var(--accent-primary);
+    //box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.25);
 
     @media (min-width: $width-max-mobile) {
         display: none;
@@ -36,7 +35,7 @@
             margin-right: 2.5rem;
             margin-bottom: -0.2rem;
             text-transform: uppercase;
-            color: $color-text-primary;
+            //color: $color-text-primary;
             font-size: 1.5rem;
             font-weight: 600;
             letter-spacing: 0.05rem;

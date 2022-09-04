@@ -10,7 +10,9 @@
     height: 2.5rem;
     margin: -0.25rem 0px 1rem 0px;
     transform: translateZ(0);
-    opacity: 0.75;
+    padding: 1rem 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
 
     .Breadcrumbs-Content {
         display: flex;
@@ -30,6 +32,8 @@
             font-size: 1.15rem;
             line-height: 1.15rem;
             white-space: nowrap;
+            opacity: 0.75;
+            cursor: pointer;
 
             .Link {
                 display: block;
