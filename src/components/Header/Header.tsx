@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import Button from '../Button';
 import { Config } from '../../util/Config';
+import { HeaderApi } from '../../api/header';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ProductIdApi } from '../../api/product';
@@ -13,18 +14,6 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
-const Header = styled.header`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fefefe;
-    border-bottom: 0.5rem solid var(--accent-primary);
-
-    @media (max-width: 950px) {
-        border-bottom: none;
-        box-shadow: none;
-    }
-`;
 const Content = styled.div`
     display: grid;
     justify-content: center;
@@ -246,6 +235,34 @@ const Badge = styled.div`
     color: var(--color-text-primary);
 `;
 
+const Header = styled.header`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fefefe;
+    border-bottom: 0.5rem solid var(--accent-primary);
+
+    &.Modern {
+        border: none;
+        background: var(--accent-primary);
+        color: #fefefe;
+
+        ${CartIconWrapper} {
+            &.Active {
+                .Wrapper {
+                    background: #fefefe;
+                    color: #0e0e0e;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 950px) {
+        border-bottom: none;
+        box-shadow: none;
+    }
+`;
+
 interface HeaderProps {
     store?: any;
     navigation?: any;
@@ -257,6 +274,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const cart = useCart();
     const router = useRouter();
     const [cartStore, setCartStore] = useStore<any>('cart');
+    const { data } = useSWR(['header'], () => HeaderApi() as any);
     const timer = useRef(null);
 
     const { data: added_product } = useSWR(
@@ -298,7 +316,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     }, [cartStore]);
 
     return (
-        <Header>
+        <Header className={data?.style === 'modern' ? 'Modern' : ''}>
             <Content>
                 <Logo>
                     <div>
