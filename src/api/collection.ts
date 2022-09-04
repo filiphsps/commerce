@@ -2,8 +2,9 @@ import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { CollectionModel } from '../models/CollectionModel';
 import { gql } from '@apollo/client';
-import { shopify } from './shopify';
+import { newShopify } from './shopify';
 
+const COLLECTION_PRODUCT_FRAGMENT = PRODUCT_FRAGMENT;
 export const COLLECTION_FRAGMENT = `
     id
     handle
@@ -16,40 +17,45 @@ export const COLLECTION_FRAGMENT = `
         height
         width
     }
+    seo {
+        title
+        description
+    }
     products(first: 250) {
         edges {
             node {
-                ${PRODUCT_FRAGMENT}
+                ${COLLECTION_PRODUCT_FRAGMENT}
             }
         }
+    }
+    keywords: metafield(namespace: "store", key: "keywords") {
+        value
     }
 `;
 
 export const Convertor = (collection: any): CollectionModel => {
     if (!collection) return null;
 
-    return {
+    const res = {
         id: collection?.id,
         handle: collection?.handle,
 
-        seo:
-            (collection.seo && {
-                title: collection?.seo?.title,
-                description: collection?.seo?.description
-            }) ||
-            null,
+        seo: {
+            title: collection?.seo?.title || collection?.title,
+            description:
+                collection?.seo?.description || collection?.description,
+            keywords: collection?.keywords?.value || ''
+        },
 
         title: collection?.title,
         body: collection?.description,
-        image:
-            (collection.image && {
-                id: atob(collection.image.id),
-                alt: collection.image.altText ?? null,
-                src: collection.image.originalSrc,
-                height: collection.image.height,
-                width: collection.image.width
-            }) ||
-            null,
+        image: collection?.image ? {
+            id: collection?.image?.id,
+            alt: collection?.image?.altText ?? null,
+            src: collection?.image?.originalSrc,
+            height: collection?.image?.height,
+            width: collection?.image?.width
+        } : null,
 
         items: collection?.products?.edges
             ?.map((product) => ProductConvertor(product.node))
@@ -63,12 +69,13 @@ export const Convertor = (collection: any): CollectionModel => {
                 variants: product.variants
             }))
     };
+    return res;
 };
 
 export const CollectionApi = async (handle: string) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await shopify.query({
+            const { data, errors } = await newShopify.query({
                 query: gql`
                 fragment collection on Collection {
                     ${COLLECTION_FRAGMENT}

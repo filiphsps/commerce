@@ -14,19 +14,16 @@ import { VendorsApi } from '../../../src/api/vendor';
 import { useRouter } from 'next/router';
 
 interface CollectionPageProps {
-    errors?: any[];
     store: StoreModel;
     data: {
         collection: CollectionModel;
     };
 }
 const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
-    const { store, data, errors } = props;
+    const { store, data } = props;
     const { collection } = data;
 
     const router = useRouter();
-
-    if (errors.length) console.error(errors);
 
     useEffect(() => {
         if (!data?.collection) return;
@@ -45,6 +42,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     collection?.body ||
                     (data as any)?.collection?.description ||
                     null
+                }
+                additionalMetaTags={
+                    collection.seo?.keywords ? [{
+                        property: 'keywords',
+                        content: collection.seo?.keywords
+                    }] : null
                 }
             />
 
@@ -104,20 +107,17 @@ export async function getStaticProps({ locale, params }) {
         };
 
     let collection, vendors;
-    let errors = [];
 
     try {
         collection = await CollectionApi(handle);
     } catch (err) {
         console.error(err);
-        if (err) errors.push(err);
     }
 
     try {
         vendors = await VendorsApi();
     } catch (err) {
         console.error(err);
-        if (err) errors.push(err);
     }
 
     return {
@@ -125,8 +125,7 @@ export async function getStaticProps({ locale, params }) {
             data: {
                 collection: collection ?? null,
                 vendors: vendors ?? null
-            },
-            errors
+            }
         },
         revalidate: 10
     };

@@ -10,6 +10,7 @@ export interface CollectionModel {
     seo: {
         title: string;
         description: string;
+        keywords: string;
     };
 
     title: string;
