@@ -4,7 +4,7 @@ import Currency from '../Currency';
 import { FiTrash } from 'react-icons/fi';
 import Image from 'next/image';
 import Input from '../Input';
-import Link from '../Link';
+import Link from 'next/link';
 import Loader from '../Loader';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
@@ -32,12 +32,19 @@ const SectionContent = styled.div`
 const ProductImage = styled(Section)`
     background: #efefef;
     border-radius: var(--block-border-radius);
+    border: 0.2rem solid #efefef;
+    cursor: pointer;
+    transition: 250ms ease-in-out;
+
+    &:hover {
+        border-color: var(--accent-primary);
+    }
 `;
 const ImageWrapper = styled.div`
-    max-width: 30rem;
+    max-width: 8rem;
     height: 8rem;
     width: 8rem;
-    padding: 1rem;
+    padding: 0.5rem;
 
     img {
         mix-blend-mode: multiply;
@@ -52,6 +59,17 @@ const Quantity = styled(SectionContent)`
         width: 6rem;
         padding: 0.75rem 1rem;
         background: #fefefe;
+        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+
+        @media (max-width: 950px) {
+            width: 4rem;
+        }
+
+        &:hover,
+        &:active,
+        &:focus {
+            border-color: var(--accent-primary-dark);
+        }
     }
 `;
 
@@ -62,6 +80,11 @@ const DetailsBrand = styled.div`
     font-weight: 700;
     letter-spacing: 0.05rem;
     color: #404756;
+    transition: 250ms ease-in-out;
+
+    &:hover {
+        color: var(--accent-primary);
+    }
 `;
 const DetailsTitle = styled.div`
     font-size: 1.75rem;
@@ -97,6 +120,12 @@ const Price = styled(SectionContent)`
     font-size: 1.5rem;
 `;
 
+const Actions = styled(SectionContent)`
+    width: 2rem;
+    justify-content: center;
+    align-items: flex-end;
+    margin-left: auto;
+`;
 const Action = styled.div`
     cursor: pointer;
 
@@ -166,23 +195,26 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         <Content>
             <ProductImage>
                 <ImageWrapper>
-                    <Image
-                        src={product?.images?.[variant?.default_image]?.src}
-                        layout="responsive"
-                        width="6rem"
-                        height="6rem"
-                        objectFit="contain"
-                    />
+                    <Link href={`/products/${product?.handle}`}>
+                        <Image
+                            src={product?.images?.[variant?.default_image]?.src}
+                            layout="responsive"
+                            width="6rem"
+                            height="6rem"
+                            objectFit="contain"
+                        />
+                    </Link>
                 </ImageWrapper>
             </ProductImage>
             <Section className="CartItem-Content">
                 <Details>
-                    <DetailsBrand>{product?.vendor?.title}</DetailsBrand>
+                    <DetailsBrand>
+                        <Link href={`/collections/${product?.vendor?.handle}`}>
+                            {product?.vendor?.title}
+                        </Link>
+                    </DetailsBrand>
                     <DetailsTitle>
-                        <Link
-                            to={`/products/${product?.handle}`}
-                            as={'/products/[handle]'}
-                        >
+                        <Link href={`/products/${product?.handle}`}>
                             {product?.title}
                         </Link>
                     </DetailsTitle>
@@ -243,7 +275,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                 </Price>
             </Section>
             <Section>
-                <SectionContent>
+                <Actions>
                     <Action
                         onClick={() => {
                             cart.removeItem(`${product?.id}#${variant?.id}`);
@@ -251,7 +283,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     >
                         <FiTrash className="Icon" />
                     </Action>
-                </SectionContent>
+                </Actions>
             </Section>
         </Content>
     );

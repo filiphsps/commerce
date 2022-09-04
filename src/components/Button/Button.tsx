@@ -12,7 +12,7 @@ const ButtonWrapper = styled.button`
     color: var(--color-text-primary);
     border-radius: var(--block-border-radius);
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.05rem;
     text-transform: uppercase;
     text-align: center;

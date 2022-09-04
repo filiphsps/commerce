@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import Link from '../Link';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 const SocialShare = dynamic(() => import('../SocialShare'), { ssr: false });
@@ -30,7 +30,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     <Link
                         itemType="https://schema.org/Thing"
                         itemProp="item"
-                        to={'/'}
+                        href={'/'}
                     >
                         <span itemProp="name">
                             {store?.name || store?.title}
@@ -53,7 +53,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                             <Link
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"
-                                to={item.url}
+                                href={item.url}
                             >
                                 <span itemProp="name">{item.title}</span>
                             </Link>

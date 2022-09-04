@@ -15,6 +15,7 @@ const SubTitle = styled.h2`
     font-size: 1.65rem;
     line-height: 2rem;
     margin: -0.5rem 0px 2rem 0px;
+    text-transform: uppercase;
 `;
 
 interface CollectionBlockProps {

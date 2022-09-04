@@ -87,7 +87,6 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                         }
                     ]}
                     store={store}
-                    hideSocial={true}
                 />
 
                 <PageHeader

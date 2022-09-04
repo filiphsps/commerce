@@ -87,6 +87,7 @@ const ItemsContainer = styled.table`
     border-spacing: 0px 2rem;
     font-size: 1.25rem;
     margin-top: -2rem;
+    table-layout: fixed;
 `;
 
 const SummaryContainer = styled.div`
@@ -95,6 +96,10 @@ const SummaryContainer = styled.div`
     max-width: calc(100vw - 2rem);
     border-radius: var(--block-border-radius);
     background: #efefef;
+
+    button {
+        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    }
 `;
 const SummaryContent = styled.div`
     position: sticky;
@@ -114,7 +119,6 @@ const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
     font-size: 1.5rem;
     font-weight: 700;
-    color: #404756;
 `;
 const SummaryItemVendor = styled.div`
     padding-top: 0.25rem;
@@ -163,6 +167,10 @@ const HeaderItem = styled.th`
     padding-left: 1rem;
     font-weight: 700;
     opacity: 0.75;
+
+    @media (max-width: 950px) {
+        font-size: 1rem;
+    }
 `;
 
 const Recommendations = styled(ContentBlock)`
@@ -278,38 +286,47 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         <ItemsContainer>
                             {cart.items?.length >= 1 ? (
                                 <>
-                                    <Header>
-                                        <HeaderItem
-                                            style={{
-                                                width: '6rem',
-                                                paddingLeft: '0px'
-                                            }}
-                                        >
-                                            <LanguageString id={'product'} />
-                                        </HeaderItem>
-                                        <HeaderItem
-                                            style={{
-                                                minWidth: '10rem'
-                                            }}
-                                        ></HeaderItem>
-                                        <HeaderItem>
-                                            <LanguageString id={'quantity'} />
-                                        </HeaderItem>
-                                        <HeaderItem>
-                                            <LanguageString id={'price'} />
-                                        </HeaderItem>
-                                        <HeaderItem></HeaderItem>
-                                    </Header>
-
-                                    {cart.items?.map((item) => {
-                                        return (
-                                            <CartItem
-                                                key={`${item.id}_${item.variant_id}`}
-                                                data={item}
-                                                total_items={cart.totalItems}
-                                            />
-                                        );
-                                    })}
+                                    <thead>
+                                        <Header>
+                                            <HeaderItem
+                                                style={{
+                                                    width: '6rem',
+                                                    paddingLeft: '0px'
+                                                }}
+                                            >
+                                                <LanguageString
+                                                    id={'product'}
+                                                />
+                                            </HeaderItem>
+                                            <HeaderItem></HeaderItem>
+                                            <HeaderItem>
+                                                <LanguageString
+                                                    id={'quantity'}
+                                                />
+                                            </HeaderItem>
+                                            <HeaderItem>
+                                                <LanguageString id={'price'} />
+                                            </HeaderItem>
+                                            <HeaderItem
+                                                style={{
+                                                    width: '2rem'
+                                                }}
+                                            ></HeaderItem>
+                                        </Header>
+                                    </thead>
+                                    <tbody>
+                                        {cart.items?.map((item) => {
+                                            return (
+                                                <CartItem
+                                                    key={`${item.id}_${item.variant_id}`}
+                                                    data={item}
+                                                    total_items={
+                                                        cart.totalItems
+                                                    }
+                                                />
+                                            );
+                                        })}
+                                    </tbody>
                                 </>
                             ) : (
                                 !cart.items && <PageLoader />

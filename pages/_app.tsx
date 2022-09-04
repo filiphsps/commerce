@@ -136,6 +136,7 @@ const StoreApp = withStore(
                                 .hex()
                                 .toString()};
                             --block-border-radius: 0.5rem;
+                            background: var(--accent-primary);
                         }
                     `}</style>
                     {/* eslint-enable indent */}

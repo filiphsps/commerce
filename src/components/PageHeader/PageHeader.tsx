@@ -21,10 +21,9 @@ const Title = styled.h2`
 const SubTitle = styled.h3`
     color: #404756;
     text-transform: uppercase;
-    font-weight: 500;
-    font-size: 1.75rem;
+    font-size: 1.65rem;
     line-height: 2rem;
-    margin-left: 0.05rem;
+    margin: -0.5rem 0px 2rem 0px;
 
     a {
         transition: 250ms ease-in-out all;
