@@ -228,6 +228,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     if (errors?.length) console.error(errors);
 
     useEffect(() => {
+        if (!product) return;
+
         (window as any)?.dataLayer?.push({ ecommerce: null });
         (window as any)?.dataLayer?.push({
             event: 'view_item',
@@ -327,6 +329,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 </Link>
                             }
                             reverse
+                            noMargin
                         />
                         {Config.features.reviews && (
                             <ReviewStars
@@ -494,7 +497,7 @@ export async function getStaticProps({ params, locale }) {
         product = (await ProductApi({ handle, locale })) as any;
     } catch (err) {
         console.error(err);
-        errors.push(err);
+        if (err) errors.push(err);
     }
 
     try {
@@ -504,7 +507,7 @@ export async function getStaticProps({ params, locale }) {
         })) as any;
     } catch (err) {
         console.warn(err);
-        errors.push(err);
+        if (err) errors.push(err);
     }
 
     if (Config.features.reviews) {
@@ -512,7 +515,7 @@ export async function getStaticProps({ params, locale }) {
             reviews = await ReviewsProductApi(product.id);
         } catch (err) {
             console.warn(err);
-            errors.push(err);
+            if (err) errors.push(err);
         }
     }
 

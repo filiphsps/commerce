@@ -25,6 +25,10 @@ const SubTitle = styled.h3`
     line-height: 2rem;
     margin: -0.5rem 0px 2rem 0px;
 
+    &.no-margin {
+        margin: 0px;
+    }
+
     a {
         transition: 250ms ease-in-out all;
         cursor: pointer;
@@ -41,25 +45,32 @@ interface PageHeaderProps {
     subtitle?: string | JSX.Element;
     reverse?: boolean;
     plainTitle?: boolean;
+    noMargin?: boolean;
 }
 const PageHeader: FunctionComponent<PageHeaderProps> = ({
     title,
     subtitle,
     reverse,
-    plainTitle
+    plainTitle,
+    noMargin
 }) => {
     if (reverse)
         return (
             <Wrapper>
-                <SubTitle>{subtitle}</SubTitle>
+                <SubTitle className={noMargin ? 'no-margin' : ''}>
+                    {subtitle}
+                </SubTitle>
                 <Title>{title}</Title>
             </Wrapper>
         );
-
     return (
         <Wrapper>
             <Title className={plainTitle && 'plain-title'}>{title}</Title>
-            {subtitle && <SubTitle>{subtitle}</SubTitle>}
+            {subtitle && (
+                <SubTitle className={noMargin ? 'no-margin' : ''}>
+                    {subtitle}
+                </SubTitle>
+            )}
         </Wrapper>
     );
 };
