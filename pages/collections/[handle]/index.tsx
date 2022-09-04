@@ -109,14 +109,14 @@ export async function getStaticProps({ locale, params }) {
     try {
         collection = await CollectionApi(handle);
     } catch (err) {
-        console.error(err);
+        if (err) console.error(err);
         errors.push(err);
     }
 
     try {
         vendors = await VendorsApi();
     } catch (err) {
-        console.error(err);
+        if (err) console.error(err);
         errors.push(err);
     }
 
