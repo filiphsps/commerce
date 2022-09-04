@@ -99,17 +99,17 @@ const StoreApp = withStore(
                     />
                     <meta
                         name="apple-mobile-web-app-title"
-                        content="Candy By Sweden"
+                        content={contextStore.name}
                     />
                     <link
                         rel="icon"
                         type="image/png"
-                        href="https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115"
+                        href={contextStore.favicon.src}
                     />
                     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                     <link
                         rel="apple-touch-icon"
-                        href="https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115"
+                        href={contextStore.favicon.src}
                     />
                     {/* General application styling */}
                     {/* eslint-disable indent */}
@@ -173,11 +173,20 @@ const StoreApp = withStore(
             // FIXME: Use CMS for these
             name:
                 Config.domain === 'candybysweden.com'
-                    ? 'Candy By Sweden'
+                    ? 'Candy by Sweden'
                     : 'HappySnus',
             currency: 'USD',
             logo: {
-                src: 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
+                src:
+                    Config.domain === 'candybysweden.com'
+                        ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
+                        : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus.png?v=1662280955'
+            },
+            favicon: {
+                src:
+                    Config.domain === 'candybysweden.com'
+                        ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
+                        : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_favicon.png?v=1662281347'
             },
             accent: {
                 primary: Config.colors.primary,
