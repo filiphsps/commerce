@@ -206,7 +206,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     justifyContent: 'center'
                 }}
             >
-                <Loader />
+                <Loader light />
             </div>
         );
     }

@@ -240,7 +240,8 @@ const CartPopupItemMetaVariant = styled.div`
     margin-top: 0.5rem;
 `;
 const Badge = styled.div`
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
     background: var(--accent-secondary-dark);
     color: var(--color-text-primary);
 `;
@@ -358,6 +359,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                             Added to the cart
                                         </CartPopupItemTitle>
                                         <FiX
+                                            style={{ cursor: 'pointer' }}
                                             onClick={() =>
                                                 setCartStore({
                                                     ...cartStore,

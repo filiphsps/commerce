@@ -9,11 +9,17 @@ const Wrapper = styled.div`
     background: #efefef;
     -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
     animation: sk-rotateplane 1.2s infinite ease-in-out;
+
+    &.Light {
+        background: #fefefe;
+    }
 `;
 
-interface LoaderProps {}
-const Loader: FunctionComponent<LoaderProps> = () => {
-    return <Wrapper></Wrapper>;
+interface LoaderProps {
+    light?: boolean;
+}
+const Loader: FunctionComponent<LoaderProps> = (props) => {
+    return <Wrapper className={props.light ? 'Light' : ''}></Wrapper>;
 };
 
 export default memo(Loader);

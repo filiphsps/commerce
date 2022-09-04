@@ -7,11 +7,13 @@ const Wrapper = styled.div`
     padding: 1.5rem;
 `;
 
-interface PageLoaderProps {}
-const PageLoader: FunctionComponent<PageLoaderProps> = () => {
+interface PageLoaderProps {
+    light?: boolean;
+}
+const PageLoader: FunctionComponent<PageLoaderProps> = ({ light }) => {
     return (
         <Wrapper className="PageLoader">
-            <Loader />
+            <Loader light={light} />
         </Wrapper>
     );
 };
