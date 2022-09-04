@@ -264,6 +264,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 description={
                     product?.seo?.description || product?.description || ''
                 }
+                additionalMetaTags={[
+                    {
+                        property: 'keywords',
+                        content: product?.seo?.keywords
+                    }
+                ]}
             />
             <ProductJsonLd
                 productName={product.title.replace(/"/gi, '\\"')}

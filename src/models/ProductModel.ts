@@ -24,6 +24,7 @@ export interface ProductModel {
     seo: {
         title: string;
         description: string;
+        keywords: string;
     };
 
     vendor: VendorModel;

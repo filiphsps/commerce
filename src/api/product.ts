@@ -73,7 +73,9 @@ export const PRODUCT_FRAGMENT = `
     }
     ingredients: metafield(namespace: "store", key: "ingredients") {
         value
-        type
+    }
+    keywords: metafield(namespace: "store", key: "keywords") {
+        value
     }
 `;
 
@@ -83,9 +85,6 @@ export const Convertor = (product: any): ProductModel => {
     let metafields = {
         ingredients: product.ingredients?.value ?? null
     };
-    /*product?.metafields?.edges?.forEach((metafield) => {
-        metafields[metafield?.node?.key] = metafield?.node?.value;
-    });*/
 
     const images = product?.images.edges.map(({ node }) => ({
         id: node.id?.includes('=') ? atob(node?.id) : node?.id,
@@ -108,7 +107,8 @@ export const Convertor = (product: any): ProductModel => {
         tags: product?.tags,
         seo: {
             title: product?.seo?.title,
-            description: product?.seo?.description
+            description: product?.seo?.description,
+            keywords: product?.keywords?.value || ''
         },
 
         vendor: {
