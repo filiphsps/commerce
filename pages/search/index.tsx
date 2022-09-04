@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import CollectionBlock from '../../src/components/CollectionBlock';
+import { Config } from '../../src/util/Config';
 import Input from '../../src/components/Input';
 import LanguageString from '../../src/components/LanguageString';
 import Page from '../../src/components/Page';
@@ -50,10 +51,10 @@ const SearchPage = (props: any) => {
     return (
         <Page className="SearchPage">
             <SiteLinksSearchBoxJsonLd
-                url="https://candybysweden.com/"
+                url={`https://${Config.domain}/`}
                 potentialActions={[
                     {
-                        target: 'https://candybysweden.com/search/?q',
+                        target: `https://${Config.domain}/search/?q`,
                         queryInput: 'search_term_string'
                     }
                 ]}

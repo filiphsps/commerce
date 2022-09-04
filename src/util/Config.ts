@@ -27,7 +27,8 @@ export const Config = {
         currencies: process.env.STORE_CURRENCIES?.split(',') || ['USD']
     },
 
-    sentry:
-        process.env.SENTRY_DSN ||
-        'https://44cb8b32ea1d49098de32524216e86ca@o1243416.ingest.sentry.io/6398730'
+    colors: {
+        primary: process.env.ACCENT_PRIMARY || '#0476D9',
+        secondary: process.env.ACCENT_SECONDARY || '#F7D435'
+    }
 };

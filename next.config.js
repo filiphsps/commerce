@@ -33,8 +33,11 @@ module.exports = withBundleAnalyzer({
         PRISMIC_REPO: process.env.PRISMIC_REPO,
         STORE_LOCALES: process.env.STORE_LOCALES,
         STORE_CURRENCIES: process.env.STORE_CURRENCIES,
-        SENTRY_DSN: process.env.SENTRY_DSN,
         GTM: process.env.GTM,
+
+        // Colors
+        ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,
+        ACCENT_SECONDARY: process.env.ACCENT_SECONDARY,
 
         // Feature flags
         FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,

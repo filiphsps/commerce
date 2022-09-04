@@ -6,6 +6,7 @@ import { useStore, withStore } from 'react-context-hook';
 
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
+import { Config } from '../src/util/Config';
 import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 import NProgress from 'nprogress';
@@ -115,25 +116,33 @@ const StoreApp = withStore(
                     <style>{`
                         body {
                             --color-text-primary: #ffffff;
-                            --accent-primary: ${Color('#0476D9')
+                            --accent-primary: ${Color(Config.colors.primary)
                                 .hex()
                                 .toString()};
-                            --accent-primary-dark: ${Color('#0476D9')
+                            --accent-primary-dark: ${Color(
+                                Config.colors.primary
+                            )
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-primary-light: ${Color('#0476D9')
+                            --accent-primary-light: ${Color(
+                                Config.colors.primary
+                            )
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary: ${Color('#F7D435')
+                            --accent-secondary: ${Color(Config.colors.secondary)
                                 .hex()
                                 .toString()};
-                            --accent-secondary-dark: ${Color('#F7D435')
+                            --accent-secondary-dark: ${Color(
+                                Config.colors.secondary
+                            )
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary-light: ${Color('#F7D435')
+                            --accent-secondary-light: ${Color(
+                                Config.colors.secondary
+                            )
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
@@ -161,14 +170,18 @@ const StoreApp = withStore(
     },
     {
         store: {
-            name: 'Candy By Sweden',
+            // FIXME: Use CMS for these
+            name:
+                Config.domain === 'candybysweden.com'
+                    ? 'Candy By Sweden'
+                    : 'HappySnus',
             currency: 'USD',
             logo: {
                 src: 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
             },
             accent: {
-                primary: '#0476D9',
-                secondary: '#F7D435'
+                primary: Config.colors.primary,
+                secondary: Config.colors.secondary
             },
             color: {
                 primary: '#ffffff',

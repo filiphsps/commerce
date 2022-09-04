@@ -1,5 +1,5 @@
 module.exports = {
-    siteUrl: 'https://candybysweden.com',
+    siteUrl: `https://${process.env.DOMAIN}.com`,
     generateRobotsTxt: false,
     exclude: ['/admin', '/account*']
 };

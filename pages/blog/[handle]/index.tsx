@@ -3,6 +3,7 @@ import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
+import { Config } from '../../../src/util/Config';
 import LanguageString from '../../../src/components/LanguageString';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
@@ -60,7 +61,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                 description={article.seo.description || article.excerpt}
             />
             <NewsArticleJsonLd
-                url={`https://candybysweden.com/blog/${article.handle}`}
+                url={`https://${Config.domain}/blog/${article.handle}`}
                 description={article.seo.description || article.excerpt}
                 body={article.content}
                 title={article.title}
