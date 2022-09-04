@@ -245,7 +245,14 @@ const Header = styled.header`
     &.Modern {
         border: none;
         background: var(--accent-primary);
-        color: #fefefe;
+
+        ${Navigation} {
+            color: #fefefe;
+
+            a.Active {
+                color: #fefefe;
+            }
+        }
 
         ${CartIconWrapper} {
             &.Active {
@@ -278,7 +285,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const timer = useRef(null);
 
     const { data: added_product } = useSWR(
-        [cartStore.item?.id?.split('#')[0] || ''],
+        [cartStore.item?.id?.split('#')[0] || 'product'],
         () =>
             ProductIdApi({
                 id: cartStore.item?.id?.split('#')[0],

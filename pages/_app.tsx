@@ -174,7 +174,7 @@ const StoreApp = withStore(
             name:
                 Config.domain === 'candybysweden.com'
                     ? 'Candy by Sweden'
-                    : 'HappySnus',
+                    : 'happysnus',
             currency: 'USD',
             logo: {
                 src:
