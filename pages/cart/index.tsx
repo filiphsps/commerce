@@ -4,7 +4,9 @@ import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
 import { CheckoutApi } from '../../src/api/checkout';
+import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
+import ContentBlock from '../../src/components/ContentBlock';
 import Currency from '../../src/components/Currency';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
@@ -13,10 +15,13 @@ import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import PaymentProviders from '../../src/components/PaymentProviders';
+import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Content = styled.div`
     display: grid;
@@ -33,21 +38,30 @@ const FreeShippingBanner = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: calc(100vw - 3rem);
+    max-width: calc(100vw - 2rem);
     margin-top: 2rem;
     padding: 1rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
     text-transform: uppercase;
 `;
 const FreeShippingBannerText = styled.div`
+    display: flex;
+    gap: 0.5rem;
     opacity: 0.75;
     &.Full {
         opacity: 1;
         color: var(--accent-primary);
     }
+`;
+const FreeShippingBannerMeta = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
 `;
 const ProgressBar = styled.div`
     height: 100%;
@@ -78,7 +92,7 @@ const ItemsContainer = styled.table`
 const SummaryContainer = styled.div`
     position: relative;
     padding: 1rem;
-    max-width: calc(100vw - 3rem);
+    max-width: calc(100vw - 2rem);
     border-radius: var(--block-border-radius);
     background: #efefef;
 `;
@@ -93,18 +107,22 @@ const SummaryItems = styled.div`
 const SummaryItem = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 1rem;
+    gap: 2rem;
     padding-bottom: 1rem;
 `;
 const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #404756;
 `;
 const SummaryItemVendor = styled.div`
-    font-size: 1rem;
+    padding-top: 0.25rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    opacity: 0.75;
     text-transform: lowercase;
+    letter-spacing: 0.05rem;
 `;
 const SummaryItemPrice = styled.div`
     display: flex;
@@ -130,6 +148,11 @@ const SummarySummary = styled.div`
     padding: 0.5rem 0px 1rem 0px;
     text-transform: uppercase;
     border-top: 0.2rem solid #404756;
+
+    &.Empty {
+        border-top: none;
+        margin-top: -1rem;
+    }
 `;
 
 const Header = styled.tr`
@@ -138,6 +161,49 @@ const Header = styled.tr`
 const HeaderItem = styled.th`
     min-width: 6rem;
     padding-left: 1rem;
+    font-weight: 700;
+    opacity: 0.75;
+`;
+
+const Recommendations = styled(ContentBlock)`
+    display: block;
+    grid-template-rows: auto auto;
+    max-width: calc(100vw - 2rem);
+    padding: 1rem;
+    margin-top: 2rem;
+    border-radius: var(--block-border-radius);
+`;
+const RecommendationsTitle = styled.h3`
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 700;
+    opacity: 0.75;
+`;
+const RecommendationsWrapper = styled.div`
+    position: relative;
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: 100%;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+`;
+const RecommendationsContent = styled.div`
+    overflow-y: auto;
+    display: grid;
+    width: 100%;
+
+    @media (max-width: 1148px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 950px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: $width-max-mobile) {
+        grid-template-columns: 1fr;
+        margin: 2rem 0px 0px 0px;
+    }
 `;
 
 interface CartPageProps {
@@ -147,6 +213,17 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
     const cart = useCart();
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const { data: recommendations } = useSWR(['recommendations'], () =>
+        RecommendationApi({
+            id:
+                cart.totalItems > 0
+                    ? cart.items[0].id.split('#')[0]
+                    : '7325668311194',
+            locale: router.locale
+        })
+    ) as any;
 
     const currency = 'USD';
     const price = cart.items.reduce(
@@ -203,11 +280,18 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <>
                                     <Header>
                                         <HeaderItem
-                                            style={{ width: '6rem' }}
-                                        ></HeaderItem>
-                                        <HeaderItem>
+                                            style={{
+                                                width: '6rem',
+                                                paddingLeft: '0px'
+                                            }}
+                                        >
                                             <LanguageString id={'product'} />
                                         </HeaderItem>
+                                        <HeaderItem
+                                            style={{
+                                                minWidth: '10rem'
+                                            }}
+                                        ></HeaderItem>
                                         <HeaderItem>
                                             <LanguageString id={'quantity'} />
                                         </HeaderItem>
@@ -233,19 +317,53 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         </ItemsContainer>
 
                         <FreeShippingBanner>
-                            <FreeShippingBannerText
-                                className={freeShipping ? 'Full' : ''}
-                            >
-                                Free shipping on orders above $75
-                            </FreeShippingBannerText>
+                            <FreeShippingBannerMeta>
+                                <FreeShippingBannerText
+                                    className={freeShipping ? 'Full' : ''}
+                                >
+                                    Free shipping on orders above $75
+                                </FreeShippingBannerText>
+                                <FreeShippingBannerText>
+                                    <Currency
+                                        price={cart.cartTotal}
+                                        currency="USD"
+                                    />
+                                    {`/`}
+                                    <Currency price={75} currency="USD" />
+                                </FreeShippingBannerText>
+                            </FreeShippingBannerMeta>
                             <Progress className={freeShipping ? 'Full' : ''}>
                                 <ProgressBar
                                     style={{
-                                        width: `${(cart.cartTotal / 75) * 100}%`
+                                        width: `${
+                                            freeShipping
+                                                ? 100
+                                                : (cart.cartTotal / 75) * 100
+                                        }%`
                                     }}
                                 />
                             </Progress>
                         </FreeShippingBanner>
+
+                        {recommendations?.length > 1 ? (
+                            <Recommendations dark>
+                                <RecommendationsTitle>
+                                    Recommended Products
+                                </RecommendationsTitle>
+                                <RecommendationsWrapper>
+                                    <RecommendationsContent>
+                                        <CollectionBlock
+                                            data={{
+                                                items: recommendations
+                                            }}
+                                            isHorizontal
+                                        />
+                                    </RecommendationsContent>
+                                </RecommendationsWrapper>
+                            </Recommendations>
+                        ) : (
+                            <PageLoader />
+                        )}
                     </ContentWrapper>
 
                     <SummaryContainer>
@@ -278,7 +396,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     })}
                                 </SummaryItems>
 
-                                <SummarySummary>
+                                <SummarySummary
+                                    className={
+                                        cart.totalItems <= 0 ? 'Empty' : ''
+                                    }
+                                >
                                     <SummaryItemShipping>
                                         {!freeShipping ? (
                                             <LanguageString

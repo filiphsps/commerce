@@ -3,10 +3,15 @@ import React, { FunctionComponent } from 'react';
 interface ContentBlockProps {
     dark?: boolean;
     children: any;
+    className?: any;
 }
 const ContentBlock: FunctionComponent<ContentBlockProps> = (props) => {
     return (
-        <div className={`ContentBlock ${props.dark && 'ContentBlock-Dark'}`}>
+        <div
+            className={`ContentBlock ${props.dark && 'ContentBlock-Dark'} ${
+                props.className
+            }`}
+        >
             {props.children}
         </div>
     );

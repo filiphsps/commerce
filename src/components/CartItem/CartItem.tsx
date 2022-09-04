@@ -60,14 +60,20 @@ const Details = styled(SectionContent)`
 `;
 const DetailsBrand = styled.div`
     font-weight: 700;
+    letter-spacing: 0.05rem;
     color: #404756;
 `;
 const DetailsTitle = styled.div`
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
     transition: 250ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);
+    }
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
     }
 `;
 const DetailsVariant = styled.div`
