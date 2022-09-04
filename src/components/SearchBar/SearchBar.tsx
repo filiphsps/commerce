@@ -1,11 +1,13 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import { FiX } from 'react-icons/fi';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 interface SearchBarProps {}
 const SearchBar: FunctionComponent<SearchBarProps> = () => {
     const [search, setSearch] = useStore<any>('search');
+    const router = useRouter();
 
     return (
         <div className="SearchBar">
@@ -18,6 +20,17 @@ const SearchBar: FunctionComponent<SearchBarProps> = () => {
                 onChange={(e) =>
                     setSearch({ ...search, phrase: e?.target?.value || '' })
                 }
+                onKeyDown={(event) => {
+                    if (event.key !== 'Enter') return;
+
+                    setSearch({
+                        open: false,
+                        phrase: search.phrase
+                    });
+                    router.push(
+                        `/search?q=${encodeURI((event as any)?.target?.value)}`
+                    );
+                }}
                 onFocus={() => setSearch({ ...search, open: true })}
                 spellCheck={false}
             />
