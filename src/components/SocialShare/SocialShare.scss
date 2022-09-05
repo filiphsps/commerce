@@ -8,15 +8,19 @@
     margin: 0.5rem 0px;
 
     a {
+        overflow: hidden;
         display: block;
-        height: 20px;
-        width: 20px;
+        height: 1.5rem;
+        width: 1.5rem;
         margin-left: 0.5rem;
+        border-radius: 100%;
+
+        &:hover, &:active {
+            background: $color-secondary;
+        }
 
         img {
             height: 100%;
-
-            border-radius: 100%;
         }
     }
 }
