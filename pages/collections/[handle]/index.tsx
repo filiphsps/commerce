@@ -104,8 +104,13 @@ export async function getStaticProps({ locale, params }) {
         handle = params?.handle;
     }
 
-    if (handle === 'undefined')
+    if (handle === 'undefined' || !handle)
         return {
+            props: {
+                data: {
+                    collection: null
+                }
+            },
             revalidate: false
         };
 

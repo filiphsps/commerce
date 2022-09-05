@@ -478,8 +478,13 @@ export async function getStaticProps({ params, locale }) {
         handle = params?.handle;
     }
 
-    if (handle === 'undefined')
+    if (handle === 'undefined' || !handle)
         return {
+            props: {
+                data: {
+                    product: null
+                }
+            },
             revalidate: false
         };
 
