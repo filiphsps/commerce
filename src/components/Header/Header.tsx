@@ -1,5 +1,5 @@
 import { FiShoppingCart, FiUser, FiX } from 'react-icons/fi';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import Button from '../Button';
 import { Config } from '../../util/Config';
@@ -280,6 +280,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 }) => {
     const cart = useCart();
     const router = useRouter();
+    const [totalItems, setTotalItem] = useState(0);
     const [cartStore, setCartStore] = useStore<any>('cart');
     const { data } = useSWR(['header'], () => HeaderApi() as any);
     const timer = useRef(null);
@@ -293,6 +294,9 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
             })
     ) as any;
 
+    useEffect(() => {
+        setTotalItem(cart.totalItems);
+    }, [cart.totalItems]);
     useEffect(() => {
         cart.items.forEach((item) => {
             if (!item.id.includes('/')) return;
@@ -363,18 +367,19 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         )}
 
                         <CartIconWrapper
-                            className={cart?.totalItems > 0 ? 'Active' : ''}
+                            className={totalItems > 0 ? 'Active' : ''}
                         >
                             <Link href={'/cart'}>
                                 <div className="Wrapper">
-                                    {cart?.totalItems > 0 && (
+                                    {totalItems > 0 && (
                                         <CartIcon className="Header-Content-CartBadge">
-                                            {cart.totalItems}
+                                            {totalItems}
                                         </CartIcon>
                                     )}
                                     <FiShoppingCart className="Icon" />
                                 </div>
                             </Link>
+
                             {added_product && cartStore.item ? (
                                 <CartPopup
                                     className={cartStore.open ? 'Open' : ''}
