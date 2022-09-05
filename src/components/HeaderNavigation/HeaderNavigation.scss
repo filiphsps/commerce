@@ -37,16 +37,15 @@
             text-transform: uppercase;
             //color: $color-text-primary;
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 0.05rem;
             transition: 150ms;
             border-bottom: 0.2rem solid transparent;
+            transition: 250ms ease-in-out;
 
-            @media (min-width: $width-max-mobile) {
-                &:hover,
-                &:active {
-                    border-bottom-color: $color-text-primary;
-                }
+            &:hover,
+            &:active {
+                color: var(--accent-primary);
             }
         }
     }

@@ -128,7 +128,7 @@ const StoreApp = withStore(
                             --accent-primary-light: ${Color(
                                 Config.colors.primary
                             )
-                                .lighten(0.25)
+                                .lighten(0.45)
                                 .hex()
                                 .toString()};
                             --accent-secondary: ${Color(Config.colors.secondary)

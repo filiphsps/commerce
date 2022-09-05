@@ -8,7 +8,10 @@ interface PageContentProps {
 }
 const PageContent: FunctionComponent<PageContentProps> = (props) => {
     return (
-        <div className={`PageContent ${props.className}`} style={props.style}>
+        <div
+            className={`PageContent ${props.className || ''}`}
+            style={props.style}
+        >
             {props.children}
         </div>
     );

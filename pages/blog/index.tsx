@@ -59,7 +59,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
     const { store, blog } = props;
 
     return (
-        <Page className="CartPage">
+        <Page className="BlogPage">
             <NextSeo title="Blog" />
 
             <PageContent>
