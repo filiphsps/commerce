@@ -146,7 +146,7 @@ const Price = styled(SectionContent)`
 const Actions = styled(SectionContent)`
     width: 2rem;
     justify-content: center;
-    align-items: flex-end;
+    align-items: flex-start;
     margin-left: auto;
 `;
 const Action = styled.div`
