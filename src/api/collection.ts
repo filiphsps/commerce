@@ -49,13 +49,15 @@ export const Convertor = (collection: any): CollectionModel => {
 
         title: collection?.title,
         body: collection?.description,
-        image: collection?.image ? {
-            id: collection?.image?.id,
-            alt: collection?.image?.altText ?? null,
-            src: collection?.image?.originalSrc,
-            height: collection?.image?.height,
-            width: collection?.image?.width
-        } : null,
+        image: collection?.image
+            ? {
+                  id: collection?.image?.id,
+                  alt: collection?.image?.altText ?? null,
+                  src: collection?.image?.originalSrc,
+                  height: collection?.image?.height,
+                  width: collection?.image?.width
+              }
+            : null,
 
         items: collection?.products?.edges
             ?.map((product) => ProductConvertor(product.node))
@@ -101,5 +103,28 @@ export const CollectionApi = async (handle: string) => {
             console.error(err);
             return reject(err);
         }
+    });
+};
+
+export const CollectionsApi = async (): Promise<CollectionModel[]> => {
+    return new Promise(async (resolve, reject) => {
+        const { data, errors } = await newShopify.query({
+            query: gql`
+                query collections {
+                    collections(first: 250) {
+                        edges {
+                            node {
+                                id
+                                handle
+                            }
+                        }
+                    }
+                }
+            `
+        });
+
+        if (errors?.length) return reject(errors);
+
+        return resolve(data.collections.edges.map((item) => item.node));
     });
 };

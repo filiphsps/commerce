@@ -1,7 +1,7 @@
+import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
-import { CollectionApi } from '../../../src/api/collection';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
 import Error from 'next/error';
@@ -44,10 +44,14 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     null
                 }
                 additionalMetaTags={
-                    collection.seo?.keywords ? [{
-                        property: 'keywords',
-                        content: collection.seo?.keywords
-                    }] : null
+                    collection.seo?.keywords
+                        ? [
+                              {
+                                  property: 'keywords',
+                                  content: collection.seo?.keywords
+                              }
+                          ]
+                        : null
                 }
             />
 
@@ -79,13 +83,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
 };
 
 export async function getStaticPaths() {
-    const vendors = ((await VendorsApi()) as any) || null;
+    const collections = await CollectionsApi();
 
-    // FIXME: Add non-vendor collections
     let paths = [
-        ...vendors
-            ?.map((vendor) => ({
-                params: { handle: vendor?.handle }
+        ...collections
+            ?.map((collection) => ({
+                params: { handle: collection?.handle }
             }))
             .filter((a) => a.params.handle)
     ];
