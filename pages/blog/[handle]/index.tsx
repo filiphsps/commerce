@@ -201,7 +201,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                             <SidebarTitle>Latest Articles</SidebarTitle>
                             {blog.articles.map((article) => (
                                 <SidebarLink key={article.id}>
-                                    <Link href={`/blog/${article.hanle}`}>
+                                    <Link href={`/blog/${article.handle}`}>
                                         <a>{article.title}</a>
                                     </Link>
                                 </SidebarLink>
