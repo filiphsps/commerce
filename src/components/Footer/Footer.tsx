@@ -171,6 +171,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             <h2>Information</h2>
                             <Link href="/shipping">Shipping Policy</Link>
                             <Link href="/about">Returns</Link>
+                            <Link href="/search">Search</Link>
                         </div>
                         <div className="Footer-Blocks-Block">
                             <h2>Contact</h2>

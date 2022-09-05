@@ -1,3 +1,4 @@
+import { NextSeo, SiteLinksSearchBoxJsonLd } from 'next-seo';
 import { useCallback, useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
@@ -10,7 +11,6 @@ import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import { SearchApi } from '../../src/api/search';
-import { SiteLinksSearchBoxJsonLd } from 'next-seo';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -50,6 +50,8 @@ const SearchPage = (props: any) => {
 
     return (
         <Page className="SearchPage">
+            <NextSeo title="Search" />
+
             <SiteLinksSearchBoxJsonLd
                 url={`https://${Config.domain}/`}
                 potentialActions={[
