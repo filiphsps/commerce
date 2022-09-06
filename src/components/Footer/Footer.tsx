@@ -194,6 +194,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             >
                                 Twitter
                             </Link>
+                            <Link
+                                href="https://www.facebook.com/candybysweden/"
+                                target="_blank"
+                            >
+                                Facebook
+                            </Link>
                         </div>
                     </div>
 
