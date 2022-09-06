@@ -7,17 +7,26 @@ import PageContent from '../../../PageContent';
 import TextBlockComponent from '../../../TextBlock';
 
 interface TextBlockProps {
-    data?: any;
+    data?: {
+        primary: {
+            theme: 'light' | 'dark';
+        };
+        items: Array<{
+            image: any;
+            text: any;
+        }>;
+    };
 }
-const TextBlock: FunctionComponent<TextBlockProps> = (props) => {
+const TextBlock: FunctionComponent<TextBlockProps> = ({ data }) => {
     return (
         <div className="Slice Slice-TextBlock">
-            <ContentBlock dark={props?.data?.primary?.theme === 'dark'}>
+            <ContentBlock dark={data?.primary?.theme === 'dark'}>
                 <PageContent>
-                    {props?.data?.items?.map((item, index) => {
+                    {data?.items?.map((item, index) => {
                         return (
                             <TextBlockComponent
                                 key={index}
+                                image={item?.image?.url ? item.image : null}
                                 body={PrismicDOM.asHTML(item?.text)}
                             />
                         );

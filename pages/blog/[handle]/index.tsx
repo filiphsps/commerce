@@ -79,6 +79,7 @@ const ArticleContent = styled.div`
 
         &:hover {
             color: var(--accent-primary-light);
+            text-decoration: underline;
         }
     }
 
