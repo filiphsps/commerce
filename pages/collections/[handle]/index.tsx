@@ -4,7 +4,9 @@ import React, { FunctionComponent, useEffect } from 'react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
+import { Config } from '../../../src/util/Config';
 import Error from 'next/error';
+import Head from 'next/head';
 import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
@@ -54,6 +56,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                         : null
                 }
             />
+            <Head>
+                <link
+                    rel="canonical"
+                    href={`https://${Config.domain}/collections/${collection.handle}/`}
+                />
+            </Head>
 
             <PageContent
                 style={{

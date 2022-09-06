@@ -1,13 +1,13 @@
 import 'destyle.css';
 import './app.scss';
 
+import { DefaultSeo, SiteLinksSearchBoxJsonLd } from 'next-seo';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
-import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
@@ -152,6 +152,16 @@ const StoreApp = withStore(
                     `}</style>
                     {/* eslint-enable indent */}
                 </Head>
+
+                <SiteLinksSearchBoxJsonLd
+                    url={`https://${Config.domain}/`}
+                    potentialActions={[
+                        {
+                            target: `https://${Config.domain}/search/?q`,
+                            queryInput: 'search_term_string'
+                        }
+                    ]}
+                />
 
                 {/* Page */}
                 <CartProvider onItemAdd={reportItem} onItemUpdate={reportItem}>

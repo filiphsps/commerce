@@ -1,11 +1,12 @@
-import { NextSeo, SiteLinksSearchBoxJsonLd } from 'next-seo';
 import { useCallback, useEffect, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
+import Head from 'next/head';
 import Input from '../../src/components/Input';
 import LanguageString from '../../src/components/LanguageString';
+import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
@@ -51,16 +52,12 @@ const SearchPage = (props: any) => {
     return (
         <Page className="SearchPage">
             <NextSeo title="Search" />
-
-            <SiteLinksSearchBoxJsonLd
-                url={`https://${Config.domain}/`}
-                potentialActions={[
-                    {
-                        target: `https://${Config.domain}/search/?q`,
-                        queryInput: 'search_term_string'
-                    }
-                ]}
-            />
+            <Head>
+                <link
+                    rel="canonical"
+                    href={`https://${Config.domain}/search/`}
+                />
+            </Head>
 
             <PageContent>
                 <Breadcrumbs

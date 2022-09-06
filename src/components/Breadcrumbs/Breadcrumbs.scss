@@ -39,17 +39,17 @@
                 display: block;
                 color: lighten($color: $color-dark, $amount: 5%);
 
-                @media (min-width: $width-max-mobile) {
-                    &:hover,
-                    &:active {
-                        color: $color-dark;
-                    }
+                &:hover,
+                &:active {
+                    color: $color-dark;
+                    color: var(--accent-primary);
                 }
             }
 
             &:last-child {
                 .Link {
                     color: $color-primary;
+                    font-weight: 600;
                 }
 
                 &:after {

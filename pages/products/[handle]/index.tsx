@@ -8,6 +8,7 @@ import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
+import Head from 'next/head';
 import Image from 'next/image';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
@@ -271,6 +272,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     }
                 ]}
             />
+            <Head>
+                <link
+                    rel="canonical"
+                    href={`https://${Config.domain}/products/${product.handle}/`}
+                />
+            </Head>
             <ProductJsonLd
                 productName={product.title.replace(/"/gi, '\\"')}
                 brand={product.vendor.title.replace(/"/gi, '\\"')}
