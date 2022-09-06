@@ -172,6 +172,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             <Link href="/shipping">Shipping Policy</Link>
                             <Link href="/about">Returns</Link>
                             <Link href="/search">Search</Link>
+                            <Link
+                                href="https://join.collabs.shopify.com/community/apply/zRDY3XwG9ts"
+                                target="_blank"
+                            >
+                                Become an affiliate
+                            </Link>
                         </div>
                         <div className="Footer-Blocks-Block">
                             <h2>Contact</h2>
