@@ -16,7 +16,7 @@ interface CollapseProps {
     };
 }
 const Collapse: FunctionComponent<CollapseProps> = (props) => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const { data } = props;
 
     return (
