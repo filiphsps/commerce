@@ -47,11 +47,12 @@
     .Slice-Collapse-Body {
         overflow: hidden;
         height: 0px;
-        margin: 1rem 0px;
+        margin: 0px;
         transition: 250ms ease-in-out;
 
         &.Open {
             height: auto;
+            margin: 1rem 0px;
         }
 
         p {
