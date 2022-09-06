@@ -43,6 +43,7 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             Component = Carousel;
                             break;
                         case 'Collapse':
+                        case 'collapse':
                             Component = Collapse;
                             break;
                         case 'CollectionBlock':

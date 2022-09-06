@@ -1,40 +1,50 @@
+import * as PrismicDOM from '@prismicio/helpers';
+
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import React, { FunctionComponent, memo, useState } from 'react';
 
-import Slices from '../../Slices';
+import ContentBlock from '../../../ContentBlock/ContentBlock';
+import PageContent from '../../../PageContent';
 import TextBlock from '../../../TextBlock';
 
 interface CollapseProps {
-    store?: any;
-    data?: any;
-    prefetch?: any;
+    data?: {
+        primary: {
+            title: string;
+            body: any;
+        };
+    };
 }
 const Collapse: FunctionComponent<CollapseProps> = (props) => {
     const [open, setOpen] = useState(false);
-    const { store, data, prefetch } = props;
+    const { data } = props;
 
     return (
         <div className="Slice Slice-Collapse">
-            <div
-                className="Slice-Collapse-Title"
-                onClick={() => setOpen(!open)}
-            >
-                {(open && <FiChevronDown className="Icon" />) || (
-                    <FiChevronUp className="Icon" />
-                )}{' '}
-                {data?.title}
-            </div>
-            {open && (
-                <div className="Slice-Collapse-Body">
-                    {(data?.slices && (
-                        <Slices
-                            store={store}
-                            data={data?.slices}
-                            prefetch={prefetch}
-                        />
-                    )) || <TextBlock body={data?.body} />}
-                </div>
-            )}
+            <ContentBlock>
+                <PageContent>
+                    <div
+                        className="Slice-Collapse-Title"
+                        onClick={() => setOpen(!open)}
+                    >
+                        {(open && <FiChevronDown className="Icon" />) || (
+                            <FiChevronUp className="Icon" />
+                        )}{' '}
+                        {data?.primary?.title}
+                    </div>
+                    {open && (
+                        <div className="Slice-Collapse-Body">
+                            {
+                                <TextBlock
+                                    body={PrismicDOM.asHTML(
+                                        data?.primary?.body
+                                    )}
+                                />
+                            }
+                        </div>
+                    )}
+                </PageContent>
+            </ContentBlock>
         </div>
     );
 };

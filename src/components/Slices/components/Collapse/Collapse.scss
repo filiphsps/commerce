@@ -1,7 +1,7 @@
 @import '../../../../scss/app';
 
 .Slice-Collapse {
-    padding: 0.5rem 0px 0.75rem 0px;
+    padding: 0.5rem 0px;
 
     .Slice-Collapse-Title {
         $font-size: 1.25rem;
@@ -9,10 +9,10 @@
         display: flex;
         justify-self: flex-start;
         align-items: center;
-        padding: 1rem;
+        padding: 1rem 0px;
         font-weight: 700;
         font-size: $font-size;
-        line-height: $font-size;
+        line-height: $font-size * 1.25;
         text-transform: uppercase;
         cursor: pointer;
         user-select: none;
