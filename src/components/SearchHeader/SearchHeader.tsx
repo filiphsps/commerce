@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import CollectionBlock from '../CollectionBlock';
 import PageLoader from '../PageLoader';
@@ -10,14 +10,16 @@ interface SearchHeaderProps {
     country?: string;
 }
 const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
-    const {
-        data
-    }: {
-        data?: any;
-        error?: any;
-    } = useSWR(props?.query ? [`${props?.query}`] : null, (url) =>
+    const { data } = useSWR(props?.query ? [`${props?.query}`] : null, (url) =>
         SearchApi(url)
     );
+
+    const [items, setItems] = useState([]);
+    useEffect(() => {
+        if (!data || data?.length <= 0) return;
+
+        setItems(data);
+    }, [data]);
 
     if (!props.query) return null;
     else if (!data)
@@ -30,18 +32,16 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
     return (
         <div className="SearchHeader">
             <div className="SearchHeader-Content">
-                {data.length ? (
+                {items.length ? (
                     <CollectionBlock
                         hideTitle
                         search
                         data={{
-                            items: data || []
+                            items
                         }}
                         isHorizontal
                     />
-                ) : (
-                    ''
-                )}
+                ) : null}
             </div>
         </div>
     );
