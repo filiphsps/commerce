@@ -83,6 +83,13 @@ const ArticleContent = styled.div`
         }
     }
 
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        line-height: 3rem;
+        letter-spacing: 0.05rem;
+        text-transform: uppercase;
+    }
     h2 {
         font-size: 2rem;
         font-weight: 600;
@@ -92,6 +99,12 @@ const ArticleContent = styled.div`
     }
     h3 {
         font-size: 1.75rem;
+        line-height: 2.5rem;
+        line-height: 2rem;
+    }
+    h4 {
+        font-size: 1.5rem;
+        line-height: 2rem;
         line-height: 2rem;
     }
 
@@ -165,11 +178,11 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                     pages={[
                         {
                             title: <LanguageString id={'blog'} />,
-                            url: '/blog'
+                            url: '/blog/'
                         },
                         {
                             title: article.title,
-                            url: `/blog/${article.handle}`
+                            url: `/blog/${article.handle}/`
                         }
                     ]}
                     store={store}
@@ -254,7 +267,7 @@ export async function getStaticProps({ params, locale }) {
     let errors = [];
 
     try {
-        article = (await ArticleApi({ handle, locale })) as any;
+        article = (await ArticleApi({ handle, blog: 'news', locale })) as any;
     } catch (err) {
         console.warn(err);
         if (err) errors.push(err);

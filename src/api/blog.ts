@@ -57,12 +57,14 @@ export const BlogApi = async ({
                 excerpt: i.node.excerpt,
                 published_at: i.node.publishedAt,
 
-                image: {
-                    url: i.node.image.url,
-                    width: i.node.image.width,
-                    height: i.node.image.height,
-                    alt: i.node.image.altText
-                }
+                image: i.node.image
+                    ? {
+                          url: i.node.image.url,
+                          width: i.node.image.width,
+                          height: i.node.image.height,
+                          alt: i.node.image.altText
+                      }
+                    : null
             }));
 
             return resolve(result);
@@ -74,9 +76,11 @@ export const BlogApi = async ({
 };
 
 export const ArticleApi = async ({
-    handle
+    handle,
+    blog
 }: {
     handle: string;
+    blog: string;
     locale?: string;
 }) => {
     return new Promise(async (resolve, reject) => {
@@ -125,7 +129,7 @@ export const ArticleApi = async ({
                     }
                 `,
                 variables: {
-                    blog: 'news'
+                    blog: blog || 'news'
                 }
             });
 
@@ -148,12 +152,14 @@ export const ArticleApi = async ({
                     bio: result.authorV2.bio
                 },
 
-                image: {
-                    url: result.image.url,
-                    width: result.image.width,
-                    height: result.image.height,
-                    alt: result.image.altText
-                },
+                image: result.image
+                    ? {
+                          url: result.image.url,
+                          width: result.image.width,
+                          height: result.image.height,
+                          alt: result.image.altText
+                      }
+                    : null,
                 seo: {
                     title: result.seo.title,
                     description: result.seo.description
