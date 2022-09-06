@@ -40,6 +40,7 @@ export const PRODUCT_FRAGMENT = `
                 id
                 sku
                 title
+                barcode
                 priceV2 {
                     amount
                     currencyCode
@@ -182,8 +183,9 @@ export const Convertor = (product: any): ProductModel => {
                         .split('/')
                         .at(-1),
                     title: variant.title,
-                    sku: variant.sku,
                     default_image: defaultImage ?? 0,
+                    sku: variant.sku,
+                    barcode: variant.barcode,
                     pricing: {
                         currency: variant.priceV2.currencyCode,
                         range: variant.priceV2.amount,

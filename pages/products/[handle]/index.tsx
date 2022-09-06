@@ -217,7 +217,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     reviews,
     store
 }) => {
-    const router = useRouter();
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
@@ -278,26 +277,35 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     href={`https://${Config.domain}/products/${product.handle}/`}
                 />
             </Head>
-            <ProductJsonLd
-                productName={product.title.replace(/"/gi, '\\"')}
-                brand={product.vendor.title.replace(/"/gi, '\\"')}
-                sku={product.sku || product.id}
-                mpn={product.sku || product.id}
-                images={product.images?.map?.((image) => image.src) || []}
-                description={product.description || ''}
-                offers={
-                    (product.variants?.map?.((variant) => ({
-                        price: variant.pricing.range,
-                        priceCurrency: variant.pricing.currency,
-                        priceValidUntil: `${new Date().getFullYear()}-12-31`,
-                        itemCondition: 'https://schema.org/NewCondition',
-                        availability: variant.available
-                            ? 'https://schema.org/InStock'
-                            : 'https://schema.org/SoldOut',
-                        url: `https://${Config.domain}/products/${product.handle}`
-                    })) || []) as any
-                }
-            />
+
+            {product.variants?.map?.((variant) => (
+                <ProductJsonLd
+                    key={variant.id}
+                    keyOverride={variant.id}
+                    productName={`${product.title} - ${variant.title}`}
+                    brand={product.vendor.title}
+                    sku={variant.sku || variant.id}
+                    mpn={variant.barcode || variant.sku || variant.id}
+                    images={product.images?.map?.((image) => image.src) || []}
+                    description={product.description || ''}
+                    aggregateRating={{
+                        ratingValue: `${reviews?.rating || 5}`,
+                        reviewCount: `${reviews?.count || 1}`
+                    }}
+                    offers={[
+                        {
+                            price: variant.pricing.range,
+                            priceCurrency: variant.pricing.currency,
+                            priceValidUntil: `${new Date().getFullYear()}-12-31`,
+                            itemCondition: 'https://schema.org/NewCondition',
+                            availability: variant.available
+                                ? 'https://schema.org/InStock'
+                                : 'https://schema.org/SoldOut',
+                            url: `https://${Config.domain}/products/${product.handle}`
+                        }
+                    ]}
+                />
+            ))}
 
             <PageContent>
                 <Breadcrumbs

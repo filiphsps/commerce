@@ -1,7 +1,11 @@
 import 'destyle.css';
 import './app.scss';
 
-import { DefaultSeo, SiteLinksSearchBoxJsonLd } from 'next-seo';
+import {
+    DefaultSeo,
+    SiteLinksSearchBoxJsonLd,
+    SocialProfileJsonLd
+} from 'next-seo';
 import Router, { useRouter } from 'next/router';
 import { useStore, withStore } from 'react-context-hook';
 
@@ -160,6 +164,15 @@ const StoreApp = withStore(
                             target: `https://${Config.domain}/search/?q`,
                             queryInput: 'search_term_string'
                         }
+                    ]}
+                />
+                <SocialProfileJsonLd
+                    type="Organization"
+                    name="Candy by Sweden"
+                    url={`https://${Config.domain}/`}
+                    sameAs={[
+                        'https://instagram.com/candybysweden',
+                        'https://twitter.com/candybysweden'
                     ]}
                 />
 

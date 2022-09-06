@@ -3,8 +3,9 @@ import { WeightModel } from './WeightModel';
 export interface ProductVariantModel {
     id: string;
     available: boolean;
-    sku: string;
     title: string;
+    sku: string;
+    barcode: string;
     pricing: {
         currency: string;
         range: number;
