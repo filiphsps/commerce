@@ -24,25 +24,20 @@ const Collapse: FunctionComponent<CollapseProps> = (props) => {
             <ContentBlock>
                 <PageContent>
                     <div
-                        className="Slice-Collapse-Title"
+                        className={`Slice-Collapse-Title ${open ? 'Open' : ''}`}
                         onClick={() => setOpen(!open)}
                     >
-                        {(open && <FiChevronDown className="Icon" />) || (
-                            <FiChevronUp className="Icon" />
-                        )}{' '}
-                        {data?.primary?.title}
+                        <FiChevronUp className="Icon" /> {data?.primary?.title}
                     </div>
-                    {open && (
-                        <div className="Slice-Collapse-Body">
-                            {
-                                <TextBlock
-                                    body={PrismicDOM.asHTML(
-                                        data?.primary?.body
-                                    )}
-                                />
-                            }
-                        </div>
-                    )}
+                    <div
+                        className={`Slice-Collapse-Body ${open ? 'Open' : ''}`}
+                    >
+                        {
+                            <TextBlock
+                                body={PrismicDOM.asHTML(data?.primary?.body)}
+                            />
+                        }
+                    </div>
                 </PageContent>
             </ContentBlock>
         </div>
