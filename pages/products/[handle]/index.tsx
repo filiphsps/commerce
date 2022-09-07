@@ -346,7 +346,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 <Link
                                     href={`/collections/${product?.vendor?.handle}`}
                                 >
-                                    {product?.vendor?.title}
+                                    {product?.vendor?.title?.toLocaleUpperCase?.()}
                                 </Link>
                             }
                             reverse
