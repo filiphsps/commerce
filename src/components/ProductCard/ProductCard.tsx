@@ -8,7 +8,17 @@ import Input from '../Input';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import { ProductModel } from '../../models/ProductModel';
+import ReactStars from 'react-rating-stars-component';
+import { ReviewsModel } from '../../models/ReviewsModel';
+import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
+import useSWR from 'swr';
+
+const Reviews = styled.div`
+    margin-top: -0.5rem;
+    margin-left: -0.25rem;
+    padding-bottom: 0.25rem;
+`;
 
 interface ProductCardProps {
     handle?: string;
@@ -17,6 +27,15 @@ interface ProductCardProps {
 }
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
+
+    const { data: reviews } = useSWR([`${product.id}_reviews`], () =>
+        fetch('/api/reviews', {
+            method: 'post',
+            body: JSON.stringify({
+                id: product.id
+            })
+        }).then((res) => res.json())
+    );
 
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
@@ -95,6 +114,19 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                             currency={variant?.pricing?.currency}
                         />
                     </div>
+
+                    {reviews && reviews?.count > 0 ? (
+                        <Reviews>
+                            <ReactStars
+                                size={25}
+                                count={5}
+                                value={reviews.rating}
+                                isHalf={true}
+                                edit={false}
+                                activeColor="#D8B309"
+                            />
+                        </Reviews>
+                    ) : null}
 
                     <div
                         className={`ProductCard-Actions ${

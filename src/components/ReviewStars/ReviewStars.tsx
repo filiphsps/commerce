@@ -43,6 +43,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
                 value={score}
                 isHalf={true}
                 edit={false}
+                activeColor="#D8B309"
             />
             {!hideLabel && (
                 <ReviewsLabel onClick={() => onShowReviews?.()}>

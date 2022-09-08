@@ -39,14 +39,16 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
                         .split('aria-label="')[1]
                         .split(' ')[0]
                 ),
-                title: item.childNodes[0].childNodes[1].innerText.replaceAll(
-                    '&#39;',
-                    "'"
-                ),
+                title: item.childNodes[0].childNodes[1].innerText
+                    .replaceAll('&#39;', "'")
+                    .replaceAll('&amp;', '&'),
                 author: item.childNodes[0].childNodes[2].innerText
                     .split(' on')[0]
-                    .replaceAll('&#39;', "'"),
-                body: item.childNodes[1].innerText.replaceAll('&#39;', "'")
+                    .replaceAll('&#39;', "'")
+                    .replaceAll('&amp;', '&'),
+                body: item.childNodes[1].innerText
+                    .replaceAll('&#39;', "'")
+                    .replaceAll('&amp;', '&')
             }));
 
         return {

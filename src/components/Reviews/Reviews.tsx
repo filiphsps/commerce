@@ -5,6 +5,7 @@ import Input from '../Input';
 import { ProductModel } from '../../models/ProductModel';
 import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';
+import useSWR from 'swr';
 
 const Container = styled.div`
     display: flex;
@@ -81,13 +82,30 @@ interface ReviewsProps {
     reviews: any;
     product: ProductModel;
 }
-const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews }) => {
+const Reviews: FunctionComponent<ReviewsProps> = ({
+    product,
+    reviews: data
+}) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [body, setBody] = useState('');
     const [rating, setRating] = useState(5);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+
+    const { data: reviews } = useSWR(
+        [`${product.id}_reviews`],
+        () =>
+            fetch('/api/reviews', {
+                method: 'post',
+                body: JSON.stringify({
+                    id: product.id
+                })
+            }).then((res) => res.json()),
+        {
+            fallbackData: data
+        }
+    );
 
     return (
         <Container>
@@ -104,6 +122,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews }) => {
                             value={review.rating}
                             isHalf={true}
                             edit={false}
+                            activeColor="#D8B309"
                         />
                     </Meta>
                     <Body>{review.body}</Body>
@@ -118,6 +137,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews }) => {
                         edit={!loading}
                         value={rating}
                         onChange={setRating}
+                        activeColor="#D8B309"
                     />
                     <Input
                         disabled={loading}
