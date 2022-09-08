@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const SubTitle = styled.h2`
+const SubTitle = styled.div`
     margin: -0.5rem 0px 2rem 0px;
     color: #404756;
     font-size: 1.65rem;
@@ -91,17 +91,13 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     <PageHeader
                         title={
                             props.noLink ? (
-                                <h2>{data?.title}</h2>
+                                data?.title
                             ) : (
                                 <Link
                                     to={`/collections/${props.handle}`}
                                     as={'/collections/[handle]'}
                                 >
-                                    {router.pathname == '/' ? (
-                                        <h1>{data?.title}</h1>
-                                    ) : (
-                                        <h2>{data?.title}</h2>
-                                    )}
+                                    {data?.title}
                                 </Link>
                             )
                         }

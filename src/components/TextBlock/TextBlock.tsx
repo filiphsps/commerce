@@ -62,6 +62,10 @@ const Content = styled.div`
         line-height: 2.25rem;
         color: #404756;
 
+        &:last-child {
+            margin-bottom: 0px;
+        }
+
         em,
         i {
             font-weight: 700;

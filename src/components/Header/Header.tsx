@@ -422,9 +422,9 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </Logo>
 
                 <Navigation>
-                    {navigation?.map((item: any) => {
+                    {navigation?.map((item: any, index) => {
                         return (
-                            <NavigationItem key={item.handle}>
+                            <NavigationItem key={item.handle + `${index}`}>
                                 <Link href={`/${item?.handle || ''}`}>
                                     <a
                                         title={item.title}
@@ -446,36 +446,41 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                     <NavigationItemChildren>
                                         <NavigationItemChildrenWrapper>
                                             <NavigationItemChildrenContainer>
-                                                {item.children.map((item) => (
-                                                    <NavigationItem
-                                                        key={item.handle}
-                                                    >
-                                                        <Link
-                                                            href={`/${
-                                                                item?.handle ||
-                                                                ''
-                                                            }`}
+                                                {item.children.map(
+                                                    (item, index) => (
+                                                        <NavigationItem
+                                                            key={
+                                                                item.handle +
+                                                                `${index}`
+                                                            }
                                                         >
-                                                            <a
-                                                                title={
-                                                                    item.title
-                                                                }
-                                                                className={
-                                                                    (router.asPath ===
-                                                                        '/' &&
-                                                                        item?.handle ===
-                                                                            null) ||
-                                                                    `/${item?.handle}` ===
-                                                                        router.asPath
-                                                                        ? 'Active'
-                                                                        : ''
-                                                                }
+                                                            <Link
+                                                                href={`/${
+                                                                    item?.handle ||
+                                                                    ''
+                                                                }`}
                                                             >
-                                                                {item.title}
-                                                            </a>
-                                                        </Link>
-                                                    </NavigationItem>
-                                                ))}
+                                                                <a
+                                                                    title={
+                                                                        item.title
+                                                                    }
+                                                                    className={
+                                                                        (router.asPath ===
+                                                                            '/' &&
+                                                                            item?.handle ===
+                                                                                null) ||
+                                                                        `/${item?.handle}` ===
+                                                                            router.asPath
+                                                                            ? 'Active'
+                                                                            : ''
+                                                                    }
+                                                                >
+                                                                    {item.title}
+                                                                </a>
+                                                            </Link>
+                                                        </NavigationItem>
+                                                    )
+                                                )}
                                             </NavigationItemChildrenContainer>
                                         </NavigationItemChildrenWrapper>
                                     </NavigationItemChildren>

@@ -77,9 +77,9 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     return (
         <Container className={open ? 'Open' : ''}>
             <Navigation>
-                {navigation?.map((item: any) => {
+                {navigation?.map((item: any, index) => {
                     return (
-                        <NavigationItem key={item.handle}>
+                        <NavigationItem key={item.handle + `_${index}`}>
                             <Link href={`/${item.handle || ''}`}>
                                 <a
                                     title={item.title}
@@ -95,8 +95,10 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                     {item.title}
                                 </a>
                             </Link>
-                            {item.children.map((item) => (
-                                <NavigationSubItem key={item.handle}>
+                            {item.children.map((item, index) => (
+                                <NavigationSubItem
+                                    key={item.handle + `_${index}`}
+                                >
                                     <Link href={`/${item.handle || ''}`}>
                                         <a
                                             title={item.title}
