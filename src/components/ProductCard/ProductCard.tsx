@@ -232,13 +232,29 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
             </div>
 
             <div className={`ProductCard-Price`}>
-                {product?.variants?.length > 1 && (
-                    <LanguageString id={'from'} />
+                {sale ? (
+                    <div>
+                        <LanguageString id={'sale'} />
+                    </div>
+                ) : null}
+                {!sale && product?.variants?.length > 1 && (
+                    <div>
+                        <LanguageString id={'from'} />
+                    </div>
                 )}
-                <Currency
-                    price={product?.variants?.[0].pricing.range}
-                    currency={variant?.pricing.currency}
-                />
+                {sale ? (
+                    <Currency
+                        price={
+                            product?.variants?.[selectedVariant].pricing.range
+                        }
+                        currency={variant?.pricing.currency}
+                    />
+                ) : (
+                    <Currency
+                        price={product?.variants?.[0].pricing.range}
+                        currency={variant?.pricing.currency}
+                    />
+                )}
             </div>
         </div>
     );
