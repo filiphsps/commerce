@@ -297,6 +297,7 @@ const NavigationItemChildrenWrapper = styled.div`
 const NavigationItemChildrenContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1rem;
     padding: 2rem;
     max-width: 1465px;
     margin: 0px auto;
