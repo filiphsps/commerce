@@ -78,7 +78,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
                                 return (
                                     <ProductCard
                                         key={product?.id}
-                                        data={product}
+                                        data={product || null}
                                         handle={product?.handle}
                                     />
                                 );

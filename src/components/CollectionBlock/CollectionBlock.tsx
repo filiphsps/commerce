@@ -116,11 +116,11 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                 {(products.length && products) ||
                     (!error && (
                         <>
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
+                            <ProductCard data={null} />
+                            <ProductCard data={null} />
+                            <ProductCard data={null} />
+                            <ProductCard data={null} />
+                            <ProductCard data={null} />
                         </>
                     ))}
                 {view_more}

@@ -12,7 +12,7 @@ interface WeightProps {
 }
 const Weight: FunctionComponent<WeightProps> = ({ data }) => {
     const router = useRouter();
-    const locale = router.locale || 'en-US';
+    const locale = router?.locale || 'en-US';
 
     switch (locale) {
         case 'en-US':

@@ -370,7 +370,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
         () =>
             ProductIdApi({
                 id: cartStore.item?.id?.split('#')[0],
-                locale: router.locale
+                locale: router?.locale
             })
     ) as any;
 

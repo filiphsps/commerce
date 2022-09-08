@@ -28,7 +28,7 @@ interface ProductCardProps {
 const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
     const { data: product } = props;
 
-    const { data: reviews } = useSWR([`${product.id}_reviews`], () =>
+    const { data: reviews } = useSWR([`${product?.id}_reviews`], () =>
         fetch('/api/reviews', {
             method: 'post',
             body: JSON.stringify({

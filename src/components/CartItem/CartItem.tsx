@@ -175,7 +175,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
     const router = useRouter();
     const cart = useCart();
     const { data } = useSWR([product_id], (id) =>
-        ProductIdApi({ id: id, locale: router.locale })
+        ProductIdApi({ id: id, locale: router?.locale })
     ) as any;
     const product: ProductModel = data;
     const [variant, setVariant] = useState<ProductVariantModel>(null);
