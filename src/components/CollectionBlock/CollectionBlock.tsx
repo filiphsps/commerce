@@ -4,7 +4,6 @@ import { CollectionApi } from '../../api/collection';
 import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
-import Markdown from 'react-markdown';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
 import styled from 'styled-components';

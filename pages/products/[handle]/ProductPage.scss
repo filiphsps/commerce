@@ -34,22 +34,6 @@
             font-size: 1.5rem;
             line-height: 1.5rem;
 
-            .MarkdownBody {
-                padding: 1rem 0px;
-                font-size: 1.5rem;
-
-                a {
-                    color: $color-primary;
-                    font-weight: 600;
-
-                    @media (min-width: $width-max-mobile) {
-                        &:hover {
-                            color: $color-primary-dark;
-                        }
-                    }
-                }
-            }
-
             .ProductPage-Content-Body-Ingredients {
                 padding-top: 0px;
                 font-size: 1rem;

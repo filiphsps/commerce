@@ -235,6 +235,18 @@ const Badge = styled.div`
     color: var(--color-text-primary);
 `;
 
+const NavigationItemChildren = styled.div`
+    overflow: hidden;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    height: 0px;
+    transition: 250ms ease-in-out;
+    opacity: 0;
+`;
+
+const NavigationItem = styled.div``;
+
 const Header = styled.header`
     display: flex;
     justify-content: center;
@@ -268,6 +280,30 @@ const Header = styled.header`
         border-bottom: none;
         box-shadow: none;
     }
+
+    &:hover {
+        ${NavigationItem} {
+            &:hover {
+                ${NavigationItemChildren} {
+                    height: auto;
+                    opacity: 1;
+                    padding: 2.6rem 0px;
+                }
+            }
+        }
+    }
+`;
+
+const NavigationItemChildrenWrapper = styled.div`
+    background: #efefef;
+    border-bottom: 0.5rem solid var(--accent-primary);
+`;
+const NavigationItemChildrenContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 2rem;
+    max-width: 1465px;
+    margin: 0px auto;
 `;
 
 interface HeaderProps {
@@ -339,21 +375,58 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </Logo>
 
                 <Navigation>
-                    {navigation?.map((item: any, index: number) => {
+                    {navigation?.map((item: any) => {
                         return (
-                            <Link key={index} href={`/${item?.handle || ''}`}>
-                                <a
-                                    className={
-                                        (router.asPath === '/' &&
-                                            item?.handle === null) ||
-                                        `/${item?.handle}` === router.asPath
-                                            ? 'Active'
-                                            : ''
-                                    }
-                                >
-                                    {item?.title}
-                                </a>
-                            </Link>
+                            <NavigationItem key={item.handle}>
+                                <Link href={`/${item?.handle || ''}`}>
+                                    <a
+                                        className={
+                                            (router.asPath === '/' &&
+                                                item?.handle === null) ||
+                                            `/${item?.handle}` === router.asPath
+                                                ? 'Active'
+                                                : ''
+                                        }
+                                    >
+                                        {item?.title}
+                                    </a>
+                                </Link>
+                                {item.children.length ? (
+                                    <NavigationItemChildren>
+                                        <NavigationItemChildrenWrapper>
+                                            <NavigationItemChildrenContainer>
+                                                {item.children.map((item) => (
+                                                    <NavigationItem
+                                                        key={item.handle}
+                                                    >
+                                                        <Link
+                                                            href={`/${
+                                                                item?.handle ||
+                                                                ''
+                                                            }`}
+                                                        >
+                                                            <a
+                                                                className={
+                                                                    (router.asPath ===
+                                                                        '/' &&
+                                                                        item?.handle ===
+                                                                            null) ||
+                                                                    `/${item?.handle}` ===
+                                                                        router.asPath
+                                                                        ? 'Active'
+                                                                        : ''
+                                                                }
+                                                            >
+                                                                {item.title}
+                                                            </a>
+                                                        </Link>
+                                                    </NavigationItem>
+                                                ))}
+                                            </NavigationItemChildrenContainer>
+                                        </NavigationItemChildrenWrapper>
+                                    </NavigationItemChildren>
+                                ) : null}
+                            </NavigationItem>
                         );
                     })}
                 </Navigation>
