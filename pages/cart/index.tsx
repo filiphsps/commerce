@@ -235,12 +235,23 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
     const cart = useCart();
     const [loading, setLoading] = useState(false);
+    const [data, setData] = useState<any>({
+        totalItems: 0,
+        items: []
+    });
     const router = useRouter();
+
+    // SSR workaround
+    useEffect(() => {
+        if (data.totalItems === cart.totalItems) return;
+
+        setData(cart);
+    }, [cart.totalItems]);
 
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
             id:
-                cart.totalItems > 0
+                data.totalItems > 0
                     ? cart.items[0].id.split('#')[0]
                     : '7325668311194',
             locale: router.locale
@@ -248,12 +259,12 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     ) as any;
 
     const currency = 'USD';
-    const price = cart.items.reduce(
+    const price = data.items.reduce(
         (previousValue, item) => previousValue + item.price * item.quantity,
         0
     );
 
-    const freeShipping = cart.cartTotal > 75;
+    const freeShipping = data.cartTotal > 75;
 
     useEffect(() => {
         (window as any).dataLayer.push({
@@ -300,7 +311,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     <ContentWrapper>
                         <ItemsContainerWrapper>
                             <ItemsContainer>
-                                {cart.items?.length >= 1 ? (
+                                {data.items?.length >= 1 ? (
                                     <>
                                         <thead>
                                             <Header>
@@ -328,13 +339,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             </Header>
                                         </thead>
                                         <tbody>
-                                            {cart.items?.map((item) => {
+                                            {data.items?.map((item) => {
                                                 return (
                                                     <CartItem
                                                         key={`${item.id}_${item.variant_id}`}
                                                         data={item}
                                                         total_items={
-                                                            cart.totalItems
+                                                            data.totalItems
                                                         }
                                                     />
                                                 );
@@ -342,7 +353,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         </tbody>
                                     </>
                                 ) : (
-                                    !cart.items && <PageLoader />
+                                    !data.items && <PageLoader />
                                 )}
                             </ItemsContainer>
                         </ItemsContainerWrapper>
@@ -356,7 +367,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 </FreeShippingBannerText>
                                 <FreeShippingBannerText>
                                     <Currency
-                                        price={cart.cartTotal}
+                                        price={data.cartTotal}
                                         currency="USD"
                                     />
                                     {`/`}
@@ -369,7 +380,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         width: `${
                                             freeShipping
                                                 ? 100
-                                                : (cart.cartTotal / 75) * 100
+                                                : (data.cartTotal / 75) * 100
                                         }%`
                                     }}
                                 />
@@ -401,7 +412,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
                                 <SummaryItems>
-                                    {cart.items?.map((line_item) => {
+                                    {data.items?.map((line_item) => {
                                         return (
                                             <SummaryItem key={line_item.id}>
                                                 <SummaryItemMeta>
@@ -429,7 +440,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                                 <SummarySummary
                                     className={
-                                        cart.totalItems <= 0 ? 'Empty' : ''
+                                        data.totalItems <= 0 ? 'Empty' : ''
                                     }
                                 >
                                     <SummaryItemShipping>
@@ -460,8 +471,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             <div>
                                 <Button
                                     disabled={
-                                        cart.items?.length <= 0 ||
-                                        !cart.items ||
+                                        data.items?.length <= 0 ||
+                                        !data.items ||
                                         loading
                                     }
                                     onClick={async () => {
@@ -470,7 +481,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         try {
                                             const url = (
                                                 (await CheckoutApi(
-                                                    cart.items
+                                                    data.items
                                                 )) as string
                                             ).replace(
                                                 Config.shopify.domain,
@@ -485,7 +496,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 currency: 'USD',
                                                 value: price,
                                                 ecommerce: {
-                                                    items: cart.items.map(
+                                                    items: data.items.map(
                                                         (item) => ({
                                                             item_id: item.id,
                                                             item_name:
@@ -510,7 +521,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                     'begin_checkout',
                                                     {
                                                         ecomm_prodid:
-                                                            cart.items.map(
+                                                            data.items.map(
                                                                 (item) =>
                                                                     item.id
                                                                         .replaceAll(
@@ -526,7 +537,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         ecomm_totalvalue: price,
                                                         revenue_value: 1,
                                                         currency: 'USD',
-                                                        items: cart.items.map(
+                                                        items: data.items.map(
                                                             (item) => ({
                                                                 id: item.id,
                                                                 quantity:

@@ -295,6 +295,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     ) as any;
 
     useEffect(() => {
+        if (totalItems === cart.totalItems) return;
         setTotalItem(cart.totalItems);
     }, [cart.totalItems]);
     useEffect(() => {
@@ -324,7 +325,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
             clearInterval(timer.current);
             timer.current = null;
         };
-    }, [cartStore]);
+    }, [cart.totalItems]);
 
     return (
         <Header className={data?.style === 'modern' ? 'Modern' : ''}>
