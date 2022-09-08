@@ -245,6 +245,7 @@ const Badge = styled.div`
 const NavigationItemChildren = styled.div`
     overflow: hidden;
     position: fixed;
+    top: 4rem;
     left: 0px;
     right: 0px;
     height: 0px;
