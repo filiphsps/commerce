@@ -43,6 +43,7 @@ const Content = styled.div`
 
     &.Plain {
         max-width: 72rem;
+        height: auto;
         padding: 0px;
         background: none;
     }

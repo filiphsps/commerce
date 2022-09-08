@@ -93,7 +93,8 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
     const { data } = useSWR([`footer`], () => FooterApi() as any, {});
     const [email, setEmail] = useState('');
 
-    // FIXME: Add newsletter API.
+    // FIXME: Togglable newsletter view.
+    // FIXME: Dynamic copyright copy.
 
     return (
         <>
@@ -167,47 +168,27 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             />
                         </div>
 
-                        <div className="Footer-Blocks-Block">
-                            <h2>Information</h2>
-                            <Link href="/faq">FAQ</Link>
-                            <Link href="/shipping">Shipping Policy</Link>
-                            <Link href="/privacy-policy">Privacy Policy</Link>
-                            <Link href="/about">Returns</Link>
-                            <Link
-                                href="https://join.collabs.shopify.com/community/apply/zRDY3XwG9ts"
-                                target="_blank"
+                        {data?.blocks?.map((block) => (
+                            <div
+                                key={block.title}
+                                className="Footer-Blocks-Block"
                             >
-                                Become an affiliate
-                            </Link>
-                        </div>
-                        <div className="Footer-Blocks-Block">
-                            <h2>Contact</h2>
-                            <Link href="/about">About us</Link>
-                            <Link href="mailto:hi@spsgroup.se" target="_blank">
-                                hi@spsgroup.se
-                            </Link>
-                        </div>
-                        <div className="Footer-Blocks-Block">
-                            <h2>Social</h2>
-                            <Link
-                                href="https://www.instagram.com/candybysweden/"
-                                target="_blank"
-                            >
-                                Instagram
-                            </Link>
-                            <Link
-                                href="https://www.twitter.com/candybysweden/"
-                                target="_blank"
-                            >
-                                Twitter
-                            </Link>
-                            <Link
-                                href="https://www.facebook.com/candybysweden/"
-                                target="_blank"
-                            >
-                                Facebook
-                            </Link>
-                        </div>
+                                <h3>{block.title}</h3>
+                                {block?.items.map((item) => (
+                                    <Link key={item.handle} href={item.handle}>
+                                        <a
+                                            target={
+                                                item.handle.startsWith('http')
+                                                    ? '_blank'
+                                                    : ''
+                                            }
+                                        >
+                                            {item.title}
+                                        </a>
+                                    </Link>
+                                ))}
+                            </div>
+                        ))}
                     </div>
 
                     <Copyright>
