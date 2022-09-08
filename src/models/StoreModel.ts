@@ -1,29 +1,34 @@
 export interface StoreModel {
     name: string;
-    title: string;
-    description: string;
+    description?: string;
     logo: {
         src: string;
     };
 
-    favicons?: Array<{
-        type: string;
+    favicon: {
         src: string;
-    }>;
+    };
     accent: {
         primary: string;
         secondary: string;
     };
+    color: {
+        primary: string;
+        secondary: string;
+    };
 
-    currency: string;
     currencies: Array<string>;
-
-    language: string;
     languages: Array<string>;
+    social: Array<{
+        name: string;
+        url: string;
+        handle: string;
+    }>;
 
-    custom_header_tags: string;
-    custom_body_tags: string;
+    custom_header_tags?: string;
+    custom_body_tags?: string;
 
-    pages?: Array<string>;
-    navigation?: Array<any>;
+    block: {
+        border_radius: string;
+    };
 }

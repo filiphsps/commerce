@@ -1,5 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
+import { StoreModel } from '../../models/StoreModel';
 import { Currency as Tender } from 'react-tender';
 import { useStore } from 'react-context-hook';
 
@@ -10,9 +11,9 @@ interface CurrencyProps {
 
     currency?: string;
     className?: string;
+    store?: StoreModel;
 }
 const Currency: FunctionComponent<CurrencyProps> = (props) => {
-    const [store] = useStore<any>('store');
     const [currency] = useStore<any>('currency');
 
     return (
@@ -23,7 +24,10 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             <Tender
                 value={Number.parseFloat(props?.price) || 0}
                 currency={
-                    props?.currency || store?.currency || currency || 'USD'
+                    props?.currency ||
+                    props?.store?.currency ||
+                    currency ||
+                    'USD'
                 }
             />
             {props.suffix && (

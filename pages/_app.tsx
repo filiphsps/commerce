@@ -5,7 +5,6 @@ import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
-import { useStore, withStore } from 'react-context-hook';
 
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
@@ -16,8 +15,11 @@ import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
 import { ShopifyAnalyticsProvider } from 'react-shopify-analytics';
+import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
+import useSWR from 'swr';
 import { v4 as uuidv4 } from 'uuid';
+import { withStore } from 'react-context-hook';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -29,10 +31,42 @@ Router.events.on('routeChangeError', (err) => {
 const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
-        const [contextStore] = useStore<any>('store');
-        const [cartStore, setCartStore] = useStore<any>('cart');
         const [sessionId, setSessionId] = useState<string>();
         const [userId, setUserId] = useState<string>();
+
+        const { data: store } = useSWR([`store`], () => StoreApi() as any, {
+            fallbackData: {
+                // FIXME: Use CMS for these
+                name:
+                    Config.domain === 'candybysweden.com'
+                        ? 'Candy by Sweden'
+                        : 'happysnus',
+                currency: 'USD',
+                logo: {
+                    src:
+                        Config.domain === 'candybysweden.com'
+                            ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
+                            : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_20e4072c-241e-48f5-a1e4-8121fe0f731c.png?v=1662282004'
+                },
+                favicon: {
+                    src:
+                        Config.domain === 'candybysweden.com'
+                            ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
+                            : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_favicon.png?v=1662281347'
+                },
+                accent: {
+                    primary: Config.colors.primary,
+                    secondary: Config.colors.secondary
+                },
+                color: {
+                    primary: '#ffffff',
+                    secondary: '#ffffff'
+                },
+                block: {
+                    border_radius: '0.5rem'
+                }
+            }
+        });
 
         const reportItem = (item) => {
             setCartStore({ open: true, item });
@@ -120,54 +154,49 @@ const StoreApp = withStore(
                     />
                     <meta
                         name="apple-mobile-web-app-title"
-                        content={contextStore.name}
+                        content={store.name}
                     />
                     <link
                         rel="icon"
                         type="image/png"
-                        href={contextStore.favicon.src}
+                        href={store.favicon.src}
                     />
                     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-                    <link
-                        rel="apple-touch-icon"
-                        href={contextStore.favicon.src}
-                    />
+                    <link rel="apple-touch-icon" href={store.favicon.src} />
                     {/* General application styling */}
                     {/* eslint-disable indent */}
                     <style>{`
                         body {
                             --color-text-primary: #ffffff;
-                            --accent-primary: ${Color(Config.colors.primary)
+                            --accent-primary: ${Color(store.accent.primary)
                                 .hex()
                                 .toString()};
-                            --accent-primary-dark: ${Color(
-                                Config.colors.primary
-                            )
+                            --accent-primary-dark: ${Color(store.accent.primary)
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
                             --accent-primary-light: ${Color(
-                                Config.colors.primary
+                                store.accent.primary
                             )
                                 .lighten(0.45)
                                 .hex()
                                 .toString()};
-                            --accent-secondary: ${Color(Config.colors.secondary)
+                            --accent-secondary: ${Color(store.accent.secondary)
                                 .hex()
                                 .toString()};
                             --accent-secondary-dark: ${Color(
-                                Config.colors.secondary
+                                store.accent.secondary
                             )
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
                             --accent-secondary-light: ${Color(
-                                Config.colors.secondary
+                                store.accent.secondary
                             )
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --block-border-radius: 0.5rem;
+                            --block-border-radius: ${store.block.border_radius};
                             background: var(--accent-primary);
                         }
                     `}</style>
@@ -185,7 +214,7 @@ const StoreApp = withStore(
                 />*/}
                 <SocialProfileJsonLd
                     type="Organization"
-                    name="Candy by Sweden"
+                    name={store.name}
                     url={`https://${Config.domain}/`}
                     sameAs={[
                         'https://instagram.com/candybysweden',
@@ -195,11 +224,11 @@ const StoreApp = withStore(
 
                 {/* Page */}
                 <CartProvider onItemAdd={reportItem} onItemUpdate={reportItem}>
-                    <PageProvider store={contextStore}>
+                    <PageProvider store={store}>
                         <Component
                             key={router.asPath}
                             {...pageProps}
-                            store={contextStore}
+                            store={store}
                         />
                     </PageProvider>
                 </CartProvider>
@@ -216,38 +245,6 @@ const StoreApp = withStore(
         );
     },
     {
-        store: {
-            // FIXME: Use CMS for these
-            name:
-                Config.domain === 'candybysweden.com'
-                    ? 'Candy by Sweden'
-                    : 'happysnus',
-            currency: 'USD',
-            logo: {
-                src:
-                    Config.domain === 'candybysweden.com'
-                        ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
-                        : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_20e4072c-241e-48f5-a1e4-8121fe0f731c.png?v=1662282004'
-            },
-            favicon: {
-                src:
-                    Config.domain === 'candybysweden.com'
-                        ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
-                        : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_favicon.png?v=1662281347'
-            },
-            accent: {
-                primary: Config.colors.primary,
-                secondary: Config.colors.secondary
-            },
-            color: {
-                primary: '#ffffff',
-                secondary: '#ffffff'
-            },
-            block: {
-                border_radius: 0.5
-            },
-            navigation: []
-        },
         currency: 'USD',
         search: {
             open: false,
