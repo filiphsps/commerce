@@ -4,5 +4,11 @@ export interface ReviewsModel {
     rating: number;
     count: number;
 
-    reviews?: Array<any>;
+    reviews?: Array<{
+        id: string;
+        rating: number;
+        title: string;
+        author: string;
+        body: string;
+    }>;
 }

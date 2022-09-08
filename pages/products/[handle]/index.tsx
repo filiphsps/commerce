@@ -9,7 +9,6 @@ import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
 import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
-import Head from 'next/head';
 import Image from 'next/image';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
@@ -20,12 +19,12 @@ import { ProductModel } from '../../../src/models/ProductModel';
 import { RecommendationApi } from '../../../src/api/recommendation';
 import { RedirectProductApi } from '../../../src/api/redirects';
 import ReviewStars from '../../../src/components/ReviewStars';
+import Reviews from '../../../src/components/Reviews';
 import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
-import { useRouter } from 'next/router';
 
 // TODO: replace this with generic label.
 const Label = styled.label`
@@ -62,8 +61,10 @@ const Assets = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
+    max-height: 60rem;
     padding: 4rem;
     background: #efefef;
+    border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
         height: 28rem;
@@ -119,7 +120,6 @@ const Quantity = styled(Input)`
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 `;
 const Metadata = styled.div`
-    margin-top: 0.75rem;
     font-size: 1.05rem;
     line-height: 1.5rem;
     letter-spacing: -0.065rem;
@@ -208,6 +208,38 @@ const Recommendations = styled.div`
     margin: 2rem 0px 1rem 0px;
 `;
 
+const Tabs = styled.div`
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+`;
+const Tab = styled.div`
+    padding: 0.8rem;
+    background: #efefef;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 0.2rem solid #efefef;
+    border-radius: var(--block-border-radius);
+    cursor: pointer;
+    transition: 250ms ease-in-out;
+
+    &.Active {
+        border-color: #404756;
+    }
+`;
+const TabContent = styled.div`
+    display: none;
+    overflow: hidden;
+    padding: 1rem;
+    margin-top: 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+
+    &.Active {
+        display: block;
+    }
+`;
+
 interface ProductPageProps {
     errors?: any[];
     product: ProductModel;
@@ -225,6 +257,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [tab, setTab] = useState('metadata');
     const [variant, setVariant] = useState(
         product ? product.variants.length - 1 : 0
     );
@@ -380,12 +413,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             reverse
                             noMargin
                         />
-                        {Config.features.reviews && (
-                            <ReviewStars
-                                score={reviews?.rating}
-                                totalReviews={reviews?.count}
-                            />
-                        )}
+                        <ReviewStars
+                            score={reviews?.rating}
+                            totalReviews={reviews?.count}
+                        />
                         <Tags>
                             {product?.tags.map((tag) => (
                                 <Tag key={tag}>{tag}</Tag>
@@ -449,18 +480,41 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             </Button>
                         </Actions>
 
-                        {product?.metadata?.ingredients && (
-                            <Metadata>
-                                <Label>Ingredients</Label>
-                                {product?.metadata?.ingredients}
-                            </Metadata>
-                        )}
-                        {product?.variants[variant].sku && (
-                            <Metadata>
-                                <Label>SKU</Label>
-                                {product?.variants[variant].sku}
-                            </Metadata>
-                        )}
+                        <Tabs>
+                            <Tab
+                                className={tab == 'metadata' ? 'Active' : ''}
+                                onClick={() => setTab('metadata')}
+                            >
+                                Metadata
+                            </Tab>
+                            <Tab
+                                className={tab == 'reviews' ? 'Active' : ''}
+                                onClick={() => setTab('reviews')}
+                            >
+                                Reviews
+                            </Tab>
+                        </Tabs>
+                        <TabContent
+                            className={tab == 'metadata' ? 'Active' : ''}
+                        >
+                            {product?.metadata?.ingredients && (
+                                <Metadata>
+                                    <Label>Ingredients</Label>
+                                    {product?.metadata?.ingredients}
+                                </Metadata>
+                            )}
+                            {product?.variants[variant].sku && (
+                                <Metadata>
+                                    <Label>SKU</Label>
+                                    {product?.variants[variant].sku}
+                                </Metadata>
+                            )}
+                        </TabContent>
+                        <TabContent
+                            className={tab == 'reviews' ? 'Active' : ''}
+                        >
+                            <Reviews product={product} reviews={reviews} />
+                        </TabContent>
                     </Details>
                 </ProductContainer>
             </ProductContainerWrapper>
@@ -555,13 +609,11 @@ export async function getStaticProps({ params, locale }) {
         if (err) errors.push(err);
     }
 
-    if (Config.features.reviews) {
-        try {
-            reviews = await ReviewsProductApi(product.id);
-        } catch (err) {
-            console.warn(err);
-            if (err) errors.push(err);
-        }
+    try {
+        reviews = await ReviewsProductApi(product.id);
+    } catch (err) {
+        console.warn(err);
+        if (err) errors.push(err);
     }
 
     return {

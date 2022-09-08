@@ -1,0 +1,166 @@
+import { FunctionComponent, useState } from 'react';
+
+import Button from '../Button';
+import Input from '../Input';
+import { ProductModel } from '../../models/ProductModel';
+import ReactStars from 'react-rating-stars-component';
+import styled from 'styled-components';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+const Review = styled.div`
+    padding: 2rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+`;
+const Meta = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+`;
+const Title = styled.div`
+    font-size: 1.5rem;
+    font-weight: 600;
+    opacity: 0.85;
+    text-transform: uppercase;
+`;
+const Author = styled.div``;
+const Body = styled.div`
+    padding-top: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+`;
+
+const Form = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+
+    input,
+    textarea {
+        -webkit-appearance: none;
+        display: block;
+        padding: 1rem 1rem;
+        background: #fefefe;
+        border: 0.2rem solid #efefef;
+        border-radius: var(--block-border-radius);
+        outline: none;
+        resize: none;
+
+        &.Body {
+            height: 12rem;
+        }
+    }
+
+    .Button {
+        margin-top: 0.25rem;
+        max-width: 12rem;
+        padding: 1rem;
+        font-size: 1.25rem;
+        background: #fefefe;
+        color: #404756;
+        border: 0.2rem solid #efefef;
+
+        &:hover {
+            background: var(--accent-primary);
+            color: var(--color-text-primary);
+        }
+
+        &.Button-Disabled {
+            color: #404756;
+        }
+    }
+`;
+
+interface ReviewsProps {
+    reviews: any;
+    product: ProductModel;
+}
+const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews }) => {
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [body, setBody] = useState('');
+    const [rating, setRating] = useState(5);
+    const [loading, setLoading] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+
+    return (
+        <Container>
+            {reviews.reviews.map((review) => (
+                <Review key={review.id}>
+                    <Meta>
+                        <div>
+                            <Title>{review.title}</Title>
+                            <Author>By {review.author}</Author>
+                        </div>
+                        <ReactStars
+                            size={20}
+                            count={5}
+                            value={review.rating}
+                            isHalf={true}
+                            edit={false}
+                        />
+                    </Meta>
+                    <Body>{review.body}</Body>
+                </Review>
+            ))}
+            {!submitted ? (
+                <Form>
+                    <ReactStars
+                        size={32}
+                        count={5}
+                        isHalf={false}
+                        edit={!loading}
+                        value={rating}
+                        onChange={setRating}
+                    />
+                    <Input
+                        disabled={loading}
+                        placeholder="Name"
+                        onChange={(e) => setAuthor(e.target.value)}
+                    />
+                    <Input
+                        disabled={loading}
+                        placeholder="Title"
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <textarea
+                        disabled={loading}
+                        placeholder="Your review goes here :)"
+                        onChange={(e) => setBody(e.target.value)}
+                    />
+                    <Button
+                        disabled={!title || !author || !body || loading}
+                        onClick={async () => {
+                            setLoading(true);
+                            const res = await fetch('/api/reviews/create', {
+                                method: 'post',
+                                headers: {
+                                    'content-type': 'text/plain'
+                                },
+                                body: JSON.stringify({
+                                    id: reviews.product_id,
+                                    rating,
+                                    title,
+                                    author,
+                                    body
+                                })
+                            });
+
+                            if (res.status === 200) setSubmitted(true);
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Form>
+            ) : null}
+        </Container>
+    );
+};
+
+export default Reviews;

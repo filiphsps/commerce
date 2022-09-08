@@ -41,7 +41,6 @@ module.exports = withBundleAnalyzer({
 
         // Feature flags
         FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,
-        FEATURE_REVIEWS: process.env.FEATURE_REVIEWS,
 
 
         GIT_SHA: git_sha,

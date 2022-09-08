@@ -3,14 +3,11 @@ import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';
 
 const ReviewsLabel = styled.div`
-    margin: 0.075rem 0 0 0;
+    transform: translateY(0.15rem);
     font-size: 1.5rem;
+    font-weight: 700;
     text-transform: uppercase;
-    cursor: pointer;
-
-    &:hover {
-        text-decoration: underline;
-    }
+    opacity: 0.75;
 `;
 
 const ReviewsWrapper = styled.div`
@@ -18,16 +15,11 @@ const ReviewsWrapper = styled.div`
     grid-template-columns: auto 1fr;
     justify-content: center;
     align-items: center;
-    margin: -1.5rem 0px 0px 0px;
+    margin: -1.75rem 0px 0px 0px;
     padding: 1rem 0px;
 
     ${ReviewsLabel} {
-        padding-left: 1rem;
-        margin: -0.05rem 0px 0px 0px;
-    }
-
-    span {
-        margin-right: 0.25rem;
+        padding-left: 0.5rem;
     }
 `;
 
@@ -46,7 +38,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
     return (
         <ReviewsWrapper>
             <ReactStars
-                size={20}
+                size={25}
                 count={5}
                 value={score}
                 isHalf={true}
@@ -57,7 +49,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
                     {score}{' '}
                     {totalReviews !== undefined &&
                         `(${totalReviews} review${
-                            totalReviews > 1 ? 's' : ''
+                            totalReviews != 1 ? 's' : ''
                         })`}
                 </ReviewsLabel>
             )}

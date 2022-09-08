@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Input = styled.input`
+    -webkit-appearance: none;
     max-width: 100%;
     border: 0.2rem solid #efefef;
     border-radius: var(--block-border-radius);

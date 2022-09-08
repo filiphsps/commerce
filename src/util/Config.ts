@@ -7,8 +7,7 @@ export const Config = {
     domain: process.env.DOMAIN || 'candybysweden.com',
 
     features: {
-        accounts: process.env.FEATURE_ACCOUNTS === 'true',
-        reviews: process.env.FEATURE_REVIEWS === 'true'
+        accounts: process.env.FEATURE_ACCOUNTS === 'true'
     },
 
     shopify: {

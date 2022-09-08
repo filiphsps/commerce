@@ -346,7 +346,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             <NextSeo title="Cart" />
 
             <PageContent>
-                <div style={{ paddingTop: '1rem' }} />
                 <Breadcrumbs
                     pages={[
                         {
