@@ -1,4 +1,4 @@
-import { FiShoppingCart, FiUser, FiX } from 'react-icons/fi';
+import { FiMenu, FiShoppingCart, FiUser, FiX } from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import Button from '../Button';
@@ -25,7 +25,8 @@ const Content = styled.div`
     padding: 0.75rem 1.5rem;
 
     @media (max-width: 950px) {
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto auto 1fr;
+        gap: 1rem;
     }
 `;
 const Logo = styled.div`
@@ -276,11 +277,6 @@ const Header = styled.header`
         }
     }
 
-    @media (max-width: 950px) {
-        border-bottom: none;
-        box-shadow: none;
-    }
-
     &:hover {
         ${NavigationItem} {
             &:hover {
@@ -306,13 +302,32 @@ const NavigationItemChildrenContainer = styled.div`
     margin: 0px auto;
 `;
 
+const HamburgerMenu = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 4rem;
+    margin: 0px -0.75rem 0px -1.25rem;
+    font-size: 2.5rem;
+    cursor: pointer;
+
+    @media (min-width: 950px) {
+        display: none;
+    }
+`;
+
 interface HeaderProps {
     store?: any;
     navigation?: any;
+    sidebarToggle?: any;
+    sidebarOpen?: boolean;
 }
 const HeaderComponent: FunctionComponent<HeaderProps> = ({
     store,
-    navigation
+    navigation,
+    sidebarToggle,
+    sidebarOpen
 }) => {
     const cart = useCart();
     const router = useRouter();
@@ -366,6 +381,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     return (
         <Header className={data?.style === 'modern' ? 'Modern' : ''}>
             <Content>
+                <HamburgerMenu onClick={() => sidebarToggle?.()}>
+                    {sidebarOpen ? <FiX /> : <FiMenu />}
+                </HamburgerMenu>
+
                 <Logo>
                     <div>
                         <Link href={'/'}>

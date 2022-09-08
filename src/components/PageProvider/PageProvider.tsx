@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
 
 import CartHeader from '../CartHeader';
 import Footer from '../Footer';
@@ -19,6 +19,7 @@ interface PageProviderProps {
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const router = useRouter();
     const [search, setSearch] = useStore<any>('search');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const { data: navigation } = useSWR(
         [`navigation`],
         () => NavigationApi() as any,
@@ -40,10 +41,19 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     return (
         <div className={`PageProvider ${props.className || ''}`}>
             <div className="HeaderWrapper">
-                <Header store={props?.store} navigation={navigation} />
+                <Header
+                    store={props?.store}
+                    navigation={navigation}
+                    sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+                    sidebarOpen={sidebarOpen}
+                />
                 {(search?.open && <SearchHeader query={search?.phrase} />) ||
                     null}
-                <HeaderNavigation navigation={navigation} />
+                <HeaderNavigation
+                    navigation={navigation}
+                    open={sidebarOpen}
+                    toggle={() => setSidebarOpen(!sidebarOpen)}
+                />
                 <CartHeader />
             </div>
             <div
