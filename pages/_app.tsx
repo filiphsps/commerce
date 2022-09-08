@@ -90,7 +90,14 @@ const StoreApp = withStore(
 
         return (
             <>
-                <DefaultSeo {...SEO} />
+                <DefaultSeo
+                    {...SEO}
+                    twitter={{
+                        cardType: 'summary_large_image',
+                        handle: '@candybysweden',
+                        site: '@candybysweden'
+                    }}
+                />
                 <Head>
                     <meta
                         name="viewport"

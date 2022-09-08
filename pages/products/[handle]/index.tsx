@@ -285,19 +285,26 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 description={
                     product?.seo?.description || product?.description || ''
                 }
+                canonical={`https://${Config.domain}/products/${product.handle}/`}
                 additionalMetaTags={[
                     {
                         property: 'keywords',
                         content: product?.seo?.keywords
                     }
                 ]}
+                openGraph={{
+                    url: `https://${Config.domain}/products/${product.handle}/`,
+                    title: `${product?.seo?.title || product?.title}`,
+                    description:
+                        product?.seo?.description || product?.description || '',
+                    images: product?.images?.map((image) => ({
+                        url: image.src,
+                        width: image.width,
+                        height: image.height,
+                        alt: image.alt
+                    }))
+                }}
             />
-            <Head>
-                <link
-                    rel="canonical"
-                    href={`https://${Config.domain}/products/${product.handle}/`}
-                />
-            </Head>
 
             {product.variants?.map?.((variant) => (
                 <ProductJsonLd
