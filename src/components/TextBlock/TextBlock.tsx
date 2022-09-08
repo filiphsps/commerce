@@ -72,6 +72,20 @@ const Content = styled.div`
         }
     }
 
+    ul {
+        padding-left: 1rem;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #404756;
+
+        li {
+            margin-bottom: 0.5rem;
+            &::before {
+                content: '• ';
+            }
+        }
+    }
+
     h2 {
         margin-bottom: 0.5rem;
         font-size: 2rem;
