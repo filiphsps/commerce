@@ -17,6 +17,7 @@ const ReviewsWrapper = styled.div`
     align-items: center;
     margin: -1.75rem 0px 0px 0px;
     padding: 1rem 0px;
+    height: 5rem;
 
     ${ReviewsLabel} {
         padding-left: 0.5rem;
@@ -47,7 +48,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
             />
             {!hideLabel && (
                 <ReviewsLabel onClick={() => onShowReviews?.()}>
-                    {score}{' '}
+                    {Math.floor(score * 100) / 100}{' '}
                     {totalReviews !== undefined &&
                         `(${totalReviews} review${
                             totalReviews != 1 ? 's' : ''

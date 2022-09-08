@@ -99,6 +99,14 @@ const Description = styled.div`
     font-size: 1.5rem;
     line-height: 2.25rem;
 
+    h1 {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    h2 {
+        font-size: 1.75rem;
+    }
+
     p {
         margin-bottom: 1rem;
     }
