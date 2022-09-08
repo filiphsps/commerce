@@ -10,6 +10,7 @@ const Container = styled.div`
     top: 6.5rem;
     height: calc(100% - 6.5rem);
     width: 65%;
+    min-width: 28rem;
     padding: 2rem;
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
@@ -35,8 +36,10 @@ const Navigation = styled.div`
     width: 100%;
 `;
 const NavigationItem = styled.div`
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.75rem;
     font-size: 2rem;
+    font-weight: 600;
+    line-height: 2rem;
     text-transform: uppercase;
 
     a {
@@ -51,6 +54,12 @@ const NavigationItem = styled.div`
 const NavigationSubItem = styled.div`
     padding: 1rem 0px 0px 1rem;
     font-size: 1.75rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+
+    &:last-child {
+        padding-bottom: 0.5rem;
+    }
 `;
 
 interface HeaderNavigationProps {
