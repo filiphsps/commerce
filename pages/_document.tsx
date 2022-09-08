@@ -57,8 +57,12 @@ class App extends Document {
                         href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
                         rel="stylesheet"
                     />
+                </Head>
+                <body lang="en">
+                    <Main />
+                    <NextScript />
                     {process.env.GTM && (
-                        <Script id="gtm" strategy="afterInteractive">
+                        <Script id="gtm" strategy="lazyOnload">
                             {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -66,10 +70,6 @@ class App extends Document {
                         })(window,document,'script','dataLayer','${process.env.GTM}');`}
                         </Script>
                     )}
-                </Head>
-                <body>
-                    <Main />
-                    <NextScript />
                 </body>
             </Html>
         );

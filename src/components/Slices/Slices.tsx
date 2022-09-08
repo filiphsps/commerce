@@ -2,7 +2,6 @@ import React, { FunctionComponent, memo } from 'react';
 
 import Carousel from './components/Carousel';
 import Collapse from './components/Collapse';
-import CollectionBlock from './components/CollectionBlock';
 import ContentBlock from './components/ContentBlock';
 import ContentGrid from './components/ContentGrid';
 import ContentWithImage from './components/ContentWithImage';
@@ -11,9 +10,12 @@ import IconGrid from './components/IconGrid';
 import Notification from './components/Notification';
 import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
-import ShopBlock from './components/ShopBlock';
 import TextBlock from './components/TextBlock';
 import Vendors from './components/Vendors';
+import dynamic from 'next/dynamic';
+
+const CollectionBlock = dynamic(() => import('./components/CollectionBlock'));
+const ShopBlock = dynamic(() => import('./components/ShopBlock'));
 
 interface SlicesProps {
     store?: any;
