@@ -14,6 +14,7 @@ import { useStore } from 'react-context-hook';
 interface PageProviderProps {
     store: StoreModel;
     children: any;
+    className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const router = useRouter();
@@ -37,7 +38,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     }, [onRouteChangeStart, router.events]);
 
     return (
-        <div className="PageProvider">
+        <div className={`PageProvider ${props.className || ''}`}>
             <div className="HeaderWrapper">
                 <Header store={props?.store} navigation={navigation} />
                 {(search?.open && <SearchHeader query={search?.phrase} />) ||

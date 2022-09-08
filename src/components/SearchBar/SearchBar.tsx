@@ -12,7 +12,7 @@ const SearchBar: FunctionComponent<SearchBarProps> = () => {
     return (
         <div className="SearchBar">
             <input
-                className="Input"
+                className="Input data-hj-allow"
                 type={'text'}
                 placeholder={'Search...'}
                 value={search?.phrase}
@@ -20,17 +20,6 @@ const SearchBar: FunctionComponent<SearchBarProps> = () => {
                 onChange={(e) =>
                     setSearch({ ...search, phrase: e?.target?.value || '' })
                 }
-                onKeyDown={(event) => {
-                    if (event.key !== 'Enter') return;
-
-                    setSearch({
-                        open: false,
-                        phrase: search.phrase
-                    });
-                    router.push(
-                        `/search?q=${encodeURI((event as any)?.target?.value)}`
-                    );
-                }}
                 onFocus={() => setSearch({ ...search, open: true })}
                 spellCheck={false}
             />

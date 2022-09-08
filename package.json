@@ -31,6 +31,7 @@
         "@liholiho/react-modal-hook": "3.0.0",
         "@prismicio/client": "6.7.0",
         "@prismicio/helpers": "2.3.3",
+        "algoliasearch": "4.14.2",
         "axios": "0.27.2",
         "color": "4.2.3",
         "cookies-next": "^2.1.1",

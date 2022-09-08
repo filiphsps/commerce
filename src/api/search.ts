@@ -1,36 +1,70 @@
-import { Convertor } from './product';
-import { PRODUCT_FRAGMENT } from './product';
-import { ProductModel } from '../models/ProductModel';
-import { gql } from '@apollo/client';
-import { shopify } from './shopify';
+import TitleToHandle from '../util/TitleToHandle';
+import { VendorModel } from '../models/VendorModel';
+import algoliasearch from 'algoliasearch/lite';
 
 export const SearchApi = async (
     query: string = ''
-): Promise<ProductModel[]> => {
+): Promise<{
+    products: Array<{
+        id: string;
+        handle: string;
+        title: string;
+        vendor: VendorModel;
+        image: string;
+    }>;
+    collections: Array<{
+        id: string;
+        handle: string;
+        title: string;
+        image?: string;
+    }>;
+}> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
 
         try {
-            const { data } = await shopify.query({
-                query: gql`
+            const client = algoliasearch(
+                'FTAWXDDQSS',
+                '96091fe7865d3a9200303d82c12e3bfa'
+            );
+
+            const search = await client.search([
                 {
-                    products(first: 15, sortKey:BEST_SELLING, query: "${query}") {
-                        edges {
-                            node {
-                                ${PRODUCT_FRAGMENT}
-                            }
-                        }
+                    indexName: 'products',
+                    params: {
+                        query
+                    }
+                },
+                {
+                    indexName: 'collections',
+                    params: {
+                        query
                     }
                 }
-                `
+            ]);
+
+            const res = search.results;
+            const products = res[0].hits.map((item) => ({
+                id: item.objectID,
+                handle: (item as any).handle,
+                title: (item as any).title,
+                vendor: {
+                    title: (item as any).vendor,
+                    handle: TitleToHandle((item as any).vendor)
+                },
+                image: (item as any).image
+            }));
+            const collections = res[1].hits.map((item) => ({
+                id: item.objectID,
+                handle: (item as any).handle,
+                title: (item as any).title,
+                image: (item as any).image
+            }));
+
+            return resolve({
+                products,
+                collections
             });
-
-            const result = data.products.edges.map((item) =>
-                Convertor(item.node)
-            );
-            if (!result) return reject();
-
-            return resolve(result);
         } catch (err) {
             console.error(err);
             return reject(err);
