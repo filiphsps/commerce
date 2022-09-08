@@ -82,6 +82,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                         <NavigationItem key={item.handle}>
                             <Link href={`/${item.handle || ''}`}>
                                 <a
+                                    title={item.title}
                                     className={
                                         (router.asPath === '/' &&
                                             item?.handle === null) ||
@@ -98,6 +99,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                 <NavigationSubItem key={item.handle}>
                                     <Link href={`/${item.handle || ''}`}>
                                         <a
+                                            title={item.title}
                                             className={
                                                 (router.asPath === '/' &&
                                                     item?.handle === null) ||

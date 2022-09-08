@@ -1,4 +1,10 @@
-import { FiMenu, FiShoppingCart, FiUser, FiX } from 'react-icons/fi';
+import {
+    FiChevronDown,
+    FiMenu,
+    FiShoppingCart,
+    FiUser,
+    FiX
+} from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import Button from '../Button';
@@ -48,7 +54,7 @@ const Navigation = styled.nav`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
     text-transform: uppercase;
     font-size: 1.5rem;
     letter-spacing: 0.05rem;
@@ -246,7 +252,13 @@ const NavigationItemChildren = styled.div`
     opacity: 0;
 `;
 
-const NavigationItem = styled.div``;
+const NavigationItem = styled.div`
+    svg {
+        margin: 0px 0px 0.25rem -0.25rem;
+        font-size: 1.25rem;
+        line-height: 100%;
+    }
+`;
 
 const Header = styled.header`
     display: flex;
@@ -291,16 +303,31 @@ const Header = styled.header`
 `;
 
 const NavigationItemChildrenWrapper = styled.div`
-    background: #efefef;
+    background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
 `;
 const NavigationItemChildrenContainer = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: 1rem;
     padding: 2rem;
     max-width: 1465px;
     margin: 0px auto;
+
+    ${NavigationItem} {
+        overflow: hidden;
+        background: #efefef;
+        border-radius: var(--block-border-radius);
+        font-size: 1.25rem;
+        font-weight: 600;
+        text-align: center;
+
+        a {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+        }
+    }
 `;
 
 const HamburgerMenu = styled.div`
@@ -400,6 +427,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             <NavigationItem key={item.handle}>
                                 <Link href={`/${item?.handle || ''}`}>
                                     <a
+                                        title={item.title}
                                         className={
                                             (router.asPath === '/' &&
                                                 item?.handle === null) ||
@@ -408,7 +436,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                 : ''
                                         }
                                     >
-                                        {item?.title}
+                                        {item?.title}{' '}
+                                        {item?.children?.length > 0 ? (
+                                            <FiChevronDown />
+                                        ) : null}
                                     </a>
                                 </Link>
                                 {item.children.length ? (
@@ -426,6 +457,9 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                             }`}
                                                         >
                                                             <a
+                                                                title={
+                                                                    item.title
+                                                                }
                                                                 className={
                                                                     (router.asPath ===
                                                                         '/' &&
