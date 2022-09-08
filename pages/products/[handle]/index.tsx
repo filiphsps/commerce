@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../../src/api/product';
 
@@ -8,6 +8,7 @@ import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
+import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
 import Head from 'next/head';
 import Image from 'next/image';
 import Input from '../../../src/components/Input';
@@ -96,6 +97,10 @@ const Description = styled.div`
     margin-top: 1.5rem;
     font-size: 1.5rem;
     line-height: 2.25rem;
+
+    p {
+        margin-bottom: 1rem;
+    }
 
     @media (min-width: 950px) {
         margin-top: 1.5rem;
@@ -224,6 +229,22 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         product ? product.variants.length - 1 : 0
     );
     const [loading, setLoading] = useState(false);
+
+    const addToCart = useCallback(() => {
+        setAddedToCart(true);
+        cart.addItem({
+            id: `${product?.id}#${product?.variants[variant]?.id}`,
+            price: product?.variants[variant]?.pricing.range,
+            quantity: quantity,
+
+            title: product?.title,
+            variant_title: product?.variants[variant].title
+        });
+
+        setTimeout(() => {
+            setAddedToCart(false);
+        }, 3000);
+    }, [product, variant]);
 
     if (errors?.length) console.error(errors);
 
@@ -415,23 +436,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     quantity < 1 ||
                                     loading
                                 }
-                                onClick={() => {
-                                    setAddedToCart(true);
-                                    cart.addItem({
-                                        id: `${product?.id}#${product?.variants[variant]?.id}`,
-                                        price: product?.variants[variant]
-                                            ?.pricing.range,
-                                        quantity: quantity,
-
-                                        title: product?.title,
-                                        variant_title:
-                                            product?.variants[variant].title
-                                    });
-
-                                    setTimeout(() => {
-                                        setAddedToCart(false);
-                                    }, 3000);
-                                }}
+                                onClick={addToCart}
                             >
                                 {addedToCart ? 'Added!' : 'Add to Cart'}
                             </Button>
@@ -467,6 +472,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     </Recommendations>
                 )}
             </PageContent>
+
+            <FloatingAddToCart
+                product={product}
+                variant={variant}
+                addToCart={addToCart}
+                addedToCart={addedToCart}
+            />
         </Page>
     );
 };

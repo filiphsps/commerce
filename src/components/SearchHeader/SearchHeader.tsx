@@ -64,6 +64,7 @@ const Products = styled.div`
 `;
 
 const ProductImage = styled.div`
+    overflow: hidden;
     position: relative;
     height: 4rem;
     width: 4rem;
@@ -82,12 +83,13 @@ const ProductMeta = styled.div`
     justify-content: center;
 `;
 const ProductMetaTitle = styled.div`
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
     text-transform: uppercase;
 `;
 const ProductMetaVendor = styled.div`
     font-weight: 700;
+    font-size: 1.25rem;
     letter-spacing: 0.05rem;
     text-transform: uppercase;
     color: #404756;
