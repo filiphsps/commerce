@@ -16,6 +16,10 @@ const SubTitle = styled.h2`
     color: #404756;
     font-size: 1.65rem;
     line-height: 2rem;
+
+    h1 {
+        font-weight: 600;
+    }
 `;
 
 interface CollectionBlockProps {
@@ -88,7 +92,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     <PageHeader
                         title={
                             props.noLink ? (
-                                <h1>{data?.title}</h1>
+                                <h2>{data?.title}</h2>
                             ) : (
                                 <Link
                                     to={`/collections/${props.handle}`}
@@ -105,11 +109,11 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                         plainTitle={props.plainTitle}
                     />
                     {props?.showDescription && (
-                        <SubTitle>
-                            <Markdown
-                                children={data?.body || data?.description || ''}
-                            />
-                        </SubTitle>
+                        <SubTitle
+                            dangerouslySetInnerHTML={{
+                                __html: data?.body
+                            }}
+                        ></SubTitle>
                     )}
                 </div>
             )}

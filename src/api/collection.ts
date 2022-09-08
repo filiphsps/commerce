@@ -9,7 +9,7 @@ export const COLLECTION_FRAGMENT = `
     id
     handle
     title
-    description
+    descriptionHtml
     image {
         id
         altText
@@ -43,12 +43,12 @@ export const Convertor = (collection: any): CollectionModel => {
         seo: {
             title: collection?.seo?.title || collection?.title,
             description:
-                collection?.seo?.description || collection?.description,
+                collection?.seo?.description || collection?.description || '',
             keywords: collection?.keywords?.value || ''
         },
 
         title: collection?.title,
-        body: collection?.description,
+        body: collection?.descriptionHtml,
         image: collection?.image
             ? {
                   id: collection?.image?.id,

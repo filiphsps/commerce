@@ -159,7 +159,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                 <Content>
                     <Section>
                         <SectionLabel>Products</SectionLabel>
-                        {data?.products?.length ? (
+                        {data ? (
                             <Products>
                                 {data?.products?.map((product) => (
                                     <Link
@@ -191,7 +191,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                     </Section>
                     <Section>
                         <SectionLabel>Collections</SectionLabel>
-                        {data?.collections?.length ? (
+                        {data ? (
                             <Collections>
                                 {data?.collections?.map((collection) => (
                                     <Link
@@ -199,10 +199,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                                         href={`/collections/${collection.handle}`}
                                     >
                                         <Collection>
-                                            {collection.handle.replaceAll(
-                                                '-',
-                                                ' '
-                                            )}
+                                            {collection.title}
                                         </Collection>
                                     </Link>
                                 ))}
