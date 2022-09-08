@@ -1,12 +1,10 @@
 import 'destyle.css';
 import './app.scss';
 
-import {
-    DefaultSeo,
-    SiteLinksSearchBoxJsonLd,
-    SocialProfileJsonLd
-} from 'next-seo';
+import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
+import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { useStore, withStore } from 'react-context-hook';
 
 import { CartProvider } from 'react-use-cart';
@@ -15,11 +13,11 @@ import { Config } from '../src/util/Config';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
-import React from 'react';
 import SEO from '../nextseo.config';
 import ScrollToTop from '../src/components/ScrollToTop';
-import ShopifyAnalytics from '../src/components/ShopifyAnalytics';
+import { ShopifyAnalyticsProvider } from 'react-shopify-analytics';
 import { appWithTranslation } from 'next-i18next';
+import { v4 as uuidv4 } from 'uuid';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -33,6 +31,8 @@ const StoreApp = withStore(
         const router = useRouter();
         const [contextStore] = useStore<any>('store');
         const [cartStore, setCartStore] = useStore<any>('cart');
+        const [sessionId, setSessionId] = useState<string>();
+        const [userId, setUserId] = useState<string>();
 
         const reportItem = (item) => {
             setCartStore({ open: true, item });
@@ -87,6 +87,16 @@ const StoreApp = withStore(
                 });
             }
         };
+
+        useEffect(() => {
+            if (!hasCookie('session'))
+                setCookie('session', uuidv4(), { maxAge: 60 * 60 * 24 });
+            if (!hasCookie('user'))
+                setCookie('user', uuidv4(), { maxAge: 60 * 60 * 24 * 365 });
+
+            setSessionId(getCookie('session') as string);
+            setUserId(getCookie('user') as string);
+        }, []);
 
         return (
             <>
@@ -194,7 +204,14 @@ const StoreApp = withStore(
                     </PageProvider>
                 </CartProvider>
                 <ScrollToTop />
-                <ShopifyAnalytics />
+                {userId && sessionId ? (
+                    <ShopifyAnalyticsProvider
+                        shopId={60485566618}
+                        route={router.pathname}
+                        userId={userId}
+                        sessionId={sessionId}
+                    />
+                ) : null}
             </>
         );
     },
