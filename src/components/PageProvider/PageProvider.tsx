@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useCallback, useState } from 'react';
 
-import CartHeader from '../CartHeader';
 import Footer from '../Footer';
 import Header from '../Header';
 import HeaderNavigation from '../HeaderNavigation';
@@ -54,7 +53,6 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     open={sidebarOpen}
                     toggle={() => setSidebarOpen(!sidebarOpen)}
                 />
-                <CartHeader />
             </div>
             <div
                 onClick={() => {

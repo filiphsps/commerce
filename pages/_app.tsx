@@ -5,6 +5,7 @@ import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
+import { useStore, withStore } from 'react-context-hook';
 
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
@@ -13,13 +14,11 @@ import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
 import SEO from '../nextseo.config';
-import ScrollToTop from '../src/components/ScrollToTop';
 import { ShopifyAnalyticsProvider } from 'react-shopify-analytics';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
 import useSWR from 'swr';
 import { v4 as uuidv4 } from 'uuid';
-import { withStore } from 'react-context-hook';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -31,6 +30,7 @@ Router.events.on('routeChangeError', (err) => {
 const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
+        const [cartStore, setCartStore] = useStore<any>('cart');
         const [sessionId, setSessionId] = useState<string>();
         const [userId, setUserId] = useState<string>();
 
@@ -232,7 +232,6 @@ const StoreApp = withStore(
                         />
                     </PageProvider>
                 </CartProvider>
-                <ScrollToTop />
                 {userId && sessionId ? (
                     <ShopifyAnalyticsProvider
                         shopId={60485566618}

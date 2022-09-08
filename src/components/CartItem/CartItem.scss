@@ -99,7 +99,7 @@
                 font-weight: 700;
                 font-size: 0.85rem;
                 text-transform: uppercase;
-                //border-radius: $block-border-radius;
+                //border-radius: var(--block-border-radius);
 
                 &:empty {
                     background: transparent;

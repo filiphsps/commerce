@@ -25,8 +25,8 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
                 value={Number.parseFloat(props?.price) || 0}
                 currency={
                     props?.currency ||
-                    props?.store?.currency ||
                     currency ||
+                    props?.store?.currencies[0] ||
                     'USD'
                 }
             />
