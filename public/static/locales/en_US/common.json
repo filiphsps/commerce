@@ -25,6 +25,7 @@
     "post": "Post",
     "close": "Close",
     "checkout": "Checkout",
+    "begin_checkout": "Begin Checkout",
 
     "from": "From",
     "total": "total",

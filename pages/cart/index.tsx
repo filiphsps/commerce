@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
@@ -93,24 +93,48 @@ const ItemsContainer = styled.table`
     table-layout: fixed;
 `;
 
-const SummaryContainer = styled.div`
-    position: relative;
-    max-width: calc(100vw - 2rem);
-
-    button {
-        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-    }
-`;
 const SummaryContent = styled.div`
     position: sticky;
     top: 8rem;
     padding: 1rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
+    transition: 250ms ease-in-out;
 `;
 const SummaryItems = styled.div`
     padding-bottom: 1rem;
     text-transform: uppercase;
+
+    @media (max-width: 950px) {
+        display: none;
+    }
+`;
+const SummaryContainer = styled.div`
+    position: relative;
+    max-width: calc(100vw - 2rem);
+
+    @media (max-width: 950px) {
+        overflow: hidden;
+        position: sticky;
+        bottom: 0px;
+        transition: 250ms ease-in-out;
+
+        &.Floating {
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0px -1.5rem 0px -1.5rem;
+            left: 0px;
+            right: 0px;
+            border-top: 0.2rem solid #e9e9e9;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+            ${SummaryContent} {
+                padding: 2rem;
+                padding-right: 8rem;
+                border-radius: 0px;
+            }
+        }
+    }
 `;
 const SummaryItem = styled.div`
     display: grid;
@@ -138,7 +162,7 @@ const SummaryItemPrice = styled.div`
     align-items: center;
     text-align: right;
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.75rem;
 
     .Currency-Sale {
         color: #d91e18;
@@ -148,14 +172,22 @@ const SummaryItemShipping = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    font-size: 1.25rem;
 `;
 const SummarySummary = styled.div`
     display: grid;
+    justify-content: space-between;
+    align-items: flex-end;
     grid-template-columns: 1fr auto;
     gap: 1rem;
     padding: 0.5rem 0px 1rem 0px;
     text-transform: uppercase;
     border-top: 0.2rem solid #404756;
+
+    @media (max-width: 950px) {
+        border-top: none;
+        padding-top: 0px;
+    }
 
     &.Empty {
         border-top: none;
@@ -247,6 +279,27 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
         setData(cart);
     }, [cart.totalItems]);
+
+    // Sticky summary
+    const [isSticky, setIsSticky] = useState(false);
+    const summaryRef = useRef();
+    useEffect(() => {
+        const cachedRef = summaryRef.current,
+            observer = new IntersectionObserver(
+                ([e]) => setIsSticky(!(e.intersectionRatio < 1)),
+                {
+                    threshold: [1],
+                    rootMargin: '0px 0px -1px 0px'
+                }
+            );
+
+        observer.observe(cachedRef);
+
+        // unmount
+        return function () {
+            observer.unobserve(cachedRef);
+        };
+    }, []);
 
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
@@ -408,7 +461,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         )}
                     </ContentWrapper>
 
-                    <SummaryContainer>
+                    <SummaryContainer
+                        ref={summaryRef}
+                        className={isSticky ? 'Sticky' : 'Floating'}
+                    >
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
                                 <SummaryItems>
@@ -560,7 +616,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     <LanguageString
                                         id={
                                             (loading && 'loading...') ||
-                                            'checkout'
+                                            'begin_checkout'
                                         }
                                     />
                                 </Button>
