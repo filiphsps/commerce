@@ -37,7 +37,7 @@ const FreeShippingBanner = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 3rem);
     margin-top: 2rem;
     padding: 1rem;
     border-radius: var(--block-border-radius);
@@ -81,9 +81,11 @@ const Progress = styled.div`
 `;
 
 const ItemsContainerWrapper = styled.div`
+    overflow: hidden;
+    max-width: calc(100vw - 3rem);
+    padding: 0px 1rem;
     background: #efefef;
     border-radius: var(--block-border-radius);
-    padding: 0px 1rem;
 `;
 const ItemsContainer = styled.table`
     min-width: 100%;
@@ -99,7 +101,7 @@ const SummaryContent = styled.div`
     padding: 1rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 `;
 const SummaryItems = styled.div`
     padding-bottom: 1rem;
@@ -111,13 +113,13 @@ const SummaryItems = styled.div`
 `;
 const SummaryContainer = styled.div`
     position: relative;
-    max-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 3rem);
 
     @media (max-width: 950px) {
         overflow: hidden;
         position: sticky;
         bottom: 0px;
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         &.Floating {
             width: 100vw;
@@ -222,7 +224,7 @@ const HeaderItemImage = styled(HeaderItem)`
 const Recommendations = styled(ContentBlock)`
     display: block;
     grid-template-rows: auto auto;
-    max-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 3rem);
     margin-top: 2rem;
     border-radius: var(--block-border-radius);
 `;
@@ -232,30 +234,14 @@ const RecommendationsTitle = styled.h3`
     font-weight: 700;
     opacity: 0.75;
 `;
-const RecommendationsWrapper = styled.div`
-    position: relative;
-    display: grid;
-    grid-auto-flow: row;
-    grid-auto-rows: 100%;
-    grid-template-columns: unset;
-    grid-template-rows: unset;
-`;
-const RecommendationsContent = styled.div`
-    overflow-y: auto;
-    display: grid;
-    width: 100%;
-
-    @media (max-width: 1148px) {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
+const RecommendationsContent = styled(PageContent)`
+    width: calc(1465px - 28rem);
+    max-width: calc(1465px - 28rem);
 
     @media (max-width: 950px) {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    @media (max-width: $width-max-mobile) {
-        grid-template-columns: 1fr;
-        margin: 2rem 0px 0px 0px;
+        width: calc(100vw - 3rem);
+        max-width: calc(100vw - 3rem);
+        padding: 0px;
     }
 `;
 
@@ -414,8 +400,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <FreeShippingBannerText
                                     className={freeShipping ? 'Full' : ''}
                                 >
-                                    Free shipping on orders above{' '}
-                                    <Currency price={75} currency="USD" />
+                                    <Currency
+                                        prefix={'Free shipping on orders above'}
+                                        price={75}
+                                        currency="USD"
+                                    />
                                 </FreeShippingBannerText>
                                 <FreeShippingBannerText>
                                     <Currency
@@ -447,16 +436,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <RecommendationsTitle>
                                     Recommended Products
                                 </RecommendationsTitle>
-                                <RecommendationsWrapper>
-                                    <RecommendationsContent>
-                                        <CollectionBlock
-                                            data={{
-                                                items: recommendations
-                                            }}
-                                            isHorizontal
-                                        />
-                                    </RecommendationsContent>
-                                </RecommendationsWrapper>
+                                <RecommendationsContent>
+                                    <CollectionBlock
+                                        data={{
+                                            items: recommendations
+                                        }}
+                                        isHorizontal
+                                    />
+                                </RecommendationsContent>
                             </Recommendations>
                         ) : (
                             <PageLoader />

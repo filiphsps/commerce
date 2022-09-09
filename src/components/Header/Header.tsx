@@ -64,11 +64,11 @@ const Navigation = styled.nav`
     }
 
     a {
-        transition: 250ms all ease-in-out;
+        transition: 150ms all ease-in-out;
         cursor: pointer;
         border-bottom: solid 0.2rem transparent;
         transform: translateY(0.2rem);
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         &:hover,
         &:active {
@@ -115,7 +115,7 @@ const CartIconWrapper = styled.div`
         font-size: 1.75rem;
         line-height: 75px;
         cursor: pointer;
-        transition: 250ms all ease-in-out;
+        transition: 150ms all ease-in-out;
 
         &:hover,
         &:active {
@@ -152,7 +152,7 @@ const CartIcon = styled.span`
     font-size: 1.25rem;
     font-weight: 700;
     text-align: center;
-    transition: 250ms all ease-in-out;
+    transition: 150ms all ease-in-out;
 `;
 
 const CartPopup = styled.section`
@@ -167,7 +167,7 @@ const CartPopup = styled.section`
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.75);
     border: 0.2rem solid var(--accent-primary);
     opacity: 0;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     pointer-events: none;
 
     &.Open {
@@ -249,7 +249,7 @@ const NavigationItemChildren = styled.div`
     left: 0px;
     right: 0px;
     height: 0px;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     opacity: 0;
 `;
 

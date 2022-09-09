@@ -26,7 +26,7 @@ const Item = styled.div`
         img {
             object-fit: cover;
             object-position: center center;
-            transition: 250ms ease-in-out;
+            transition: 150ms ease-in-out;
         }
 
         &:active,
@@ -59,7 +59,7 @@ const TitleContainer = styled.div`
         rgba(0, 0, 0, 0.45) 0%,
         rgba(0, 0, 0, 0) 100%
     );
-    transition: 250ms ease-in-out border;
+    transition: 150ms ease-in-out border;
 
     &:hover,
     &:active {

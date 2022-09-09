@@ -32,7 +32,7 @@ const ProductImage = styled.div`
     border-radius: var(--block-border-radius);
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     user-select: none;
 
     &:hover {
@@ -84,7 +84,7 @@ const Title = styled.div`
 const Description = styled.div`
     padding-top: 0.25rem;
     flex-grow: 1;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     color: #404756;
 `;
 const VariantsContainer = styled.div`
@@ -150,7 +150,12 @@ const QuantityAction = styled.div`
     margin-top: -0.25rem;
     font-size: 1rem;
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
+        width: 1.5rem;
+    }
 
     &.Inactive {
         width: 0px;
@@ -164,6 +169,10 @@ const QuantityAction = styled.div`
 const QuantityValue = styled.div`
     min-width: 1.25rem;
     font-size: 1.5rem;
+
+    @media (max-width: 950px) {
+        font-size: 1.75rem;
+    }
 `;
 
 const Prices = styled.div`

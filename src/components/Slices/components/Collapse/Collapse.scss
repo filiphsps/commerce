@@ -2,7 +2,6 @@
 
 .Slice-Collapse {
     .Slice-Collapse-Title {
-
         display: grid;
         grid-template-columns: 2rem auto;
         gap: 1rem;
@@ -18,7 +17,7 @@
         border-bottom: 0.15rem solid $color-black;
 
         @media (min-width: $width-max-mobile) {
-            transition: 250ms all ease-in-out;
+            transition: 150ms all ease-in-out;
 
             &:hover {
                 border-color: $color-primary;
@@ -34,7 +33,7 @@
             width: 2rem;
             font-size: 1.75rem;
             line-height: 2rem;
-            transition: 250ms ease-in-out;
+            transition: 150ms ease-in-out;
         }
 
         &.Open {
@@ -48,7 +47,7 @@
         overflow: hidden;
         height: 0px;
         margin: 0px;
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         &.Open {
             height: auto;

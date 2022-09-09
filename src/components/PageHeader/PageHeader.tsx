@@ -29,7 +29,7 @@ const SubTitle = styled.h3`
     }
 
     a {
-        transition: 250ms ease-in-out all;
+        transition: 150ms ease-in-out all;
         cursor: pointer;
 
         &:hover,

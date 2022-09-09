@@ -75,7 +75,7 @@ const ArticleContent = styled.div`
 
     a {
         color: var(--accent-primary);
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         &:hover {
             color: var(--accent-primary-light);
@@ -136,7 +136,7 @@ const SidebarLink = styled.div`
     margin: 1rem 0px;
     padding: 0px 0px 0.5rem 0px;
     border-bottom: 0.2rem solid #efefef;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     a:hover {
         color: var(--accent-primary);

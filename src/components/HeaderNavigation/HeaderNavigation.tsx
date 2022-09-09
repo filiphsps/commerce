@@ -15,7 +15,7 @@ const Container = styled.div`
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     left: calc(-65% - 4rem);
     &.Open {
@@ -43,7 +43,7 @@ const NavigationItem = styled.div`
     text-transform: uppercase;
 
     a {
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
     }
 
     a.Active {

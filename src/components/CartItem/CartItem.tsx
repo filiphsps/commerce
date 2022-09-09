@@ -52,7 +52,7 @@ const ProductImage = styled(Section)`
     border-radius: var(--block-border-radius);
     border: 0.2rem solid #fefefe;
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &:hover {
         border-color: var(--accent-primary);
@@ -99,7 +99,7 @@ const DetailsBrand = styled.div`
     font-weight: 700;
     letter-spacing: 0.05rem;
     color: #404756;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);
@@ -108,7 +108,7 @@ const DetailsBrand = styled.div`
 const DetailsTitle = styled.div`
     font-size: 1.75rem;
     font-weight: 600;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);

@@ -1,4 +1,4 @@
-@import "../../../../scss/app";
+@import '../../../../scss/app';
 
 .Slice.Slice-ContentGrid {
     overflow: hidden;
@@ -29,10 +29,10 @@
                 cursor: pointer;
 
                 @media (min-width: $width-max-mobile) {
-                    transition: 250ms all ease-in-out;
+                    transition: 150ms all ease-in-out;
 
                     &:hover {
-                        background: ($color-primary,);
+                        background: ($color-primary);
 
                         .Slice.Slice-SectionHeader * {
                             color: $color-text-primary;

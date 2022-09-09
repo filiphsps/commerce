@@ -188,7 +188,7 @@ const Variant = styled.div`
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-    transition: 250ms all ease-in-out;
+    transition: 150ms all ease-in-out;
 
     &.Selected,
     &:hover {
@@ -239,7 +239,7 @@ const Tab = styled.div`
     border: 0.2rem solid #efefef;
     border-radius: var(--block-border-radius);
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &:hover {
         border-color: var(--accent-primary);

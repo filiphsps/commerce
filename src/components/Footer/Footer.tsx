@@ -70,7 +70,7 @@ const EmailCaptureSubmit = styled.button`
     border-radius: var(--block-border-radius);
     background: var(--color-text-primary);
     font-size: 1.25rem;
-    transition: 250ms;
+    transition: 150ms;
 
     &:hover {
         background: var(--accent-secondary-dark);

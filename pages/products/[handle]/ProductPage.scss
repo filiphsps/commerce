@@ -306,7 +306,7 @@
     }
 
     .Button {
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
         &.Added {
             background: var(--accent-secondary-dark);
             font-weight: 700;
