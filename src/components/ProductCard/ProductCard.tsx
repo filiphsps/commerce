@@ -263,31 +263,34 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                 </div>
             </div>
 
-            <div className={`ProductCard-Price`}>
-                {sale ? (
-                    <div>
-                        <LanguageString id={'sale'} />
-                    </div>
-                ) : null}
-                {!sale && product?.variants?.length > 1 && (
-                    <div>
-                        <LanguageString id={'from'} />
-                    </div>
-                )}
-                {sale ? (
-                    <Currency
-                        price={
-                            product?.variants?.[selectedVariant].pricing.range
-                        }
-                        currency={variant?.pricing.currency}
-                    />
-                ) : (
-                    <Currency
-                        price={product?.variants?.[0].pricing.range}
-                        currency={variant?.pricing.currency}
-                    />
-                )}
-            </div>
+            {sale || product?.variants?.length > 1 ? (
+                <div className={`ProductCard-Price`}>
+                    {sale ? (
+                        <div>
+                            <LanguageString id={'sale'} />
+                        </div>
+                    ) : null}
+                    {!sale && product?.variants?.length > 1 && (
+                        <div>
+                            <LanguageString id={'from'} />
+                        </div>
+                    )}
+                    {sale ? (
+                        <Currency
+                            price={
+                                product?.variants?.[selectedVariant].pricing
+                                    .range
+                            }
+                            currency={variant?.pricing.currency}
+                        />
+                    ) : (
+                        <Currency
+                            price={product?.variants?.[0].pricing.range}
+                            currency={variant?.pricing.currency}
+                        />
+                    )}
+                </div>
+            ) : null}
         </div>
     );
 };
