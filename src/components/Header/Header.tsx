@@ -30,7 +30,7 @@ const Content = styled.div`
     width: 100%;
     padding: 0.75rem 1.5rem;
 
-    @media (max-width: 950px) {
+    @media (max-width: 1260px) {
         grid-template-columns: auto auto 1fr;
         gap: 1rem;
     }
@@ -59,7 +59,7 @@ const Navigation = styled.nav`
     font-size: 1.5rem;
     letter-spacing: 0.05rem;
 
-    @media (max-width: 950px) {
+    @media (max-width: 1260px) {
         display: none;
     }
 
@@ -254,8 +254,12 @@ const NavigationItemChildren = styled.div`
 `;
 
 const NavigationItem = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.25rem;
+    height: 2rem;
     svg {
-        margin: 0px 0px 0.25rem -0.25rem;
         font-size: 1.25rem;
         line-height: 100%;
     }
@@ -317,6 +321,7 @@ const NavigationItemChildrenContainer = styled.div`
 
     ${NavigationItem} {
         overflow: hidden;
+        height: auto;
         background: #efefef;
         border-radius: var(--block-border-radius);
         font-size: 1.25rem;
@@ -341,7 +346,7 @@ const HamburgerMenu = styled.div`
     font-size: 2.5rem;
     cursor: pointer;
 
-    @media (min-width: 950px) {
+    @media (min-width: 1260px) {
         display: none;
     }
 `;

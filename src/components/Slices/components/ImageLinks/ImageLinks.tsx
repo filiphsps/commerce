@@ -22,11 +22,20 @@ const Item = styled.div`
         display: block;
         height: 100%;
         width: 100%;
-    }
 
-    img {
-        object-fit: cover;
-        object-position: center center;
+        img {
+            object-fit: cover;
+            object-position: center center;
+            transition: 250ms ease-in-out;
+        }
+
+        &:active,
+        &:focus,
+        &:hover {
+            img {
+                transform: scale(1.15);
+            }
+        }
     }
 `;
 
@@ -42,7 +51,7 @@ const TitleContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    padding: 2rem;
+    padding: 2rem 2rem 1.8rem 2rem;
     height: 100%;
     width: 100%;
     background: linear-gradient(
@@ -50,13 +59,11 @@ const TitleContainer = styled.div`
         rgba(0, 0, 0, 0.45) 0%,
         rgba(0, 0, 0, 0) 100%
     );
-
-    transition: 250ms ease-in-out;
+    transition: 250ms ease-in-out border;
 
     &:hover,
     &:active {
         border: 0.2rem solid var(--accent-primary);
-        padding-bottom: 2.25rem;
     }
 `;
 
