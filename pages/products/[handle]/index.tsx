@@ -100,11 +100,20 @@ const Description = styled.div`
     line-height: 2.25rem;
 
     h1 {
-        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
         font-weight: 600;
+        line-height: 3rem;
+        letter-spacing: 0.05rem;
+        text-transform: uppercase;
     }
     h2 {
-        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 2.75rem;
+        letter-spacing: 0.05rem;
+        text-transform: uppercase;
     }
 
     p {
@@ -226,12 +235,18 @@ const Tab = styled.div`
     background: #efefef;
     text-transform: uppercase;
     font-weight: 600;
+    font-size: 1.15rem;
     border: 0.2rem solid #efefef;
     border-radius: var(--block-border-radius);
     cursor: pointer;
     transition: 250ms ease-in-out;
 
-    &.Active {
+    &:hover {
+        border-color: var(--accent-primary);
+    }
+
+    &.Active,
+    &.Active:hover {
         border-color: #404756;
     }
 `;
