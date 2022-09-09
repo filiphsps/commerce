@@ -45,12 +45,25 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
                 setRates(current_rates);
             }
 
-            const val = await converter.convert(
+            let val = await converter.convert(
                 props.price,
                 props.currency || props?.store?.currencies[0] || 'USD',
                 new_currency,
                 current_rates[new_currency]
             );
+
+            // Pretty-fy cents
+            let cents = (val * 100) % 100;
+            if (cents) {
+                val = Math.floor(val);
+
+                if (cents > 45) cents = 95;
+                else if (cents > 25) cents = 45;
+                else cents = 0;
+
+                cents /= 100;
+                val += cents;
+            }
 
             setPrice(val);
             setCurrency(new_currency);
