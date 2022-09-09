@@ -1,6 +1,5 @@
 import React, { FunctionComponent, memo } from 'react';
 
-import Carousel from './components/Carousel';
 import Collapse from './components/Collapse';
 import ContentBlock from './components/ContentBlock';
 import ContentGrid from './components/ContentGrid';
@@ -13,6 +12,7 @@ import TextBlock from './components/TextBlock';
 import Vendors from './components/Vendors';
 import dynamic from 'next/dynamic';
 
+const Carousel = dynamic(() => import('./components/Carousel'));
 const CollectionBlock = dynamic(() => import('./components/CollectionBlock'));
 const ShopBlock = dynamic(() => import('./components/ShopBlock'));
 
