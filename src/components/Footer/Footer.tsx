@@ -84,6 +84,12 @@ const EmailCaptureSubmit = styled.button`
     }
 `;
 
+const BlockTitle = styled.div`
+    font-size: 2rem;
+    font-weight: 700;
+    padding-bottom: 0.5rem;
+`;
+
 interface FooterProps {
     store?: any;
     country?: string;
@@ -173,7 +179,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                 key={block.title}
                                 className="Footer-Blocks-Block"
                             >
-                                <h3>{block.title}</h3>
+                                <BlockTitle>{block.title}</BlockTitle>
                                 {block?.items.map((item) => (
                                     <Link key={item.handle} href={item.handle}>
                                         <a

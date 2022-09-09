@@ -87,12 +87,17 @@ const Content = styled.div`
         }
     }
 
+    h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
     h2 {
         margin-bottom: 0.5rem;
         font-size: 2rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05rem;
     }
 `;
 

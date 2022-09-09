@@ -42,19 +42,14 @@
                 padding-bottom: 1.5rem;
             }
 
-            h2, h3 {
-                font-size: 2rem;
-                font-weight: 700;
-                padding-bottom: 0.5rem;
-            }
-
             a {
                 font-weight: 300;
                 font-size: 1.25rem;
                 line-height: 1.75rem;
                 letter-spacing: 0.05rem;
 
-                &:hover, &:active {
+                &:hover,
+                &:active {
                     text-decoration: underline;
                 }
             }
