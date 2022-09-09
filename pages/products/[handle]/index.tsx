@@ -421,15 +421,15 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             reverse
                             noMargin
                         />
-                        <ReviewStars
-                            score={reviews?.rating}
-                            totalReviews={reviews?.count}
-                        />
                         <Tags>
                             {product?.tags.map((tag) => (
                                 <Tag key={tag}>{tag}</Tag>
                             ))}
                         </Tags>
+                        <ReviewStars
+                            score={reviews?.rating}
+                            totalReviews={reviews?.count}
+                        />
 
                         <Description
                             dangerouslySetInnerHTML={{
