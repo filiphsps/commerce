@@ -103,7 +103,7 @@ const Description = styled.div`
         margin-bottom: 1rem;
         font-size: 2.5rem;
         font-weight: 600;
-        line-height: 3rem;
+        line-height: 2.75rem;
         letter-spacing: 0.05rem;
         text-transform: uppercase;
     }
@@ -111,9 +111,17 @@ const Description = styled.div`
         margin-bottom: 1rem;
         font-size: 2rem;
         font-weight: 600;
-        line-height: 2.75rem;
+        line-height: 2.25rem;
         letter-spacing: 0.05rem;
         text-transform: uppercase;
+        color: #404756;
+    }
+    h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 2rem;
+        letter-spacing: 0.05rem;
+        color: #404756;
     }
 
     p {
