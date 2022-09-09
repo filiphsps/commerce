@@ -63,6 +63,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
                     {product?.images?.length > 0 && (
                         <Image
                             src={product?.images?.[variant?.default_image]}
+                            title={
+                                product?.images?.[variant?.default_image]?.alt
+                            }
                             alt={product?.images?.[variant?.default_image]?.alt}
                             width={150}
                             height={150}

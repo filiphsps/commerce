@@ -16,6 +16,7 @@ const ReviewsWrapper = styled.div`
     justify-content: center;
     align-items: center;
     height: 3.25rem;
+    max-height: 3.25rem;
     margin: 0.5rem 0px 0px 0px;
 
     ${ReviewsLabel} {

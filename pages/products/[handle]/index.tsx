@@ -418,6 +418,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                             ?.default_image
                                     ]?.src
                                 }
+                                alt={
+                                    product?.images?.[
+                                        product?.variants?.[variant]
+                                            ?.default_image
+                                    ]?.alt
+                                }
+                                title={
+                                    product?.images?.[
+                                        product?.variants?.[variant]
+                                            ?.default_image
+                                    ]?.alt
+                                }
                                 layout="fill"
                                 objectFit="contain"
                             />
