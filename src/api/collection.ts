@@ -8,6 +8,7 @@ export const COLLECTION_FRAGMENT = `
     id
     handle
     title
+    description
     descriptionHtml
     image {
         id
