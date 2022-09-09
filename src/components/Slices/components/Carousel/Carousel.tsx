@@ -49,6 +49,8 @@ const Carousel: FunctionComponent<CarouselProps> = (props) => {
                                 <Image
                                     className="Image"
                                     src={slide?.image?.url}
+                                    alt={slide?.image?.alt}
+                                    title={slide?.image?.alt}
                                     width={1920}
                                     height={300}
                                     loading="lazy"

@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import React, { FunctionComponent, useRef } from 'react';
 
 import { CollectionApi } from '../../api/collection';
 import ErrorPage from 'next/error';
@@ -7,7 +8,6 @@ import Link from '../Link';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const SubTitle = styled.div`
@@ -18,6 +18,37 @@ const SubTitle = styled.div`
 
     h1 {
         font-weight: 600;
+    }
+`;
+
+const Actions = styled.div`
+    position: absolute;
+    top: 3rem;
+    right: -4rem;
+    bottom: 0px;
+    left: -4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+
+    @media (max-width: 1500px) {
+        display: none;
+    }
+`;
+const Action = styled.div`
+    font-size: 4rem;
+    color: #404756;
+    cursor: pointer;
+    transition: 150ms ease-in-out;
+    pointer-events: all;
+    user-select: none;
+    margin-top: -0.5rem;
+
+    &:hover,
+    &:active {
+        color: var(--accent-primary);
+        transform: scale(1.15);
     }
 `;
 
@@ -48,9 +79,9 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
         { fallbackData: props?.data }
     );
 
-    if (error?.message === '404') return <ErrorPage statusCode={404} />;
+    const content_ref = useRef();
 
-    const router = useRouter();
+    if (error?.message === '404') return <ErrorPage statusCode={404} />;
 
     const products = (data?.items || props?.data?.items || []).map(
         (item, index) => {
@@ -112,7 +143,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     )}
                 </div>
             )}
-            <div className="CollectionBlock-Content">
+            <div className="CollectionBlock-Content" ref={content_ref}>
                 {(products.length && products) ||
                     (!error && (
                         <>
@@ -125,6 +156,34 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     ))}
                 {view_more}
             </div>
+            {props.isHorizontal ? (
+                <Actions>
+                    <Action
+                        onClick={() => {
+                            if (!content_ref?.current) return;
+                            (content_ref.current as any).scroll?.({
+                                left:
+                                    (content_ref.current as any).scrollLeft -
+                                    150
+                            });
+                        }}
+                    >
+                        <FiChevronLeft />
+                    </Action>
+                    <Action
+                        onClick={() => {
+                            if (!content_ref?.current) return;
+                            (content_ref.current as any).scroll?.({
+                                left:
+                                    (content_ref.current as any).scrollLeft +
+                                    150
+                            });
+                        }}
+                    >
+                        <FiChevronRight />
+                    </Action>
+                </Actions>
+            ) : null}
         </div>
     );
 };
