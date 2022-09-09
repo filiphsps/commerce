@@ -7,48 +7,4 @@
     background-size: cover;
     background-position: center;
     color: $color-black;
-
-    &.ContentBlock-Dark {
-        background: $color-light-gray;
-
-        .CollectionBlock {
-            .ProductCard {
-                background: $color-white;
-
-                .ProductCard-Container {
-                    .ProductCard-Actions {
-                        .ProductCard-Actions-Action {
-                            background: $color-silvery;
-
-                            &.Button {
-                                background: $color-primary;
-                            }
-
-                            .Input {
-                                background: $color-silvery;
-                            }
-
-                            .ProductCard-Actions-Action-Variant {
-                                background: $color-silvery;
-                                border: 0.2rem solid $color-silvery;
-                            }
-                        }
-
-                        .ProductCard-Actions-Action-QuantityInput {
-                            .Action {
-                                background: $color-silvery;
-                                border: 0.2rem solid $color-silvery;
-
-                                @media (min-width: $width-max-mobile) {
-                                    &:hover {
-                                        border-color: $color-primary;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

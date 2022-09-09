@@ -13,7 +13,7 @@ interface ShopBlockProps {
 const ShopBlock: FunctionComponent<ShopBlockProps> = (props) => {
     return (
         <div className="Slice Slice-ShopBlock">
-            <ContentBlock dark={props?.data?.theme === 'dark'}>
+            <ContentBlock>
                 <PageContent>
                     <ShopBlockComponent
                         store={props?.store}

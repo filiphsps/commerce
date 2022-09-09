@@ -8,11 +8,9 @@ interface VendorsProps {
     data?: any;
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
-    const theme = props?.data?.theme || props?.data?.primary?.theme;
-
     return (
         <div className="Slice Slice-Vendors">
-            <ContentBlock dark={theme === 'dark'}>
+            <ContentBlock>
                 <PageContent>
                     <VendorsComponent />
                 </PageContent>

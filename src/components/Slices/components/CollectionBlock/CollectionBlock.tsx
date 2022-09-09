@@ -10,7 +10,6 @@ interface CollectionBlockProps {
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     const handle = props?.data?.handle || props?.data?.primary?.handle;
-    const theme = props?.data?.theme || props?.data?.primary?.theme;
     const limit = props?.data?.limit || props?.data?.primary?.limit;
     const layout = props?.data?.layout || props?.data?.primary?.layout;
     const hide_title =
@@ -18,7 +17,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
 
     return (
         <div className="Slice Slice-CollectionBlock">
-            <ContentBlock dark={theme === 'dark'}>
+            <ContentBlock>
                 <PageContent>
                     <CollectionBlockComponent
                         handle={handle}

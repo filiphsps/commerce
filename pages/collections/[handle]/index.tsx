@@ -85,7 +85,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     noLink
                 />
             </PageContent>
-            <Vendors data={{ theme: 'dark' }} />
+            <Vendors />
         </Page>
     );
 };

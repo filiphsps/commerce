@@ -15,7 +15,7 @@ const ContentWithImage: FunctionComponent<ContentWithImageProps> = (props) => {
 
     return (
         <div className="Slice Slice-ContentWithImage">
-            <ContentBlock dark={data?.theme === 'dark'}>
+            <ContentBlock>
                 <PageContent>
                     <div className="ContentWithImage">
                         <img

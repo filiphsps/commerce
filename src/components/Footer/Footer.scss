@@ -5,8 +5,8 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    background: $color-primary-dark;
-    color: $color-text-primary;
+    background: var(--accent-primary-dark);
+    color: var(--color-text-primary);
 
     .Footer-Wrapper {
         display: grid;

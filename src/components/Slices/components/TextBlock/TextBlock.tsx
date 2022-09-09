@@ -8,9 +8,7 @@ import TextBlockComponent from '../../../TextBlock';
 
 interface TextBlockProps {
     data?: {
-        primary: {
-            theme: 'light' | 'dark';
-        };
+        primary: {};
         items: Array<{
             image: any;
             text: any;
@@ -20,7 +18,7 @@ interface TextBlockProps {
 const TextBlock: FunctionComponent<TextBlockProps> = ({ data }) => {
     return (
         <div className="Slice Slice-TextBlock">
-            <ContentBlock dark={data?.primary?.theme === 'dark'}>
+            <ContentBlock>
                 <PageContent>
                     {data?.items?.map((item, index) => {
                         return (

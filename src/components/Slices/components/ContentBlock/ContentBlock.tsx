@@ -15,7 +15,7 @@ const ContentBlock: FunctionComponent<ContentBlockProps> = (props) => {
 
     return (
         <div className="Slice Slice-ContentBlock">
-            <ContentBlockComponent dark={data?.theme === 'dark'}>
+            <ContentBlockComponent>
                 <PageContent>
                     <Slices
                         store={store}
