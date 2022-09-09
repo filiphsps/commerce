@@ -414,11 +414,15 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <FreeShippingBannerText
                                     className={freeShipping ? 'Full' : ''}
                                 >
-                                    Free shipping on orders above $75
+                                    Free shipping on orders above{' '}
+                                    <Currency price={75} currency="USD" />
                                 </FreeShippingBannerText>
                                 <FreeShippingBannerText>
                                     <Currency
-                                        price={data.cartTotal}
+                                        price={
+                                            Number.parseFloat(data.cartTotal) ||
+                                            0
+                                        }
                                         currency="USD"
                                     />
                                     {`/`}
@@ -479,9 +483,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 </SummaryItemMeta>
                                                 <SummaryItemPrice>
                                                     <Currency
-                                                        price={
+                                                        price={Number.parseFloat(
                                                             line_item?.itemTotal
-                                                        }
+                                                        )}
                                                         currency={
                                                             line_item.currency
                                                         }
@@ -508,7 +512,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     </SummaryItemShipping>
                                     <SummaryItemPrice>
                                         <Currency
-                                            price={price}
+                                            price={Number.parseFloat(price)}
                                             currency={currency}
                                             prefix={
                                                 <>
@@ -626,12 +630,5 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         </Page>
     );
 };
-
-export async function getStaticProps({ locale }) {
-    return {
-        props: {},
-        revalidate: 5
-    };
-}
 
 export default CartPage;

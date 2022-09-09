@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { Convert } from 'easy-currencies';
+import { Converter } from 'easy-currencies';
 import { StoreModel } from '../../models/StoreModel';
 import { Currency as Tender } from 'react-tender';
 import { getParamByISO } from 'iso-country-currency';
-import useCountry from '../../hooks/country';
+import { useStore } from 'react-context-hook';
 
 interface CurrencyProps {
     price?: number;
@@ -16,7 +16,8 @@ interface CurrencyProps {
     store?: StoreModel;
 }
 const Currency: FunctionComponent<CurrencyProps> = (props) => {
-    const country = useCountry();
+    const [rates, setRates] = useStore('rates');
+    const [country] = useStore('country');
     const [currency, setCurrency] = useState(
         props.currency || props?.store?.currencies[0] || 'USD'
     );
@@ -25,26 +26,36 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
     );
 
     useEffect(() => {
-        if (price !== props.price) {
-            setPrice(Number.parseFloat(props.price as any) || 0);
-            setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
-        }
+        setPrice(props.price);
+        setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
 
-        if (!country.code) return;
-        const new_currency = getParamByISO(country.code, 'currency');
-
-        if (new_currency === currency) return;
+        if (!country) return;
+        const new_currency: string = getParamByISO(country, 'currency');
         setCurrency(new_currency);
 
-        // FIXME: Round to .45 or .95
-        // FIXME: Cache.
-        Convert(props.price)
-            .from(props.currency || 'USD')
-            .to(new_currency)
-            .then((value) => {
-                setPrice(value);
-            });
-    }, [country.code, props.price, props.currency]);
+        (async () => {
+            const converter = new Converter();
+
+            const current_rates = rates;
+            if (!current_rates[new_currency]) {
+                current_rates[new_currency] = await converter.getRates(
+                    'USD',
+                    new_currency
+                );
+                setRates(current_rates);
+            }
+
+            const val = await converter.convert(
+                props.price,
+                props.currency || props?.store?.currencies[0] || 'USD',
+                new_currency,
+                current_rates[new_currency]
+            );
+
+            setPrice(val);
+            setCurrency(new_currency);
+        })();
+    }, [country, rates, props.price, props.currency]);
 
     return (
         <div className={`Currency ${props.className || ''}`}>

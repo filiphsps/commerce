@@ -10,6 +10,7 @@ import { useStore, withStore } from 'react-context-hook';
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
+import { Converter } from 'easy-currencies';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
@@ -17,6 +18,7 @@ import SEO from '../nextseo.config';
 import { ShopifyAnalyticsProvider } from 'react-shopify-analytics';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
+import useCountry from '../src/hooks/country';
 import useSWR from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -31,8 +33,10 @@ const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
         const [cartStore, setCartStore] = useStore<any>('cart');
+        const [country, setCountry] = useStore('country');
         const [sessionId, setSessionId] = useState<string>();
         const [userId, setUserId] = useState<string>();
+        const user_country = useCountry();
 
         const { data: store } = useSWR([`store`], () => StoreApi() as any, {
             fallbackData: {
@@ -131,6 +135,11 @@ const StoreApp = withStore(
             setSessionId(getCookie('session') as string);
             setUserId(getCookie('user') as string);
         }, []);
+
+        useEffect(() => {
+            if (!user_country.code) return;
+            setCountry(user_country.code);
+        }, [user_country]);
 
         return (
             <>
@@ -245,6 +254,8 @@ const StoreApp = withStore(
     },
     {
         currency: 'USD',
+        country: 'US',
+        rates: {},
         search: {
             open: false,
             phrase: ''
