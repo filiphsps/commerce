@@ -148,6 +148,7 @@ const Actions = styled(SectionContent)`
     justify-content: center;
     align-items: flex-start;
     margin-left: auto;
+    user-select: none;
 `;
 const Action = styled.div`
     cursor: pointer;

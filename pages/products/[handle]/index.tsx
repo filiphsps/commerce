@@ -288,14 +288,17 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
     const addToCart = useCallback(() => {
         setAddedToCart(true);
-        cart.addItem({
-            id: `${product?.id}#${product?.variants[variant]?.id}`,
-            price: product?.variants[variant]?.pricing.range,
-            quantity: quantity,
+        cart.addItem(
+            {
+                id: `${product?.id}#${product?.variants[variant]?.id}`,
+                price: product?.variants[variant]?.pricing.range,
+                quantity: quantity,
 
-            title: product?.title,
-            variant_title: product?.variants[variant].title
-        });
+                title: product?.title,
+                variant_title: product?.variants[variant].title
+            },
+            quantity
+        );
 
         setTimeout(() => {
             setAddedToCart(false);

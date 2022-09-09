@@ -4,7 +4,6 @@ import { CollectionModel } from '../models/CollectionModel';
 import { gql } from '@apollo/client';
 import { newShopify } from './shopify';
 
-const COLLECTION_PRODUCT_FRAGMENT = PRODUCT_FRAGMENT;
 export const COLLECTION_FRAGMENT = `
     id
     handle
@@ -24,7 +23,7 @@ export const COLLECTION_FRAGMENT = `
     products(first: 250) {
         edges {
             node {
-                ${COLLECTION_PRODUCT_FRAGMENT}
+                ${PRODUCT_FRAGMENT}
             }
         }
     }
@@ -59,17 +58,9 @@ export const Convertor = (collection: any): CollectionModel => {
               }
             : null,
 
-        items: collection?.products?.edges
-            ?.map((product) => ProductConvertor(product.node))
-            .map((product) => ({
-                id: product.id,
-                handle: product.handle,
-                title: product.title,
-                vendor: product.vendor,
-                images: product.images,
-                pricing: product.pricing,
-                variants: product.variants
-            }))
+        items: collection?.products?.edges?.map((product) =>
+            ProductConvertor(product.node)
+        )
     };
     return res;
 };

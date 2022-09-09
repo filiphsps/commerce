@@ -9,6 +9,7 @@ import { gql } from '@apollo/client';
 export const PRODUCT_FRAGMENT = `
     id
     handle
+    createdAt
     title
     description
     descriptionHtml
@@ -100,6 +101,7 @@ export const Convertor = (product: any): ProductModel => {
             .split('/')
             .at(-1),
         handle: product?.handle,
+        created_at: product.createdAt,
 
         title: product?.title,
         description: product?.description,
@@ -188,9 +190,11 @@ export const Convertor = (product: any): ProductModel => {
                     barcode: variant.barcode,
                     pricing: {
                         currency: variant.priceV2.currencyCode,
-                        range: variant.priceV2.amount,
+                        range: Number.parseFloat(variant.priceV2.amount),
                         compare_at_range:
-                            variant.compareAtPriceV2?.amount || null
+                            Number.parseFloat(
+                                variant.compareAtPriceV2?.amount
+                            ) || null
                     },
                     options: variant.selectedOptions.map(({ name, value }) => ({
                         id: name,

@@ -1,301 +1,447 @@
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { ProductImageModel, ProductModel } from '../../models/ProductModel';
 
 import Button from '../Button';
 import Currency from '../Currency';
 import Image from 'next/image';
-import Input from '../Input';
-import LanguageString from '../LanguageString';
-import Link from '../Link';
-import { ProductModel } from '../../models/ProductModel';
-import ReactStars from 'react-rating-stars-component';
-import { ReviewsModel } from '../../models/ReviewsModel';
+import Link from 'next/link';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
-import useSWR from 'swr';
 
-const Reviews = styled.div`
-    margin-top: -0.5rem;
-    margin-left: -0.25rem;
-    padding-bottom: 0.25rem;
+const Container = styled.div`
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.5rem;
+    min-width: 16rem;
+    padding: 1rem;
+    border: 0.2rem solid #e9e9e9;
+    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    border-radius: var(--block-border-radius);
+    background: #efefef;
+    scroll-snap-align: start;
 `;
+const ProductImage = styled.div`
+    height: 14rem;
+    width: calc(100% + 2rem);
+    padding: 1.25rem;
+    margin: -1rem -1rem 0px -1rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    transition: 250ms ease-in-out;
+    user-select: none;
+
+    &:hover {
+        padding: 0.5rem;
+    }
+`;
+const ProductImageWrapper = styled.div`
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    img {
+        object-fit: contain;
+        mix-blend-mode: multiply;
+    }
+`;
+
+const Details = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 0.5rem;
+`;
+const Brand = styled.div`
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #404756;
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: var(--accent-secondary-dark);
+    }
+`;
+const Title = styled.div`
+    //flex-grow: 1;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.65rem;
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: var(--accent-primary);
+    }
+`;
+const Description = styled.div`
+    padding-top: 0.25rem;
+    flex-grow: 1;
+    font-size: 1.05rem;
+    color: #404756;
+`;
+const VariantsContainer = styled.div`
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding-top: 1rem;
+    transition: 150ms ease-in-out;
+`;
+const Variants = styled.div`
+    display: flex;
+    gap: 0.75rem;
+`;
+const Variant = styled.div`
+    border-radius: var(--block-border-radius);
+    font-weight: 600;
+    font-size: 1.15rem;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0.5;
+
+    &.Active,
+    &:hover,
+    &:active,
+    &:focus {
+        opacity: 1;
+        border-color: var(--accent-primary);
+    }
+`;
+
+const Actions = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+`;
+const AddButton = styled(Button)`
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+    transition: 150ms ease-in-out;
+
+    &.Added {
+        background: var(--accent-secondary-dark);
+        font-weight: 700;
+    }
+`;
+const Quantity = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+    user-select: none;
+`;
+const QuantityAction = styled.div`
+    overflow: hidden;
+    width: 1rem;
+    margin-top: -0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 250ms ease-in-out;
+
+    &.Inactive {
+        width: 0px;
+        margin-left: -0.5rem;
+    }
+
+    &:hover {
+        color: var(--accent-primary);
+    }
+`;
+const QuantityValue = styled.div`
+    min-width: 1.25rem;
+    font-size: 1.5rem;
+`;
+
+const Prices = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    text-transform: uppercase;
+`;
+const Price = styled.div`
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    &.Discount {
+        color: #d91e18;
+    }
+`;
+const PreviousPrice = styled.div`
+    font-weight: 700;
+    text-decoration: line-through;
+    color: #404756;
+`;
+
+const Badges = styled.div`
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    z-index: 1;
+`;
+const BadgeText = styled.div``;
+const BadgePrice = styled(Currency)`
+    font-size: 1.25rem;
+    font-weight: 700;
+`;
+const Badge = styled.div`
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: auto;
+    padding: 0.25rem 0.5rem;
+    background: var(--accent-primary);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    font-weight: 600;
+
+    &.Sale {
+        background: #d91e18;
+    }
+
+    &.From {
+        background: #efefef;
+        color: #0e0e0e;
+
+        ${BadgeText} {
+            color: #404756;
+        }
+    }
+
+    &.New {
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+`;
+
+interface VariantImageProps {
+    image: ProductImageModel;
+}
+const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
+    const { src, alt, height, width } = image;
+
+    return (
+        <Image
+            src={src}
+            width={width}
+            height={height}
+            layout="fill"
+            alt={alt}
+            title={alt}
+        />
+    );
+};
 
 interface ProductCardProps {
     handle?: string;
     data?: ProductModel;
     isHorizontal?: boolean;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = (props) => {
-    const { data: product } = props;
-
-    const { data: reviews } = useSWR([`${product?.id}_reviews`], () =>
-        fetch('/api/reviews', {
-            method: 'post',
-            body: JSON.stringify({
-                id: product.id
-            })
-        }).then((res) => res.json())
-    );
-
-    const cart = useCart();
-    const [addedToCart, setAddedToCart] = useState(false);
-    const [showAll, setShowAll] = useState(false);
+const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
+    const [variantIndex, setVariantIndex] = useState(data.variants.length - 1);
     const [quantity, setQuantity] = useState(1);
-    const [selectedVariant, setSelectedVariant] = useState(
-        product?.variants?.length - 1
-    );
+    const [addedToCart, setAddedToCart] = useState(false);
+    const cart = useCart();
+
+    const {
+        images,
+        variants,
+        vendor,
+        handle,
+        title,
+        created_at,
+        id,
+        seo,
+        description
+    } = data;
+    const variant = variants[variantIndex];
+
+    const is_new_product =
+        Math.abs(new Date(created_at).getTime() - new Date().getTime()) /
+            (24 * 60 * 60 * 1000) <
+        45;
+    const is_sale = !!variants[variantIndex].pricing.compare_at_range;
+
+    let short_desc = (seo.description || description).substring(0, 100);
+    // Remove whitespace if it's the last character
+    if (short_desc[short_desc.length - 1] === ' ')
+        short_desc = short_desc.substring(0, short_desc.length - 1);
 
     useEffect(() => {
-        setSelectedVariant(product?.variants?.length - 1);
-    }, [product]);
-
-    const variant = product?.variants?.[selectedVariant] || null;
-    const sale = variant?.pricing.compare_at_range > 0;
+        if (quantity > 0) return;
+        setQuantity(1);
+    }, [quantity]);
 
     return (
-        <div className={`ProductCard ${sale ? 'Sale' : ''}`}>
-            <div className="ProductCard-Container">
-                <Link
-                    className="ProductCard-Container-Image"
-                    to={product && `/products/${product?.handle}`}
-                    as={'/products/[handle]'}
-                >
-                    {product?.images?.length > 0 && (
-                        <Image
-                            src={product?.images?.[variant?.default_image]}
-                            title={
-                                product?.images?.[variant?.default_image]?.alt
-                            }
-                            alt={product?.images?.[variant?.default_image]?.alt}
-                            width={150}
-                            height={150}
-                            layout="fixed"
-                            placeholder="empty"
-                            priority
+        <Container className="ProductCard">
+            <Badges>
+                {!is_sale && data.variants.length > 1 ? (
+                    <Badge className="From">
+                        <BadgeText>From</BadgeText>
+                        <BadgePrice
+                            price={variants[0].pricing.range}
+                            currency={variants[0].pricing.currency}
                         />
-                    )}
+                    </Badge>
+                ) : null}
+                {is_sale ? (
+                    <Badge className="Sale">
+                        <BadgeText>Sale</BadgeText>
+                        <BadgePrice
+                            price={variants[0].pricing.range}
+                            currency={variants[0].pricing.currency}
+                        />
+                    </Badge>
+                ) : null}
+                {is_new_product ? (
+                    <Badge className="New">
+                        <BadgeText>New!</BadgeText>
+                    </Badge>
+                ) : null}
+            </Badges>
+            <ProductImage>
+                <Link href={`/products/${handle}`}>
+                    <a>
+                        <ProductImageWrapper>
+                            <VariantImage
+                                image={images[variant.default_image]}
+                            />
+                        </ProductImageWrapper>
+                    </a>
                 </Link>
+            </ProductImage>
+            <Details>
+                <Brand>
+                    <Link href={`/collections/${vendor.handle}`}>
+                        <a>{vendor.title}</a>
+                    </Link>
+                </Brand>
+                <Title>
+                    <Link href={`/products/${handle}`}>
+                        <a>{title}</a>
+                    </Link>
+                </Title>
+                <Description>
+                    {short_desc}
+                    {short_desc.length > 5 ? '...' : ''}
+                </Description>
 
-                <div className="ProductCard-Container-Content">
-                    <div className="ProductCard-Container-Header">
-                        <Link
-                            className="ProductCard-Container-Header-Vendor"
-                            to={
-                                product &&
-                                `/collections/${product?.vendor?.handle}`
-                            }
-                        >
-                            {product?.vendor?.title}
-                        </Link>
-                        <Link
-                            className="ProductCard-Container-Header-Title"
-                            to={product && `/products/${product?.handle}`}
-                            as={'/products/[handle]'}
-                        >
-                            {product?.title}
-                        </Link>
-                    </div>
-
-                    <div
-                        className={`ProductCard-TotalPrice ${
-                            variant?.pricing.compare_at_range ? 'Sale' : ''
-                        }`}
-                    >
-                        {variant?.pricing?.compare_at_range && (
-                            <div className="Sale-Price">
+                <VariantsContainer>
+                    <Prices>
+                        {variants[variantIndex].pricing.compare_at_range ? (
+                            <PreviousPrice>
                                 <Currency
                                     price={
-                                        variant?.pricing?.compare_at_range ||
-                                        variant?.pricing?.compare_at_range
+                                        variants[variantIndex].pricing
+                                            .compare_at_range * quantity
                                     }
-                                    currency={variant?.pricing?.currency}
+                                    currency={
+                                        variants[variantIndex].pricing.currency
+                                    }
                                 />
-                            </div>
-                        )}
-                        <Currency
-                            price={variant?.pricing?.range}
-                            currency={variant?.pricing?.currency}
-                        />
-                    </div>
-
-                    {reviews && reviews?.count > 0 ? (
-                        <Reviews>
-                            <ReactStars
-                                size={25}
-                                count={5}
-                                value={reviews.rating}
-                                isHalf={true}
-                                edit={false}
-                                activeColor="#D8B309"
-                            />
-                        </Reviews>
-                    ) : null}
-
-                    <div
-                        className={`ProductCard-Actions ${
-                            product?.variants?.length <= 1 &&
-                            !props.isHorizontal
-                                ? 'Only-One'
-                                : ''
-                        }`}
-                    >
-                        <div className="ProductCard-Actions-Action ProductCard-Actions-Action-Variants">
-                            <div
-                                className={`ProductCard-Actions-Action-Variants ${
-                                    (showAll && 'Open') || ''
-                                }`}
-                            >
-                                {product?.variants?.map((variant, index) => {
-                                    if (!showAll && index >= 3) return null;
-
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={`ProductCard-Actions-Action-Variant ${
-                                                index === selectedVariant &&
-                                                'ProductCard-Actions-Action-Variant-Selected'
-                                            }`}
-                                            onClick={() =>
-                                                setSelectedVariant(index)
-                                            }
-                                            data-nosnippet
-                                        >
-                                            <LanguageString
-                                                id={
-                                                    variant?.title?.split(
-                                                        ' /'
-                                                    )[0]
-                                                }
-                                            />
-                                        </div>
-                                    );
-                                })}
-
-                                {product?.variants?.length > 3 && (
-                                    <div
-                                        className="ProductCard-Actions-Action-Variant"
-                                        onClick={() => setShowAll(!showAll)}
-                                    >
-                                        {showAll ? (
-                                            <FiMinus
-                                                className="Icon"
-                                                style={{ marginBottom: 10 }}
-                                            />
-                                        ) : (
-                                            <FiPlus
-                                                className="Icon"
-                                                style={{
-                                                    marginBottom: 10
-                                                }}
-                                            />
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="ProductCard-Actions-Action ProductCard-Actions-Action-QuantityInput">
-                            <div
-                                className="Action"
-                                onClick={() => {
-                                    if (quantity - 1 >= 0)
-                                        return setQuantity(
-                                            parseInt(quantity as any) - 1
-                                        );
-
-                                    return setQuantity(0);
-                                }}
-                            >
-                                -
-                            </div>
-                            <Input
-                                className="Input"
-                                type="number"
-                                value={quantity}
-                                onChange={(event) => {
-                                    setQuantity(
-                                        Number.parseInt(
-                                            event?.target?.value,
-                                            10
-                                        )
-                                    );
-                                }}
-                            />
-                            <div
-                                className="Action"
-                                onClick={() =>
-                                    setQuantity(parseInt(quantity as any) + 1)
-                                }
-                            >
-                                +
-                            </div>
-                        </div>
-
-                        <Button
-                            className={`Button ${addedToCart ? 'Added' : ''}`}
-                            disabled={
-                                !variant?.available ||
-                                !parseInt(quantity as any)
+                            </PreviousPrice>
+                        ) : null}
+                        <Price
+                            className={
+                                variants[variantIndex].pricing.compare_at_range
+                                    ? 'Discount'
+                                    : ''
                             }
-                            onClick={() => {
-                                setAddedToCart(true);
-                                cart.addItem({
-                                    id: `${product?.id}#${product?.variants[selectedVariant]?.id}`,
-                                    price: product?.variants[selectedVariant]
-                                        ?.pricing.range,
-                                    quantity: quantity,
-
-                                    title: product?.title,
-                                    variant_title:
-                                        product?.variants[selectedVariant].title
-                                });
-
-                                setTimeout(() => {
-                                    setAddedToCart(false);
-                                }, 3000);
-                            }}
                         >
-                            <span data-nosnippet>
-                                {!variant?.available
-                                    ? 'Out of stock'
-                                    : (addedToCart && 'Added!') ||
-                                      'Add to Cart'}
-                            </span>
-                        </Button>
-                    </div>
-                </div>
-            </div>
+                            <Currency
+                                price={
+                                    variants[variantIndex].pricing.range *
+                                    quantity
+                                }
+                                currency={
+                                    variants[variantIndex].pricing.currency
+                                }
+                            />
+                        </Price>
+                    </Prices>
 
-            {sale || product?.variants?.length > 1 ? (
-                <div className={`ProductCard-Price`}>
-                    {sale ? (
-                        <div>
-                            <LanguageString id={'sale'} />
-                        </div>
-                    ) : null}
-                    {!sale && product?.variants?.length > 1 && (
-                        <div>
-                            <LanguageString id={'from'} />
-                        </div>
-                    )}
-                    {sale ? (
-                        <Currency
-                            price={
-                                product?.variants?.[selectedVariant].pricing
-                                    .range
-                            }
-                            currency={variant?.pricing.currency}
-                        />
-                    ) : (
-                        <Currency
-                            price={product?.variants?.[0].pricing.range}
-                            currency={variant?.pricing.currency}
-                        />
-                    )}
-                </div>
-            ) : null}
-        </div>
+                    <Variants>
+                        {variants.length > 1
+                            ? variants.map((variant, index) => (
+                                  <Variant
+                                      key={variant.id}
+                                      onClick={() => setVariantIndex(index)}
+                                      className={
+                                          variantIndex === index ? 'Active' : ''
+                                      }
+                                  >
+                                      {variant.title}
+                                  </Variant>
+                              ))
+                            : null}
+                    </Variants>
+                </VariantsContainer>
+            </Details>
+            <Actions>
+                <AddButton
+                    className={addedToCart ? 'Added' : ''}
+                    onClick={() => {
+                        setAddedToCart(true);
+                        cart.addItem(
+                            {
+                                id: `${id}#${variants[variantIndex].id}`,
+                                price: variants[variantIndex].pricing.range,
+                                quantity,
+
+                                title: title,
+                                variant_title: variants[variantIndex].title
+                            },
+                            quantity
+                        );
+
+                        setTimeout(() => {
+                            setAddedToCart(false);
+                        }, 3000);
+                    }}
+                >
+                    <span data-nosnippet>
+                        {!variant?.available
+                            ? 'Out of stock'
+                            : (addedToCart && 'Added!') || 'Add to Cart'}
+                    </span>
+                </AddButton>
+                <Quantity>
+                    <QuantityAction
+                        className={quantity > 1 ? '' : 'Inactive'}
+                        onClick={() => setQuantity(quantity - 1)}
+                    >
+                        <FiMinus />
+                    </QuantityAction>
+                    <QuantityValue>{quantity}</QuantityValue>
+                    <QuantityAction onClick={() => setQuantity(quantity + 1)}>
+                        <FiPlus />
+                    </QuantityAction>
+                </Quantity>
+            </Actions>
+        </Container>
     );
 };
 
-export default memo(ProductCard);
+export default ProductCard;

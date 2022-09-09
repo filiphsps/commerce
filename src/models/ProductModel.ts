@@ -5,6 +5,7 @@ import { VendorModel } from './VendorModel';
 export interface ProductModel {
     id: string;
     handle: string;
+    created_at: string;
     sku?: string;
 
     title: string;
@@ -37,17 +38,7 @@ export interface ProductModel {
     /**
      * Product Images.
      */
-    images: Array<{
-        id: string;
-        height: number;
-        width: number;
-        src: string;
-
-        /**
-         * Descriptive alt text for the image.
-         */
-        alt: string;
-    }>;
+    images: ProductImageModel[];
 
     /**
      * Product options.
@@ -56,6 +47,18 @@ export interface ProductModel {
 
     details?: any;
     metadata?: any;
+}
+
+export interface ProductImageModel {
+    id: string;
+    height: number;
+    width: number;
+    src: string;
+
+    /**
+     * Descriptive alt text for the image.
+     */
+    alt: string;
 }
 
 export type ProductOptionsType = Array<

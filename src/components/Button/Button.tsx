@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import styled from 'styled-components';
 
@@ -63,4 +63,4 @@ const Button: FunctionComponent<ButtonProps> = (props) => {
     );
 };
 
-export default memo(Button);
+export default Button;
