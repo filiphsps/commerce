@@ -72,8 +72,8 @@ const StoreApp = withStore(
             setCartStore({ open: true, item });
             if (!window || !(window as any)?.dataLayer) return;
 
-            (window as any).dataLayer.push({ ecommerce: null });
-            (window as any).dataLayer.push({
+            (window as any).dataLayer?.push({ ecommerce: null });
+            (window as any).dataLayer?.push({
                 event: 'add_to_cart',
                 currency: 'USD',
                 value: item.price * item.quantity,

@@ -320,10 +320,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const freeShipping = data.cartTotal > 75;
 
     useEffect(() => {
-        (window as any).dataLayer.push({
+        (window as any).dataLayer?.push({
             ecommerce: null
         });
-        (window as any).dataLayer.push({
+        (window as any).dataLayer?.push({
             event: 'view_cart',
             currency: 'USD',
             value: price,
@@ -543,10 +543,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 'checkout.candybysweden.com'
                                             );
 
-                                            (window as any).dataLayer.push({
+                                            (window as any).dataLayer?.push({
                                                 ecommerce: null
                                             });
-                                            (window as any).dataLayer.push({
+                                            (window as any).dataLayer?.push({
                                                 event: 'begin_checkout',
                                                 currency: 'USD',
                                                 value: price,
