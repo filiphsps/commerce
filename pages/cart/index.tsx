@@ -223,7 +223,6 @@ const Recommendations = styled(ContentBlock)`
     display: block;
     grid-template-rows: auto auto;
     max-width: calc(100vw - 2rem);
-    padding: 1rem;
     margin-top: 2rem;
     border-radius: var(--block-border-radius);
 `;
@@ -440,7 +439,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         </FreeShippingBanner>
 
                         {recommendations?.length > 1 ? (
-                            <Recommendations dark>
+                            <Recommendations>
                                 <RecommendationsTitle>
                                     Recommended Products
                                 </RecommendationsTitle>

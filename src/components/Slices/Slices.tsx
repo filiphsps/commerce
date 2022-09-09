@@ -4,9 +4,8 @@ import Carousel from './components/Carousel';
 import Collapse from './components/Collapse';
 import ContentBlock from './components/ContentBlock';
 import ContentGrid from './components/ContentGrid';
-import ContentWithImage from './components/ContentWithImage';
-import HtmlBlock from './components/HtmlBlock';
 import IconGrid from './components/IconGrid';
+import ImageLinks from './components/ImageLinks';
 import Notification from './components/Notification';
 import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
@@ -58,12 +57,6 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                         case 'ContentGrid':
                             Component = ContentGrid;
                             break;
-                        case 'ContentWithImage':
-                            Component = ContentWithImage;
-                            break;
-                        case 'HtmlBlock':
-                            Component = HtmlBlock;
-                            break;
                         case 'ProductCard':
                             Component = ProductCard;
                             break;
@@ -85,8 +78,11 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                         case 'icon_grid':
                             Component = IconGrid;
                             break;
+                        case 'imagelinks':
+                            Component = ImageLinks;
+                            break;
                         default:
-                            console.error(`Invalid slice "${type}"`);
+                            console.warn(`Invalid slice "${type}"`);
                             return null;
                     }
 

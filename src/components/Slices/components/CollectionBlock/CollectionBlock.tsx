@@ -1,7 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import CollectionBlockComponent from '../../../CollectionBlock';
-import ContentBlock from '../../../ContentBlock';
 import PageContent from '../../../PageContent';
 
 interface CollectionBlockProps {
@@ -17,18 +16,16 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
 
     return (
         <div className="Slice Slice-CollectionBlock">
-            <ContentBlock>
-                <PageContent>
-                    <CollectionBlockComponent
-                        handle={handle}
-                        isHorizontal={layout === 'horizontal'}
-                        limit={limit}
-                        data={props?.prefetch?.collections[handle]}
-                        hideTitle={hide_title}
-                        plainTitle
-                    />
-                </PageContent>
-            </ContentBlock>
+            <PageContent>
+                <CollectionBlockComponent
+                    handle={handle}
+                    isHorizontal={layout === 'horizontal'}
+                    limit={limit}
+                    data={props?.prefetch?.collections[handle]}
+                    hideTitle={hide_title}
+                    plainTitle
+                />
+            </PageContent>
         </div>
     );
 };
