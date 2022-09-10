@@ -19,7 +19,8 @@ const Container = styled.div`
     align-items: center;
     z-index: 25;
     width: 100%;
-    padding: 1rem 0px 2rem 0px;
+    max-height: 100%;
+    max-height: calc(100% - env(safe-area-inset-bottom));
     background: #fefefe;
     border-bottom: 0.05rem solid #efefef;
     box-shadow: 0px 5px 15px -10px rgba(0, 0, 0, 0.75);
@@ -34,6 +35,7 @@ const Content = styled.div`
     grid-template-columns: 1fr auto;
     gap: 2rem;
     width: 100%;
+    padding: 1rem 0px 2rem 0px;
 
     @media (max-width: 950px) {
         overflow-y: scroll;
@@ -48,25 +50,24 @@ const Section = styled.div`
 `;
 const SectionLabel = styled.div`
     font-size: 2rem;
+    font-weight: 600;
     line-height: 2rem;
     padding-bottom: 1rem;
     text-transform: uppercase;
+    color: #404756;
 `;
 
 const Products = styled.div`
+    overflow: hidden;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
     gap: 1rem;
-
-    @media (max-width: 950px) {
-        grid-template-columns: 1fr;
-    }
 `;
 
 const ProductImage = styled.div`
     overflow: hidden;
     position: relative;
-    height: 4rem;
+    height: 100%;
     width: 4rem;
     padding: 1rem;
     background: #fefefe;
@@ -128,7 +129,7 @@ const Collection = styled.a`
     display: block;
     width: 100%;
     text-transform: uppercase;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
 

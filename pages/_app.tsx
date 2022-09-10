@@ -10,7 +10,6 @@ import { useStore, withStore } from 'react-context-hook';
 import { CartProvider } from 'react-use-cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
-import { Converter } from 'easy-currencies';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';

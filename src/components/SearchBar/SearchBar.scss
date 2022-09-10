@@ -29,12 +29,15 @@
 
     .SearchBar-Cross {
         position: absolute;
+        top: 0px;
         right: 1rem;
-        height: 100%;
-        margin: 0.95rem 0px;
+        bottom: 0px;
         font-size: 1.5rem;
         cursor: pointer;
         color: #0e0e0e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         @media (min-width: $width-max-mobile) {
             top: -0.25rem;
@@ -43,10 +46,6 @@
             &:active {
                 color: rgba(0, 0, 0, 0.75);
             }
-        }
-
-        @media (max-width: $width-max-mobile) {
-            margin: 0.5rem 0px;
         }
     }
 }

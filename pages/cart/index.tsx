@@ -302,7 +302,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         0
     );
 
-    const freeShipping = data.cartTotal > 75;
+    const freeShipping = (Number.parseFloat(data.cartTotal) || 0) > 75;
 
     useEffect(() => {
         (window as any).dataLayer?.push({
@@ -424,7 +424,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         width: `${
                                             freeShipping
                                                 ? 100
-                                                : (data.cartTotal / 75) * 100
+                                                : ((Number.parseFloat(
+                                                      data.cartTotal
+                                                  ) || 0) /
+                                                      75) *
+                                                  100
                                         }%`
                                     }}
                                 />
