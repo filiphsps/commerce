@@ -92,7 +92,7 @@ const VariantsContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     gap: 1rem;
     width: 100%;
     padding-top: 1rem;
