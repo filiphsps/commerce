@@ -6,7 +6,6 @@ import ContentGrid from './components/ContentGrid';
 import IconGrid from './components/IconGrid';
 import ImageLinks from './components/ImageLinks';
 import Notification from './components/Notification';
-import ProductCard from './components/ProductCard';
 import SectionHeader from './components/SectionHeader';
 import TextBlock from './components/TextBlock';
 import Vendors from './components/Vendors';
@@ -56,9 +55,6 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             break;
                         case 'ContentGrid':
                             Component = ContentGrid;
-                            break;
-                        case 'ProductCard':
-                            Component = ProductCard;
                             break;
                         case 'SectionHeader':
                             Component = SectionHeader;

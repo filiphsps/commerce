@@ -20,9 +20,6 @@
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls",
-        "create-component": "node ./tools/create-component.js",
-        "create-slice": "node ./tools/create-slice.js",
-        "create-view": "node ./tools/create-view.js",
         "prettier": "prettier --config .prettierrc src/**/*.* --check",
         "prettier-format": "prettier --config .prettierrc src/**/*.* --write"
     },
