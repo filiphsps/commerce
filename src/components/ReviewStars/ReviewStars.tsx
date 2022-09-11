@@ -44,6 +44,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
                 value={score}
                 isHalf={true}
                 edit={false}
+                a11y={false}
                 activeColor="#D8B309"
             />
             {!hideLabel && (

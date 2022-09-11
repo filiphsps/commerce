@@ -18,13 +18,18 @@ import PageHeader from '../../../src/components/PageHeader';
 import { ProductModel } from '../../../src/models/ProductModel';
 import { RecommendationApi } from '../../../src/api/recommendation';
 import { RedirectProductApi } from '../../../src/api/redirects';
-import ReviewStars from '../../../src/components/ReviewStars';
 import Reviews from '../../../src/components/Reviews';
 import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
 import Weight from '../../../src/components/Weight';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
+
+const ReviewStars = dynamic(
+    () => import('../../../src/components/ReviewStars'),
+    { ssr: false }
+);
 
 // TODO: replace this with generic label.
 const Label = styled.label`
