@@ -44,8 +44,9 @@ const Logo = styled.div`
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
 
-    div {
+    a {
         position: relative;
+        display: block;
         height: 2.5rem;
         width: 7rem;
     }
@@ -420,11 +421,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </HamburgerMenu>
 
                 <Logo>
-                    <div>
-                        <Link href={'/'}>
+                    <Link href={'/'}>
+                        <a>
                             <Image src={store?.logo?.src} layout="fill" />
-                        </Link>
-                    </div>
+                        </a>
+                    </Link>
                 </Logo>
 
                 <Navigation>
@@ -509,14 +510,14 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             className={totalItems > 0 ? 'Active' : ''}
                         >
                             <Link href={'/cart'}>
-                                <div className="Wrapper">
+                                <a className="Wrapper">
                                     {totalItems > 0 && (
                                         <CartIcon className="Header-Content-CartBadge">
                                             {totalItems}
                                         </CartIcon>
                                     )}
                                     <FiShoppingCart className="Icon" />
-                                </div>
+                                </a>
                             </Link>
 
                             {added_product && cartStore.item ? (
@@ -566,17 +567,18 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                             </CartPopupItemMetaVariant>
                                         </CartPopupItemMeta>
                                     </CartPopupItem>
-                                    <Button
-                                        onClick={() => {
-                                            setCartStore({
-                                                ...cartStore,
-                                                open: false
-                                            });
-                                            router.push('/cart');
-                                        }}
-                                    >
-                                        View cart
-                                    </Button>
+                                    <Link href="/cart">
+                                        <a
+                                            onClick={() => {
+                                                setCartStore({
+                                                    ...cartStore,
+                                                    open: false
+                                                });
+                                            }}
+                                        >
+                                            <Button>View cart</Button>
+                                        </a>
+                                    </Link>
                                 </CartPopup>
                             ) : null}
                         </CartIconWrapper>
