@@ -103,6 +103,7 @@ const Variants = styled.div`
     gap: 0.75rem;
 `;
 const Variant = styled.div`
+    height: 1.4rem;
     border-radius: var(--block-border-radius);
     font-weight: 600;
     font-size: 1.15rem;
@@ -126,7 +127,7 @@ const Actions = styled.div`
 `;
 const AddButton = styled(Button)`
     padding: 0.75rem 1rem;
-    font-size: 1rem;
+    font-size: 1.25rem;
     width: 100%;
     transition: 150ms ease-in-out;
 
@@ -319,8 +320,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                     <Badge className="Sale">
                         <BadgeText>Sale</BadgeText>
                         <BadgePrice
-                            price={variants[0].pricing.range}
-                            currency={variants[0].pricing.currency}
+                            price={variant.pricing.range}
+                            currency={variant.pricing.currency}
                         />
                     </Badge>
                 ) : null}

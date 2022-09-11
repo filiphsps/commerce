@@ -22,6 +22,7 @@ const SubTitle = styled.h3`
     margin: -0.5rem 0px 2rem 0px;
     color: #404756;
     font-size: 1.65rem;
+    font-weight: 700;
     line-height: 2rem;
 
     &.no-margin {

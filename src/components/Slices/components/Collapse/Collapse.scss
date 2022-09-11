@@ -1,31 +1,33 @@
 @import '../../../../scss/app';
 
 .Slice-Collapse {
+    .PageContent {
+        padding-top: 0px;
+        margin-top: 0px;
+    }
+
     .Slice-Collapse-Title {
         display: grid;
         grid-template-columns: 2rem auto;
         gap: 1rem;
         justify-self: flex-start;
         align-items: center;
-        padding: 1rem 0px;
+        padding: 0px 0px 0.5rem 0px;
         font-weight: 700;
-        font-size: 1.25rem;
-        line-height: 2rem;
+        font-size: 1.75rem;
+        line-height: 2.25rem;
         text-transform: uppercase;
         cursor: pointer;
         user-select: none;
-        border-bottom: 0.15rem solid $color-black;
+        border-bottom: 0.15rem solid $color-dark;
+        transition: 150ms all ease-in-out;
 
-        @media (min-width: $width-max-mobile) {
-            transition: 150ms all ease-in-out;
+        &:hover {
+            border-color: $color-primary;
+            color: $color-primary;
 
-            &:hover {
-                border-color: $color-primary;
+            .Icon {
                 color: $color-primary;
-
-                .Icon {
-                    color: $color-primary;
-                }
             }
         }
 
@@ -52,10 +54,6 @@
         &.Open {
             height: auto;
             margin: 1rem 0px;
-        }
-
-        p {
-            font-size: 1.25rem;
         }
     }
 }

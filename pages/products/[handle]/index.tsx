@@ -9,7 +9,7 @@ import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
 import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
-import Image from 'next/image';
+import Gallery from '../../../src/components/Gallery';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
@@ -67,14 +67,10 @@ const Assets = styled.div`
     align-items: center;
     width: 100%;
     max-height: 60rem;
-    padding: 4rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
         height: 28rem;
         max-height: 30vh;
-        padding: 1.5rem;
     }
 `;
 const Details = styled.div`
@@ -219,19 +215,6 @@ const VariantQuantity = styled.div`
     grid-template-rows: auto 1fr;
     grid-gap: 0.65rem;
     margin: 0px 0px 0.5rem 0px;
-`;
-
-const Carousel = styled.div`
-    position: relative;
-    width: 100%;
-    height: 100%;
-
-    max-width: 42rem;
-    max-width: 38rem;
-
-    img {
-        mix-blend-mode: multiply;
-    }
 `;
 
 const Recommendations = styled.div`
@@ -426,30 +409,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             <ProductContainerWrapper>
                 <ProductContainer>
                     <Assets>
-                        <Carousel>
-                            <Image
-                                src={
-                                    product?.images?.[
-                                        product?.variants?.[variant]
-                                            ?.default_image
-                                    ]?.src
-                                }
-                                alt={
-                                    product?.images?.[
-                                        product?.variants?.[variant]
-                                            ?.default_image
-                                    ]?.alt
-                                }
-                                title={
-                                    product?.images?.[
-                                        product?.variants?.[variant]
-                                            ?.default_image
-                                    ]?.alt
-                                }
-                                layout="fill"
-                                objectFit="contain"
-                            />
-                        </Carousel>
+                        <Gallery
+                            selected={
+                                product?.variants?.[variant]?.default_image || 0
+                            }
+                            images={product?.images}
+                        />
                     </Assets>
                     <Details>
                         <PageHeader

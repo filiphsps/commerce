@@ -11,7 +11,8 @@ import TextBlock from './components/TextBlock';
 import Vendors from './components/Vendors';
 import dynamic from 'next/dynamic';
 
-const Carousel = dynamic(() => import('./components/Carousel'));
+// FIXME: Placeholder component for the carousel.
+const Carousel = dynamic(() => import('./components/Carousel'), { ssr: false });
 const CollectionBlock = dynamic(() => import('./components/CollectionBlock'));
 const ShopBlock = dynamic(() => import('./components/ShopBlock'));
 
