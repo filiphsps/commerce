@@ -12,7 +12,7 @@ import Vendors from './components/Vendors';
 import dynamic from 'next/dynamic';
 
 // FIXME: Placeholder component for the carousel.
-const Carousel = dynamic(() => import('./components/Carousel'), { ssr: false });
+const Carousel = dynamic(() => import('./components/Carousel'));
 const CollectionBlock = dynamic(() => import('./components/CollectionBlock'));
 
 interface SlicesProps {
