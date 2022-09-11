@@ -395,3 +395,87 @@ export const ProductsApi = async (
         }
     });
 };
+
+export const ProductsPaginationApi = async ({
+    limit,
+    vendor,
+    sorting,
+    before,
+    after
+}: {
+    limit?: number;
+    vendor?: string;
+    sorting?:
+        | 'BEST_SELLING'
+        | 'CREATED_AT'
+        | 'PRICE'
+        | 'RELEVANCE'
+        | 'TITLE'
+        | 'VENDOR';
+    before?: string;
+    after?: string;
+}): Promise<{
+    page_info: {
+        start_cursor: string;
+        end_cursor: string;
+        has_next_page: boolean;
+        has_prev_page: boolean;
+    };
+    products: ProductModel[];
+}> => {
+    const limit_n = limit || 35;
+    const sort_key = sorting || 'BEST_SELLING';
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data } = await newShopify.query({
+                query: gql`
+            fragment product on Product {
+                ${PRODUCT_FRAGMENT}
+            }
+            query products {
+                products(
+                    first: ${limit_n},
+                    sortKey: ${sort_key}
+                    ${vendor ? `,query:"vendor:${vendor}"` : ''}
+                    ${before ? `,before:"${before}"` : ''}
+                    ${after ? `,after:"${after}"` : ''}
+                )
+                {
+                    edges {
+                        cursor
+                        node {
+                            ...product
+                        }
+                    }
+                    pageInfo {
+                        startCursor
+                        endCursor
+                        hasNextPage
+                        hasPreviousPage
+                    }
+                }
+            }
+            `
+            });
+
+            const page_info = data.products.pageInfo;
+            const products = data.products.edges.map((product) =>
+                Convertor(product.node)
+            );
+
+            resolve({
+                page_info: {
+                    start_cursor: page_info.startCursor,
+                    end_cursor: page_info.endCursor,
+                    has_next_page: page_info.hasNextPage,
+                    has_prev_page: page_info.hasPreviousPage
+                },
+                products
+            });
+        } catch (error) {
+            console.error(error);
+            reject(error);
+        }
+    });
+};

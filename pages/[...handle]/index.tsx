@@ -18,9 +18,9 @@ import { useRouter } from 'next/router';
 interface CustomPageProps {
     store: StoreModel;
     data: {
-        page: PageModel,
-        prefetch: any
-    }
+        page: PageModel;
+        prefetch: any;
+    };
 }
 const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
     const { store } = props;
@@ -36,12 +36,14 @@ const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
                 title={data?.title}
                 description={data?.description || ''}
                 additionalMetaTags={
-                    data?.keywords ? [
-                        {
-                            property: 'keywords',
-                            content: data?.keywords
-                        }
-                    ] : null
+                    data?.keywords
+                        ? [
+                              {
+                                  property: 'keywords',
+                                  content: data?.keywords
+                              }
+                          ]
+                        : null
                 }
             />
 
@@ -76,7 +78,12 @@ export async function getStaticPaths() {
             ?.map((page) => {
                 return { params: { handle: [page] } };
             })
-            .filter((a) => a.params.handle && a.params.handle != 'home')
+            .filter(
+                (a) =>
+                    a.params.handle &&
+                    a.params.handle != 'home' &&
+                    a.params.handle != 'shop'
+            )
     ];
 
     return { paths, fallback: true };

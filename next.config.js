@@ -57,6 +57,11 @@ module.exports = withBundleAnalyzer({
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: false,
             },
+            {
+                source: '/products/',
+                destination: '/shop/',
+                permanent: true
+            }
         ];
     },
 });

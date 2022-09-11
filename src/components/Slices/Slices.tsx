@@ -14,7 +14,6 @@ import dynamic from 'next/dynamic';
 // FIXME: Placeholder component for the carousel.
 const Carousel = dynamic(() => import('./components/Carousel'), { ssr: false });
 const CollectionBlock = dynamic(() => import('./components/CollectionBlock'));
-const ShopBlock = dynamic(() => import('./components/ShopBlock'));
 
 interface SlicesProps {
     store?: any;
@@ -59,9 +58,6 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             break;
                         case 'SectionHeader':
                             Component = SectionHeader;
-                            break;
-                        case 'shopblock':
-                            Component = ShopBlock;
                             break;
                         case 'textblock':
                             Component = TextBlock;

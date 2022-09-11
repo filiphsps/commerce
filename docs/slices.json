@@ -110,15 +110,6 @@
                         },
                         "repeat": {}
                     },
-                    "shopblock": {
-                        "type": "Slice",
-                        "fieldset": "ShopBlock",
-                        "description": "collection of all products",
-                        "icon": "dashboard",
-                        "display": "list",
-                        "non-repeat": {},
-                        "repeat": {}
-                    },
                     "vendors": {
                         "type": "Slice",
                         "fieldset": "Vendors",

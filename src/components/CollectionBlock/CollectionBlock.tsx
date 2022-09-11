@@ -75,13 +75,11 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
         error?: any;
     } = useSWR(
         props.handle ? [`${props.handle}`] : null,
-        (url) => CollectionApi(url),
+        (url) => (props.handle ? CollectionApi(url) : () => props.data),
         { fallbackData: props?.data }
     );
 
     const content_ref = useRef();
-
-    if (error?.message === '404') return <ErrorPage statusCode={404} />;
 
     const products = (data?.items || props?.data?.items || []).map(
         (item, index) => {
@@ -144,16 +142,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                 </div>
             )}
             <div className="CollectionBlock-Content" ref={content_ref}>
-                {(products.length && products) ||
-                    (!error && (
-                        <>
-                            <ProductCard data={null} />
-                            <ProductCard data={null} />
-                            <ProductCard data={null} />
-                            <ProductCard data={null} />
-                            <ProductCard data={null} />
-                        </>
-                    ))}
+                {products.length > 0 ? products : null}
                 {view_more}
             </div>
             {props.isHorizontal ? (
