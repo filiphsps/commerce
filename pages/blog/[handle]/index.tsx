@@ -66,11 +66,12 @@ const ArticleTag = styled.div`
 const ArticleContent = styled.div`
     max-width: 62rem;
     overflow: hidden;
-    font-size: 1.45rem;
     font-weight: 400;
     margin: 0px auto;
 
     p {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
     a {
@@ -84,6 +85,7 @@ const ArticleContent = styled.div`
     }
 
     h1 {
+        margin-bottom: 1rem;
         font-size: 2.5rem;
         font-weight: 600;
         line-height: 3rem;
@@ -91,6 +93,7 @@ const ArticleContent = styled.div`
         text-transform: uppercase;
     }
     h2 {
+        margin-bottom: 1rem;
         font-size: 2rem;
         font-weight: 600;
         line-height: 2.75rem;
@@ -98,18 +101,21 @@ const ArticleContent = styled.div`
         text-transform: uppercase;
     }
     h3 {
+        margin-bottom: 1rem;
         font-size: 1.75rem;
         line-height: 2.5rem;
         line-height: 2rem;
     }
     h4 {
+        margin-bottom: 1rem;
         font-size: 1.5rem;
         line-height: 2rem;
         line-height: 2rem;
     }
 
     img {
-        max-width: 100vw !important;
+        margin: 2rem 0px;
+        max-width: 100% !important;
         object-fit: contain;
         mix-blend-mode: multiply;
     }
