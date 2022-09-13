@@ -21,7 +21,11 @@ export const BlogApi = async ({
                                 title
                                 description
                             }
-                            articles(first: 250, reverse: true) {
+                            articles(
+                                first: 250
+                                reverse: true
+                                sortKey: PUBLISHED_AT
+                            ) {
                                 edges {
                                     node {
                                         id

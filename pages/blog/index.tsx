@@ -29,6 +29,7 @@ const Article = styled.div`
     }
 `;
 const ArticleImage = styled.div`
+    position: relative;
     overflow: hidden;
     height: 12rem;
     width: 12rem;
@@ -37,6 +38,9 @@ const ArticleImage = styled.div`
 
     img {
         mix-blend-mode: multiply;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
     }
 `;
 const ArticleDate = styled.div`
@@ -83,9 +87,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
                                 <ArticleImage>
                                     <Image
                                         src={article.image.url}
-                                        layout="responsive"
-                                        width={article.image.width}
-                                        height={article.image.height}
+                                        layout="fill"
                                     />
                                 </ArticleImage>
                                 <div>

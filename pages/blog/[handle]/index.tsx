@@ -64,19 +64,16 @@ const ArticleTag = styled.div`
 `;
 
 const ArticleContent = styled.div`
+    width: 100%;
     max-width: 62rem;
     overflow: hidden;
     font-weight: 400;
     margin: 0px auto;
-
-    p {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
+    //background: #efefef;
+    //padding: 1rem;
 
     a {
         color: var(--accent-primary);
-        transition: 150ms ease-in-out;
 
         &:hover {
             color: var(--accent-primary-light);
@@ -84,40 +81,61 @@ const ArticleContent = styled.div`
         }
     }
 
+    p {
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+        line-height: 2.25rem;
+        color: #404756;
+
+        &:last-child {
+            margin-bottom: 0px;
+        }
+
+        em,
+        i {
+            font-weight: 700;
+        }
+    }
+
+    ul {
+        padding-left: 1rem;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #404756;
+
+        li {
+            margin-bottom: 0.5rem;
+            &::before {
+                content: '• ';
+            }
+        }
+    }
+
     h1 {
-        margin-bottom: 1rem;
-        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
         font-weight: 600;
-        line-height: 3rem;
-        letter-spacing: 0.05rem;
         text-transform: uppercase;
     }
     h2 {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         font-size: 2rem;
         font-weight: 600;
-        line-height: 2.75rem;
-        letter-spacing: 0.05rem;
         text-transform: uppercase;
     }
     h3 {
-        margin-bottom: 1rem;
-        font-size: 1.75rem;
-        line-height: 2.5rem;
-        line-height: 2rem;
-    }
-    h4 {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         font-size: 1.5rem;
-        line-height: 2rem;
-        line-height: 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
     }
 
     img {
-        margin: 2rem 0px;
+        width: 100%;
         max-width: 100% !important;
         object-fit: contain;
         mix-blend-mode: multiply;
+        margin-bottom: 1rem;
     }
 `;
 
