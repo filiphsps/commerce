@@ -31,6 +31,9 @@ export const COLLECTION_FRAGMENT = `
     keywords: metafield(namespace: "store", key: "keywords") {
         value
     }
+    isBrand: metafield(namespace: "store", key: "is_brand") {
+        value
+    }
 `;
 
 export const Convertor = (collection: any): CollectionModel => {
@@ -39,6 +42,10 @@ export const Convertor = (collection: any): CollectionModel => {
     const res = {
         id: collection?.id,
         handle: collection?.handle,
+        is_brand:
+            collection.isBrand?.value && collection.isBrand?.value == 'true'
+                ? true
+                : false,
 
         seo: {
             title: collection?.seo?.title || collection?.title,
@@ -118,5 +125,31 @@ export const CollectionsApi = async (): Promise<CollectionModel[]> => {
         if (errors?.length) return reject(errors);
 
         return resolve(data.collections.edges.map((item) => item.node));
+    });
+};
+
+export const BrandsApi = async (): Promise<CollectionModel[]> => {
+    return new Promise(async (resolve, reject) => {
+        const { data, errors } = await newShopify.query({
+            query: gql`
+                query collections {
+                    collections(first: 250) {
+                        edges {
+                            node {
+                                ${COLLECTION_FRAGMENT}
+                            }
+                        }
+                    }
+                }
+            `
+        });
+
+        if (errors?.length) return reject(errors);
+
+        return resolve(
+            data.collections.edges
+                .map((item) => Convertor(item.node))
+                .filter((item) => item.is_brand)
+        );
     });
 };

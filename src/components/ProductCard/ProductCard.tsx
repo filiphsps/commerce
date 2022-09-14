@@ -250,13 +250,13 @@ interface VariantImageProps {
     image: ProductImageModel;
 }
 const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
-    const { src, alt, height, width } = image;
+    const { src, alt /*, height, width*/ } = image;
 
     return (
         <Image
             src={src}
-            width={width}
-            height={height}
+            /*width={width}
+            height={height}*/
             layout="fill"
             alt={alt}
             title={alt}

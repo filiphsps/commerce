@@ -3,6 +3,7 @@ import { ProductModel } from './ProductModel';
 export interface CollectionModel {
     id: string;
     handle: string;
+    is_brand?: boolean;
 
     /**
      * SEO.
@@ -15,6 +16,7 @@ export interface CollectionModel {
 
     title: string;
     body?: string;
+    bodyHtml?: string;
 
     image?: {
         id: string;
