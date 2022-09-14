@@ -5,15 +5,65 @@ import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
 import { Config } from '../../../src/util/Config';
+import Content from '../../../src/components/Content';
 import Error from 'next/error';
 import Head from 'next/head';
+import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
+import PageHeader from '../../../src/components/PageHeader';
 import { StoreModel } from '../../../src/models/StoreModel';
 import Vendors from '../../../src/components/Slices/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
+import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+const Body = styled(Content)`
+    margin-top: 2rem;
+`;
+
+const Banner = styled.div`
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    height: 14rem;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+`;
+const BannerMeta = styled.div`
+    overflow: hidden;
+`;
+const BannerDescription = styled.div`
+    max-width: 24rem;
+    font-size: 1.25rem;
+`;
+const BannerTitle = styled.h2`
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #404756;
+`;
+const BannerImage = styled.div`
+    height: 100%;
+    width: 10rem;
+    padding: 1rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
+`;
+const BannerImageWrapper = styled.div`
+    height: 100%;
+    position: relative;
+
+    img {
+        object-fit: contain;
+        mix-blend-mode: multiply;
+    }
+`;
 
 interface CollectionPageProps {
     store: StoreModel;
@@ -78,11 +128,39 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     store={store}
                 />
 
+                {collection.is_brand && collection.image ? (
+                    <Banner>
+                        <BannerMeta>
+                            <BannerTitle>{collection.title}</BannerTitle>
+                            <BannerDescription>
+                                {collection.seo?.description?.slice(0, 125)}...
+                            </BannerDescription>
+                        </BannerMeta>
+                        <BannerImage>
+                            <BannerImageWrapper>
+                                <Image
+                                    src={collection.image.src}
+                                    alt={collection.image.alt}
+                                    layout="fill"
+                                />
+                            </BannerImageWrapper>
+                        </BannerImage>
+                    </Banner>
+                ) : (
+                    <PageHeader title={collection.title} plainTitle />
+                )}
+
                 <CollectionBlock
                     handle={`${router.query.handle}`}
                     data={collection}
-                    showDescription
                     noLink
+                    hideTitle
+                />
+
+                <Body
+                    dangerouslySetInnerHTML={{
+                        __html: collection.body
+                    }}
                 />
             </PageContent>
             <Vendors />

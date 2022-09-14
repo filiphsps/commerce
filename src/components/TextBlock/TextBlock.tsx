@@ -1,5 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
+import ContentComponent from '../Content';
 import Image from 'next/image';
 import styled from 'styled-components';
 
@@ -32,7 +33,7 @@ const ImageContainer = styled.div`
         max-width: 100%;
     }
 `;
-const Content = styled.div`
+const Content = styled(ContentComponent)`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,58 +47,6 @@ const Content = styled.div`
         height: auto;
         padding: 0px;
         background: none;
-    }
-
-    a {
-        color: var(--accent-primary);
-
-        &:hover {
-            color: var(--accent-primary-light);
-            text-decoration: underline;
-        }
-    }
-
-    p {
-        margin-bottom: 1.5rem;
-        font-size: 1.75rem;
-        line-height: 2.25rem;
-        color: #404756;
-
-        &:last-child {
-            margin-bottom: 0px;
-        }
-
-        em,
-        i {
-            font-weight: 700;
-        }
-    }
-
-    ul {
-        padding-left: 1rem;
-        font-size: 1.75rem;
-        margin-bottom: 1.5rem;
-        color: #404756;
-
-        li {
-            margin-bottom: 0.5rem;
-            &::before {
-                content: '• ';
-            }
-        }
-    }
-
-    h1 {
-        margin-bottom: 0.5rem;
-        font-size: 2rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    h2 {
-        margin-bottom: 0.5rem;
-        font-size: 2rem;
-        font-weight: 600;
-        text-transform: uppercase;
     }
 `;
 
@@ -113,7 +62,6 @@ interface TextBlockProps {
     };
 }
 const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
-    // FIXME: Add support for TextBlock without image.
     if (!image)
         return (
             <Content
