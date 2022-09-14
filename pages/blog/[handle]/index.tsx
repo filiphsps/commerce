@@ -181,6 +181,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
             <NextSeo
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
+                canonical={`https://${Config.domain}/blog/${article.handle}/`}
             />
             <NewsArticleJsonLd
                 url={`https://${Config.domain}/blog/${article.handle}`}
@@ -188,13 +189,13 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                 body={article.content}
                 title={article.title}
                 section="news"
-                images={[]}
+                images={[article.image.url]}
                 keywords={article.tags}
                 dateCreated={article.published_at}
                 datePublished={article.published_at}
                 authorName={article.author.name}
                 publisherName="Candy by Sweden"
-                publisherLogo=""
+                publisherLogo={store.favicon.src}
             />
 
             <PageContent>
