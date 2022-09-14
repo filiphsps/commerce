@@ -5,6 +5,7 @@ import React, { FunctionComponent } from 'react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
 import ContentComponent from '../../../src/components/Content';
+import Image from 'next/image';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
@@ -25,6 +26,18 @@ const ContentWrapper = styled.div`
 const Content = styled.div`
     width: 100%;
     margin: 0px auto;
+`;
+
+const Banner = styled.div`
+    position: relative;
+    width: 100%;
+    max-width: 62rem;
+    height: 18rem;
+    margin: 0px auto 1rem auto;
+
+    img {
+        object-fit: cover;
+    }
 `;
 
 const ArticleHeader = styled.div`
@@ -151,7 +164,18 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                 <ContentWrapper>
                     <Content>
                         <ArticleHeader>
+                            {article.image ? (
+                                <Banner>
+                                    <Image
+                                        src={article.image.url}
+                                        alt={article.image.alt}
+                                        layout="fill"
+                                    />
+                                </Banner>
+                            ) : null}
+
                             <ArticleTitle>{article.title}</ArticleTitle>
+
                             <ArticleMeta>
                                 <ArticleAuthor>
                                     by {article.author.name}

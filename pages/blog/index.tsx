@@ -15,17 +15,28 @@ import styled from 'styled-components';
 const Article = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    grid-gap: 2rem;
-    padding-bottom: 2rem;
+    grid-gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0px;
     cursor: pointer;
+    border: 0.2rem solid #efefef;
+    border-left: none;
+    border-right: none;
 
     @media (min-width: 950px) {
         max-width: 64rem;
     }
 
     h2 {
-        font-size: 2rem;
         padding-bottom: 0.5rem;
+        font-size: 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: 150ms ease-in-out;
+
+        &:hover {
+            color: var(--accent-primary);
+        }
     }
 `;
 const ArticleImage = styled.div`
