@@ -16,6 +16,7 @@ const Container = styled.div`
     grid-template-rows: auto 1fr auto;
     gap: 0.5rem;
     min-width: 16rem;
+    max-width: 24rem;
     padding: 1rem;
     border: 0.2rem solid #e9e9e9;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
