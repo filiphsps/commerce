@@ -25,6 +25,7 @@ import Weight from '../../../src/components/Weight';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
+import { useRouter } from 'next/router';
 
 const ReviewStars = dynamic(
     () => import('../../../src/components/ReviewStars'),
@@ -273,6 +274,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     reviews,
     store
 }) => {
+    const router = useRouter();
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
@@ -299,6 +301,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         setTimeout(() => {
             setAddedToCart(false);
         }, 3000);
+
+        router.push('/cart/');
     }, [product, variant]);
 
     if (errors?.length) console.error(errors);
@@ -434,10 +438,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 <Tag key={tag}>{tag}</Tag>
                             ))}
                         </Tags>
-                        <ReviewStars
-                            score={reviews?.rating}
-                            totalReviews={reviews?.count}
-                        />
+                        {false && (
+                            <ReviewStars
+                                score={reviews?.rating}
+                                totalReviews={reviews?.count}
+                            />
+                        )}
 
                         <Description
                             dangerouslySetInnerHTML={{
