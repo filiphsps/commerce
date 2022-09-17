@@ -2,16 +2,12 @@ const child_process = require('child_process');
 const manifest = require('./package.json');
 const { i18n } = require('./next-i18next.config');
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-    enabled: process.env.ANALYZE === "true",
-});
-
 const git_sha = child_process.execSync('git rev-parse HEAD', {
     cwd: __dirname,
     encoding: 'utf8'
 }).replace(/\n/, '');
 
-module.exports = withBundleAnalyzer({
+module.exports = {
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
@@ -64,4 +60,4 @@ module.exports = withBundleAnalyzer({
             }
         ];
     },
-});
+};

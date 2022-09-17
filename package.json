@@ -58,7 +58,6 @@
         "uuid": "9.0.0"
     },
     "devDependencies": {
-        "@next/bundle-analyzer": "12.2.5",
         "@testing-library/jest-dom": "5.16.5",
         "@testing-library/react": "13.4.0",
         "@types/enzyme": "3.10.12",
