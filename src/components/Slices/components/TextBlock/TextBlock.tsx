@@ -17,7 +17,7 @@ interface TextBlockProps {
 }
 const TextBlock: FunctionComponent<TextBlockProps> = ({ data }) => {
     return (
-        <div className="Slice Slice-TextBlock">
+        <section className="Slice Slice-TextBlock">
             <ContentBlock>
                 <PageContent>
                     {data?.items?.map((item, index) => {
@@ -31,7 +31,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ data }) => {
                     })}
                 </PageContent>
             </ContentBlock>
-        </div>
+        </section>
     );
 };
 

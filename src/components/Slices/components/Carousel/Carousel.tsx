@@ -24,7 +24,7 @@ const Carousel: FunctionComponent<CarouselProps> = (props) => {
     };
 
     return (
-        <div className={`Slice Slice-Carousel Index-${props.index}`}>
+        <section className={`Slice Slice-Carousel Index-${props.index}`}>
             <Head>
                 <link
                     rel="stylesheet"
@@ -62,7 +62,7 @@ const Carousel: FunctionComponent<CarouselProps> = (props) => {
                     })}
                 </Slider>
             </PageContent>
-        </div>
+        </section>
     );
 };
 

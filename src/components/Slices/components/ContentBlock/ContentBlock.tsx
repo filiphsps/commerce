@@ -14,7 +14,7 @@ const ContentBlock: FunctionComponent<ContentBlockProps> = (props) => {
     const { data, store, prefetch } = props;
 
     return (
-        <div className="Slice Slice-ContentBlock">
+        <section className="Slice Slice-ContentBlock">
             <ContentBlockComponent>
                 <PageContent>
                     <Slices
@@ -24,7 +24,7 @@ const ContentBlock: FunctionComponent<ContentBlockProps> = (props) => {
                     />
                 </PageContent>
             </ContentBlockComponent>
-        </div>
+        </section>
     );
 };
 

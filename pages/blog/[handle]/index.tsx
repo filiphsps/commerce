@@ -23,7 +23,7 @@ const ContentWrapper = styled.div`
         gap: 1rem;
     }
 `;
-const Content = styled.div`
+const Content = styled.article`
     width: 100%;
     margin: 0px auto;
 `;
