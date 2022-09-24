@@ -51,11 +51,16 @@ module.exports = {
             {
                 source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
-                permanent: false,
+                permanent: true,
             },
             {
                 source: '/products/',
                 destination: '/shop/',
+                permanent: true
+            },
+            {
+                source: '/en-UK/',
+                destination: '/',
                 permanent: true
             }
         ];

@@ -32,7 +32,7 @@ class App extends Document {
 
     render() {
         return (
-            <Html>
+            <Html lang="en">
                 <Head>
                     <link
                         rel="preconnect"
@@ -58,7 +58,7 @@ class App extends Document {
                         rel="stylesheet"
                     />
                 </Head>
-                <body lang="en">
+                <body itemScope itemType="http://schema.org/WebPage">
                     <Main />
                     <NextScript />
                     {process.env.GTM && (
