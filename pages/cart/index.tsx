@@ -537,6 +537,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 'checkout.candybysweden.com'
                                             );
 
+                                            // Google Tracking
                                             (window as any).dataLayer?.push({
                                                 ecommerce: null
                                             });
@@ -598,7 +599,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 );
                                             }
 
-                                            window.location.href = url;
+                                            // Do it this way to handle cross-domain tracking.
+                                            let link =
+                                                document.createElement('a');
+                                            link.setAttribute('type', 'hidden');
+                                            link.setAttribute('href', url);
+                                            document.body.appendChild(link);
+                                            link.click();
                                         } catch (err) {
                                             console.error(err);
                                             alert(err.message);

@@ -1,10 +1,10 @@
-# Shoppy
+# Candy by Sweden
 
 # Shoppy is a modern implementation of a B2C storefront.
 
 * Complete SSR-support
 * Per-component testing
-* Always targeting **lts** nodejs (currently **16.x**)
+* Always targeting **LTS** nodejs (currently **16.x**)
 * npm
 
 ## Usage
