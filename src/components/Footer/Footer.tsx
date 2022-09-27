@@ -113,8 +113,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
             <EmailCapture>
                 <EmailCaptureContent>
                     <EmailCaptureTitle>
-                        Join our newsletter for <b>15% off</b> your first
-                        purchase
+                        Join our newsletter for exclusive deals and discounts
                     </EmailCaptureTitle>
                     <EmailCaptureInput>
                         <Input
@@ -133,9 +132,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                 const res = await NewsletterApi({
                                     email: email
                                 });
-                                alert(
-                                    'Thanks! An email with your coupon code has been sent to you! :)'
-                                );
+                                alert('Welcome to the world of Swedish candy!');
                             } catch (error) {
                                 if (error.code == 'duplicate_parameter')
                                     alert(
