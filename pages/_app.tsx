@@ -243,7 +243,11 @@ const StoreApp = withStore(
                 {userId && sessionId ? (
                     <ShopifyAnalyticsProvider
                         shopId={60485566618}
-                        route={router.pathname}
+                        route={
+                            router.pathname.includes('/shop')
+                                ? router.pathname.replace('/shop', '/products')
+                                : router.pathname
+                        }
                         userId={userId}
                         sessionId={sessionId}
                     />
