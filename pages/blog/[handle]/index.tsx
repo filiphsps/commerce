@@ -131,7 +131,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                 description={article.seo.description || article.excerpt}
                 canonical={`https://${Config.domain}/blog/${article.handle}/`}
                 openGraph={{
-                    url: {`https://${Config.domain}/blog/${article.handle}/`},
+                    url: `https://${Config.domain}/blog/${article.handle}/`,
                     title: article.seo.title || article.title,
                     description: article.seo.description || article.excerpt,
                     images: [
