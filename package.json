@@ -70,7 +70,7 @@
         "eslint-config-prettier": "8.5.0",
         "jest": "29.3.1",
         "jest-environment-jsdom": "29.3.1",
-        "next-sitemap": "3.1.30",
+        "next-sitemap": "3.1.31",
         "prettier": "2.7.1",
         "webpack": "5.75.0"
     }
