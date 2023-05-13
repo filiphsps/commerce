@@ -30,13 +30,13 @@ export const SearchApi = async (
 
             const search = await client.search([
                 {
-                    indexName: 'products',
+                    indexName: 'shopify_products',
                     params: {
                         query
                     }
                 },
                 {
-                    indexName: 'collections',
+                    indexName: 'shopify_collections',
                     params: {
                         query
                     }
