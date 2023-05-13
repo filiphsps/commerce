@@ -24,8 +24,8 @@ export const SearchApi = async (
 
         try {
             const client = algoliasearch(
-                'FTAWXDDQSS',
-                '96091fe7865d3a9200303d82c12e3bfa'
+                'K6GKG8PPW8',
+                '4b66d1e9840c871fc80eac49b6ca35fd'
             );
 
             const search = await client.search([
