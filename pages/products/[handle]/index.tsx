@@ -509,12 +509,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             >
                                 Metadata
                             </Tab>
-                            <Tab
+                            {false && <Tab
                                 className={tab == 'reviews' ? 'Active' : ''}
                                 onClick={() => setTab('reviews')}
                             >
                                 Reviews
-                            </Tab>
+                            </Tab>}
                         </Tabs>
                         <TabContent
                             className={tab == 'metadata' ? 'Active' : ''}
@@ -532,11 +532,11 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 </Metadata>
                             )}
                         </TabContent>
-                        <TabContent
+                        {false && <TabContent
                             className={tab == 'reviews' ? 'Active' : ''}
                         >
                             <Reviews product={product} reviews={reviews} />
-                        </TabContent>
+                        </TabContent>}
                     </Details>
                 </ProductContainer>
             </ProductContainerWrapper>
