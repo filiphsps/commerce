@@ -40,22 +40,13 @@ const StoreApp = withStore(
         const { data: store } = useSWR([`store`], () => StoreApi() as any, {
             fallbackData: {
                 // FIXME: Use CMS for these
-                name:
-                    Config.domain === 'candybysweden.com'
-                        ? 'Candy by Sweden'
-                        : 'happysnus',
+                name: 'Sweet Side of Sweden',
                 currency: 'USD',
                 logo: {
-                    src:
-                        Config.domain === 'candybysweden.com'
-                            ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/cbs-logo.png?v=1652349590'
-                            : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_20e4072c-241e-48f5-a1e4-8121fe0f731c.png?v=1662282004'
+                    src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/Untitled_2x_b42c57d1-aabd-43a2-a0a4-c4acb5e9f100.png?v=1684000882'
                 },
                 favicon: {
-                    src:
-                        Config.domain === 'candybysweden.com'
-                            ? 'https://cdn.shopify.com/s/files/1/0604/8556/6618/files/Candy_By_Sweden_1.png?v=1652354115'
-                            : 'https://cdn.shopify.com/s/files/1/0660/1536/3330/files/happysnus_favicon.png?v=1662281347'
+                    src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/logo.png?v=1684000686'
                 },
                 accent: {
                     primary: Config.colors.primary,
@@ -66,7 +57,7 @@ const StoreApp = withStore(
                     secondary: '#ffffff'
                 },
                 block: {
-                    border_radius: '0.5rem'
+                    border_radius: '0.25rem'
                 }
             }
         });
@@ -146,8 +137,8 @@ const StoreApp = withStore(
                     {...SEO}
                     twitter={{
                         cardType: 'summary_large_image',
-                        handle: '@candybysweden',
-                        site: '@candybysweden'
+                        handle: '@sweetsideofsweden',
+                        site: 'sweetsideofsweden.com'
                     }}
                 />
                 <Head>
@@ -225,8 +216,8 @@ const StoreApp = withStore(
                     name={store.name}
                     url={`https://${Config.domain}/`}
                     sameAs={[
-                        'https://instagram.com/candybysweden',
-                        'https://twitter.com/candybysweden'
+                        'https://instagram.com/sweetsideofsweden',
+                        'https://twitter.com/sweetsideofsweden'
                     ]}
                 />
 
@@ -242,7 +233,7 @@ const StoreApp = withStore(
                 </CartProvider>
                 {userId && sessionId ? (
                     <ShopifyAnalyticsProvider
-                        shopId={60485566618}
+                        shopId={76188483889}
                         route={
                             router.pathname.includes('/shop')
                                 ? router.pathname.replace('/shop', '/products')
