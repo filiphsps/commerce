@@ -11,8 +11,8 @@ export const Config = {
     },
 
     shopify: {
-        domain: process.env.SHOPIFY_DOMAIN || 'candy-by-sweden.myshopify.com',
-        token: process.env.SHOPIFY_TOKEN || '234f356a7e866a3fecfa3d2f0c9a7c85'
+        domain: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
+        token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045'
     },
 
     prismic: {
@@ -27,7 +27,7 @@ export const Config = {
     },
 
     colors: {
-        primary: process.env.ACCENT_PRIMARY || '#0476D9',
-        secondary: process.env.ACCENT_SECONDARY || '#F7D435'
+        primary: process.env.ACCENT_PRIMARY || '#274690',
+        secondary: process.env.ACCENT_SECONDARY || '#EDD382'
     }
 };
