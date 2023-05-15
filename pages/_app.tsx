@@ -1,7 +1,7 @@
 import 'destyle.css';
 import './app.scss';
 
-import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
+import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
