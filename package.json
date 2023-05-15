@@ -60,7 +60,7 @@
     "devDependencies": {
         "@testing-library/jest-dom": "5.16.5",
         "@testing-library/react": "13.4.0",
-        "@types/enzyme": "3.10.12",
+        "@types/enzyme": "3.10.13",
         "@types/node": "18.11.13",
         "@types/react": "18.0.26",
         "@types/styled-components": "5.1.26",
