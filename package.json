@@ -62,7 +62,7 @@
         "@testing-library/react": "13.4.0",
         "@types/enzyme": "3.10.13",
         "@types/node": "18.11.19",
-        "@types/react": "18.0.26",
+        "@types/react": "18.0.38",
         "@types/styled-components": "5.1.26",
         "enzyme": "3.11.0",
         "eslint": "8.29.0",
