@@ -202,7 +202,7 @@ const StoreApp = withStore(
                     {/* eslint-enable indent */}
                 </Head>
 
-                {/*<SiteLinksSearchBoxJsonLd
+                <SiteLinksSearchBoxJsonLd
                     url={`https://${Config.domain}/`}
                     potentialActions={[
                         {
@@ -210,7 +210,7 @@ const StoreApp = withStore(
                             queryInput: 'search_term_string'
                         }
                     ]}
-                />*/}
+                />
                 <SocialProfileJsonLd
                     type="Organization"
                     name={store.name}
