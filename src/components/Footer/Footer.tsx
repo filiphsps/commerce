@@ -195,8 +195,8 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     </div>
 
                     <Copyright>
-                        &copy; {new Date().getFullYear()}{' '}
-                        <a href="https://spsgroup.se/">SPS Group AB</a> - All
+                        &copy; 2020-{new Date().getFullYear()}{' '}
+                        <a href="https://www.sweetsideofsweden.com/">Sweet Side of Sweden</a> - All
                         rights reserved
                     </Copyright>
                 </div>
