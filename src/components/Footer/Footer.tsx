@@ -110,7 +110,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                 </PaymentIconsContainer>
             </PaymentIconsWrapper>
 
-            <EmailCapture>
+            {/*<EmailCapture>
                 <EmailCaptureContent>
                     <EmailCaptureTitle>
                         Join our newsletter for exclusive deals and discounts
@@ -148,7 +148,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         OK
                     </EmailCaptureSubmit>
                 </EmailCaptureContent>
-            </EmailCapture>
+            </EmailCapture>*/}
 
             <footer className="Footer">
                 <div className="Footer-Wrapper">
