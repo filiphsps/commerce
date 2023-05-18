@@ -27,7 +27,7 @@
         "@apollo/client": "3.7.14",
         "@prismicio/client": "6.7.3",
         "@prismicio/helpers": "2.3.9",
-        "algoliasearch": "4.14.2",
+        "algoliasearch": "4.14.3",
         "axios": "0.27.2",
         "color": "4.2.3",
         "cookies-next": "2.1.1",
