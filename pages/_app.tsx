@@ -236,7 +236,7 @@ const StoreApp = withStore(
                         shopId={76188483889}
                         route={
                             router.pathname.includes('/shop')
-                                ? router.pathname.replace('/shop', '/products')
+                                ? router.pathname.replace('/shop', '/products').replace('/en-US', '')
                                 : router.pathname
                         }
                         userId={userId}
