@@ -93,8 +93,48 @@ const Tag = styled.div`
     align-items: center;
     padding: 0.5rem 1rem;
     text-transform: uppercase;
+    font-size: 1.25rem;
     background: var(--accent-secondary-dark);
     color: var(--color-text-primary);
+
+    &.Vegan {
+        background: #228b22;
+    }
+    &.Raspberry {
+        background: #e30b5c;
+    }
+    &.Strawberry {
+        background: #fb2943;
+    }
+    &.Fruity {
+        background: #663046;
+    }
+    &.Chocolate {
+        background: #7f4e1e;
+    }
+    &.Marshmallow {
+        background: #f0eee4;
+        color: #333;
+    }
+    &.Licorice {
+        background: #333;
+    }
+    &.Toffee {
+        background: #cc8149;
+    }
+    &.Creamy {
+        background: #b3956c;
+    }
+    &.Coffee {
+        background: #6f4d3f;
+    }
+    &.Salty {
+        background: #4d423e;
+    }
+    &.Soft {
+        background: #ace1f0;
+        color: #333;
+    }
 `;
 const Description = styled.div`
     margin-top: 1.5rem;
@@ -435,7 +475,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         />
                         <Tags>
                             {product?.tags.map((tag) => (
-                                <Tag key={tag}>{tag}</Tag>
+                                <Tag key={tag} className={tag}>
+                                    {tag}
+                                </Tag>
                             ))}
                         </Tags>
                         {false && (
