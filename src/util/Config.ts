@@ -4,14 +4,15 @@ export const Config = {
     environment: process.env.NODE_ENV || 'production',
     version: process.env.VERSION,
     git_sha: process.env.GIT_SHA,
-    domain: process.env.DOMAIN || 'candybysweden.com',
+    domain: process.env.DOMAIN || 'sweetsideofsweden.com',
 
     features: {
         accounts: process.env.FEATURE_ACCOUNTS === 'true'
     },
 
     shopify: {
-        domain: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
+        domain:
+            process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
         token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045'
     },
 

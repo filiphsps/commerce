@@ -431,10 +431,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                             setAddedToCart(false);
                         }, 3000);
                     }}
+                    disabled={!variant?.available}
                 >
                     <span data-nosnippet>
                         {!variant?.available
-                            ? 'Out of stock'
+                            ? 'Out of Stock'
                             : (addedToCart && 'Added!') || 'Add to Cart'}
                     </span>
                 </AddButton>

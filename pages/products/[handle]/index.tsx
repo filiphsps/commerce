@@ -498,7 +498,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 }
                                 onClick={addToCart}
                             >
-                                {addedToCart ? 'Added!' : 'Add to Cart'}
+                                {product?.variants[variant].available ? (
+                                    <>
+                                        {addedToCart ? 'Added!' : 'Add to Cart'}
+                                    </>
+                                ) : (
+                                    <>Out of Stock</>
+                                )}
                             </Button>
                         </Actions>
 
@@ -509,12 +515,14 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             >
                                 Metadata
                             </Tab>
-                            {false && <Tab
-                                className={tab == 'reviews' ? 'Active' : ''}
-                                onClick={() => setTab('reviews')}
-                            >
-                                Reviews
-                            </Tab>}
+                            {false && (
+                                <Tab
+                                    className={tab == 'reviews' ? 'Active' : ''}
+                                    onClick={() => setTab('reviews')}
+                                >
+                                    Reviews
+                                </Tab>
+                            )}
                         </Tabs>
                         <TabContent
                             className={tab == 'metadata' ? 'Active' : ''}
@@ -532,11 +540,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 </Metadata>
                             )}
                         </TabContent>
-                        {false && <TabContent
-                            className={tab == 'reviews' ? 'Active' : ''}
-                        >
-                            <Reviews product={product} reviews={reviews} />
-                        </TabContent>}
+                        {false && (
+                            <TabContent
+                                className={tab == 'reviews' ? 'Active' : ''}
+                            >
+                                <Reviews product={product} reviews={reviews} />
+                            </TabContent>
+                        )}
                     </Details>
                 </ProductContainer>
             </ProductContainerWrapper>
