@@ -24,8 +24,8 @@ module.exports = {
     env: {
         // Settings
         DOMAIN: process.env.DOMAIN,
-        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
+        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
+        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
         PRISMIC_REPO: process.env.PRISMIC_REPO,
         STORE_LOCALES: process.env.STORE_LOCALES,
         STORE_CURRENCIES: process.env.STORE_CURRENCIES,

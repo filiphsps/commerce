@@ -222,7 +222,7 @@ const Badge = styled.div`
     justify-content: center;
     align-items: flex-start;
     height: auto;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
     background: var(--accent-primary);
     color: var(--color-text-primary);
     text-transform: uppercase;
@@ -244,6 +244,11 @@ const Badge = styled.div`
     &.New {
         font-weight: 700;
         font-size: 1.25rem;
+    }
+    &.Vegan {
+        font-weight: 700;
+        font-size: 1.25rem;
+        background: #228b22;
     }
 `;
 
@@ -285,7 +290,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
         created_at,
         id,
         seo,
-        description
+        description,
+        tags
     } = data;
     const variant = variants[variantIndex];
 
@@ -293,6 +299,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
         Math.abs(new Date(created_at).getTime() - new Date().getTime()) /
             (24 * 60 * 60 * 1000) <
         45;
+    const is_vegan_product = tags?.includes('Vegan');
     const is_sale = !!variants[variantIndex].pricing.compare_at_range;
 
     let short_desc = (seo.description || description).substring(0, 100);
@@ -329,6 +336,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                 {is_new_product ? (
                     <Badge className="New">
                         <BadgeText>New!</BadgeText>
+                    </Badge>
+                ) : null}
+                {is_vegan_product ? (
+                    <Badge className="Vegan">
+                        <BadgeText>Vegan</BadgeText>
                     </Badge>
                 ) : null}
             </Badges>
