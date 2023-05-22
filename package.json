@@ -68,8 +68,8 @@
         "eslint": "8.41.0",
         "eslint-config-next": "12.2.6",
         "eslint-config-prettier": "8.8.0",
-        "jest": "29.3.1",
-        "jest-environment-jsdom": "29.3.1",
+        "jest": "29.5.0",
+        "jest-environment-jsdom": "29.5.0",
         "next-sitemap": "3.1.55",
         "prettier": "2.8.8",
         "webpack": "5.83.1"
