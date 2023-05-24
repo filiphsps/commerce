@@ -291,7 +291,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             id:
                 data.totalItems > 0
                     ? cart.items[0].id.split('#')[0]
-                    : '7325668311194',
+                    : '8463374614833',
             locale: router?.locale
         })
     ) as any;
