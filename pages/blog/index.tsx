@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import { Config } from '../../../src/util/Config';
+import { Config } from '../../src/util/Config';
 import Image from 'next/image';
 import LanguageString from '../../src/components/LanguageString';
 import Link from 'next/link';
