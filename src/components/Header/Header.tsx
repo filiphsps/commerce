@@ -25,7 +25,7 @@ const Content = styled.div`
     justify-content: center;
     align-items: center;
     grid-template-columns: auto 1fr 1fr;
-    gap: 4rem;
+    gap: 1.5rem;
     max-width: 1465px;
     width: 100%;
     padding: 0.75rem 1.5rem;

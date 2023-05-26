@@ -25,7 +25,6 @@ import Weight from '../../../src/components/Weight';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
-import { useRouter } from 'next/router';
 
 const ReviewStars = dynamic(
     () => import('../../../src/components/ReviewStars'),
@@ -44,6 +43,7 @@ const ProductContainerWrapper = styled.div`
     display: grid;
     justify-content: center;
     align-items: center;
+    padding-top: 0.5rem;
 `;
 const ProductContainer = styled.div`
     overflow: hidden;
@@ -431,6 +431,177 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             ))}
 
             <PageContent>
+                <ProductContainerWrapper>
+                    <ProductContainer>
+                        <Assets>
+                            <Gallery
+                                selected={
+                                    product?.variants?.[variant]
+                                        ?.default_image || 0
+                                }
+                                images={product?.images}
+                            />
+                        </Assets>
+                        <Details>
+                            <PageHeader
+                                title={product?.title}
+                                subtitle={
+                                    <Link
+                                        href={`/collections/${product?.vendor?.handle}`}
+                                    >
+                                        {product?.vendor?.title?.toLocaleUpperCase?.()}
+                                    </Link>
+                                }
+                                reverse
+                                noMargin
+                            />
+                            <Tags>
+                                {product?.tags.map((tag) => (
+                                    <Tag key={tag} className={tag}>
+                                        {tag}
+                                    </Tag>
+                                ))}
+                            </Tags>
+                            {false && (
+                                <ReviewStars
+                                    score={reviews?.rating}
+                                    totalReviews={reviews?.count}
+                                />
+                            )}
+
+                            <Description
+                                dangerouslySetInnerHTML={{
+                                    __html: product?.body
+                                }}
+                            />
+
+                            {/* FIXME: Use options instead */}
+                            <Variants>
+                                {product.variants.map((item, index) => (
+                                    <Variant
+                                        key={item.id}
+                                        onClick={() => setVariant(index)}
+                                        className={
+                                            index === variant ? 'Selected' : ''
+                                        }
+                                    >
+                                        <VariantTitle>
+                                            {item.title}
+                                        </VariantTitle>
+                                        <VariantSubTitle>
+                                            <Currency
+                                                price={item?.pricing?.range}
+                                                currency={
+                                                    item?.pricing?.currency
+                                                }
+                                            />
+                                            {' | '}
+                                            <VariantWeight
+                                                data={item?.weight}
+                                            />
+                                        </VariantSubTitle>
+                                    </Variant>
+                                ))}
+                                <VariantQuantity>
+                                    <Label>Quantity</Label>
+                                    <Quantity
+                                        type="number"
+                                        value={quantity}
+                                        onChange={(event) => {
+                                            const val = parseInt(
+                                                event.target.value
+                                            );
+                                            setQuantity(val <= 0 ? 1 : val);
+                                        }}
+                                    />
+                                </VariantQuantity>
+                            </Variants>
+                            <Actions>
+                                <Button
+                                    className={`Button ${
+                                        addedToCart ? 'Added' : ''
+                                    }`}
+                                    disabled={
+                                        !product?.variants[variant]
+                                            ?.available || quantity < 1
+                                    }
+                                    onClick={addToCart}
+                                >
+                                    {product?.variants[variant].available ? (
+                                        <>
+                                            {addedToCart
+                                                ? 'Added!'
+                                                : 'Add to Cart'}
+                                        </>
+                                    ) : (
+                                        <>Out of Stock</>
+                                    )}
+                                </Button>
+                            </Actions>
+
+                            <Tabs>
+                                <Tab
+                                    className={
+                                        tab == 'metadata' ? 'Active' : ''
+                                    }
+                                    onClick={() => setTab('metadata')}
+                                >
+                                    Metadata
+                                </Tab>
+                                {false && (
+                                    <Tab
+                                        className={
+                                            tab == 'reviews' ? 'Active' : ''
+                                        }
+                                        onClick={() => setTab('reviews')}
+                                    >
+                                        Reviews
+                                    </Tab>
+                                )}
+                            </Tabs>
+                            <TabContent
+                                className={tab == 'metadata' ? 'Active' : ''}
+                            >
+                                {product?.metadata?.ingredients && (
+                                    <Metadata>
+                                        <Label>Ingredients</Label>
+                                        {product?.metadata?.ingredients}
+                                    </Metadata>
+                                )}
+                                {product?.variants[variant].sku && (
+                                    <Metadata>
+                                        <Label>SKU</Label>
+                                        {product?.variants[variant].sku}
+                                    </Metadata>
+                                )}
+                            </TabContent>
+                            {false && (
+                                <TabContent
+                                    className={tab == 'reviews' ? 'Active' : ''}
+                                >
+                                    <Reviews
+                                        product={product}
+                                        reviews={reviews}
+                                    />
+                                </TabContent>
+                            )}
+                        </Details>
+                    </ProductContainer>
+                </ProductContainerWrapper>
+
+                {recommendations && recommendations?.length >= 1 && (
+                    <Recommendations>
+                        <div className="ProductPage-Content-Recommendations-Content">
+                            <CollectionBlock
+                                data={{
+                                    items: recommendations
+                                }}
+                                isHorizontal
+                            />
+                        </div>
+                    </Recommendations>
+                )}
+
                 <Breadcrumbs
                     pages={[
                         {
@@ -444,163 +615,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     ]}
                     store={store}
                 />
-            </PageContent>
-
-            <ProductContainerWrapper>
-                <ProductContainer>
-                    <Assets>
-                        <Gallery
-                            selected={
-                                product?.variants?.[variant]?.default_image || 0
-                            }
-                            images={product?.images}
-                        />
-                    </Assets>
-                    <Details>
-                        <PageHeader
-                            title={product?.title}
-                            subtitle={
-                                <Link
-                                    href={`/collections/${product?.vendor?.handle}`}
-                                >
-                                    {product?.vendor?.title?.toLocaleUpperCase?.()}
-                                </Link>
-                            }
-                            reverse
-                            noMargin
-                        />
-                        <Tags>
-                            {product?.tags.map((tag) => (
-                                <Tag key={tag} className={tag}>
-                                    {tag}
-                                </Tag>
-                            ))}
-                        </Tags>
-                        {false && (
-                            <ReviewStars
-                                score={reviews?.rating}
-                                totalReviews={reviews?.count}
-                            />
-                        )}
-
-                        <Description
-                            dangerouslySetInnerHTML={{
-                                __html: product?.body
-                            }}
-                        />
-
-                        {/* FIXME: Use options instead */}
-                        <Variants>
-                            {product.variants.map((item, index) => (
-                                <Variant
-                                    key={item.id}
-                                    onClick={() => setVariant(index)}
-                                    className={
-                                        index === variant ? 'Selected' : ''
-                                    }
-                                >
-                                    <VariantTitle>{item.title}</VariantTitle>
-                                    <VariantSubTitle>
-                                        <Currency
-                                            price={item?.pricing?.range}
-                                            currency={item?.pricing?.currency}
-                                        />
-                                        {' | '}
-                                        <VariantWeight data={item?.weight} />
-                                    </VariantSubTitle>
-                                </Variant>
-                            ))}
-                            <VariantQuantity>
-                                <Label>Quantity</Label>
-                                <Quantity
-                                    type="number"
-                                    value={quantity}
-                                    onChange={(event) => {
-                                        const val = parseInt(
-                                            event.target.value
-                                        );
-                                        setQuantity(val <= 0 ? 1 : val);
-                                    }}
-                                />
-                            </VariantQuantity>
-                        </Variants>
-                        <Actions>
-                            <Button
-                                className={`Button ${
-                                    addedToCart ? 'Added' : ''
-                                }`}
-                                disabled={
-                                    !product?.variants[variant]?.available ||
-                                    quantity < 1
-                                }
-                                onClick={addToCart}
-                            >
-                                {product?.variants[variant].available ? (
-                                    <>
-                                        {addedToCart ? 'Added!' : 'Add to Cart'}
-                                    </>
-                                ) : (
-                                    <>Out of Stock</>
-                                )}
-                            </Button>
-                        </Actions>
-
-                        <Tabs>
-                            <Tab
-                                className={tab == 'metadata' ? 'Active' : ''}
-                                onClick={() => setTab('metadata')}
-                            >
-                                Metadata
-                            </Tab>
-                            {false && (
-                                <Tab
-                                    className={tab == 'reviews' ? 'Active' : ''}
-                                    onClick={() => setTab('reviews')}
-                                >
-                                    Reviews
-                                </Tab>
-                            )}
-                        </Tabs>
-                        <TabContent
-                            className={tab == 'metadata' ? 'Active' : ''}
-                        >
-                            {product?.metadata?.ingredients && (
-                                <Metadata>
-                                    <Label>Ingredients</Label>
-                                    {product?.metadata?.ingredients}
-                                </Metadata>
-                            )}
-                            {product?.variants[variant].sku && (
-                                <Metadata>
-                                    <Label>SKU</Label>
-                                    {product?.variants[variant].sku}
-                                </Metadata>
-                            )}
-                        </TabContent>
-                        {false && (
-                            <TabContent
-                                className={tab == 'reviews' ? 'Active' : ''}
-                            >
-                                <Reviews product={product} reviews={reviews} />
-                            </TabContent>
-                        )}
-                    </Details>
-                </ProductContainer>
-            </ProductContainerWrapper>
-
-            <PageContent>
-                {recommendations && recommendations?.length >= 1 && (
-                    <Recommendations>
-                        <div className="ProductPage-Content-Recommendations-Content">
-                            <CollectionBlock
-                                data={{
-                                    items: recommendations
-                                }}
-                                isHorizontal
-                            />
-                        </div>
-                    </Recommendations>
-                )}
             </PageContent>
 
             <FloatingAddToCart

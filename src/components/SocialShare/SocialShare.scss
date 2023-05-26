@@ -10,17 +10,19 @@
     a {
         overflow: hidden;
         display: block;
-        height: 1.5rem;
-        width: 1.5rem;
+        height: 2rem;
+        width: 2rem;
         margin-left: 0.5rem;
         border-radius: 100%;
 
-        &:hover, &:active {
+        &:hover,
+        &:active {
             background: $color-secondary;
         }
 
         img {
             height: 100%;
+            width: 100%;
         }
     }
 }
