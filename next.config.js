@@ -2,10 +2,12 @@ const child_process = require('child_process');
 const manifest = require('./package.json');
 const { i18n } = require('./next-i18next.config');
 
-const git_sha = child_process.execSync('git rev-parse HEAD', {
-    cwd: __dirname,
-    encoding: 'utf8'
-}).replace(/\n/, '');
+const git_sha = child_process
+    .execSync('git rev-parse HEAD', {
+        cwd: __dirname,
+        encoding: 'utf8'
+    })
+    .replace(/\n/, '');
 
 module.exports = {
     poweredByHeader: false,
@@ -16,19 +18,23 @@ module.exports = {
     i18n,
 
     images: {
-        domains: ['cdn.shopify.com', 'images.prismic.io'],
+        domains: ['cdn.shopify.com', 'images.prismic.io']
     },
     compiler: {
-        styledComponents: true,
+        styledComponents: true
     },
     env: {
         // Settings
         DOMAIN: process.env.DOMAIN,
-        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
-        PRISMIC_REPO: process.env.PRISMIC_REPO,
-        STORE_LOCALES: process.env.STORE_LOCALES,
-        STORE_CURRENCIES: process.env.STORE_CURRENCIES,
+        SHOPIFY_DOMAIN:
+            process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
+        SHOPIFY_TOKEN:
+            process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
+        PRISMIC_REPO:
+            process.env.PRISMIC_REPO ||
+            'https://candy-by-sweden.cdn.prismic.io/api/v2',
+        STORE_LOCALES: process.env.STORE_LOCALES || 'en-US',
+        STORE_CURRENCIES: process.env.STORE_CURRENCIES || 'USD',
         GTM: process.env.GTM,
 
         // Colors
@@ -37,7 +43,6 @@ module.exports = {
 
         // Feature flags
         FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,
-
 
         GIT_SHA: git_sha,
         VERSION: manifest.version
@@ -51,7 +56,7 @@ module.exports = {
             {
                 source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
-                permanent: true,
+                permanent: true
             },
             {
                 source: '/products/',
@@ -64,5 +69,5 @@ module.exports = {
                 permanent: true
             }
         ];
-    },
+    }
 };

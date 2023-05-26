@@ -314,7 +314,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     reviews,
     store
 }) => {
-    const router = useRouter();
     const cart = useCart();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
@@ -322,7 +321,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [variant, setVariant] = useState(
         product ? product.variants.length - 1 : 0
     );
-    const [loading, setLoading] = useState(false);
 
     const addToCart = useCallback(() => {
         setAddedToCart(true);
@@ -341,8 +339,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         setTimeout(() => {
             setAddedToCart(false);
         }, 3000);
-
-        router.push('/cart/');
     }, [product, variant]);
 
     if (errors?.length) console.error(errors);
@@ -535,8 +531,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 }`}
                                 disabled={
                                     !product?.variants[variant]?.available ||
-                                    quantity < 1 ||
-                                    loading
+                                    quantity < 1
                                 }
                                 onClick={addToCart}
                             >
