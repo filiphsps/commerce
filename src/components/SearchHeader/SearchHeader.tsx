@@ -40,6 +40,7 @@ const Content = styled.div`
     @media (max-width: 950px) {
         overflow-y: scroll;
         max-height: calc(100vh - 10rem);
+        max-height: calc(100dvh - 10rem);
         grid-template-columns: 1fr;
     }
 `;

@@ -51,6 +51,7 @@ const ProductContainer = styled.div`
     grid-template-columns: 53% 1fr;
     grid-gap: 1.5rem;
     min-height: calc(100vh - 42rem);
+    min-height: calc(100dvh - 42rem);
     width: calc(1465px - 4rem);
     max-width: calc(100vw - 4rem);
     margin: 0px 1.5rem;
