@@ -98,6 +98,7 @@ const Actions = styled.div`
 
     .SearchBar {
         max-width: 24rem;
+
         input {
             height: 3.25rem;
             border-radius: var(--block-border-radius);
@@ -350,12 +351,20 @@ const Header = styled.header`
                 .Wrapper {
                     background: #fefefe;
                     color: #0e0e0e;
+                    padding: 0.75rem 1.25rem;
                 }
             }
         }
 
         ${Actions}, ${HamburgerMenu} {
             color: #fefefe;
+        }
+
+        .SearchBar {
+            input {
+                border-width: 0px;
+                height: 3.25rem;
+            }
         }
     }
 
