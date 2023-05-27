@@ -1,0 +1,29 @@
+//
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Next.js: debug server-side",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 npm run dev"
+        },
+        {
+            "name": "Next.js: debug client-side",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000"
+        },
+        {
+            "name": "Next.js: debug full stack",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 npm run dev",
+            "serverReadyAction": {
+                "pattern": "started server on .+, url: (https?://.+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            }
+        }
+    ]
+}
