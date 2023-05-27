@@ -98,7 +98,6 @@ const Actions = styled.div`
 
     .SearchBar {
         max-width: 24rem;
-
         input {
             height: 3.25rem;
             border-radius: var(--block-border-radius);
@@ -328,6 +327,7 @@ const Header = styled.header`
         border: none;
         background: var(--accent-primary);
         top: 8rem;
+        height: 6rem;
         ${Navigation} {
             color: #fefefe;
 
@@ -364,6 +364,15 @@ const Header = styled.header`
             input {
                 border-width: 0px;
                 height: 3.25rem;
+            }
+        }
+
+        ${Logo} {
+            padding: 0px;
+            padding-right: 1rem;
+
+            @media (max-width: 950px) {
+                padding-right: 0.25rem;
             }
         }
     }
