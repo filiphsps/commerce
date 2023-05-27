@@ -1,14 +1,18 @@
 import React, { FunctionComponent, memo } from 'react';
 
+import { HeaderApi } from '../../api/header';
+import { HeaderStyle } from '../Header/Header';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Container = styled.div`
     overflow-y: scroll;
     position: fixed;
     top: 6.5rem;
     height: calc(100% - 6.5rem);
+    height: calc(100dvh - 6.5rem);
     width: 65%;
     min-width: 28rem;
     padding: 2rem;
@@ -20,6 +24,11 @@ const Container = styled.div`
     left: calc(-65% - 4rem);
     &.Open {
         left: 0px;
+    }
+    &.Modern {
+        top: 6rem;
+        height: calc(100% - 6rem);
+        height: calc(100dvh - 6rem);
     }
 
     @media (min-width: 1260px) {
@@ -73,9 +82,16 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     toggle
 }) => {
     const router = useRouter();
+    const { data } = useSWR(['header'], () => HeaderApi() as any);
+
+    // TODO: Switch-case
+    const headerStyle =
+        data?.style?.toLowerCase() === 'modern'
+            ? HeaderStyle.Modern
+            : HeaderStyle.Simple;
 
     return (
-        <Container className={open ? 'Open' : ''}>
+        <Container className={`${open ? 'Open' : ''} ${headerStyle}`}>
             <Navigation>
                 {navigation?.map((item: any, index) => {
                     return (

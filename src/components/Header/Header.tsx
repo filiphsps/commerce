@@ -20,6 +20,13 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
+export enum HeaderStyle {
+    // eslint-disable-next-line no-unused-vars
+    Modern = 'Modern',
+    // eslint-disable-next-line no-unused-vars
+    Simple = 'Simple'
+}
+
 const Content = styled.div`
     display: grid;
     justify-content: center;
@@ -265,49 +272,6 @@ const NavigationItem = styled.div`
         line-height: 100%;
     }
 `;
-
-const Header = styled.header`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fefefe;
-    border-bottom: 0.5rem solid var(--accent-primary);
-
-    &.Modern {
-        border: none;
-        background: var(--accent-primary);
-
-        ${Navigation} {
-            color: #fefefe;
-
-            a.Active {
-                color: #fefefe;
-            }
-        }
-
-        ${CartIconWrapper} {
-            &.Active {
-                .Wrapper {
-                    background: #fefefe;
-                    color: #0e0e0e;
-                }
-            }
-        }
-    }
-
-    &:hover {
-        ${NavigationItem} {
-            &:hover {
-                ${NavigationItemChildren} {
-                    height: auto;
-                    opacity: 1;
-                    padding: 2.6rem 0px;
-                }
-            }
-        }
-    }
-`;
-
 const NavigationItemChildrenWrapper = styled.div`
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
@@ -352,6 +316,62 @@ const HamburgerMenu = styled.div`
     }
 `;
 
+const Header = styled.header`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fefefe;
+    border-bottom: 0.5rem solid var(--accent-primary);
+
+    &.Modern {
+        border: none;
+        background: var(--accent-primary);
+        top: 8rem;
+        ${Navigation} {
+            color: #fefefe;
+
+            a.Active {
+                color: #fefefe;
+            }
+        }
+
+        ${NavigationItemChildren} {
+            ${NavigationItemChildrenContainer} {
+                ${NavigationItem} {
+                    color: #0e0e0e;
+                }
+            }
+        }
+
+        ${CartIconWrapper} {
+            color: #fefefe;
+
+            &.Active {
+                .Wrapper {
+                    background: #fefefe;
+                    color: #0e0e0e;
+                }
+            }
+        }
+
+        ${Actions}, ${HamburgerMenu} {
+            color: #fefefe;
+        }
+    }
+
+    &:hover {
+        ${NavigationItem} {
+            &:hover {
+                ${NavigationItemChildren} {
+                    height: auto;
+                    opacity: 1;
+                    padding: 2.6rem 0px;
+                }
+            }
+        }
+    }
+`;
+
 interface HeaderProps {
     store?: any;
     navigation?: any;
@@ -370,6 +390,12 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const [cartStore, setCartStore] = useStore<any>('cart');
     const { data } = useSWR(['header'], () => HeaderApi() as any);
     const timer = useRef(null);
+
+    // TODO: Switch-case
+    const style =
+        data?.style?.toLowerCase() === 'modern'
+            ? HeaderStyle.Modern
+            : HeaderStyle.Simple;
 
     const { data: added_product } = useSWR(
         [cartStore.item?.id?.split('#')[0] || 'product'],
@@ -414,7 +440,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     }, [cart.totalItems]);
 
     return (
-        <Header className={data?.style === 'modern' ? 'Modern' : ''}>
+        <Header className={style}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX /> : <FiMenu />}
