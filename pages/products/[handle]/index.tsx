@@ -46,7 +46,7 @@ const ProductContainerWrapper = styled.div`
     padding-top: 0.5rem;
 `;
 const ProductContainer = styled.div`
-    overflow: hidden;
+    position: relative;
     display: grid;
     grid-template-columns: 53% 1fr;
     grid-gap: 1.5rem;
@@ -57,13 +57,13 @@ const ProductContainer = styled.div`
     margin: 0px 1.5rem;
 
     @media (max-width: 950px) {
+        overflow: hidden;
         grid-template-columns: 1fr;
         max-width: calc(100vw - 3rem);
         margin: 0px;
     }
 `;
 const Assets = styled.div`
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,8 +71,14 @@ const Assets = styled.div`
     max-height: 60rem;
 
     @media (max-width: 950px) {
+        overflow: hidden;
         height: 28rem;
         max-height: 30vh;
+    }
+
+    @media (min-width: 950px) {
+        position: sticky;
+        top: 8rem;
     }
 `;
 const Details = styled.div`

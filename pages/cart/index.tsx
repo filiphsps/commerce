@@ -28,12 +28,6 @@ const Content = styled.div`
     grid-template-columns: auto 28rem;
     gap: 2rem;
     max-width: 100%;
-
-    @media (min-width: 950px) {
-        position: relative;
-        overflow: hidden;
-    }
-
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -51,12 +45,16 @@ const FreeShippingBanner = styled.div`
     gap: 0.5rem;
     max-width: calc(100vw - 3rem);
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
     font-size: 1.5rem;
     font-weight: 700;
     text-transform: uppercase;
+
+    @media (max-width: 950px) {
+        padding: 1rem;
+    }
 `;
 const FreeShippingBannerText = styled.div`
     display: flex;
@@ -93,13 +91,14 @@ const Progress = styled.div`
 `;
 
 const ItemsContainerWrapper = styled.div`
-    overflow: hidden;
     max-width: 100%;
-    padding: 0px 1rem;
+    padding: 0.5rem 1.5rem;
     background: #efefef;
     border-radius: var(--block-border-radius);
 
-    // TODO: Remove padding on mobile.
+    @media (max-width: 950px) {
+        padding: 0.5rem 1rem;
+    }
 `;
 const ItemsContainer = styled.table`
     display: block;
@@ -108,7 +107,6 @@ const ItemsContainer = styled.table`
     border-spacing: 0px 1rem;
     font-size: 1.25rem;
     table-layout: fixed;
-    overflow: hidden;
 
     tbody,
     thead {
@@ -118,14 +116,20 @@ const ItemsContainer = styled.table`
 `;
 
 const SummaryContent = styled.div`
-    position: sticky;
-    top: 0rem;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
     transition: 150ms ease-in-out;
 
+    @media (min-width: 950px) {
+        position: sticky;
+        top: 8rem;
+        bottom: 0rem;
+    }
+
     @media (max-width: 950px) {
+        padding: 1rem;
+
         Button {
             height: 4.5rem;
             padding: 1rem 1.5rem;
@@ -139,34 +143,23 @@ const SummaryItems = styled.div`
 
     @media (max-width: 950px) {
         display: none;
-    }
-`;
-const SummaryContainer = styled.div`
-    z-index: 1;
-    position: sticky;
-
-    @media (max-width: 950px) {
-        max-width: calc(100vw - 3rem);
-        position: sticky;
-        bottom: 0px;
+        height: 0px;
+        opacity: 0;
         transition: 150ms ease-in-out;
+        overflow: hidden;
+        width: calc(100dvw - 3rem);
+        width: calc(100vw - 3rem);
+        padding-bottom: 0px;
 
-        &.Floating {
-            width: 100vw;
-            max-width: 100vw;
-            margin: 0px -1.5rem 0px -1.5rem;
+        &.Open {
+            display: block;
+            position: sticky;
+            overflow-y: auto;
+            opacity: 1;
+            bottom: 8rem;
             left: 0px;
-            right: 0px;
-            border-top: 0.2rem solid #e9e9e9;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-
-            background: var(--accent-secondary-light);
-
-            ${SummaryContent} {
-                padding: 1.5rem;
-                padding-right: 10rem;
-                border-radius: 0px;
-            }
+            height: 30dvh;
+            margin-bottom: 1.5rem;
         }
     }
 `;
@@ -191,11 +184,26 @@ const SummaryItemVendor = styled.div`
 `;
 const SummaryItemPrice = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     text-align: right;
+    gap: 0.5rem;
     font-weight: 700;
     font-size: 1.25rem;
+
+    span {
+        display: inline-block;
+        text-transform: initial;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 950px) {
+        font-size: 1.25rem;
+
+        span {
+            font-size: 1.25rem;
+        }
+    }
 
     .Currency-Sale {
         color: #d91e18;
@@ -203,9 +211,13 @@ const SummaryItemPrice = styled.div`
 `;
 const SummaryItemShipping = styled.div`
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
     font-size: 1.25rem;
+
+    @media (max-width: 950px) {
+        font-size: 1.25rem;
+    }
 `;
 const SummarySummary = styled.div`
     display: grid;
@@ -227,6 +239,81 @@ const SummarySummary = styled.div`
         margin-top: -1rem;
     }
 `;
+const SummaryItemsToggle = styled.div`
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: calc(100vw - 3rem);
+    width: calc(100dvw - 3rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    height: 3rem;
+    font-size: 1.25rem;
+    transition: 150ms ease-in-out;
+
+    background: var(--color-text-primary);
+    color: var(--accent-primary-light);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--block-border-radius);
+    margin: -0.5rem 0px 1rem 0px;
+
+    &:hover {
+        background: var(--accent-secondary-dark);
+        color: var(--color-text-primary);
+    }
+
+    @media (min-width: 950px) {
+        display: none;
+    }
+`;
+const SummaryContainer = styled.div`
+    z-index: 1;
+
+    @media (max-width: 950px) {
+        max-width: calc(100vw - 3rem);
+        max-width: calc(100dvw - 3rem);
+        position: sticky;
+        bottom: 0px;
+        transition: 150ms ease-in-out;
+
+        &.Floating {
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0px -1.5rem 0px -1.5rem;
+            left: 0px;
+            right: 0px;
+            border-top: 0.2rem solid #e9e9e9;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+            ${SummaryItems} {
+                display: block;
+            }
+
+            ${SummaryContent} {
+                padding: 1.5rem;
+                padding-right: 10rem;
+                border-radius: 0px;
+
+                background: var(--accent-secondary-light);
+            }
+
+            ${SummarySummary} {
+                z-index: 9999;
+                background: var(--color-text-primary);
+                color: var(--accent-primary);
+                padding: 1.25rem 1.5rem;
+                border-radius: var(--block-border-radius);
+                margin-bottom: 1rem;
+            }
+
+            ${SummaryItemsToggle} {
+                display: flex;
+            }
+        }
+    }
+`;
 
 const Header = styled.tr`
     display: grid;
@@ -240,7 +327,7 @@ const Header = styled.tr`
     @media (max-width: 950px) {
         grid-gap: 0.5rem;
         grid-template-columns: 8rem 1fr 4rem 7rem;
-        padding: 1rem 0px 0.5rem 0px;
+        padding: 0.5rem 0px 0.25rem 0px;
     }
 `;
 const HeaderItem = styled.th`
@@ -265,9 +352,7 @@ const HeaderItemQuantity = styled(HeaderItem)`
     }
 `;
 const HeaderItemPrice = styled(HeaderItem)`
-    @media (min-width: 950px) {
-        text-align: center;
-    }
+    text-align: center;
 `;
 const HeaderItemActions = styled(HeaderItem)`
     @media (max-width: 950px) {
@@ -376,6 +461,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         totalItems: 0,
         items: []
     });
+    const [isItemListOpen, setIsItemListOpen] = useState(false);
     const router = useRouter();
 
     // SSR workaround
@@ -404,7 +490,16 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         return () => {
             observer.unobserve(cachedRef!);
         };
-    }, []);
+    }, [undefined]);
+
+    // Mobile
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        if (!outerWidth) return;
+
+        if (outerWidth >= 950 && isMobile) setIsMobile(false);
+        else if (outerWidth <= 950 && !isMobile) setIsMobile(true);
+    }, [outerWidth]);
 
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
@@ -569,7 +664,22 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     >
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
-                                <SummaryItems>
+                                <SummaryItemsToggle
+                                    onClick={() =>
+                                        setIsItemListOpen(!isItemListOpen)
+                                    }
+                                >
+                                    {(isItemListOpen && 'Hide all items') ||
+                                        'Show all items'}
+                                </SummaryItemsToggle>
+                                <SummaryItems
+                                    className={
+                                        (!isSticky &&
+                                            isItemListOpen &&
+                                            'Open') ||
+                                        ''
+                                    }
+                                >
                                     {data.items?.map((line_item) => {
                                         return (
                                             <SummaryItem key={line_item.id}>
@@ -578,10 +688,16 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         {line_item?.title}
                                                     </SummaryItemTitle>
                                                     <SummaryItemVendor>
-                                                        {`${line_item?.quantity}x - ${line_item?.variant_title}`}
+                                                        {
+                                                            line_item?.variant_title
+                                                        }
+                                                        `
                                                     </SummaryItemVendor>
                                                 </SummaryItemMeta>
                                                 <SummaryItemPrice>
+                                                    <span>
+                                                        {line_item?.quantity}x
+                                                    </span>
                                                     <Currency
                                                         price={Number.parseFloat(
                                                             line_item?.itemTotal
@@ -602,6 +718,25 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         data.totalItems <= 0 ? 'Empty' : ''
                                     }
                                 >
+                                    <SummaryItemPrice>
+                                        <Currency
+                                            price={Number.parseFloat(price)}
+                                            currency={currency}
+                                            prefix={
+                                                <span
+                                                    style={{
+                                                        textTransform:
+                                                            'uppercase'
+                                                    }}
+                                                >
+                                                    <LanguageString
+                                                        id={'total'}
+                                                    />
+                                                </span>
+                                            }
+                                            store={store}
+                                        />
+                                    </SummaryItemPrice>
                                     <SummaryItemShipping>
                                         {!freeShipping ? (
                                             <LanguageString
@@ -611,30 +746,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             'Free shipping!'
                                         )}
                                     </SummaryItemShipping>
-                                    <SummaryItemPrice>
-                                        <Currency
-                                            price={Number.parseFloat(price)}
-                                            currency={currency}
-                                            prefix={
-                                                <>
-                                                    <LanguageString
-                                                        id={'total'}
-                                                    />
-                                                    :{' '}
-                                                </>
-                                            }
-                                            store={store}
-                                        />
-                                    </SummaryItemPrice>
                                 </SummarySummary>
                             </div>
                             <div>
                                 <Button
-                                    className={
-                                        outerWidth && outerWidth <= 950
-                                            ? 'Secondary'
-                                            : ''
-                                    }
+                                    className={isMobile ? '' : ''}
                                     disabled={
                                         data.items?.length <= 0 ||
                                         !data.items ||
