@@ -68,7 +68,7 @@ const Option = styled.div`
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    opacity: 0.65;
+    opacity: 0.75;
     transition: 150ms all ease-in-out;
 
     &.Selected {

@@ -24,7 +24,7 @@ const Meta = styled.div`
 const Title = styled.div`
     font-size: 1.5rem;
     font-weight: 600;
-    opacity: 0.85;
+    opacity: 0.75;
     text-transform: uppercase;
 `;
 const Author = styled.div``;

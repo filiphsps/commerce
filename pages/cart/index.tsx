@@ -1,4 +1,9 @@
-import { FiChevronDown, FiChevronUp, FiTrash } from 'react-icons/fi';
+import {
+    FiChevronDown,
+    FiChevronUp,
+    FiShoppingCart,
+    FiTrash
+} from 'react-icons/fi';
 import React, { FunctionComponent, useRef, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
@@ -108,15 +113,6 @@ const Progress = styled.div`
 
 const ItemsContainerWrapper = styled.div`
     max-width: 100%;
-    padding: 0.5rem 1.5rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
-
-    @media (max-width: 950px) {
-        padding: 0px;
-        background: none;
-        border-radius: none;
-    }
 `;
 const ItemsContainer = styled.table`
     display: block;
@@ -142,7 +138,6 @@ const SummaryContent = styled.div`
     @media (min-width: 950px) {
         position: sticky;
         top: 8rem;
-        bottom: 0rem;
     }
 
     @media (max-width: 950px) {
@@ -159,15 +154,15 @@ const SummaryItems = styled.div`
     padding-bottom: 1rem;
     text-transform: uppercase;
     user-select: all;
+    transition: 150ms ease-in-out;
 
     @media (max-width: 950px) {
         display: none;
         height: 0px;
         opacity: 0;
-        transition: 150ms ease-in-out;
         overflow: hidden;
-        width: calc(100dvw - 3rem);
         width: calc(100vw - 3rem);
+        width: calc(100dvw - 3rem);
         padding: 1rem;
         padding-bottom: 0px;
         background: var(--color-text-primary);
@@ -282,7 +277,7 @@ const SummarySummary = styled.div`
     }
 `;
 const SummaryItemsToggle = styled(Button)`
-    display: none;
+    display: inline-flex;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
@@ -339,8 +334,8 @@ const SummaryItemsActions = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
-    width: calc(100dvw - 3rem);
     width: calc(100vw - 3rem);
+    width: calc(100dvw - 3rem);
 `;
 const SummaryContainer = styled.div`
     z-index: 5;
@@ -352,7 +347,20 @@ const SummaryContainer = styled.div`
         bottom: 0px;
         transition: 150ms ease-in-out;
 
-        &.Floating {
+        &.Sticky ${SummaryItems}:not(.Open) {
+            display: block;
+            overflow: auto;
+            padding-bottom: 1rem;
+        }
+
+        &.Sticky:has(${SummaryItems}.Open) {
+            position: sticky;
+            //bottom: 0px;
+        }
+
+        &.Floating,
+        &.Sticky:has(${SummaryItems}.Open) {
+            z-index: 9999999;
             width: 100vw;
             max-width: 100vw;
             margin: 0px -1.5rem 0px -1.5rem;
@@ -373,40 +381,34 @@ const SummaryContainer = styled.div`
             }
 
             ${SummarySummary} {
-                z-index: 9999;
                 background: var(--color-text-primary);
                 color: var(--accent-primary);
                 padding: 1.25rem 1.5rem;
                 border-radius: var(--block-border-radius);
                 margin-bottom: 1rem;
             }
-
-            ${SummaryItemsToggle} {
-                display: inline-flex;
-            }
         }
     }
 `;
 
 const Header = styled.tr`
+    overflow: hidden;
     display: grid;
     width: 100%;
-    grid-template-columns: 8rem 1fr 4rem 12rem 6rem;
+    grid-template-columns: 8rem 1fr 4rem 6rem 4rem;
     grid-template-rows: 1fr;
-    grid-gap: 1rem;
+    gap: 1rem;
     padding: 1rem 0px 0.5rem 0px;
     text-transform: uppercase;
 
-    @media (max-width: 950px) {
-        overflow: hidden;
-        grid-gap: 1rem;
-        grid-template-columns: 8rem 1fr 5rem 6rem;
+    padding: 0.5rem 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+    margin-bottom: 1rem;
+    opacity: 0.75;
 
-        padding: 0.5rem 1rem;
-        background: #efefef;
-        border-radius: var(--block-border-radius);
-        margin-bottom: 1rem;
-        opacity: 0.75;
+    @media (max-width: 950px) {
+        grid-template-columns: 8rem 1fr 5rem 6rem;
     }
 `;
 const HeaderItem = styled.th`
@@ -580,10 +582,15 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     useEffect(() => {
         const cachedRef = summaryRef.current,
             observer = new IntersectionObserver(
-                ([e]) => setIsSticky(!(e.intersectionRatio < 1)),
+                ([e]) =>
+                    setIsSticky(
+                        !(e.intersectionRatio < 1 && e.boundingClientRect.y > 0)
+                    ),
                 {
-                    threshold: [1],
-                    rootMargin: '0px 0px -1px 0px'
+                    threshold: [0.9, 1.0],
+                    rootMargin: `0px 0px ${
+                        (cachedRef?.offsetHeight || 0) * -1
+                    }px 0px`
                 }
             );
 
@@ -803,12 +810,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     </SummaryItemsActionClear>
                                 </SummaryItemsActions>
                                 <SummaryItems
-                                    className={
-                                        (!isSticky &&
-                                            isItemListOpen &&
-                                            'Open') ||
-                                        ''
-                                    }
+                                    className={(isItemListOpen && 'Open') || ''}
                                 >
                                     {data.items?.map((line_item) => {
                                         return (
@@ -901,6 +903,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         }
                                     }}
                                 >
+                                    <FiShoppingCart
+                                        style={{
+                                            marginRight: '1.5rem',
+                                            width: '2rem',
+                                            height: '1.75rem',
+                                            fontSize: '1.25rem'
+                                        }}
+                                    />
                                     <LanguageString
                                         id={
                                             (loading && 'loading...') ||

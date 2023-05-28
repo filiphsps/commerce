@@ -16,32 +16,6 @@ import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const Content = styled.tr`
-    display: grid;
-    min-height: 9rem;
-    width: 100vw;
-    max-width: 100%;
-    grid-template-columns: 8rem 1fr 4rem 12rem 6rem;
-    grid-template-rows: 1fr;
-    grid-template-areas: 'image meta quantity price actions';
-    grid-gap: 1rem;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 0px;
-
-    @media (max-width: 950px) {
-        position: relative;
-        grid-gap: 1rem;
-        grid-template-columns: 8rem 1fr 5rem 6rem;
-        grid-template-areas: 'image meta quantity price';
-        margin-bottom: 1rem;
-
-        min-height: 10rem;
-        padding: 1rem;
-        background: #efefef;
-        border-radius: var(--block-border-radius);
-    }
-`;
-
 const Section = styled.td``;
 const SectionContent = styled.div`
     display: flex;
@@ -49,6 +23,73 @@ const SectionContent = styled.div`
     justify-content: center;
     align-items: flex-start;
     height: 100%;
+`;
+
+const Details = styled(SectionContent)`
+    text-transform: uppercase;
+`;
+const DetailsBrand = styled.div`
+    font-weight: 700;
+    letter-spacing: 0.05rem;
+    color: #404756;
+    transition: 150ms ease-in-out;
+
+    &:hover {
+        color: var(--accent-primary);
+    }
+`;
+const DetailsTitle = styled.div`
+    font-size: 1.75rem;
+    font-weight: 700;
+    opacity: 0.75;
+    transition: 150ms ease-in-out;
+
+    &:hover {
+        color: var(--accent-primary);
+    }
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
+    }
+`;
+const DetailsVariant = styled.div`
+    margin-top: 0.5rem;
+
+    @media (max-width: 950px) {
+        display: none;
+    }
+`;
+
+const Content = styled.tr`
+    display: grid;
+    position: relative;
+    min-height: 10rem;
+    width: 100vw;
+    max-width: 100%;
+    grid-template-columns: 8rem 1fr 4rem 6rem 4rem;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'image meta quantity price actions';
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0px;
+
+    padding: 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
+
+    @media (max-width: 950px) {
+        grid-template-columns: 8rem 1fr 5rem 6rem;
+        grid-template-areas: 'image meta quantity price';
+    }
+
+    &.Sale {
+        padding: 0.8rem;
+        border: 0.2rem solid #d91e18;
+
+        ${DetailsTitle} {
+            color: #d91e18;
+        }
+    }
 `;
 
 const ImageWrapper = styled.div`
@@ -130,40 +171,6 @@ const Quantity = styled(SectionContent)`
     }
 `;
 
-const Details = styled(SectionContent)`
-    text-transform: uppercase;
-`;
-const DetailsBrand = styled.div`
-    font-weight: 700;
-    letter-spacing: 0.05rem;
-    color: #404756;
-    transition: 150ms ease-in-out;
-
-    &:hover {
-        color: var(--accent-primary);
-    }
-`;
-const DetailsTitle = styled.div`
-    font-size: 1.75rem;
-    font-weight: 600;
-    transition: 150ms ease-in-out;
-
-    &:hover {
-        color: var(--accent-primary);
-    }
-
-    @media (max-width: 950px) {
-        font-size: 1.5rem;
-    }
-`;
-const DetailsVariant = styled.div`
-    margin-top: 0.5rem;
-
-    @media (max-width: 950px) {
-        display: none;
-    }
-`;
-
 const Badge = styled.div`
     display: flex;
     justify-content: center;
@@ -192,6 +199,20 @@ const Price = styled(SectionContent)`
         height: 100%;
         overflow-wrap: anywhere;
         hyphens: auto;
+    }
+
+    &.Sale {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+        gap: 0.15rem;
+        height: 4rem;
+
+        .Currency {
+            max-height: 2.15rem;
+            width: 100%;
+        }
     }
 
     @media (max-width: 950px) {
@@ -243,6 +264,7 @@ const QuantitySection = styled(Section)`
     }
 `;
 const PriceSection = styled(Section)`
+    position: relative;
     overflow: hidden;
     grid-area: price;
     display: flex;
@@ -255,13 +277,18 @@ const PriceSection = styled(Section)`
     .Currency {
         // FIXME: Wrap bug numbers.
     }
+
+    ${Price} .Currency.Currency-Sale {
+        font-size: 1.25rem;
+        width: auto;
+    }
 `;
 const ActionsSection = styled(Section)`
     grid-area: actions;
 
     @media (max-width: 950px) {
         position: absolute;
-        right: 9.5rem;
+        right: 9.25rem;
         top: 6rem;
         padding: 0.25rem;
         border-radius: 100%;
@@ -358,7 +385,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         ? variant?.pricing?.compare_at_range - variant?.pricing?.range
         : 0;
     return (
-        <Content>
+        <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
                     <Link href={`/products/${product?.handle}`}>
@@ -420,21 +447,19 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                 </Quantity>
             </QuantitySection>
             <PriceSection>
-                <Price>
+                <Price className={(discount > 0 && 'Sale') || ''}>
                     {discount > 0 &&
                         typeof variant.pricing.compare_at_range ===
                             'number' && (
-                            <span>
-                                <Currency
-                                    price={
-                                        variant.pricing.compare_at_range! *
-                                        props?.data?.quantity
-                                    }
-                                    currency={variant?.pricing?.currency}
-                                    className="Currency-Sale"
-                                    store={props.store}
-                                />
-                            </span>
+                            <Currency
+                                price={
+                                    variant.pricing.compare_at_range! *
+                                    props?.data?.quantity
+                                }
+                                currency={variant?.pricing?.currency}
+                                className="Currency-Sale"
+                                store={props.store}
+                            />
                         )}
                     <Currency
                         price={variant?.pricing?.range * props?.data?.quantity}

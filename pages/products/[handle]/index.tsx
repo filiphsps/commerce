@@ -8,7 +8,7 @@ import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Currency from '../../../src/components/Currency';
 import Error from 'next/error';
-import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
+//import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
 import Gallery from '../../../src/components/Gallery';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
@@ -181,6 +181,48 @@ const Description = styled.div`
         margin-top: 1.5rem;
     }
 `;
+/*const DescriptionWrapper = styled.div`
+    overflow: hidden;
+    position: relative;
+    transition: 150ms ease-in-out;
+    max-height: 100vh;
+
+    &::after {
+        content: '';
+        z-index: 99999;
+        position: absolute;
+        display: block;
+        bottom: 0px;
+        width: 100vw;
+        height: 12rem;
+
+        background-image: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0) 100%
+        );
+    }
+
+    &.Condensed {
+        max-height: 42rem;
+
+        &::after {
+            background-image: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0.95) 100%
+            );
+        }
+    }
+`;
+const DescriptionToggle = styled.div`
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 0.5rem 0px;
+    user-select: none;
+    cursor: pointer;
+`;*/
+
 const Actions = styled.div`
     display: flex;
     grid-gap: 1rem;
@@ -325,6 +367,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('metadata');
+    //const [hideDescription, setHideDescription] = useState(false);
     const [variant, setVariant] = useState(
         product ? product.variants.length - 1 : 0
     );
@@ -480,11 +523,28 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 />
                             )}
 
+                            {/*<DescriptionWrapper
+                                className={
+                                    (hideDescription && 'Condensed') || ''
+                                }
+                            >*/}
                             <Description
                                 dangerouslySetInnerHTML={{
                                     __html: product?.body
                                 }}
                             />
+                            {/* FIXME: only show this if the desc is longer than x */}
+                            {/*</DescriptionWrapper>
+
+                            <DescriptionToggle
+                                onClick={() =>
+                                    setHideDescription(!hideDescription)
+                                }
+                            >
+                                {(hideDescription && 'Show More') ||
+                                    'Show Less'}
+                                ...
+                            </DescriptionToggle>*/}
 
                             {/* FIXME: Use options instead */}
                             <Variants>
@@ -552,14 +612,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             </Actions>
 
                             <Tabs>
-                                <Tab
-                                    className={
-                                        tab == 'metadata' ? 'Active' : ''
-                                    }
-                                    onClick={() => setTab('metadata')}
-                                >
-                                    Metadata
-                                </Tab>
+                                {false && (
+                                    <Tab
+                                        className={
+                                            tab == 'metadata' ? 'Active' : ''
+                                        }
+                                        onClick={() => setTab('metadata')}
+                                    >
+                                        Metadata
+                                    </Tab>
+                                )}
                                 {false && (
                                     <Tab
                                         className={
@@ -571,22 +633,27 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     </Tab>
                                 )}
                             </Tabs>
-                            <TabContent
-                                className={tab == 'metadata' ? 'Active' : ''}
-                            >
-                                {product?.metadata?.ingredients && (
-                                    <Metadata>
-                                        <Label>Ingredients</Label>
-                                        {product?.metadata?.ingredients}
-                                    </Metadata>
-                                )}
-                                {product?.variants[variant].sku && (
-                                    <Metadata>
-                                        <Label>SKU</Label>
-                                        {product?.variants[variant].sku}
-                                    </Metadata>
-                                )}
-                            </TabContent>
+                            {product?.metadata?.ingredients ||
+                                (product?.variants[variant].sku && (
+                                    <TabContent
+                                        className={
+                                            tab == 'metadata' ? 'Active' : ''
+                                        }
+                                    >
+                                        {product?.metadata?.ingredients && (
+                                            <Metadata>
+                                                <Label>Ingredients</Label>
+                                                {product?.metadata?.ingredients}
+                                            </Metadata>
+                                        )}
+                                        {product?.variants[variant].sku && (
+                                            <Metadata>
+                                                <Label>SKU</Label>
+                                                {product?.variants[variant].sku}
+                                            </Metadata>
+                                        )}
+                                    </TabContent>
+                                ))}
                             {false && (
                                 <TabContent
                                     className={tab == 'reviews' ? 'Active' : ''}
@@ -630,12 +697,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 />
             </PageContent>
 
-            <FloatingAddToCart
+            {/* FIXME: Re-enable this */}
+            {/*<FloatingAddToCart
                 product={product}
                 variant={variant}
                 addToCart={addToCart}
                 addedToCart={addedToCart}
-            />
+            />*/}
         </Page>
     );
 };

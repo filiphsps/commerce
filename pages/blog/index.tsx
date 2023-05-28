@@ -61,7 +61,7 @@ const ArticleDate = styled.div`
     letter-spacing: 0.05rem;
     margin: -0.15rem 0px 0.25rem 0px;
     text-transform: uppercase;
-    opacity: 0.85;
+    opacity: 0.75;
 `;
 const ArticleContent = styled.div`
     font-size: 1.5rem;
