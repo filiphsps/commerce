@@ -21,7 +21,7 @@ const Blur = styled.div`
     pointer-events: none;
 
     &.Modern {
-        top: 6rem;
+        top: 5.5rem;
         height: calc(100% - 6rem);
         height: calc(100dvh - 6rem);
     }

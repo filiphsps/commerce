@@ -240,13 +240,10 @@ const StoreApp = withStore(
                 {userId && sessionId ? (
                     <ShopifyAnalyticsProvider
                         shopId={76188483889}
-                        route={
-                            router.pathname.includes('/shop')
-                                ? router.pathname
-                                      .replace('/shop', '/products')
-                                      .replace('/en-US', '')
-                                : router.pathname
-                        }
+                        route={(router.pathname.includes('/shop')
+                            ? router.pathname.replace('/shop', '/products')
+                            : router.pathname
+                        ).replace(`/${router.locale}`, '')}
                         userId={userId}
                         sessionId={sessionId}
                     />

@@ -14,6 +14,7 @@ const Container = styled.div`
     }
 `;
 const ImageContainer = styled.div`
+    overflow: hidden;
     position: relative;
     display: flex;
     justify-content: center;

@@ -329,13 +329,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         product ? product.variants.length - 1 : 0
     );
 
+    useEffect(() => {
+        if (quantity > 0) return;
+        setQuantity(1);
+    }, [quantity]);
+
     const addToCart = useCallback(() => {
         setAddedToCart(true);
         cart.addItem(
             {
                 id: `${product?.id}#${product?.variants[variant]?.id}`,
                 price: product?.variants[variant]?.pricing.range,
-                quantity: quantity,
+                quantity,
 
                 title: product?.title,
                 variant_title: product?.variants[variant].title
@@ -519,7 +524,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                             const val = parseInt(
                                                 event.target.value
                                             );
-                                            setQuantity(val <= 0 ? 1 : val);
+                                            setQuantity(val);
                                         }}
                                     />
                                 </VariantQuantity>

@@ -192,15 +192,20 @@ const SummaryItems = styled.div`
 const SummaryItem = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
+    margin-bottom: 1.25rem;
     gap: 2rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 0.2rem solid var(--accent-secondary);
 
-    &:last-child {
-        border-bottom: none;
-        padding-bottom: 0px;
-        margin-bottom: 1rem;
+    @media (max-width: 950px) {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+
+        border-bottom: 0.2rem solid var(--accent-secondary);
+
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 0px;
+            margin-bottom: 1rem;
+        }
     }
 `;
 const SummaryItemMeta = styled.div``;
