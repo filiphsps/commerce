@@ -20,7 +20,7 @@ const ContentWrapper = styled.div`
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 2rem;
     }
 `;
 const Content = styled.article`
@@ -41,23 +41,26 @@ const Banner = styled.div`
 `;
 
 const ArticleHeader = styled.div`
-    margin-bottom: 2rem;
-    padding-top: 1.5rem;
-    border-top: 0.2rem solid #efefef;
+    margin-bottom: 3rem;
+    padding: 0.5rem 0px 1rem 0px;
+    border-bottom: 0.2rem solid #efefef;
 `;
 const ArticleTitle = styled.h1`
     max-width: 62rem;
     margin: 0px auto;
     text-transform: uppercase;
-    font-size: 2.75rem;
-    font-weight: 600;
+    font-size: 3.25rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
 `;
 const ArticleMeta = styled.div`
+    text-transform: uppercase;
     max-width: 62rem;
     margin: 0px auto;
     color: #404756;
     font-size: 1.25rem;
+    font-weight: 600;
+    font-size: 2rem;
 `;
 const ArticleAuthor = styled.div``;
 const ArticleDate = styled.div``;
@@ -85,11 +88,23 @@ const ArticleContent = styled(ContentComponent)`
     margin: 0px auto;
     //background: #efefef;
     //padding: 1rem;
+
+    &::first-letter {
+        color: var(--accent-primary-dark);
+        initial-letter: 2;
+        font-weight: 700;
+        padding: 0px 1rem 0.25rem 0px;
+    }
 `;
 
 const Sidebar = styled.div`
     position: relative;
     width: 100%;
+
+    @media (max-width: 950px) {
+        border-top: 0.2rem solid #efefef;
+        padding-top: 2rem;
+    }
 `;
 const SidebarContent = styled.div`
     position: sticky;
@@ -158,20 +173,6 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
             />
 
             <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'blog'} />,
-                            url: '/blog/'
-                        },
-                        {
-                            title: article.title,
-                            url: `/blog/${article.handle}/`
-                        }
-                    ]}
-                    store={store}
-                />
-
                 <ContentWrapper>
                     <Content>
                         <ArticleHeader>
@@ -211,7 +212,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                             {blog.articles.map((article) => (
                                 <SidebarLink key={article.id}>
                                     <Link href={`/blog/${article.handle}`}>
-                                        <a>{article.title}</a>
+                                        {article.title}
                                     </Link>
                                 </SidebarLink>
                             ))}
@@ -225,6 +226,20 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                         </SidebarContent>
                     </Sidebar>
                 </ContentWrapper>
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'blog'} />,
+                            url: '/blog/'
+                        },
+                        {
+                            title: article.title,
+                            url: `/blog/${article.handle}/`
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
         </Page>
     );

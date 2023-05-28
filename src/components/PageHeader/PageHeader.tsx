@@ -10,12 +10,18 @@ const Wrapper = styled.div`
 const Title = styled.h2`
     margin: 0px 0px 0.75rem -0.05rem;
     text-transform: uppercase;
-    font-weight: 600;
-    font-size: 2.5rem;
+    font-weight: 900;
+    font-size: 2.75rem;
+    line-height: 2.75rem;
 
     color: #404756;
     &:not(.plain-title) {
         color: var(--accent-primary);
+    }
+
+    @media (max-width: 950px) {
+        font-size: 3rem;
+        line-height: 3rem;
     }
 `;
 const SubTitle = styled.h3`

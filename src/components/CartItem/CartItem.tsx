@@ -30,10 +30,15 @@ const Content = styled.tr`
 
     @media (max-width: 950px) {
         position: relative;
-        grid-gap: 0.5rem;
-        grid-template-columns: 8rem 1fr 4rem 7rem;
+        grid-gap: 1rem;
+        grid-template-columns: 8rem 1fr 6rem 6rem;
         grid-template-areas: 'image meta quantity price';
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
+
+        max-height: 10rem;
+        padding: 1rem;
+        background: #efefef;
+        border-radius: var(--block-border-radius);
     }
 `;
 
@@ -172,12 +177,25 @@ const Badge = styled.div`
 `;
 
 const Price = styled(SectionContent)`
+    width: 100%;
+    height: 100%;
     font-weight: 700;
     font-size: 1.5rem;
     text-align: center;
 
+    .Currency {
+        display: flex;
+        //justify-content: flex-end;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
     @media (max-width: 950px) {
-        text-align: left;
+        text-align: right;
     }
 `;
 
@@ -223,19 +241,25 @@ const QuantitySection = styled(Section)`
     }
 `;
 const PriceSection = styled(Section)`
+    overflow: hidden;
     grid-area: price;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 100%;
+    height: 100%;
+
+    .Currency {
+        // FIXME: Wrap bug numbers.
+    }
 `;
 const ActionsSection = styled(Section)`
     grid-area: actions;
 
     @media (max-width: 950px) {
         position: absolute;
-        right: 8rem;
+        right: 10.5rem;
         bottom: 1rem;
         padding: 0.25rem;
         border-radius: 100%;
@@ -309,16 +333,17 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
 
     if (!product || !variant) {
         return (
-            <div
-                className="CartItem"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}
-            >
-                <Loader light />
-            </div>
+            <Content>
+                <ProductImage>
+                    <ImageWrapper></ImageWrapper>
+                </ProductImage>
+                <Section />
+                <Section>
+                    <Loader light />
+                </Section>
+                <Section />
+                <Section />
+            </Content>
         );
     }
 
@@ -340,7 +365,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     </Link>
                 </ImageWrapper>
             </ProductImage>
-            <MetaSection className="CartItem-Content">
+            <MetaSection>
                 <Details>
                     <DetailsBrand>
                         <Link href={`/collections/${product?.vendor?.handle}`}>
@@ -370,7 +395,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                                 .replace(/[^0-9.]/g, '')
                                 .replace(/(\..*?)\..*/g, '$1');
 
-                            // TODO: Figure out a good max
+                            // TODO: Figure out a good limit
                             if (
                                 Number.parseInt(
                                     (event as any).target.value,

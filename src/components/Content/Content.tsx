@@ -20,8 +20,8 @@ const Content = styled.div`
             margin-bottom: 0px;
         }
 
-        em,
-        i {
+        i,
+        em {
             font-weight: 700;
         }
     }
@@ -42,20 +42,23 @@ const Content = styled.div`
 
     h1 {
         margin-bottom: 0.5rem;
-        font-size: 2rem;
-        font-weight: 600;
+        font-size: 3.25rem;
+        line-height: 3.5rem;
+        font-weight: 800;
         text-transform: uppercase;
     }
     h2 {
         margin-bottom: 0.5rem;
-        font-size: 2rem;
-        font-weight: 600;
+        font-size: 2.75rem;
+        line-height: 3rem;
+        font-weight: 800;
         text-transform: uppercase;
     }
     h3 {
         margin-bottom: 0.5rem;
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 2rem;
+        line-height: 3.25rem;
+        font-weight: 700;
         text-transform: uppercase;
     }
 

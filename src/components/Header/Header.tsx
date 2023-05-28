@@ -39,7 +39,7 @@ const Content = styled.div`
     width: 100%;
     padding: 0.75rem 1.5rem;
 
-    @media (max-width: 1260px) {
+    @media (max-width: 950px) {
         grid-template-columns: auto auto 1fr;
         gap: 1rem;
     }
@@ -69,7 +69,7 @@ const Navigation = styled.nav`
     font-size: 1.5rem;
     letter-spacing: 0.05rem;
 
-    @media (max-width: 1260px) {
+    @media (max-width: 950px) {
         display: none;
     }
 
@@ -116,7 +116,7 @@ const CartIconWrapper = styled.div`
         align-items: center;
         position: relative;
         padding: 0.5rem 1rem;
-        border-radius: 1.5rem;
+        border-radius: 1.75rem;
         cursor: pointer;
         border: 0.2rem solid transparent;
     }
@@ -346,7 +346,7 @@ const HamburgerMenu = styled.div`
     font-size: 2.5rem;
     cursor: pointer;
 
-    @media (min-width: 1260px) {
+    @media (min-width: 950px) {
         display: none;
     }
 `;
@@ -590,7 +590,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         <CartIconWrapper
                             className={totalItems > 0 ? 'Active' : ''}
                         >
-                            <Link href={'/cart'} className="Wrapper">
+                            <Link href={'/cart/'} className="Wrapper">
                                 {totalItems > 0 && (
                                     <CartIcon className="Header-Content-CartBadge">
                                         {totalItems}
@@ -602,7 +602,8 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             {added_product && cartStore.item ? (
                                 <CartPopup
                                     className={
-                                        cartStore.open || beginCheckout
+                                        (cartStore.open || beginCheckout) &&
+                                        router.asPath !== '/cart/'
                                             ? 'Open'
                                             : ''
                                     }

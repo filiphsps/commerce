@@ -34,7 +34,7 @@ const tempGetInitialCurrencyAndValue = ({
             targetCurrency = 'CHF';
             break;
         case 'sv-SE':
-            targetCurrency = 'CHF';
+            targetCurrency = 'SEK';
             break;
     }
 

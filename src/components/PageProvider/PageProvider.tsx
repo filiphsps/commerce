@@ -51,7 +51,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}
-                    toggle={() => setSidebarOpen(!sidebarOpen)}
+                    toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
                 />
             </div>
             <div

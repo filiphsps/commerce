@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useWindowSize } from 'rooks';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 const Content = styled.div`
     display: grid;
@@ -49,7 +50,7 @@ const FreeShippingBanner = styled.div`
     border-radius: var(--block-border-radius);
     background: #efefef;
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
 
     @media (max-width: 950px) {
@@ -58,10 +59,10 @@ const FreeShippingBanner = styled.div`
 `;
 const FreeShippingBannerText = styled.div`
     display: flex;
-    gap: 0.5rem;
-    opacity: 0.75;
+    gap: 0.25rem;
+    font-weight: 600;
+
     &.Full {
-        opacity: 1;
         color: var(--accent-primary);
     }
 `;
@@ -71,6 +72,21 @@ const FreeShippingBannerMeta = styled.div`
     gap: 1rem;
     justify-content: center;
     align-items: center;
+
+    .Currency {
+        font-weight: 900;
+        color: var(--accent-primary);
+
+        .Currency-Prefix,
+        .Currency-Suffix {
+            font-weight: 600;
+            color: initial;
+        }
+    }
+
+    .Progress {
+        font-size: 1.75rem;
+    }
 `;
 const ProgressBar = styled.div`
     height: 100%;
@@ -97,7 +113,9 @@ const ItemsContainerWrapper = styled.div`
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
-        padding: 0.5rem 1rem;
+        padding: 0px;
+        background: none;
+        border-radius: none;
     }
 `;
 const ItemsContainer = styled.table`
@@ -150,6 +168,13 @@ const SummaryItems = styled.div`
         width: calc(100dvw - 3rem);
         width: calc(100vw - 3rem);
         padding-bottom: 0px;
+        padding: 1rem;
+        background: var(--color-text-primary);
+        border-radius: var(--block-border-radius);
+
+        .Currency {
+            font-size: 1.75rem;
+        }
 
         &.Open {
             display: block;
@@ -159,7 +184,7 @@ const SummaryItems = styled.div`
             bottom: 8rem;
             left: 0px;
             height: 30dvh;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0px;
         }
     }
 `;
@@ -171,7 +196,7 @@ const SummaryItem = styled.div`
 `;
 const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
 `;
 const SummaryItemVendor = styled.div`
@@ -195,6 +220,7 @@ const SummaryItemPrice = styled.div`
         display: inline-block;
         text-transform: initial;
         font-size: 1rem;
+        font-weight: 500;
     }
 
     @media (max-width: 950px) {
@@ -202,6 +228,7 @@ const SummaryItemPrice = styled.div`
 
         span {
             font-size: 1.25rem;
+            margin-bottom: -0.5rem;
         }
     }
 
@@ -243,23 +270,26 @@ const SummaryItemsToggle = styled.div`
     display: none;
     justify-content: center;
     align-items: center;
-    width: calc(100vw - 3rem);
-    width: calc(100dvw - 3rem);
-    font-weight: 600;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    height: 3rem;
-    font-size: 1.25rem;
+    height: 2.75rem;
+    font-size: 1.15rem;
+    font-weight: 800;
     transition: 150ms ease-in-out;
 
     background: var(--color-text-primary);
-    color: var(--accent-primary-light);
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem;
     border-radius: var(--block-border-radius);
-    margin: -0.5rem 0px 1rem 0px;
+    margin: 0rem auto 0rem 0rem;
+    gap: 0.5rem;
 
-    &:hover {
+    span {
+        color: rgba(0, 0, 0, 0.75);
+    }
+
+    &.Open,
+    &.Open span {
         background: var(--accent-secondary-dark);
         color: var(--color-text-primary);
     }
@@ -284,7 +314,6 @@ const SummaryContainer = styled.div`
             margin: 0px -1.5rem 0px -1.5rem;
             left: 0px;
             right: 0px;
-            border-top: 0.2rem solid #e9e9e9;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
             ${SummaryItems} {
@@ -292,7 +321,7 @@ const SummaryContainer = styled.div`
             }
 
             ${SummaryContent} {
-                padding: 1.5rem;
+                padding: 2rem 1.5rem 1.5rem;
                 padding-right: 10rem;
                 border-radius: 0px;
 
@@ -309,7 +338,7 @@ const SummaryContainer = styled.div`
             }
 
             ${SummaryItemsToggle} {
-                display: flex;
+                display: inline-flex;
             }
         }
     }
@@ -325,52 +354,76 @@ const Header = styled.tr`
     text-transform: uppercase;
 
     @media (max-width: 950px) {
-        grid-gap: 0.5rem;
-        grid-template-columns: 8rem 1fr 4rem 7rem;
-        padding: 0.5rem 0px 0.25rem 0px;
+        overflow: hidden;
+        grid-gap: 1rem;
+        grid-template-columns: 8rem 1fr 6rem 6rem;
+
+        padding: 0.5rem 1rem;
+        background: #efefef;
+        border-radius: var(--block-border-radius);
+        margin-bottom: 1rem;
+        opacity: 0.75;
     }
 `;
 const HeaderItem = styled.th`
     display: block;
+    height: 100%;
+    width: 100%;
     font-weight: 700;
     opacity: 0.75;
     text-align: left;
 
     @media (max-width: 950px) {
+        height: 100%;
         font-size: 1rem;
         text-align: left;
     }
 `;
 const HeaderItemImage = styled(HeaderItem)``;
 const HeaderItemQuantity = styled(HeaderItem)`
-    opacity: 0;
+    transform: translateX(-1rem);
+    text-align: center;
 
     @media (min-width: 950px) {
-        opacity: 0.75;
-        text-align: center;
-        transform: translateX(-25%);
+        transform: translateX(-1.25rem);
     }
 `;
 const HeaderItemPrice = styled(HeaderItem)`
     text-align: center;
+
+    @media (max-width: 950px) {
+        text-align: right;
+    }
 `;
 const HeaderItemActions = styled(HeaderItem)`
     @media (max-width: 950px) {
+        overflow: hidden;
         display: none;
+        width: 0px;
     }
 `;
 
 const Recommendations = styled(ContentBlock)`
     display: block;
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 4rem;
     border-radius: var(--block-border-radius);
+
+    @media (max-width: 950px) {
+        margin-top: 2.5rem;
+    }
 `;
 const RecommendationsTitle = styled.h3`
     text-transform: uppercase;
-    font-size: 1.5rem;
-    font-weight: 700;
-    opacity: 0.75;
+    font-size: 2.5rem;
+    font-weight: 600;
+
+    @media (max-width: 950px) {
+        font-size: 1.75rem;
+        font-weight: 700;
+        text-align: center;
+        color: var(--accent-primary);
+    }
 `;
 const RecommendationsContent = styled(PageContent)`
     width: 100%;
@@ -455,7 +508,8 @@ interface CartPageProps {
 const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
     const { outerWidth } = useWindowSize();
-    const cart = useCart();
+    const localCart = useCart();
+    const [cart, setCart] = useState<typeof localCart | null>(null);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any>({
         totalItems: 0,
@@ -464,12 +518,16 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const [isItemListOpen, setIsItemListOpen] = useState(false);
     const router = useRouter();
 
+    useEffect(() => {
+        setCart(localCart);
+    }, []);
+
     // SSR workaround
     useEffect(() => {
-        if (data.totalItems === cart.totalItems) return;
+        if (data.totalItems === localCart?.totalItems) return;
 
-        setData(cart);
-    }, [cart.totalItems]);
+        setData(localCart);
+    }, [localCart, cart]);
 
     // Sticky summary
     const [isSticky, setIsSticky] = useState(false);
@@ -504,9 +562,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
             id:
-                data.totalItems > 0
-                    ? cart.items[0].id.split('#')[0]
-                    : '8463374614833',
+                (data.totalItems > 0 && cart?.items[0].id.split('#')[0]) ||
+                '8463374614833',
             locale: router?.locale
         })
     ) as any;
@@ -520,6 +577,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const freeShipping = (Number.parseFloat(data.cartTotal) || 0) > 75;
 
     useEffect(() => {
+        if (!cart) return;
+
         (window as any).dataLayer?.push({
             ecommerce: null
         });
@@ -528,7 +587,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             currency: 'USD',
             value: price,
             ecommerce: {
-                items: cart.items.map((item) => ({
+                items: cart?.items.map((item) => ({
                     item_id: item.id,
                     item_name: item.title,
                     item_variant: item.variant_title,
@@ -539,24 +598,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 }))
             }
         });
-    }, []);
+    }, [cart]);
 
     return (
         <Page className="CartPage">
             <NextSeo title="Cart" canonical={`https://${Config.domain}/cart`} />
 
             <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'cart'} />,
-                            url: '/cart'
-                        }
-                    ]}
-                    store={store}
-                    hideSocial={true}
-                />
-
                 <PageHeader title="Cart" />
 
                 <Content>
@@ -583,11 +631,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         id={'price'}
                                                     />
                                                 </HeaderItemPrice>
-                                                <HeaderItemActions>
-                                                    <LanguageString
-                                                        id={'actions'}
-                                                    />
-                                                </HeaderItemActions>
+                                                {!isMobile && (
+                                                    <HeaderItemActions>
+                                                        <LanguageString
+                                                            id={'actions'}
+                                                        />
+                                                    </HeaderItemActions>
+                                                )}
                                             </Header>
                                         </thead>
                                         <tbody>
@@ -623,7 +673,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         store={store}
                                     />
                                 </FreeShippingBannerText>
-                                <FreeShippingBannerText>
+                                <FreeShippingBannerText className="Progress">
                                     <Currency
                                         price={
                                             Number.parseFloat(data.cartTotal) ||
@@ -631,12 +681,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         }
                                         currency="USD"
                                         store={store}
+                                        className="Total"
                                     />
                                     {`/`}
                                     <Currency
                                         price={75}
                                         currency="USD"
                                         store={store}
+                                        className="Left"
                                     />
                                 </FreeShippingBannerText>
                             </FreeShippingBannerMeta>
@@ -665,12 +717,39 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
                                 <SummaryItemsToggle
+                                    className={(isItemListOpen && 'Open') || ''}
                                     onClick={() =>
                                         setIsItemListOpen(!isItemListOpen)
                                     }
                                 >
-                                    {(isItemListOpen && 'Hide all items') ||
-                                        'Show all items'}
+                                    {(isItemListOpen && <FiChevronDown />) || (
+                                        <FiChevronUp />
+                                    )}
+                                    {cart && (
+                                        <span>
+                                            {(isItemListOpen && (
+                                                <>
+                                                    Hide all{' '}
+                                                    <b>
+                                                        {cart?.totalItems || 0}
+                                                    </b>
+                                                    {(cart?.totalItems > 1 &&
+                                                        ' items') ||
+                                                        ' item'}
+                                                </>
+                                            )) || (
+                                                <>
+                                                    Show{' '}
+                                                    <b>
+                                                        {cart?.totalItems || 0}
+                                                    </b>
+                                                    {(cart?.totalItems > 1 &&
+                                                        ' items') ||
+                                                        ' item'}
+                                                </>
+                                            )}
+                                        </span>
+                                    )}
                                 </SummaryItemsToggle>
                                 <SummaryItems
                                     className={
@@ -691,7 +770,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         {
                                                             line_item?.variant_title
                                                         }
-                                                        `
                                                     </SummaryItemVendor>
                                                 </SummaryItemMeta>
                                                 <SummaryItemPrice>
@@ -784,7 +862,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     </SummaryContainer>
                 </Content>
 
-                {cart.totalItems > 0 && (
+                {cart && cart?.totalItems > 0 && (
                     <>
                         {recommendations?.length > 1 ? (
                             <Recommendations>
@@ -806,6 +884,16 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         )}
                     </>
                 )}
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'cart'} />,
+                            url: '/cart/'
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
         </Page>
     );
