@@ -205,18 +205,20 @@ const Actions = styled(SectionContent)`
     align-items: flex-end;
     flex-direction: column;
     width: 100%;
+    user-select: none;
 `;
 const Action = styled.div`
     cursor: pointer;
     text-align: center;
-    width: 2rem;
-    max-width: 2rem;
+    width: 2.25rem;
+    max-width: 2.25rem;
     font-size: 1.25rem;
     user-select: none;
 
     &:hover {
         // FIXME: Only use this for the remove action
         color: #d91e18;
+        border-color: #d91e18;
     }
 `;
 
@@ -266,20 +268,22 @@ const ActionsSection = styled(Section)`
         transition: 150ms ease-in-out;
         background-color: var(--color-text-primary);
         border: 0.2rem solid #efefef;
+        cursor: pointer;
+        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
         ${Actions} {
             ${Action} {
-                width: 2rem;
-                height: 2rem;
+                width: 2.25rem;
+                height: 2.25rem;
                 font-size: 1.5rem;
                 color: unset;
-                opacity: 0.75;
-                box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
             }
         }
 
         &:hover {
-            border-color: var(--accent-primary);
+            color: var(--color-text-primary);
+            border-color: #d91e18;
+            background-color: #d91e18;
         }
     }
 `;

@@ -52,6 +52,7 @@ const Logo = styled.div`
     cursor: pointer;
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
+    user-select: none;
 
     a {
         position: relative;
@@ -110,6 +111,8 @@ const Actions = styled.div`
 
 const CartIconWrapper = styled.div`
     position: relative;
+    user-select: none;
+
     .Wrapper {
         display: flex;
         justify-content: center;
@@ -387,6 +390,17 @@ const Header = styled.header`
                     background: #fefefe;
                     color: #0e0e0e;
                     padding: 0.75rem 1.25rem;
+
+                    &:hover,
+                    &:active {
+                        background: var(--accent-secondary-dark);
+                        color: var(--color-text-primary);
+
+                        .Icon {
+                            color: var(--color-text-primary);
+                            transform: none;
+                        }
+                    }
                 }
             }
         }

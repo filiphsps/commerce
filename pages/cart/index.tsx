@@ -419,7 +419,7 @@ const RecommendationsTitle = styled.h3`
     font-weight: 600;
 
     @media (max-width: 950px) {
-        font-size: 1.75rem;
+        font-size: 2.25rem;
         font-weight: 700;
         text-align: center;
         color: var(--accent-primary);
