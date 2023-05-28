@@ -167,8 +167,8 @@ const SummaryItems = styled.div`
         overflow: hidden;
         width: calc(100dvw - 3rem);
         width: calc(100vw - 3rem);
-        padding-bottom: 0px;
         padding: 1rem;
+        padding-bottom: 0px;
         background: var(--color-text-primary);
         border-radius: var(--block-border-radius);
 
@@ -183,6 +183,7 @@ const SummaryItems = styled.div`
             opacity: 1;
             bottom: 8rem;
             left: 0px;
+            height: 30vh;
             height: 30dvh;
             margin: 1.5rem 0px;
         }
@@ -193,6 +194,14 @@ const SummaryItem = styled.div`
     grid-template-columns: 1fr auto;
     gap: 2rem;
     margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 0.2rem solid var(--accent-secondary);
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0px;
+        margin-bottom: 1rem;
+    }
 `;
 const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
@@ -356,7 +365,7 @@ const Header = styled.tr`
     @media (max-width: 950px) {
         overflow: hidden;
         grid-gap: 1rem;
-        grid-template-columns: 8rem 1fr 6rem 6rem;
+        grid-template-columns: 8rem 1fr 5rem 6rem;
 
         padding: 0.5rem 1rem;
         background: #efefef;
@@ -728,15 +737,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     {cart && (
                                         <span>
                                             {(isItemListOpen && (
-                                                <>
-                                                    Hide all{' '}
-                                                    <b>
-                                                        {cart?.totalItems || 0}
-                                                    </b>
-                                                    {(cart?.totalItems > 1 &&
-                                                        ' items') ||
-                                                        ' item'}
-                                                </>
+                                                <>Hide order summary</>
                                             )) || (
                                                 <>
                                                     Show{' '}

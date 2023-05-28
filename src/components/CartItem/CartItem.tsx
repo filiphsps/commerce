@@ -18,7 +18,7 @@ import useSWR from 'swr';
 
 const Content = styled.tr`
     display: grid;
-    max-height: 9rem;
+    min-height: 9rem;
     width: 100vw;
     max-width: 100%;
     grid-template-columns: 8rem 1fr 4rem 12rem 6rem;
@@ -31,11 +31,11 @@ const Content = styled.tr`
     @media (max-width: 950px) {
         position: relative;
         grid-gap: 1rem;
-        grid-template-columns: 8rem 1fr 6rem 6rem;
+        grid-template-columns: 8rem 1fr 5rem 6rem;
         grid-template-areas: 'image meta quantity price';
         margin-bottom: 1rem;
 
-        max-height: 10rem;
+        min-height: 10rem;
         padding: 1rem;
         background: #efefef;
         border-radius: var(--block-border-radius);
@@ -53,7 +53,7 @@ const SectionContent = styled.div`
 
 const ImageWrapper = styled.div`
     max-width: 8rem;
-    height: 8rem;
+    min-height: 8rem;
     width: 8rem;
     max-width: 8rem;
     padding: 0.5rem;
@@ -74,7 +74,7 @@ const ImageWrapper = styled.div`
 const ProductImage = styled(Section)`
     grid-area: image;
     display: block;
-    height: 8rem;
+    height: 100%;
     width: 100%;
     max-width: 8rem;
     background: #fefefe;
@@ -261,8 +261,8 @@ const ActionsSection = styled(Section)`
 
     @media (max-width: 950px) {
         position: absolute;
-        right: 10.5rem;
-        bottom: 1rem;
+        right: 9.5rem;
+        top: 6rem;
         padding: 0.25rem;
         border-radius: 100%;
         transition: 150ms ease-in-out;
@@ -273,6 +273,9 @@ const ActionsSection = styled(Section)`
 
         ${Actions} {
             ${Action} {
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 width: 2.25rem;
                 height: 2.25rem;
                 font-size: 1.5rem;
