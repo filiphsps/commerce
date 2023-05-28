@@ -1,3 +1,4 @@
+import { FiChevronDown, FiChevronUp, FiTrash } from 'react-icons/fi';
 import React, { FunctionComponent, useRef, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
@@ -22,7 +23,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useWindowSize } from 'rooks';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 const Content = styled.div`
     display: grid;
@@ -158,6 +158,7 @@ const SummaryContent = styled.div`
 const SummaryItems = styled.div`
     padding-bottom: 1rem;
     text-transform: uppercase;
+    user-select: all;
 
     @media (max-width: 950px) {
         display: none;
@@ -280,30 +281,43 @@ const SummarySummary = styled.div`
         margin-top: -1rem;
     }
 `;
-const SummaryItemsToggle = styled.div`
+const SummaryItemsToggle = styled(Button)`
     display: none;
-    justify-content: center;
-    align-items: center;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    height: 2.75rem;
-    font-size: 1.15rem;
-    font-weight: 800;
     transition: 150ms ease-in-out;
 
     background: var(--color-text-primary);
-    padding: 1.25rem;
     border-radius: var(--block-border-radius);
-    margin: 0rem auto 0rem 0rem;
     gap: 0.5rem;
 
-    span {
+    &.Button {
+        justify-content: center;
+        align-items: center;
+
+        height: 2.75rem;
+        margin: 0rem auto 0rem 0rem;
+        padding: 1.25rem;
+        border-width: 0px;
+        width: auto;
+
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: unset;
+        text-align: unset;
+
+        box-shadow: none;
+    }
+
+    span,
+    svg {
         color: rgba(0, 0, 0, 0.75);
     }
 
     &.Open,
-    &.Open span {
+    &.Open span,
+    &.Open svg {
         background: var(--accent-secondary-dark);
         color: var(--color-text-primary);
     }
@@ -312,8 +326,24 @@ const SummaryItemsToggle = styled.div`
         display: none;
     }
 `;
+const SummaryItemsActionClear = styled(SummaryItemsToggle)`
+    background: none;
+    color: rgba(0, 0, 0, 0.75);
+    opacity: 0;
+
+    &.Active {
+        opacity: 1;
+    }
+`;
+const SummaryItemsActions = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    width: calc(100dvw - 3rem);
+    width: calc(100vw - 3rem);
+`;
 const SummaryContainer = styled.div`
-    z-index: 1;
+    z-index: 5;
 
     @media (max-width: 950px) {
         max-width: calc(100vw - 3rem);
@@ -726,35 +756,52 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     >
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
-                                <SummaryItemsToggle
-                                    className={(isItemListOpen && 'Open') || ''}
-                                    onClick={() =>
-                                        setIsItemListOpen(!isItemListOpen)
-                                    }
-                                >
-                                    {(isItemListOpen && <FiChevronDown />) || (
-                                        <FiChevronUp />
-                                    )}
-                                    {cart && (
-                                        <span>
-                                            {(isItemListOpen && (
-                                                <>Hide order summary</>
-                                            )) || (
-                                                <>
-                                                    Show{' '}
-                                                    <b>
-                                                        {localCart?.totalItems ||
-                                                            cart?.totalItems ||
-                                                            0}
-                                                    </b>
-                                                    {(cart?.totalItems > 1 &&
-                                                        ' items') ||
-                                                        ' item'}
-                                                </>
-                                            )}
-                                        </span>
-                                    )}
-                                </SummaryItemsToggle>
+                                <SummaryItemsActions>
+                                    <SummaryItemsToggle
+                                        className={
+                                            (isItemListOpen && 'Open') || ''
+                                        }
+                                        onClick={() =>
+                                            setIsItemListOpen(!isItemListOpen)
+                                        }
+                                    >
+                                        {(isItemListOpen && (
+                                            <FiChevronDown />
+                                        )) || <FiChevronUp />}
+                                        {cart && (
+                                            <span>
+                                                {(isItemListOpen && (
+                                                    <>Hide order summary</>
+                                                )) || (
+                                                    <>
+                                                        Show{' '}
+                                                        <b>
+                                                            {localCart?.totalItems ||
+                                                                cart?.totalItems ||
+                                                                0}
+                                                        </b>
+                                                        {(cart?.totalItems >
+                                                            1 &&
+                                                            ' items') ||
+                                                            ' item'}
+                                                    </>
+                                                )}
+                                            </span>
+                                        )}
+                                    </SummaryItemsToggle>
+                                    <SummaryItemsActionClear
+                                        disabled={(cart?.totalItems || 0) <= 0}
+                                        className={
+                                            (isItemListOpen && 'Active') || ''
+                                        }
+                                        onClick={() => {
+                                            cart?.emptyCart();
+                                        }}
+                                    >
+                                        <FiTrash />
+                                        Clear
+                                    </SummaryItemsActionClear>
+                                </SummaryItemsActions>
                                 <SummaryItems
                                     className={
                                         (!isSticky &&

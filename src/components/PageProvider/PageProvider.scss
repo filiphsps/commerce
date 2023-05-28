@@ -26,9 +26,11 @@ body {
 
     #dummy-chat-button-iframe {
         right: 2rem !important;
+        bottom: 2rem !important;
 
         @media screen and (max-width: 950px) {
-            right: 1.5rem !important;
+            right: 1.75rem !important;
+            bottom: 3rem !important;
         }
     }
 }

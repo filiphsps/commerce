@@ -101,24 +101,28 @@ const StoreApp = withStore(
                 else if (router.pathname.includes('collections'))
                     page_type = 'collection';
 
-                (window as any).uetq.push('event', 'add_to_cart', {
-                    ecomm_prodid: [
-                        item.id
-                            .replaceAll('gid://shopify/Product/', '')
-                            .replaceAll('gid://shopify/ProductVariant', '')
-                    ],
-                    ecomm_pagetype: page_type,
-                    ecomm_totalvalue: item.price * item.quantity,
-                    revenue_value: 1,
-                    currency: 'USD',
-                    items: [
-                        {
-                            id: item.id,
-                            quantity: item.quantity,
-                            price: item.price
-                        }
-                    ]
-                });
+                try {
+                    (window as any).uetq.push('event', 'add_to_cart', {
+                        ecomm_prodid: [
+                            item.id
+                                .replaceAll('gid://shopify/Product/', '')
+                                .replaceAll('gid://shopify/ProductVariant', '')
+                        ],
+                        ecomm_pagetype: page_type,
+                        ecomm_totalvalue: item.price * item.quantity,
+                        revenue_value: 1,
+                        currency: 'USD',
+                        items: [
+                            {
+                                id: item.id,
+                                quantity: item.quantity,
+                                price: item.price
+                            }
+                        ]
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
             }
         };
 
