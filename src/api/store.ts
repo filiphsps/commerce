@@ -16,7 +16,6 @@ export const StoreApi = async (
 
             const currencies = res.currencies.map((item) => item.currency);
 
-            // FIXME: add social.
             // FIXME: add custom_header_tags, custom_body_tags; or do this through gtm and instead just provide a gtm_id.
             return resolve({
                 name: res.store_name,
@@ -36,7 +35,7 @@ export const StoreApi = async (
                 },
                 currencies: currencies,
                 languages: Config.i18n.locales,
-                social: [],
+                social: res.social,
                 block: {
                     border_radius: res.border_radius || '0.5rem'
                 }

@@ -347,11 +347,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             },
             quantity
         );
-
         setTimeout(() => {
             setAddedToCart(false);
         }, 3000);
-    }, [product, variant]);
+    }, [product, variant, quantity]);
 
     if (errors?.length) console.error(errors);
 

@@ -488,6 +488,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
             // Clear cart if we find old product ids
             cart.emptyCart();
+            cart.clearCartMetadata();
         });
     }, []);
 

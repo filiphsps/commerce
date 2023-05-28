@@ -9,12 +9,6 @@
             "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 STORE_LOCALES=\"en-US,en-GB,sv-SE\" npm run dev"
         },
         {
-            "name": "Next.js: debug client-side",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:3000"
-        },
-        {
             "name": "Next.js: debug full stack",
             "type": "node-terminal",
             "request": "launch",
@@ -22,7 +16,7 @@
             "serverReadyAction": {
                 "pattern": "started server on .+, url: (https?://.+)",
                 "uriFormat": "%s",
-                "action": "debugWithChrome"
+                "action": "debugWithEdge"
             }
         },
         {

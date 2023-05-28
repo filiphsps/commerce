@@ -538,10 +538,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     // SSR workaround
     useEffect(() => {
-        if (data.totalItems === localCart?.totalItems) return;
+        if ((cart || !localCart) && data.totalItems === localCart?.totalItems)
+            return;
 
         setData(localCart);
-    }, [localCart, cart]);
+    }, [localCart, cart, localCart?.items]);
 
     // Sticky summary
     const [isSticky, setIsSticky] = useState(false);
@@ -562,7 +563,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         return () => {
             observer.unobserve(cachedRef!);
         };
-    }, [undefined]);
+    }, []);
 
     // Mobile
     const [isMobile, setIsMobile] = useState(false);
@@ -625,35 +626,30 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     <ContentWrapper>
                         <ItemsContainerWrapper>
                             <ItemsContainer>
+                                <thead>
+                                    <Header>
+                                        <HeaderItemImage>
+                                            <LanguageString id={'product'} />
+                                        </HeaderItemImage>
+                                        <HeaderItem></HeaderItem>
+                                        <HeaderItemQuantity>
+                                            <LanguageString id={'quantity'} />
+                                        </HeaderItemQuantity>
+                                        <HeaderItemPrice>
+                                            <LanguageString id={'price'} />
+                                        </HeaderItemPrice>
+                                        {!isMobile && (
+                                            <HeaderItemActions>
+                                                <LanguageString
+                                                    id={'actions'}
+                                                />
+                                            </HeaderItemActions>
+                                        )}
+                                    </Header>
+                                </thead>
+
                                 {data.items?.length >= 1 ? (
                                     <>
-                                        <thead>
-                                            <Header>
-                                                <HeaderItemImage>
-                                                    <LanguageString
-                                                        id={'product'}
-                                                    />
-                                                </HeaderItemImage>
-                                                <HeaderItem></HeaderItem>
-                                                <HeaderItemQuantity>
-                                                    <LanguageString
-                                                        id={'quantity'}
-                                                    />
-                                                </HeaderItemQuantity>
-                                                <HeaderItemPrice>
-                                                    <LanguageString
-                                                        id={'price'}
-                                                    />
-                                                </HeaderItemPrice>
-                                                {!isMobile && (
-                                                    <HeaderItemActions>
-                                                        <LanguageString
-                                                            id={'actions'}
-                                                        />
-                                                    </HeaderItemActions>
-                                                )}
-                                            </Header>
-                                        </thead>
                                         <tbody>
                                             {data.items?.map((item) => {
                                                 return (
@@ -747,7 +743,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 <>
                                                     Show{' '}
                                                     <b>
-                                                        {cart?.totalItems || 0}
+                                                        {localCart?.totalItems ||
+                                                            cart?.totalItems ||
+                                                            0}
                                                     </b>
                                                     {(cart?.totalItems > 1 &&
                                                         ' items') ||
