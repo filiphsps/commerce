@@ -27,16 +27,15 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     itemType="https://schema.org/ListItem"
                     className="Breadcrumbs-Content-Item"
                 >
-                    <Link href={'/'}>
-                        <a
-                            itemType="https://schema.org/Thing"
-                            itemProp="item"
-                            className="Link"
-                        >
-                            <span itemProp="name">
-                                {store?.name || store?.title}
-                            </span>
-                        </a>
+                    <Link
+                        href={'/'}
+                        itemType="https://schema.org/Thing"
+                        itemProp="item"
+                        className="Link"
+                    >
+                        <span itemProp="name">
+                            {store?.name || store?.title}
+                        </span>
                     </Link>
                     <meta itemProp="position" content="1" />
                 </li>
@@ -52,14 +51,13 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                             itemType="https://schema.org/ListItem"
                             className="Breadcrumbs-Content-Item"
                         >
-                            <Link href={item.url}>
-                                <a
-                                    itemType="https://schema.org/Thing"
-                                    itemProp="item"
-                                    className="Link"
-                                >
-                                    <span itemProp="name">{item.title}</span>
-                                </a>
+                            <Link
+                                href={item.url}
+                                itemType="https://schema.org/Thing"
+                                itemProp="item"
+                                className="Link"
+                            >
+                                <span itemProp="name">{item.title}</span>
                             </Link>
                             <meta itemProp="position" content={index + 2} />
                         </li>

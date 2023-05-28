@@ -8,12 +8,14 @@ import {
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import Button from '../Button';
+import { Checkout } from '../../../pages/cart';
 import { Config } from '../../util/Config';
 import { HeaderApi } from '../../api/header';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import { ProductIdApi } from '../../api/product';
 import SearchBar from '../SearchBar';
+import { Tag } from '../../../pages/products/[handle]';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
@@ -166,17 +168,24 @@ const CartIcon = styled.span`
 const CartPopup = styled.section`
     z-index: 999;
     position: absolute;
+    display: grid;
     width: 32rem;
-    padding: 1rem;
-    right: -1rem;
+    padding: 1.5rem;
+    right: -0.5rem;
     top: 4rem;
-    background: #efefef;
+    background: var(--accent-secondary-light);
+    color: #0e0e0e;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.75);
-    border: 0.2rem solid var(--accent-primary);
+    box-shadow: 0px 0px 50px -10px rgba(0, 0, 0, 0.75);
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
     opacity: 0;
     transition: 150ms ease-in-out;
     pointer-events: none;
+
+    @media (min-width: 950px) {
+        width: 36rem;
+    }
 
     &.Open {
         opacity: 1;
@@ -187,6 +196,8 @@ const CartPopupItem = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 1rem;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 1rem;
     text-transform: uppercase;
 `;
@@ -194,8 +205,13 @@ const CartPopupItemHeader = styled.div`
     display: grid;
     justify-content: center;
     align-items: center;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr 2rem;
+    gap: 0px;
     margin-bottom: 1rem;
+    color: var(--color-text-primary);
+    background: var(--accent-primary);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--block-border-radius);
 
     svg {
         font-size: 2rem;
@@ -203,19 +219,29 @@ const CartPopupItemHeader = styled.div`
 `;
 const CartPopupItemTitle = styled.div`
     text-transform: uppercase;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    font-weight: 900;
+    text-align: left;
+
+    span {
+        display: inline-block;
+        font-size: 1.5rem;
+    }
 `;
 const CartPopupItemImageWrapper = styled.div`
     background: #fefefe;
     border-radius: var(--block-border-radius);
     overflow: hidden;
+    height: 100%;
     padding: 1rem;
 `;
 const CartPopupItemImage = styled.div`
     position: relative;
     width: 6rem;
-    height: 6rem;
+    min-height: 6rem;
+    height: 100%;
+
     img {
         height: 100%;
         width: 100%;
@@ -223,31 +249,40 @@ const CartPopupItemImage = styled.div`
     }
 `;
 const CartPopupItemMeta = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 0px;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    background: #fefefe;
+    border-radius: var(--block-border-radius);
 `;
 const CartPopupItemMetaVendor = styled.div`
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: 0.05rem;
     opacity: 0.75;
+    color: #404756;
 `;
 const CartPopupItemMetaTitle = styled.div`
-    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    font-size: 2.15rem;
+    line-height: 2.25rem;
     font-weight: 600;
     color: var(--accent-primary);
 `;
 const CartPopupItemMetaVariant = styled.div`
     display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    align-items: flex-end;
 `;
-const Badge = styled.div`
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    background: var(--accent-secondary-dark);
-    color: var(--color-text-primary);
+const CartPopupContent = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    width: 100%;
 `;
 
 const NavigationItemChildren = styled.div`
@@ -375,6 +410,10 @@ const Header = styled.header`
                 padding-right: 0.25rem;
             }
         }
+
+        ${CartPopup} {
+            top: 5.5rem;
+        }
     }
 
     &:hover {
@@ -405,9 +444,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const cart = useCart();
     const router = useRouter();
     const [totalItems, setTotalItem] = useState(0);
+    const [beginCheckout, setBeginCheckout] = useState(false);
     const [cartStore, setCartStore] = useStore<any>('cart');
-    const { data } = useSWR(['header'], () => HeaderApi() as any);
-    const timer = useRef(null);
+    const { data } = useSWR(['header'], () => HeaderApi(router.locale) as any);
+    const timer: any = useRef(null);
 
     // TODO: Switch-case
     const style =
@@ -446,7 +486,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
         if (cartStore.open) {
             timer.current = setTimeout(() => {
                 if (!cartStore.open) return;
-
                 setCartStore({ ...cartStore, open: false });
             }, 5000);
         }
@@ -466,9 +505,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
                 <Logo>
                     <Link href={'/'}>
-                        <a>
-                            <Image src={store?.logo?.src} layout="fill" />
-                        </a>
+                        <Image
+                            src={store?.logo?.src}
+                            layout="fill"
+                            alt="Logo"
+                        />
                     </Link>
                 </Logo>
 
@@ -476,22 +517,21 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                     {navigation?.map((item: any, index) => {
                         return (
                             <NavigationItem key={item.handle + `${index}`}>
-                                <Link href={`/${item?.handle || ''}`}>
-                                    <a
-                                        title={item.title}
-                                        className={
-                                            (router.asPath === '/' &&
-                                                item?.handle === null) ||
-                                            `/${item?.handle}` === router.asPath
-                                                ? 'Active'
-                                                : ''
-                                        }
-                                    >
-                                        {item?.title}{' '}
-                                        {item?.children?.length > 0 ? (
-                                            <FiChevronDown />
-                                        ) : null}
-                                    </a>
+                                <Link
+                                    href={`/${item?.handle || ''}`}
+                                    title={item.title}
+                                    className={
+                                        (router.asPath === '/' &&
+                                            item?.handle === null) ||
+                                        `/${item?.handle}` === router.asPath
+                                            ? 'Active'
+                                            : ''
+                                    }
+                                >
+                                    {item?.title}{' '}
+                                    {item?.children?.length > 0 ? (
+                                        <FiChevronDown />
+                                    ) : null}
                                 </Link>
                                 {item.children.length ? (
                                     <NavigationItemChildren>
@@ -510,24 +550,21 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                                     item?.handle ||
                                                                     ''
                                                                 }`}
+                                                                title={
+                                                                    item.title
+                                                                }
+                                                                className={
+                                                                    (router.asPath ===
+                                                                        '/' &&
+                                                                        item?.handle ===
+                                                                            null) ||
+                                                                    `/${item?.handle}` ===
+                                                                        router.asPath
+                                                                        ? 'Active'
+                                                                        : ''
+                                                                }
                                                             >
-                                                                <a
-                                                                    title={
-                                                                        item.title
-                                                                    }
-                                                                    className={
-                                                                        (router.asPath ===
-                                                                            '/' &&
-                                                                            item?.handle ===
-                                                                                null) ||
-                                                                        `/${item?.handle}` ===
-                                                                            router.asPath
-                                                                            ? 'Active'
-                                                                            : ''
-                                                                    }
-                                                                >
-                                                                    {item.title}
-                                                                </a>
+                                                                {item.title}
                                                             </Link>
                                                         </NavigationItem>
                                                     )
@@ -553,24 +590,26 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         <CartIconWrapper
                             className={totalItems > 0 ? 'Active' : ''}
                         >
-                            <Link href={'/cart'}>
-                                <a className="Wrapper">
-                                    {totalItems > 0 && (
-                                        <CartIcon className="Header-Content-CartBadge">
-                                            {totalItems}
-                                        </CartIcon>
-                                    )}
-                                    <FiShoppingCart className="Icon" />
-                                </a>
+                            <Link href={'/cart'} className="Wrapper">
+                                {totalItems > 0 && (
+                                    <CartIcon className="Header-Content-CartBadge">
+                                        {totalItems}
+                                    </CartIcon>
+                                )}
+                                <FiShoppingCart className="Icon" />
                             </Link>
 
                             {added_product && cartStore.item ? (
                                 <CartPopup
-                                    className={cartStore.open ? 'Open' : ''}
+                                    className={
+                                        cartStore.open || beginCheckout
+                                            ? 'Open'
+                                            : ''
+                                    }
                                 >
                                     <CartPopupItemHeader>
                                         <CartPopupItemTitle>
-                                            Added to the cart
+                                            <span>✓</span> Added to the cart
                                         </CartPopupItemTitle>
                                         <FiX
                                             style={{ cursor: 'pointer' }}
@@ -602,17 +641,18 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                 {cartStore.item.title}
                                             </CartPopupItemMetaTitle>
                                             <CartPopupItemMetaVariant>
-                                                <Badge>
+                                                <Tag>
                                                     {
                                                         cartStore.item
                                                             .variant_title
                                                     }
-                                                </Badge>
+                                                </Tag>
                                             </CartPopupItemMetaVariant>
                                         </CartPopupItemMeta>
                                     </CartPopupItem>
-                                    <Link href="/cart">
-                                        <a
+                                    <CartPopupContent>
+                                        <Link
+                                            href="/cart"
                                             onClick={() => {
                                                 setCartStore({
                                                     ...cartStore,
@@ -620,9 +660,46 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                 });
                                             }}
                                         >
-                                            <Button>View cart</Button>
-                                        </a>
-                                    </Link>
+                                            <Button
+                                                className="Secondary"
+                                                disabled={beginCheckout}
+                                            >
+                                                View cart
+                                            </Button>
+                                        </Link>
+                                        <Button
+                                            disabled={beginCheckout}
+                                            onClick={async () => {
+                                                try {
+                                                    if (beginCheckout) return;
+
+                                                    setBeginCheckout(true);
+
+                                                    await Checkout({
+                                                        data: cart,
+                                                        locale: router.locale,
+                                                        price: cart.items.reduce(
+                                                            (
+                                                                previousValue,
+                                                                item
+                                                            ) =>
+                                                                previousValue +
+                                                                item.price *
+                                                                    (item.quantity ||
+                                                                        1),
+                                                            0
+                                                        )
+                                                    });
+                                                } catch (error) {
+                                                    console.error(error);
+                                                    alert(error.message);
+                                                    setBeginCheckout(false);
+                                                }
+                                            }}
+                                        >
+                                            Checkout
+                                        </Button>
+                                    </CartPopupContent>
                                 </CartPopup>
                             ) : null}
                         </CartIconWrapper>

@@ -26,9 +26,9 @@ interface ShopBlockProps {
     store?: any;
     data?: any;
 }
-const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
+const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
     const { products } = data;
-    const [filter, setFilter] = useState({
+    const [filter, setFilter] = useState<any>({
         tags: [],
         vendors: [],
         sorting: 'none'
@@ -80,6 +80,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data }) => {
                                         key={product?.id}
                                         data={product || null}
                                         handle={product?.handle}
+                                        store={store}
                                     />
                                 );
                             })}

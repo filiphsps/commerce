@@ -1,7 +1,11 @@
 import 'destyle.css';
 import './app.scss';
 
-import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import {
+    DefaultSeo,
+    SiteLinksSearchBoxJsonLd,
+    SocialProfileJsonLd
+} from 'next-seo';
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
@@ -31,7 +35,9 @@ Router.events.on('routeChangeError', (err) => {
 const StoreApp = withStore(
     ({ Component, pageProps }) => {
         const router = useRouter();
+        // eslint-disable-next-line no-unused-vars
         const [cartStore, setCartStore] = useStore<any>('cart');
+        // eslint-disable-next-line no-unused-vars
         const [country, setCountry] = useStore('country');
         const [sessionId, setSessionId] = useState<string>();
         const [userId, setUserId] = useState<string>();
@@ -236,7 +242,9 @@ const StoreApp = withStore(
                         shopId={76188483889}
                         route={
                             router.pathname.includes('/shop')
-                                ? router.pathname.replace('/shop', '/products').replace('/en-US', '')
+                                ? router.pathname
+                                      .replace('/shop', '/products')
+                                      .replace('/en-US', '')
                                 : router.pathname
                         }
                         userId={userId}

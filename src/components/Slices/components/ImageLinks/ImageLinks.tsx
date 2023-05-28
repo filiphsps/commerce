@@ -1,6 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import PageContent from '../../../PageContent';
 import styled from 'styled-components';
@@ -93,20 +93,18 @@ const ImageLinks: FunctionComponent<ImageLinksProps> = ({ data }) => {
                     {items.map(({ handle, title, image }) => (
                         <Item key={handle} title={title}>
                             <Link href={handle}>
-                                <a>
-                                    <Image
-                                        src={image.url}
-                                        alt={image.alt || title}
-                                        width={image.dimensions.width}
-                                        height={image.dimensions.height}
-                                    />
+                                <Image
+                                    src={image?.url || ''}
+                                    alt={image?.alt || title}
+                                    width={image?.dimensions.width}
+                                    height={image?.dimensions.height}
+                                />
 
-                                    {title ? (
-                                        <TitleContainer>
-                                            <Title>{title}</Title>
-                                        </TitleContainer>
-                                    ) : null}
-                                </a>
+                                {title ? (
+                                    <TitleContainer>
+                                        <Title>{title}</Title>
+                                    </TitleContainer>
+                                ) : null}
                             </Link>
                         </Item>
                     ))}

@@ -9,9 +9,11 @@ export const Convertor = (
         node: ProductModel;
     }>
 ): Array<VendorModel> => {
-    let vendors = [];
+    let vendors: any[] = [];
     products.forEach((product) => {
-        vendors.push(product?.node?.vendor);
+        if (!product?.node?.vendor) return;
+
+        vendors.push(product.node.vendor);
     });
     vendors = vendors.filter((item, pos, self) => {
         return self.indexOf(item) == pos;

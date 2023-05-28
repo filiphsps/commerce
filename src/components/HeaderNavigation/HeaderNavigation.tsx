@@ -82,7 +82,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     toggle
 }) => {
     const router = useRouter();
-    const { data } = useSWR(['header'], () => HeaderApi() as any);
+    const { data } = useSWR(['header'], () => HeaderApi(router.locale) as any);
 
     // TODO: Switch-case
     const headerStyle =
@@ -96,40 +96,37 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                 {navigation?.map((item: any, index) => {
                     return (
                         <NavigationItem key={item.handle + `_${index}`}>
-                            <Link href={`/${item.handle || ''}`}>
-                                <a
-                                    title={item.title}
-                                    className={
-                                        (router.asPath === '/' &&
-                                            item?.handle === null) ||
-                                        `/${item?.handle}` === router.asPath
-                                            ? 'Active'
-                                            : ''
-                                    }
-                                    onClick={toggle}
-                                >
-                                    {item.title}
-                                </a>
+                            <Link
+                                href={`/${item.handle || ''}`}
+                                title={item.title}
+                                className={
+                                    (router.asPath === '/' &&
+                                        item?.handle === null) ||
+                                    `/${item?.handle}` === router.asPath
+                                        ? 'Active'
+                                        : ''
+                                }
+                                onClick={toggle}
+                            >
+                                {item.title}
                             </Link>
                             {item.children.map((item, index) => (
                                 <NavigationSubItem
                                     key={item.handle + `_${index}`}
                                 >
-                                    <Link href={`/${item.handle || ''}`}>
-                                        <a
-                                            title={item.title}
-                                            className={
-                                                (router.asPath === '/' &&
-                                                    item?.handle === null) ||
-                                                `/${item?.handle}` ===
-                                                    router.asPath
-                                                    ? 'Active'
-                                                    : ''
-                                            }
-                                            onClick={toggle}
-                                        >
-                                            {item.title}
-                                        </a>
+                                    <Link
+                                        href={`/${item.handle || ''}`}
+                                        title={item.title}
+                                        className={
+                                            (router.asPath === '/' &&
+                                                item?.handle === null) ||
+                                            `/${item?.handle}` === router.asPath
+                                                ? 'Active'
+                                                : ''
+                                        }
+                                        onClick={toggle}
+                                    >
+                                        {item.title}
                                     </Link>
                                 </NavigationSubItem>
                             ))}

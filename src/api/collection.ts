@@ -36,7 +36,7 @@ export const COLLECTION_FRAGMENT = `
     }
 `;
 
-export const Convertor = (collection: any): CollectionModel => {
+export const Convertor = (collection: any): CollectionModel | null => {
     if (!collection) return null;
 
     const res = {
@@ -70,7 +70,7 @@ export const Convertor = (collection: any): CollectionModel => {
             ProductConvertor(product.node)
         )
     };
-    return res;
+    return res as any as CollectionModel;
 };
 
 export const CollectionApi = async (handle: string) => {

@@ -1,33 +1,49 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import { FiTrash } from 'react-icons/fi';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Input from '../Input';
 import Link from 'next/link';
 import Loader from '../Loader';
 import { ProductIdApi } from '../../api/product';
 import { ProductModel } from '../../models/ProductModel';
 import { ProductVariantModel } from '../../models/ProductVariantModel';
+import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const Content = styled.tr`
-    width: 100%;
-    min-width: 100%;
-    height: 8rem;
+    display: grid;
+    max-height: 9rem;
+    width: 100vw;
+    max-width: 100%;
+    grid-template-columns: 8rem 1fr 4rem 12rem 6rem;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'image meta quantity price actions';
+    grid-gap: 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0px;
+
+    @media (max-width: 950px) {
+        position: relative;
+        grid-gap: 0.5rem;
+        grid-template-columns: 8rem 1fr 4rem 7rem;
+        grid-template-areas: 'image meta quantity price';
+        margin-bottom: 0.5rem;
+    }
 `;
+
 const Section = styled.td``;
 const SectionContent = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    height: 6rem;
-    margin: 1rem 0px;
-    margin-left: 1rem;
+    height: 100%;
 `;
 
 const ImageWrapper = styled.div`
@@ -37,13 +53,21 @@ const ImageWrapper = styled.div`
     max-width: 8rem;
     padding: 0.5rem;
 
+    a {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
     img {
+        display: block;
         mix-blend-mode: multiply;
         width: 100%;
         height: 100%;
     }
 `;
 const ProductImage = styled(Section)`
+    grid-area: image;
     display: block;
     height: 8rem;
     width: 100%;
@@ -73,15 +97,24 @@ const ProductImage = styled(Section)`
 `;
 
 const Quantity = styled(SectionContent)`
+    grid-area: quantity;
     text-align: center;
+    width: 100%;
+    height: 3rem;
+
     input {
-        width: 6rem;
-        padding: 0.75rem 1rem;
-        background: #fefefe;
+        height: 100%;
+        width: 100%;
+        padding: 0.5rem 0.5rem;
+        background: var(--color-text-primary);
         box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+        border-width: 0.1rem;
+        font-size: 1.25rem;
 
         @media (max-width: 950px) {
             width: 4rem;
+            padding: 0.35rem 0.25rem;
+            font-size: 1.15rem;
         }
 
         &:hover,
@@ -141,17 +174,27 @@ const Badge = styled.div`
 const Price = styled(SectionContent)`
     font-weight: 700;
     font-size: 1.5rem;
+    text-align: center;
+
+    @media (max-width: 950px) {
+        text-align: left;
+    }
 `;
 
 const Actions = styled(SectionContent)`
-    width: 2rem;
+    display: flex;
     justify-content: center;
-    align-items: flex-start;
-    margin-left: auto;
-    user-select: none;
+    align-items: flex-end;
+    flex-direction: column;
+    width: 100%;
 `;
 const Action = styled.div`
     cursor: pointer;
+    text-align: center;
+    width: 2rem;
+    max-width: 2rem;
+    font-size: 1.25rem;
+    user-select: none;
 
     &:hover {
         // FIXME: Only use this for the remove action
@@ -159,11 +202,79 @@ const Action = styled.div`
     }
 `;
 
+const MetaSection = styled(Section)`
+    grid-area: meta;
+`;
+const QuantitySection = styled(Section)`
+    grid-area: quantity;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    @media (max-width: 950px) {
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 0.5rem;
+
+        ${Quantity} {
+            height: 3.25rem;
+        }
+    }
+`;
+const PriceSection = styled(Section)`
+    grid-area: price;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+`;
+const ActionsSection = styled(Section)`
+    grid-area: actions;
+
+    @media (max-width: 950px) {
+        position: absolute;
+        right: 8rem;
+        bottom: 1rem;
+        padding: 0.25rem;
+        border-radius: 100%;
+        transition: 150ms ease-in-out;
+        background-color: var(--color-text-primary);
+        border: 0.2rem solid #efefef;
+
+        ${Actions} {
+            ${Action} {
+                width: 2rem;
+                height: 2rem;
+                font-size: 1.5rem;
+                color: unset;
+                opacity: 0.75;
+                box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        &:hover {
+            border-color: var(--accent-primary);
+        }
+    }
+`;
+
 interface CartItemProps {
     total_items?: number;
     data?: any;
+    store: StoreModel;
 }
 const CartItem: FunctionComponent<CartItemProps> = (props) => {
+    const router = useRouter();
+    const cart = useCart();
+    const TempImage = Image as any;
+
+    const locale =
+        router?.locale && router?.locale != '__default'
+            ? router?.locale
+            : Config.i18n.locales[0];
+
     // TODO: remove replace once we've cleared all broken carts
     const product_id = props.data.id
         .split('#')[0]
@@ -172,20 +283,19 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         .split('#')[1]
         .replace('gid://shopify/ProductVariant/', '');
 
-    const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
-    const cart = useCart();
     const { data } = useSWR([product_id], (id) =>
-        ProductIdApi({ id: id, locale: router?.locale })
+        ProductIdApi({ id: id, locale })
     ) as any;
     const product: ProductModel = data;
-    const [variant, setVariant] = useState<ProductVariantModel>(null);
+    const [variant, setVariant] = useState<ProductVariantModel | null>(null);
 
     useEffect(() => {
         if (!product) return;
 
         setVariant(
-            product?.variants?.find((variant) => variant?.id === variant_id)
+            product?.variants?.find?.(
+                (variant) => variant?.id === variant_id
+            ) || null
         );
     }, [product]);
 
@@ -197,7 +307,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
         );
     };
 
-    if (!product || !variant || isLoading) {
+    if (!product || !variant) {
         return (
             <div
                 className="CartItem"
@@ -220,7 +330,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
             <ProductImage>
                 <ImageWrapper>
                     <Link href={`/products/${product?.handle}`}>
-                        <Image
+                        <TempImage
                             src={product?.images?.[variant?.default_image]?.src}
                             layout="responsive"
                             width="6rem"
@@ -230,7 +340,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     </Link>
                 </ImageWrapper>
             </ProductImage>
-            <Section className="CartItem-Content">
+            <MetaSection className="CartItem-Content">
                 <Details>
                     <DetailsBrand>
                         <Link href={`/collections/${product?.vendor?.handle}`}>
@@ -246,8 +356,8 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                         <Badge>{variant?.title}</Badge>
                     </DetailsVariant>
                 </Details>
-            </Section>
-            <Section className="CartItem-Quantity">
+            </MetaSection>
+            <QuantitySection className="QuantitySection">
                 <Quantity>
                     <Input
                         className="Input"
@@ -265,9 +375,9 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                                 Number.parseInt(
                                     (event as any).target.value,
                                     10
-                                ) > 500
+                                ) > 250
                             )
-                                (event as any).target.value = 500;
+                                (event as any).target.value = 250;
                         }}
                         onKeyPress={(event) => {
                             if (event.key !== 'Enter') return;
@@ -276,29 +386,33 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                         }}
                     />
                 </Quantity>
-            </Section>
-            <Section>
+            </QuantitySection>
+            <PriceSection>
                 <Price>
-                    {discount > 0 && (
-                        <span>
-                            <Currency
-                                price={
-                                    variant?.pricing?.compare_at_range *
-                                    props?.data?.quantity
-                                }
-                                currency={variant?.pricing?.currency}
-                                className="Currency-Sale"
-                            />
-                        </span>
-                    )}
+                    {discount > 0 &&
+                        typeof variant.pricing.compare_at_range ===
+                            'number' && (
+                            <span>
+                                <Currency
+                                    price={
+                                        variant.pricing.compare_at_range! *
+                                        props?.data?.quantity
+                                    }
+                                    currency={variant?.pricing?.currency}
+                                    className="Currency-Sale"
+                                    store={props.store}
+                                />
+                            </span>
+                        )}
                     <Currency
                         price={variant?.pricing?.range * props?.data?.quantity}
                         currency={variant?.pricing?.currency}
-                        className={discount > 0 && 'Currency-Discount'}
+                        className={(discount > 0 && 'Currency-Discount') || ''}
+                        store={props.store}
                     />
                 </Price>
-            </Section>
-            <Section>
+            </PriceSection>
+            <ActionsSection>
                 <Actions>
                     <Action
                         onClick={() => {
@@ -308,7 +422,7 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                         <FiTrash className="Icon" />
                     </Action>
                 </Actions>
-            </Section>
+            </ActionsSection>
         </Content>
     );
 };

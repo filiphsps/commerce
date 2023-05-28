@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
 import ContentComponent from '../../../src/components/Content';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
@@ -137,9 +137,9 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
                     images: [
                         {
                             url: article.image.url
-                        },
+                        }
                     ],
-                    site_name: 'Candy by Sweden',
+                    site_name: 'Candy by Sweden'
                 }}
             />
             <NewsArticleJsonLd
@@ -230,15 +230,22 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
     );
 };
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
     const blog: any = await BlogApi({ handle: 'news' });
 
     let paths = [
         ...blog.articles
-            ?.map((article) => ({
-                params: { handle: article?.handle }
-            }))
-            .filter((a) => a.params.handle)
+            ?.map((article) => [
+                {
+                    params: { handle: article?.handle }
+                },
+                ...locales.map((locale) => ({
+                    params: { handle: article?.handle },
+                    locale: locale
+                }))
+            ])
+            .flat()
+            .filter((a) => a?.params?.handle)
     ];
 
     return { paths, fallback: 'blocking' };
@@ -259,16 +266,23 @@ export async function getStaticProps({ params, locale }) {
 
     let article: any = null;
     let blog: any = null;
-    let errors = [];
+    let errors: any[] = [];
 
     try {
-        article = (await ArticleApi({ handle, blog: 'news', locale })) as any;
+        article = (await ArticleApi({
+            handle,
+            blog: 'news',
+            locale
+        })) as any;
     } catch (err) {
         console.warn(err);
         if (err) errors.push(err);
     }
     try {
-        blog = (await BlogApi({ handle: 'news', locale })) as any;
+        blog = (await BlogApi({
+            handle: 'news',
+            locale
+        })) as any;
     } catch (err) {
         console.warn(err);
         if (err) errors.push(err);

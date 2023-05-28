@@ -1,6 +1,6 @@
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 interface SocialShareProps {}
 const SocialShare: FunctionComponent<SocialShareProps> = () => {
@@ -8,6 +8,8 @@ const SocialShare: FunctionComponent<SocialShareProps> = () => {
     useEffect(() => {
         setHref(window.location.href);
     }, [process.browser]);
+
+    const TempImage = Image as any;
 
     return (
         <div className="SocialShare">
@@ -17,7 +19,7 @@ const SocialShare: FunctionComponent<SocialShareProps> = () => {
                 title="facebook"
                 href={`https://www.facebook.com/sharer.php?u=${href}`}
             >
-                <Image
+                <TempImage
                     alt="facebook"
                     src="/assets/icons/social/facebook-outline.svg"
                     width="25px"
@@ -30,7 +32,7 @@ const SocialShare: FunctionComponent<SocialShareProps> = () => {
                 title="twitter"
                 href={`https://www.twitter.com/share?url=${href}`}
             >
-                <Image
+                <TempImage
                     alt="twitter"
                     src="/assets/icons/social/twitter-outline.svg"
                     width="25px"

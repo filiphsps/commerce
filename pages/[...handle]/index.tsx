@@ -2,6 +2,7 @@ import { PageApi, PagesApi } from '../../src/api/page';
 import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
+import { Config } from '../../src/util/Config';
 import ErrorPage from 'next/error';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
@@ -35,6 +36,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
             <NextSeo
                 title={data?.title}
                 description={data?.description || ''}
+                canonical={`https://${Config.domain}${router.asPath}`}
                 additionalMetaTags={
                     data?.keywords
                         ? [
@@ -43,7 +45,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
                                   content: data?.keywords
                               }
                           ]
-                        : null
+                        : []
                 }
             />
 
@@ -70,29 +72,36 @@ const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
     );
 };
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
     const pages = (await PagesApi()) as any;
 
     let paths = [
         ...pages
-            ?.map((page) => {
-                return { params: { handle: [page] } };
-            })
+            ?.map((page) => [
+                {
+                    params: { handle: [page] }
+                },
+                ...locales.map((locale) => ({
+                    params: { handle: [page] },
+                    locale: locale
+                }))
+            ])
+            .flat()
+            .filter((a) => a?.params?.handle)
             .filter(
-                (a) =>
-                    a.params.handle &&
-                    a.params.handle != 'home' &&
-                    a.params.handle != 'shop'
+                (a) => a.params.handle != 'home' && a.params.handle != 'shop'
             )
     ];
-
     return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params, locale }) {
     try {
         const page =
-            ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
+            ((await PageApi(
+                params?.handle?.join('/'),
+                locale === '__default' ? Config.i18n.locales[0] : locale
+            )) as any) || null;
         const prefetch = (page && (await Prefetch(page, params))) || null;
 
         return {

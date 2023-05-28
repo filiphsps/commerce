@@ -21,17 +21,29 @@ import { useCart } from 'react-use-cart';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useWindowSize } from 'rooks';
 
 const Content = styled.div`
     display: grid;
-    grid-template-columns: 1fr 28rem;
+    grid-template-columns: auto 28rem;
     gap: 2rem;
+    max-width: 100%;
+
+    @media (min-width: 950px) {
+        position: relative;
+        overflow: hidden;
+    }
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 `;
-const ContentWrapper = styled.div``;
+const ContentWrapper = styled.div`
+    display: block;
+    overflow: hidden;
+    width: 100;
+`;
 
 const FreeShippingBanner = styled.div`
     display: flex;
@@ -82,26 +94,44 @@ const Progress = styled.div`
 
 const ItemsContainerWrapper = styled.div`
     overflow: hidden;
-    max-width: calc(100vw - 3rem);
+    max-width: 100%;
     padding: 0px 1rem;
     background: #efefef;
     border-radius: var(--block-border-radius);
+
+    // TODO: Remove padding on mobile.
 `;
 const ItemsContainer = styled.table`
-    min-width: 100%;
+    display: block;
+    width: 100%;
     border-collapse: separate;
     border-spacing: 0px 1rem;
     font-size: 1.25rem;
     table-layout: fixed;
+    overflow: hidden;
+
+    tbody,
+    thead {
+        display: block;
+        width: 100%;
+    }
 `;
 
 const SummaryContent = styled.div`
     position: sticky;
-    top: 8rem;
+    top: 0rem;
     padding: 1rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
     transition: 150ms ease-in-out;
+
+    @media (max-width: 950px) {
+        Button {
+            height: 4.5rem;
+            padding: 1rem 1.5rem;
+            font-size: 1.5rem;
+        }
+    }
 `;
 const SummaryItems = styled.div`
     padding-bottom: 1rem;
@@ -112,11 +142,11 @@ const SummaryItems = styled.div`
     }
 `;
 const SummaryContainer = styled.div`
-    position: relative;
-    max-width: calc(100vw - 3rem);
+    z-index: 1;
+    position: sticky;
 
     @media (max-width: 950px) {
-        overflow: hidden;
+        max-width: calc(100vw - 3rem);
         position: sticky;
         bottom: 0px;
         transition: 150ms ease-in-out;
@@ -130,9 +160,11 @@ const SummaryContainer = styled.div`
             border-top: 0.2rem solid #e9e9e9;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
+            background: var(--accent-secondary-light);
+
             ${SummaryContent} {
-                padding: 2rem;
-                padding-right: 8rem;
+                padding: 1.5rem;
+                padding-right: 10rem;
                 border-radius: 0px;
             }
         }
@@ -142,13 +174,12 @@ const SummaryItem = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 2rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
 `;
 const SummaryItemMeta = styled.div``;
 const SummaryItemTitle = styled.div`
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #404756;
 `;
 const SummaryItemVendor = styled.div`
     padding-top: 0.25rem;
@@ -164,7 +195,7 @@ const SummaryItemPrice = styled.div`
     align-items: center;
     text-align: right;
     font-weight: 700;
-    font-size: 1.75rem;
+    font-size: 1.25rem;
 
     .Currency-Sale {
         color: #d91e18;
@@ -182,7 +213,7 @@ const SummarySummary = styled.div`
     align-items: flex-end;
     grid-template-columns: 1fr auto;
     gap: 1rem;
-    padding: 0.5rem 0px 1rem 0px;
+    padding: 0.5rem 0px 0.5rem 0px;
     text-transform: uppercase;
     border-top: 0.2rem solid #404756;
 
@@ -198,33 +229,55 @@ const SummarySummary = styled.div`
 `;
 
 const Header = styled.tr`
+    display: grid;
+    width: 100%;
+    grid-template-columns: 8rem 1fr 4rem 12rem 6rem;
+    grid-template-rows: 1fr;
+    grid-gap: 1rem;
+    padding: 1rem 0px 0.5rem 0px;
     text-transform: uppercase;
+
+    @media (max-width: 950px) {
+        grid-gap: 0.5rem;
+        grid-template-columns: 8rem 1fr 4rem 7rem;
+        padding: 1rem 0px 0.5rem 0px;
+    }
 `;
 const HeaderItem = styled.th`
-    min-width: 6rem;
-    padding-left: 1rem;
+    display: block;
     font-weight: 700;
     opacity: 0.75;
+    text-align: left;
 
     @media (max-width: 950px) {
         font-size: 1rem;
+        text-align: left;
     }
 `;
-const HeaderItemImage = styled(HeaderItem)`
-    display: block;
-    width: 6rem;
-    max-width: 6rem;
-    padding-left: 0px;
+const HeaderItemImage = styled(HeaderItem)``;
+const HeaderItemQuantity = styled(HeaderItem)`
+    opacity: 0;
+
+    @media (min-width: 950px) {
+        opacity: 0.75;
+        text-align: center;
+        transform: translateX(-25%);
+    }
+`;
+const HeaderItemPrice = styled(HeaderItem)`
+    @media (min-width: 950px) {
+        text-align: center;
+    }
+`;
+const HeaderItemActions = styled(HeaderItem)`
     @media (max-width: 950px) {
-        width: 2rem;
-        max-width: 2rem;
+        display: none;
     }
 `;
 
 const Recommendations = styled(ContentBlock)`
     display: block;
-    grid-template-rows: auto auto;
-    max-width: calc(100vw - 3rem);
+    width: 100%;
     margin-top: 2rem;
     border-radius: var(--block-border-radius);
 `;
@@ -235,8 +288,7 @@ const RecommendationsTitle = styled.h3`
     opacity: 0.75;
 `;
 const RecommendationsContent = styled(PageContent)`
-    width: calc(1465px - 28rem);
-    max-width: calc(1465px - 28rem);
+    width: 100%;
 
     @media (max-width: 950px) {
         width: calc(100vw - 3rem);
@@ -245,11 +297,79 @@ const RecommendationsContent = styled(PageContent)`
     }
 `;
 
+export const Checkout = async ({
+    data,
+    price,
+    currency = 'USD',
+    locale = Config.i18n.locales[0]
+}: {
+    data: any;
+    price: number;
+    currency?: string;
+    locale?: string;
+}) => {
+    const url = (
+        (await CheckoutApi({
+            items: data.items,
+            locale
+        })) as string
+    ).replace(Config.shopify.domain, 'checkout.sweetsideofsweden.com');
+
+    // Google Tracking
+    (window as any).dataLayer?.push({
+        ecommerce: null
+    });
+    (window as any).dataLayer?.push({
+        event: 'begin_checkout',
+        currency: currency,
+        value: price,
+        ecommerce: {
+            items: data.items.map((item) => ({
+                item_id: item.id,
+                item_name: item.title,
+                item_variant: item.variant_title,
+                item_brand: item.brand,
+                currency: currency,
+                quantity: item.quantity,
+                price: item.price
+            }))
+        }
+    });
+
+    // Microsoft Ads tracking
+    if ((window as any).uetq) {
+        (window as any).uetq.push('event', 'begin_checkout', {
+            ecomm_prodid: data.items.map((item) =>
+                item.id
+                    .replaceAll('gid://shopify/Product/', '')
+                    .replaceAll('gid://shopify/ProductVariant', '')
+            ),
+            ecomm_pagetype: 'cart',
+            ecomm_totalvalue: price,
+            revenue_value: 1,
+            currency: currency,
+            items: data.items.map((item) => ({
+                id: item.id,
+                quantity: item.quantity,
+                price: item.price
+            }))
+        });
+    }
+
+    // Do it this way to handle cross-domain tracking.
+    let link = document.createElement('a');
+    link.setAttribute('type', 'hidden');
+    link.setAttribute('href', url);
+    document.body.appendChild(link);
+    link.click();
+};
+
 interface CartPageProps {
     store: StoreModel;
 }
 const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
+    const { outerWidth } = useWindowSize();
     const cart = useCart();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any>({
@@ -267,7 +387,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     // Sticky summary
     const [isSticky, setIsSticky] = useState(false);
-    const summaryRef = useRef();
+    const summaryRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const cachedRef = summaryRef.current,
             observer = new IntersectionObserver(
@@ -278,11 +398,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 }
             );
 
-        observer.observe(cachedRef);
+        observer.observe(cachedRef!);
 
         // unmount
-        return function () {
-            observer.unobserve(cachedRef);
+        return () => {
+            observer.unobserve(cachedRef!);
         };
     }, []);
 
@@ -296,7 +416,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         })
     ) as any;
 
-    const currency = 'USD';
+    const currency = 'USD'; // FIXME
     const price = data.items.reduce(
         (previousValue, item) => previousValue + item.price * item.quantity,
         0
@@ -328,7 +448,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     return (
         <Page className="CartPage">
-            <NextSeo title="Cart" />
+            <NextSeo title="Cart" canonical={`https://${Config.domain}/cart`} />
 
             <PageContent>
                 <Breadcrumbs
@@ -358,21 +478,21 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                     />
                                                 </HeaderItemImage>
                                                 <HeaderItem></HeaderItem>
-                                                <HeaderItem>
+                                                <HeaderItemQuantity>
                                                     <LanguageString
                                                         id={'quantity'}
                                                     />
-                                                </HeaderItem>
-                                                <HeaderItem>
+                                                </HeaderItemQuantity>
+                                                <HeaderItemPrice>
                                                     <LanguageString
                                                         id={'price'}
                                                     />
-                                                </HeaderItem>
-                                                <HeaderItem
-                                                    style={{
-                                                        width: '2rem'
-                                                    }}
-                                                ></HeaderItem>
+                                                </HeaderItemPrice>
+                                                <HeaderItemActions>
+                                                    <LanguageString
+                                                        id={'actions'}
+                                                    />
+                                                </HeaderItemActions>
                                             </Header>
                                         </thead>
                                         <tbody>
@@ -384,6 +504,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         total_items={
                                                             data.totalItems
                                                         }
+                                                        store={store}
                                                     />
                                                 );
                                             })}
@@ -404,6 +525,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         prefix={'Free shipping on orders above'}
                                         price={75}
                                         currency="USD"
+                                        store={store}
                                     />
                                 </FreeShippingBannerText>
                                 <FreeShippingBannerText>
@@ -413,9 +535,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             0
                                         }
                                         currency="USD"
+                                        store={store}
                                     />
                                     {`/`}
-                                    <Currency price={75} currency="USD" />
+                                    <Currency
+                                        price={75}
+                                        currency="USD"
+                                        store={store}
+                                    />
                                 </FreeShippingBannerText>
                             </FreeShippingBannerMeta>
                             <Progress className={freeShipping ? 'Full' : ''}>
@@ -434,24 +561,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 />
                             </Progress>
                         </FreeShippingBanner>
-
-                        {recommendations?.length > 1 ? (
-                            <Recommendations>
-                                <RecommendationsTitle>
-                                    Recommended Products
-                                </RecommendationsTitle>
-                                <RecommendationsContent>
-                                    <CollectionBlock
-                                        data={{
-                                            items: recommendations
-                                        }}
-                                        isHorizontal
-                                    />
-                                </RecommendationsContent>
-                            </Recommendations>
-                        ) : (
-                            <PageLoader />
-                        )}
                     </ContentWrapper>
 
                     <SummaryContainer
@@ -480,6 +589,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                         currency={
                                                             line_item.currency
                                                         }
+                                                        store={store}
                                                     />
                                                 </SummaryItemPrice>
                                             </SummaryItem>
@@ -513,12 +623,18 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                     :{' '}
                                                 </>
                                             }
+                                            store={store}
                                         />
                                     </SummaryItemPrice>
                                 </SummarySummary>
                             </div>
                             <div>
                                 <Button
+                                    className={
+                                        outerWidth && outerWidth <= 950
+                                            ? 'Secondary'
+                                            : ''
+                                    }
                                     disabled={
                                         data.items?.length <= 0 ||
                                         !data.items ||
@@ -528,84 +644,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         setLoading(true);
 
                                         try {
-                                            const url = (
-                                                (await CheckoutApi(
-                                                    data.items
-                                                )) as string
-                                            ).replace(
-                                                Config.shopify.domain,
-                                                'checkout.candybysweden.com'
-                                            );
-
-                                            // Google Tracking
-                                            (window as any).dataLayer?.push({
-                                                ecommerce: null
+                                            await Checkout({
+                                                data,
+                                                price,
+                                                locale: router.locale
                                             });
-                                            (window as any).dataLayer?.push({
-                                                event: 'begin_checkout',
-                                                currency: 'USD',
-                                                value: price,
-                                                ecommerce: {
-                                                    items: data.items.map(
-                                                        (item) => ({
-                                                            item_id: item.id,
-                                                            item_name:
-                                                                item.title,
-                                                            item_variant:
-                                                                item.variant_title,
-                                                            item_brand:
-                                                                item.brand,
-                                                            currency: 'USD',
-                                                            quantity:
-                                                                item.quantity,
-                                                            price: item.price
-                                                        })
-                                                    )
-                                                }
-                                            });
-
-                                            // Microsoft Ads tracking
-                                            if ((window as any).uetq) {
-                                                (window as any).uetq.push(
-                                                    'event',
-                                                    'begin_checkout',
-                                                    {
-                                                        ecomm_prodid:
-                                                            data.items.map(
-                                                                (item) =>
-                                                                    item.id
-                                                                        .replaceAll(
-                                                                            'gid://shopify/Product/',
-                                                                            ''
-                                                                        )
-                                                                        .replaceAll(
-                                                                            'gid://shopify/ProductVariant',
-                                                                            ''
-                                                                        )
-                                                            ),
-                                                        ecomm_pagetype: 'cart',
-                                                        ecomm_totalvalue: price,
-                                                        revenue_value: 1,
-                                                        currency: 'USD',
-                                                        items: data.items.map(
-                                                            (item) => ({
-                                                                id: item.id,
-                                                                quantity:
-                                                                    item.quantity,
-                                                                price: item.price
-                                                            })
-                                                        )
-                                                    }
-                                                );
-                                            }
-
-                                            // Do it this way to handle cross-domain tracking.
-                                            let link =
-                                                document.createElement('a');
-                                            link.setAttribute('type', 'hidden');
-                                            link.setAttribute('href', url);
-                                            document.body.appendChild(link);
-                                            link.click();
                                         } catch (err) {
                                             console.error(err);
                                             alert(err.message);
@@ -624,6 +667,29 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         </SummaryContent>
                     </SummaryContainer>
                 </Content>
+
+                {cart.totalItems > 0 && (
+                    <>
+                        {recommendations?.length > 1 ? (
+                            <Recommendations>
+                                <RecommendationsTitle>
+                                    Recommended Products
+                                </RecommendationsTitle>
+                                <RecommendationsContent>
+                                    <CollectionBlock
+                                        data={{
+                                            items: recommendations
+                                        }}
+                                        isHorizontal
+                                        store={store}
+                                    />
+                                </RecommendationsContent>
+                            </Recommendations>
+                        ) : (
+                            <PageLoader />
+                        )}
+                    </>
+                )}
             </PageContent>
         </Page>
     );

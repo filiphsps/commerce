@@ -10,7 +10,8 @@ node_modules/
 .next/
 out/
 dist/
-public/sitemap*
+public/sitemap*.xml*
+public/robots.txt*
 
 # production
 build/

@@ -7,7 +7,7 @@ import VendorsComponent from '../../../Vendors';
 interface VendorsProps {
     data?: any;
 }
-const Vendors: FunctionComponent<VendorsProps> = (props) => {
+const Vendors: FunctionComponent<VendorsProps> = ({}) => {
     return (
         <div className="Slice Slice-Vendors">
             <ContentBlock>

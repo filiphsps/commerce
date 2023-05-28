@@ -1,9 +1,9 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import React, { FunctionComponent, memo, useState } from 'react';
 
 import ContentBlock from '../../../ContentBlock/ContentBlock';
+import { FiChevronUp } from 'react-icons/fi';
 import PageContent from '../../../PageContent';
 import TextBlock from '../../../TextBlock';
 
@@ -34,7 +34,9 @@ const Collapse: FunctionComponent<CollapseProps> = (props) => {
                     >
                         {
                             <TextBlock
-                                body={PrismicDOM.asHTML(data?.primary?.body)}
+                                body={
+                                    PrismicDOM.asHTML(data?.primary?.body) || ''
+                                }
                             />
                         }
                     </div>

@@ -88,7 +88,7 @@ const Tags = styled.div`
     display: flex;
     grid-gap: 0.55rem;
 `;
-const Tag = styled.div`
+export const Tag = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -357,7 +357,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     {
                         item_id:
                             product.variants[variant].sku ||
-                            product.variants[variant].id.split('/').at(-1),
+                            product.variants[variant]?.id.split('/').at(-1),
                         item_name: product.title,
                         item_variant: product.variants[variant].title,
                         item_brand: product.vendor.title,
@@ -404,12 +404,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
             {product.variants?.map?.((variant) => (
                 <ProductJsonLd
-                    key={variant.id}
-                    keyOverride={variant.id}
+                    key={variant?.id}
+                    keyOverride={variant?.id}
                     productName={`${product.title} - ${variant.title}`}
                     brand={product.vendor.title}
-                    sku={variant.sku || variant.id}
-                    mpn={variant.barcode || variant.sku || variant.id}
+                    sku={variant.sku || variant?.id}
+                    mpn={variant.barcode || variant.sku || variant?.id}
                     images={product.images?.map?.((image) => image.src) || []}
                     description={product.description || ''}
                     aggregateRating={{
@@ -457,16 +457,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 noMargin
                             />
                             <Tags>
-                                {product?.tags.map((tag) => (
+                                {product?.tags?.map((tag) => (
                                     <Tag key={tag} className={tag}>
                                         {tag}
                                     </Tag>
                                 ))}
                             </Tags>
-                            {false && (
+                            {false && reviews?.rating && (
                                 <ReviewStars
-                                    score={reviews?.rating}
-                                    totalReviews={reviews?.count}
+                                    score={reviews?.rating || 5}
+                                    totalReviews={reviews?.count || 0}
                                 />
                             )}
 
@@ -480,7 +480,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             <Variants>
                                 {product.variants.map((item, index) => (
                                     <Variant
-                                        key={item.id}
+                                        key={item?.id}
                                         onClick={() => setVariant(index)}
                                         className={
                                             index === variant ? 'Selected' : ''
@@ -495,6 +495,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                                 currency={
                                                     item?.pricing?.currency
                                                 }
+                                                store={store}
                                             />
                                             {' | '}
                                             <VariantWeight
@@ -598,6 +599,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     items: recommendations
                                 }}
                                 isHorizontal
+                                store={store}
                             />
                         </div>
                     </Recommendations>
@@ -628,15 +630,21 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     );
 };
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
     const products_data = await ProductsApi();
-
     let paths = [
         ...products_data.products
-            ?.map((product) => ({
-                params: { handle: product?.handle }
-            }))
-            .filter((a) => a.params.handle)
+            ?.map((product) => [
+                {
+                    params: { handle: product?.handle }
+                },
+                ...locales.map((locale) => ({
+                    params: { handle: product?.handle },
+                    locale: locale
+                }))
+            ])
+            .flat()
+            .filter((a) => a?.params?.handle)
     ];
 
     return { paths, fallback: 'blocking' };
@@ -660,6 +668,13 @@ export async function getStaticProps({ params, locale }) {
             revalidate: false
         };
 
+    if (locale === '__default') {
+        return {
+            props: {},
+            revalidate: false
+        };
+    }
+
     const redirect = await RedirectProductApi(handle);
     if (redirect) {
         return {
@@ -671,32 +686,40 @@ export async function getStaticProps({ params, locale }) {
         };
     }
 
-    let product: ProductModel = null;
-    let recommendations: Array<ProductModel> = null;
-    let reviews: ReviewsModel = null;
-    let errors = [];
+    let product: ProductModel | null = null;
+    let recommendations: ProductModel[] | null = null;
+    let reviews: ReviewsModel | null = null;
+    let errors: any[] = [];
 
     try {
-        product = (await ProductApi({ handle, locale })) as any;
-    } catch (err) {
-        console.error(err);
-        if (err) errors.push(err);
-    }
-
-    try {
-        recommendations = (await RecommendationApi({
-            id: product?.id,
+        product = (await ProductApi({
+            handle,
             locale
         })) as any;
     } catch (err) {
-        console.warn(err);
+        console.error('ProductApi', err);
+        if (err) errors.push(err);
+
+        return {
+            notFound: true
+        };
+    }
+
+    try {
+        if (product)
+            recommendations = (await RecommendationApi({
+                id: product?.id,
+                locale
+            })) as any;
+    } catch (err) {
+        console.warn('RecommendationApi', err);
         if (err) errors.push(err);
     }
 
     try {
-        reviews = await ReviewsProductApi(product.id);
+        if (product) reviews = await ReviewsProductApi(product?.id);
     } catch (err) {
-        console.warn(err);
+        console.warn('ReviewsProductApi', err);
         if (err) errors.push(err);
     }
 

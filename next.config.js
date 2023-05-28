@@ -1,15 +1,18 @@
-const child_process = require('child_process');
-const manifest = require('./package.json');
-const { i18n } = require('./next-i18next.config');
+import manifest from './package.json' assert { type: 'json' };
+import { i18n } from './next-i18next.config.js';
+import * as child_process from 'child_process';
+import * as nextInterceptStdout from 'next-intercept-stdout';
+
+const withInterceptStdout = nextInterceptStdout.default;
 
 const git_sha = child_process
     .execSync('git rev-parse HEAD', {
-        cwd: __dirname,
+        cwd: './',
         encoding: 'utf8'
     })
     .replace(/\n/, '');
 
-module.exports = {
+let config = {
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
@@ -64,10 +67,23 @@ module.exports = {
                 permanent: true
             },
             {
-                source: '/en-UK/',
-                destination: '/',
-                permanent: true
+                source: '/__default/:slug*',
+                destination: '/:slug',
+                permanent: false
             }
         ];
     }
 };
+
+export default typeof withInterceptStdout !== 'function'
+    ? config
+    : withInterceptStdout(config, (text) => {
+          if (
+              text.includes('Do not add stylesheets') ||
+              text.includes('The Fetch API is') ||
+              text.includes('Debugger attached.')
+          )
+              return '';
+
+          return text;
+      });

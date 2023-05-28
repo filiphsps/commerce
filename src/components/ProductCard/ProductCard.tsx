@@ -4,8 +4,9 @@ import { ProductImageModel, ProductModel } from '../../models/ProductModel';
 
 import Button from '../Button';
 import Currency from '../Currency';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
+import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import { useCart } from 'react-use-cart';
 
@@ -23,9 +24,13 @@ const Container = styled.div`
     border-radius: var(--block-border-radius);
     background: #efefef;
     scroll-snap-align: start;
+
+    @media (max-width: 950px) {
+        padding: 0.75rem;
+    }
 `;
 const ProductImage = styled.div`
-    height: 14rem;
+    height: 15rem;
     width: calc(100% + 2rem);
     padding: 1.25rem;
     margin: -1rem -1rem 0px -1rem;
@@ -83,7 +88,7 @@ const Title = styled.div`
     }
 `;
 const Description = styled.div`
-    padding-top: 0.25rem;
+    padding: 0.25rem 0px 0.5rem 0px;
     flex-grow: 1;
     font-size: 1.15rem;
     color: #404756;
@@ -127,7 +132,7 @@ const Actions = styled.div`
     gap: 1rem;
 `;
 const AddButton = styled(Button)`
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     font-size: 1.25rem;
     width: 100%;
     transition: 150ms ease-in-out;
@@ -274,12 +279,23 @@ interface ProductCardProps {
     handle?: string;
     data?: ProductModel;
     isHorizontal?: boolean;
+    store: StoreModel;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
-    const [variantIndex, setVariantIndex] = useState(data.variants.length - 1);
+const ProductCard: FunctionComponent<ProductCardProps> = ({ data, store }) => {
+    const [variantIndex, setVariantIndex] = useState<number>(
+        (data?.variants?.length || 1) - 1
+    );
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
+
+    useEffect(() => {
+        if (quantity > 0) return;
+        setQuantity(1);
+    }, [quantity]);
+
+    // TODO: Placeholder card?
+    if (!data) return null;
 
     const {
         images,
@@ -302,15 +318,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
     const is_vegan_product = tags?.includes('Vegan');
     const is_sale = !!variants[variantIndex].pricing.compare_at_range;
 
-    let short_desc = (seo.description || description).substring(0, 100);
+    let short_desc = (seo.description || description || '').substring(0, 100);
     // Remove whitespace if it's the last character
     if (short_desc[short_desc.length - 1] === ' ')
         short_desc = short_desc.substring(0, short_desc.length - 1);
-
-    useEffect(() => {
-        if (quantity > 0) return;
-        setQuantity(1);
-    }, [quantity]);
 
     return (
         <Container className="ProductCard">
@@ -321,6 +332,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                         <BadgePrice
                             price={variants[0].pricing.range}
                             currency={variants[0].pricing.currency}
+                            store={store}
                         />
                     </Badge>
                 ) : null}
@@ -330,6 +342,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                         <BadgePrice
                             price={variant.pricing.range}
                             currency={variant.pricing.currency}
+                            store={store}
                         />
                     </Badge>
                 ) : null}
@@ -346,25 +359,19 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
             </Badges>
             <ProductImage>
                 <Link href={`/products/${handle}`}>
-                    <a>
-                        <ProductImageWrapper>
-                            <VariantImage
-                                image={images[variant.default_image]}
-                            />
-                        </ProductImageWrapper>
-                    </a>
+                    <ProductImageWrapper>
+                        <VariantImage image={images[variant.default_image]} />
+                    </ProductImageWrapper>
                 </Link>
             </ProductImage>
             <Details>
                 <Brand>
                     <Link href={`/collections/${vendor.handle}`}>
-                        <a>{vendor.title}</a>
+                        {vendor.title}
                     </Link>
                 </Brand>
                 <Title>
-                    <Link href={`/products/${handle}`}>
-                        <a>{title}</a>
-                    </Link>
+                    <Link href={`/products/${handle}`}>{title}</Link>
                 </Title>
                 <Description>
                     {short_desc}
@@ -378,11 +385,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                                 <Currency
                                     price={
                                         variants[variantIndex].pricing
-                                            .compare_at_range * quantity
+                                            .compare_at_range! * quantity
                                     }
                                     currency={
                                         variants[variantIndex].pricing.currency
                                     }
+                                    store={store}
                                 />
                             </PreviousPrice>
                         ) : null}
@@ -401,6 +409,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ data }) => {
                                 currency={
                                     variants[variantIndex].pricing.currency
                                 }
+                                store={store}
                             />
                         </Price>
                     </Prices>

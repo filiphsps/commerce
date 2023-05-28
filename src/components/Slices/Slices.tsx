@@ -36,7 +36,7 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                     // we previously dynamically imported components from /Slices/components,
                     //   but that prevented SSR from working.
 
-                    let Component = null;
+                    let Component: any | null = null;
                     const type = item?.type || item?.slice_type;
                     switch (type) {
                         case 'carousel':

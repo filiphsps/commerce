@@ -19,17 +19,14 @@ const Link: FunctionComponent<LinkProps> = (props) => {
 
     return (
         <NextLink
-            href={props.as || props.to}
+            {...props}
+            href={(props.as || props.to) as any}
             as={props.as ? props.to : undefined}
             locale={props.locale ? props.locale : router?.locale}
+            className={`Link ${props.className}`}
+            style={props.style}
         >
-            <a
-                {...props}
-                className={`Link ${props.className}`}
-                style={props.style}
-            >
-                {props.children}
-            </a>
+            {props.children}
         </NextLink>
     );
 };

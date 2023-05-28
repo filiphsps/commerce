@@ -1,21 +1,24 @@
+import { Config } from '../util/Config';
 import { StoreModel } from '../models/StoreModel';
 import { prismic } from './prismic';
 
-export const StoreApi = async (locale = 'en-US'): Promise<StoreModel> => {
+export const StoreApi = async (
+    locale = Config.i18n.locales[0]
+): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = (
                 await prismic().getSingle('store', {
-                    lang: locale
+                    lang:
+                        locale === '__default' ? Config.i18n.locales[0] : locale
                 })
             ).data;
 
-            const currencies = res.currencies.map((currency) => currency);
+            const currencies = res.currencies.map((item) => item.currency);
 
-            // FIXME: add languages.
             // FIXME: add social.
-            // FIXME: add custom_header_tags, custom_body_tags.
-            resolve({
+            // FIXME: add custom_header_tags, custom_body_tags; or do this through gtm and instead just provide a gtm_id.
+            return resolve({
                 name: res.store_name,
                 logo: {
                     src: res.logo
@@ -32,15 +35,22 @@ export const StoreApi = async (locale = 'en-US'): Promise<StoreModel> => {
                     secondary: res.primary_text_color
                 },
                 currencies: currencies,
-                languages: [],
+                languages: Config.i18n.locales,
                 social: [],
                 block: {
-                    border_radius: res.border_radius
+                    border_radius: res.border_radius || '0.5rem'
                 }
             });
-        } catch (err) {
-            console.error(err);
-            reject(err);
+        } catch (error) {
+            if (
+                error.message.includes('No documents') &&
+                locale !== Config.i18n.locales[0]
+            ) {
+                return resolve(await StoreApi()); // Try again with default locale
+            }
+
+            console.error(error);
+            return reject(error);
         }
     });
 };

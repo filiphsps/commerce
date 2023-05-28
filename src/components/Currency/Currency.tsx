@@ -1,10 +1,67 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { Config } from '../../util/Config';
 import { Converter } from 'easy-currencies';
 import { StoreModel } from '../../models/StoreModel';
 import { Currency as Tender } from 'react-tender';
 import { getParamByISO } from 'iso-country-currency';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
+
+const tempGetInitialCurrencyAndValue = ({
+    locale,
+    currency,
+    price
+}: {
+    locale: string;
+    price: number;
+    currency: string;
+}) => {
+    let targetCurrency: string | null = null;
+    // TODO: Handle this during build
+    // FIXME: This makes assumptions about supported currencies
+    switch (locale) {
+        case 'en-US':
+            targetCurrency = 'USD';
+            break;
+        case 'en-GB':
+            targetCurrency = 'GBP';
+            break;
+        case 'de-DE':
+            targetCurrency = 'EUR';
+            break;
+        case 'de-CH':
+            targetCurrency = 'CHF';
+            break;
+        case 'sv-SE':
+            targetCurrency = 'CHF';
+            break;
+    }
+
+    let roughConversion = price;
+    if (currency || currency == targetCurrency)
+        // TODO: getRates during ssg instead
+        // FIXME: This gets outdated fast
+        switch (targetCurrency) {
+            case 'GBP':
+                roughConversion *= 0.81;
+                break;
+            case 'EUR':
+                roughConversion *= 0.93;
+                break;
+            case 'CHF':
+                roughConversion *= 0.91;
+                break;
+            case 'SEK':
+                roughConversion *= 10.81;
+                break;
+            case 'USD':
+            default:
+                break;
+        }
+
+    return [targetCurrency as string, roughConversion as number];
+};
 
 interface CurrencyProps {
     price?: number;
@@ -13,24 +70,44 @@ interface CurrencyProps {
 
     currency?: string;
     className?: string;
-    store?: StoreModel;
+    store: StoreModel;
 }
 const Currency: FunctionComponent<CurrencyProps> = (props) => {
+    const router = useRouter();
+
     const [rates, setRates] = useStore('rates');
     const [country] = useStore('country');
-    const [currency, setCurrency] = useState(
-        props.currency || props?.store?.currencies[0] || 'USD'
+
+    const [targetCurrency, roughConversion] = tempGetInitialCurrencyAndValue({
+        locale: router.locale || Config.i18n.locales[0],
+        currency: props.currency || props?.store?.currencies?.[0] || 'USD',
+        price: props.price || 0
+    }) as [string, number];
+
+    const [currency, setCurrency] = useState<string>(
+        targetCurrency || props.currency || props?.store?.currencies[0] || 'USD'
     );
-    const [price, setPrice] = useState(
-        Number.parseFloat(props.price as any) || 0
-    );
+
+    const [price, setPrice] = useState<number>(roughConversion as number);
 
     useEffect(() => {
-        setPrice(props.price);
-        setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
+        if (!router.locale || !props.store || !country) return;
+
+        if (price == 0 || !price) setPrice(props.price || 0);
+        if (!currency)
+            setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
 
         if (!country) return;
-        const new_currency: string = getParamByISO(country, 'currency');
+        const new_currency: string =
+            (targetCurrency as string) || getParamByISO(country, 'currency');
+
+        // Make sure that we the currency is included in our supported set of currencies
+        if (
+            props?.store?.currencies &&
+            !props?.store?.currencies?.includes?.(new_currency)
+        )
+            return;
+
         setCurrency(new_currency);
 
         (async () => {
@@ -39,15 +116,15 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             const current_rates = rates;
             if (!current_rates[new_currency]) {
                 current_rates[new_currency] = await converter.getRates(
-                    'USD',
+                    props.currency || props?.store?.currencies?.[0] || 'USD',
                     new_currency
                 );
                 setRates(current_rates);
             }
 
             let val = await converter.convert(
-                props.price,
-                props.currency || props?.store?.currencies[0] || 'USD',
+                props.price || 0,
+                props.currency || props?.store?.currencies?.[0] || 'USD',
                 new_currency,
                 current_rates[new_currency]
             );
@@ -68,7 +145,7 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
             setPrice(val);
             setCurrency(new_currency);
         })();
-    }, [country, rates, props.price, props.currency]);
+    }, [country, rates, props.price, props.currency, props.store]);
 
     return (
         <div className={`Currency ${props.className || ''}`}>

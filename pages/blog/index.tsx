@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import LanguageString from '../../src/components/LanguageString';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -125,12 +125,15 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
     );
 };
 
-export async function getStaticProps({ params, locale }) {
+export async function getStaticProps({ locale }) {
     let blog: any = null;
-    let errors = [];
+    let errors: any = [];
 
     try {
-        blog = (await BlogApi({ handle: 'news', locale })) as any;
+        blog = (await BlogApi({
+            handle: 'news',
+            locale
+        })) as any;
     } catch (err) {
         console.warn(err);
         errors.push(err);

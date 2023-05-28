@@ -1,7 +1,7 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import Slices from '../..';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface ContentGridProps {
     store?: any;

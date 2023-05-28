@@ -8,7 +8,7 @@ import { Config } from '../../../src/util/Config';
 import Content from '../../../src/components/Content';
 import Error from 'next/error';
 import Head from 'next/head';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
@@ -73,7 +73,6 @@ interface CollectionPageProps {
 }
 const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
     const { store, data } = props;
-    const { collection } = data;
 
     const router = useRouter();
 
@@ -83,7 +82,9 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
         if (window) (window as any).resourceId = collection?.id;
     }, [data?.collection]);
 
-    if (!data?.collection) return <Error statusCode={404} />;
+    if (!data || !data?.collection) return <Error statusCode={404} />;
+
+    const { collection } = data;
 
     return (
         <Page className="CollectionPage">
@@ -103,7 +104,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                                   content: collection.seo?.keywords
                               }
                           ]
-                        : null
+                        : []
                 }
             />
             <Head>
@@ -155,11 +156,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     data={collection}
                     noLink
                     hideTitle
+                    store={store}
                 />
 
                 <Body
                     dangerouslySetInnerHTML={{
-                        __html: collection.body
+                        __html: collection?.body || ''
                     }}
                 />
             </PageContent>
@@ -168,21 +170,28 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
     );
 };
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }) {
     const collections = await CollectionsApi();
 
     let paths = [
         ...collections
-            ?.map((collection) => ({
-                params: { handle: collection?.handle }
-            }))
-            .filter((a) => a.params.handle)
+            ?.map((collection) => [
+                {
+                    params: { handle: collection?.handle }
+                },
+                ...locales.map((locale) => ({
+                    params: { handle: collection?.handle },
+                    locale: locale
+                }))
+            ])
+            .flat()
+            .filter((a) => a?.params?.handle && a.locale !== '__default')
     ];
 
-    return { paths, fallback: 'blocking' };
+    return { paths, fallback: true };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params, locale }) {
     let handle = '';
     if (Array.isArray(params.handle)) {
         handle = params?.handle?.join('');
@@ -192,26 +201,29 @@ export async function getStaticProps({ locale, params }) {
 
     if (handle === 'undefined' || !handle)
         return {
-            props: {
-                data: {
-                    collection: null
-                }
-            },
+            notFound: true,
             revalidate: false
         };
+
+    if (locale === '__default') {
+        return {
+            props: {},
+            revalidate: false
+        };
+    }
 
     let collection, vendors;
 
     try {
         collection = await CollectionApi(handle);
     } catch (err) {
-        console.error(err);
+        console.error('CollectionApi', err);
     }
 
     try {
         vendors = await VendorsApi();
     } catch (err) {
-        console.error(err);
+        console.error('VendorsApi', err);
     }
 
     return {

@@ -25,7 +25,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ data }) => {
                             <TextBlockComponent
                                 key={index}
                                 image={item?.image?.url ? item.image : null}
-                                body={PrismicDOM.asHTML(item?.text)}
+                                body={PrismicDOM.asHTML(item?.text) || ''}
                             />
                         );
                     })}

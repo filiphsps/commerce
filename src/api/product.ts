@@ -1,8 +1,9 @@
+import { ShopifyWeightUnit, WeightModel } from '../models/WeightModel';
 import { newShopify, shopify } from './shopify';
 
+import { Config } from '../util/Config';
 import { ProductModel } from '../models/ProductModel';
 import { ProductVariantModel } from '../models/ProductVariantModel';
-import { ShopifyWeightUnit } from '../models/WeightModel';
 import TitleToHandle from '../util/TitleToHandle';
 import { gql } from '@apollo/client';
 
@@ -81,7 +82,7 @@ export const PRODUCT_FRAGMENT = `
     }
 `;
 
-export const Convertor = (product: any): ProductModel => {
+export const Convertor = (product: any): ProductModel | null => {
     if (!product) return null;
 
     let metafields = {
@@ -153,7 +154,8 @@ export const Convertor = (product: any): ProductModel => {
                 let weight = {
                     value: null,
                     unit: null
-                };
+                } as any as WeightModel;
+
                 switch (variant.weightUnit as ShopifyWeightUnit) {
                     case 'KILOGRAMS':
                         weight.value = variant.weight * 1000;
@@ -212,7 +214,7 @@ export const Convertor = (product: any): ProductModel => {
 
 export const ProductApi = async ({
     handle,
-    locale
+    locale: loc
 }: {
     handle: string;
     locale?: string;
@@ -220,8 +222,10 @@ export const ProductApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject();
 
+        const locale = loc === '__default' ? Config.i18n.locales[0] : loc;
+        // FIXME: Don't assume en-US
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
-        const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
+        const country = locale ? locale.split('-').at(-1)?.toUpperCase() : 'US';
 
         try {
             const { data, errors } = await newShopify.query({
@@ -258,7 +262,7 @@ export const ProductApi = async ({
 
 export const ProductIdApi = async ({
     id,
-    locale
+    locale: loc
 }: {
     id: string;
     locale?: string;
@@ -266,8 +270,12 @@ export const ProductIdApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!id) return reject();
 
+        const locale = loc === '__default' ? Config.i18n.locales[0] : loc;
+        // FIXME: Don't assume en-US
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
-        const country = locale ? locale.split('-').at(-1).toUpperCase() : 'US';
+        const country = locale
+            ? locale.split('-').at(-1)?.toUpperCase() || 'US'
+            : 'US';
 
         let formatted_id = id;
         if (!id.includes('/')) formatted_id = `gid://shopify/Product/${id}`;

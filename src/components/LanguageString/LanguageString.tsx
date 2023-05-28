@@ -3,7 +3,7 @@ import en from '../../../public/static/locales/en_US/common.json';
 import { useRouter } from 'next/router';
 
 interface LanguageStringProps {
-    id: string
+    id: string;
 }
 const LanguageString: FunctionComponent<LanguageStringProps> = (props) => {
     const router = useRouter();
@@ -14,7 +14,7 @@ const LanguageString: FunctionComponent<LanguageStringProps> = (props) => {
         case 'en-US':
         case 'en-GB':
         default:
-            return en[props.id] || (props.id);
+            return en[props.id] || props.id;
     }
 };
 

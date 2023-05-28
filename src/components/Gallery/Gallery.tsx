@@ -1,6 +1,6 @@
 import { FunctionComponent, useState } from 'react';
 
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { ProductImageModel } from '../../models/ProductModel';
 import styled from 'styled-components';
 

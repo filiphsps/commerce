@@ -7,7 +7,7 @@ export const Convertor = (
         node: any;
     }>
 ): Array<RedirectModel> => {
-    let entries = [];
+    let entries: any[] = [];
     redirects.forEach((redirect) => {
         entries.push(redirect?.node);
     });

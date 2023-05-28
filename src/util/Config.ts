@@ -24,7 +24,7 @@ export const Config = {
     },
 
     i18n: {
-        locales: process.env.STORE_LOCALES?.split(',') || ['en-US'],
+        locales: process.env.STORE_LOCALES?.split?.(',') || ['en-US'],
         currencies: process.env.STORE_CURRENCIES?.split(',') || ['USD']
     },
 

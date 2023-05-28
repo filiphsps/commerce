@@ -1,7 +1,8 @@
+import { Config } from '../util/Config';
 import { prismic } from './prismic';
 
 export const NavigationApi = async (
-    locale = 'en-US'
+    locale = Config.i18n.locales[0]
 ): Promise<
     Array<{
         title: string;
@@ -15,19 +16,26 @@ export const NavigationApi = async (
     return new Promise(async (resolve, reject) => {
         try {
             const navigation = await prismic().getSingle('navigation', {
-                lang: locale
+                lang: locale === '__default' ? Config.i18n.locales[0] : locale
             });
 
-            resolve(
+            return resolve(
                 (navigation?.data?.body as any)?.map((item) => ({
                     title: item.primary.title,
                     handle: item.primary.handle,
                     children: item.items
                 }))
             );
-        } catch (err) {
-            console.error(err);
-            reject(err);
+        } catch (error) {
+            if (
+                error.message.includes('No documents') &&
+                locale !== Config.i18n.locales[0]
+            ) {
+                return resolve(await NavigationApi()); // Try again with default locale
+            }
+
+            console.error(error);
+            return reject(error);
         }
     });
 };

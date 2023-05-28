@@ -7,7 +7,7 @@ const ButtonWrapper = styled.button`
     appearance: none;
     display: inline-block;
     width: 100%;
-    padding: 1em 2em;
+    padding: 1rem 1.5rem;
     background-color: var(--accent-primary);
     color: var(--color-text-primary);
     border-radius: var(--block-border-radius);
@@ -21,16 +21,35 @@ const ButtonWrapper = styled.button`
     user-select: none;
     transition: 150ms all ease-in-out;
 
-    @media (max-width: 950px) {
-        font-size: 1.5rem;
-    }
-
     &:hover {
         background: var(--accent-primary-light);
     }
 
     &:active {
         background: var(--accent-primary-dark);
+    }
+
+    &.Secondary {
+        padding: 0.75rem 1.5rem;
+        background: unset;
+        border: 0.35rem solid var(--accent-primary);
+        color: var(--accent-primary);
+        font-weight: 800;
+
+        &:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--color-text-primary);
+        }
+        &:active {
+            color: var(--accent-primary);
+            background: var(--color-text-primary);
+            border-color: var(--color-text-primary);
+        }
+    }
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
     }
 
     &.Button-Disabled {

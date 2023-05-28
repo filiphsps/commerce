@@ -15,13 +15,21 @@ body {
     touch-action: manipulation;
     color: $color-black;
 
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 950px) {
         font-size: 10px;
     }
 
     .zEWidget-launcher {
         z-index: 1 !important;
         margin: 2rem !important;
+    }
+
+    #dummy-chat-button-iframe {
+        right: 2rem !important;
+
+        @media screen and (max-width: 950px) {
+            right: 1.5rem !important;
+        }
     }
 }
 

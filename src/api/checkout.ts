@@ -1,7 +1,14 @@
+import { Config } from '../util/Config';
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
 
-export const CheckoutApi = async (items: any) => {
+export const CheckoutApi = async ({
+    items,
+    locale = Config.i18n.locales[0]
+}: {
+    items: any[];
+    locale: string;
+}) => {
     return new Promise(async (resolve, reject) => {
         try {
             const line_items = items?.map((line_item) => ({
@@ -13,6 +20,11 @@ export const CheckoutApi = async (items: any) => {
                 )
             }));
 
+            // eslint-disable-next-line no-console
+            console.log(
+                locale,
+                (locale || Config.i18n.locales[0]).split('-')[-1]
+            );
             const { data, errors } = await shopify.query({
                 query: gql`
                     mutation checkoutCreate($input: CheckoutCreateInput!) {
@@ -31,6 +43,12 @@ export const CheckoutApi = async (items: any) => {
                 `,
                 variables: {
                     input: {
+                        buyerIdentity: {
+                            countryCode:
+                                (locale || Config.i18n.locales[0]).split('-')[
+                                    -1
+                                ] || 'US'
+                        },
                         lineItems: line_items
                     }
                 }

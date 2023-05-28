@@ -9,7 +9,10 @@ export const accessToken = '';
 export const prismic = (req = null) =>
     new Prismic.Client(apiEndpoint, createClientOptions(req, accessToken));
 
-const createClientOptions = (req = null, prismicAccessToken = null) => {
+const createClientOptions = (
+    req: any = null,
+    prismicAccessToken: any = null
+) => {
     const reqOption = req ? { req } : {};
     const accessTokenOption = prismicAccessToken
         ? { accessToken: prismicAccessToken }

@@ -21,7 +21,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { data: navigation } = useSWR(
         [`navigation`],
-        () => NavigationApi() as any,
+        () => NavigationApi(router.locale) as any,
         {}
     );
 

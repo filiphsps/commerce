@@ -19,8 +19,8 @@ export const GetToken = () => {
     });
 };
 export const RemoveToken = () => {
-    return new Promise((resolve, reject) => {
-        const data = localStorage.removeItem('access_token');
+    return new Promise((resolve) => {
+        //const data = localStorage.removeItem('access_token');
         resolve(null);
     });
 };

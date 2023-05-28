@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect } from 'react';
 
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import PageContent from '../PageContent';
 import PageLoader from '../PageLoader';
@@ -144,7 +144,9 @@ interface SearchHeaderProps {
     country?: string;
 }
 const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
-    const { data } = useSWR([props.query || null], (url) => SearchApi(url));
+    const { data } = useSWR([props.query || null], (url) =>
+        SearchApi(url || '')
+    );
 
     useEffect(() => {
         if (!props.query) return;

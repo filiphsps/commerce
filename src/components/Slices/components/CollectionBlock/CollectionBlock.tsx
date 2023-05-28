@@ -2,10 +2,12 @@ import React, { FunctionComponent, memo } from 'react';
 
 import CollectionBlockComponent from '../../../CollectionBlock';
 import PageContent from '../../../PageContent';
+import { StoreModel } from '../../../../models/StoreModel';
 
 interface CollectionBlockProps {
     data?: any;
     prefetch?: any;
+    store: StoreModel;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     const handle = props?.data?.handle || props?.data?.primary?.handle;
@@ -24,6 +26,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     data={props?.prefetch?.collections[handle]}
                     hideTitle={hide_title}
                     plainTitle
+                    store={props.store}
                 />
             </PageContent>
         </div>

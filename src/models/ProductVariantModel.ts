@@ -9,7 +9,7 @@ export interface ProductVariantModel {
     pricing: {
         currency: string;
         range: number;
-        compare_at_range?: number;
+        compare_at_range?: number | null;
     };
     default_image: number;
     options: Array<{

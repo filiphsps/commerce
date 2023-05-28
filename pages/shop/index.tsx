@@ -3,6 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import CollectionBlock from '../../src/components/CollectionBlock';
+import { Config } from '../../src/util/Config';
 import ErrorPage from 'next/error';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
@@ -196,6 +197,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
             <NextSeo
                 title={props.page?.title || 'Shop'}
                 description={props.page?.description || ''}
+                canonical={`https://${Config.domain}/shop/`}
                 additionalMetaTags={
                     props.page?.keywords
                         ? [
@@ -204,7 +206,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                   content: props.page?.keywords
                               }
                           ]
-                        : null
+                        : []
                 }
             />
 
@@ -345,6 +347,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                             <CollectionBlock
                                 data={{ items: products }}
                                 hideTitle
+                                store={props.store}
                             />
 
                             <Pagination>
@@ -395,15 +398,15 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     );
 };
 
-export async function getStaticProps({ params, locale }) {
+export async function getStaticProps({ locale }) {
     let page: any = null;
     let data: any = null;
     let vendors: any = null;
-    let errors = [];
+    let errors: any[] = [];
 
     try {
         data = (await ProductsPaginationApi({
-            before: null
+            before: undefined
         })) as any;
     } catch (err) {
         console.warn(err);

@@ -33,7 +33,7 @@ class App extends Document {
 
     render() {
         return (
-            <Html lang="en">
+            <Html lang={this.props.locale || Config.i18n.locales[0]}>
                 <Head>
                     <link
                         rel="preconnect"

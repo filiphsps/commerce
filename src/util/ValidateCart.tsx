@@ -1,9 +1,9 @@
-import React from 'react';
 import LanguageString from '../components/LanguageString';
+import React from 'react';
 
 const ValidateQuantity = (variant, quantity) => {
     let value = quantity;
-    let alert = [];
+    let alert: any = [];
 
     if (!variant) return null;
 

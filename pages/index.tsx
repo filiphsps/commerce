@@ -35,7 +35,7 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                                   content: data?.page?.keywords
                               }
                           ]
-                        : null
+                        : []
                 }
             />
             <Slices

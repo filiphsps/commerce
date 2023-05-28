@@ -1,7 +1,7 @@
 import React, { FunctionComponent, memo } from 'react';
 
 import ContentComponent from '../Content';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -67,7 +67,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
             <Content
                 className="Plain"
                 dangerouslySetInnerHTML={{
-                    __html: body
+                    __html: body || ''
                 }}
             />
         );
@@ -85,7 +85,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
             </ImageContainer>
             <Content
                 dangerouslySetInnerHTML={{
-                    __html: body
+                    __html: body || ''
                 }}
             />
         </Container>

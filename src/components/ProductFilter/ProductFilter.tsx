@@ -88,13 +88,14 @@ const OptionsTitle = styled.div`
 
 interface ProductFilterProps {
     products: ProductModel[];
+    // eslint-disable-next-line no-unused-vars
     onChange: (filter: any) => void;
 }
 const ProductFilter: FunctionComponent<ProductFilterProps> = ({
     products,
     onChange
 }) => {
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState<any>({
         tags: [],
         vendors: [],
         sorting: 'none'
@@ -105,13 +106,13 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
     // const [sorting, setSorting] = useState<string[]>([]);
 
     useEffect(() => {
-        let new_tags = [];
-        let new_vendors = [];
+        let new_tags: any[] = [];
+        let new_vendors: any[] = [];
 
         if (!products) return;
 
         products?.forEach((product) => {
-            new_tags.push(...product.tags);
+            new_tags.push(...(product.tags || []));
             new_vendors.push(product.vendor.title);
         });
 
@@ -132,18 +133,20 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
         <FilterWrapper>
             <Toggle
                 onClick={() => setShowFilters(!showFilters)}
-                className={showFilters && 'Open'}
+                className={(showFilters && 'Open') || ''}
             >
                 <LanguageString id="filter_show" />
             </Toggle>
             <Filters>
-                <Filter className={!showFilters && 'Closed'}>
+                <Filter className={(!showFilters && 'Closed') || ''}>
                     <Options>
                         <OptionsTitle>
                             <LanguageString id="sorting" />
                         </OptionsTitle>
                         <Option
-                            className={filters.sorting == 'none' && 'Selected'}
+                            className={
+                                (filters.sorting == 'none' && 'Selected') || ''
+                            }
                             onClick={() =>
                                 setFilters({ ...filters, sorting: 'none' })
                             }
@@ -152,7 +155,8 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                         </Option>
                         <Option
                             className={
-                                filters.sorting == 'abcAsc' && 'Selected'
+                                (filters.sorting == 'abcAsc' && 'Selected') ||
+                                ''
                             }
                             onClick={() =>
                                 setFilters({ ...filters, sorting: 'abcAsc' })
@@ -170,7 +174,9 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                             <Option
                                 key={`tags_${item}`}
                                 className={
-                                    filters.tags.includes(item) && 'Selected'
+                                    (filters.tags.includes(item) &&
+                                        'Selected') ||
+                                    ''
                                 }
                                 onClick={() => {
                                     let new_filter = filters.tags;
@@ -179,7 +185,11 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                                         new_filter = filters.tags.filter(
                                             (tag) => tag !== item
                                         );
-                                    else new_filter = [...filters.tags, item];
+                                    else
+                                        new_filter = [
+                                            ...(filters.tags || []),
+                                            item
+                                        ];
 
                                     setFilters({
                                         ...filters,

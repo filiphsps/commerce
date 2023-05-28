@@ -2,11 +2,11 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import React, { FunctionComponent, useRef } from 'react';
 
 import { CollectionApi } from '../../api/collection';
-import ErrorPage from 'next/error';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
+import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -65,14 +65,13 @@ interface CollectionBlockProps {
     brand?: boolean;
     search?: boolean;
     plainTitle?: boolean;
+    store: StoreModel;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
     const {
-        data,
-        error
+        data
     }: {
         data?: any;
-        error?: any;
     } = useSWR(
         props.handle ? [`${props.handle}`] : null,
         (url) => (props.handle ? CollectionApi(url) : () => props.data),
@@ -91,6 +90,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     handle={item?.handle || item}
                     data={typeof item !== 'string' ? item : null}
                     isHorizontal={props.isHorizontal}
+                    store={props.store}
                 />
             );
         }
@@ -141,7 +141,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     )}
                 </div>
             )}
-            <div className="CollectionBlock-Content" ref={content_ref}>
+            <div className="CollectionBlock-Content" ref={content_ref as any}>
                 {products.length > 0 ? products : null}
                 {view_more}
             </div>

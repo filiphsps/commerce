@@ -65,7 +65,9 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
         );
     return (
         <Wrapper>
-            <Title className={plainTitle && 'plain-title'}>{title}</Title>
+            <Title className={(plainTitle && 'plain-title') || ''}>
+                {title}
+            </Title>
             {subtitle && (
                 <SubTitle className={noMargin ? 'no-margin' : ''}>
                     {subtitle}

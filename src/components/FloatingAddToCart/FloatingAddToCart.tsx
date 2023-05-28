@@ -1,6 +1,6 @@
 import Button from '../Button';
 import { FunctionComponent } from 'react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { ProductModel } from '../../models/ProductModel';
 import styled from 'styled-components';
 

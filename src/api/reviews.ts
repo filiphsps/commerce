@@ -12,8 +12,8 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
 
         if (!data.aggregate_rating) {
             return {
-                id: null,
-                product_id: id.split('/').at(-1),
+                id: '',
+                product_id: id?.split('/').at(-1) || '',
                 rating: 0,
                 count: 0,
                 reviews: []
@@ -53,7 +53,7 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
 
         return {
             id: data.remote_id,
-            product_id: id,
+            product_id: id || '',
             rating: parseFloat(rating) ?? 0,
             count: parseFloat(count) ?? 0,
             reviews
@@ -61,8 +61,8 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
     } catch (err) {
         console.error(err);
         return {
-            id: null,
-            product_id: id,
+            id: '',
+            product_id: id || '',
             rating: 0,
             count: 0,
             reviews: []

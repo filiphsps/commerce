@@ -1,12 +1,12 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { FooterApi } from '../../api/footer';
-import Image from 'next/image';
-import Input from '../Input';
+import Image from 'next/legacy/image';
+//import Input from '../Input';
 import Link from 'next/link';
-import { NewsletterApi } from '../../api/newsletter';
+//import { NewsletterApi } from '../../api/newsletter';
 import PaymentIcons from '../../../public/assets/payments/icons.png';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -28,7 +28,7 @@ const PaymentIconsWrapper = styled.div`
     margin: 1rem 0px;
 `;
 
-const EmailCapture = styled.div`
+/*const EmailCapture = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -82,7 +82,7 @@ const EmailCaptureSubmit = styled.button`
         color: unset;
         opacity: 0.5;
     }
-`;
+`;*/
 
 const BlockTitle = styled.div`
     font-size: 2rem;
@@ -97,7 +97,7 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const { store } = props;
     const { data } = useSWR([`footer`], () => FooterApi() as any, {});
-    const [email, setEmail] = useState('');
+    //const [email, setEmail] = useState('');
 
     // FIXME: Togglable newsletter view.
     // FIXME: Dynamic copyright copy.
@@ -163,10 +163,11 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
                             <address
                                 dangerouslySetInnerHTML={{
-                                    __html: PrismicDOM.asText(
-                                        data?.address,
-                                        '<br />'
-                                    )
+                                    __html:
+                                        PrismicDOM.asText(
+                                            data?.address,
+                                            '<br />'
+                                        ) || ''
                                 }}
                             />
                         </div>
@@ -178,16 +179,16 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             >
                                 <BlockTitle>{block.title}</BlockTitle>
                                 {block?.items.map((item) => (
-                                    <Link key={item.handle} href={item.handle}>
-                                        <a
-                                            target={
-                                                item.handle.startsWith('http')
-                                                    ? '_blank'
-                                                    : ''
-                                            }
-                                        >
-                                            {item.title}
-                                        </a>
+                                    <Link
+                                        key={item.handle}
+                                        href={item.handle}
+                                        target={
+                                            item.handle.startsWith('http')
+                                                ? '_blank'
+                                                : ''
+                                        }
+                                    >
+                                        {item.title}
                                     </Link>
                                 ))}
                             </div>
@@ -196,8 +197,10 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
                     <Copyright>
                         &copy; 2020-{new Date().getFullYear()}{' '}
-                        <a href="https://www.sweetsideofsweden.com/">Sweet Side of Sweden</a> - All
-                        rights reserved
+                        <a href="https://www.sweetsideofsweden.com/">
+                            Sweet Side of Sweden
+                        </a>{' '}
+                        - All rights reserved
                     </Copyright>
                 </div>
             </footer>
