@@ -53,9 +53,9 @@ const Carousel: FunctionComponent<CarouselProps> = (props) => {
                                     title={slide?.image?.alt}
                                     width={1920}
                                     height={300}
-                                    loading="lazy"
                                     layout="intrinsic"
                                     placeholder="empty"
+                                    priority={true}
                                 />
                             </Link>
                         );
