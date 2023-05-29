@@ -83,12 +83,12 @@ const Content = styled.tr`
     }
 
     &.Sale {
-        padding: 0.8rem;
-        border: 0.2rem solid #d91e18;
+        //padding: 0.65rem;
+        //border: 0.35rem solid #d91e18;
 
-        ${DetailsTitle} {
+        /*${DetailsTitle} {
             color: #d91e18;
-        }
+        }*/
     }
 `;
 
