@@ -208,6 +208,11 @@ const FooterBottomSection = styled.section`
     @media (min-width: 950px) {
         grid-template-columns: 1fr 1fr;
     }
+    
+    // Make the footer a bit taller to deal with the support chat
+    @media (max-width: 1450px) {
+        padding-bottom: 13rem;
+    }
 `;
 const FooterBottomSectionBlock = styled.div`
     display: flex;
