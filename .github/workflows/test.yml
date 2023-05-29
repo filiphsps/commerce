@@ -5,7 +5,7 @@ jobs:
     test:
         runs-on: buildjet-2vcpu-ubuntu-2204	
         steps:
-            - uses: buildjet/checkout@v3
+            - uses: actions/checkout@v3
             - uses: buildjet/setup-node@v3
               with:
                   node-version: 18
