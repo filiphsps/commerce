@@ -3,12 +3,23 @@ on: [push]
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: buildjet-2vcpu-ubuntu-2204	
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: buildjet/checkout@v3
+            - uses: buildjet/setup-node@v3
               with:
-                  node-version: 16
-            - run: npm install
-            - run: npm run build
-            - run: npm run test
+                  node-version: 18
+            - uses: buildjet/cache@v3
+              with:
+                path: ~/.npm
+                id: npm-cache
+                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
+            - name: Download dependencies
+              if: steps.npm-cache.outputs.cache-hit != 'true'
+              run: npm ci
+            - name: Build
+              run: npm run build
+            - name: Test
+              run: npm run test
