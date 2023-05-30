@@ -572,7 +572,7 @@ export const Checkout = async ({
     }
 
     const ga4 = getCrossDomainLinkerParameter();
-    window.location = `${url}${(ga4 && `&_gl=${ga4}`) || ''}`;
+    window.location = `${url}${(ga4 && `&_gl=${ga4}`) || ''}` as any;
 };
 
 interface CartPageProps {

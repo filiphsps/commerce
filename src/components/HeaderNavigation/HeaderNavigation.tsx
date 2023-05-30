@@ -123,7 +123,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     return (
         <Blur
             className={`${open ? 'Open' : ''} ${headerStyle}`}
-            onClick={(e) => {
+            onClick={() => {
                 toggle(false);
                 return false;
             }}
