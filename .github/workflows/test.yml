@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
     test:
-        runs-on: buildjet-2vcpu-ubuntu-2204	
+        runs-on: buildjet-2vcpu-ubuntu-2204
         steps:
             - uses: actions/checkout@v3
             - uses: buildjet/setup-node@v3
@@ -11,11 +11,10 @@ jobs:
                   node-version: 18
             - uses: buildjet/cache@v3
               with:
-                path: ~/.npm
-                id: npm-cache
-                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-                restore-keys: |
-                  ${{ runner.os }}-node-
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
             - name: Download dependencies
               if: steps.npm-cache.outputs.cache-hit != 'true'
               run: npm ci
@@ -23,3 +22,8 @@ jobs:
               run: npm run build
             - name: Test
               run: npm run test
+            - name: Submit coverage to codacy
+              uses: codacy/codacy-coverage-reporter-action@v1
+              with:
+                  project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+                  coverage-reports: coverage/lcov.info
