@@ -208,7 +208,7 @@ const FooterBottomSection = styled.section`
     @media (min-width: 950px) {
         grid-template-columns: 1fr 1fr;
     }
-    
+
     // Make the footer a bit taller to deal with the support chat
     @media (max-width: 1450px) {
         padding-bottom: 13rem;
@@ -412,16 +412,25 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
                         <FooterBottomSectionBlock>
                             <Socials>
-                                {store?.social?.map((social) => (
-                                    <Social key={social.url} href={social.url}>
-                                        <Image
-                                            src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
-                                            fill
-                                            alt={social.name}
-                                            title={social.name}
-                                        />
-                                    </Social>
-                                ))}
+                                {store?.social
+                                    ?.filter((social) =>
+                                        ['instagram', 'facebook'].includes(
+                                            social.name.toLowerCase()
+                                        )
+                                    )
+                                    .map((social) => (
+                                        <Social
+                                            key={social.url}
+                                            href={social.url}
+                                        >
+                                            <Image
+                                                src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
+                                                fill
+                                                alt={social.name}
+                                                title={social.name}
+                                            />
+                                        </Social>
+                                    ))}
                             </Socials>
                             <LegalAndCopyright>
                                 <Copyright>
