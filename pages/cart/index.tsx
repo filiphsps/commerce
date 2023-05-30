@@ -481,6 +481,35 @@ const RecommendationsContent = styled(PageContent)`
     }
 `;
 
+// Const hacky workaround for ga4 cross-domain
+// Ugly hack taken from StackOverflow
+const getCrossDomainLinkerParameter = () => {
+    // create form element, give it an action, make it hidden and prevent the submit event
+    const formNode = document.createElement('form') as any;
+    formNode.action = 'https://opensource.sweetsideofsweden.com';
+    formNode.style.opacity = '0';
+    formNode.addEventListener('submit', (event) => {
+        event.preventDefault();
+    });
+
+    // create a button node, make it type=submit and append it to the form
+    const buttonNode = document.createElement('button') as any;
+    buttonNode.type = 'submit';
+    formNode.append(buttonNode);
+
+    // append the form (and button) to the DOM
+    document.body.append(formNode);
+
+    // trigger a click on the button node to submit the form
+    buttonNode.click();
+
+    // check for the input[name=_gl] hidden input in the form (if decoration worked)
+    const _glNode = formNode.querySelector('input[name="_gl"]') as any;
+
+    if (_glNode) return _glNode.value as string;
+    return null;
+};
+
 export const Checkout = async ({
     data,
     price,
@@ -500,25 +529,27 @@ export const Checkout = async ({
     ).replace(Config.shopify.domain, 'checkout.sweetsideofsweden.com');
 
     // Google Tracking
-    (window as any).dataLayer?.push({
-        ecommerce: null
-    });
-    (window as any).dataLayer?.push({
-        event: 'begin_checkout',
-        currency: currency,
-        value: price,
-        ecommerce: {
-            items: data.items.map((item) => ({
-                item_id: item.id,
-                item_name: item.title,
-                item_variant: item.variant_title,
-                item_brand: item.brand,
-                currency: currency,
-                quantity: item.quantity,
-                price: item.price
-            }))
+    (window as any).dataLayer?.push(
+        {
+            ecommerce: null
+        },
+        {
+            event: 'begin_checkout',
+            currency: currency,
+            value: price,
+            ecommerce: {
+                items: data.items.map((item) => ({
+                    item_id: item.id,
+                    item_name: item.title,
+                    item_variant: item.variant_title,
+                    item_brand: item.brand,
+                    currency: currency,
+                    quantity: item.quantity,
+                    price: item.price
+                }))
+            }
         }
-    });
+    );
 
     // Microsoft Ads tracking
     if ((window as any).uetq) {
@@ -540,12 +571,8 @@ export const Checkout = async ({
         });
     }
 
-    // Do it this way to handle cross-domain tracking.
-    let link = document.createElement('a');
-    link.setAttribute('type', 'hidden');
-    link.setAttribute('href', url);
-    document.body.appendChild(link);
-    link.click();
+    const ga4 = getCrossDomainLinkerParameter();
+    window.location = `${url}${(ga4 && `&_gl=${ga4}`) || ''}`;
 };
 
 interface CartPageProps {
