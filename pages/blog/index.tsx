@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import React, { FunctionComponent } from 'react';
 
 import { BlogApi } from '../../src/api/blog';
@@ -134,9 +136,10 @@ export async function getStaticProps({ locale }) {
             handle: 'news',
             locale
         })) as any;
-    } catch (err) {
-        console.warn(err);
-        errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        console.warn(error);
+        errors.push(error);
     }
 
     return {

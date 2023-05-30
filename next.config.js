@@ -2,6 +2,7 @@ import manifest from './package.json' assert { type: 'json' };
 import { i18n } from './next-i18next.config.js';
 import * as child_process from 'child_process';
 import * as nextInterceptStdout from 'next-intercept-stdout';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withInterceptStdout = nextInterceptStdout.default;
 
@@ -75,15 +76,46 @@ let config = {
     }
 };
 
-export default typeof withInterceptStdout !== 'function'
-    ? config
-    : withInterceptStdout(config, (text) => {
-          if (
-              text.includes('Do not add stylesheets') ||
-              text.includes('The Fetch API is') ||
-              text.includes('Debugger attached.')
-          )
-              return '';
+export default withSentryConfig(
+    typeof withInterceptStdout !== 'function'
+        ? config
+        : withInterceptStdout(config, (text) => {
+              if (
+                  text.includes('Do not add stylesheets') ||
+                  text.includes('The Fetch API is') ||
+                  text.includes('Debugger attached.')
+              )
+                  return '';
 
-          return text;
-      });
+              return text;
+          }),
+    {
+        // For all available options, see:
+        // https://github.com/getsentry/sentry-webpack-plugin#options
+
+        // Suppresses source map uploading logs during build
+        silent: true,
+
+        org: 'sweet-side-of-sweden',
+        project: 'frontend'
+    },
+    {
+        // For all available options, see:
+        // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+
+        // Upload a larger set of source maps for prettier stack traces (increases build time)
+        widenClientFileUpload: true,
+
+        // Transpiles SDK to be compatible with IE11 (increases bundle size)
+        transpileClientSDK: true,
+
+        // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
+        tunnelRoute: '/monitoring',
+
+        // Hides source maps from generated client bundles
+        hideSourceMaps: true,
+
+        // Automatically tree-shake Sentry logger statements to reduce bundle size
+        disableLogger: true
+    }
+);

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { PageApi, PagesApi } from '../../src/api/page';
 import React, { FunctionComponent } from 'react';
 
@@ -114,8 +116,9 @@ export async function getStaticProps({ params, locale }) {
             },
             revalidate: 10
         };
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        console.error(error);
 
         return {
             props: {},

@@ -1,6 +1,8 @@
 import 'destyle.css';
 import './app.scss';
 
+import * as Sentry from '@sentry/nextjs';
+
 import {
     DefaultSeo,
     SiteLinksSearchBoxJsonLd,
@@ -121,6 +123,7 @@ const StoreApp = withStore(
                         ]
                     });
                 } catch (error) {
+                    Sentry.captureException(error);
                     console.error(error);
                 }
             }
