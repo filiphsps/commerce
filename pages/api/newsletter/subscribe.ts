@@ -2,8 +2,13 @@ export default async function handler(req, res) {
     const body = JSON.parse(req.body);
     if (!body?.email)
         return res.status(400).json({
-            error: 'Email missing!'
+            error: 'Invalid or missing email'
         });
+
+    /*if (!Config.brevo)
+        return res.status(500).json({
+            error: 'The newsletter service is currently unavailable'
+        });*/
 
     const response = await fetch('https://api.sendinblue.com/v3/contacts', {
         method: 'post',
@@ -11,12 +16,12 @@ export default async function handler(req, res) {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'api-key':
-                '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'
+                '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' // FIXME: Configurable
         },
         body: JSON.stringify({
             updateEnabled: false,
             email: body.email,
-            listIds: [8]
+            listIds: [4] // FIXME: Configurable
         })
     });
 

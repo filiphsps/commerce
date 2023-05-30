@@ -6,7 +6,7 @@ export const Config = {
     git_sha: process.env.GIT_SHA,
     domain: process.env.DOMAIN || 'www.sweetsideofsweden.com',
     GTM: process.env.GTM,
-
+    brevo: process.env.BREVO_ENABLED,
     features: {
         accounts: process.env.FEATURE_ACCOUNTS === 'true'
     },

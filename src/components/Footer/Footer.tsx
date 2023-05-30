@@ -3,71 +3,14 @@ import * as PrismicDOM from '@prismicio/helpers';
 import React, { FunctionComponent } from 'react';
 
 import { Config } from '../../util/Config';
+import EmailCapture from '../EmailCapture';
 import { FooterApi } from '../../api/footer';
 import Image from 'next/image';
-//import Input from '../Input';
 import Link from 'next/link';
-//import { NewsletterApi } from '../../api/newsletter';
 import PaymentIcons from '../../../public/assets/payments/icons.png';
 import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import useSWR from 'swr';
-
-/*const EmailCapture = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--accent-primary);
-`;
-const EmailCaptureContent = styled.div`
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 1rem;
-    max-width: 100%;
-    width: 1465px;
-    height: 100%;
-    min-height: 2rem;
-    padding: 1rem 2rem;
-`;
-const EmailCaptureInput = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    input {
-        height: 3.5rem;
-        padding: 1rem;
-        background: #fefefe;
-        font-size: 1.25rem;
-    }
-`;
-const EmailCaptureTitle = styled.div`
-    color: var(--color-text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.05rem;
-    font-size: 1.75rem;
-`;
-const EmailCaptureSubmit = styled.button`
-    height: 3.5rem;
-    padding: 1rem 1.5rem;
-    border-radius: var(--block-border-radius);
-    background: var(--color-text-primary);
-    font-size: 1.25rem;
-    transition: 150ms;
-
-    &:hover {
-        background: var(--accent-secondary-dark);
-        color: var(--color-text-primary);
-    }
-
-    &:disabled {
-        background: var(--color-text-primary);
-        color: unset;
-        opacity: 0.5;
-    }
-`;*/
 
 const Logo = styled.div`
     position: relative;
@@ -211,7 +154,7 @@ const FooterBottomSection = styled.section`
 
     // Make the footer a bit taller to deal with the support chat
     @media (max-width: 1450px) {
-        padding-bottom: 13rem;
+        padding-bottom: 8rem;
     }
 `;
 const FooterBottomSectionBlock = styled.div`
@@ -290,55 +233,13 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const { store } = props;
     const { data } = useSWR([`footer`], () => FooterApi() as any, {});
-    //const [email, setEmail] = useState('');
 
-    // FIXME: Togglable newsletter view.
     // FIXME: Dynamic copyright copy.
 
+    // FIXME: Togglable newsletter view.
     return (
         <>
-            <>
-                {/*<EmailCapture>
-                    <EmailCaptureContent>
-                        <EmailCaptureTitle>
-                            Join our newsletter for exclusive deals and discounts
-                        </EmailCaptureTitle>
-                        <EmailCaptureInput>
-                            <Input
-                                type="email"
-                                placeholder="candy@example.com"
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </EmailCaptureInput>
-                        <EmailCaptureSubmit
-                            disabled={
-                                email.length <= 4 ||
-                                !(email.includes('@') && email.includes('.'))
-                            }
-                            onClick={async () => {
-                                try {
-                                    const res = await NewsletterApi({
-                                        email: email
-                                    });
-                                    alert('Welcome to the world of Swedish candy!');
-                                } catch (error) {
-                                    if (error.code == 'duplicate_parameter')
-                                        alert(
-                                            'You have already subscribed to the newsletter :)'
-                                        );
-                                    else
-                                        alert(
-                                            'Something went wrong please try again!'
-                                        );
-                                }
-                            }}
-                        >
-                            OK
-                        </EmailCaptureSubmit>
-                    </EmailCaptureContent>
-                </EmailCapture>*/}
-            </>
-
+            <EmailCapture />
             <FooterContainer>
                 <FooterWrapper>
                     <FooterBlocksContainer>
