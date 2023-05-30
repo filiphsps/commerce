@@ -1,6 +1,6 @@
 {
     "extends": [
-        "@bigmichi1",
+        "github>sweet-side-of-sweden/renovate-config",
         ":automergePatch",
         ":automergeMinor"
     ]
