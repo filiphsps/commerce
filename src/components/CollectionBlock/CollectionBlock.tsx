@@ -74,7 +74,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
         data?: any;
     } = useSWR(
         props.handle ? [`${props.handle}`] : null,
-        (url) => (props.handle ? CollectionApi(url) : () => props.data),
+        ([url]) => (props.handle ? CollectionApi(url) : () => props.data),
         { fallbackData: props?.data }
     );
 

@@ -144,7 +144,7 @@ interface SearchHeaderProps {
     country?: string;
 }
 const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
-    const { data } = useSWR([props.query || null], (url) =>
+    const { data } = useSWR([props.query || null], ([url]) =>
         SearchApi(url || '')
     );
 

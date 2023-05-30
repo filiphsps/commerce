@@ -169,8 +169,8 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     const router = useRouter();
     const [showFilters, setShowFilters] = useState(false);
     const { data, isValidating, error } = useSWR(
-        [{ query: router.query }],
-        ({ query }) =>
+        [router.query],
+        (query: any) =>
             ProductsPaginationApi({
                 vendor: query.vendor as any,
                 sorting: query.sorting as any,
@@ -220,7 +220,10 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                     ]}
                     store={props.store}
                 />
-                <PageHeader title={data?.title} subtitle={data?.description} />
+                <PageHeader
+                    title={(data as any)?.title}
+                    subtitle={(data as any)?.description}
+                />
 
                 <PageHeader
                     title={props.page?.title || 'Shop'}

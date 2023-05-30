@@ -336,12 +336,12 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
     // TODO: remove replace once we've cleared all broken carts
     const product_id = props.data.id
         .split('#')[0]
-        .replace('gid://shopify/Product/', '');
+        .replace('gid://shopify/Product/', '') as string;
     const variant_id = props.data.id
         .split('#')[1]
-        .replace('gid://shopify/ProductVariant/', '');
+        .replace('gid://shopify/ProductVariant/', '') as string;
 
-    const { data } = useSWR([product_id], (id) =>
+    const { data } = useSWR([product_id], ([id]) =>
         ProductIdApi({ id: id, locale })
     ) as any;
     const product: ProductModel = data;
