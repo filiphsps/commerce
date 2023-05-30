@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { Config } from '../util/Config';
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
@@ -60,9 +62,10 @@ export const CheckoutApi = async ({
                 return reject(data?.checkoutCreate?.checkoutUserErrors);
 
             return resolve(data?.checkoutCreate?.checkout?.webUrl);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

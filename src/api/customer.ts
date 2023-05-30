@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { GetToken } from '../util/customer/token';
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
@@ -38,9 +40,10 @@ export const CustomerLoginApi = async (customer: any) => {
             return resolve(
                 data?.customerAccessTokenCreate?.customerAccessToken
             );
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
@@ -77,9 +80,10 @@ export const CustomerRegisterApi = async (customer: any) => {
                 return reject(data?.customerCreate?.customerUserErrors);
 
             return resolve(null);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
@@ -110,9 +114,10 @@ export const CustomerRecoverApi = async (email: any) => {
                 );
 
             return resolve(null);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
@@ -149,9 +154,10 @@ export const CustomerApi = async () => {
             if (!data?.customer) return reject();
 
             return resolve(data?.customer);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

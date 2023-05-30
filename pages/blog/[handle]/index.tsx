@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { FunctionComponent } from 'react';
@@ -5,6 +7,7 @@ import React, { FunctionComponent } from 'react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
 import ContentComponent from '../../../src/components/Content';
+import Error from 'next/error';
 import Image from 'next/legacy/image';
 import LanguageString from '../../../src/components/LanguageString';
 import Link from 'next/link';
@@ -135,9 +138,15 @@ interface ArticlePageProps {
     store: StoreModel;
     article: any;
     blog: any;
+    error?: string;
 }
-const ArticlePage: FunctionComponent<ArticlePageProps> = (props) => {
-    const { store, article, blog } = props;
+const ArticlePage: FunctionComponent<ArticlePageProps> = ({
+    store,
+    article,
+    blog,
+    error
+}) => {
+    if (error || !article) return <Error statusCode={500} title={error} />;
 
     return (
         <Page className="ArticlePage">
@@ -281,7 +290,6 @@ export async function getStaticProps({ params, locale }) {
 
     let article: any = null;
     let blog: any = null;
-    let errors: any[] = [];
 
     try {
         article = (await ArticleApi({
@@ -289,27 +297,37 @@ export async function getStaticProps({ params, locale }) {
             blog: 'news',
             locale
         })) as any;
-    } catch (err) {
-        console.warn(err);
-        if (err) errors.push(err);
+    } catch (error) {
+        if (error.message?.includes('404')) {
+            return {
+                notFound: true
+            };
+        }
+
+        Sentry.captureException(error);
+        return {
+            props: {
+                error: error.message
+            },
+            revalidate: 10
+        };
     }
+
     try {
         blog = (await BlogApi({
             handle: 'news',
             locale
         })) as any;
-    } catch (err) {
-        console.warn(err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
     }
 
     return {
         props: {
             article,
-            blog,
-            errors
+            blog
         },
-        revalidate: 10
+        revalidate: 60
     };
 }
 

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { Config } from '../util/Config';
@@ -47,9 +49,10 @@ export const RecommendationApi = async ({
             if (!result) return reject();
 
             return resolve(result);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { ProductModel } from '../models/ProductModel';
 import TitleToHandle from '../util/TitleToHandle';
 import { VendorModel } from '../models/VendorModel';
@@ -45,9 +47,10 @@ export const VendorsApi = async () => {
             });
 
             resolve(Convertor(res?.data?.products?.edges));
-        } catch (err) {
-            console.error(err);
-            reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            reject(error);
         }
     });
 };

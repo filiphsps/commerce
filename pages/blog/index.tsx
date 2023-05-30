@@ -5,6 +5,7 @@ import React, { FunctionComponent } from 'react';
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
+import Error from 'next/error';
 import Image from 'next/legacy/image';
 import LanguageString from '../../src/components/LanguageString';
 import Link from 'next/link';
@@ -72,9 +73,10 @@ const ArticleContent = styled.div`
 interface BlogPageProps {
     store: StoreModel;
     blog: any;
+    error?: string;
 }
-const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
-    const { store, blog } = props;
+const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
+    if (error || !blog) return <Error statusCode={500} title={error} />;
 
     return (
         <Page className="BlogPage">
@@ -129,26 +131,35 @@ const BlogPage: FunctionComponent<BlogPageProps> = (props) => {
 
 export async function getStaticProps({ locale }) {
     let blog: any = null;
-    let errors: any = [];
 
     try {
         blog = (await BlogApi({
-            handle: 'news',
+            handle: 'news', // FIXME: Configurable
             locale
         })) as any;
-    } catch (error) {
-        Sentry.captureException(error);
-        console.warn(error);
-        errors.push(error);
-    }
 
-    return {
-        props: {
-            blog,
-            errors
-        },
-        revalidate: 10
-    };
+        return {
+            props: {
+                blog
+            },
+            revalidate: 60
+        };
+    } catch (error) {
+        if (error.message?.includes('404')) {
+            return {
+                props: null,
+                revalidate: 60
+            };
+        }
+
+        Sentry.captureException(error);
+        return {
+            props: {
+                error: error.message
+            },
+            revalidate: 10
+        };
+    }
 }
 
 export default BlogPage;

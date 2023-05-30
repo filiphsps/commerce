@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
 import React, { FunctionComponent, useEffect } from 'react';
 
@@ -216,14 +218,14 @@ export async function getStaticProps({ params, locale }) {
 
     try {
         collection = await CollectionApi(handle);
-    } catch (err) {
-        console.error('CollectionApi', err);
+    } catch (error) {
+        Sentry.captureException(error);
     }
 
     try {
         vendors = await VendorsApi();
-    } catch (err) {
-        console.error('VendorsApi', err);
+    } catch (error) {
+        Sentry.captureException(error);
     }
 
     return {

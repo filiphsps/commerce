@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { Config } from '../util/Config';
 import { prismic } from './prismic';
 
@@ -25,6 +27,7 @@ export const FooterApi = async (locale = Config.i18n.locales[0]) => {
                 return resolve(await FooterApi()); // Try again with default locale
             }
 
+            Sentry.captureException(error);
             console.error(error);
             return reject(error);
         }

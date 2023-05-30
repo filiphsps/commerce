@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import Button from '../Button';
@@ -191,6 +193,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                                         return;
                                     }
 
+                                    Sentry.captureException(error);
                                     alert(
                                         'Something went wrong please try again!'
                                     );

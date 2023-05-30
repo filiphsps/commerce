@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import {
     FiChevronDown,
     FiChevronUp,
@@ -923,9 +925,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                                 price,
                                                 locale: router.locale
                                             });
-                                        } catch (err) {
-                                            console.error(err);
-                                            alert(err.message);
+                                        } catch (error) {
+                                            Sentry.captureException(error);
+                                            alert(error.message);
                                             setLoading(false);
                                         }
                                     }}

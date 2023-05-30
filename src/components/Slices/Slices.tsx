@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import React, { FunctionComponent, memo } from 'react';
 
 import Collapse from './components/Collapse';
@@ -93,8 +95,9 @@ const Slices: FunctionComponent<SlicesProps> = (props) => {
                             prefetch={props?.prefetch}
                         />
                     );
-                } catch (err) {
-                    console.error(err);
+                } catch (error) {
+                    Sentry.captureException(error);
+                    console.error(error);
                     return null;
                 }
             })}

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { GetToken } from '../util/customer/token';
 import { gql } from '@apollo/client';
 import { shopify } from './shopify';
@@ -60,9 +62,10 @@ export const OrdersApi = async () => {
             if (!data?.customer) return reject();
 
             return resolve(Convertor(data?.customer?.orders?.edges));
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

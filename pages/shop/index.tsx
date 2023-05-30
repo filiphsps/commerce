@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import React, { FunctionComponent, useState } from 'react';
 
@@ -411,23 +413,23 @@ export async function getStaticProps({ locale }) {
         data = (await ProductsPaginationApi({
             before: undefined
         })) as any;
-    } catch (err) {
-        console.warn(err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        if (error) errors.push(error);
     }
 
     try {
         vendors = (await VendorsApi()) as any;
-    } catch (err) {
-        console.warn(err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        if (error) errors.push(error);
     }
 
     try {
         page = ((await PageApi('shop', locale)) as any) || null;
-    } catch (err) {
-        console.warn(err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        if (error) errors.push(error);
     }
 
     return {

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import {
     FiChevronDown,
     FiMenu,
@@ -707,6 +709,9 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                         )
                                                     });
                                                 } catch (error) {
+                                                    Sentry.captureException(
+                                                        error
+                                                    );
                                                     console.error(error);
                                                     alert(error.message);
                                                     setBeginCheckout(false);

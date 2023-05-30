@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { CollectionModel } from '../models/CollectionModel';
@@ -98,9 +100,10 @@ export const CollectionApi = async (handle: string) => {
             if (!result) return reject(new Error('404'));
 
             return resolve(result);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

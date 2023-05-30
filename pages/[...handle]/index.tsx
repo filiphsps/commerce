@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
-import ErrorPage from 'next/error';
+import Error from 'next/error';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
@@ -20,34 +20,34 @@ import { useRouter } from 'next/router';
 
 interface CustomPageProps {
     store: StoreModel;
-    data: {
-        page: PageModel;
-        prefetch: any;
-    };
+    page: PageModel;
+    prefetch: any;
+    error?: string;
 }
-const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
-    const { store } = props;
+const CustomPage: FunctionComponent<CustomPageProps> = ({
+    store,
+    page,
+    prefetch,
+    error
+}) => {
     const router = useRouter();
 
-    const data = props?.data?.page;
-
-    if (!data) return <ErrorPage statusCode={404} />;
+    if (error || !page) return <Error statusCode={500} title={error} />;
 
     return (
-        <Page className={`CustomPage CustomPage-${data?.type}`}>
+        <Page className={`CustomPage CustomPage-${page?.type}`}>
             <NextSeo
-                title={data?.title}
-                description={data?.description || ''}
+                title={page?.title}
+                description={page?.description || ''}
                 canonical={`https://${Config.domain}${router.asPath}`}
                 additionalMetaTags={
-                    data?.keywords
-                        ? [
-                              {
-                                  property: 'keywords',
-                                  content: data?.keywords
-                              }
-                          ]
-                        : []
+                    (page?.keywords && [
+                        {
+                            property: 'keywords',
+                            content: page?.keywords
+                        }
+                    ]) ||
+                    []
                 }
             />
 
@@ -61,15 +61,13 @@ const CustomPage: FunctionComponent<CustomPageProps> = (props) => {
                     })}
                     store={store}
                 />
-                <PageHeader title={data?.title} subtitle={data?.description} />
+                <PageHeader title={page?.title} subtitle={page?.description} />
             </PageContent>
-            {(data && (
-                <Slices
-                    store={store}
-                    data={data?.slices || data?.body}
-                    prefetch={props?.data?.prefetch}
-                />
-            )) || <PageLoader />}
+            <Slices
+                store={store}
+                data={page?.slices || page?.body}
+                prefetch={prefetch}
+            />
         </Page>
     );
 };
@@ -100,26 +98,25 @@ export async function getStaticPaths({ locales }) {
 export async function getStaticProps({ params, locale }) {
     try {
         const page =
-            ((await PageApi(
-                params?.handle?.join('/'),
-                locale === '__default' ? Config.i18n.locales[0] : locale
-            )) as any) || null;
+            ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
         const prefetch = (page && (await Prefetch(page, params))) || null;
 
         return {
             props: {
                 handle: params?.handle?.join('/'),
-                data: {
-                    page,
-                    prefetch
-                }
+                page,
+                prefetch
             },
             revalidate: 10
         };
     } catch (error) {
-        Sentry.captureException(error);
-        console.error(error);
+        if (error.message?.includes('404')) {
+            return {
+                notFound: true
+            };
+        }
 
+        Sentry.captureException(error);
         return {
             props: {},
             revalidate: 1

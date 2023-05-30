@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { Config } from '../util/Config';
 import { prismic } from './prismic';
 
@@ -34,6 +36,7 @@ export const NavigationApi = async (
                 return resolve(await NavigationApi()); // Try again with default locale
             }
 
+            Sentry.captureException(error);
             console.error(error);
             return reject(error);
         }

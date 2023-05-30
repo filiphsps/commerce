@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { Config } from '../util/Config';
 import { StoreModel } from '../models/StoreModel';
 import { prismic } from './prismic';
@@ -48,6 +50,7 @@ export const StoreApi = async (
                 return resolve(await StoreApi()); // Try again with default locale
             }
 
+            Sentry.captureException(error);
             console.error(error);
             return reject(error);
         }

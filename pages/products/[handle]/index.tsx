@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../../src/api/product';
@@ -350,14 +352,14 @@ const TabContent = styled.div`
 `;
 
 interface ProductPageProps {
-    errors?: any[];
+    error?: string;
     product: ProductModel;
     recommendations?: ProductModel[];
     reviews?: ReviewsModel;
     store: any;
 }
 const ProductPage: FunctionComponent<ProductPageProps> = ({
-    errors,
+    error,
     product,
     recommendations,
     reviews,
@@ -395,8 +397,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         }, 3000);
     }, [product, variant, quantity]);
 
-    if (errors?.length) console.error(errors);
-
     useEffect(() => {
         if (!product) return;
 
@@ -425,7 +425,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         });
     }, []);
 
-    if (!product) return <Error statusCode={404} />;
+    if (error || !product) return <Error statusCode={500} title={error} />;
 
     return (
         <Page className="ProductPage">
@@ -774,12 +774,19 @@ export async function getStaticProps({ params, locale }) {
             handle,
             locale
         })) as any;
-    } catch (err) {
-        console.error('ProductApi', err);
-        if (err) errors.push(err);
+    } catch (error) {
+        if (error.message?.includes('404')) {
+            return {
+                notFound: true
+            };
+        }
 
+        Sentry.captureException(error);
         return {
-            notFound: true
+            props: {
+                error: error.message
+            },
+            revalidate: 60
         };
     }
 
@@ -789,16 +796,16 @@ export async function getStaticProps({ params, locale }) {
                 id: product?.id,
                 locale
             })) as any;
-    } catch (err) {
-        console.warn('RecommendationApi', err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        if (error) errors.push(error);
     }
 
     try {
         if (product) reviews = await ReviewsProductApi(product?.id);
-    } catch (err) {
-        console.warn('ReviewsProductApi', err);
-        if (err) errors.push(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        if (error) errors.push(error);
     }
 
     return {

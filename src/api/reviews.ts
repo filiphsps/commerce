@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { Config } from '../util/Config';
 import { ReviewsModel } from '../models/ReviewsModel';
 import { parse } from 'node-html-parser';
@@ -58,8 +60,9 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
             count: parseFloat(count) ?? 0,
             reviews
         };
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        Sentry.captureException(error);
+        console.error(error);
         return {
             id: '',
             product_id: id || '',

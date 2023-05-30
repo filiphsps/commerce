@@ -11,7 +11,7 @@
         ".next/cache"
     ],
     "scripts": {
-        "dev": "next",
+        "dev": "next dev",
         "build": "next build",
         "postbuild": "next-sitemap",
         "sitemap": "next-sitemap",
@@ -20,9 +20,12 @@
         "lint": "next lint",
         "test": "npm-run-all test:*",
         "test:jest": "jest --coverage",
-        "prettier": "prettier --config .prettierrc src/**/*.* --check",
         "watch:test": "jest --watch",
-        "format:prettier": "prettier --config .prettierrc src/**/*.* --write"
+        "format": "npm-run-all *:format**",
+        "prettier": "prettier --config .prettierrc src/**/*.* --check",
+        "prettier:format:src": "prettier --config .prettierrc src/**/*.* --write",
+        "prettier:format:pages": "prettier --config .prettierrc src/**/*.* --write",
+        "prettier:format:app": "prettier --config .prettierrc src/**/*.* --write"
     },
     "dependencies": {
         "@apollo/client": "3.7.14",

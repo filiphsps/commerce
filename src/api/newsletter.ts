@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 export const NewsletterApi = async ({
     email
 }: {
@@ -20,6 +22,7 @@ export const NewsletterApi = async ({
 
             resolve(response);
         } catch (error) {
+            Sentry.captureException(error);
             console.error(error);
             reject(error);
         }

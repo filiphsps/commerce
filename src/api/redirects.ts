@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { RedirectModel } from '../models/RedirectModel';
 import { gql } from '@apollo/client';
 import { newShopify } from './shopify';
@@ -38,9 +40,10 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
             });
 
             return resolve(Convertor(res?.data?.urlRedirects?.edges));
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

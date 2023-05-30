@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { ShopifyWeightUnit, WeightModel } from '../models/WeightModel';
 import { newShopify, shopify } from './shopify';
 
@@ -244,18 +246,18 @@ export const ProductApi = async ({
                 }
             });
 
-            if (errors) {
-                console.error(errors);
-                reject(errors);
-            }
+            if (errors) return reject(new Error(errors.join('\n')));
+            if (!data?.productByHandle)
+                return reject(
+                    new Error('404: The requested document cannot be found')
+                );
 
-            const result = Convertor(data?.productByHandle);
-            if (!result) return reject();
-
+            const result = Convertor(data.productByHandle);
             return resolve(result);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
@@ -301,9 +303,10 @@ export const ProductIdApi = async ({
             if (!data?.node) return reject();
 
             return resolve(Convertor(data?.node));
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
@@ -397,9 +400,10 @@ export const ProductsApi = async (
                     previous: data.products.pageInfo.hasPreviousPage
                 }
             });
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

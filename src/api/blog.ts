@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import { gql } from '@apollo/client';
 import { newShopify } from './shopify';
 
@@ -72,9 +74,9 @@ export const BlogApi = async ({
             }));
 
             return resolve(result);
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            return reject(error);
         }
     });
 };
@@ -137,9 +139,13 @@ export const ArticleApi = async ({
                 }
             });
 
-            if (errors) throw errors;
-            let result = data.blogByHandle.articleByHandle;
+            if (errors) return reject(new Error(errors.join('\n')));
+            if (!data?.blogByHandle?.articleByHandle)
+                return reject(
+                    new Error('404: The requested document cannot be found')
+                );
 
+            let result = data.blogByHandle.articleByHandle;
             return resolve({
                 id: result.id,
                 handle: result.handle,
@@ -169,9 +175,10 @@ export const ArticleApi = async ({
                     description: result.seo.description
                 }
             });
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

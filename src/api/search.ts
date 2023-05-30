@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/nextjs';
+
 import TitleToHandle from '../util/TitleToHandle';
 import { VendorModel } from '../models/VendorModel';
 import algoliasearch from 'algoliasearch/lite';
@@ -65,9 +67,10 @@ export const SearchApi = async (
                 products,
                 collections
             });
-        } catch (err) {
-            console.error(err);
-            return reject(err);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };
