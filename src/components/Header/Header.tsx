@@ -292,7 +292,7 @@ const CartPopupContent = styled.div`
 
 const NavigationItemChildren = styled.div`
     overflow: hidden;
-    position: fixed;
+    position: absolute;
     top: 4rem;
     left: 0px;
     right: 0px;
@@ -377,9 +377,14 @@ const Header = styled.header`
         }
 
         ${NavigationItemChildren} {
+            top: 3rem;
             ${NavigationItemChildrenContainer} {
                 ${NavigationItem} {
                     color: #0e0e0e;
+
+                    a.Active {
+                        color: var(--accent-primary);
+                    }
                 }
             }
         }
@@ -462,7 +467,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const [totalItems, setTotalItem] = useState(0);
     const [beginCheckout, setBeginCheckout] = useState(false);
     const [cartStore, setCartStore] = useStore<any>('cart');
-    const { data } = useSWR(['header'], () => HeaderApi(router.locale) as any);
+    const { data } = useSWR(['header'], () => HeaderApi(router.locale));
     const timer: any = useRef(null);
 
     // TODO: Switch-case
@@ -551,7 +556,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                     ) : null}
                                 </Link>
                                 {item.children.length ? (
-                                    <NavigationItemChildren>
+                                    <NavigationItemChildren className={style}>
                                         <NavigationItemChildrenWrapper>
                                             <NavigationItemChildrenContainer>
                                                 {item.children.map(

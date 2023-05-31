@@ -7,50 +7,23 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const Blur = styled.div`
-    position: fixed;
-    top: 6.5rem;
-    bottom: 0px;
-
-    background: transparent;
-    width: 200vw;
-    width: 200dvw;
-    height: calc(100% - 6.5rem);
-    height: calc(100dvh - 6.5rem);
-    transition: 150ms ease-in-out;
-    pointer-events: none;
-
-    &.Modern {
-        top: 5.5rem;
-        height: calc(100% - 6rem);
-        height: calc(100dvh - 6rem);
-    }
-
-    left: -100vw;
-    left: -100dvw;
-    &.Open {
-        left: 0px;
-        overflow: hidden;
-        background: rgba(0, 0, 0, 0.45);
-        pointer-events: all;
-    }
-`;
-
 const Container = styled.div`
+    position: absolute;
+    top: 6rem;
     z-index: 99999;
     overflow-y: scroll;
     height: 100%;
     width: 70vw;
     width: 70dvw;
-    min-width: 28rem;
+    height: calc(100dvh - 6rem);
+    height: calc(100vh - 6rem);
     padding: 2rem;
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
     transition: 150ms ease-in-out;
 
-    left: calc(-70vw - 4rem);
-    left: calc(-70dvw - 4rem);
+    left: -100vw;
     &.Open {
         left: 0px;
     }
@@ -121,64 +94,55 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
             : HeaderStyle.Simple;
 
     return (
-        <Blur
+        <Container
             className={`${open ? 'Open' : ''} ${headerStyle}`}
-            onClick={() => {
-                toggle(false);
-                return false;
+            onClick={(e) => {
+                e.stopPropagation();
             }}
         >
-            <Container
-                className={`${open ? 'Open' : ''} ${headerStyle}`}
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
-            >
-                <Navigation>
-                    {navigation?.map((item: any, index) => {
-                        return (
-                            <NavigationItem key={item.handle + `_${index}`}>
-                                <Link
-                                    href={`/${item.handle || ''}`}
-                                    title={item.title}
-                                    className={
-                                        (router.asPath === '/' &&
-                                            item?.handle === null) ||
-                                        `/${item?.handle}` === router.asPath
-                                            ? 'Active'
-                                            : ''
-                                    }
-                                    onClick={() => toggle(false)}
+            <Navigation>
+                {navigation?.map((item: any, index) => {
+                    return (
+                        <NavigationItem key={item.handle + `_${index}`}>
+                            <Link
+                                href={`/${item.handle || ''}`}
+                                title={item.title}
+                                className={
+                                    (router.asPath === '/' &&
+                                        item?.handle === null) ||
+                                    `/${item?.handle}` === router.asPath
+                                        ? 'Active'
+                                        : ''
+                                }
+                                onClick={() => toggle(false)}
+                            >
+                                {item.title}
+                            </Link>
+                            {item.children.map((item, index) => (
+                                <NavigationSubItem
+                                    key={item.handle + `_${index}`}
                                 >
-                                    {item.title}
-                                </Link>
-                                {item.children.map((item, index) => (
-                                    <NavigationSubItem
-                                        key={item.handle + `_${index}`}
+                                    <Link
+                                        href={`/${item.handle || ''}`}
+                                        title={item.title}
+                                        className={
+                                            (router.asPath === '/' &&
+                                                item?.handle === null) ||
+                                            `/${item?.handle}` === router.asPath
+                                                ? 'Active'
+                                                : ''
+                                        }
+                                        onClick={() => toggle(false)}
                                     >
-                                        <Link
-                                            href={`/${item.handle || ''}`}
-                                            title={item.title}
-                                            className={
-                                                (router.asPath === '/' &&
-                                                    item?.handle === null) ||
-                                                `/${item?.handle}` ===
-                                                    router.asPath
-                                                    ? 'Active'
-                                                    : ''
-                                            }
-                                            onClick={() => toggle(false)}
-                                        >
-                                            {item.title}
-                                        </Link>
-                                    </NavigationSubItem>
-                                ))}
-                            </NavigationItem>
-                        );
-                    })}
-                </Navigation>
-            </Container>
-        </Blur>
+                                        {item.title}
+                                    </Link>
+                                </NavigationSubItem>
+                            ))}
+                        </NavigationItem>
+                    );
+                })}
+            </Navigation>
+        </Container>
     );
 };
 
