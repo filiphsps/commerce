@@ -14,7 +14,8 @@ export const Config = {
     shopify: {
         domain:
             process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
-        token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045'
+        token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
+        api: '2023-04'
     },
 
     prismic: {
