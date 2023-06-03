@@ -3,6 +3,11 @@ import './app.scss';
 
 import * as Sentry from '@sentry/nextjs';
 
+import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
+import {
+    CountryCode,
+    LanguageCode
+} from '@shopify/hydrogen-react/storefront-api-types';
 import {
     DefaultSeo,
     SiteLinksSearchBoxJsonLd,
@@ -13,7 +18,6 @@ import Router, { useRouter } from 'next/router';
 import { getCookie, hasCookie, setCookie } from 'cookies-next';
 import { useStore, withStore } from 'react-context-hook';
 
-import { CartProvider } from 'react-use-cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
 import Head from 'next/head';
@@ -23,7 +27,6 @@ import SEO from '../nextseo.config';
 import { ShopifyAnalyticsProvider } from 'react-shopify-analytics';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
-import useCountry from '../src/hooks/country';
 import useSWR from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,15 +38,17 @@ Router.events.on('routeChangeError', (err) => {
 });
 
 const StoreApp = withStore(
-    ({ Component, pageProps }) => {
+    ({ Component, pageProps, locale }) => {
         const router = useRouter();
         // eslint-disable-next-line no-unused-vars
         const [cartStore, setCartStore] = useStore<any>('cart');
         // eslint-disable-next-line no-unused-vars
-        const [country, setCountry] = useStore('country');
         const [sessionId, setSessionId] = useState<string>();
         const [userId, setUserId] = useState<string>();
-        const user_country = useCountry();
+
+        const country = (locale?.split('-')[1] || 'US') as CountryCode;
+        const language = (locale?.split('-')[0].toUpperCase() ||
+            'EN') as LanguageCode;
 
         const { data: store } = useSWR([`store`], () => StoreApi() as any, {
             fallbackData: {
@@ -70,65 +75,6 @@ const StoreApp = withStore(
             }
         });
 
-        const reportItem = (item) => {
-            setCartStore({ open: true, item });
-            if (!window || !(window as any)?.dataLayer) return;
-
-            (window as any).dataLayer?.push({ ecommerce: null });
-            (window as any).dataLayer?.push({
-                event: 'add_to_cart',
-                currency: 'USD',
-                value: item.price * item.quantity,
-                ecommerce: {
-                    items: [
-                        {
-                            item_id: item.id
-                                .replaceAll('gid://shopify/Product/', '')
-                                .replaceAll('gid://shopify/ProductVariant', ''),
-                            item_name: item.title,
-                            item_variant: item.variant_title,
-                            item_brand: item.brand,
-                            currency: 'USD',
-                            quantity: item.quantity,
-                            price: item.price
-                        }
-                    ]
-                }
-            });
-
-            // Microsoft Ads tracking
-            if ((window as any).uetq) {
-                let page_type = 'home';
-                if (router.pathname.includes('products')) page_type = 'product';
-                else if (router.pathname.includes('collections'))
-                    page_type = 'collection';
-
-                try {
-                    (window as any).uetq.push('event', 'add_to_cart', {
-                        ecomm_prodid: [
-                            item.id
-                                .replaceAll('gid://shopify/Product/', '')
-                                .replaceAll('gid://shopify/ProductVariant', '')
-                        ],
-                        ecomm_pagetype: page_type,
-                        ecomm_totalvalue: item.price * item.quantity,
-                        revenue_value: 1,
-                        currency: 'USD',
-                        items: [
-                            {
-                                id: item.id,
-                                quantity: item.quantity,
-                                price: item.price
-                            }
-                        ]
-                    });
-                } catch (error) {
-                    Sentry.captureException(error);
-                    console.error(error);
-                }
-            }
-        };
-
         useEffect(() => {
             if (!hasCookie('session'))
                 setCookie('session', uuidv4(), { maxAge: 60 * 60 * 24 });
@@ -138,11 +84,6 @@ const StoreApp = withStore(
             setSessionId(getCookie('session') as string);
             setUserId(getCookie('user') as string);
         }, []);
-
-        useEffect(() => {
-            if (!user_country.code) return;
-            setCountry(user_country.code);
-        }, [user_country]);
 
         return (
             <>
@@ -235,20 +176,29 @@ const StoreApp = withStore(
                 />
 
                 {/* Page */}
-                <CartProvider onItemAdd={reportItem} onItemUpdate={reportItem}>
-                    <PageProvider store={store}>
-                        <Component
-                            key={router.asPath}
-                            {...pageProps}
-                            store={store}
-                        />
-                    </PageProvider>
-                </CartProvider>
+                <ShopifyProvider
+                    storeDomain={`https://${Config.shopify.domain}`}
+                    storefrontApiVersion={Config.shopify.api}
+                    storefrontToken={Config.shopify.token}
+                    countryIsoCode={country}
+                    languageIsoCode={language}
+                >
+                    <CartProvider countryCode={country}>
+                        <PageProvider store={store}>
+                            <Component
+                                key={router.asPath}
+                                {...pageProps}
+                                store={store}
+                            />
+                        </PageProvider>
+                    </CartProvider>
+                </ShopifyProvider>
+
                 {process.env.NODE_ENV !== 'development' &&
                 userId &&
                 sessionId ? (
                     <ShopifyAnalyticsProvider
-                        shopId={76188483889}
+                        shopId={Config.shopify.shop_id}
                         route={(router.pathname.includes('/shop')
                             ? router.pathname.replace('/shop', '/products')
                             : router.pathname
@@ -261,8 +211,6 @@ const StoreApp = withStore(
         );
     },
     {
-        currency: 'USD',
-        country: 'US',
         rates: {},
         search: {
             open: false,

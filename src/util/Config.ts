@@ -12,8 +12,10 @@ export const Config = {
     },
 
     shopify: {
-        domain:
-            process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
+        shop_id: 76188483889,
+        domain: (
+            process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com'
+        ).replace('https://', ''),
         token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
         api: '2023-04'
     },

@@ -74,9 +74,9 @@ interface CurrencyProps {
 }
 const Currency: FunctionComponent<CurrencyProps> = (props) => {
     const router = useRouter();
+    const country = router.locale?.split('-')[1] || 'US';
 
     const [rates, setRates] = useStore('rates');
-    const [country] = useStore('country');
 
     const [targetCurrency, roughConversion] = tempGetInitialCurrencyAndValue({
         locale: router.locale || Config.i18n.locales[0],
@@ -91,13 +91,12 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
     const [price, setPrice] = useState<number>(roughConversion as number);
 
     useEffect(() => {
-        if (!router.locale || !props.store || !country) return;
+        if (!router.locale || !props.store) return;
 
         if (price == 0 || !price) setPrice(props.price || 0);
         if (!currency)
             setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
 
-        if (!country) return;
         const new_currency: string =
             (targetCurrency as string) || getParamByISO(country, 'currency');
 
