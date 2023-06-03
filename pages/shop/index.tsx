@@ -4,6 +4,7 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import React, { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
+import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
 import ErrorPage from 'next/error';
@@ -25,6 +26,7 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 2rem;
+    margin-top: 1rem;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
@@ -108,7 +110,7 @@ const FilterItem = styled.div`
         font-weight: 600;
         padding-left: 0.25rem;
         border-left: 0.2rem solid var(--accent-primary);
-        color: #0e0e0e;
+        color: var(--color-text-dark);
     }
 `;
 
@@ -171,13 +173,13 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     const router = useRouter();
     const [showFilters, setShowFilters] = useState(false);
     const { data, isValidating, error } = useSWR(
-        [router.query],
-        (query: any) =>
+        ['shop'],
+        () =>
             ProductsPaginationApi({
-                vendor: query.vendor as any,
-                sorting: query.sorting as any,
-                before: query.before as string,
-                after: query.after as string
+                vendor: router.query.vendor as any,
+                sorting: router.query.sorting as any,
+                before: router.query.before as string,
+                after: router.query.after as string
             }),
         {
             fallbackData: props.data
@@ -191,7 +193,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
 
     const state_change = () => {
         window.scrollY = 0;
-        router.replace(router);
+        router.push(router);
     };
 
     return (
@@ -201,14 +203,13 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 description={props.page?.description || ''}
                 canonical={`https://${Config.domain}/shop/`}
                 additionalMetaTags={
-                    props.page?.keywords
-                        ? [
-                              {
-                                  property: 'keywords',
-                                  content: props.page?.keywords
-                              }
-                          ]
-                        : []
+                    (props.page?.keywords && [
+                        {
+                            property: 'keywords',
+                            content: props.page?.keywords
+                        }
+                    ]) ||
+                    []
                 }
             />
 
@@ -222,10 +223,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                     ]}
                     store={props.store}
                 />
-                <PageHeader
-                    title={(data as any)?.title}
-                    subtitle={(data as any)?.description}
-                />
+                <PageHeader title={(data as any)?.title} subtitle={(data as any)?.description} />
 
                 <PageHeader
                     title={props.page?.title || 'Shop'}
@@ -234,9 +232,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
 
                 <Container>
                     <Actions>
-                        <Action onClick={() => setShowFilters(!showFilters)}>
-                            Filters
-                        </Action>
+                        <Action onClick={() => setShowFilters(!showFilters)}>Filters</Action>
                     </Actions>
 
                     <FilterContainer>
@@ -247,27 +243,21 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                     <FilterItem
                                         className={
                                             !router.query.sorting ||
-                                            router.query.sorting ==
-                                                'BEST_SELLING'
+                                            router.query.sorting == 'BEST_SELLING'
                                                 ? 'Active'
                                                 : ''
                                         }
                                         onClick={() => {
                                             delete router.query.after;
                                             delete router.query.before;
-                                            router.query.sorting =
-                                                'BEST_SELLING';
+                                            router.query.sorting = 'BEST_SELLING';
                                             state_change();
                                         }}
                                     >
                                         Best selling
                                     </FilterItem>
                                     <FilterItem
-                                        className={
-                                            router.query.sorting == 'PRICE'
-                                                ? 'Active'
-                                                : ''
-                                        }
+                                        className={router.query.sorting == 'PRICE' ? 'Active' : ''}
                                         onClick={() => {
                                             delete router.query.after;
                                             delete router.query.before;
@@ -279,9 +269,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                     </FilterItem>
                                     <FilterItem
                                         className={
-                                            router.query.sorting == 'CREATED_AT'
-                                                ? 'Active'
-                                                : ''
+                                            router.query.sorting == 'CREATED_AT' ? 'Active' : ''
                                         }
                                         onClick={() => {
                                             delete router.query.after;
@@ -293,11 +281,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                         Date
                                     </FilterItem>
                                     <FilterItem
-                                        className={
-                                            router.query.sorting == 'TITLE'
-                                                ? 'Active'
-                                                : ''
-                                        }
+                                        className={router.query.sorting == 'TITLE' ? 'Active' : ''}
                                         onClick={() => {
                                             delete router.query.after;
                                             delete router.query.before;
@@ -317,16 +301,10 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                         <FilterItem
                                             key={vendor.handle}
                                             className={
-                                                router.query.vendor ==
-                                                vendor.title
-                                                    ? 'Active'
-                                                    : ''
+                                                router.query.vendor == vendor.title ? 'Active' : ''
                                             }
                                             onClick={() => {
-                                                if (
-                                                    router.query.vendor ==
-                                                    vendor.title
-                                                ) {
+                                                if (router.query.vendor == vendor.title) {
                                                     delete router.query.vendor;
                                                     state_change();
                                                     return;
@@ -334,8 +312,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
 
                                                 delete router.query.after;
                                                 delete router.query.before;
-                                                router.query.vendor =
-                                                    vendor.title;
+                                                router.query.vendor = vendor.title;
                                                 state_change();
                                             }}
                                         >
@@ -350,24 +327,25 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                     {!isValidating ? (
                         <Content>
                             <CollectionBlock
-                                data={{ items: products }}
+                                data={
+                                    {
+                                        products: {
+                                            edges: products
+                                        }
+                                    } as any
+                                }
                                 hideTitle
                                 store={props.store}
                             />
 
                             <Pagination>
                                 <PaginationAction
-                                    className={
-                                        !page_info.has_prev_page
-                                            ? 'Disabled'
-                                            : ''
-                                    }
+                                    className={!page_info.has_prev_page ? 'Disabled' : ''}
                                     onClick={() => {
                                         if (!page_info.has_prev_page) return;
 
                                         delete router.query.after;
-                                        router.query.before =
-                                            page_info.start_cursor;
+                                        router.query.before = page_info.start_cursor;
                                         state_change();
                                     }}
                                 >
@@ -375,17 +353,12 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                                     Previous
                                 </PaginationAction>
                                 <PaginationAction
-                                    className={
-                                        !page_info.has_next_page
-                                            ? 'Disabled'
-                                            : ''
-                                    }
+                                    className={!page_info.has_next_page ? 'Disabled' : ''}
                                     onClick={() => {
                                         if (!page_info.has_next_page) return;
 
                                         delete router.query.before;
-                                        router.query.after =
-                                            page_info.end_cursor;
+                                        router.query.after = page_info.end_cursor;
                                         state_change();
                                     }}
                                 >

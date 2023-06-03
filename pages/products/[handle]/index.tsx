@@ -1,43 +1,62 @@
 import * as Sentry from '@sentry/nextjs';
 
+import {
+    AnalyticsEventName,
+    ProductProvider,
+    ShopifyAddToCartPayload,
+    getClientBrowserParameters,
+    sendShopifyAnalytics,
+    useCart,
+    useProduct
+} from '@shopify/hydrogen-react';
+import {
+    CartLine,
+    Collection,
+    CurrencyCode,
+    LanguageCode,
+    Product,
+    ProductEdge,
+    ProductVariant,
+    ProductVariantEdge
+} from '@shopify/hydrogen-react/storefront-api-types';
+import { FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../../src/api/product';
+import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import Button from '../../../src/components/Button';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
-import Currency from '../../../src/components/Currency';
+import ContentBlock from '../../../src/components/ContentBlock';
+import { Currency } from 'react-tender';
 import Error from 'next/error';
-//import FloatingAddToCart from '../../../src/components/FloatingAddToCart';
 import Gallery from '../../../src/components/Gallery';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageHeader from '../../../src/components/PageHeader';
-import { ProductModel } from '../../../src/models/ProductModel';
+import { ProductOptions } from '../../../src/components/ProductOptions';
 import { RecommendationApi } from '../../../src/api/recommendation';
 import { RedirectProductApi } from '../../../src/api/redirects';
 import Reviews from '../../../src/components/Reviews';
 import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
-import Weight from '../../../src/components/Weight';
+import TitleToHandle from '../../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
-import { useCart } from 'react-use-cart';
+import { useRouter } from 'next/router';
+import { useStore } from 'react-context-hook';
+import { useWindowSize } from 'rooks';
 
-const ReviewStars = dynamic(
-    () => import('../../../src/components/ReviewStars'),
-    { ssr: false }
-);
+const ReviewStars = dynamic(() => import('../../../src/components/ReviewStars'), { ssr: false });
 
 // TODO: replace this with generic label.
 const Label = styled.label`
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 1.15rem;
+    font-size: 1.5rem;
     color: #404756;
 `;
 
@@ -50,8 +69,8 @@ const ProductContainerWrapper = styled.div`
 const ProductContainer = styled.div`
     position: relative;
     display: grid;
-    grid-template-columns: 53% 1fr;
-    grid-gap: 1.5rem;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 2rem;
     min-height: calc(100vh - 42rem);
     min-height: calc(100dvh - 42rem);
     width: calc(1465px - 4rem);
@@ -59,8 +78,8 @@ const ProductContainer = styled.div`
     margin: 0px 1.5rem;
 
     @media (max-width: 950px) {
-        overflow: hidden;
         grid-template-columns: 1fr;
+        gap: 0rem;
         max-width: calc(100vw - 3rem);
         margin: 0px;
     }
@@ -76,6 +95,7 @@ const Assets = styled.div`
         overflow: hidden;
         height: 28rem;
         max-height: 30vh;
+        margin-bottom: 1.5rem;
     }
 
     @media (min-width: 950px) {
@@ -84,17 +104,20 @@ const Assets = styled.div`
     }
 `;
 const Details = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
-
-    @media (max-width: 950px) {
-        margin: 2rem 0px;
-        max-width: calc(100vw - 2rem);
-    }
+    margin: 1rem 0px;
 `;
 
 const Tags = styled.div`
     display: flex;
-    grid-gap: 0.55rem;
+    gap: 0.5rem;
+
+    @media (max-width: 950px) {
+        margin: 0px 0px 0.5rem 0px;
+    }
 `;
 export const Tag = styled.div`
     display: flex;
@@ -146,7 +169,6 @@ export const Tag = styled.div`
     }
 `;
 const Description = styled.div`
-    margin-top: 1.5rem;
     font-size: 1.5rem;
     line-height: 2.25rem;
 
@@ -177,66 +199,13 @@ const Description = styled.div`
 
     p {
         margin-bottom: 1rem;
-    }
 
-    @media (min-width: 950px) {
-        margin-top: 1.5rem;
-    }
-`;
-/*const DescriptionWrapper = styled.div`
-    overflow: hidden;
-    position: relative;
-    transition: 150ms ease-in-out;
-    max-height: 100vh;
-
-    &::after {
-        content: '';
-        z-index: 99999;
-        position: absolute;
-        display: block;
-        bottom: 0px;
-        width: 100vw;
-        height: 12rem;
-
-        background-image: linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0),
-            rgba(255, 255, 255, 0) 100%
-        );
-    }
-
-    &.Condensed {
-        max-height: 42rem;
-
-        &::after {
-            background-image: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0),
-                rgba(255, 255, 255, 0.95) 100%
-            );
+        &:last-of-type {
+            margin-bottom: 0px;
         }
     }
 `;
-const DescriptionToggle = styled.div`
-    font-weight: 700;
-    font-size: 1.5rem;
-    padding: 0.5rem 0px;
-    user-select: none;
-    cursor: pointer;
-`;*/
 
-const Actions = styled.div`
-    display: flex;
-    grid-gap: 1rem;
-    grid-gap: 1rem;
-    margin-top: 0.5rem;
-`;
-const Quantity = styled(Input)`
-    max-width: 10rem;
-    text-align: center;
-    font-size: 1.5rem;
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-`;
 const Metadata = styled.div`
     font-size: 1.05rem;
     line-height: 1.5rem;
@@ -250,220 +219,517 @@ const Metadata = styled.div`
     }
 `;
 
-const Variants = styled.div`
+const Actions = styled.div`
     display: flex;
-    grid-gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 2.5rem;
+    align-items: end;
+    gap: 1rem;
+
+    @media (max-width: 950px) {
+        align-items: start;
+        flex-direction: column;
+    }
 `;
-const VariantTitle = styled.div`
-    font-size: 2.15rem;
-    font-weight: 700;
-    color: #404756;
-`;
-const VariantSubTitle = styled.div`
+const AddToCart = styled(Button)`
     display: flex;
     justify-content: center;
     align-items: center;
-    grid-gap: 0.25rem;
-    font-size: 1.15rem;
-    font-weight: 500;
-    color: #404756;
+    gap: 1.5rem;
+    height: 4rem;
+    width: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-weight: 600;
+
+    svg {
+        font-size: 1.75rem;
+    }
+
+    @media (max-width: 950px) {
+        height: 5rem;
+        width: 100%;
+    }
 `;
+const Quantity = styled(Input)`
+    height: 4rem;
+    max-width: 10rem;
+    text-align: center;
+    font-size: 1.5rem;
 
-const VariantWeight = styled(Weight)``;
+    @media (max-width: 950px) {
+        height: 4.5rem;
+        width: 100%;
+        max-width: 100%;
+    }
+`;
+const QuantitySelector = styled.div`
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 0.5rem;
 
-const Variant = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    grid-gap: 0.25rem;
-    max-width: 18rem;
-    padding: 1rem 1.5rem;
-    margin: 0px 0px 0.5rem 0px;
-    text-transform: uppercase;
-    background: #efefef;
+    input {
+        border-width: 0px;
+    }
+
+    @media (max-width: 950px) {
+        width: 100%;
+        margin-top: -0.5rem;
+    }
+`;
+const QuantityWrapper = styled.div`
+    display: grid;
+    grid-template-columns: 4.5rem 1fr 4.5rem;
+    height: 4rem;
     border: 0.2rem solid #efefef;
+    background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-    transition: 150ms all ease-in-out;
+    outline: none;
 
-    &.Selected,
-    &:hover {
-        color: var(--accent-primary);
-        border-color: var(--accent-primary);
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        font-size: 1.5rem;
 
-        ${VariantTitle}, ${VariantSubTitle} {
+        &:hover {
             color: var(--accent-primary);
         }
     }
+
+    input {
+        height: 100%;
+
+        @media (min-width: 950px) {
+            width: 4rem;
+        }
+    }
+
+    @media (max-width: 950px) {
+        height: 4.5rem;
+    }
 `;
 
-const VariantQuantity = styled.div`
+const Header = styled.div`
     display: grid;
-    grid-template-rows: auto 1fr;
-    grid-gap: 0.65rem;
-    margin: 0px 0px 0.5rem 0px;
+    grid-template-columns: 1fr minmax(8rem, auto);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    @media (min-width: 950px) {
+        h3 {
+            padding-bottom: 0.25rem;
+        }
+    }
+
+    @media (max-width: 950px) {
+        margin-bottom: 1rem;
+        grid-template-columns: 1fr;
+    }
+`;
+const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
+    position: relative;
+    display: block;
+    font-size: 3rem;
+    line-height: 100%;
+    font-weight: 600;
+
+    @media (max-width: 950px) {
+        font-size: 2.5rem;
+    }
+
+    ${(props) =>
+        props.sale &&
+        css`
+            font-size: 2rem;
+
+            @media (max-width: 950px) {
+                font-size: 1.75rem;
+            }
+
+            &:before {
+                position: absolute;
+                content: '';
+                left: 0;
+                top: 50%;
+                right: 0;
+                border-top: 0.2rem solid;
+                border-color: inherit;
+                transform: rotate(-5deg);
+            }
+        `}
+    ${(props) =>
+        props.highlight &&
+        css`
+            color: var(--color-sale);
+        `}
 `;
 
-const Recommendations = styled.div`
-    margin: 2rem 0px 1rem 0px;
+const PriceContainer = styled.div`
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    @media (max-width: 950px) {
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
+const Recommendations = styled(ContentBlock)`
+    display: block;
+    width: 100%;
+    margin-top: 4rem;
+    border-radius: var(--block-border-radius);
+
+    @media (max-width: 950px) {
+        margin: 1.5rem 0px;
+    }
+`;
+const RecommendationsTitle = styled.h3`
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+
+    @media (max-width: 950px) {
+        font-size: 2.25rem;
+        font-weight: 700;
+    }
+`;
+const RecommendationsContent = styled(PageContent)`
+    width: 100%;
+
+    @media (max-width: 950px) {
+        width: calc(100vw - 3rem);
+        max-width: calc(100vw - 3rem);
+        padding: 0px;
+    }
 `;
 
 const Tabs = styled.div`
     display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 1.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    border-bottom: 0.15rem solid #efefef;
 `;
 const Tab = styled.div`
-    padding: 0.8rem;
-    background: #efefef;
+    padding: 1rem 0.25rem 0.5rem 0.25rem;
     text-transform: uppercase;
-    font-weight: 600;
-    font-size: 1.15rem;
-    border: 0.2rem solid #efefef;
-    border-radius: var(--block-border-radius);
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-align: center;
+    border-bottom: 0.4rem solid transparent;
     cursor: pointer;
     transition: 150ms ease-in-out;
+    opacity: 0.5;
 
-    &:hover {
-        border-color: var(--accent-primary);
-    }
-
-    &.Active,
-    &.Active:hover {
-        border-color: #404756;
+    &.Active {
+        border-bottom-color: var(--accent-primary);
+        opacity: 1;
     }
 `;
 const TabContent = styled.div`
     display: none;
     overflow: hidden;
-    padding: 1rem;
-    margin-top: 1rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
+    padding: 0.5rem 0px;
 
     &.Active {
         display: block;
     }
 `;
 
+const AddToCartCTA = styled.div`
+    z-index: 5;
+    position: fixed;
+    display: grid;
+    grid-template-columns: minmax(8rem, auto) 1fr;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    width: 100vw;
+    padding: 1.5rem 2rem;
+    background: var(--color-text-primary);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    border-top-left-radius: var(--block-border-radius);
+    border-top-right-radius: var(--block-border-radius);
+
+    ${PriceContainer} {
+        align-items: start;
+    }
+`;
+
 interface ProductPageProps {
     error?: string;
-    product: ProductModel;
-    recommendations?: ProductModel[];
+    product: Product;
+    recommendations?: Product[];
     reviews?: ReviewsModel;
     store: any;
 }
-const ProductPage: FunctionComponent<ProductPageProps> = ({
-    error,
-    product,
-    recommendations,
-    reviews,
-    store
-}) => {
+const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, reviews, store }) => {
+    const router = useRouter();
     const cart = useCart();
+    const { product, variants, selectedVariant: initialVariant } = useProduct();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [tab, setTab] = useState('metadata');
-    //const [hideDescription, setHideDescription] = useState(false);
-    const [variant, setVariant] = useState(
-        product ? product.variants.length - 1 : 0
-    );
-
+    const [tab, setTab] = useState('details');
+    const { outerWidth } = useWindowSize();
+    const [isMobile, setIsMobile] = useState(false);
+    const [cartStore, setCartStore] = useStore<any>('cart');
     useEffect(() => {
-        if (quantity > 0) return;
-        setQuantity(1);
-    }, [quantity]);
+        if (!outerWidth) return;
 
+        if (outerWidth >= 950 && isMobile) setIsMobile(false);
+        else if (outerWidth <= 950 && !isMobile) setIsMobile(true);
+    }, [outerWidth]);
+
+    // TODO: Better way to pick default
+    const selectedVariant = initialVariant || (variants?.[0]! as ProductVariant);
+
+    // FIXME: Utility function
     const addToCart = useCallback(() => {
-        setAddedToCart(true);
-        cart.addItem(
-            {
-                id: `${product?.id}#${product?.variants[variant]?.id}`,
-                price: product?.variants[variant]?.pricing.range,
-                quantity,
+        if (!selectedVariant || !selectedVariant.id) return;
 
+        cart.linesAdd([
+            {
+                merchandiseId: selectedVariant.id,
+                quantity
+            }
+        ]);
+
+        setAddedToCart(true);
+        setCartStore({
+            ...cartStore,
+            item: {
                 title: product?.title,
-                variant_title: product?.variants[variant].title
+                vendor: product?.vendor,
+                variant: {
+                    title: selectedVariant.title
+                },
+                images: [
+                    {
+                        src: product?.images?.edges?.[0]?.node?.url
+                    }
+                ]
             },
-            quantity
-        );
+            open: true
+        });
+
         setTimeout(() => {
             setAddedToCart(false);
         }, 3000);
-    }, [product, variant, quantity]);
+    }, [product, selectedVariant, quantity, cart, cartStore, setCartStore]);
 
     useEffect(() => {
-        if (!product) return;
+        if (!product || !selectedVariant || !cart.lines || cart.totalQuantity <= 0) return;
 
-        (window as any)?.dataLayer?.push({ ecommerce: null });
-        (window as any)?.dataLayer?.push({
-            event: 'view_item',
-            currency: product.pricing.currency,
-            value: parseFloat(product.variants[variant].pricing.range as any),
-            ecommerce: {
-                items: [
-                    {
-                        item_id:
-                            product.variants[variant].sku ||
-                            product.variants[variant]?.id.split('/').at(-1),
-                        item_name: product.title,
-                        item_variant: product.variants[variant].title,
-                        item_brand: product.vendor.title,
-                        currency: product.pricing.currency,
-                        price: parseFloat(
-                            product.variants[variant].pricing.range as any
-                        ),
-                        quantity
-                    }
-                ]
+        const params = getClientBrowserParameters();
+        const cartPayload: ShopifyAddToCartPayload = {
+            ...params,
+            url: params.url.replace(`/${router.locale}`, ''),
+            path: params.path.replace(`/${router.locale}`, ''),
+            navigationType: 'navigate',
+            hasUserConsent: true,
+            shopId: `gid://shopify/Shop/${Config.shopify.shop_id}`,
+            currency: 'USD' as CurrencyCode, // FIXME
+            acceptedLanguage: 'EN' as LanguageCode,
+            cartId: cart.id!,
+            totalValue: Number.parseFloat(cart.cost?.totalAmount?.amount!),
+            products: cart.lines!.map((line: CartLine) => ({
+                productGid: line.merchandise.product.id,
+                name: line.merchandise.product.title!,
+                variantGid: line.merchandise.id!,
+                variantName: line.merchandise.title!,
+                brand: line.merchandise.product.vendor!,
+                price: line.merchandise.price?.amount!,
+                quantity: line.quantity,
+                sku: line.merchandise.sku!
+            }))
+        };
+
+        sendShopifyAnalytics(
+            {
+                eventName: AnalyticsEventName.ADD_TO_CART,
+                payload: cartPayload
+            },
+            Config.shopify.domain
+        );
+    }, [cart.lines]);
+
+    useEffect(() => {
+        if (!product || !selectedVariant) return;
+        (window as any)?.dataLayer?.push(
+            { ecommerce: null },
+            {
+                event: 'view_item',
+                currency: selectedVariant.price?.currencyCode,
+                value: Number.parseFloat(selectedVariant.price?.amount || ''),
+                ecommerce: {
+                    items: [
+                        {
+                            item_id: selectedVariant.sku || selectedVariant.id?.split('/').at(-1),
+                            item_name: product.title,
+                            item_variant: selectedVariant.title,
+                            item_brand: product.vendor,
+                            currency: selectedVariant.price?.currencyCode,
+                            price: Number.parseFloat(selectedVariant.price?.amount || ''),
+                            quantity
+                        }
+                    ]
+                }
             }
-        });
-    }, []);
+        );
+    }, [cart.lines]);
 
-    if (error || !product) return <Error statusCode={500} title={error} />;
+    // NOTE: this should never happen
+    if (!product) return null;
+
+    const tags = (
+        <Tags>
+            {product?.tags?.map((tag) => (
+                <Tag key={tag} className={tag}>
+                    {tag}
+                </Tag>
+            ))}
+        </Tags>
+    );
+    const pricing = (
+        <PriceContainer>
+            {selectedVariant.compareAtPrice && (
+                <Price sale>
+                    <Currency
+                        value={
+                            Number.parseFloat(selectedVariant.compareAtPrice?.amount!) * quantity
+                        }
+                        currency={selectedVariant.price?.currencyCode!}
+                    />
+                </Price>
+            )}
+            <Price highlight={!!selectedVariant.compareAtPrice}>
+                <Currency
+                    value={Number.parseFloat(selectedVariant.price?.amount!) * quantity}
+                    currency={selectedVariant.price?.currencyCode!}
+                />
+            </Price>
+        </PriceContainer>
+    );
+    const information = (
+        <>
+            <Header>
+                <div>
+                    <PageHeader
+                        title={product.title!}
+                        subtitle={
+                            <Link href={`/collections/${TitleToHandle(product.vendor!)}`}>
+                                {product.vendor!.toLocaleUpperCase?.()}
+                            </Link>
+                        }
+                        reverse
+                        noMargin
+                    />
+                    {(reviews?.count && reviews.count > 0 && (
+                        <ReviewStars
+                            score={reviews?.rating || 0}
+                            totalReviews={reviews?.count || 0}
+                        />
+                    )) ||
+                        null}
+                </div>
+                {!isMobile && pricing}
+            </Header>
+        </>
+    );
+    const addToCartAction = (
+        <AddToCart
+            className={`Button ${addedToCart ? 'Added' : ''}`}
+            disabled={quantity <= 0 || !selectedVariant?.availableForSale}
+            onClick={addToCart}
+        >
+            <FiShoppingCart />
+            <span data-nosnippet>
+                {(selectedVariant?.availableForSale &&
+                    ((addedToCart && 'Added!') || 'Add to Cart')) ||
+                    'Out of Stock'}
+            </span>
+        </AddToCart>
+    );
+    const quantityAction = (
+        <QuantitySelector>
+            <Label>Quantity</Label>
+            <QuantityWrapper>
+                <button onClick={() => setQuantity(quantity - 1)}>
+                    <FiMinus />
+                </button>
+                <Quantity
+                    type="number"
+                    value={quantity}
+                    onChange={(event) => {
+                        const val = parseInt(event.target.value);
+                        setQuantity(val);
+                    }}
+                />
+                <button onClick={() => setQuantity(quantity + 1)}>
+                    <FiPlus />
+                </button>
+            </QuantityWrapper>
+        </QuantitySelector>
+    );
 
     return (
         <Page className="ProductPage">
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
-                description={
-                    product?.seo?.description || product?.description || ''
-                }
+                description={product?.seo?.description || product?.description || ''}
                 canonical={`https://${Config.domain}/products/${product.handle}/`}
-                additionalMetaTags={[
-                    {
-                        property: 'keywords',
-                        content: product?.seo?.keywords
-                    }
-                ]}
+                additionalMetaTags={
+                    ((product as any).keywords?.value && [
+                        {
+                            property: 'keywords',
+                            content: (product as any).keywords?.value
+                        }
+                    ]) ||
+                    []
+                }
                 openGraph={{
                     url: `https://${Config.domain}/products/${product.handle}/`,
-                    title: `${product?.seo?.title || product?.title}`,
-                    description:
-                        product?.seo?.description || product?.description || '',
-                    images: product?.images?.map((image) => ({
-                        url: image.src,
-                        width: image.width,
-                        height: image.height,
-                        alt: image.alt
-                    }))
+                    title: `${product.seo?.title || product.title}`,
+                    description: product?.seo?.description || product?.description || '',
+                    images:
+                        product.images?.edges
+                            ?.map((edge) => {
+                                const image = edge!.node;
+
+                                return {
+                                    url: image!.url as string,
+                                    width: image!.width as number,
+                                    height: image!.height as number,
+                                    alt: image!.altText || ''
+                                };
+                            })
+                            .filter((item) => item) || []
                 }}
             />
 
-            {product.variants?.map?.((variant) => (
+            {product.variants?.edges?.map?.(({ node: variant }: ProductVariantEdge) => (
                 <ProductJsonLd
                     key={variant?.id}
                     keyOverride={variant?.id}
                     productName={`${product.title} - ${variant.title}`}
-                    brand={product.vendor.title}
+                    brand={product.vendor}
                     sku={variant.sku || variant?.id}
                     mpn={variant.barcode || variant.sku || variant?.id}
-                    images={product.images?.map?.((image) => image.src) || []}
+                    images={
+                        (product.images?.edges
+                            ?.map?.((edge) => edge?.node?.url)
+                            .filter((i) => i) as string[]) || []
+                    }
                     description={product.description || ''}
                     aggregateRating={{
                         ratingValue: `${reviews?.rating || 5}`,
@@ -471,11 +737,11 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     }}
                     offers={[
                         {
-                            price: variant.pricing.range,
-                            priceCurrency: variant.pricing.currency,
+                            price: Number.parseFloat(variant.price.amount!),
+                            priceCurrency: variant.price.currencyCode,
                             priceValidUntil: `${new Date().getFullYear()}-12-31`,
                             itemCondition: 'https://schema.org/NewCondition',
-                            availability: variant.available
+                            availability: variant.availableForSale
                                 ? 'https://schema.org/InStock'
                                 : 'https://schema.org/SoldOut',
                             url: `https://${Config.domain}/products/${product.handle}`
@@ -485,37 +751,31 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             ))}
 
             <PageContent>
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: product.vendor,
+                            url: `/collections/${TitleToHandle(product.vendor!)}`
+                        },
+                        {
+                            title: product.title,
+                            url: `/products/${product.handle}`
+                        }
+                    ]}
+                    store={store}
+                />
                 <ProductContainerWrapper>
                     <ProductContainer>
+                        {isMobile && information}
                         <Assets>
                             <Gallery
-                                selected={
-                                    product?.variants?.[variant]
-                                        ?.default_image || 0
-                                }
-                                images={product?.images}
+                                selected={selectedVariant?.image?.id || null}
+                                images={(product as any).images || null}
                             />
                         </Assets>
                         <Details>
-                            <PageHeader
-                                title={product?.title}
-                                subtitle={
-                                    <Link
-                                        href={`/collections/${product?.vendor?.handle}`}
-                                    >
-                                        {product?.vendor?.title?.toLocaleUpperCase?.()}
-                                    </Link>
-                                }
-                                reverse
-                                noMargin
-                            />
-                            <Tags>
-                                {product?.tags?.map((tag) => (
-                                    <Tag key={tag} className={tag}>
-                                        {tag}
-                                    </Tag>
-                                ))}
-                            </Tags>
+                            {!isMobile && information}
+
                             {false && reviews?.rating && (
                                 <ReviewStars
                                     score={reviews?.rating || 5}
@@ -523,196 +783,119 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 />
                             )}
 
-                            {/*<DescriptionWrapper
-                                className={
-                                    (hideDescription && 'Condensed') || ''
-                                }
-                            >*/}
-                            <Description
-                                dangerouslySetInnerHTML={{
-                                    __html: product?.body
-                                }}
-                            />
-                            {/* FIXME: only show this if the desc is longer than x */}
-                            {/*</DescriptionWrapper>
-
-                            <DescriptionToggle
-                                onClick={() =>
-                                    setHideDescription(!hideDescription)
-                                }
-                            >
-                                {(hideDescription && 'Show More') ||
-                                    'Show Less'}
-                                ...
-                            </DescriptionToggle>*/}
-
-                            {/* FIXME: Use options instead */}
-                            <Variants>
-                                {product.variants.map((item, index) => (
-                                    <Variant
-                                        key={item?.id}
-                                        onClick={() => setVariant(index)}
-                                        className={
-                                            index === variant ? 'Selected' : ''
-                                        }
-                                    >
-                                        <VariantTitle>
-                                            {item.title}
-                                        </VariantTitle>
-                                        <VariantSubTitle>
-                                            <Currency
-                                                price={item?.pricing?.range}
-                                                currency={
-                                                    item?.pricing?.currency
-                                                }
-                                                store={store}
-                                            />
-                                            {' | '}
-                                            <VariantWeight
-                                                data={item?.weight}
-                                            />
-                                        </VariantSubTitle>
-                                    </Variant>
-                                ))}
-                                <VariantQuantity>
-                                    <Label>Quantity</Label>
-                                    <Quantity
-                                        type="number"
-                                        value={quantity}
-                                        onChange={(event) => {
-                                            const val = parseInt(
-                                                event.target.value
-                                            );
-                                            setQuantity(val);
-                                        }}
-                                    />
-                                </VariantQuantity>
-                            </Variants>
+                            <ProductOptions />
                             <Actions>
-                                <Button
-                                    className={`Button ${
-                                        addedToCart ? 'Added' : ''
-                                    }`}
-                                    disabled={
-                                        !product?.variants[variant]
-                                            ?.available || quantity < 1
-                                    }
-                                    onClick={addToCart}
-                                >
-                                    {product?.variants[variant].available ? (
-                                        <>
-                                            {addedToCart
-                                                ? 'Added!'
-                                                : 'Add to Cart'}
-                                        </>
-                                    ) : (
-                                        <>Out of Stock</>
-                                    )}
-                                </Button>
+                                {quantityAction}
+                                {!isMobile && addToCartAction}
                             </Actions>
 
-                            <Tabs>
-                                {false && (
+                            {isMobile && (
+                                <AddToCartCTA>
+                                    {pricing}
+                                    {addToCartAction}
+                                </AddToCartCTA>
+                            )}
+
+                            <>
+                                <Tabs>
                                     <Tab
-                                        className={
-                                            tab == 'metadata' ? 'Active' : ''
-                                        }
-                                        onClick={() => setTab('metadata')}
+                                        className={tab == 'details' ? 'Active' : ''}
+                                        onClick={() => setTab('details')}
                                     >
-                                        Metadata
+                                        Details
                                     </Tab>
-                                )}
-                                {false && (
                                     <Tab
-                                        className={
-                                            tab == 'reviews' ? 'Active' : ''
-                                        }
+                                        className={tab == 'ingredients' ? 'Active' : ''}
+                                        onClick={() => setTab('ingredients')}
+                                    >
+                                        Ingredients
+                                    </Tab>
+                                    <Tab
+                                        className={tab == 'reviews' ? 'Active' : ''}
                                         onClick={() => setTab('reviews')}
                                     >
                                         Reviews
                                     </Tab>
-                                )}
-                            </Tabs>
-                            {product?.metadata?.ingredients ||
-                                (product?.variants[variant].sku && (
-                                    <TabContent
-                                        className={
-                                            tab == 'metadata' ? 'Active' : ''
-                                        }
-                                    >
-                                        {product?.metadata?.ingredients && (
-                                            <Metadata>
-                                                <Label>Ingredients</Label>
-                                                {product?.metadata?.ingredients}
-                                            </Metadata>
-                                        )}
-                                        {product?.variants[variant].sku && (
-                                            <Metadata>
-                                                <Label>SKU</Label>
-                                                {product?.variants[variant].sku}
-                                            </Metadata>
-                                        )}
-                                    </TabContent>
-                                ))}
-                            {false && (
-                                <TabContent
-                                    className={tab == 'reviews' ? 'Active' : ''}
-                                >
-                                    <Reviews
-                                        product={product}
-                                        reviews={reviews}
+                                </Tabs>
+                                <TabContent className={tab == 'details' ? 'Active' : ''}>
+                                    <Description
+                                        dangerouslySetInnerHTML={{
+                                            __html: product.descriptionHtml || ''
+                                        }}
                                     />
                                 </TabContent>
-                            )}
+                                <TabContent className={tab == 'ingredients' ? 'Active' : ''}>
+                                    <Metadata>
+                                        <Label>Ingredients</Label>
+                                        {(product as any)?.ingredients?.value ||
+                                            `No ingredients found.`}
+                                    </Metadata>
+                                    {selectedVariant.sku && (
+                                        <Metadata>
+                                            <Label>SKU</Label>
+                                            {selectedVariant.sku}
+                                        </Metadata>
+                                    )}
+                                </TabContent>
+                                <TabContent className={tab == 'reviews' ? 'Active' : ''}>
+                                    <Reviews product={product as any} reviews={reviews} />
+                                </TabContent>
+                            </>
+
+                            {tags}
                         </Details>
                     </ProductContainer>
                 </ProductContainerWrapper>
 
-                {recommendations && recommendations?.length >= 1 && (
+                {recommendations?.length && recommendations.length >= 1 && (
                     <Recommendations>
-                        <div className="ProductPage-Content-Recommendations-Content">
+                        <RecommendationsTitle>You might also like</RecommendationsTitle>
+                        <RecommendationsContent>
                             <CollectionBlock
-                                data={{
-                                    items: recommendations
-                                }}
+                                data={
+                                    {
+                                        products: {
+                                            edges: recommendations.map((item) => ({
+                                                node: item
+                                            }))
+                                        }
+                                    } as Collection
+                                }
                                 isHorizontal
                                 store={store}
                             />
-                        </div>
+                        </RecommendationsContent>
                     </Recommendations>
                 )}
-
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: product?.vendor?.title,
-                            url: `/collections/${product?.vendor?.handle}`
-                        },
-                        {
-                            title: product?.title,
-                            url: `/products/${product?.handle}`
-                        }
-                    ]}
-                    store={store}
-                />
             </PageContent>
-
-            {/* FIXME: Re-enable this */}
-            {/*<FloatingAddToCart
-                product={product}
-                variant={variant}
-                addToCart={addToCart}
-                addedToCart={addedToCart}
-            />*/}
         </Page>
     );
 };
 
+const ProductPageWrapper: FunctionComponent<ProductPageProps> = (props) => {
+    const router = useRouter();
+
+    if (props.error || !props.product) return <Error statusCode={500} title={props.error} />;
+
+    return (
+        <ProductProvider
+            data={props.product}
+            initialVariantId={
+                (router.query.variant && `gid://shopify/ProductVariant/${router.query.variant}`) ||
+                props.product.variants.edges.at(-1)?.node.id ||
+                undefined
+            }
+        >
+            <ProductPage {...props} />
+        </ProductProvider>
+    );
+};
+
 export async function getStaticPaths({ locales }) {
-    const products_data = await ProductsApi();
+    const data = await ProductsApi();
     let paths = [
-        ...products_data.products
-            ?.map((product) => [
+        ...data.products
+            ?.map(({ node: product }: ProductEdge) => [
                 {
                     params: { handle: product?.handle }
                 },
@@ -764,27 +947,27 @@ export async function getStaticProps({ params, locale }) {
         };
     }
 
-    let product: ProductModel | null = null;
-    let recommendations: ProductModel[] | null = null;
+    let product: Product | null = null;
+    let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
     let errors: any[] = [];
 
     try {
-        product = (await ProductApi({
+        product = await ProductApi({
             handle,
             locale
-        })) as any;
+        });
     } catch (error) {
-        if (error.message?.includes('404')) {
+        if (error?.message?.includes('404')) {
             return {
                 notFound: true
             };
         }
 
-        Sentry.captureException(error);
+        if (error) Sentry.captureException(error);
         return {
             props: {
-                error: error.message
+                error: error?.message || null
             },
             revalidate: 60
         };
@@ -792,10 +975,10 @@ export async function getStaticProps({ params, locale }) {
 
     try {
         if (product)
-            recommendations = (await RecommendationApi({
+            recommendations = await RecommendationApi({
                 id: product?.id,
                 locale
-            })) as any;
+            });
     } catch (error) {
         Sentry.captureException(error);
         if (error) errors.push(error);
@@ -813,10 +996,14 @@ export async function getStaticProps({ params, locale }) {
             product,
             recommendations,
             reviews,
-            errors
+            errors,
+            analytics: {
+                pageType: 'product',
+                resourceId: product?.id
+            }
         },
         revalidate: 10
     };
 }
 
-export default ProductPage;
+export default ProductPageWrapper;

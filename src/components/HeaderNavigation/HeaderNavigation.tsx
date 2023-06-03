@@ -1,11 +1,8 @@
 import React, { FunctionComponent, memo } from 'react';
 
-import { HeaderApi } from '../../api/header';
-import { HeaderStyle } from '../Header/Header';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
 const Container = styled.div`
     position: absolute;
@@ -85,17 +82,10 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     toggle
 }) => {
     const router = useRouter();
-    const { data } = useSWR(['header'], () => HeaderApi(router.locale) as any);
-
-    // TODO: Switch-case
-    const headerStyle =
-        data?.style?.toLowerCase() === 'modern'
-            ? HeaderStyle.Modern
-            : HeaderStyle.Simple;
 
     return (
         <Container
-            className={`${open ? 'Open' : ''} ${headerStyle}`}
+            className={`${open ? 'Open' : ''} Modern`}
             onClick={(e) => {
                 e.stopPropagation();
             }}
@@ -108,8 +98,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                 href={`/${item.handle || ''}`}
                                 title={item.title}
                                 className={
-                                    (router.asPath === '/' &&
-                                        item?.handle === null) ||
+                                    (router.asPath === '/' && item?.handle === null) ||
                                     `/${item?.handle}` === router.asPath
                                         ? 'Active'
                                         : ''
@@ -119,15 +108,12 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                 {item.title}
                             </Link>
                             {item.children.map((item, index) => (
-                                <NavigationSubItem
-                                    key={item.handle + `_${index}`}
-                                >
+                                <NavigationSubItem key={item.handle + `_${index}`}>
                                     <Link
                                         href={`/${item.handle || ''}`}
                                         title={item.title}
                                         className={
-                                            (router.asPath === '/' &&
-                                                item?.handle === null) ||
+                                            (router.asPath === '/' && item?.handle === null) ||
                                             `/${item?.handle}` === router.asPath
                                                 ? 'Active'
                                                 : ''

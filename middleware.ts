@@ -13,10 +13,7 @@ export let middleware = (request) => {
         return undefined;
     }
 
-    if (
-        !/\.(.*)$/.test(request.nextUrl.pathname) &&
-        request.nextUrl.locale === '__default'
-    ) {
+    if (!/\.(.*)$/.test(request.nextUrl.pathname) && request.nextUrl.locale === '__default') {
         const newUrl = request.nextUrl.clone();
         const headers = request.headers.get('accept-language');
         const userLang = acceptLanguage.get(headers);
@@ -34,9 +31,6 @@ export let middleware = (request) => {
 
 export const config = {
     matcher: [
-        /*`/((?!api|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next|__default|${(
-            Config?.i18n?.locales || ['en-US']
-        ).join('|')}).*)/`*/
-        '/((?!api|_next/static|_next/image|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)'
+        '/((?!api|_next/static|_next/image|_next/data|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next|assets|static|monitoring).*)'
     ]
 };

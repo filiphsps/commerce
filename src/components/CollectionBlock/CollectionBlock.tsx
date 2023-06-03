@@ -1,3 +1,4 @@
+import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import React, { FunctionComponent, useRef } from 'react';
 
@@ -6,6 +7,7 @@ import LanguageString from '../LanguageString';
 import Link from '../Link';
 import PageHeader from '../PageHeader';
 import ProductCard from '../ProductCard';
+import { ProductProvider } from '@shopify/hydrogen-react';
 import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -55,7 +57,7 @@ const Action = styled.div`
 interface CollectionBlockProps {
     handle?: string;
     limit?: number;
-    data?: any;
+    data?: Collection;
     country?: string;
     hideTitle?: boolean;
     noLink?: boolean;
@@ -68,60 +70,56 @@ interface CollectionBlockProps {
     store: StoreModel;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
-    const {
-        data
-    }: {
-        data?: any;
-    } = useSWR(
+    const { data } = useSWR(
         props.handle ? [`${props.handle}`] : null,
-        ([url]) => (props.handle ? CollectionApi(url) : () => props.data),
-        { fallbackData: props?.data }
+        ([url]) => CollectionApi(url),
+        {
+            fallbackData: props?.data
+        }
     );
 
     const content_ref = useRef();
 
-    const products = (data?.items || props?.data?.items || []).map(
-        (item, index) => {
+    const products = (data?.products?.edges || props?.data?.products?.edges || []).map(
+        (edge, index) => {
             if (props.limit && index >= props.limit) return null;
+            if (!edge?.node) return null;
 
+            const product = edge.node;
             return (
-                <ProductCard
-                    key={item?.handle || item}
-                    handle={item?.handle || item}
-                    data={typeof item !== 'string' ? item : null}
-                    isHorizontal={props.isHorizontal}
-                    store={props.store}
-                />
+                <ProductProvider key={product?.id} data={product}>
+                    <ProductCard
+                        handle={product?.handle}
+                        isHorizontal={props.isHorizontal}
+                        store={props.store}
+                    />
+                </ProductProvider>
             );
         }
     );
 
-    const view_more =
-        (props.limit && data?.items?.length && (
+    const view_more = props.limit &&
+        data?.products?.edges &&
+        data.products.edges.length > props.limit && (
             <Link
                 className="ProductCard CollectionBlock-Content-ShowMore"
                 to={`/collections/${props.handle}`}
             >
                 <LanguageString id={'see_all'} />
             </Link>
-        )) ||
-        null;
+        );
 
     return (
         <div
             className={`CollectionBlock ${
-                props.isHorizontal
-                    ? 'CollectionBlock-Horizontal'
-                    : 'CollectionBlock-Grid'
+                props.isHorizontal ? 'CollectionBlock-Horizontal' : 'CollectionBlock-Grid'
             }`}
         >
             {!props.hideTitle && (
                 <div className="CollectionBlock-Header">
                     <PageHeader
                         title={
-                            props.noLink ? (
-                                data?.title
-                            ) : (
+                            (props.noLink && data?.title) || (
                                 <Link
                                     to={`/collections/${props.handle}`}
                                     as={'/collections/[handle]'}
@@ -135,25 +133,23 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     {props?.showDescription && (
                         <SubTitle
                             dangerouslySetInnerHTML={{
-                                __html: data?.body
+                                __html: data?.descriptionHtml || ''
                             }}
                         ></SubTitle>
                     )}
                 </div>
             )}
             <div className="CollectionBlock-Content" ref={content_ref as any}>
-                {products.length > 0 ? products : null}
+                {products.length > 0 && products}
                 {view_more}
             </div>
-            {props.isHorizontal ? (
+            {props.isHorizontal && (
                 <Actions>
                     <Action
                         onClick={() => {
                             if (!content_ref?.current) return;
                             (content_ref.current as any).scroll?.({
-                                left:
-                                    (content_ref.current as any).scrollLeft -
-                                    150
+                                left: (content_ref.current as any).scrollLeft - 150
                             });
                         }}
                     >
@@ -163,16 +159,14 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                         onClick={() => {
                             if (!content_ref?.current) return;
                             (content_ref.current as any).scroll?.({
-                                left:
-                                    (content_ref.current as any).scrollLeft +
-                                    150
+                                left: (content_ref.current as any).scrollLeft + 150
                             });
                         }}
                     >
                         <FiChevronRight />
                     </Action>
                 </Actions>
-            ) : null}
+            )}
         </div>
     );
 };

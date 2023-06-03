@@ -11,7 +11,6 @@ import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
-import PageLoader from '../../src/components/PageLoader';
 import type { PageModel } from '../../src/models/PageModel';
 import { Prefetch } from '../../src/util/Prefetch';
 import Slices from '../../src/components/Slices';
@@ -24,12 +23,7 @@ interface CustomPageProps {
     prefetch: any;
     error?: string;
 }
-const CustomPage: FunctionComponent<CustomPageProps> = ({
-    store,
-    page,
-    prefetch,
-    error
-}) => {
+const CustomPage: FunctionComponent<CustomPageProps> = ({ store, page, prefetch, error }) => {
     const router = useRouter();
 
     if (error || !page) return <Error statusCode={500} title={error} />;
@@ -63,11 +57,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({
                 />
                 <PageHeader title={page?.title} subtitle={page?.description} />
             </PageContent>
-            <Slices
-                store={store}
-                data={page?.slices || page?.body}
-                prefetch={prefetch}
-            />
+            <Slices store={store} data={page?.slices || page?.body} prefetch={prefetch} />
         </Page>
     );
 };
@@ -88,24 +78,24 @@ export async function getStaticPaths({ locales }) {
             ])
             .flat()
             .filter((a) => a?.params?.handle)
-            .filter(
-                (a) => a.params.handle != 'home' && a.params.handle != 'shop'
-            )
+            .filter((a) => a.params.handle != 'home' && a.params.handle != 'shop')
     ];
     return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params, locale }) {
     try {
-        const page =
-            ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
+        const page = ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
         const prefetch = (page && (await Prefetch(page, params))) || null;
 
         return {
             props: {
                 handle: params?.handle?.join('/'),
                 page,
-                prefetch
+                prefetch,
+                analytics: {
+                    pageType: 'page'
+                }
             },
             revalidate: 10
         };

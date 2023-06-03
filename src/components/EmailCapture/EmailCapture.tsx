@@ -142,12 +142,9 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
             <EmailCaptureContent>
                 {(!subscribed && (
                     <div>
-                        <EmailCaptureTitle>
-                            Don&apos;t Miss out
-                        </EmailCaptureTitle>
+                        <EmailCaptureTitle>Don&apos;t Miss out</EmailCaptureTitle>
                         <EmailCaptureDescription>
-                            Sign up to our newsletter to get <b>10% off</b> off
-                            your next order.
+                            Sign up to our newsletter and get <b>10% off</b> your next order.
                         </EmailCaptureDescription>
                     </div>
                 )) || (
@@ -170,8 +167,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                         </EmailCaptureInput>
                         <EmailCaptureSubmit
                             disabled={
-                                email.length <= 4 ||
-                                !(email.includes('@') && email.includes('.'))
+                                email.length <= 4 || !(email.includes('@') && email.includes('.'))
                             }
                             onClick={async () => {
                                 try {
@@ -182,21 +178,14 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                                     setSubscribed(true);
                                 } catch (error) {
                                     if (error.code == 'duplicate_parameter') {
-                                        alert(
-                                            `You're already subscribed to our newsletter!`
-                                        );
-                                        localStorage.setItem(
-                                            'SUBSCRIBED',
-                                            'true'
-                                        );
+                                        alert(`You're already subscribed to our newsletter!`);
+                                        localStorage.setItem('SUBSCRIBED', 'true');
                                         setHidden(true);
                                         return;
                                     }
 
                                     Sentry.captureException(error);
-                                    alert(
-                                        'Something went wrong please try again!'
-                                    );
+                                    alert('Something went wrong please try again!');
                                 }
                             }}
                         >

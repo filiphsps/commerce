@@ -61,9 +61,7 @@ export interface ProductImageModel {
     alt: string;
 }
 
-export type ProductOptionsType = Array<
-    ProductOptionCheckbox | ProductOptionMultiChoice
->;
+export type ProductOptionsType = Array<ProductOptionCheckbox | ProductOptionMultiChoice>;
 interface ProductOptionGeneric {
     id: string;
     title: string;

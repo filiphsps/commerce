@@ -12,7 +12,7 @@ interface BreadcrumbsProps {
     hideSocial?: boolean;
 }
 const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
-    const { store, hideSocial } = props;
+    const { store, hideSocial = true } = props;
 
     return (
         <div className="Breadcrumbs">
@@ -33,9 +33,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                         itemProp="item"
                         className="Link"
                     >
-                        <span itemProp="name">
-                            {store?.name || store?.title}
-                        </span>
+                        <span itemProp="name">{store?.name || store?.title}</span>
                     </Link>
                     <meta itemProp="position" content="1" />
                 </li>

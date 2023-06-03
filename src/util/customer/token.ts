@@ -11,7 +11,7 @@ export const StoreToken = async (token) => {
 export const GetToken = () => {
     return new Promise((resolve, reject) => {
         const data = localStorage.getItem('access_token');
-        if (!data) return reject();
+        if (!data) return reject(new Error('TODO:'));
 
         const token = JSON.parse(data);
 

@@ -4,6 +4,7 @@ import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
+import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { CollectionModel } from '../../../src/models/CollectionModel';
 import { Config } from '../../../src/util/Config';
@@ -69,44 +70,26 @@ const BannerImageWrapper = styled.div`
 
 interface CollectionPageProps {
     store: StoreModel;
-    data: {
-        collection: CollectionModel;
-    };
+    collection: Collection;
 }
-const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
-    const { store, data } = props;
-
+const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collection }) => {
     const router = useRouter();
 
-    useEffect(() => {
-        if (!data?.collection) return;
-
-        if (window) (window as any).resourceId = collection?.id;
-    }, [data?.collection]);
-
-    if (!data || !data?.collection) return <Error statusCode={404} />;
-
-    const { collection } = data;
+    if (!collection) return <Error statusCode={404} />;
 
     return (
         <Page className="CollectionPage">
             <NextSeo
                 title={collection?.seo?.title || collection?.title}
-                description={
-                    collection?.seo?.description ||
-                    collection?.body ||
-                    (data as any)?.collection?.description ||
-                    null
-                }
+                description={collection?.seo?.description || collection?.description || undefined}
                 additionalMetaTags={
-                    collection.seo?.keywords
-                        ? [
-                              {
-                                  property: 'keywords',
-                                  content: collection.seo?.keywords
-                              }
-                          ]
-                        : []
+                    ((collection as any).keywords?.value && [
+                        {
+                            property: 'keywords',
+                            content: (collection as any).keywords?.value
+                        }
+                    ]) ||
+                    []
                 }
             />
             <Head>
@@ -131,27 +114,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
                     store={store}
                 />
 
-                {collection.is_brand && collection.image ? (
-                    <Banner>
-                        <BannerMeta>
-                            <BannerTitle>{collection.title}</BannerTitle>
-                            <BannerDescription>
-                                {collection.seo?.description?.slice(0, 125)}...
-                            </BannerDescription>
-                        </BannerMeta>
-                        <BannerImage>
-                            <BannerImageWrapper>
-                                <Image
-                                    src={collection.image.src}
-                                    alt={collection.image.alt}
-                                    layout="fill"
-                                />
-                            </BannerImageWrapper>
-                        </BannerImage>
-                    </Banner>
-                ) : (
-                    <PageHeader title={collection.title} plainTitle />
-                )}
+                <PageHeader title={collection.title} plainTitle />
 
                 <CollectionBlock
                     handle={`${router.query.handle}`}
@@ -163,7 +126,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = (props) => {
 
                 <Body
                     dangerouslySetInnerHTML={{
-                        __html: collection?.body || ''
+                        __html: collection?.descriptionHtml || ''
                     }}
                 />
             </PageContent>
@@ -214,7 +177,8 @@ export async function getStaticProps({ params, locale }) {
         };
     }
 
-    let collection, vendors;
+    let collection: Collection | null = null;
+    let vendors;
 
     try {
         collection = await CollectionApi(handle);
@@ -230,9 +194,11 @@ export async function getStaticProps({ params, locale }) {
 
     return {
         props: {
-            data: {
-                collection: collection ?? null,
-                vendors: vendors ?? null
+            collection: collection,
+            vendors: vendors ?? null,
+            analytics: {
+                pageType: 'collection',
+                resourceId: collection?.id
             }
         },
         revalidate: 10

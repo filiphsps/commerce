@@ -1,5 +1,3 @@
-// FIXME: Handle 'NEXT_PUBLIC' requirements.
-
 export const Config = {
     environment: process.env.NODE_ENV || 'production',
     version: process.env.VERSION,
@@ -12,18 +10,20 @@ export const Config = {
     },
 
     shopify: {
-        shop_id: 76188483889,
-        domain: (
-            process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com'
-        ).replace('https://', ''),
+        shop_id:
+            (process.env.SHOPIFY_SHOP_ID && Number.parseInt(process.env.SHOPIFY_SHOP_ID)) ||
+            76188483889,
+        domain: (process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com').replace(
+            'https://',
+            ''
+        ),
         token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
-        api: '2023-04'
+        api: '2023-04',
+        checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com'
     },
 
     prismic: {
-        repo:
-            process.env.PRISMIC_REPO ||
-            'https://candy-by-sweden.cdn.prismic.io/api/v2'
+        repo: process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2'
     },
 
     i18n: {

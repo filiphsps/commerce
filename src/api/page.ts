@@ -21,9 +21,7 @@ export const PageApi = async (
                     return resolve(await PageApi(handle)); // Try again with default locale
                 }
 
-                return reject(
-                    new Error('404: The requested document cannot be found')
-                );
+                return reject(new Error('404: The requested document cannot be found'));
             }
 
             Sentry.captureException(error);
@@ -37,9 +35,7 @@ export const PagesApi = async () => {
         try {
             const pages = await prismic().getAllByType('page');
 
-            return resolve(
-                pages.map((page) => page.uid).filter((page) => page !== 'home')
-            );
+            return resolve(pages.map((page) => page.uid).filter((page) => page !== 'home'));
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);

@@ -15,13 +15,12 @@ const useCountry = () => {
             await fetch(api)
                 .then((res) => {
                     if (!res.ok) {
-                        throw Error(res.statusText);
+                        throw new Error(res.statusText);
                     }
                     return res.json();
                 })
                 .then((res) => {
-                    if (res && res.country && !isCancelled)
-                        setCountry(res.country);
+                    if (res && res.country && !isCancelled) setCountry(res.country);
                 })
                 .catch((err) => setError(err))
                 .finally(() => setIsLoading(false));

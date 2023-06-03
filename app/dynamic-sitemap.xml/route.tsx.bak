@@ -31,7 +31,7 @@ export async function GET() {
     const products = (await ProductsApi()).products.map(
         (product) =>
             ({
-                location: `products/${product.handle}/`,
+                location: `products/${product.node.handle!}/`,
                 priority: 1.0
             } as SitemapEntry)
     );

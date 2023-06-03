@@ -1,17 +1,10 @@
 import { Config } from '../util/Config';
 import axios from 'axios';
 
-const NewFetcher = (
-    url: string,
-    params?: any,
-    cacheDuration: number = 5 * 60 * 1000
-) => {
+const NewFetcher = (url: string, params?: any, cacheDuration: number = 5 * 60 * 1000) => {
     return axios({
         ...{
-            baseURL:
-                Config.environment === 'development'
-                    ? 'http://localhost:3000/api/'
-                    : '/api/',
+            baseURL: Config.environment === 'development' ? 'http://localhost:3000/api/' : '/api/',
             withCredentials: true,
             method: 'GET',
             timeout: 5000,
@@ -32,10 +25,7 @@ const NewFetcher = (
 const post = (url: string, params?: any, body?: any) => {
     return axios({
         ...{
-            baseURL:
-                Config.environment === 'development'
-                    ? 'http://localhost:3000/api/'
-                    : '/api/',
+            baseURL: Config.environment === 'development' ? 'http://localhost:3000/api/' : '/api/',
             withCredentials: true,
             method: 'POST',
             timeout: 5000,

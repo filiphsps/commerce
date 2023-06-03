@@ -1,7 +1,7 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 import Image from 'next/legacy/image';
-import { ProductImageModel } from '../../models/ProductModel';
+import { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -9,13 +9,32 @@ const Container = styled.div`
     grid-template-rows: 1fr auto;
     width: 100%;
     height: 100%;
+    gap: 1rem;
+
+    @media (max-width: 950px) {
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr auto;
+    }
+
+    &.Single {
+        grid-template-rows: 1fr;
+        grid-template-columns: 1fr;
+    }
 `;
 
 const Previews = styled.div`
+    position: relative;
+    overflow-x: auto;
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    margin-top: 1rem;
+    width: 100%;
+
+    @media (max-width: 950px) {
+        overflow-x: hidden;
+        overflow-y: auto;
+        flex-direction: column;
+    }
 `;
 const Preview = styled.div`
     width: 12rem;
@@ -31,12 +50,21 @@ const Preview = styled.div`
     &.Selected,
     &:hover,
     &:active {
+        border-width: 0.2rem;
         border-color: var(--accent-primary);
     }
 
     @media (max-width: 950px) {
-        width: 8rem;
-        height: 8rem;
+        overflow: hidden;
+        padding: 0px;
+        width: 3.5rem;
+        height: 3.5rem;
+        border-width: 0px;
+
+        img {
+            object-fit: cover;
+            object-position: center;
+        }
     }
 `;
 
@@ -59,41 +87,49 @@ const ImageWrapper = styled.div`
 `;
 
 interface GalleryProps {
-    selected: number;
-    images: ProductImageModel[];
+    selected: string | null;
+    images: ImageConnection | null;
 }
-const Gallery: FunctionComponent<GalleryProps> = ({
-    selected: defaultImageIndex,
-    images
-}) => {
-    const [selected, setSelected] = useState(defaultImageIndex);
+const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex, images }) => {
+    const [selected, setSelected] = useState(defaultImageIndex || images?.edges[0].node.id);
 
-    const image = images[selected];
+    useEffect(() => {
+        if (!defaultImageIndex) return;
+        else if (defaultImageIndex == selected) return;
+
+        setSelected(defaultImageIndex);
+    }, [defaultImageIndex]);
+
+    if (!images) return null;
+
+    const image =
+        images.edges.find((image) => image.node && image.node.id === selected)?.node ||
+        images.edges[0].node;
     return (
-        <Container>
+        <Container className={(images.edges.length <= 1 && 'Single') || ''}>
             <Primary>
                 <ImageWrapper>
                     <Image
-                        src={image.src}
-                        alt={image.alt}
-                        title={image.alt}
+                        src={image.url}
+                        alt={image.altText || undefined}
+                        title={image.altText || undefined}
                         layout="fill"
                     />
                 </ImageWrapper>
             </Primary>
-            {images.length > 1 ? (
+            {images.edges.length > 1 ? (
                 <Previews>
-                    {images.map((image, index) => (
+                    {images.edges.map(({ node: image }) => (
                         <Preview
                             key={image.id}
-                            onClick={() => setSelected(index)}
-                            className={index === selected ? 'Selected' : ''}
+                            onClick={() => setSelected(image.id)}
+                            className={image.id === selected ? 'Selected' : ''}
                         >
                             <ImageWrapper>
                                 <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    title={image.alt}
+                                    src={image.url}
+                                    alt={image.altText || undefined}
+                                    title={image.altText || undefined}
                                     layout="fill"
                                 />
                             </ImageWrapper>

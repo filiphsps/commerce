@@ -2,38 +2,34 @@ import React, { FunctionComponent, memo } from 'react';
 
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-    margin-bottom: 1rem;
-`;
+const Wrapper = styled.div``;
 
 // TODO: replace this with generic header component(s).
 const Title = styled.h2`
-    margin: 0px 0px 0.75rem -0.05rem;
-    text-transform: uppercase;
-    font-weight: 900;
-    font-size: 2.75rem;
-    line-height: 2.75rem;
+    margin-bottom: 1rem;
 
-    color: #404756;
+    &.no-margin {
+        margin-bottom: 0px;
+    }
+
     &:not(.plain-title) {
         color: var(--accent-primary);
     }
 
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    font-weight: 600;
+
     @media (max-width: 950px) {
-        font-size: 3rem;
-        line-height: 3rem;
+        font-size: 2.25rem;
+        font-weight: 700;
     }
 `;
 const SubTitle = styled.h3`
-    margin: -0.5rem 0px 2rem 0px;
     color: #404756;
-    font-size: 1.65rem;
-    font-weight: 700;
-    line-height: 2rem;
-
-    &.no-margin {
-        margin: 0px;
-    }
+    font-size: 1.75rem;
+    line-height: 1.75rem;
+    font-weight: 800;
 
     a {
         transition: 150ms ease-in-out all;
@@ -62,22 +58,20 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
 }) => {
     if (reverse)
         return (
-            <Wrapper>
-                <SubTitle className={noMargin ? 'no-margin' : ''}>
-                    {subtitle}
-                </SubTitle>
-                <Title>{title}</Title>
+            <Wrapper className={`${noMargin ? 'no-margin' : ''}`}>
+                <SubTitle className={`${noMargin ? 'no-margin' : ''}`}>{subtitle}</SubTitle>
+                <Title className={`${noMargin ? 'no-margin' : ''}`}>{title}</Title>
             </Wrapper>
         );
     return (
-        <Wrapper>
-            <Title className={(plainTitle && 'plain-title') || ''}>
+        <Wrapper className={`${noMargin ? 'no-margin' : ''}`}>
+            <Title
+                className={`${(plainTitle && 'plain-title') || ''} ${noMargin ? 'no-margin' : ''}`}
+            >
                 {title}
             </Title>
             {subtitle && (
-                <SubTitle className={noMargin ? 'no-margin' : ''}>
-                    {subtitle}
-                </SubTitle>
+                <SubTitle className={`${noMargin ? 'no-margin' : ''}`}>{subtitle}</SubTitle>
             )}
         </Wrapper>
     );

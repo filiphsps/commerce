@@ -1,18 +1,22 @@
+import {
+    CartLineQuantity,
+    CartLineQuantityAdjustButton,
+    useCart,
+    useCartLine
+} from '@shopify/hydrogen-react';
+import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import { Config } from '../../util/Config';
 import Currency from '../Currency';
-import { FiTrash } from 'react-icons/fi';
 import Image from 'next/legacy/image';
-import Input from '../Input';
 import Link from 'next/link';
 import Loader from '../Loader';
-import { ProductIdApi } from '../../api/product';
-import { ProductModel } from '../../models/ProductModel';
-import { ProductVariantModel } from '../../models/ProductVariantModel';
+import { ProductApi } from '../../api/product';
+import { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { StoreModel } from '../../models/StoreModel';
-import styled from 'styled-components';
-import { useCart } from 'react-use-cart';
+import TitleToHandle from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -26,12 +30,15 @@ const SectionContent = styled.div`
 `;
 
 const Details = styled(SectionContent)`
+    width: 100%;
     text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text-dark);
 `;
 const DetailsBrand = styled.div`
     font-weight: 700;
     letter-spacing: 0.05rem;
-    color: #404756;
     transition: 150ms ease-in-out;
 
     &:hover {
@@ -41,8 +48,10 @@ const DetailsBrand = styled.div`
 const DetailsTitle = styled.div`
     font-size: 1.75rem;
     font-weight: 700;
-    opacity: 0.75;
     transition: 150ms ease-in-out;
+    word-wrap: break-word;
+    hyphens: auto;
+    padding-bottom: 0.25rem;
 
     &:hover {
         color: var(--accent-primary);
@@ -52,45 +61,7 @@ const DetailsTitle = styled.div`
         font-size: 1.5rem;
     }
 `;
-const DetailsVariant = styled.div`
-    margin-top: 0.5rem;
-
-    @media (max-width: 950px) {
-        display: none;
-    }
-`;
-
-const Content = styled.tr`
-    display: grid;
-    position: relative;
-    min-height: 10rem;
-    width: 100vw;
-    max-width: 100%;
-    grid-template-columns: 8rem 1fr 4rem 6rem 4rem;
-    grid-template-rows: 1fr;
-    grid-template-areas: 'image meta quantity price actions';
-    gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0px;
-
-    padding: 1rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
-
-    @media (max-width: 950px) {
-        grid-template-columns: 8rem 1fr 5rem 6rem;
-        grid-template-areas: 'image meta quantity price';
-    }
-
-    &.Sale {
-        //padding: 0.65rem;
-        //border: 0.35rem solid #d91e18;
-
-        /*${DetailsTitle} {
-            color: #d91e18;
-        }*/
-    }
-`;
+const DetailsVariant = styled.div``;
 
 const ImageWrapper = styled.div`
     max-width: 8rem;
@@ -142,47 +113,6 @@ const ProductImage = styled(Section)`
     }
 `;
 
-const Quantity = styled(SectionContent)`
-    grid-area: quantity;
-    text-align: center;
-    width: 100%;
-    height: 3rem;
-
-    input {
-        height: 100%;
-        width: 100%;
-        padding: 0.5rem 0.5rem;
-        background: var(--color-text-primary);
-        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-        border-width: 0.1rem;
-        font-size: 1.25rem;
-
-        @media (max-width: 950px) {
-            width: 4rem;
-            padding: 0.35rem 0.25rem;
-            font-size: 1.15rem;
-        }
-
-        &:hover,
-        &:active,
-        &:focus {
-            border-color: var(--accent-primary-dark);
-        }
-    }
-`;
-
-const Badge = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.25rem 0.5rem;
-    text-transform: uppercase;
-    font-size: 1rem;
-    font-weight: 700;
-    background: var(--accent-secondary-dark);
-    color: var(--color-text-primary);
-`;
-
 const Price = styled(SectionContent)`
     width: 100%;
     height: 100%;
@@ -192,13 +122,10 @@ const Price = styled(SectionContent)`
 
     .Currency {
         display: flex;
-        //justify-content: flex-end;
         justify-content: center;
         align-items: center;
         width: 100%;
         height: 100%;
-        overflow-wrap: anywhere;
-        hyphens: auto;
     }
 
     &.Sale {
@@ -216,51 +143,100 @@ const Price = styled(SectionContent)`
     }
 
     @media (max-width: 950px) {
-        text-align: right;
-    }
-`;
+        text-align: start;
+        align-items: start;
+        justify-content: center;
 
-const Actions = styled(SectionContent)`
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    flex-direction: column;
-    width: 100%;
-    user-select: none;
-`;
-const Action = styled.div`
-    cursor: pointer;
-    text-align: center;
-    width: 2.25rem;
-    max-width: 2.25rem;
-    font-size: 1.25rem;
-    user-select: none;
+        &.Sale {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            gap: 0px;
 
-    &:hover {
-        // FIXME: Only use this for the remove action
-        color: #d91e18;
-        border-color: #d91e18;
+            .Currency-Sale {
+                height: 1.25rem;
+            }
+            .Currency-Discount {
+                height: 2.5rem;
+            }
+        }
+
+        .Currency {
+            justify-content: start;
+            line-height: 100%;
+        }
     }
 `;
 
 const MetaSection = styled(Section)`
+    overflow: hidden;
     grid-area: meta;
+    min-height: 0px;
+    min-width: 0px;
+`;
+
+const RemoveButton = styled(CartLineQuantityAdjustButton)`
+    &:hover {
+        background: var(--color-danger);
+        color: var(--color-text-primary);
+    }
+`;
+const Quantity = styled.div<{ disabled?: boolean }>`
+    height: 3rem;
+    background: var(--color-text-primary);
+    border-radius: var(--block-border-radius);
+    transition: 150ms all ease-in-out;
+
+    ${(props) =>
+        props.disabled &&
+        css`
+            opacity: 0.5;
+            cursor: wait;
+
+            input,
+            button {
+                cursor: inherit;
+            }
+        `}
+
+    input {
+        overflow: hidden;
+        height: 3rem;
+        width: 3rem;
+        border: none;
+        border-radius: 0px;
+        font-size: 1.25rem;
+        text-align: center;
+        outline: none;
+    }
+
+    button:hover {
+        background: var(--accent-primary);
+        color: var(--color-text-primary);
+    }
 `;
 const QuantitySection = styled(Section)`
     grid-area: quantity;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 1rem;
+    padding-left: 1rem;
+
+    button {
+        height: 3rem;
+        width: 3rem;
+        text-align: center;
+        font-size: 1.25rem;
+        line-height: 100%;
+        border-radius: var(--block-border-radius);
+    }
 
     @media (max-width: 950px) {
         display: flex;
         justify-content: flex-start;
         padding-top: 0.5rem;
-
-        ${Quantity} {
-            height: 3.25rem;
-        }
     }
 `;
 const PriceSection = styled(Section)`
@@ -274,98 +250,65 @@ const PriceSection = styled(Section)`
     width: 100%;
     height: 100%;
 
-    .Currency {
-        // FIXME: Wrap bug numbers.
-    }
-
     ${Price} .Currency.Currency-Sale {
         font-size: 1.25rem;
         width: auto;
     }
 `;
-const ActionsSection = styled(Section)`
-    grid-area: actions;
+
+const Content = styled.tr`
+    overflow: hidden;
+    display: grid;
+    position: relative;
+    min-height: 10rem;
+    width: calc(100vw - 3rem);
+    max-width: 100%;
+    grid-template-columns: 8rem 1fr 6rem 14rem;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'image meta price quantity';
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0px;
+
+    padding: 1rem;
+    background: #efefef;
+    border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
-        position: absolute;
-        right: 9.25rem;
-        top: 6rem;
-        padding: 0.25rem;
-        border-radius: 100%;
-        transition: 150ms ease-in-out;
-        background-color: var(--color-text-primary);
-        border: 0.2rem solid #efefef;
-        cursor: pointer;
-        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-
-        ${Actions} {
-            ${Action} {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 2.25rem;
-                height: 2.25rem;
-                font-size: 1.5rem;
-                color: unset;
-            }
-        }
-
-        &:hover {
-            color: var(--color-text-primary);
-            border-color: #d91e18;
-            background-color: #d91e18;
-        }
+        grid-template-columns: 8rem 1fr 14rem;
+        grid-template-areas:
+            'image meta meta'
+            'image price quantity';
     }
 `;
 
 interface CartItemProps {
-    total_items?: number;
-    data?: any;
     store: StoreModel;
 }
-const CartItem: FunctionComponent<CartItemProps> = (props) => {
+const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
     const router = useRouter();
     const cart = useCart();
+    const line = useCartLine();
     const TempImage = Image as any;
 
     const locale =
-        router?.locale && router?.locale != '__default'
-            ? router?.locale
-            : Config.i18n.locales[0];
+        router?.locale && router?.locale != '__default' ? router?.locale : Config.i18n.locales[0];
 
-    // TODO: remove replace once we've cleared all broken carts
-    const product_id = props.data.id
-        .split('#')[0]
-        .replace('gid://shopify/Product/', '') as string;
-    const variant_id = props.data.id
-        .split('#')[1]
-        .replace('gid://shopify/ProductVariant/', '') as string;
-
-    const { data } = useSWR([product_id], ([id]) =>
-        ProductIdApi({ id: id, locale })
-    ) as any;
-    const product: ProductModel = data;
-    const [variant, setVariant] = useState<ProductVariantModel | null>(null);
+    const { data: product } = useSWR([line?.merchandise?.product?.handle!], ([handle]) =>
+        ProductApi({ handle: handle || '', locale })
+    );
+    const [variant, setVariant] = useState<ProductVariant | null>(null);
 
     useEffect(() => {
         if (!product) return;
 
         setVariant(
-            product?.variants?.find?.(
-                (variant) => variant?.id === variant_id
-            ) || null
+            product?.variants.edges.find?.((edge) => edge.node.id === line.merchandise?.id)?.node ||
+                null
         );
     }, [product]);
 
-    const changeAmount = (event: any) => {
-        if (event?.target?.value == props?.data?.quantity) return;
-        cart.updateItemQuantity(
-            `${product?.id}#${variant?.id}`,
-            parseInt(event?.target?.value) || 0
-        );
-    };
-
-    if (!product || !variant) {
+    if (!line || !product || !variant) {
         return (
             <Content>
                 <ProductImage>
@@ -376,21 +319,26 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     <Loader light />
                 </Section>
                 <Section />
-                <Section />
             </Content>
         );
     }
 
-    let discount = variant?.pricing?.compare_at_range
-        ? variant?.pricing?.compare_at_range - variant?.pricing?.range
-        : 0;
+    let discount =
+        (variant.compareAtPrice?.amount &&
+            Number.parseFloat(variant?.compareAtPrice?.amount || '') -
+                Number.parseFloat(variant?.price.amount || '')) ||
+        0;
     return (
         <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
                     <Link href={`/products/${product?.handle}`}>
                         <TempImage
-                            src={product?.images?.[variant?.default_image]?.src}
+                            src={
+                                product.images.edges.find(
+                                    (edge) => edge.node.id === variant.image?.id
+                                )?.node.url || ''
+                            }
                             layout="responsive"
                             width="6rem"
                             height="6rem"
@@ -399,87 +347,91 @@ const CartItem: FunctionComponent<CartItemProps> = (props) => {
                     </Link>
                 </ImageWrapper>
             </ProductImage>
+
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${product?.vendor?.handle}`}>
-                            {product?.vendor?.title}
+                        <Link href={`/collections/${TitleToHandle(product?.vendor)}`}>
+                            {product?.vendor}
                         </Link>
                     </DetailsBrand>
                     <DetailsTitle>
-                        <Link href={`/products/${product?.handle}`}>
-                            {product?.title}
-                        </Link>
+                        <Link href={`/products/${product?.handle}`}>{product?.title}</Link>
                     </DetailsTitle>
-                    <DetailsVariant>
-                        <Badge>{variant?.title}</Badge>
-                    </DetailsVariant>
+                    <DetailsVariant>{variant?.title}</DetailsVariant>
                 </Details>
             </MetaSection>
-            <QuantitySection className="QuantitySection">
-                <Quantity>
-                    <Input
-                        className="Input"
-                        defaultValue={props?.data?.quantity}
-                        onBlur={(event) => changeAmount(event)}
-                        onInput={(event) => {
-                            (event as any).target.value = (
-                                event as any
-                            ).target.value
-                                .replace(/[^0-9.]/g, '')
-                                .replace(/(\..*?)\..*/g, '$1');
 
-                            // TODO: Figure out a good limit
-                            if (
-                                Number.parseInt(
-                                    (event as any).target.value,
-                                    10
-                                ) > 250
-                            )
-                                (event as any).target.value = 250;
-                        }}
-                        onKeyPress={(event) => {
-                            if (event.key !== 'Enter') return;
-
-                            changeAmount(event);
-                        }}
-                    />
-                </Quantity>
-            </QuantitySection>
             <PriceSection>
                 <Price className={(discount > 0 && 'Sale') || ''}>
-                    {discount > 0 &&
-                        typeof variant.pricing.compare_at_range ===
-                            'number' && (
-                            <Currency
-                                price={
-                                    variant.pricing.compare_at_range! *
-                                    props?.data?.quantity
-                                }
-                                currency={variant?.pricing?.currency}
-                                className="Currency-Sale"
-                                store={props.store}
-                            />
-                        )}
+                    {discount > 0 && variant.compareAtPrice && (
+                        <Currency
+                            price={
+                                Number.parseFloat(variant.compareAtPrice?.amount || '') *
+                                line.quantity!
+                            }
+                            currency={variant.price.currencyCode}
+                            className="Currency-Sale"
+                            store={store}
+                        />
+                    )}
                     <Currency
-                        price={variant?.pricing?.range * props?.data?.quantity}
-                        currency={variant?.pricing?.currency}
+                        price={Number.parseFloat(variant.price?.amount || '') * line.quantity!}
+                        currency={variant.price.currencyCode}
                         className={(discount > 0 && 'Currency-Discount') || ''}
-                        store={props.store}
+                        store={store}
                     />
                 </Price>
             </PriceSection>
-            <ActionsSection>
-                <Actions>
-                    <Action
-                        onClick={() => {
-                            cart.removeItem(`${product?.id}#${variant?.id}`);
-                        }}
-                    >
-                        <FiTrash className="Icon" />
-                    </Action>
-                </Actions>
-            </ActionsSection>
+
+            <QuantitySection className="QuantitySection">
+                <Quantity disabled={cart.status !== 'idle'}>
+                    <CartLineQuantityAdjustButton adjust="decrease">
+                        <FiMinus />
+                    </CartLineQuantityAdjustButton>
+                    <CartLineQuantity
+                        as={
+                            ((props: any) => {
+                                return (
+                                    <input
+                                        disabled={cart.status !== 'idle'}
+                                        value={props.children}
+                                        onInput={(event) => {
+                                            event.currentTarget.value = event.currentTarget.value
+                                                .replace(/[^0-9.]/g, '')
+                                                .replace(/(\..*?)\..*/g, '$1');
+
+                                            if (event.currentTarget.value === '') {
+                                                cart.linesRemove([line.id!]);
+                                                return;
+                                            }
+
+                                            const quantity = Number.parseInt(
+                                                event.currentTarget.value
+                                            );
+                                            if (quantity === line.quantity) return;
+
+                                            cart.linesUpdate([
+                                                {
+                                                    id: line.id!,
+                                                    quantity: quantity
+                                                }
+                                            ]);
+                                        }}
+                                    />
+                                );
+                            }) as any
+                        }
+                    />
+                    <CartLineQuantityAdjustButton adjust="increase">
+                        <FiPlus />
+                    </CartLineQuantityAdjustButton>
+                </Quantity>
+
+                <RemoveButton adjust="remove">
+                    <FiTrash />
+                </RemoveButton>
+            </QuantitySection>
         </Content>
     );
 };

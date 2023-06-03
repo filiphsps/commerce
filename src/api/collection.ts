@@ -1,10 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
+import { storefrontClient } from './shopify';
 
+import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionModel } from '../models/CollectionModel';
 import { gql } from '@apollo/client';
-import { newShopify } from './shopify';
 
 export const COLLECTION_FRAGMENT = `
     id
@@ -44,15 +45,11 @@ export const Convertor = (collection: any): CollectionModel | null => {
     const res = {
         id: collection?.id,
         handle: collection?.handle,
-        is_brand:
-            collection.isBrand?.value && collection.isBrand?.value == 'true'
-                ? true
-                : false,
+        is_brand: collection.isBrand?.value && collection.isBrand?.value == 'true' ? true : false,
 
         seo: {
             title: collection?.seo?.title || collection?.title,
-            description:
-                collection?.seo?.description || collection?.description || '',
+            description: collection?.seo?.description || collection?.description || '',
             keywords: collection?.keywords?.value || ''
         },
 
@@ -68,38 +65,35 @@ export const Convertor = (collection: any): CollectionModel | null => {
               }
             : null,
 
-        items: collection?.products?.edges?.map((product) =>
-            ProductConvertor(product.node)
-        )
+        items: collection?.products?.edges?.map((product) => ProductConvertor(product.node))
     };
     return res as any as CollectionModel;
 };
 
-export const CollectionApi = async (handle: string) => {
+export const CollectionApi = async (handle: string): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await newShopify.query({
+            const { data, errors } = await storefrontClient.query({
                 query: gql`
-                fragment collection on Collection {
-                    ${COLLECTION_FRAGMENT}
-                }
-                query collection($handle: String!) {
-                    collectionByHandle(handle: $handle) {
-                        ...collection
+                    fragment collection on Collection {
+                        ${COLLECTION_FRAGMENT}
                     }
-                }
+                    query collection($handle: String!) {
+                        collectionByHandle(handle: $handle) {
+                            ...collection
+                        }
+                    }
                 `,
                 variables: {
                     handle: handle
                 }
             });
 
-            if (errors) throw errors;
+            if (errors) return reject(new Error(errors.join('\n')));
+            if (!data?.collectionByHandle)
+                return reject(new Error('404: The requested document cannot be found'));
 
-            const result = Convertor(data?.collectionByHandle);
-            if (!result) return reject(new Error('404'));
-
-            return resolve(result);
+            return resolve(/*flattenConnection(*/ data.collectionByHandle /*)*/);
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);
@@ -108,9 +102,14 @@ export const CollectionApi = async (handle: string) => {
     });
 };
 
-export const CollectionsApi = async (): Promise<CollectionModel[]> => {
+export const CollectionsApi = async (): Promise<
+    Array<{
+        id: string;
+        handle: string;
+    }>
+> => {
     return new Promise(async (resolve, reject) => {
-        const { data, errors } = await newShopify.query({
+        const { data, errors } = await storefrontClient.query({
             query: gql`
                 query collections {
                     collections(first: 250) {
@@ -125,34 +124,8 @@ export const CollectionsApi = async (): Promise<CollectionModel[]> => {
             `
         });
 
-        if (errors?.length) return reject(errors);
+        if (errors) return reject(new Error(errors.join('\n')));
 
         return resolve(data.collections.edges.map((item) => item.node));
-    });
-};
-
-export const BrandsApi = async (): Promise<CollectionModel[]> => {
-    return new Promise(async (resolve, reject) => {
-        const { data, errors } = await newShopify.query({
-            query: gql`
-                query collections {
-                    collections(first: 250) {
-                        edges {
-                            node {
-                                ${COLLECTION_FRAGMENT}
-                            }
-                        }
-                    }
-                }
-            `
-        });
-
-        if (errors?.length) return reject(errors);
-
-        return resolve(
-            data.collections.edges
-                .map((item) => Convertor(item.node))
-                .filter((item) => item.is_brand)
-        );
     });
 };

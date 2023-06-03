@@ -80,10 +80,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
 
     return (
         <Page className="BlogPage">
-            <NextSeo
-                title="Blog"
-                canonical={`https://${Config.domain}/blog/`}
-            />
+            <NextSeo title="Blog" canonical={`https://${Config.domain}/blog/`} />
 
             <PageContent>
                 <Breadcrumbs
@@ -104,21 +101,14 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                         <Link key={article.id} href={`/blog/${article.handle}`}>
                             <Article>
                                 <ArticleImage>
-                                    <Image
-                                        src={article.image.url}
-                                        layout="fill"
-                                    />
+                                    <Image src={article.image.url} layout="fill" />
                                 </ArticleImage>
                                 <div>
                                     <h2>{article.title}</h2>
                                     <ArticleDate>
-                                        {new Date(
-                                            article.published_at
-                                        ).toDateString()}
+                                        {new Date(article.published_at).toDateString()}
                                     </ArticleDate>
-                                    <ArticleContent>
-                                        {article.excerpt}
-                                    </ArticleContent>
+                                    <ArticleContent>{article.excerpt}</ArticleContent>
                                 </div>
                             </Article>
                         </Link>
@@ -140,7 +130,10 @@ export async function getStaticProps({ locale }) {
 
         return {
             props: {
-                blog
+                blog,
+                analytics: {
+                    pageType: 'blog'
+                }
             },
             revalidate: 60
         };

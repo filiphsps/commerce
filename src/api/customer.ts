@@ -9,9 +9,7 @@ export const CustomerLoginApi = async (customer: any) => {
         try {
             const { data } = await shopify.query({
                 query: gql`
-                    mutation customerAccessTokenCreate(
-                        $input: CustomerAccessTokenCreateInput!
-                    ) {
+                    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
                         customerAccessTokenCreate(input: $input) {
                             customerAccessToken {
                                 accessToken
@@ -33,13 +31,9 @@ export const CustomerLoginApi = async (customer: any) => {
             });
 
             if (!data?.customerAccessTokenCreate?.customerAccessToken)
-                return reject(
-                    data?.customerAccessTokenCreate?.customerUserErrors
-                );
+                return reject(data?.customerAccessTokenCreate?.customerUserErrors);
 
-            return resolve(
-                data?.customerAccessTokenCreate?.customerAccessToken
-            );
+            return resolve(data?.customerAccessTokenCreate?.customerAccessToken);
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);
@@ -53,9 +47,7 @@ export const CustomerRegisterApi = async (customer: any) => {
         try {
             const { data } = await shopify.query({
                 query: gql`
-                    mutation customerAccessTokenCreate(
-                        $input: CustomerAccessTokenCreateInput!
-                    ) {
+                    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
                         customerCreate(input: $input) {
                             customer {
                                 email
@@ -109,9 +101,7 @@ export const CustomerRecoverApi = async (email: any) => {
             });
 
             if (data?.customerRecover?.customerUserErrors || errors)
-                return reject(
-                    data?.customerRecover?.customerUserErrors || errors
-                );
+                return reject(data?.customerRecover?.customerUserErrors || errors);
 
             return resolve(null);
         } catch (error) {
@@ -151,7 +141,7 @@ export const CustomerApi = async () => {
 
             if (errors) throw errors;
 
-            if (!data?.customer) return reject();
+            if (!data?.customer) return reject(new Error('404: TODO:'));
 
             return resolve(data?.customer);
         } catch (error) {

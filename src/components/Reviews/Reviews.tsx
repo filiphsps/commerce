@@ -2,7 +2,7 @@ import { FunctionComponent, useState } from 'react';
 
 import Button from '../Button';
 import Input from '../Input';
-import { ProductModel } from '../../models/ProductModel';
+import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -13,7 +13,6 @@ const Container = styled.div`
     gap: 1rem;
 `;
 const Review = styled.div`
-    padding: 2rem;
     background: #fefefe;
     border-radius: var(--block-border-radius);
 `;
@@ -38,7 +37,6 @@ const Form = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 2rem;
     background: #fefefe;
     border-radius: var(--block-border-radius);
 
@@ -80,12 +78,9 @@ const Form = styled.div`
 
 interface ReviewsProps {
     reviews: any;
-    product: ProductModel;
+    product: Product | undefined | null;
 }
-const Reviews: FunctionComponent<ReviewsProps> = ({
-    product,
-    reviews: data
-}) => {
+const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [body, setBody] = useState('');
@@ -93,19 +88,21 @@ const Reviews: FunctionComponent<ReviewsProps> = ({
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const { data: reviews } = useSWR(
-        [`${product.id}_reviews`],
-        () =>
+    const { data: reviews }: any = useSWR(
+        [product?.id],
+        ([id]) =>
             fetch('/api/reviews', {
                 method: 'post',
                 body: JSON.stringify({
-                    id: product.id
+                    id
                 })
             }).then((res) => res.json()),
         {
             fallbackData: data
         }
     );
+
+    if (!product) return null;
 
     return (
         <Container>

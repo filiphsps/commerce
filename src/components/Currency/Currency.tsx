@@ -85,7 +85,7 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
     }) as [string, number];
 
     const [currency, setCurrency] = useState<string>(
-        targetCurrency || props.currency || props?.store?.currencies[0] || 'USD'
+        targetCurrency || props.currency || props?.store?.currencies?.[0] || 'USD'
     );
 
     const [price, setPrice] = useState<number>(roughConversion as number);
@@ -94,18 +94,13 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
         if (!router.locale || !props.store) return;
 
         if (price == 0 || !price) setPrice(props.price || 0);
-        if (!currency)
-            setCurrency(props.currency || props?.store?.currencies[0] || 'USD');
+        if (!currency) setCurrency(props.currency || props?.store?.currencies?.[0] || 'USD');
 
         const new_currency: string =
             (targetCurrency as string) || getParamByISO(country, 'currency');
 
         // Make sure that we the currency is included in our supported set of currencies
-        if (
-            props?.store?.currencies &&
-            !props?.store?.currencies?.includes?.(new_currency)
-        )
-            return;
+        if (props?.store?.currencies && !props?.store?.currencies?.includes?.(new_currency)) return;
 
         setCurrency(new_currency);
 
@@ -148,13 +143,9 @@ const Currency: FunctionComponent<CurrencyProps> = (props) => {
 
     return (
         <div className={`Currency ${props.className || ''}`}>
-            {props.prefix && (
-                <span className="Currency-Prefix">{props.prefix}</span>
-            )}
+            {props.prefix && <span className="Currency-Prefix">{props.prefix}</span>}
             <Tender value={price} currency={currency} />
-            {props.suffix && (
-                <span className="Currency-Suffix">{props.suffix}</span>
-            )}
+            {props.suffix && <span className="Currency-Suffix">{props.suffix}</span>}
         </div>
     );
 };

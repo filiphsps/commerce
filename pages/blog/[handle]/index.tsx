@@ -28,13 +28,12 @@ const ContentWrapper = styled.div`
 `;
 const Content = styled.article`
     width: 100%;
-    margin: 0px auto;
+    margin: 0px auto 1.5rem auto;
 `;
 
 const Banner = styled.div`
     position: relative;
     width: 100%;
-    max-width: 62rem;
     height: 18rem;
     margin: 0px auto 1rem auto;
 
@@ -49,7 +48,6 @@ const ArticleHeader = styled.div`
     border-bottom: 0.2rem solid #efefef;
 `;
 const ArticleTitle = styled.h1`
-    max-width: 62rem;
     margin: 0px auto;
     text-transform: uppercase;
     font-size: 3.25rem;
@@ -58,7 +56,6 @@ const ArticleTitle = styled.h1`
 `;
 const ArticleMeta = styled.div`
     text-transform: uppercase;
-    max-width: 62rem;
     margin: 0px auto;
     color: #404756;
     font-size: 1.25rem;
@@ -85,12 +82,9 @@ const ArticleTag = styled.div`
 
 const ArticleContent = styled(ContentComponent)`
     width: 100%;
-    max-width: 62rem;
     overflow: hidden;
     font-weight: 400;
     margin: 0px auto;
-    //background: #efefef;
-    //padding: 1rem;
 
     &::first-letter {
         color: var(--accent-primary-dark);
@@ -140,12 +134,7 @@ interface ArticlePageProps {
     blog: any;
     error?: string;
 }
-const ArticlePage: FunctionComponent<ArticlePageProps> = ({
-    store,
-    article,
-    blog,
-    error
-}) => {
+const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog, error }) => {
     if (error || !article) return <Error statusCode={500} title={error} />;
 
     return (
@@ -182,29 +171,40 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({
             />
 
             <PageContent>
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'blog'} />,
+                            url: '/blog/'
+                        },
+                        {
+                            title: article.title,
+                            url: `/blog/${article.handle}/`
+                        }
+                    ]}
+                    store={store}
+                />
+
                 <ContentWrapper>
                     <Content>
                         <ArticleHeader>
-                            {article.image ? (
+                            {(article.image && (
                                 <Banner>
                                     <Image
                                         src={article.image.url}
-                                        alt={article.image.alt}
+                                        alt={article.image.alt || ''}
                                         layout="fill"
                                     />
                                 </Banner>
-                            ) : null}
+                            )) ||
+                                null}
 
                             <ArticleTitle>{article.title}</ArticleTitle>
 
                             <ArticleMeta>
-                                <ArticleAuthor>
-                                    by {article.author.name}
-                                </ArticleAuthor>
+                                <ArticleAuthor>by {article.author.name}</ArticleAuthor>
                                 <ArticleDate>
-                                    {new Date(
-                                        article.published_at
-                                    ).toDateString()}
+                                    {new Date(article.published_at).toDateString()}
                                 </ArticleDate>
                             </ArticleMeta>
                         </ArticleHeader>
@@ -220,9 +220,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({
                             <SidebarTitle>Latest Articles</SidebarTitle>
                             {blog.articles.map((article) => (
                                 <SidebarLink key={article.id}>
-                                    <Link href={`/blog/${article.handle}`}>
-                                        {article.title}
-                                    </Link>
+                                    <Link href={`/blog/${article.handle}`}>{article.title}</Link>
                                 </SidebarLink>
                             ))}
 
@@ -235,20 +233,6 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({
                         </SidebarContent>
                     </Sidebar>
                 </ContentWrapper>
-
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'blog'} />,
-                            url: '/blog/'
-                        },
-                        {
-                            title: article.title,
-                            url: `/blog/${article.handle}/`
-                        }
-                    ]}
-                    store={store}
-                />
             </PageContent>
         </Page>
     );
@@ -325,7 +309,10 @@ export async function getStaticProps({ params, locale }) {
     return {
         props: {
             article,
-            blog
+            blog,
+            analytics: {
+                pageType: 'article'
+            }
         },
         revalidate: 60
     };

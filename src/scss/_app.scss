@@ -18,7 +18,7 @@ $color-error: #d91e18;
 
 $color-sale: #d91e18;
 
-$color-black: #0e0e0e;
+$color-black: #1c1c1c;
 $color-light-gray: #f2f2f2;
 $color-white: #fefefe;
 
@@ -102,7 +102,6 @@ $int-max: 2147483647;
 
     100% {
         transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-        -webkit-transform: perspective(120px) rotateX(-180deg)
-            rotateY(-179.9deg);
+        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     }
 }

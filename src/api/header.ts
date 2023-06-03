@@ -4,9 +4,7 @@ import { Config } from '../util/Config';
 import { HeaderModel } from '../models/HeaderModel';
 import { prismic } from './prismic';
 
-export const HeaderApi = async (
-    locale = Config.i18n.locales[0]
-): Promise<HeaderModel> => {
+export const HeaderApi = async (locale = Config.i18n.locales[0]): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await prismic().getSingle('head', {
@@ -19,9 +17,7 @@ export const HeaderApi = async (
                     return resolve(await HeaderApi()); // Try again with default locale
                 }
 
-                return reject(
-                    new Error('404: The requested document cannot be found')
-                );
+                return reject(new Error('404: The requested document cannot be found'));
             }
 
             Sentry.captureException(error);

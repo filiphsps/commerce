@@ -3,12 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { newShopify } from './shopify';
 
-export const BlogApi = async ({
-    handle
-}: {
-    handle: string;
-    locale?: string;
-}) => {
+export const BlogApi = async ({ handle }: { handle: string; locale?: string }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data, errors } = await newShopify.query({
@@ -23,11 +18,7 @@ export const BlogApi = async ({
                                 title
                                 description
                             }
-                            articles(
-                                first: 250
-                                reverse: true
-                                sortKey: PUBLISHED_AT
-                            ) {
+                            articles(first: 250, reverse: true, sortKey: PUBLISHED_AT) {
                                 edges {
                                     node {
                                         id
@@ -141,9 +132,7 @@ export const ArticleApi = async ({
 
             if (errors) return reject(new Error(errors.join('\n')));
             if (!data?.blogByHandle?.articleByHandle)
-                return reject(
-                    new Error('404: The requested document cannot be found')
-                );
+                return reject(new Error('404: The requested document cannot be found'));
 
             let result = data.blogByHandle.articleByHandle;
             return resolve({

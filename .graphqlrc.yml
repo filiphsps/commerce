@@ -1,0 +1,3 @@
+projects:
+    default:
+        schema: '@shopify/hydrogen-react/storefront.schema.json'

@@ -1,21 +1,17 @@
 import * as Sentry from '@sentry/nextjs';
 
-import {
-    FiChevronDown,
-    FiChevronUp,
-    FiShoppingCart,
-    FiTrash
-} from 'react-icons/fi';
-import React, { FunctionComponent, useRef, useState } from 'react';
+import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import { CartLineProvider, CartWithActions, useCart } from '@shopify/hydrogen-react';
+import React, { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
-import { CheckoutApi } from '../../src/api/checkout';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
 import ContentBlock from '../../src/components/ContentBlock';
 import Currency from '../../src/components/Currency';
+import { FiShoppingCart } from 'react-icons/fi';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
@@ -25,15 +21,13 @@ import PageLoader from '../../src/components/PageLoader';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';
-import { useCart } from 'react-use-cart';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useWindowSize } from 'rooks';
 
 const Content = styled.div`
     display: grid;
-    grid-template-columns: auto 28rem;
+    grid-template-columns: 1fr minmax(auto, 28rem);
     gap: 2rem;
     max-width: 100%;
     @media (max-width: 950px) {
@@ -52,7 +46,6 @@ const FreeShippingBanner = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     max-width: calc(100vw - 3rem);
-    margin-top: 2rem;
     padding: 1.5rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
@@ -103,7 +96,7 @@ const Progress = styled.div`
     overflow: hidden;
     width: 100%;
     height: 2rem;
-    background: #fefefe;
+    background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
 
     &.Full {
@@ -126,19 +119,27 @@ const ItemsContainer = styled.table`
 
     tbody,
     thead {
+        overflow: hidden;
         display: block;
         width: 100%;
+        max-width: 100%;
     }
 `;
 
 const SummaryContent = styled.div`
+    position: sticky;
     padding: 1.5rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
     transition: 150ms ease-in-out;
 
+    .CheckoutButton {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     @media (min-width: 950px) {
-        position: sticky;
         top: 8rem;
     }
 
@@ -152,95 +153,35 @@ const SummaryContent = styled.div`
         }
     }
 `;
-const SummaryItems = styled.div`
-    padding-bottom: 1rem;
-    text-transform: uppercase;
-    user-select: all;
-    transition: 150ms ease-in-out;
-
-    @media (max-width: 950px) {
-        display: none;
-        height: 0px;
-        opacity: 0;
-        overflow: hidden;
-        width: calc(100vw - 3rem);
-        width: calc(100dvw - 3rem);
-        padding: 1rem;
-        padding-bottom: 0px;
-        background: var(--color-text-primary);
-        border-radius: var(--block-border-radius);
-
-        .Currency {
-            font-size: 1.75rem;
-        }
-
-        &.Open {
-            display: block;
-            position: sticky;
-            overflow-y: auto;
-            opacity: 1;
-            bottom: 8rem;
-            left: 0px;
-            height: 30vh;
-            height: 30dvh;
-            margin: 1.5rem 0px;
-        }
-    }
-`;
-const SummaryItem = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto;
-    margin-bottom: 1.25rem;
-    gap: 2rem;
-
-    @media (max-width: 950px) {
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-
-        border-bottom: 0.2rem solid var(--accent-secondary);
-
-        &:last-child {
-            border-bottom: none;
-            padding-bottom: 0px;
-            margin-bottom: 1rem;
-        }
-    }
-`;
-const SummaryItemMeta = styled.div``;
-const SummaryItemTitle = styled.div`
-    font-size: 1.5rem;
-    font-weight: 700;
-`;
-const SummaryItemVendor = styled.div`
-    padding-top: 0.25rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    opacity: 0.75;
-    text-transform: lowercase;
-    letter-spacing: 0.05rem;
-`;
 const SummaryItemPrice = styled.div`
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
     text-align: right;
-    gap: 0.5rem;
-    font-weight: 700;
-    font-size: 1.25rem;
+    gap: 0ox;
+    font-weight: 600;
+    font-size: 1rem;
+
+    .Currency-Prefix {
+        width: 5.5rem;
+        padding-right: 1rem;
+        text-align: start;
+    }
 
     span {
         display: inline-block;
         text-transform: initial;
-        font-size: 1rem;
+        font-size: 0.75rem;
         font-weight: 500;
     }
 
-    @media (max-width: 950px) {
-        font-size: 1.25rem;
+    .Total {
+        font-size: 1.5rem;
+        font-weight: 700;
 
         span {
             font-size: 1.25rem;
-            margin-bottom: -0.5rem;
         }
     }
 
@@ -264,9 +205,8 @@ const SummarySummary = styled.div`
     align-items: flex-end;
     grid-template-columns: 1fr auto;
     gap: 1rem;
-    padding: 0.5rem 0px 0.5rem 0px;
+    padding-bottom: 1rem;
     text-transform: uppercase;
-    border-top: 0.2rem solid #404756;
 
     @media (max-width: 950px) {
         border-top: none;
@@ -275,93 +215,19 @@ const SummarySummary = styled.div`
 
     &.Empty {
         border-top: none;
-        margin-top: -1rem;
     }
-`;
-const SummaryItemsToggle = styled(Button)`
-    display: inline-flex;
-    text-transform: uppercase;
-    cursor: pointer;
-    user-select: none;
-    transition: 150ms ease-in-out;
-
-    background: var(--color-text-primary);
-    border-radius: var(--block-border-radius);
-    gap: 0.5rem;
-
-    &.Button {
-        justify-content: center;
-        align-items: center;
-
-        height: 2.75rem;
-        margin: 0rem auto 0rem 0rem;
-        padding: 1.25rem;
-        border-width: 0px;
-        width: auto;
-
-        font-size: 1.15rem;
-        font-weight: 800;
-        letter-spacing: unset;
-        text-align: unset;
-
-        box-shadow: none;
-    }
-
-    span,
-    svg {
-        color: rgba(0, 0, 0, 0.75);
-    }
-
-    &.Open,
-    &.Open span,
-    &.Open svg {
-        background: var(--accent-secondary-dark);
-        color: var(--color-text-primary);
-    }
-
-    @media (min-width: 950px) {
-        display: none;
-    }
-`;
-const SummaryItemsActionClear = styled(SummaryItemsToggle)`
-    background: none;
-    color: rgba(0, 0, 0, 0.75);
-    opacity: 0;
-
-    &.Active {
-        opacity: 1;
-    }
-`;
-const SummaryItemsActions = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
-    width: calc(100vw - 3rem);
-    width: calc(100dvw - 3rem);
 `;
 const SummaryContainer = styled.div`
     z-index: 5;
 
     @media (max-width: 950px) {
-        max-width: calc(100vw - 3rem);
+        /*max-width: calc(100vw - 3rem);
         max-width: calc(100dvw - 3rem);
         position: sticky;
-        bottom: 0px;
+        bottom: -1px;*/
         transition: 150ms ease-in-out;
 
-        &.Sticky ${SummaryItems}:not(.Open) {
-            display: block;
-            overflow: auto;
-            padding-bottom: 1rem;
-        }
-
-        &.Sticky:has(${SummaryItems}.Open) {
-            position: sticky;
-            //bottom: 0px;
-        }
-
-        &.Floating,
-        &.Sticky:has(${SummaryItems}.Open) {
+        &.Floating {
             z-index: 9999999;
             width: 100vw;
             max-width: 100vw;
@@ -369,10 +235,6 @@ const SummaryContainer = styled.div`
             left: 0px;
             right: 0px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-
-            ${SummaryItems} {
-                display: block;
-            }
 
             ${SummaryContent} {
                 padding: 2rem 1.5rem 1.5rem;
@@ -393,64 +255,6 @@ const SummaryContainer = styled.div`
     }
 `;
 
-const Header = styled.tr`
-    overflow: hidden;
-    display: grid;
-    width: 100%;
-    grid-template-columns: 8rem 1fr 4rem 6rem 4rem;
-    grid-template-rows: 1fr;
-    gap: 1rem;
-    padding: 1rem 0px 0.5rem 0px;
-    text-transform: uppercase;
-
-    padding: 0.5rem 1rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
-    margin-bottom: 1rem;
-    opacity: 0.75;
-
-    @media (max-width: 950px) {
-        grid-template-columns: 8rem 1fr 5rem 6rem;
-    }
-`;
-const HeaderItem = styled.th`
-    display: block;
-    height: 100%;
-    width: 100%;
-    font-weight: 700;
-    opacity: 0.75;
-    text-align: left;
-
-    @media (max-width: 950px) {
-        height: 100%;
-        font-size: 1rem;
-        text-align: left;
-    }
-`;
-const HeaderItemImage = styled(HeaderItem)``;
-const HeaderItemQuantity = styled(HeaderItem)`
-    transform: translateX(-1rem);
-    text-align: center;
-
-    @media (min-width: 950px) {
-        transform: translateX(-1.25rem);
-    }
-`;
-const HeaderItemPrice = styled(HeaderItem)`
-    text-align: center;
-
-    @media (max-width: 950px) {
-        text-align: right;
-    }
-`;
-const HeaderItemActions = styled(HeaderItem)`
-    @media (max-width: 950px) {
-        overflow: hidden;
-        display: none;
-        width: 0px;
-    }
-`;
-
 const Recommendations = styled(ContentBlock)`
     display: block;
     width: 100%;
@@ -465,12 +269,11 @@ const RecommendationsTitle = styled.h3`
     text-transform: uppercase;
     font-size: 2.5rem;
     font-weight: 600;
+    color: var(--accent-primary);
 
     @media (max-width: 950px) {
         font-size: 2.25rem;
         font-weight: 700;
-        text-align: center;
-        color: var(--accent-primary);
     }
 `;
 const RecommendationsContent = styled(PageContent)`
@@ -512,23 +315,11 @@ const getCrossDomainLinkerParameter = () => {
     return null;
 };
 
-export const Checkout = async ({
-    data,
-    price,
-    currency = 'USD',
-    locale = Config.i18n.locales[0]
-}: {
-    data: any;
-    price: number;
-    currency?: string;
-    locale?: string;
-}) => {
-    const url = (
-        (await CheckoutApi({
-            items: data.items,
-            locale
-        })) as string
-    ).replace(Config.shopify.domain, 'checkout.sweetsideofsweden.com');
+export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: string }) => {
+    if (cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
+    else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
+
+    const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
 
     // Google Tracking
     (window as any).dataLayer?.push(
@@ -537,17 +328,20 @@ export const Checkout = async ({
         },
         {
             event: 'begin_checkout',
-            currency: currency,
-            value: price,
+            currency: cart.cost?.totalAmount?.currencyCode!,
+            value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
             ecommerce: {
-                items: data.items.map((item) => ({
-                    item_id: item.id,
-                    item_name: item.title,
-                    item_variant: item.variant_title,
-                    item_brand: item.brand,
-                    currency: currency,
-                    quantity: item.quantity,
-                    price: item.price
+                items: cart.lines.map((line: CartLine) => ({
+                    item_id: line.merchandise.id,
+                    item_name: line.merchandise.product.title,
+                    item_variant: line.merchandise.title,
+                    item_brand: line.merchandise.product.vendor,
+                    currency: line.merchandise.price.currencyCode!,
+                    quantity: line.quantity,
+                    discount:
+                        Number.parseFloat(line.merchandise.price.amount!) -
+                        Number.parseFloat(line.cost.amountPerQuantity.amount!),
+                    price: Number.parseFloat(line.merchandise.price.amount!)
                 }))
             }
         }
@@ -556,25 +350,22 @@ export const Checkout = async ({
     // Microsoft Ads tracking
     if ((window as any).uetq) {
         (window as any).uetq.push('event', 'begin_checkout', {
-            ecomm_prodid: data.items.map((item) =>
-                item.id
-                    .replaceAll('gid://shopify/Product/', '')
-                    .replaceAll('gid://shopify/ProductVariant', '')
-            ),
+            ecomm_prodid: cart.lines.map((line: CartLine) => line.merchandise.id),
             ecomm_pagetype: 'cart',
-            ecomm_totalvalue: price,
+            ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount!),
             revenue_value: 1,
-            currency: currency,
-            items: data.items.map((item) => ({
-                id: item.id,
-                quantity: item.quantity,
-                price: item.price
+            currency: cart.cost?.totalAmount?.currencyCode!,
+            items: cart.lines.map((line: CartLine) => ({
+                id: line.merchandise.id,
+                quantity: line.quantity,
+                price: Number.parseFloat(line.merchandise.price.amount!)
             }))
         });
     }
 
     const ga4 = getCrossDomainLinkerParameter();
-    window.location = `${url}${(ga4 && `&_gl=${ga4}`) || ''}` as any;
+    const finalUrl = `${url}${(ga4 && `${(url.includes('?') && '&') || '?'}_gl=${ga4}`) || ''}`;
+    window.location.href = finalUrl;
 };
 
 interface CartPageProps {
@@ -582,103 +373,45 @@ interface CartPageProps {
 }
 const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { store } = props;
-    const { outerWidth } = useWindowSize();
-    const localCart = useCart();
-    const [cart, setCart] = useState<typeof localCart | null>(null);
+    const cart = useCart();
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<any>({
-        totalItems: 0,
-        items: []
-    });
-    const [isItemListOpen, setIsItemListOpen] = useState(false);
     const router = useRouter();
-
-    useEffect(() => {
-        setCart(localCart);
-    }, []);
-
-    // SSR workaround
-    useEffect(() => {
-        if ((cart || !localCart) && data.totalItems === localCart?.totalItems)
-            return;
-
-        setData(localCart);
-    }, [localCart, cart, localCart?.items]);
-
-    // Sticky summary
-    const [isSticky, setIsSticky] = useState(false);
-    const summaryRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const cachedRef = summaryRef.current,
-            observer = new IntersectionObserver(
-                ([e]) =>
-                    setIsSticky(
-                        !(e.intersectionRatio < 1 && e.boundingClientRect.y > 0)
-                    ),
-                {
-                    threshold: [0.9, 1.0],
-                    rootMargin: `0px 0px ${
-                        (cachedRef?.offsetHeight || 0) * -1
-                    }px 0px`
-                }
-            );
-
-        observer.observe(cachedRef!);
-
-        // unmount
-        return () => {
-            observer.unobserve(cachedRef!);
-        };
-    }, []);
-
-    // Mobile
-    const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        if (!outerWidth) return;
-
-        if (outerWidth >= 950 && isMobile) setIsMobile(false);
-        else if (outerWidth <= 950 && !isMobile) setIsMobile(true);
-    }, [outerWidth]);
 
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
             id:
-                (data.totalItems > 0 && cart?.items[0].id.split('#')[0]) ||
-                '8463374614833',
+                (cart.totalQuantity > 0 && cart.lines?.[0]?.merchandise?.product?.id) ||
+                '8463374614833', // FIXME: don't hardcode this
             locale: router?.locale
         })
-    ) as any;
-
-    const currency = 'USD'; // FIXME
-    const price = data.items.reduce(
-        (previousValue, item) => previousValue + item.price * item.quantity,
-        0
     );
 
-    const freeShipping = (Number.parseFloat(data.cartTotal) || 0) > 75;
+    const freeShipping = Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > 75;
 
     useEffect(() => {
-        if (!cart) return;
+        if (!cart?.lines) return;
 
-        (window as any).dataLayer?.push({
-            ecommerce: null
-        });
-        (window as any).dataLayer?.push({
-            event: 'view_cart',
-            currency: 'USD',
-            value: price,
-            ecommerce: {
-                items: cart?.items.map((item) => ({
-                    item_id: item.id,
-                    item_name: item.title,
-                    item_variant: item.variant_title,
-                    item_brand: item.brand,
-                    currency: 'USD',
-                    quantity: item.quantity,
-                    price: item.price
-                }))
+        (window as any).dataLayer?.push(
+            {
+                ecommerce: null
+            },
+            {
+                event: 'view_cart',
+                currency: 'USD',
+                value: Number.parseFloat(cart.cost?.totalAmount?.amount || '0'),
+                ecommerce: {
+                    items: cart.lines.map((item: CartLine) => ({
+                        item_id: item.merchandise.id,
+                        item_name: item.merchandise.product.title,
+                        item_variant: item.merchandise.title,
+                        item_brand: item.merchandise.product.vendor,
+                        currency: item.merchandise.price.currencyCode,
+                        quantity: item.quantity,
+                        price: Number.parseFloat(item.merchandise.price.amount!)
+                    }))
+                }
             }
-        });
+        );
     }, [cart]);
 
     return (
@@ -686,62 +419,43 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             <NextSeo title="Cart" canonical={`https://${Config.domain}/cart`} />
 
             <PageContent>
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'cart'} />,
+                            url: '/cart/'
+                        }
+                    ]}
+                    store={store}
+                />
+
                 <PageHeader title="Cart" />
 
                 <Content>
                     <ContentWrapper>
                         <ItemsContainerWrapper>
                             <ItemsContainer>
-                                <thead>
-                                    <Header>
-                                        <HeaderItemImage>
-                                            <LanguageString id={'product'} />
-                                        </HeaderItemImage>
-                                        <HeaderItem></HeaderItem>
-                                        <HeaderItemQuantity>
-                                            <LanguageString id={'quantity'} />
-                                        </HeaderItemQuantity>
-                                        <HeaderItemPrice>
-                                            <LanguageString id={'price'} />
-                                        </HeaderItemPrice>
-                                        {!isMobile && (
-                                            <HeaderItemActions>
-                                                <LanguageString
-                                                    id={'actions'}
-                                                />
-                                            </HeaderItemActions>
-                                        )}
-                                    </Header>
-                                </thead>
-
-                                {data.items?.length >= 1 ? (
+                                {cart.lines && cart.lines.length >= 1 ? (
                                     <>
                                         <tbody>
-                                            {data.items?.map((item) => {
+                                            {cart.lines?.map((item: CartLine) => {
                                                 return (
-                                                    <CartItem
-                                                        key={`${item.id}_${item.variant_id}`}
-                                                        data={item}
-                                                        total_items={
-                                                            data.totalItems
-                                                        }
-                                                        store={store}
-                                                    />
+                                                    <CartLineProvider key={item.id} line={item}>
+                                                        <CartItem store={store} />
+                                                    </CartLineProvider>
                                                 );
                                             })}
                                         </tbody>
                                     </>
                                 ) : (
-                                    !data.items && <PageLoader />
+                                    !cart.lines && <PageLoader />
                                 )}
                             </ItemsContainer>
                         </ItemsContainerWrapper>
 
                         <FreeShippingBanner>
                             <FreeShippingBannerMeta>
-                                <FreeShippingBannerText
-                                    className={freeShipping ? 'Full' : ''}
-                                >
+                                <FreeShippingBannerText className={freeShipping ? 'Full' : ''}>
                                     <Currency
                                         prefix={'Free shipping on orders above'}
                                         price={75}
@@ -751,11 +465,10 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 </FreeShippingBannerText>
                                 <FreeShippingBannerText className="Progress">
                                     <Currency
-                                        price={
-                                            Number.parseFloat(data.cartTotal) ||
-                                            0
-                                        }
-                                        currency="USD"
+                                        price={Number.parseFloat(
+                                            cart.cost?.totalAmount?.amount || '0'
+                                        )}
+                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
                                         store={store}
                                         className="Total"
                                     />
@@ -772,13 +485,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <ProgressBar
                                     style={{
                                         width: `${
-                                            freeShipping
-                                                ? 100
-                                                : ((Number.parseFloat(
-                                                      data.cartTotal
-                                                  ) || 0) /
-                                                      75) *
-                                                  100
+                                            (freeShipping && 100) ||
+                                            ((Number.parseFloat(cart.cost?.totalAmount?.amount!) ||
+                                                0) /
+                                                75) *
+                                                100
                                         }%`
                                     }}
                                 />
@@ -786,144 +497,91 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         </FreeShippingBanner>
                     </ContentWrapper>
 
-                    <SummaryContainer
-                        ref={summaryRef}
-                        className={isSticky ? 'Sticky' : 'Floating'}
-                    >
+                    <SummaryContainer>
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
-                                <SummaryItemsActions>
-                                    <SummaryItemsToggle
-                                        className={
-                                            (isItemListOpen && 'Open') || ''
-                                        }
-                                        onClick={() =>
-                                            setIsItemListOpen(!isItemListOpen)
-                                        }
-                                    >
-                                        {(isItemListOpen && (
-                                            <FiChevronDown />
-                                        )) || <FiChevronUp />}
-                                        {cart && (
-                                            <span>
-                                                {(isItemListOpen && (
-                                                    <>Hide order summary</>
-                                                )) || (
-                                                    <>
-                                                        Show{' '}
-                                                        <b>
-                                                            {localCart?.totalItems ||
-                                                                cart?.totalItems ||
-                                                                0}
-                                                        </b>
-                                                        {(cart?.totalItems >
-                                                            1 &&
-                                                            ' items') ||
-                                                            ' item'}
-                                                    </>
-                                                )}
-                                            </span>
-                                        )}
-                                    </SummaryItemsToggle>
-                                    <SummaryItemsActionClear
-                                        disabled={(cart?.totalItems || 0) <= 0}
-                                        className={
-                                            (isItemListOpen && 'Active') || ''
-                                        }
-                                        onClick={() => {
-                                            cart?.emptyCart();
-                                        }}
-                                    >
-                                        <FiTrash />
-                                        Clear
-                                    </SummaryItemsActionClear>
-                                </SummaryItemsActions>
-                                <SummaryItems
-                                    className={(isItemListOpen && 'Open') || ''}
-                                >
-                                    {data.items?.map((line_item) => {
-                                        return (
-                                            <SummaryItem key={line_item.id}>
-                                                <SummaryItemMeta>
-                                                    <SummaryItemTitle>
-                                                        {line_item?.title}
-                                                    </SummaryItemTitle>
-                                                    <SummaryItemVendor>
-                                                        {
-                                                            line_item?.variant_title
-                                                        }
-                                                    </SummaryItemVendor>
-                                                </SummaryItemMeta>
-                                                <SummaryItemPrice>
-                                                    <span>
-                                                        {line_item?.quantity}x
-                                                    </span>
-                                                    <Currency
-                                                        price={Number.parseFloat(
-                                                            line_item?.itemTotal
-                                                        )}
-                                                        currency={
-                                                            line_item.currency
-                                                        }
-                                                        store={store}
-                                                    />
-                                                </SummaryItemPrice>
-                                            </SummaryItem>
-                                        );
-                                    })}
-                                </SummaryItems>
-
-                                <SummarySummary
-                                    className={
-                                        data.totalItems <= 0 ? 'Empty' : ''
-                                    }
-                                >
+                                <SummarySummary className={cart.totalQuantity <= 0 ? 'Empty' : ''}>
                                     <SummaryItemPrice>
+                                        {(false && cart.totalQuantity && cart.totalQuantity > 0 && (
+                                            <>
+                                                <Currency
+                                                    price={Number.parseFloat(
+                                                        cart.cost?.subtotalAmount?.amount || '0'
+                                                    )}
+                                                    currency={
+                                                        cart.cost?.subtotalAmount?.currencyCode ||
+                                                        'USD'
+                                                    }
+                                                    prefix={
+                                                        <span
+                                                            style={{
+                                                                textTransform: 'uppercase'
+                                                            }}
+                                                        >
+                                                            <LanguageString id={'subtotal'} />
+                                                        </span>
+                                                    }
+                                                    store={store}
+                                                />
+                                                <Currency
+                                                    price={Number.parseFloat(
+                                                        cart.cost?.totalTaxAmount?.amount || '0'
+                                                    )}
+                                                    currency={
+                                                        cart.cost?.totalTaxAmount?.currencyCode ||
+                                                        'USD'
+                                                    }
+                                                    prefix={
+                                                        <span
+                                                            style={{
+                                                                textTransform: 'uppercase'
+                                                            }}
+                                                        >
+                                                            <LanguageString id={'tax'} />
+                                                        </span>
+                                                    }
+                                                    store={store}
+                                                />
+                                            </>
+                                        )) ||
+                                            null}
                                         <Currency
-                                            price={Number.parseFloat(price)}
-                                            currency={currency}
+                                            className="Total"
+                                            price={Number.parseFloat(
+                                                cart.cost?.totalAmount?.amount || '0'
+                                            )}
+                                            currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
                                             prefix={
                                                 <span
                                                     style={{
-                                                        textTransform:
-                                                            'uppercase'
+                                                        textTransform: 'uppercase'
                                                     }}
                                                 >
-                                                    <LanguageString
-                                                        id={'total'}
-                                                    />
+                                                    <LanguageString id={'total'} />
                                                 </span>
                                             }
                                             store={store}
                                         />
                                     </SummaryItemPrice>
                                     <SummaryItemShipping>
-                                        {!freeShipping ? (
-                                            <LanguageString
-                                                id={'excl_shipping'}
-                                            />
-                                        ) : (
-                                            'Free shipping!'
-                                        )}
+                                        {(!freeShipping && (
+                                            <LanguageString id={'excl_shipping'} />
+                                        )) ||
+                                            'Free shipping!'}
                                     </SummaryItemShipping>
                                 </SummarySummary>
                             </div>
+
                             <div>
                                 <Button
-                                    className={isMobile ? '' : ''}
-                                    disabled={
-                                        data.items?.length <= 0 ||
-                                        !data.items ||
-                                        loading
-                                    }
+                                    className={'CheckoutButton'}
+                                    disabled={cart.totalQuantity <= 0 || !cart.lines || loading}
                                     onClick={async () => {
                                         setLoading(true);
 
                                         try {
                                             await Checkout({
-                                                data,
-                                                price,
-                                                locale: router.locale
+                                                cart
                                             });
                                         } catch (error) {
                                             Sentry.captureException(error);
@@ -941,10 +599,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         }}
                                     />
                                     <LanguageString
-                                        id={
-                                            (loading && 'loading...') ||
-                                            'begin_checkout'
-                                        }
+                                        id={(loading && 'loading...') || 'begin_checkout'}
                                     />
                                 </Button>
                             </div>
@@ -952,41 +607,44 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     </SummaryContainer>
                 </Content>
 
-                {cart && cart?.totalItems > 0 && (
+                {cart?.totalQuantity > 0 && (
                     <>
-                        {recommendations?.length > 1 ? (
+                        {(recommendations?.length && recommendations.length > 1 && (
                             <Recommendations>
-                                <RecommendationsTitle>
-                                    Recommended Products
-                                </RecommendationsTitle>
+                                <RecommendationsTitle>Recommended Products</RecommendationsTitle>
                                 <RecommendationsContent>
                                     <CollectionBlock
-                                        data={{
-                                            items: recommendations
-                                        }}
+                                        data={
+                                            {
+                                                // FIXME: this is hacky
+                                                products: {
+                                                    edges: recommendations.map((product) => ({
+                                                        node: product
+                                                    }))
+                                                }
+                                            } as Collection
+                                        }
                                         isHorizontal
                                         store={store}
                                     />
                                 </RecommendationsContent>
                             </Recommendations>
-                        ) : (
-                            <PageLoader />
-                        )}
+                        )) || <PageLoader />}
                     </>
                 )}
-
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'cart'} />,
-                            url: '/cart/'
-                        }
-                    ]}
-                    store={store}
-                />
             </PageContent>
         </Page>
     );
 };
+
+export async function getStaticProps({}) {
+    return {
+        props: {
+            analytics: {
+                pageType: 'cart'
+            }
+        }
+    };
+}
 
 export default CartPage;

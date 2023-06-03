@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { RedirectModel } from '../models/RedirectModel';
 import { gql } from '@apollo/client';
-import { newShopify } from './shopify';
+import { storefrontClient } from './shopify';
 
 export const Convertor = (
     redirects: Array<{
@@ -24,7 +24,8 @@ export const Convertor = (
 export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const res = await newShopify.query({
+            // FIXME: Handle more than 250 redirects
+            const { data, errors } = await storefrontClient.query({
                 query: gql`
                     query urlRedirects {
                         urlRedirects(first: 250) {
@@ -39,7 +40,11 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
                 `
             });
 
-            return resolve(Convertor(res?.data?.urlRedirects?.edges));
+            if (errors) return reject(new Error(errors.join('\n')));
+            if (!data?.urlRedirects)
+                return reject(new Error('404: The requested document cannot be found'));
+
+            return resolve(Convertor(data?.urlRedirects?.edges));
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);

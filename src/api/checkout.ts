@@ -23,10 +23,6 @@ export const CheckoutApi = async ({
             }));
 
             // eslint-disable-next-line no-console
-            console.log(
-                locale,
-                (locale || Config.i18n.locales[0]).split('-')[-1]
-            );
             const { data, errors } = await shopify.query({
                 query: gql`
                     mutation checkoutCreate($input: CheckoutCreateInput!) {
@@ -46,10 +42,7 @@ export const CheckoutApi = async ({
                 variables: {
                     input: {
                         buyerIdentity: {
-                            countryCode:
-                                (locale || Config.i18n.locales[0]).split('-')[
-                                    -1
-                                ] || 'US'
+                            countryCode: (locale || Config.i18n.locales[0]).split('-')[-1] || 'US'
                         },
                         lineItems: line_items
                     }

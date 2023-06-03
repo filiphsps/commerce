@@ -22,13 +22,10 @@ export const SearchApi = async (
     }>;
 }> => {
     return new Promise(async (resolve, reject) => {
-        if (!query) return reject();
+        if (!query) return reject(new Error('TODO:'));
 
         try {
-            const client = algoliasearch(
-                'K6GKG8PPW8',
-                '4b66d1e9840c871fc80eac49b6ca35fd'
-            );
+            const client = algoliasearch('K6GKG8PPW8', '4b66d1e9840c871fc80eac49b6ca35fd');
 
             const search = await client.search([
                 {

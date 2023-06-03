@@ -4,6 +4,7 @@ import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import ProductFilter from '../ProductFilter';
+import { ProductProvider } from '@shopify/hydrogen-react';
 import styled from 'styled-components';
 
 const ShopBlockWrapper = styled.div`
@@ -43,8 +44,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
                             ?.filter?.((product) => {
                                 if (
                                     !filter ||
-                                    (filter.tags.length <= 0 &&
-                                        filter.vendors.length <= 0)
+                                    (filter.tags.length <= 0 && filter.vendors.length <= 0)
                                 )
                                     return true;
 
@@ -56,9 +56,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
                                 }
 
                                 if (result && filter.vendors.length > 0) {
-                                    result = filter.vendors.includes(
-                                        product.vendor.title
-                                    );
+                                    result = filter.vendors.includes(product.vendor.title);
                                 }
 
                                 return result;
@@ -66,9 +64,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
                             .sort((a, b) => {
                                 switch (filter.sorting) {
                                     case 'abcAsc':
-                                        return a.vendor.handle.localeCompare(
-                                            b.vendor.handle
-                                        );
+                                        return a.vendor.handle.localeCompare(b.vendor.handle);
                                     case 'none':
                                     default:
                                         return null;
@@ -76,26 +72,18 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
                             })
                             .map((product) => {
                                 return (
-                                    <ProductCard
-                                        key={product?.id}
-                                        data={product || null}
-                                        handle={product?.handle}
-                                        store={store}
-                                    />
+                                    <ProductProvider key={product?.id} data={product}>
+                                        <ProductCard handle={product?.handle} store={store} />
+                                    </ProductProvider>
                                 );
                             })}
 
-                        {!products?.length && (
-                            <LanguageString id="search_no_results" />
-                        )}
+                        {!products?.length && <LanguageString id="search_no_results" />}
                     </div>
                 </div>
             )) || <Loader />}
             {products && (
-                <ProductFilter
-                    products={products}
-                    onChange={(filter) => setFilter(filter)}
-                />
+                <ProductFilter products={products} onChange={(filter) => setFilter(filter)} />
             )}
         </ShopBlockWrapper>
     );

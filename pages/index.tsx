@@ -23,9 +23,7 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
         <Page className="HomePage">
             <NextSeo
                 title={data?.page?.title}
-                description={
-                    data?.page?.description || store?.description || ''
-                }
+                description={data?.page?.description || store?.description || ''}
                 canonical={`https://${Config.domain}/`}
                 additionalMetaTags={
                     data?.page?.keywords
@@ -38,11 +36,7 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                         : []
                 }
             />
-            <Slices
-                store={store}
-                data={data?.page?.body}
-                prefetch={data?.prefetch}
-            />
+            <Slices store={store} data={data?.page?.body} prefetch={data?.prefetch} />
         </Page>
     );
 };
@@ -56,6 +50,9 @@ export async function getStaticProps({ query, locale }) {
             data: {
                 page,
                 prefetch
+            },
+            analytics: {
+                pageType: 'index'
             }
         },
         revalidate: 10

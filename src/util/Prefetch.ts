@@ -10,7 +10,7 @@ const Prefetch = (page: PageModel, query: any) => {
         shop?: any;
         vendors?: any;
     }>(async (resolve, reject) => {
-        if (!page) return reject();
+        if (!page) return reject(new Error('404: Invalid page'));
 
         const slices = page?.slices || page?.body;
         let collections = {},
@@ -24,44 +24,22 @@ const Prefetch = (page: PageModel, query: any) => {
             const type = slice?.type || slice?.slice_type;
             const handle = slice?.data?.handle || slice?.primary?.handle;
 
-            switch (type) {
-                case 'CollectionBlock':
-                case 'collection':
-                    if (handle && !process.browser) {
-                        collections[handle] = await CollectionApi(handle);
-                        if (slice?.primary?.limit > 0)
-                            collections[handle].items = collections[
-                                handle
-                            ].items.slice(0, slice?.primary?.limit);
-                    }
-                    break;
-                case 'ContentBlock':
-                    const res = await Prefetch(
-                        {
-                            slices: slice?.data?.slices
-                        } as any,
-                        query
-                    );
-
-                    collections = {
-                        ...collections,
-                        ...res?.collections
-                    };
-                    products = {
-                        ...products,
-                        ...res?.products
-                    };
-                    shop = {
-                        ...shop,
-                        ...res?.shop
-                    };
-                    break;
-                case 'ContentBlock':
-                    for (let i = 0; i < slice?.data?.items?.length; i++) {
-                        const slices = slice?.data?.items?.[i]?.slices;
+            try {
+                switch (type) {
+                    case 'CollectionBlock':
+                    case 'collection':
+                        if (handle && !process.browser) {
+                            collections[handle] = await CollectionApi(handle);
+                            if (slice?.primary?.limit > 0)
+                                collections[handle].products.edges = collections[
+                                    handle
+                                ].products.edges.slice(0, slice?.primary?.limit);
+                        }
+                        break;
+                    case 'ContentBlock':
                         const res = await Prefetch(
                             {
-                                slices
+                                slices: slice?.data?.slices
                             } as any,
                             query
                         );
@@ -78,12 +56,38 @@ const Prefetch = (page: PageModel, query: any) => {
                             ...shop,
                             ...res?.shop
                         };
-                    }
-                    break;
-                case 'shopblock':
-                    shop = (await ProductsApi()) ?? {};
-                    vendors = (await VendorsApi()) ?? {};
-                    break;
+                        break;
+                    case 'ContentBlock':
+                        for (let i = 0; i < slice?.data?.items?.length; i++) {
+                            const slices = slice?.data?.items?.[i]?.slices;
+                            const res = await Prefetch(
+                                {
+                                    slices
+                                } as any,
+                                query
+                            );
+
+                            collections = {
+                                ...collections,
+                                ...res?.collections
+                            };
+                            products = {
+                                ...products,
+                                ...res?.products
+                            };
+                            shop = {
+                                ...shop,
+                                ...res?.shop
+                            };
+                        }
+                        break;
+                    case 'shopblock':
+                        shop = (await ProductsApi()) ?? {};
+                        vendors = (await VendorsApi()) ?? {};
+                        break;
+                }
+            } catch (error) {
+                console.error(error);
             }
         }
 

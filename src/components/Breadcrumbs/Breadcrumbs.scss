@@ -1,22 +1,18 @@
 @import '../../scss/app';
 
 .Breadcrumbs {
+    overflow: hidden;
     overflow-x: auto;
-    overflow-y: hidden;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex-wrap: nowrap;
-    height: 3rem;
-    margin: 0.5rem 0rem;
+    justify-content: flex-start;
+    align-items: center;
+    height: 2rem;
+    margin-bottom: 1rem;
     transform: translateZ(0);
-    //padding: 1rem 1rem;
-    //background: #efefef;
-    border-radius: var(--block-border-radius);
 
     .Breadcrumbs-Content {
         display: flex;
-        flex-wrap: nowrap;
         justify-content: flex-start;
         align-items: center;
         padding: 0px;
@@ -34,6 +30,10 @@
             white-space: nowrap;
             opacity: 0.75;
             cursor: pointer;
+
+            @media (max-width: 950px) {
+                font-size: 1.05rem;
+            }
 
             .Link {
                 display: block;
@@ -58,7 +58,7 @@
             }
 
             &:after {
-                content: '>';
+                content: '/';
                 margin: 0px 0.5rem;
             }
         }

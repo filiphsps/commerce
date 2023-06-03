@@ -16,9 +16,7 @@ export const Convertor = (orders: any) => {
             price: order?.totalPriceV2?.amount,
             currency: order?.totalPriceV2?.currencyCode,
 
-            line_items: order?.lineItems?.edges?.map(
-                (line_item) => line_item?.node
-            )
+            line_items: order?.lineItems?.edges?.map((line_item) => line_item?.node)
         }));
 };
 
@@ -29,11 +27,7 @@ export const OrdersApi = async () => {
                 query: gql`
                     query orders($token: String!) {
                         customer(customerAccessToken: $token) {
-                            orders(
-                                first: 250
-                                sortKey: PROCESSED_AT
-                                reverse: true
-                            ) {
+                            orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {
                                 edges {
                                     node {
                                         id
@@ -59,7 +53,7 @@ export const OrdersApi = async () => {
 
             if (errors) throw errors;
 
-            if (!data?.customer) return reject();
+            if (!data?.customer) return reject(new Error('TODO:'));
 
             return resolve(Convertor(data?.customer?.orders?.edges));
         } catch (error) {
@@ -114,13 +108,11 @@ export const OrderApi = async (id: string) => {
 
             if (errors) throw errors;
 
-            if (!data?.customer) return reject();
+            if (!data?.customer) return reject(new Error('TODO:'));
 
             // HACK
             return resolve(
-                Convertor(data?.customer?.orders?.edges)?.filter(
-                    (a) => a?.name === `#${id}`
-                )[0]
+                Convertor(data?.customer?.orders?.edges)?.filter((a) => a?.name === `#${id}`)[0]
             );
         } catch (err) {
             console.error(err);
