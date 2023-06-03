@@ -62,7 +62,7 @@ class App extends Document {
                 <body itemScope itemType="http://schema.org/WebPage">
                     <Main />
                     <NextScript />
-                    {Config.GTM && (
+                    {process.env.NODE_ENV !== 'development' && Config.GTM && (
                         <Script id="gtm" strategy="lazyOnload">
                             {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

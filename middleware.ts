@@ -32,10 +32,11 @@ export let middleware = (request) => {
     return undefined;
 };
 
-/*export const config = {
+export const config = {
     matcher: [
-        `/((?!api|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next|__default|${(
+        /*`/((?!api|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next|__default|${(
             Config?.i18n?.locales || ['en-US']
-        ).join('|')}).*)/`
+        ).join('|')}).*)/`*/
+        '/((?!api|_next/static|_next/image|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)'
     ]
-};*/
+};

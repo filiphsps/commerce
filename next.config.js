@@ -1,10 +1,7 @@
 import manifest from './package.json' assert { type: 'json' };
 import { i18n } from './next-i18next.config.js';
 import * as child_process from 'child_process';
-import * as nextInterceptStdout from 'next-intercept-stdout';
 import { withSentryConfig } from '@sentry/nextjs';
-
-const withInterceptStdout = nextInterceptStdout.default;
 
 const git_sha = child_process
     .execSync('git rev-parse HEAD', {
@@ -13,12 +10,12 @@ const git_sha = child_process
     })
     .replace(/\n/, '');
 
+/** @type {import('next').NextConfig} */
 let config = {
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    //largePageDataBytes: 256 * 1000,
     i18n,
 
     images: {
@@ -29,7 +26,7 @@ let config = {
     },
     env: {
         // Settings
-        DOMAIN: process.env.DOMAIN,
+        DOMAIN: process.env.DOMAIN || 'www.sweetsideofsweden.com',
         SHOPIFY_DOMAIN:
             process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
         SHOPIFY_TOKEN:
@@ -77,18 +74,7 @@ let config = {
 };
 
 export default withSentryConfig(
-    typeof withInterceptStdout !== 'function'
-        ? config
-        : withInterceptStdout(config, (text) => {
-              if (
-                  text.includes('Do not add stylesheets') ||
-                  text.includes('The Fetch API is') ||
-                  text.includes('Debugger attached.')
-              )
-                  return '';
-
-              return text;
-          }),
+    config,
     {
         // For all available options, see:
         // https://github.com/getsentry/sentry-webpack-plugin#options

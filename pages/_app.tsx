@@ -244,7 +244,9 @@ const StoreApp = withStore(
                         />
                     </PageProvider>
                 </CartProvider>
-                {userId && sessionId ? (
+                {process.env.NODE_ENV !== 'development' &&
+                userId &&
+                sessionId ? (
                     <ShopifyAnalyticsProvider
                         shopId={76188483889}
                         route={(router.pathname.includes('/shop')
