@@ -31,7 +31,7 @@
         "@apollo/client": "3.7.15",
         "@prismicio/client": "7.0.1",
         "@prismicio/helpers": "2.3.9",
-        "@sentry/nextjs": "7.53.1",
+        "@sentry/nextjs": "7.54.0",
         "accept-language": "3.0.18",
         "algoliasearch": "4.17.1",
         "axios": "1.4.0",
