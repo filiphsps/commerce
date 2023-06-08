@@ -33,7 +33,7 @@
         "@prismicio/helpers": "2.3.9",
         "@sentry/nextjs": "7.54.0",
         "accept-language": "3.0.18",
-        "algoliasearch": "4.17.1",
+        "algoliasearch": "4.17.2",
         "axios": "1.4.0",
         "color": "4.2.3",
         "cookies-next": "2.1.1",
