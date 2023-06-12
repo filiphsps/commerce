@@ -36,7 +36,7 @@
         "algoliasearch": "4.17.2",
         "axios": "1.4.0",
         "color": "4.2.3",
-        "cookies-next": "2.1.1",
+        "cookies-next": "2.1.2",
         "cross-env": "7.0.3",
         "destyle.css": "4.0.0",
         "easy-currencies": "1.7.0",
