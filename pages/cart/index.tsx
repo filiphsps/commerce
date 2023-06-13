@@ -409,7 +409,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         item_brand: item.merchandise.product.vendor,
                         currency: item.merchandise.price.currencyCode,
                         quantity: item.quantity,
-                        price: Number.parseFloat(item.merchandise.price.amount!)
+                        price: Number.parseFloat(item.merchandise.price?.amount! || '0')
                     }))
                 }
             }
@@ -488,7 +488,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     style={{
                                         width: `${
                                             (freeShipping && 100) ||
-                                            ((Number.parseFloat(cart.cost?.totalAmount?.amount!) ||
+                                            ((Number.parseFloat(cart.cost?.totalAmount?.amount! || '0') ||
                                                 0) /
                                                 75) *
                                                 100
