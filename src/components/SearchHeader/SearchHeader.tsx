@@ -167,7 +167,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                         <SectionLabel>Products</SectionLabel>
                         {data ? (
                             <Products>
-                                {data?.products?.map((product) => (
+                                {data?.products?.map?.((product) => (
                                     <Link
                                         key={product.id}
                                         href={`/products/${product.handle}`}

@@ -308,6 +308,7 @@ const CartPopupContent = styled.div`
 `;
 
 const Menu = styled.div`
+    z-index: 9999;
     overflow: hidden;
     position: absolute;
     top: 6rem;
