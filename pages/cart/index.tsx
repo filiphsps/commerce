@@ -321,47 +321,49 @@ export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: strin
 
     const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
 
-    // Google Tracking
-    (window as any).dataLayer?.push(
-        {
-            ecommerce: null
-        },
-        {
-            event: 'begin_checkout',
-            currency: cart.cost?.totalAmount?.currencyCode!,
-            value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-            ecommerce: {
-                items: cart.lines.map((line: CartLine) => ({
-                    item_id: line.merchandise.id,
-                    item_name: line.merchandise.product.title,
-                    item_variant: line.merchandise.title,
-                    item_brand: line.merchandise.product.vendor,
-                    currency: line.merchandise.price.currencyCode!,
-                    quantity: line.quantity,
-                    discount:
-                        Number.parseFloat(line.merchandise.price.amount!) -
-                        Number.parseFloat(line.cost.amountPerQuantity.amount!),
-                    price: Number.parseFloat(line.merchandise.price.amount!)
-                }))
+    try {
+        // Google Tracking
+        (window as any).dataLayer?.push(
+            {
+                ecommerce: null
+            },
+            {
+                event: 'begin_checkout',
+                currency: cart.cost?.totalAmount?.currencyCode!,
+                value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
+                ecommerce: {
+                    items: cart.lines.map((line: CartLine) => ({
+                        item_id: line.merchandise.id,
+                        item_name: line.merchandise.product.title,
+                        item_variant: line.merchandise.title,
+                        item_brand: line.merchandise.product.vendor,
+                        currency: line.merchandise.price.currencyCode!,
+                        quantity: line.quantity,
+                        discount:
+                            Number.parseFloat(line.merchandise.price?.amount! || '0') -
+                            Number.parseFloat(line.cost.amountPerQuantity?.amount! || '0'),
+                        price: Number.parseFloat(line.merchandise.price?.amount! || '0')
+                    }))
+                }
             }
-        }
-    );
+        );
 
-    // Microsoft Ads tracking
-    if ((window as any).uetq) {
-        (window as any).uetq.push('event', 'begin_checkout', {
-            ecomm_prodid: cart.lines.map((line: CartLine) => line.merchandise.id),
-            ecomm_pagetype: 'cart',
-            ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-            revenue_value: 1,
-            currency: cart.cost?.totalAmount?.currencyCode!,
-            items: cart.lines.map((line: CartLine) => ({
-                id: line.merchandise.id,
-                quantity: line.quantity,
-                price: Number.parseFloat(line.merchandise.price.amount!)
-            }))
-        });
-    }
+        // Microsoft Ads tracking
+        if ((window as any).uetq) {
+            (window as any).uetq.push('event', 'begin_checkout', {
+                ecomm_prodid: cart.lines.map((line: CartLine) => line.merchandise.id),
+                ecomm_pagetype: 'cart',
+                ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
+                revenue_value: 1,
+                currency: cart.cost?.totalAmount?.currencyCode!,
+                items: cart.lines.map((line: CartLine) => ({
+                    id: line.merchandise.id,
+                    quantity: line.quantity,
+                    price: Number.parseFloat(line.merchandise.price.amount! || '0')
+                }))
+            });
+        }
+    } catch { }
 
     const ga4 = getCrossDomainLinkerParameter();
     const finalUrl = `${url}${(ga4 && `${(url.includes('?') && '&') || '?'}_gl=${ga4}`) || ''}`;
