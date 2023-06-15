@@ -1,0 +1,42 @@
+{
+    "id": "collection",
+    "type": "SharedSlice",
+    "name": "Collection",
+    "description": "Collection",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "handle": { "type": "Text", "config": { "label": "Handle", "placeholder": "" } },
+                "limit": {
+                    "type": "Number",
+                    "config": { "label": "Item Limit", "placeholder": "16" }
+                },
+                "direction": {
+                    "type": "Select",
+                    "config": {
+                        "label": "Direction",
+                        "placeholder": "",
+                        "options": ["horizontal", "vertical"],
+                        "default_value": "horizontal"
+                    }
+                },
+                "hide_title": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Hide Title",
+                        "placeholder_false": "Show",
+                        "placeholder_true": "Hide",
+                        "default_value": false
+                    }
+                }
+            },
+            "items": {}
+        }
+    ]
+}

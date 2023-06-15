@@ -19,7 +19,7 @@ let config = {
     i18n,
 
     images: {
-        domains: ['cdn.shopify.com', 'images.prismic.io']
+        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com']
     },
     compiler: {
         styledComponents: {

@@ -1,9 +1,11 @@
 import { CollectionApi } from '../api/collection';
-import { PageModel } from '../models/PageModel';
-import { ProductsApi } from '../api/product';
-import { VendorsApi } from '../api/vendor';
+import { Config } from './Config';
+import { CustomPageDocument } from '../../prismicio-types';
 
-const Prefetch = (page: PageModel, query: any) => {
+const Prefetch = (page: CustomPageDocument<string>, query: any, locale: string) => {
+    if (locale === 'default')
+        locale = Config.i18n.locales[1];
+    
     return new Promise<{
         collections?: any;
         products?: any;
@@ -12,7 +14,7 @@ const Prefetch = (page: PageModel, query: any) => {
     }>(async (resolve, reject) => {
         if (!page) return reject(new Error('404: Invalid page'));
 
-        const slices = page?.slices || page?.body;
+        const slices = page?.data.slices;
         let collections = {},
             products = {},
             shop = {},
@@ -21,22 +23,21 @@ const Prefetch = (page: PageModel, query: any) => {
         // FIXME: support nested components
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
-            const type = slice?.type || slice?.slice_type;
-            const handle = slice?.data?.handle || slice?.primary?.handle;
+            const type = slice?.slice_type;
+            const handle = (slice.primary as any).handle;
 
             try {
                 switch (type) {
-                    case 'CollectionBlock':
                     case 'collection':
                         if (handle && !process.browser) {
-                            collections[handle] = await CollectionApi(handle);
-                            if (slice?.primary?.limit > 0)
+                            collections[handle] = await CollectionApi({ handle, locale });
+                            if (slice.primary.limit && slice.primary.limit > 0)
                                 collections[handle].products.edges = collections[
                                     handle
                                 ].products.edges.slice(0, slice?.primary?.limit);
                         }
                         break;
-                    case 'ContentBlock':
+                    /*case 'ContentBlock':
                         const res = await Prefetch(
                             {
                                 slices: slice?.data?.slices
@@ -84,7 +85,7 @@ const Prefetch = (page: PageModel, query: any) => {
                     case 'shopblock':
                         shop = (await ProductsApi()) ?? {};
                         vendors = (await VendorsApi()) ?? {};
-                        break;
+                        break;*/
                 }
             } catch (error) {
                 console.error(error);

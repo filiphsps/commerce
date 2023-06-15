@@ -43,8 +43,8 @@ const SubTitle = styled.h3`
 `;
 
 interface PageHeaderProps {
-    title: string | JSX.Element;
-    subtitle?: string | JSX.Element;
+    title?: string | JSX.Element | null;
+    subtitle?: string | JSX.Element | null;
     reverse?: boolean;
     plainTitle?: boolean;
     noMargin?: boolean;

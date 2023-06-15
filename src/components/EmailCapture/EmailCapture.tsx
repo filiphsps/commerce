@@ -13,11 +13,12 @@ const Container = styled.div`
     align-items: center;
     min-height: 12rem;
     padding: 2rem 0px;
+    margin-top: 1rem;
     background: var(--accent-secondary-light);
 `;
 const EmailCaptureContent = styled.div`
     display: grid;
-    grid-template-columns 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: 2rem;
     max-width: 100%;
     width: 1465px;

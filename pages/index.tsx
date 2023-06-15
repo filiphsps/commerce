@@ -1,56 +1,61 @@
 import React, { FunctionComponent } from 'react';
 
 import { Config } from '../src/util/Config';
+import { CustomPageDocument } from '../prismicio-types';
 import { NextSeo } from 'next-seo';
 import Page from '../src/components/Page';
-import { PageApi } from '../src/api/page';
-import type { PageModel } from '../src/models/PageModel';
 import { Prefetch } from '../src/util/Prefetch';
-import Slices from '../src/components/Slices';
+import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
+import { asText } from '@prismicio/client';
+import { components } from '../slices';
+import { createClient } from '../prismicio';
 
 interface HomePageProps {
     store: StoreModel;
-    data: {
-        page: PageModel;
-        prefetch: any;
-    };
+    prefetch: any;
+    page: CustomPageDocument<string>;
 }
 const HomePage: FunctionComponent<HomePageProps> = (props) => {
-    const { store, data } = props;
+    const { store, page, prefetch } = props;
 
     return (
         <Page className="HomePage">
             <NextSeo
-                title={data?.page?.title}
-                description={data?.page?.description || store?.description || ''}
+                title={page.data.meta_title || ''}
+                description={asText(page.data.meta_description) || store?.description || ''}
                 canonical={`https://${Config.domain}/`}
                 additionalMetaTags={
-                    data?.page?.keywords
-                        ? [
-                              {
-                                  property: 'keywords',
-                                  content: data?.page?.keywords
-                              }
-                          ]
-                        : []
+                    page.data.keywords && [
+                            {
+                                property: 'keywords',
+                                content: page.data.keywords
+                            }
+                        ]
+                    || []
                 }
             />
-            <Slices store={store} data={data?.page?.body} prefetch={data?.prefetch} />
+            <SliceZone slices={page.data.slices} components={components} context={{ prefetch, store }} />
         </Page>
     );
 };
 
-export async function getStaticProps({ query, locale }) {
-    const page = await PageApi('home', locale);
-    const prefetch = page && (await Prefetch(page, query));
+export async function getStaticProps({ locale, query, previewData }) {
+    const client = createClient({ previewData });
+    let page: any = null;
+    try {
+        page = await client.getByUID('custom_page', 'homepage', {
+            lang: locale,
+        });
+    } catch {
+        page = await client.getByUID('custom_page', 'homepage');
+    }
+    const prefetch = page && (await Prefetch(page, query, locale));
 
     return {
         props: {
-            data: {
-                page,
-                prefetch
-            },
+            page,
+            prefetch,
             analytics: {
                 pageType: 'index'
             }

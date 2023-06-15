@@ -47,7 +47,7 @@ const FooterContainer = styled.footer`
     width: 100%;
     background: var(--accent-primary-dark);
     color: var(--color-text-primary);
-    padding-top: 1em;
+    padding-top: 1rem;
 
     a {
         transition: 150ms ease-in-out;
