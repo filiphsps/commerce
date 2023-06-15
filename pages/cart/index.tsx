@@ -316,7 +316,7 @@ const getCrossDomainLinkerParameter = () => {
 };
 
 export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: string }) => {
-    if (cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
+    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
     const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
