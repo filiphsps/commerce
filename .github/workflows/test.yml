@@ -3,21 +3,15 @@ on: [push]
 
 jobs:
     test:
-        runs-on: buildjet-2vcpu-ubuntu-2204
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: buildjet/setup-node@v3
+            - uses: actions/setup-node@v3
               with:
                   node-version: 18
-            - name: Download dependencies
-              if: steps.npm-cache.outputs.cache-hit != 'true'
+            - name: 📦 Download dependencies
               run: npm ci
-            - name: Build
+            - name: 🛠️ Build
               run: npm run build
-            - name: Test
+            - name: 🧪 Test
               run: npm run test
-            - name: Submit coverage to codacy
-              uses: codacy/codacy-coverage-reporter-action@v1
-              with:
-                  project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-                  coverage-reports: coverage/lcov.info
