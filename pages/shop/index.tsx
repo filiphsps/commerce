@@ -4,13 +4,12 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import React, { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
+import { CustomPageDocument } from '../../prismicio-types';
 import ErrorPage from 'next/error';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
-import { PageApi } from '../../src/api/page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
@@ -18,6 +17,8 @@ import { ProductsPaginationApi } from '../../src/api/product';
 import { StoreModel } from '../../src/models/StoreModel';
 import { VendorModel } from '../../src/models/VendorModel';
 import { VendorsApi } from '../../src/api/vendor';
+import { asText } from '@prismicio/client';
+import { createClient } from '../../prismicio';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -166,7 +167,7 @@ const PaginationAction = styled.div`
 interface ShopPageProps {
     store: StoreModel;
     vendors: VendorModel[];
-    page: any;
+    page: CustomPageDocument<string>;
     data: any;
 }
 const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
@@ -199,14 +200,14 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     return (
         <Page className="ShopPage">
             <NextSeo
-                title={props.page?.title || 'Shop'}
-                description={props.page?.description || ''}
+                title={props.page?.data.meta_title ||props.page?.data.title || 'Shop'}
+                description={asText(props.page.data.meta_description) || props.page.data.description || ''}
                 canonical={`https://${Config.domain}/shop/`}
                 additionalMetaTags={
-                    (props.page?.keywords && [
+                    (props.page?.data.keywords && [
                         {
                             property: 'keywords',
-                            content: props.page?.keywords
+                            content: props.page?.data.keywords
                         }
                     ]) ||
                     []
@@ -217,7 +218,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 <Breadcrumbs
                     pages={[
                         {
-                            title: props.page?.title || 'Shop',
+                            title: props.page?.data.title || 'Shop',
                             url: `/shop`
                         }
                     ]}
@@ -226,8 +227,8 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 <PageHeader title={(data as any)?.title} subtitle={(data as any)?.description} />
 
                 <PageHeader
-                    title={props.page?.title || 'Shop'}
-                    subtitle={props.page?.description}
+                    title={props.page?.data.title || props.page?.data.meta_title || 'Shop'}
+                    subtitle={props.page.data.description || asText(props.page.data.meta_description) /* TODO: Support html */}
                 />
 
                 <Container>
@@ -376,7 +377,9 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     );
 };
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, previewData }) {
+    const client = createClient({ previewData });
+    
     let page: any = null;
     let data: any = null;
     let vendors: any = null;
@@ -399,7 +402,13 @@ export async function getStaticProps({ locale }) {
     }
 
     try {
-        page = ((await PageApi('shop', locale)) as any) || null;
+        try {
+            page = await client.getByUID('custom_page', 'shop', {
+                lang: locale,
+            });
+        } catch {
+            page = await client.getByUID('custom_page', 'shop');
+        }
     } catch (error) {
         Sentry.captureException(error);
         if (error) errors.push(error);

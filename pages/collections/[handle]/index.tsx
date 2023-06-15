@@ -137,7 +137,7 @@ export async function getStaticProps({ params, locale }) {
     let vendors;
 
     try {
-        collection = await CollectionApi(handle);
+        collection = await CollectionApi({ handle, locale });
     } catch (error) {
         Sentry.captureException(error);
     }

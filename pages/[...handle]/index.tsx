@@ -1,29 +1,32 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { PageApi, PagesApi } from '../../src/api/page';
 import React, { FunctionComponent } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
+import { CustomPageDocument } from '../../prismicio-types';
 import Error from 'next/error';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
-import type { PageModel } from '../../src/models/PageModel';
+import { PagesApi } from '../../src/api/page';
 import { Prefetch } from '../../src/util/Prefetch';
-import Slices from '../../src/components/Slices';
+import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
+import { asText } from '@prismicio/client';
+import { components } from '../../slices';
+import { createClient } from '../../prismicio';
 import { useRouter } from 'next/router';
 
 interface CustomPageProps {
     store: StoreModel;
-    page: PageModel;
     prefetch: any;
+    page: CustomPageDocument<string>;
     error?: string;
 }
-const CustomPage: FunctionComponent<CustomPageProps> = ({ store, page, prefetch, error }) => {
+const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page, error }) => {
     const router = useRouter();
 
     if (error || !page) return <Error statusCode={500} title={error} />;
@@ -31,17 +34,17 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, page, prefetch,
     return (
         <Page className={`CustomPage CustomPage-${page?.type}`}>
             <NextSeo
-                title={page?.title}
-                description={page?.description || ''}
+                title={page.data.meta_title || page.data.title || ''}
+                description={asText(page.data.meta_description) || page.data.description || ''}
                 canonical={`https://${Config.domain}${router.asPath}`}
                 additionalMetaTags={
-                    (page?.keywords && [
-                        {
-                            property: 'keywords',
-                            content: page?.keywords
-                        }
-                    ]) ||
-                    []
+                    page.data.keywords && [
+                            {
+                                property: 'keywords',
+                                content: page.data.keywords
+                            }
+                        ]
+                    || []
                 }
             />
 
@@ -55,9 +58,9 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, page, prefetch,
                     })}
                     store={store}
                 />
-                <PageHeader title={page?.title} subtitle={page?.description} />
+                <PageHeader title={page.data.title} subtitle={page.data.description} />
             </PageContent>
-            <Slices store={store} data={page?.slices || page?.body} prefetch={prefetch} />
+            <SliceZone slices={page.data.slices} components={components} context={{ prefetch, store }} />
         </Page>
     );
 };
@@ -78,15 +81,23 @@ export async function getStaticPaths({ locales }) {
             ])
             .flat()
             .filter((a) => a?.params?.handle)
-            .filter((a) => a.params.handle != 'home' && a.params.handle != 'shop')
+            .filter((a) => a.params.handle != 'homepage' && a.params.handle != 'shop')
     ];
     return { paths, fallback: true };
 }
 
-export async function getStaticProps({ params, locale }) {
+export async function getStaticProps({ params, locale, previewData }) {
     try {
-        const page = ((await PageApi(params?.handle?.join('/'), locale)) as any) || null;
-        const prefetch = (page && (await Prefetch(page, params))) || null;
+        const client = createClient({ previewData });
+        let page: any = null;
+        try {
+            page = await client.getByUID('custom_page', params?.handle?.join('/'), {
+                lang: locale,
+            });
+        } catch {
+            page = await client.getByUID('custom_page', params?.handle?.join('/'));
+        }
+        const prefetch = (page && (await Prefetch(page, params, locale))) || null;
 
         return {
             props: {
@@ -100,7 +111,7 @@ export async function getStaticProps({ params, locale }) {
             revalidate: 10
         };
     } catch (error) {
-        if (error.message?.includes('404')) {
+        if (error.message?.includes('No documents')) {
             return {
                 notFound: true
             };

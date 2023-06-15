@@ -19,9 +19,11 @@ import { Config } from '../src/util/Config';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import PageProvider from '../src/components/PageProvider';
+import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
+import prismicConfig from '../slicemachine.config.json';
 import useSWR from 'swr';
 import { withStore } from 'react-context-hook';
 
@@ -211,12 +213,14 @@ const StoreApp = withStore(
                         <PageProvider store={store}>
                             <Component
                                 key={router.asPath}
-                                {...{ ...pageProps, ...analytics }}
+                                {...pageProps}
+                                { ...analytics}
                                 store={store}
                             />
                         </PageProvider>
                     </CartProvider>
                 </ShopifyProvider>
+                <PrismicPreview repositoryName={prismicConfig.repositoryName} />
             </>
         );
     },

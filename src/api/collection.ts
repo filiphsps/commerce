@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { Collection, CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
-import { storefrontClient } from './shopify';
 
-import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionModel } from '../models/CollectionModel';
+import { Config } from '../util/Config';
 import { gql } from '@apollo/client';
+import { storefrontClient } from './shopify';
 
 export const COLLECTION_FRAGMENT = `
     id
@@ -70,15 +71,30 @@ export const Convertor = (collection: any): CollectionModel | null => {
     return res as any as CollectionModel;
 };
 
-export const CollectionApi = async (handle: string): Promise<Collection> => {
+export const CollectionApi = async ({
+    handle,
+    locale
+}: {
+    handle: string;
+    locale?: string;
+}): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
+        if (!handle) return reject(new Error('Invalid handle'));
+
+        const country = (
+            locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+        ).toUpperCase() as CountryCode;
+        const language = (
+            locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+        ).toUpperCase() as LanguageCode;
+        
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
                     fragment collection on Collection {
                         ${COLLECTION_FRAGMENT}
                     }
-                    query collection($handle: String!) {
+                    query collection($handle: String!) @inContext(language: ${language}, country: ${country}) {
                         collectionByHandle(handle: $handle) {
                             ...collection
                         }

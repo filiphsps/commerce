@@ -1,0 +1,16 @@
+{
+    "id": "vendors",
+    "type": "SharedSlice",
+    "name": "Vendors",
+    "description": "Vendors",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": ""
+        }
+    ]
+}

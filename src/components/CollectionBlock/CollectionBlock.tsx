@@ -1,7 +1,7 @@
-import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import React, { FunctionComponent, useRef } from 'react';
 
+import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '../../api/collection';
 import LanguageString from '../LanguageString';
 import Link from '../Link';
@@ -10,6 +10,7 @@ import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const SubTitle = styled.div`
@@ -70,9 +71,11 @@ interface CollectionBlockProps {
     store: StoreModel;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
+    const router = useRouter();
+
     const { data } = useSWR(
         props.handle ? [`${props.handle}`] : null,
-        ([url]) => CollectionApi(url),
+        ([url]) => CollectionApi({ handle: url, locale: router.locale }),
         {
             fallbackData: props?.data
         }

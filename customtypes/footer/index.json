@@ -1,0 +1,70 @@
+{
+    "id": "footer",
+    "label": "Legacy Footer",
+    "format": "custom",
+    "repeatable": false,
+    "status": true,
+    "json": {
+        "Main": {
+            "address": {
+                "type": "StructuredText",
+                "config": {
+                    "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,embed,list-item,o-list-item,rtl",
+                    "label": "Address"
+                }
+            },
+            "show_language_selector": {
+                "type": "Boolean",
+                "config": {
+                    "default_value": false,
+                    "label": "Show Language Selector"
+                }
+            },
+            "show_currency_selector": {
+                "type": "Boolean",
+                "config": {
+                    "default_value": false,
+                    "label": "Show Currency Selector"
+                }
+            },
+            "body": {
+                "type": "Slices",
+                "fieldset": "Slice zone",
+                "config": {
+                    "labels": null,
+                    "choices": {
+                        "block": {
+                            "type": "Slice",
+                            "fieldset": "Block",
+                            "description": "Block",
+                            "icon": "dehaze",
+                            "display": "list",
+                            "non-repeat": {
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                }
+                            },
+                            "repeat": {
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                },
+                                "handle": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Handle"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

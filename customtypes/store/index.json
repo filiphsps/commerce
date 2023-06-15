@@ -1,0 +1,93 @@
+{
+    "id": "store",
+    "label": "Store",
+    "format": "custom",
+    "repeatable": false,
+    "status": true,
+    "json": {
+        "Main": {
+            "store_name": {
+                "type": "Text",
+                "config": {
+                    "label": "Store name"
+                }
+            },
+            "logo": {
+                "type": "Text",
+                "config": {
+                    "label": "Logo"
+                }
+            },
+            "favicon": {
+                "type": "Text",
+                "config": {
+                    "label": "Favicon"
+                }
+            },
+            "primary": {
+                "type": "Color",
+                "config": {
+                    "label": "Primary"
+                }
+            },
+            "secondary": {
+                "type": "Color",
+                "config": {
+                    "label": "Secondary"
+                }
+            },
+            "primary_text_color": {
+                "type": "Color",
+                "config": {
+                    "label": "Primary Text Color"
+                }
+            },
+            "border_radius": {
+                "type": "Text",
+                "config": {
+                    "label": "Corner radius"
+                }
+            },
+            "currencies": {
+                "type": "Group",
+                "config": {
+                    "fields": {
+                        "currency": {
+                            "type": "Text",
+                            "config": {
+                                "label": "currency"
+                            }
+                        }
+                    },
+                    "label": "Currencies"
+                }
+            },
+            "social": {
+                "type": "Group",
+                "config": {
+                    "fields": {
+                        "name": {
+                            "type": "Text",
+                            "config": {
+                                "label": "Name"
+                            }
+                        },
+                        "url": {
+                            "type": "Text",
+                            "config": {
+                                "label": "Link"
+                            }
+                        },
+                        "handle": {
+                            "type": "Text",
+                            "config": {
+                                "label": "Handle"
+                            }
+                        }
+                    },
+                    "label": "Social"
+                }
+            }
+        }
+    }
+}
