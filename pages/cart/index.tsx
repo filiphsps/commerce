@@ -382,7 +382,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
             id:
-                (cart.totalQuantity > 0 && cart.lines?.[0]?.merchandise?.product?.id) ||
+                (cart.totalQuantity && cart.totalQuantity > 0 && cart.lines?.[0]?.merchandise?.product?.id) ||
                 '8463374614833', // FIXME: don't hardcode this
             locale: router?.locale
         })
@@ -577,7 +577,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             <div>
                                 <Button
                                     className={'CheckoutButton'}
-                                    disabled={cart.totalQuantity <= 0 || !cart.lines || loading}
+                                    disabled={!cart.totalQuantity && cart.totalQuantity <= 0 || !cart.lines || loading}
                                     onClick={async () => {
                                         setLoading(true);
 
