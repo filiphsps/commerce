@@ -504,49 +504,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             <div className="CartPage-Content-Total-Content">
                                 <SummarySummary className={!cart?.totalQuantity || cart.totalQuantity <= 0 ? 'Empty' : ''}>
                                     <SummaryItemPrice>
-                                        {(false && cart.totalQuantity && cart.totalQuantity > 0 && (
-                                            <>
-                                                <Currency
-                                                    price={Number.parseFloat(
-                                                        cart.cost?.subtotalAmount?.amount || '0'
-                                                    )}
-                                                    currency={
-                                                        cart.cost?.subtotalAmount?.currencyCode ||
-                                                        'USD'
-                                                    }
-                                                    prefix={
-                                                        <span
-                                                            style={{
-                                                                textTransform: 'uppercase'
-                                                            }}
-                                                        >
-                                                            <LanguageString id={'subtotal'} />
-                                                        </span>
-                                                    }
-                                                    store={store}
-                                                />
-                                                <Currency
-                                                    price={Number.parseFloat(
-                                                        cart.cost?.totalTaxAmount?.amount || '0'
-                                                    )}
-                                                    currency={
-                                                        cart.cost?.totalTaxAmount?.currencyCode ||
-                                                        'USD'
-                                                    }
-                                                    prefix={
-                                                        <span
-                                                            style={{
-                                                                textTransform: 'uppercase'
-                                                            }}
-                                                        >
-                                                            <LanguageString id={'tax'} />
-                                                        </span>
-                                                    }
-                                                    store={store}
-                                                />
-                                            </>
-                                        )) ||
-                                            null}
                                         <Currency
                                             className="Total"
                                             price={Number.parseFloat(

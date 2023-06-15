@@ -15,7 +15,7 @@ import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import PageHeader from '../../../src/components/PageHeader';
 import { StoreModel } from '../../../src/models/StoreModel';
-import Vendors from '../../../src/components/Slices/components/Vendors';
+import Vendors from '../../../src/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
