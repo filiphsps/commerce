@@ -502,7 +502,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     <SummaryContainer>
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
-                                <SummarySummary className={cart.totalQuantity <= 0 ? 'Empty' : ''}>
+                                <SummarySummary className={(cart.totalQuantity && cart.totalQuantity) <= 0 ? 'Empty' : ''}>
                                     <SummaryItemPrice>
                                         {(false && cart.totalQuantity && cart.totalQuantity > 0 && (
                                             <>
