@@ -44,7 +44,7 @@
         "graphql": "16.6.0",
         "iso-country-currency": "0.7.2",
         "next": "13.4.5",
-        "next-i18next": "13.3.0",
+        "next-i18next": "14.0.0",
         "next-seo": "6.0.0",
         "node-html-parser": "6.1.5",
         "nprogress": "0.2.0",
