@@ -1,6 +1,6 @@
 {
     "id": "head",
-    "label": "Legacy Header",
+    "label": "Header",
     "format": "custom",
     "repeatable": false,
     "status": true,

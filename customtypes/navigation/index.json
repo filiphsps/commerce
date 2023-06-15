@@ -1,6 +1,6 @@
 {
     "id": "navigation",
-    "label": "Legacy Navigation",
+    "label": "Navigation",
     "format": "custom",
     "repeatable": false,
     "status": true,
@@ -8,11 +8,8 @@
         "Main": {
             "body": {
                 "type": "Slices",
-                "fieldset": "Slice zone",
+                "fieldset": "Slice Zone",
                 "config": {
-                    "labels": {
-                        "link": []
-                    },
                     "choices": {
                         "link": {
                             "type": "Slice",
@@ -21,38 +18,16 @@
                             "icon": "apps",
                             "display": "list",
                             "non-repeat": {
-                                "title": {
-                                    "type": "Text",
-                                    "config": {
-                                        "label": "Title"
-                                    }
-                                },
-                                "handle": {
-                                    "type": "Text",
-                                    "config": {
-                                        "label": "Handle"
-                                    }
-                                }
+                                "title": { "type": "Text", "config": { "label": "Title" } },
+                                "handle": { "type": "Text", "config": { "label": "Handle" } }
                             },
                             "repeat": {
-                                "title": {
-                                    "type": "Text",
-                                    "config": {
-                                        "label": "Title"
-                                    }
-                                },
+                                "title": { "type": "Text", "config": { "label": "Title" } },
                                 "description": {
                                     "type": "Text",
-                                    "config": {
-                                        "label": "Description"
-                                    }
+                                    "config": { "label": "Description" }
                                 },
-                                "handle": {
-                                    "type": "Text",
-                                    "config": {
-                                        "label": "Handle"
-                                    }
-                                }
+                                "handle": { "type": "Text", "config": { "label": "Handle" } }
                             }
                         }
                     }

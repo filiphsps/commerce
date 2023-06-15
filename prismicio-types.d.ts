@@ -177,10 +177,10 @@ export type CustomPageDocument<Lang extends string = string> = prismic.PrismicDo
     'custom_page',
     Lang
 >;
-/** Content for Legacy Footer documents */
+/** Content for Footer documents */
 interface FooterDocumentData {
     /**
-     * Address field in *Legacy Footer*
+     * Address field in *Footer*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
@@ -191,7 +191,7 @@ interface FooterDocumentData {
      */
     address: prismic.RichTextField;
     /**
-     * Show Language Selector field in *Legacy Footer*
+     * Show Language Selector field in *Footer*
      *
      * - **Field Type**: Boolean
      * - **Placeholder**: *None*
@@ -203,7 +203,7 @@ interface FooterDocumentData {
      */
     show_language_selector: prismic.BooleanField;
     /**
-     * Show Currency Selector field in *Legacy Footer*
+     * Show Currency Selector field in *Footer*
      *
      * - **Field Type**: Boolean
      * - **Placeholder**: *None*
@@ -215,7 +215,7 @@ interface FooterDocumentData {
      */
     show_currency_selector: prismic.BooleanField;
     /**
-     * Slice zone field in *Legacy Footer*
+     * Slice Zone field in *Footer*
      *
      * - **Field Type**: Slice Zone
      * - **Placeholder**: *None*
@@ -227,12 +227,12 @@ interface FooterDocumentData {
     body: prismic.SliceZone<FooterDocumentDataBodySlice>;
 }
 /**
- * Primary content in Legacy Footer → Slice zone → `block` → Primary
+ * Primary content in Footer → Slice Zone → `block` → Primary
  *
  */
 interface FooterDocumentDataBodyBlockSlicePrimary {
     /**
-     * Title field in *Legacy Footer → Slice zone → `block` → Primary*
+     * Title field in *Footer → Slice Zone → `block` → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -243,12 +243,12 @@ interface FooterDocumentDataBodyBlockSlicePrimary {
     title: prismic.KeyTextField;
 }
 /**
- * Item in Legacy Footer → Slice zone → `block` → Items
+ * Item in Footer → Slice Zone → `block` → Items
  *
  */
 export interface FooterDocumentDataBodyBlockSliceItem {
     /**
-     * Title field in *Legacy Footer → Slice zone → `block` → Items*
+     * Title field in *Footer → Slice Zone → `block` → Items*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -258,7 +258,7 @@ export interface FooterDocumentDataBodyBlockSliceItem {
      */
     title: prismic.KeyTextField;
     /**
-     * Handle field in *Legacy Footer → Slice zone → `block` → Items*
+     * Handle field in *Footer → Slice Zone → `block` → Items*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -274,12 +274,12 @@ export type FooterDocumentDataBodyBlockSlice = prismic.Slice<
     Simplify<FooterDocumentDataBodyBlockSliceItem>
 >;
 /**
- * Slice for *Legacy Footer → Slice zone*
+ * Slice for *Footer → Slice Zone*
  *
  */
 type FooterDocumentDataBodySlice = FooterDocumentDataBodyBlockSlice;
 /**
- * Legacy Footer document from Prismic
+ * Footer document from Prismic
  *
  * - **API ID**: `footer`
  * - **Repeatable**: `false`
@@ -292,76 +292,10 @@ export type FooterDocument<Lang extends string = string> = prismic.PrismicDocume
     'footer',
     Lang
 >;
-/** Content for Global Header documents */
-interface GlobalHeaderDocumentData {
-    /**
-     * Announcements field in *Global Header*
-     *
-     * - **Field Type**: Group
-     * - **Placeholder**: *None*
-     * - **API ID Path**: global_header.announcements[]
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/core-concepts/group
-     *
-     */
-    announcements: prismic.GroupField<Simplify<GlobalHeaderDocumentDataAnnouncementsItem>>;
-}
-/**
- * Item in Global Header → Announcements
- *
- */
-export interface GlobalHeaderDocumentDataAnnouncementsItem {
-    /**
-     * Location field in *Global Header → Announcements*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: above
-     * - **API ID Path**: global_header.announcements[].location
-     * - **Documentation**: https://prismic.io/docs/core-concepts/select
-     *
-     */
-    location: prismic.SelectField<'above' | 'bellow', 'filled'>;
-    /**
-     * Background Color field in *Global Header → Announcements*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: secondary
-     * - **API ID Path**: global_header.announcements[].background_color
-     * - **Documentation**: https://prismic.io/docs/core-concepts/select
-     *
-     */
-    background_color: prismic.SelectField<'secondary' | 'primary', 'filled'>;
-    /**
-     * Content field in *Global Header → Announcements*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: Free shipping on orders above $75
-     * - **API ID Path**: global_header.announcements[].content
-     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
-     *
-     */
-    content: prismic.RichTextField;
-}
-/**
- * Global Header document from Prismic
- *
- * - **API ID**: `global_header`
- * - **Repeatable**: `false`
- * - **Documentation**: https://prismic.io/docs/core-concepts/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type GlobalHeaderDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
-    Simplify<GlobalHeaderDocumentData>,
-    'global_header',
-    Lang
->;
-/** Content for Legacy Header documents */
+/** Content for Header documents */
 interface HeadDocumentData {
     /**
-     * Announcements field in *Legacy Header*
+     * Announcements field in *Header*
      *
      * - **Field Type**: Group
      * - **Placeholder**: *None*
@@ -373,12 +307,12 @@ interface HeadDocumentData {
     announcements: prismic.GroupField<Simplify<HeadDocumentDataAnnouncementsItem>>;
 }
 /**
- * Item in Legacy Header → Announcements
+ * Item in Header → Announcements
  *
  */
 export interface HeadDocumentDataAnnouncementsItem {
     /**
-     * Location field in *Legacy Header → Announcements*
+     * Location field in *Header → Announcements*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
@@ -389,7 +323,7 @@ export interface HeadDocumentDataAnnouncementsItem {
      */
     location: prismic.SelectField<'above' | 'bellow', 'filled'>;
     /**
-     * Background Color field in *Legacy Header → Announcements*
+     * Background Color field in *Header → Announcements*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
@@ -400,7 +334,7 @@ export interface HeadDocumentDataAnnouncementsItem {
      */
     background_color: prismic.SelectField<'secondary' | 'primary', 'filled'>;
     /**
-     * Content field in *Legacy Header → Announcements*
+     * Content field in *Header → Announcements*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: Free shipping on orders above $75
@@ -411,7 +345,7 @@ export interface HeadDocumentDataAnnouncementsItem {
     content: prismic.RichTextField;
 }
 /**
- * Legacy Header document from Prismic
+ * Header document from Prismic
  *
  * - **API ID**: `head`
  * - **Repeatable**: `false`
@@ -424,10 +358,10 @@ export type HeadDocument<Lang extends string = string> = prismic.PrismicDocument
     'head',
     Lang
 >;
-/** Content for Legacy Navigation documents */
+/** Content for Navigation documents */
 interface NavigationDocumentData {
     /**
-     * Slice zone field in *Legacy Navigation*
+     * Slice Zone field in *Navigation*
      *
      * - **Field Type**: Slice Zone
      * - **Placeholder**: *None*
@@ -439,12 +373,12 @@ interface NavigationDocumentData {
     body: prismic.SliceZone<NavigationDocumentDataBodySlice>;
 }
 /**
- * Primary content in Legacy Navigation → Slice zone → `link` → Primary
+ * Primary content in Navigation → Slice Zone → `link` → Primary
  *
  */
 interface NavigationDocumentDataBodyLinkSlicePrimary {
     /**
-     * Title field in *Legacy Navigation → Slice zone → `link` → Primary*
+     * Title field in *Navigation → Slice Zone → `link` → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -454,7 +388,7 @@ interface NavigationDocumentDataBodyLinkSlicePrimary {
      */
     title: prismic.KeyTextField;
     /**
-     * Handle field in *Legacy Navigation → Slice zone → `link` → Primary*
+     * Handle field in *Navigation → Slice Zone → `link` → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -465,12 +399,12 @@ interface NavigationDocumentDataBodyLinkSlicePrimary {
     handle: prismic.KeyTextField;
 }
 /**
- * Item in Legacy Navigation → Slice zone → `link` → Items
+ * Item in Navigation → Slice Zone → `link` → Items
  *
  */
 export interface NavigationDocumentDataBodyLinkSliceItem {
     /**
-     * Title field in *Legacy Navigation → Slice zone → `link` → Items*
+     * Title field in *Navigation → Slice Zone → `link` → Items*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -480,7 +414,7 @@ export interface NavigationDocumentDataBodyLinkSliceItem {
      */
     title: prismic.KeyTextField;
     /**
-     * Description field in *Legacy Navigation → Slice zone → `link` → Items*
+     * Description field in *Navigation → Slice Zone → `link` → Items*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -490,7 +424,7 @@ export interface NavigationDocumentDataBodyLinkSliceItem {
      */
     description: prismic.KeyTextField;
     /**
-     * Handle field in *Legacy Navigation → Slice zone → `link` → Items*
+     * Handle field in *Navigation → Slice Zone → `link` → Items*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -506,12 +440,12 @@ export type NavigationDocumentDataBodyLinkSlice = prismic.Slice<
     Simplify<NavigationDocumentDataBodyLinkSliceItem>
 >;
 /**
- * Slice for *Legacy Navigation → Slice zone*
+ * Slice for *Navigation → Slice Zone*
  *
  */
 type NavigationDocumentDataBodySlice = NavigationDocumentDataBodyLinkSlice;
 /**
- * Legacy Navigation document from Prismic
+ * Navigation document from Prismic
  *
  * - **API ID**: `navigation`
  * - **Repeatable**: `false`
@@ -522,363 +456,6 @@ type NavigationDocumentDataBodySlice = NavigationDocumentDataBodyLinkSlice;
 export type NavigationDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
     Simplify<NavigationDocumentData>,
     'navigation',
-    Lang
->;
-/** Content for Legacy Page documents */
-interface PageDocumentData {
-    /**
-     * title field in *Legacy Page*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: Page Title
-     * - **API ID Path**: page.title
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    title: prismic.KeyTextField;
-    /**
-     * Description field in *Legacy Page*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: Page Description
-     * - **API ID Path**: page.description
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    description: prismic.KeyTextField;
-    /**
-     * Keywords field in *Legacy Page*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: Page Keywords
-     * - **API ID Path**: page.keywords
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    keywords: prismic.KeyTextField;
-    /**
-     * Slice zone field in *Legacy Page*
-     *
-     * - **Field Type**: Slice Zone
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[]
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/core-concepts/slices
-     *
-     */
-    body: prismic.SliceZone<PageDocumentDataBodySlice>;
-}
-/**
- * Primary content in Legacy Page → Slice zone → `carousel` → Primary
- *
- */
-interface PageDocumentDataBodyCarouselSlicePrimary {
-    /**
-     * Delay field in *Legacy Page → Slice zone → `carousel` → Primary*
-     *
-     * - **Field Type**: Number
-     * - **Placeholder**: 3000
-     * - **API ID Path**: page.body[].carousel.primary.delay
-     * - **Documentation**: https://prismic.io/docs/core-concepts/number
-     *
-     */
-    delay: prismic.NumberField;
-}
-/**
- * Item in Legacy Page → Slice zone → `carousel` → Items
- *
- */
-export interface PageDocumentDataBodyCarouselSliceItem {
-    /**
-     * Image field in *Legacy Page → Slice zone → `carousel` → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].carousel.items[].image
-     * - **Documentation**: https://prismic.io/docs/core-concepts/image
-     *
-     */
-    image: prismic.ImageField<never>;
-    /**
-     * href field in *Legacy Page → Slice zone → `carousel` → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].carousel.items[].href
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    href: prismic.KeyTextField;
-}
-export type PageDocumentDataBodyCarouselSlice = prismic.Slice<
-    'carousel',
-    Simplify<PageDocumentDataBodyCarouselSlicePrimary>,
-    Simplify<PageDocumentDataBodyCarouselSliceItem>
->;
-/**
- * Primary content in Legacy Page → Slice zone → `collection` → Primary
- *
- */
-interface PageDocumentDataBodyCollectionSlicePrimary {
-    /**
-     * handle field in *Legacy Page → Slice zone → `collection` → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: Collection handle
-     * - **API ID Path**: page.body[].collection.primary.handle
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    handle: prismic.KeyTextField;
-    /**
-     * Limit field in *Legacy Page → Slice zone → `collection` → Primary*
-     *
-     * - **Field Type**: Number
-     * - **Placeholder**: max amount of products to show
-     * - **API ID Path**: page.body[].collection.primary.limit
-     * - **Documentation**: https://prismic.io/docs/core-concepts/number
-     *
-     */
-    limit: prismic.NumberField;
-    /**
-     * direction field in *Legacy Page → Slice zone → `collection` → Primary*
-     *
-     * - **Field Type**: Select
-     * - **Placeholder**: *None*
-     * - **Default Value**: vertical
-     * - **API ID Path**: page.body[].collection.primary.layout
-     * - **Documentation**: https://prismic.io/docs/core-concepts/select
-     *
-     */
-    layout: prismic.SelectField<'vertical' | 'horizontal', 'filled'>;
-    /**
-     * Hide title field in *Legacy Page → Slice zone → `collection` → Primary*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: page.body[].collection.primary.hide_title
-     * - **Documentation**: https://prismic.io/docs/core-concepts/boolean
-     *
-     */
-    hide_title: prismic.BooleanField;
-}
-export type PageDocumentDataBodyCollectionSlice = prismic.Slice<
-    'collection',
-    Simplify<PageDocumentDataBodyCollectionSlicePrimary>,
-    never
->;
-export type PageDocumentDataBodyShopblockSlice = prismic.Slice<
-    'shopblock',
-    Record<string, never>,
-    never
->;
-export type PageDocumentDataBodyVendorsSlice = prismic.Slice<
-    'vendors',
-    Record<string, never>,
-    never
->;
-/**
- * Item in Legacy Page → Slice zone → `textblock` → Items
- *
- */
-export interface PageDocumentDataBodyTextblockSliceItem {
-    /**
-     * Image field in *Legacy Page → Slice zone → `textblock` → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].textblock.items[].image
-     * - **Documentation**: https://prismic.io/docs/core-concepts/image
-     *
-     */
-    image: prismic.ImageField<never>;
-    /**
-     * Text field in *Legacy Page → Slice zone → `textblock` → Items*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].textblock.items[].text
-     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
-     *
-     */
-    text: prismic.RichTextField;
-}
-export type PageDocumentDataBodyTextblockSlice = prismic.Slice<
-    'textblock',
-    Record<string, never>,
-    Simplify<PageDocumentDataBodyTextblockSliceItem>
->;
-/**
- * Primary content in Legacy Page → Slice zone → `notification` → Primary
- *
- */
-interface PageDocumentDataBodyNotificationSlicePrimary {
-    /**
-     * Content field in *Legacy Page → Slice zone → `notification` → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].notification.primary.content
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    content: prismic.KeyTextField;
-}
-export type PageDocumentDataBodyNotificationSlice = prismic.Slice<
-    'notification',
-    Simplify<PageDocumentDataBodyNotificationSlicePrimary>,
-    never
->;
-/**
- * Primary content in Legacy Page → Slice zone → `icon_grid` → Primary
- *
- */
-interface PageDocumentDataBodyIconGridSlicePrimary {
-    /**
-     * Secondary field in *Legacy Page → Slice zone → `icon_grid` → Primary*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: page.body[].icon_grid.primary.secondary
-     * - **Documentation**: https://prismic.io/docs/core-concepts/boolean
-     *
-     */
-    secondary: prismic.BooleanField;
-}
-/**
- * Item in Legacy Page → Slice zone → `icon_grid` → Items
- *
- */
-export interface PageDocumentDataBodyIconGridSliceItem {
-    /**
-     * Icon field in *Legacy Page → Slice zone → `icon_grid` → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].icon_grid.items[].icon
-     * - **Documentation**: https://prismic.io/docs/core-concepts/image
-     *
-     */
-    icon: prismic.ImageField<never>;
-    /**
-     * Title field in *Legacy Page → Slice zone → `icon_grid` → Items*
-     *
-     * - **Field Type**: Title
-     * - **Placeholder**: text
-     * - **API ID Path**: page.body[].icon_grid.items[].title1
-     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
-     *
-     */
-    title1: prismic.TitleField;
-}
-export type PageDocumentDataBodyIconGridSlice = prismic.Slice<
-    'icon_grid',
-    Simplify<PageDocumentDataBodyIconGridSlicePrimary>,
-    Simplify<PageDocumentDataBodyIconGridSliceItem>
->;
-/**
- * Primary content in Legacy Page → Slice zone → `collapse` → Primary
- *
- */
-interface PageDocumentDataBodyCollapseSlicePrimary {
-    /**
-     * Title field in *Legacy Page → Slice zone → `collapse` → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].collapse.primary.title
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    title: prismic.KeyTextField;
-    /**
-     * Body field in *Legacy Page → Slice zone → `collapse` → Primary*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].collapse.primary.body
-     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
-     *
-     */
-    body: prismic.RichTextField;
-}
-export type PageDocumentDataBodyCollapseSlice = prismic.Slice<
-    'collapse',
-    Simplify<PageDocumentDataBodyCollapseSlicePrimary>,
-    never
->;
-/**
- * Item in Legacy Page → Slice zone → `imagelinks` → Items
- *
- */
-export interface PageDocumentDataBodyImagelinksSliceItem {
-    /**
-     * Image field in *Legacy Page → Slice zone → `imagelinks` → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].imagelinks.items[].image
-     * - **Documentation**: https://prismic.io/docs/core-concepts/image
-     *
-     */
-    image: prismic.ImageField<never>;
-    /**
-     * Title field in *Legacy Page → Slice zone → `imagelinks` → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].imagelinks.items[].title
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    title: prismic.KeyTextField;
-    /**
-     * Handle field in *Legacy Page → Slice zone → `imagelinks` → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: page.body[].imagelinks.items[].handle
-     * - **Documentation**: https://prismic.io/docs/core-concepts/key-text
-     *
-     */
-    handle: prismic.KeyTextField;
-}
-export type PageDocumentDataBodyImagelinksSlice = prismic.Slice<
-    'imagelinks',
-    Record<string, never>,
-    Simplify<PageDocumentDataBodyImagelinksSliceItem>
->;
-/**
- * Slice for *Legacy Page → Slice zone*
- *
- */
-type PageDocumentDataBodySlice =
-    | PageDocumentDataBodyCarouselSlice
-    | PageDocumentDataBodyCollectionSlice
-    | PageDocumentDataBodyShopblockSlice
-    | PageDocumentDataBodyVendorsSlice
-    | PageDocumentDataBodyTextblockSlice
-    | PageDocumentDataBodyNotificationSlice
-    | PageDocumentDataBodyIconGridSlice
-    | PageDocumentDataBodyCollapseSlice
-    | PageDocumentDataBodyImagelinksSlice;
-/**
- * Legacy Page document from Prismic
- *
- * - **API ID**: `page`
- * - **Repeatable**: `true`
- * - **Documentation**: https://prismic.io/docs/core-concepts/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type PageDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
-    Simplify<PageDocumentData>,
-    'page',
     Lang
 >;
 /** Content for Product Page documents */
@@ -1119,10 +696,8 @@ export type AllDocumentTypes =
     | CollectionPageDocument
     | CustomPageDocument
     | FooterDocument
-    | GlobalHeaderDocument
     | HeadDocument
     | NavigationDocument
-    | PageDocument
     | ProductPageDocument
     | StoreDocument;
 /**
@@ -1552,9 +1127,6 @@ declare module '@prismicio/client' {
             FooterDocumentDataBodyBlockSlice,
             FooterDocumentDataBodySlice,
             FooterDocument,
-            GlobalHeaderDocumentData,
-            GlobalHeaderDocumentDataAnnouncementsItem,
-            GlobalHeaderDocument,
             HeadDocumentData,
             HeadDocumentDataAnnouncementsItem,
             HeadDocument,
@@ -1564,27 +1136,6 @@ declare module '@prismicio/client' {
             NavigationDocumentDataBodyLinkSlice,
             NavigationDocumentDataBodySlice,
             NavigationDocument,
-            PageDocumentData,
-            PageDocumentDataBodyCarouselSlicePrimary,
-            PageDocumentDataBodyCarouselSliceItem,
-            PageDocumentDataBodyCarouselSlice,
-            PageDocumentDataBodyCollectionSlicePrimary,
-            PageDocumentDataBodyCollectionSlice,
-            PageDocumentDataBodyShopblockSlice,
-            PageDocumentDataBodyVendorsSlice,
-            PageDocumentDataBodyTextblockSliceItem,
-            PageDocumentDataBodyTextblockSlice,
-            PageDocumentDataBodyNotificationSlicePrimary,
-            PageDocumentDataBodyNotificationSlice,
-            PageDocumentDataBodyIconGridSlicePrimary,
-            PageDocumentDataBodyIconGridSliceItem,
-            PageDocumentDataBodyIconGridSlice,
-            PageDocumentDataBodyCollapseSlicePrimary,
-            PageDocumentDataBodyCollapseSlice,
-            PageDocumentDataBodyImagelinksSliceItem,
-            PageDocumentDataBodyImagelinksSlice,
-            PageDocumentDataBodySlice,
-            PageDocument,
             ProductPageDocumentData,
             ProductPageDocumentDataSlicesSlice,
             ProductPageDocument,
