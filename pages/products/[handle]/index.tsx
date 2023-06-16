@@ -528,7 +528,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
     }, [product, selectedVariant, quantity, cart, cartStore, setCartStore]);
 
     useEffect(() => {
-        if (!product || !selectedVariant || !cart.lines || cart.totalQuantity <= 0) return;
+        if (!product || !selectedVariant || !cart.lines || (cart?.totalQuantity || 0) <= 0) return;
 
         const params = getClientBrowserParameters();
         const cartPayload: ShopifyAddToCartPayload = {

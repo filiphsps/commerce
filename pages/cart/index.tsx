@@ -534,7 +534,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             <div>
                                 <Button
                                     className={'CheckoutButton'}
-                                    disabled={!cart.totalQuantity && cart.totalQuantity <= 0 || !cart.lines || loading}
+                                    disabled={ (cart?.totalQuantity || 0) <= 0 || !cart.lines || loading}
                                     onClick={async () => {
                                         setLoading(true);
 
@@ -566,7 +566,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     </SummaryContainer>
                 </Content>
 
-                {cart?.totalQuantity > 0 && (
+                {(cart?.totalQuantity || 0) > 0 && (
                     <>
                         {(recommendations?.length && recommendations.length > 1 && (
                             <Recommendations>

@@ -574,11 +574,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         </CartIconWrapper>
                     </div>
                     <div>
-                        <CartIconWrapper className={cart.totalQuantity > 0 ? 'Active' : ''}>
+                        <CartIconWrapper className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
                             <Link href={'/cart/'} className="Wrapper">
-                                {cart.totalQuantity > 0 && (
+                                {(cart?.totalQuantity || 0) > 0 && (
                                     <CartIcon className="Header-Content-CartBadge">
-                                        {cart.totalQuantity}
+                                        {(cart?.totalQuantity || 0)}
                                     </CartIcon>
                                 )}
                                 <FiShoppingCart className="Icon" />
