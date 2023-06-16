@@ -1,15 +1,5 @@
 @import '../src/scss/_app.scss';
 
-//Slices
-@import '../src/components/Slices/components/Carousel/Carousel.scss';
-@import '../src/components/Slices/components/Collapse/Collapse.scss';
-@import '../src/components/Slices/components/CollectionBlock/CollectionBlock.scss';
-@import '../src/components/Slices/components/ContentBlock/ContentBlock.scss';
-@import '../src/components/Slices/components/ContentGrid/ContentGrid.scss';
-@import '../src/components/Slices/components/SectionHeader/SectionHeader.scss';
-@import '../src/components/Slices/components/TextBlock/TextBlock.scss';
-@import '../src/components/Slices/components/Vendors/Vendors.scss';
-
 // Components
 @import '../src/components/Alert/Alert.scss';
 @import '../src/components/Breadcrumbs/Breadcrumbs.scss';
@@ -22,7 +12,6 @@
 @import '../src/components/PageContent/PageContent.scss';
 @import '../src/components/PageProvider/PageProvider.scss';
 @import '../src/components/SearchBar/SearchBar.scss';
-@import '../src/components/Slices/Slices.scss';
 @import '../src/components/SocialShare/SocialShare.scss';
 @import '../src/components/Vendors/Vendors.scss';
 
