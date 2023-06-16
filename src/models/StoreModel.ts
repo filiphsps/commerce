@@ -31,4 +31,9 @@ export interface StoreModel {
     block: {
         border_radius: string;
     };
+
+    payment?: {
+        methods: string[];
+        wallets: string[];
+    };
 }

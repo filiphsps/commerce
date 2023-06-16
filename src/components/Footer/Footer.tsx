@@ -2,12 +2,12 @@ import * as PrismicDOM from '@prismicio/helpers';
 
 import React, { FunctionComponent } from 'react';
 
+import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 import { Config } from '../../util/Config';
 import EmailCapture from '../EmailCapture';
 import { FooterApi } from '../../api/footer';
 import Image from 'next/image';
 import Link from 'next/link';
-import PaymentIcons from '../../../public/assets/payments/icons.png';
 import { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -105,41 +105,6 @@ const LegalAndCopyright = styled.div`
 
     @media (max-width: 950px) {
         margin: 1rem 0px;
-    }
-`;
-const PaymentIconsContainer = styled.div`
-    position: relative;
-    width: 100%;
-    height: 5rem;
-    margin: 0px;
-
-    @media (min-width: 950px) {
-        margin: -1.5rem -1rem;
-    }
-
-    img {
-        display: block;
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
-        object-position: center;
-
-        @media (min-width: 950px) {
-            object-position: 0px;
-        }
-    }
-`;
-const PaymentIconsWrapper = styled.div`
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-    overflow: clip;
-    width: 100%;
-    height: 2.25rem;
-
-    @media (min-width: 950px) {
-        display: block;
     }
 `;
 const FooterBottomSection = styled.section`
@@ -288,16 +253,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     {/* TODO: This should be configurable in prismic. */}
                     <FooterBottomSection>
                         <FooterBottomSectionBlock>
-                            <PaymentIconsWrapper>
-                                <PaymentIconsContainer>
-                                    <Image
-                                        src={PaymentIcons}
-                                        alt="Support payment methods."
-                                        fill
-                                    />
-                                </PaymentIconsContainer>
-                            </PaymentIconsWrapper>
-
+                            <AcceptedPaymentMethods store={store!} />
                             <LegalAndCopyright>
                                 <ImportantLinks>
                                     <Policy href="mailto:dennis@sweetsideofsweden.com">

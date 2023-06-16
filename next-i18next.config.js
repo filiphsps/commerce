@@ -10,4 +10,14 @@ const i18n = {
     localeDetection: false
 };
 
-export { i18n };
+const fallbackLng = {
+    default: [locales[0]]
+};
+
+const nonExplicitSupportedLngs = true;
+
+export {
+    i18n,
+    fallbackLng,
+    nonExplicitSupportedLngs,
+};

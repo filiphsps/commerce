@@ -74,7 +74,7 @@ const StoreApp = withStore(
             locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
         ).toUpperCase() as LanguageCode;
 
-        const { data: store } = useSWR([`store`], () => StoreApi() as any, {
+        const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }) as any, {
             fallbackData: {
                 // FIXME: Use CMS for these
                 name: 'Sweet Side of Sweden',
