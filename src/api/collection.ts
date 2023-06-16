@@ -81,6 +81,9 @@ export const CollectionApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
+        if (locale === '__default')
+            locale = Config.i18n.locales[0];
+
         const country = (
             locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
         ).toUpperCase() as CountryCode;
@@ -91,12 +94,9 @@ export const CollectionApi = async ({
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    fragment collection on Collection {
-                        ${COLLECTION_FRAGMENT}
-                    }
                     query collection($handle: String!) @inContext(language: ${language}, country: ${country}) {
                         collectionByHandle(handle: $handle) {
-                            ...collection
+                            ${COLLECTION_FRAGMENT}
                         }
                     }
                 `,
