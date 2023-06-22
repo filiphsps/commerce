@@ -38,6 +38,15 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
             <NextSeo
                 title={collection?.seo?.title || collection?.title}
                 description={collection?.seo?.description || collection?.description || undefined}
+                canonical={`https://${Config.domain}/collections/${collection.handle}/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/collections/${collection.handle}/`
+                        })) || []
+                }
                 additionalMetaTags={
                     ((collection as any).keywords?.value && [
                         {
@@ -48,12 +57,6 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                     []
                 }
             />
-            <Head>
-                <link
-                    rel="canonical"
-                    href={`https://${Config.domain}/collections/${collection.handle}/`}
-                />
-            </Head>
 
             <PageContent
                 style={{

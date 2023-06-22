@@ -605,9 +605,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
             {selectedVariant.compareAtPrice && (
                 <Price sale>
                     <Currency
-                        value={
-                            Number.parseFloat(selectedVariant.compareAtPrice?.amount!)
-                        }
+                        value={Number.parseFloat(selectedVariant.compareAtPrice?.amount!)}
                         currency={selectedVariant.price?.currencyCode!}
                     />
                 </Price>
@@ -688,6 +686,14 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                 title={`${product?.seo?.title || product?.title}`}
                 description={product?.seo?.description || product?.description || ''}
                 canonical={`https://${Config.domain}/products/${product.handle}/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/products/${product.handle}/`
+                        })) || []
+                }
                 additionalMetaTags={
                     ((product as any).keywords?.value && [
                         {

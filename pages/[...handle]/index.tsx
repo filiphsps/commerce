@@ -37,14 +37,22 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                 title={page.data.meta_title || page.data.title || ''}
                 description={asText(page.data.meta_description) || page.data.description || ''}
                 canonical={`https://${Config.domain}${router.asPath}`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}${router.asPath}`
+                        })) || []
+                }
                 additionalMetaTags={
-                    page.data.keywords && [
-                            {
-                                property: 'keywords',
-                                content: page.data.keywords
-                            }
-                        ]
-                    || []
+                    (page.data.keywords && [
+                        {
+                            property: 'keywords',
+                            content: page.data.keywords
+                        }
+                    ]) ||
+                    []
                 }
             />
 
@@ -60,7 +68,11 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                 />
                 <PageHeader title={page.data.title} subtitle={page.data.description} />
             </PageContent>
-            <SliceZone slices={page.data.slices} components={components} context={{ prefetch, store }} />
+            <SliceZone
+                slices={page.data.slices}
+                components={components}
+                context={{ prefetch, store }}
+            />
         </Page>
     );
 };
@@ -92,7 +104,7 @@ export async function getStaticProps({ params, locale, previewData }) {
         let page: any = null;
         try {
             page = await client.getByUID('custom_page', params?.handle?.join('/'), {
-                lang: locale,
+                lang: locale
             });
         } catch {
             page = await client.getByUID('custom_page', params?.handle?.join('/'));

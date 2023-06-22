@@ -15,6 +15,7 @@ import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';
 import { StoreModel } from '../../../src/models/StoreModel';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -135,6 +136,7 @@ interface ArticlePageProps {
     error?: string;
 }
 const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog, error }) => {
+    const router = useRouter();
     if (error || !article) return <Error statusCode={500} title={error} />;
 
     return (
@@ -143,6 +145,14 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
                 canonical={`https://${Config.domain}/blog/${article.handle}/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/blog/${article.handle}`
+                        })) || []
+                }
                 openGraph={{
                     url: `https://${Config.domain}/blog/${article.handle}/`,
                     title: article.seo.title || article.title,

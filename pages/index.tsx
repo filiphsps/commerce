@@ -10,6 +10,7 @@ import type { StoreModel } from '../src/models/StoreModel';
 import { asText } from '@prismicio/client';
 import { components } from '../slices';
 import { createClient } from '../prismicio';
+import { useRouter } from 'next/router';
 
 interface HomePageProps {
     store: StoreModel;
@@ -17,6 +18,7 @@ interface HomePageProps {
     page: CustomPageDocument<string>;
 }
 const HomePage: FunctionComponent<HomePageProps> = (props) => {
+    const router = useRouter();
     const { store, page, prefetch } = props;
 
     return (
@@ -25,17 +27,29 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                 title={page.data.meta_title || ''}
                 description={asText(page.data.meta_description) || store?.description || ''}
                 canonical={`https://${Config.domain}/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/`
+                        })) || []
+                }
                 additionalMetaTags={
-                    page.data.keywords && [
-                            {
-                                property: 'keywords',
-                                content: page.data.keywords
-                            }
-                        ]
-                    || []
+                    (page.data.keywords && [
+                        {
+                            property: 'keywords',
+                            content: page.data.keywords
+                        }
+                    ]) ||
+                    []
                 }
             />
-            <SliceZone slices={page.data.slices} components={components} context={{ prefetch, store }} />
+            <SliceZone
+                slices={page.data.slices}
+                components={components}
+                context={{ prefetch, store }}
+            />
         </Page>
     );
 };
@@ -45,7 +59,7 @@ export async function getStaticProps({ locale, query, previewData }) {
     let page: any = null;
     try {
         page = await client.getByUID('custom_page', 'homepage', {
-            lang: locale,
+            lang: locale
         });
     } catch {
         page = await client.getByUID('custom_page', 'homepage');

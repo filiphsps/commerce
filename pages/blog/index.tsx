@@ -15,6 +15,7 @@ import PageContent from '../../src/components/PageContent';
 import PageHeader from '../../src/components/PageHeader';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const Article = styled.div`
     display: grid;
@@ -76,11 +77,23 @@ interface BlogPageProps {
     error?: string;
 }
 const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
+    const router = useRouter();
     if (error || !blog) return <Error statusCode={500} title={error} />;
 
     return (
         <Page className="BlogPage">
-            <NextSeo title="Blog" canonical={`https://${Config.domain}/blog/`} />
+            <NextSeo
+                title="Blog"
+                canonical={`https://${Config.domain}/blog/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/blog/`
+                        })) || []
+                }
+            />
 
             <PageContent>
                 <Breadcrumbs

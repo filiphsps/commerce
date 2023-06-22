@@ -316,7 +316,8 @@ const getCrossDomainLinkerParameter = () => {
 };
 
 export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: string }) => {
-    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
+    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines)
+        throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
     const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
@@ -363,7 +364,7 @@ export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: strin
                 }))
             });
         }
-    } catch { }
+    } catch {}
 
     const ga4 = getCrossDomainLinkerParameter();
     const finalUrl = `${url}${(ga4 && `${(url.includes('?') && '&') || '?'}_gl=${ga4}`) || ''}`;
@@ -382,7 +383,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const { data: recommendations } = useSWR(['recommendations'], () =>
         RecommendationApi({
             id:
-                (cart.totalQuantity && cart.totalQuantity > 0 && cart.lines?.[0]?.merchandise?.product?.id) ||
+                (cart.totalQuantity &&
+                    cart.totalQuantity > 0 &&
+                    cart.lines?.[0]?.merchandise?.product?.id) ||
                 '8463374614833', // FIXME: don't hardcode this
             locale: router?.locale
         })
@@ -418,7 +421,18 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     return (
         <Page className="CartPage">
-            <NextSeo title="Cart" canonical={`https://${Config.domain}/cart`} />
+            <NextSeo
+                title="Cart"
+                canonical={`https://${Config.domain}/cart/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/cart/`
+                        })) || []
+                }
+            />
 
             <PageContent>
                 <Breadcrumbs
@@ -488,8 +502,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     style={{
                                         width: `${
                                             (freeShipping && 100) ||
-                                            ((Number.parseFloat(cart.cost?.totalAmount?.amount! || '0') ||
-                                                0) /
+                                            ((Number.parseFloat(
+                                                cart.cost?.totalAmount?.amount! || '0'
+                                            ) || 0) /
                                                 75) *
                                                 100
                                         }%`
@@ -502,7 +517,13 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     <SummaryContainer>
                         <SummaryContent>
                             <div className="CartPage-Content-Total-Content">
-                                <SummarySummary className={!cart?.totalQuantity || cart.totalQuantity <= 0 ? 'Empty' : ''}>
+                                <SummarySummary
+                                    className={
+                                        !cart?.totalQuantity || cart.totalQuantity <= 0
+                                            ? 'Empty'
+                                            : ''
+                                    }
+                                >
                                     <SummaryItemPrice>
                                         <Currency
                                             className="Total"
@@ -534,7 +555,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             <div>
                                 <Button
                                     className={'CheckoutButton'}
-                                    disabled={ (cart?.totalQuantity || 0) <= 0 || !cart.lines || loading}
+                                    disabled={
+                                        (cart?.totalQuantity || 0) <= 0 || !cart.lines || loading
+                                    }
                                     onClick={async () => {
                                         setLoading(true);
 

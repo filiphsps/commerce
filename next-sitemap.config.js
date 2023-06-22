@@ -11,7 +11,7 @@ const config = {
         .filter((locale) => locale !== '__default')
         .map((locale) => ({
             href: `${url}/${locale}`,
-            hreflang: locale.split('-')[0]
+            hreflang: locale
         })),
 
     generateRobotsTxt: true,

@@ -200,9 +200,19 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
     return (
         <Page className="ShopPage">
             <NextSeo
-                title={props.page?.data.meta_title ||props.page?.data.title || 'Shop'}
-                description={asText(props.page.data.meta_description) || props.page.data.description || ''}
+                title={props.page?.data.meta_title || props.page?.data.title || 'Shop'}
+                description={
+                    asText(props.page.data.meta_description) || props.page.data.description || ''
+                }
                 canonical={`https://${Config.domain}/shop/`}
+                languageAlternates={
+                    router?.locales
+                        ?.filter((locale) => locale !== '__default')
+                        .map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://${Config.domain}/${locale}/shop/`
+                        })) || []
+                }
                 additionalMetaTags={
                     (props.page?.data.keywords && [
                         {
@@ -228,7 +238,10 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
 
                 <PageHeader
                     title={props.page?.data.title || props.page?.data.meta_title || 'Shop'}
-                    subtitle={props.page.data.description || asText(props.page.data.meta_description) /* TODO: Support html */}
+                    subtitle={
+                        props.page.data.description ||
+                        asText(props.page.data.meta_description) /* TODO: Support html */
+                    }
                 />
 
                 <Container>
@@ -379,7 +392,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
 
 export async function getStaticProps({ locale, previewData }) {
     const client = createClient({ previewData });
-    
+
     let page: any = null;
     let data: any = null;
     let vendors: any = null;
@@ -404,7 +417,7 @@ export async function getStaticProps({ locale, previewData }) {
     try {
         try {
             page = await client.getByUID('custom_page', 'shop', {
-                lang: locale,
+                lang: locale
             });
         } catch {
             page = await client.getByUID('custom_page', 'shop');
