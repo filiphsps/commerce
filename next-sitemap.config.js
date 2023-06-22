@@ -11,7 +11,7 @@ const config = {
         .filter((locale) => locale !== '__default')
         .map((locale) => ({
             href: `${url}/${locale}`,
-            hreflang: locale,
+            hreflang: locale.split('-')[0]
         })),
 
     generateRobotsTxt: true,
@@ -21,7 +21,9 @@ const config = {
         policies: [
             {
                 userAgent: '*',
-                ...(((url.includes('preview.') || url.includes('staging.')) && { disallow: '/' }) || { allow: '/' })
+                ...(((url.includes('preview.') || url.includes('staging.')) && {
+                    disallow: '/'
+                }) || { allow: '/' })
             },
             {
                 userAgent: '*',
@@ -32,14 +34,13 @@ const config = {
     exclude: [
         '/admin/',
         '/__default*',
-//        '*/products/*',
-//        '*/collections/*',
+        //        '*/products/*',
+        //        '*/collections/*',
         '*.xml'
     ],
 
     transform: async (config, path) => {
-        if (!path.includes(locales[1]))
-            return null;
+        if (!path.includes(locales[1])) return null;
 
         let cleanedPath = path;
         locales.forEach((locale) => (cleanedPath = cleanedPath.replace(`/${locale}`, '')));
