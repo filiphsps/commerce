@@ -355,7 +355,7 @@ export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: strin
                 ecomm_prodid: cart.lines.map((line: CartLine) => line.merchandise.id),
                 ecomm_pagetype: 'cart',
                 ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
-                revenue_value: 1,
+                revenue_value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
                 currency: cart.cost?.totalAmount?.currencyCode!,
                 items: cart.lines.map((line: CartLine) => ({
                     id: line.merchandise.id,
