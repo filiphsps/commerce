@@ -17,8 +17,7 @@ export const RecommendationApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
 
-        if (locale === '__default')
-            locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = Config.i18n.locales[0];
 
         const country = (
             locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]

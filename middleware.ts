@@ -13,7 +13,7 @@ export let middleware = (request) => {
         return undefined;
     }
 
-    if (!/\.(.*)$/.test(request.nextUrl.pathname) && request.nextUrl.locale === '__default') {
+    if (!/\.(.*)$/.test(request.nextUrl.pathname) && request.nextUrl.locale === 'x-default') {
         const newUrl = request.nextUrl.clone();
         const headers = request.headers.get('accept-language');
         const userLang = acceptLanguage.get(headers);

@@ -29,7 +29,7 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                 canonical={`https://${Config.domain}/${router.locale}/`}
                 languageAlternates={
                     router?.locales
-                        ?.filter((locale) => locale !== '__default')
+                        ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
                             href: `https://${Config.domain}/${locale}/`

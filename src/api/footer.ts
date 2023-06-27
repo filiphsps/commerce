@@ -7,7 +7,7 @@ export const FooterApi = async (locale = Config.i18n.locales[0]) => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await prismic().getSingle('footer', {
-                lang: locale === '__default' ? Config.i18n.locales[0] : locale
+                lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
             });
 
             return resolve({

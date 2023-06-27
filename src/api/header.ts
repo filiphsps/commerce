@@ -8,7 +8,7 @@ export const HeaderApi = async (locale = Config.i18n.locales[0]): Promise<Header
     return new Promise(async (resolve, reject) => {
         try {
             const res = await prismic().getSingle('head', {
-                lang: locale === '__default' ? Config.i18n.locales[0] : locale
+                lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
             });
             return resolve(res.data as HeaderModel);
         } catch (error) {

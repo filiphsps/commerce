@@ -688,7 +688,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                 canonical={`https://${Config.domain}/${router.locale}/products/${product.handle}/`}
                 languageAlternates={
                     router?.locales
-                        ?.filter((locale) => locale !== '__default')
+                        ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
                             href: `https://${Config.domain}/${locale}/products/${product.handle}/`
@@ -938,7 +938,7 @@ export async function getStaticProps({ params, locale }) {
             revalidate: false
         };
 
-    if (locale === '__default') {
+    if (locale === 'x-default') {
         return {
             props: {},
             revalidate: false

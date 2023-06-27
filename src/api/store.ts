@@ -11,8 +11,7 @@ import { storefrontClient } from './shopify';
 export const LocalesApi = async ({ locale }): Promise<string[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (locale === '__default')
-                locale = Config.i18n.locales[0];
+            if (locale === 'x-default') locale = Config.i18n.locales[0];
 
             const country = (
                 locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
@@ -43,7 +42,16 @@ export const LocalesApi = async ({ locale }): Promise<string[]> => {
                 `
             });
 
-            return localData?.localization?.availableCountries?.map(({ isoCode: country, availableLanguages }) => availableLanguages.map(({isoCode: language}) => `${language.toLowerCase()}-${country.toUpperCase()}`))?.flat() || [];
+            return (
+                localData?.localization?.availableCountries
+                    ?.map(({ isoCode: country, availableLanguages }) =>
+                        availableLanguages.map(
+                            ({ isoCode: language }) =>
+                                `${language.toLowerCase()}-${country.toUpperCase()}`
+                        )
+                    )
+                    ?.flat() || []
+            );
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);
@@ -55,8 +63,7 @@ export const LocalesApi = async ({ locale }): Promise<string[]> => {
 export const StoreApi = async ({ locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (locale === '__default')
-                locale = Config.i18n.locales[0];
+            if (locale === 'x-default') locale = Config.i18n.locales[0];
 
             const country = (
                 locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
@@ -106,7 +113,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
 
             const res = (
                 await prismic().getSingle('store', {
-                    lang: locale === '__default' ? Config.i18n.locales[0] : locale
+                    lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
                 })
             ).data;
 
@@ -123,13 +130,19 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 },
                 accent: {
                     primary: shopData?.shop?.brand?.colors.primary?.[0]?.background || res.primary,
-                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.background || res.secondary
+                    secondary:
+                        shopData?.shop?.brand?.colors.secondary?.[0]?.background || res.secondary
                 },
                 color: {
-                    primary: shopData?.shop?.brand?.colors.primary?.[0]?.foreground || res.primary_text_color,
-                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.foreground  || res.primary_text_color
+                    primary:
+                        shopData?.shop?.brand?.colors.primary?.[0]?.foreground ||
+                        res.primary_text_color,
+                    secondary:
+                        shopData?.shop?.brand?.colors.secondary?.[0]?.foreground ||
+                        res.primary_text_color
                 },
-                currencies: shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
+                currencies:
+                    shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
                 languages: Config.i18n.locales,
                 social: res.social,
                 block: {

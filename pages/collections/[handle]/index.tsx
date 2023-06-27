@@ -40,7 +40,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                 canonical={`https://${Config.domain}/${router.locale}/collections/${collection.handle}/`}
                 languageAlternates={
                     router?.locales
-                        ?.filter((locale) => locale !== '__default')
+                        ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
                             href: `https://${Config.domain}/${locale}/collections/${collection.handle}/`
@@ -108,7 +108,7 @@ export async function getStaticPaths({ locales }) {
                 }))
             ])
             .flat()
-            .filter((a) => a?.params?.handle && a.locale !== '__default')
+            .filter((a) => a?.params?.handle && a.locale !== 'x-default')
     ];
 
     return { paths, fallback: true };
@@ -128,7 +128,7 @@ export async function getStaticProps({ params, locale }) {
             revalidate: false
         };
 
-    if (locale === '__default') {
+    if (locale === 'x-default') {
         return {
             props: {},
             revalidate: false

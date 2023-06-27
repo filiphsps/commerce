@@ -1,18 +1,16 @@
 var url = `https://${process.env.DOMAIN || 'www.sweetsideofsweden.com'}`;
 var locales = [
-    '__default',
+    'x-default',
     ...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])
 ];
 
 /** @type {import('next-sitemap').IConfig} */
 const config = {
     siteUrl: `${url}`,
-    alternateRefs: locales
-        .filter((locale) => locale !== '__default')
-        .map((locale) => ({
-            href: `${url}/${locale}`,
-            hreflang: locale
-        })),
+    alternateRefs: locales.map((locale) => ({
+        href: (locale !== 'x-default' && `${url}/${locale}`) || `${url}/${locales[1]}`,
+        hreflang: locale
+    })),
 
     generateRobotsTxt: true,
     generateIndexSitemap: true,
@@ -33,7 +31,7 @@ const config = {
     },
     exclude: [
         '/admin/',
-        '/__default*',
+        '/x-default*',
         //        '*/products/*',
         //        '*/collections/*',
         '*.xml'

@@ -14,7 +14,8 @@
         "dev": "next dev",
         "build": "next build",
         "postbuild": "next-sitemap",
-        "sitemap": "next-sitemap",
+        "sitemap": "next-sitemap && npm run sitemap:pretty",
+        "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
         "analyze": "ANALYZE=true next build",
         "start": "next start -p $PORT",
         "lint": "next lint",
@@ -84,6 +85,7 @@
         "next-sitemap": "4.1.3",
         "npm-run-all": "4.1.5",
         "prettier": "2.8.8",
+        "pretty-xml": "^1.2.1",
         "slice-machine-ui": "1.3.0",
         "webpack": "5.88.0"
     }

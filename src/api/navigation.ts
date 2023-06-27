@@ -18,7 +18,7 @@ export const NavigationApi = async (
     return new Promise(async (resolve, reject) => {
         try {
             const navigation = await prismic().getSingle('navigation', {
-                lang: locale === '__default' ? Config.i18n.locales[0] : locale
+                lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
             });
 
             return resolve(

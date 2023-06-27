@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { Collection, CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import {
+    Collection,
+    CountryCode,
+    LanguageCode
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { CollectionModel } from '../models/CollectionModel';
@@ -81,8 +85,7 @@ export const CollectionApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
-        if (locale === '__default')
-            locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = Config.i18n.locales[0];
 
         const country = (
             locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
@@ -90,7 +93,7 @@ export const CollectionApi = async ({
         const language = (
             locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
         ).toUpperCase() as LanguageCode;
-        
+
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`

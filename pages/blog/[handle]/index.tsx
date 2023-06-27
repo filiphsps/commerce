@@ -147,7 +147,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
                     router?.locales
-                        ?.filter((locale) => locale !== '__default')
+                        ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
                             href: `https://${Config.domain}/${locale}/blog/${article.handle}`

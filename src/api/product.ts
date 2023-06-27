@@ -210,8 +210,7 @@ export const ProductApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
-        if (locale === '__default')
-            locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = Config.i18n.locales[0];
 
         const country = (
             locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
@@ -251,7 +250,7 @@ export const ProductIdApi = async ({ id, locale: loc }: { id: string; locale?: s
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('Invalid ID'));
 
-        const locale = loc === '__default' ? Config.i18n.locales[0] : loc;
+        const locale = loc === 'x-default' ? Config.i18n.locales[0] : loc;
         // FIXME: Don't assume en-US
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
         const country = locale ? locale.split('-').at(-1)?.toUpperCase() || 'US' : 'US';

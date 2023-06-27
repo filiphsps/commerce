@@ -426,7 +426,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
                     router?.locales
-                        ?.filter((locale) => locale !== '__default')
+                        ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
                             href: `https://${Config.domain}/${locale}/cart/`

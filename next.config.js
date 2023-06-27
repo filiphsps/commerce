@@ -54,7 +54,7 @@ let config = {
                 permanent: true
             },
             {
-                source: '/__default/:slug*',
+                source: '/x-default/:slug*',
                 destination: '/:slug',
                 permanent: true
             }
