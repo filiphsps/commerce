@@ -738,10 +738,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                             .filter((i) => i) as string[]) || []
                     }
                     description={product.description || ''}
-                    aggregateRating={{
-                        ratingValue: `${reviews?.rating || 5}`,
-                        reviewCount: `${reviews?.count || 0}`
-                    }}
+                    aggregateRating={
+                        (reviews?.count || 0) > 0 && {
+                            ratingValue: `${reviews?.rating || 5}`,
+                            reviewCount: `${reviews?.count || 1}`
+                        }
+                    }
                     offers={[
                         {
                             price: Number.parseFloat(variant.price.amount!),
