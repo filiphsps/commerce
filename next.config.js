@@ -1,14 +1,6 @@
 import manifest from './package.json' assert { type: 'json' };
 import { i18n } from './next-i18next.config.js';
-import * as child_process from 'child_process';
 import { withSentryConfig } from '@sentry/nextjs';
-
-const git_sha = child_process
-    .execSync('git rev-parse HEAD', {
-        cwd: './',
-        encoding: 'utf8'
-    })
-    .replace(/\n/, '');
 
 /** @type {import('next').NextConfig} */
 let config = {
@@ -17,6 +9,7 @@ let config = {
     trailingSlash: true,
     swcMinify: true,
     i18n,
+    productionBrowserSourceMaps: true,
 
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com']
@@ -45,14 +38,9 @@ let config = {
 
         // Feature flags
         FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,
-
-        GIT_SHA: git_sha,
         VERSION: manifest.version
     },
 
-    generateBuildId: async () => {
-        return git_sha;
-    },
     async redirects() {
         return [
             {

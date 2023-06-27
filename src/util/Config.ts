@@ -1,7 +1,6 @@
 export const Config = {
     environment: process.env.NODE_ENV || 'production',
     version: process.env.VERSION,
-    git_sha: process.env.GIT_SHA,
     domain: process.env.DOMAIN || 'www.sweetsideofsweden.com',
     GTM: process.env.GTM,
     brevo: process.env.BREVO_ENABLED,
