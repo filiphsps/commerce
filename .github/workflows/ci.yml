@@ -3,7 +3,7 @@ name: 🧠 CI
 on:
     push:
         paths-ignore:
-            - "**.md"
+            - '**.md'
 
 jobs:
     test:
@@ -15,29 +15,19 @@ jobs:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v3
 
-            - name: 💾 Cache node modules
-              id: cache-npm
-              uses: actions/cache@v3
-              env:
-                  cache-name: cache-node-modules
-              with:
-                  # npm cache files are stored in `~/.npm` on Linux/macOS
-                  path: ~/.npm
-                  key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-test-${{ env.cache-name }}-
-                      ${{ runner.os }}-test-
-                      ${{ runner.os }}-
-
-            - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-              name: 📃 List the state of node modules
-              continue-on-error: true
-              run: npm list
-
             - name: 🏎️ Setup nodejs
               uses: actions/setup-node@v3
               with:
                   node-version: 'lts/*'
+                  cache: 'npm'
+
+            - name: 💾 Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-test-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-test-
 
             - name: 📦 Download dependencies
               run: npm ci
@@ -54,32 +44,65 @@ jobs:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v3
 
-            - name: 💾 Cache node modules
-              id: cache-npm
-              uses: actions/cache@v3
-              env:
-                  cache-name: cache-node-modules
-              with:
-                  # npm cache files are stored in `~/.npm` on Linux/macOS
-                  path: ~/.npm
-                  key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-build-${{ env.cache-name }}-
-                      ${{ runner.os }}-build-
-                      ${{ runner.os }}-
-
-            - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-              name: 📃 List the state of node modules
-              continue-on-error: true
-              run: npm list
-
             - name: 🏎️ Setup nodejs
               uses: actions/setup-node@v3
               with:
                   node-version: 'lts/*'
+                  cache: 'npm'
+
+            - name: 💾 Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-build-
 
             - name: 📦 Download dependencies
               run: npm ci
 
             - name: 🛠️ Build
               run: npm run build
+
+    deploy:
+        name: 🚚 Deploy
+        needs: [test, build]
+        runs-on: ubuntu-latest
+        env:
+            CI: true
+            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+            VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        if: github.ref == 'refs/heads/master'
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v3
+
+            - name: 🏎️ Setup nodejs
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 'lts/*'
+
+            - name: 💾 Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  # Re-use npm cache from the build job
+                  key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-build-
+
+            - name: 📦 Download dependencies
+              run: npm ci
+
+            - name: 📐 Install & Configure Vercel CLI
+              run: |
+                  npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+                  npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: 🚚 Push to Vercel
+              run: npx vercel deploy --prod --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: 🔥 Purge CloudFlare cache
+              run: 'curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ID }}/purge_cache" -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_TOKEN }}" -H "Content-Type: application/json" --data "{\"purge_everything\":true}"'
