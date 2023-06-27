@@ -8,7 +8,7 @@ import Slider from 'react-slick';
 import styled from 'styled-components';
 import { useWindowSize } from 'rooks';
 
-const Container = styled.div`
+const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
@@ -23,6 +23,7 @@ const ImageContainer = styled.div`
         height: 100%;
         object-fit: contain;
         object-position: center;
+        border-radius: var(--block-border-radius);
     }
 `;
 
@@ -48,26 +49,15 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
         slidesToScroll: 1
     };
 
-
     return (
         <>
-            <Head>
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-                />
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-                />
-            </Head>
             <Container>
                 <PageContent>
                     <Slider {...settings}>
                         {slice.items.map((slide, index) => {
-                            const image = (!outerWidth || outerWidth > 960) && slide?.image || slide.mobile_image;
+                            const image =
+                                ((!outerWidth || outerWidth > 960) && slide?.image) ||
+                                slide.mobile_image;
                             return (
                                 <Link key={index} href={slide.href!}>
                                     <ImageContainer>
@@ -80,7 +70,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                             width={image.dimensions?.width}
                                             height={image.dimensions?.height}
                                             priority={true}
-                                            />
+                                        />
                                     </ImageContainer>
                                 </Link>
                             );

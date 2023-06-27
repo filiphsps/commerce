@@ -6,7 +6,7 @@ import { SliceComponentProps } from '@prismicio/react';
 import TextBlockComponent from '../../src/components/TextBlock';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
@@ -30,7 +30,7 @@ const TextBlock = ({ slice }: TextBlockProps): JSX.Element => {
                             // eslint-disable-next-line react/jsx-no-undef
                             <TextBlockComponent
                                 key={index}
-                                image={item?.image?.url && item.image as any || undefined}
+                                image={(item?.image?.url && (item.image as any)) || undefined}
                                 body={asHTML(item?.text) || ''}
                             />
                         );

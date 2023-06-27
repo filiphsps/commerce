@@ -5,7 +5,7 @@ import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     gap: 1rem;
@@ -22,6 +22,7 @@ const Item = styled.div`
     height: 100%;
     min-height: 2rem;
     max-height: 18rem;
+    border-radius: var(--block-border-radius);
 
     a {
         display: block;
@@ -59,11 +60,7 @@ const TitleContainer = styled.div`
     padding: 2rem 2rem 1.8rem 2rem;
     height: 100%;
     width: 100%;
-    background: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.45) 0%,
-        rgba(0, 0, 0, 0) 100%
-    );
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
     transition: 150ms ease-in-out border;
 
     &:hover,

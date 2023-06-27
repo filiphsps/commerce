@@ -4,7 +4,7 @@ import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     gap: 1rem;
@@ -53,7 +53,6 @@ const ItemContent = styled.h3`
     }
 `;
 
-
 /**
  * Props for `IconGrid`.
  */
@@ -73,7 +72,7 @@ const IconGrid = ({ slice }: IconGridProps): JSX.Element => {
                                 {item.icon?.url && (
                                     <Image
                                         src={item.icon.url}
-                                        alt={item.icon.alt ||''}
+                                        alt={item.icon.alt || ''}
                                         layout="fill"
                                     />
                                 )}
