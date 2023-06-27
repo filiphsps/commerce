@@ -78,14 +78,15 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         };
     }, [onRouteChangeStart, router.events]);
 
-    const above =
-        header?.announcements.filter((item) => item.location === 'above') || [];
-    const bellow =
-        header?.announcements.filter((item) => item.location === 'bellow') ||
-        [];
+    const above = header?.announcements.filter((item) => item.location === 'above') || [];
+    const bellow = header?.announcements.filter((item) => item.location === 'bellow') || [];
 
     return (
-        <div className={`PageProvider ${props.className || ''}`}>
+        <div
+            className={`PageProvider ${props.className || ''} ${
+                (sidebarOpen && 'SideBar-Open') || ''
+            }`}
+        >
             {above.length > 0 && (
                 <Announcements>
                     {above.map((item, index) => (
@@ -106,8 +107,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
                     sidebarOpen={sidebarOpen}
                 />
-                {(search?.open && <SearchHeader query={search?.phrase} />) ||
-                    null}
+                {(search?.open && <SearchHeader query={search?.phrase} />) || null}
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}
@@ -117,16 +117,12 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             {bellow.length > 0 && (
                 <Announcements>
                     {bellow.map((item, index) => (
-                        <Announcement
-                            key={index}
-                            className={item.background_color}
-                        >
+                        <Announcement key={index} className={item.background_color}>
                             <Announcement
                                 key={index}
                                 className={item.background_color}
                                 dangerouslySetInnerHTML={{
-                                    __html:
-                                        PrismicDOM.asHTML(item.content) || ''
+                                    __html: PrismicDOM.asHTML(item.content) || ''
                                 }}
                             />
                         </Announcement>

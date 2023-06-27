@@ -78,7 +78,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
             <ImageContainer>
                 <Image
                     src={image?.url}
-                    alt={image?.alt}
+                    alt={image?.alt || 'Decorative image to content'}
                     width={image?.dimensions?.width || 0}
                     height={image?.dimensions?.height || 0}
                     layout="intrinsic"

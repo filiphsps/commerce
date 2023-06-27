@@ -9,11 +9,12 @@ const Container = styled.div`
     top: 6rem;
     z-index: 99999;
     overflow-y: scroll;
+    overscroll-behavior: auto auto;
     height: 100%;
     width: 70vw;
     width: 70dvw;
-    height: calc(100dvh - 6rem);
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 10rem);
+    height: calc(100dvh - 10rem);
     padding: 2rem;
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);

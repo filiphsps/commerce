@@ -22,9 +22,13 @@ const Content = styled.div`
     gap: 1.5rem;
     max-width: 1465px;
     width: 100%;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 2rem;
 
+    @media (max-width: 1430px) {
+        padding: 0.75rem 1rem;
+    }
     @media (max-width: 950px) {
+        padding: 0.75rem 2rem;
         position: relative;
         grid-template-columns: auto auto 1fr;
         gap: 1rem;
@@ -348,7 +352,8 @@ const MenuItem = styled.div`
     padding-right: 1.2rem;
     transition: padding 150ms ease-in-out;
 
-    &.Active, &:hover {
+    &.Active,
+    &:hover {
         padding-left: 1rem;
         padding-right: 0px;
         border-left: 0.2rem solid var(--accent-primary);
@@ -542,18 +547,26 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                     <Menu>
                                         <MenuContent>
                                             {item.children.map((item, index) => (
-                                                <MenuItem key={item.handle + `${index}`} className={
-                                                    (router.asPath === '/' && item?.handle === null) ||
-                                                    `/${item?.handle}` === router.asPath
-                                                        ? 'Active'
-                                                        : ''
-                                                }>
+                                                <MenuItem
+                                                    key={item.handle + `${index}`}
+                                                    className={
+                                                        (router.asPath === '/' &&
+                                                            item?.handle === null) ||
+                                                        `/${item?.handle}` === router.asPath
+                                                            ? 'Active'
+                                                            : ''
+                                                    }
+                                                >
                                                     <Link
                                                         href={`/${item?.handle || ''}`}
                                                         title={item.title}
                                                     >
                                                         <MenuItemTitle>{item.title}</MenuItemTitle>
-                                                        {item.description && <MenuItemDescription>{item.description}</MenuItemDescription>}
+                                                        {item.description && (
+                                                            <MenuItemDescription>
+                                                                {item.description}
+                                                            </MenuItemDescription>
+                                                        )}
                                                     </Link>
                                                 </MenuItem>
                                             ))}
@@ -578,7 +591,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             <Link href={'/cart/'} className="Wrapper">
                                 {(cart?.totalQuantity || 0) > 0 && (
                                     <CartIcon className="Header-Content-CartBadge">
-                                        {(cart?.totalQuantity || 0)}
+                                        {cart?.totalQuantity || 0}
                                     </CartIcon>
                                 )}
                                 <FiShoppingCart className="Icon" />
