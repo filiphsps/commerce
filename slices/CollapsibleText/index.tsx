@@ -79,7 +79,7 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
  * Component for "CollapsibleText" Slices.
  */
 const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     // FIXME: Set height to zero when closed to let search engines index this
 
     return (
