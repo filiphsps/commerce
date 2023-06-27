@@ -726,10 +726,11 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
             {product.variants?.edges?.map?.(({ node: variant }: ProductVariantEdge) => (
                 <ProductJsonLd
                     key={variant?.id}
-                    keyOverride={variant?.id}
-                    productName={`${product.title} - ${variant.title}`}
+                    productName={`${product.vendor} ${product.title} ${variant.title}`}
                     brand={product.vendor}
-                    sku={variant.sku || variant?.id}
+                    sku={`shopify_${(router?.locale || 'en-US').split('-')[1]}_${product.id
+                        ?.split('/')
+                        .at(-1)}_${variant?.id.split('/').at(-1)}`}
                     mpn={variant.barcode || variant.sku || variant?.id}
                     images={
                         (product.images?.edges
@@ -739,7 +740,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                     description={product.description || ''}
                     aggregateRating={{
                         ratingValue: `${reviews?.rating || 5}`,
-                        reviewCount: `${reviews?.count || 1}`
+                        reviewCount: `${reviews?.count || 0}`
                     }}
                     offers={[
                         {
