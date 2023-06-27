@@ -86,12 +86,13 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                 title="Blog"
                 canonical={`https://${Config.domain}/${router.locale}/blog/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/blog/`
-                        })) || []
+                    router.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href:
+                            (locale !== 'x-default' &&
+                                `https://${Config.domain}/${locale}/blog/`) ||
+                            `https://${Config.domain}/blog/`
+                    })) || []
                 }
             />
 

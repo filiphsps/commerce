@@ -1,10 +1,10 @@
-import Document, { Head, Html, Main, NextScript } from 'next/document';
+import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 
 import { Config } from '../src/util/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
 
-class App extends Document {
+class Document extends NextDocument {
     static async getInitialProps(ctx) {
         const sheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
@@ -15,7 +15,7 @@ class App extends Document {
                     enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />)
                 });
 
-            const initialProps = await Document.getInitialProps(ctx);
+            const initialProps = await NextDocument.getInitialProps(ctx);
             return {
                 ...initialProps,
                 styles: (
@@ -32,7 +32,13 @@ class App extends Document {
 
     render() {
         return (
-            <Html lang={this.props.locale || Config.i18n.locales[0]}>
+            <Html
+                lang={
+                    (this.props.locale !== 'x-default' &&
+                        (this.props.locale || Config.i18n.locales[0])) ||
+                    undefined
+                }
+            >
                 <Head>
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -60,37 +66,43 @@ class App extends Document {
                 <body itemScope itemType="http://schema.org/WebPage">
                     <Main />
                     <NextScript />
-                    {Config.GTM && (
-                        <Script id="gtm" strategy="lazyOnload">
-                            {`
-                            // Adapted from https://www.sean-lloyd.com/post/delay-google-analytics-improve-pagespeed-insights-score/
 
-                            // Load the script after the user scrolls, moves the mouse, or touches the screen
-                            document.addEventListener('scroll', initGTMOnEvent);
-                            document.addEventListener('mousemove', initGTMOnEvent);
-                            document.addEventListener('touchstart', initGTMOnEvent);
-                            
-                            // Or, load the script after 2 seconds
-                            document.addEventListener('DOMContentLoaded', () => { setTimeout(initGTM, 2000); });
-                            
-                            // Initializes Google Tag Manager in response to an event
-                            function initGTMOnEvent (event) {
-                                initGTM();
-                                event.currentTarget.removeEventListener(event.type, initGTMOnEvent);
-                            }
-                            
+                    {Config.GTM && (
+                        <Script id="gtm" strategy="afterInteractive">
+                            {`// Originally adapted from https://www.sean-lloyd.com/post/delay-google-analytics-improve-pagespeed-insights-score/
+                            // TODO: Turn this into an actual package.
+
                             // Initializes Google Tag Manager
+                            let ran = false;
                             function initGTM () {
+                                if(ran) return;
+                                ran = true;
+                                
                                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                                 })(window,document,'script','dataLayer','${Config.GTM}');
-
-                                console.log("Delayed!");
                             }
-                        
-                        `}
+
+                            // Load the script after the user scrolls, moves the mouse, or touches the screen
+                            document.addEventListener('scroll', initGTMOnEvent);
+                            document.addEventListener('click', initGTMOnEvent);
+                            document.addEventListener('touchstart', initGTMOnEvent);
+
+                            // Initializes Google Tag Manager in response to an event
+                            function initGTMOnEvent (event) {
+                                initGTM();
+                                document.removeEventListener('scroll', initGTMOnEvent);
+                                document.removeEventListener('click', initGTMOnEvent);
+                                document.removeEventListener('touchstart', initGTMOnEvent);
+                            }
+                            
+                            // Backup options
+                            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+                                setTimeout(initGTM, 10000);
+                            else
+                                setTimeout(initGTM, 5000);`}
                         </Script>
                     )}
                 </body>
@@ -99,4 +111,4 @@ class App extends Document {
     }
 }
 
-export default App;
+export default Document;

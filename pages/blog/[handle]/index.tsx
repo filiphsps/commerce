@@ -150,19 +150,30 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                         ?.filter((locale) => locale !== 'x-default')
                         .map((locale) => ({
                             hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/blog/${article.handle}`
+                            href:
+                                (locale !== 'x-default' &&
+                                    `https://${Config.domain}/${locale}/blog/${article.handle}/`) ||
+                                `https://${Config.domain}/blog/${article.handle}/`
                         })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/blog/${article.handle}/`,
+                    url: `https://${Config.domain}/${router.locale}/blog/${article.handle}/`,
+                    locale: router.locale,
+                    type: 'article',
                     title: article.seo.title || article.title,
                     description: article.seo.description || article.excerpt,
+                    article: {
+                        publishedTime: article.published_at,
+                        section: 'Life-Style',
+                        authors: [article.author.name],
+                        tags: article.tags
+                    },
                     images: [
                         {
                             url: article.image.url
                         }
                     ],
-                    site_name: 'Candy by Sweden'
+                    site_name: store.name
                 }}
             />
             <NewsArticleJsonLd

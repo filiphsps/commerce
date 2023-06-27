@@ -72,6 +72,19 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
             ).toUpperCase() as LanguageCode;
 
+            const { data: localData } = await storefrontClient.query({
+                query: gql`
+                    query localization @inContext(language: ${language}, country: ${country}) {
+                        localization {
+                            availableCountries {
+                                isoCode
+                                name
+                            }
+                        }
+                    }
+                `
+            });
+
             const { data: shopData } = await storefrontClient.query({
                 query: gql`
                     query shop @inContext(language: ${language}, country: ${country}) {
@@ -150,7 +163,8 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 },
                 payment: {
                     methods: shopData?.shop?.paymentSettings?.acceptedCardBrands || [],
-                    wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || []
+                    wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || [],
+                    countries: localData.localization.availableCountries
                 }
             });
         } catch (error) {

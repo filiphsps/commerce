@@ -107,6 +107,7 @@ export const ArticleApi = async ({
 
                                 authorV2 {
                                     name
+                                    email
                                     bio
                                 }
 

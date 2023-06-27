@@ -4,14 +4,8 @@ var locales = [
 
 const i18n = {
     locales: ['x-default', ...locales],
-    defaultLocale: 'x-default', //locales[0] || 'en-US',
+    defaultLocale: 'x-default',
     localeDetection: false
 };
 
-const fallbackLng = {
-    default: [locales[0]]
-};
-
-const nonExplicitSupportedLngs = true;
-
-export { i18n, fallbackLng, nonExplicitSupportedLngs };
+export { i18n };

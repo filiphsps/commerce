@@ -5,7 +5,7 @@ import { prismic } from './prismic';
 export const PagesApi = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const pages = await prismic().getAllByType('page');
+            const pages = await prismic().getAllByType('custom_page');
 
             return resolve(pages.map((page) => page.uid).filter((page) => page !== 'homepage'));
         } catch (error) {

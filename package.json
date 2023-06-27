@@ -5,21 +5,21 @@
     "type": "module",
     "engines": {
         "npm": ">=8",
-        "node": "^18"
+        "node": "18"
     },
     "cacheDirectories": [
         ".next/cache"
     ],
     "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "postbuild": "next-sitemap",
+        "dev": "npm run hack && next dev",
+        "build": "npm run hack && next build",
+        "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap && npm run sitemap:pretty",
         "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
         "analyze": "ANALYZE=true next build",
-        "start": "next start -p $PORT",
-        "lint": "next lint",
-        "test": "npm-run-all test:*",
+        "start": "npm run hack && next start -p $PORT",
+        "lint": "npm run hack && next lint",
+        "test": "npm run hack && npm-run-all test:*",
         "test:jest": "jest --coverage",
         "watch:test": "jest --watch",
         "format": "npm-run-all prettier:format:*",
@@ -27,7 +27,9 @@
         "prettier:format:src": "prettier --config .prettierrc src/**/*.* --write",
         "prettier:format:pages": "prettier --config .prettierrc pages/**/*.* --write",
         "prettier:format:app": "prettier --config .prettierrc app/**/*.* --write",
-        "slicemachine": "start-slicemachine"
+        "slicemachine": "npm run hack && start-slicemachine",
+        "hack": "npm-run-all --sequential hack:*",
+        "hack:useclient-directive": "node scripts/useclient-directive-hack.mjs"
     },
     "dependencies": {
         "@apollo/client": "3.7.16",
@@ -85,7 +87,7 @@
         "next-sitemap": "4.1.3",
         "npm-run-all": "4.1.5",
         "prettier": "2.8.8",
-        "pretty-xml": "^1.2.1",
+        "pretty-xml": "1.2.1",
         "slice-machine-ui": "1.3.0",
         "webpack": "5.88.0"
     }

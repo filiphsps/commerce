@@ -33,6 +33,7 @@ import ContentBlock from '../../../src/components/ContentBlock';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
 import Gallery from '../../../src/components/Gallery';
+import { GetStaticPropsResult } from 'next';
 import Input from '../../../src/components/Input';
 import Link from 'next/link';
 import Page from '../../../src/components/Page';
@@ -44,6 +45,7 @@ import { RedirectProductApi } from '../../../src/api/redirects';
 import Reviews from '../../../src/components/Reviews';
 import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
+import { StoreModel } from '../../../src/models/StoreModel';
 import TitleToHandle from '../../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -471,7 +473,7 @@ interface ProductPageProps {
     product: Product;
     recommendations?: Product[];
     reviews?: ReviewsModel;
-    store: any;
+    store: StoreModel;
 }
 const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, reviews, store }) => {
     const router = useRouter();
@@ -704,9 +706,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                     []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/products/${product.handle}/`,
+                    url: `https://${Config.domain}/${router.locale}/products/${product.handle}/`,
+                    type: 'website',
                     title: `${product.seo?.title || product.title}`,
                     description: product?.seo?.description || product?.description || '',
+                    siteName: store.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                     images:
                         product.images?.edges
                             ?.map((edge) => {
@@ -726,12 +731,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
             {product.variants?.edges?.map?.(({ node: variant }: ProductVariantEdge) => (
                 <ProductJsonLd
                     key={variant?.id}
+                    keyOverride={`item_${variant?.id}`}
                     productName={`${product.vendor} ${product.title} ${variant.title}`}
                     brand={product.vendor}
                     sku={`shopify_${(router?.locale || 'en-US').split('-')[1]}_${product.id
                         ?.split('/')
                         .at(-1)}_${variant?.id.split('/').at(-1)}`}
-                    mpn={variant.barcode || variant.sku || variant?.id}
+                    mpn={variant.barcode || undefined}
                     images={
                         (product.images?.edges
                             ?.map?.((edge) => edge?.node?.url)
@@ -748,12 +754,60 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                         {
                             price: Number.parseFloat(variant.price.amount!),
                             priceCurrency: variant.price.currencyCode,
-                            priceValidUntil: `${new Date().getFullYear()}-12-31`,
+                            priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
                             itemCondition: 'https://schema.org/NewCondition',
                             availability: variant.availableForSale
                                 ? 'https://schema.org/InStock'
                                 : 'https://schema.org/SoldOut',
-                            url: `https://${Config.domain}/products/${product.handle}`
+                            url: `https://${Config.domain}/${router.locale}/products/${
+                                product.handle
+                            }/?variant=${variant.id.split('/').at(-1)}`,
+
+                            hasMerchantReturnPolicy: {
+                                '@type': 'MerchantReturnPolicy',
+                                returnPolicyCategory:
+                                    'https://schema.org/MerchantReturnNotPermitted'
+                            },
+
+                            shippingDetails: {
+                                '@type': 'OfferShippingDetails',
+                                shippingRate: {
+                                    '@type': 'MonetaryAmount',
+                                    maxValue: 25,
+                                    minValue: 0,
+                                    currency: 'USD' //variant.price.currencyCode
+                                },
+                                shippingDestination: store.payment?.countries.map(
+                                    ({ isoCode }) => ({
+                                        '@type': 'DefinedRegion',
+                                        addressCountry: isoCode
+                                    })
+                                ) || [
+                                    {
+                                        '@type': 'DefinedRegion',
+                                        addressCountry:
+                                            (router.locale !== 'x-default' &&
+                                                router.locale?.split('-')[1]) ||
+                                            router.locales?.[0].split('-')[1]
+                                    }
+                                ],
+                                cutoffTime: '12:00:15Z',
+                                deliveryTime: {
+                                    '@type': 'ShippingDeliveryTime',
+                                    handlingTime: {
+                                        '@type': 'QuantitativeValue',
+                                        minValue: 0,
+                                        maxValue: 3,
+                                        unitCode: 'd'
+                                    },
+                                    transitTime: {
+                                        '@type': 'QuantitativeValue',
+                                        minValue: 2,
+                                        maxValue: 12,
+                                        unitCode: 'd'
+                                    }
+                                }
+                            }
                         }
                     ]}
                 />
@@ -908,19 +962,21 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: product?.handle }
                 },
-                ...locales.map((locale) => ({
-                    params: { handle: product?.handle },
-                    locale: locale
-                }))
+                ...locales
+                    .filter((locale) => locale !== 'x-default')
+                    .map((locale) => ({
+                        params: { handle: product?.handle },
+                        locale: locale
+                    }))
             ])
             .flat()
             .filter((a) => a?.params?.handle)
     ];
 
-    return { paths, fallback: 'blocking' };
+    return { paths, fallback: true };
 }
 
-export async function getStaticProps({ params, locale }) {
+export async function getStaticProps({ params, locale }): Promise<GetStaticPropsResult<{}>> {
     let handle = '';
     if (Array.isArray(params.handle)) {
         handle = params?.handle?.join('');
@@ -937,13 +993,6 @@ export async function getStaticProps({ params, locale }) {
             },
             revalidate: false
         };
-
-    if (locale === 'x-default') {
-        return {
-            props: {},
-            revalidate: false
-        };
-    }
 
     const redirect = await RedirectProductApi(handle);
     if (redirect) {

@@ -11,6 +11,8 @@ export let middleware = (request) => {
         return undefined;
     } else if (request.nextUrl.pathname.startsWith('/api')) {
         return undefined;
+    } else if (request.nextUrl.pathname.startsWith('/monitoring')) {
+        return undefined;
     }
 
     if (!/\.(.*)$/.test(request.nextUrl.pathname) && request.nextUrl.locale === 'x-default') {

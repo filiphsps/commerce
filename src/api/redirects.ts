@@ -53,7 +53,7 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
     });
 };
 
-export const RedirectProductApi = async (handle: string) => {
+export const RedirectProductApi = async (handle: string): Promise<string | null> => {
     return new Promise(async (resolve) => {
         const redirects = await RedirectsApi();
         for (let i = 0; i < redirects.length; i++) {

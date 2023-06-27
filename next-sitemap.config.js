@@ -8,14 +8,14 @@ var locales = [
 const config = {
     siteUrl: `${url}`,
     alternateRefs: locales.map((locale) => ({
-        href: (locale !== 'x-default' && `${url}/${locale}`) || `${url}/${locales[1]}`,
+        href: (locale !== 'x-default' && `${url}/${locale}`) || url,
         hreflang: locale
     })),
 
     generateRobotsTxt: true,
     generateIndexSitemap: true,
     robotsTxtOptions: {
-        // additionalSitemaps: [`https://${process.env.DOMAIN}/dynamic-sitemap.xml`],
+        additionalSitemaps: [`https://${process.env.DOMAIN}/dynamic-sitemap.xml`],
         policies: [
             {
                 userAgent: '*',
@@ -29,13 +29,7 @@ const config = {
             }
         ]
     },
-    exclude: [
-        '/admin/',
-        '/x-default*',
-        //        '*/products/*',
-        //        '*/collections/*',
-        '*.xml'
-    ],
+    exclude: ['/admin/', '/x-default*', '*/products/*', '*/collections/*', '*.xml'],
 
     transform: async (config, path) => {
         if (!path.includes(locales[1])) return null;

@@ -43,8 +43,6 @@ const sendPageView = (analyticsPageData: any, locale: string = Config.i18n.local
         navigationType: 'navigate',
         ...analyticsPageData
     };
-    // eslint-disable-next-line no-console
-    console.log('Sending PageView event for', JSON.stringify(payload, null, 4));
     sendShopifyAnalytics(
         {
             eventName: AnalyticsEventName.PAGE_VIEW,
@@ -103,7 +101,7 @@ const StoreApp = withStore(
                         secondary: '#ffffff'
                     },
                     block: {
-                        border_radius: '0.25rem'
+                        border_radius: '0.5rem'
                     }
                 }
             }
@@ -136,6 +134,7 @@ const StoreApp = withStore(
             <>
                 <DefaultSeo
                     {...SEO}
+                    themeColor={Color(store.accent.primary).hex().toString()}
                     twitter={{
                         cardType: 'summary_large_image',
                         handle: '@sweetsideofsweden',
@@ -145,7 +144,7 @@ const StoreApp = withStore(
                 <Head>
                     <meta
                         name="viewport"
-                        content="width=device-width, initial-scale=1, user-scalable=no"
+                        content="width=device-width, initial-scale=1, shrink-to-fit=no"
                     />
                     <meta name="apple-mobile-web-app-capable" content="yes" />
                     <meta
@@ -194,11 +193,48 @@ const StoreApp = withStore(
                 <SocialProfileJsonLd
                     type="Organization"
                     name={store.name}
-                    url={`https://${Config.domain}/`}
-                    sameAs={[
-                        'https://instagram.com/sweetsideofsweden',
-                        'https://facebook.com/sweetsideofsweden'
+                    description={store.description}
+                    url={`https://${Config.domain}/${router.locale}/`}
+                    logo={store.favicon.src}
+                    foundingDate="2023"
+                    founders={[
+                        {
+                            '@type': 'Person',
+                            name: 'Dennis Sahlin',
+                            email: 'dennis@sweetsideofsweden.com',
+                            jobTitle: 'CEO'
+                        },
+                        {
+                            '@type': 'Person',
+                            name: 'Filiph Siitam Sandström',
+                            email: 'filiph@sweetsideofsweden.com',
+                            jobTitle: 'CTO'
+                        }
                     ]}
+                    address={{
+                        '@type': 'PostalAddress',
+                        streetAddress: 'Österrådagatan 11C',
+                        addressLocality: 'Mellerud',
+                        addressRegion: 'Västra Götaland',
+                        postalCode: '46431',
+                        addressCountry: 'Sweden'
+                    }}
+                    contactPoint={{
+                        '@type': 'ContactPoint',
+                        contactType: 'Customer relations and support',
+                        email: 'dennis@sweetsideofsweden.com',
+                        telephone: '+46-73-511-58-50',
+                        url: `https://${Config.domain}/${router.locale}/about/`,
+                        availableLanguage: ['English', 'Swedish'],
+                        areaServed:
+                            store.payment?.countries.map(({ isoCode }) => isoCode) ||
+                            router.locales
+                                ?.filter((i) => i !== 'x-default')
+                                .map((i) => i.split('-')[1]) ||
+                            (router.locale && []) ||
+                            undefined
+                    }}
+                    sameAs={store.social?.map(({ url }) => url)}
                 />
 
                 {/* Page */}

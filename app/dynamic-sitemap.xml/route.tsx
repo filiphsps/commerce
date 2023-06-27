@@ -7,7 +7,7 @@ import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {
     const urls: any[] = [];
-    const locales: string[] = Config?.i18n?.locales || [];
+    const locales: string[] = ['x-default', ...(Config?.i18n?.locales || [])];
 
     interface SitemapEntry {
         location: string;
@@ -44,6 +44,7 @@ export async function GET() {
     );
 
     const objects: Array<SitemapEntry[]> = [pages, collections, products, blog];
+    const url = `https://${Config.domain}`;
 
     urls.push(
         ...objects
@@ -52,18 +53,20 @@ export async function GET() {
                 // FIXME
                 const modified = new Date().toISOString();
 
-                return [
-                    {
-                        loc: `https://${Config.domain}/${item.location}`,
-                        lastmod: modified,
-                        priority: item.priority || 0.7,
-                        alternateRefs: locales.map((locale) => ({
-                            href: `https://${Config.domain}/${locale}/${item.location}`,
-                            hreflang: locale,
-                            hrefIsAbsolute: true
-                        }))
-                    }
-                ];
+                return locales.map((locale) => ({
+                    loc: `https://${Config.domain}/${
+                        (locale !== 'x-default' && `${locale}/`) || ''
+                    }${item.location}`,
+                    lastmod: modified,
+                    priority: item.priority || 0.7,
+                    alternateRefs: locales.map((locale) => ({
+                        href:
+                            (locale !== 'x-default' && `${url}/${locale}/${item.location}`) ||
+                            `${url}/${item.location}`,
+                        hreflang: locale,
+                        hrefIsAbsolute: true
+                    }))
+                }));
             })
             .flat()
     );
