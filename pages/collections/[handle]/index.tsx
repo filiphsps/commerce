@@ -9,7 +9,6 @@ import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
 import Content from '../../../src/components/Content';
 import Error from 'next/error';
-import Head from 'next/head';
 import { NextSeo } from 'next-seo';
 import Page from '../../../src/components/Page';
 import PageContent from '../../../src/components/PageContent';

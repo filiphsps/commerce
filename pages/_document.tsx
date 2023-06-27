@@ -60,13 +60,37 @@ class App extends Document {
                 <body itemScope itemType="http://schema.org/WebPage">
                     <Main />
                     <NextScript />
-                    {process.env.NODE_ENV !== 'development' && Config.GTM && (
+                    {Config.GTM && (
                         <Script id="gtm" strategy="lazyOnload">
-                            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                        })(window,document,'script','dataLayer','${Config.GTM}');`}
+                            {`
+                            // Adapted from https://www.sean-lloyd.com/post/delay-google-analytics-improve-pagespeed-insights-score/
+
+                            // Load the script after the user scrolls, moves the mouse, or touches the screen
+                            document.addEventListener('scroll', initGTMOnEvent);
+                            document.addEventListener('mousemove', initGTMOnEvent);
+                            document.addEventListener('touchstart', initGTMOnEvent);
+                            
+                            // Or, load the script after 2 seconds
+                            document.addEventListener('DOMContentLoaded', () => { setTimeout(initGTM, 2000); });
+                            
+                            // Initializes Google Tag Manager in response to an event
+                            function initGTMOnEvent (event) {
+                                initGTM();
+                                event.currentTarget.removeEventListener(event.type, initGTMOnEvent);
+                            }
+                            
+                            // Initializes Google Tag Manager
+                            function initGTM () {
+                                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                                })(window,document,'script','dataLayer','${Config.GTM}');
+
+                                console.log("Delayed!");
+                            }
+                        
+                        `}
                         </Script>
                     )}
                 </body>

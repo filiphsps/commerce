@@ -10,7 +10,7 @@ import {
     useShopifyCookies
 } from '@shopify/hydrogen-react';
 import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
-import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
 import React, { useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 
