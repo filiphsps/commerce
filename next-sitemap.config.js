@@ -27,7 +27,7 @@ const config = {
             },
             {
                 userAgent: '*',
-                disallow: ['/checkout/', '/account/', '/admin/']
+                disallow: ['/checkout/', '/account/', '/admin/', '/cdn-cgi/']
             }
         ]
     },
