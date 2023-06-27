@@ -9,6 +9,7 @@ import { FooterApi } from '../../api/footer';
 import Image from 'next/image';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
+import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -197,7 +198,9 @@ interface FooterProps {
 }
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const { store } = props;
-    const { data } = useSWR([`footer`], () => FooterApi() as any, {});
+    const { data } = useSWR([`footer`], () => FooterApi(), {
+        fallbackData: preval.footer
+    });
 
     // FIXME: Dynamic copyright copy.
 
@@ -210,22 +213,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     <FooterBlocksContainer>
                         <FooterBlock>
                             <Logo>
-                                {store?.logo?.src && (
-                                    <Image
-                                        src={store.logo.src}
-                                        alt="Logo"
-                                        fill
-                                    />
-                                )}
+                                {store?.logo?.src && <Image src={store.logo.src} alt="Logo" fill />}
                             </Logo>
 
                             <Address
                                 dangerouslySetInnerHTML={{
-                                    __html:
-                                        PrismicDOM.asText(
-                                            data?.address,
-                                            '<br />'
-                                        ) || ''
+                                    __html: PrismicDOM.asText(data?.address, '<br />') || ''
                                 }}
                             />
                         </FooterBlock>
@@ -237,11 +230,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                     <Link
                                         key={item.handle}
                                         href={item.handle}
-                                        target={
-                                            item.handle.startsWith('http')
-                                                ? '_blank'
-                                                : ''
-                                        }
+                                        target={item.handle.startsWith('http') ? '_blank' : ''}
                                     >
                                         {item.title}
                                     </Link>
@@ -260,9 +249,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                         Contact Us
                                     </Policy>
                                     <Policy href="/about/">About</Policy>
-                                    <Policy href="/privacy-policy/">
-                                        Privacy Policy
-                                    </Policy>
+                                    <Policy href="/privacy-policy/">Privacy Policy</Policy>
                                 </ImportantLinks>
                             </LegalAndCopyright>
                         </FooterBottomSectionBlock>
@@ -276,10 +263,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                         )
                                     )
                                     .map((social) => (
-                                        <Social
-                                            key={social.url}
-                                            href={social.url}
-                                        >
+                                        <Social key={social.url} href={social.url}>
                                             <Image
                                                 src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
                                                 fill
@@ -291,13 +275,9 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             </Socials>
                             <LegalAndCopyright>
                                 <Copyright>
+                                    <span>&copy; 2020-{new Date().getFullYear()} </span>
                                     <span>
-                                        &copy; 2020-{new Date().getFullYear()}{' '}
-                                    </span>
-                                    <span>
-                                        <Link
-                                            href={`https://${Config.domain}/`}
-                                        >
+                                        <Link href={`https://${Config.domain}/`}>
                                             {store?.name}
                                         </Link>{' '}
                                         - All rights reserved

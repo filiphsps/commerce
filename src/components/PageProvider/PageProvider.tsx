@@ -9,6 +9,7 @@ import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import SearchHeader from '../SearchHeader';
 import { StoreModel } from '../../models/StoreModel';
+import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -59,12 +60,12 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const router = useRouter();
     const [search, setSearch] = useStore<any>('search');
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { data: navigation } = useSWR(
-        [`navigation`],
-        () => NavigationApi(router.locale) as any,
-        {}
-    );
-    const { data: header } = useSWR(['header'], () => HeaderApi(router.locale));
+    const { data: navigation } = useSWR([`navigation`], () => NavigationApi(router.locale), {
+        fallbackData: preval.navigation
+    });
+    const { data: header } = useSWR(['header'], () => HeaderApi(router.locale), {
+        fallbackData: preval.header
+    });
 
     const onRouteChangeStart = useCallback(() => {
         setSearch({ ...search, open: false });

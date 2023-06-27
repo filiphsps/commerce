@@ -1,6 +1,9 @@
 import manifest from './package.json' assert { type: 'json' };
 import { i18n } from './next-i18next.config.js';
 import { withSentryConfig } from '@sentry/nextjs';
+import createNextPluginPreval from 'next-plugin-preval/config.js';
+
+const withNextPluginPreval = createNextPluginPreval();
 
 /** @type {import('next').NextConfig} */
 let config = {
@@ -63,7 +66,7 @@ let config = {
 };
 
 export default withSentryConfig(
-    config,
+    withNextPluginPreval(config),
     {
         // For all available options, see:
         // https://github.com/getsentry/sentry-webpack-plugin#options
@@ -85,10 +88,10 @@ export default withSentryConfig(
         transpileClientSDK: true,
 
         // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-        //tunnelRoute: '/monitoring',
+        // tunnelRoute: '/monitoring',
 
         // Hides source maps from generated client bundles
-        hideSourceMaps: true,
+        hideSourceMaps: false,
 
         // Automatically tree-shake Sentry logger statements to reduce bundle size
         disableLogger: true

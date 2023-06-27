@@ -23,6 +23,7 @@ import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
+import preval from '../src/data.preval';
 import prismicConfig from '../slicemachine.config.json';
 import useSWR from 'swr';
 import { withStore } from 'react-context-hook';
@@ -59,6 +60,7 @@ const sendPageView = (analyticsPageData: any, locale: string = Config.i18n.local
 const StoreApp = withStore(
     ({ Component, pageProps, locale }) => {
         const router = useRouter();
+
         useShopifyCookies({
             hasUserConsent: true,
             domain:
@@ -82,28 +84,7 @@ const StoreApp = withStore(
             [`store`],
             () => StoreApi({ locale: router.locale }) as any,
             {
-                fallbackData: {
-                    // FIXME: Use CMS for these
-                    name: 'Sweet Side of Sweden',
-                    currency: 'USD',
-                    logo: {
-                        src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/logo_d38724cd-5589-4b7a-9f61-62c274f52720.png?v=1686651235'
-                    },
-                    favicon: {
-                        src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/favicon.png?v=1686651228'
-                    },
-                    accent: {
-                        primary: Config.colors.primary,
-                        secondary: Config.colors.secondary
-                    },
-                    color: {
-                        primary: '#ffffff',
-                        secondary: '#ffffff'
-                    },
-                    block: {
-                        border_radius: '0.5rem'
-                    }
-                }
+                fallbackData: preval.store
             }
         );
 
