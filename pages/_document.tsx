@@ -12,8 +12,7 @@ class App extends Document {
         try {
             ctx.renderPage = () =>
                 originalRenderPage({
-                    enhanceApp: (App) => (props) =>
-                        sheet.collectStyles(<App {...props} />)
+                    enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />)
                 });
 
             const initialProps = await Document.getInitialProps(ctx);
@@ -35,20 +34,9 @@ class App extends Document {
         return (
             <Html lang={this.props.locale || Config.i18n.locales[0]}>
                 <Head>
-                    <link
-                        rel="preconnect"
-                        href="https://fonts.googleapis.com"
-                    />
-                    <link
-                        rel="preconnect"
-                        href="https://fonts.gstatic.com"
-                        crossOrigin=""
-                    />
-                    <link
-                        rel="preconnect"
-                        href="https://cdn.shopify.com"
-                        crossOrigin=""
-                    />
+                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+                    <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
                     <link
                         rel="preconnect"
                         href="https://sweet-side-of-sweden.myshopify.com/"
@@ -57,6 +45,16 @@ class App extends Document {
                     <link
                         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;800&display=swap"
                         rel="stylesheet"
+                    />
+                    <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+                    />
+                    <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                     />
                 </Head>
                 <body itemScope itemType="http://schema.org/WebPage">
