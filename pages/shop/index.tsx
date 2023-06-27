@@ -204,7 +204,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 description={
                     asText(props.page.data.meta_description) || props.page.data.description || ''
                 }
-                canonical={`https://${Config.domain}/shop/`}
+                canonical={`https://${Config.domain}/${router.locale}/shop/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

@@ -26,7 +26,7 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
             <NextSeo
                 title={page.data.meta_title || ''}
                 description={asText(page.data.meta_description) || store?.description || ''}
-                canonical={`https://${Config.domain}/`}
+                canonical={`https://${Config.domain}/${router.locale}/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

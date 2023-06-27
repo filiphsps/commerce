@@ -423,7 +423,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         <Page className="CartPage">
             <NextSeo
                 title="Cart"
-                canonical={`https://${Config.domain}/cart/`}
+                canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

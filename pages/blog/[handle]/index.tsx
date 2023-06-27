@@ -144,7 +144,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
             <NextSeo
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
-                canonical={`https://${Config.domain}/blog/${article.handle}/`}
+                canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

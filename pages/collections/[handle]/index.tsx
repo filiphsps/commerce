@@ -38,7 +38,7 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
             <NextSeo
                 title={collection?.seo?.title || collection?.title}
                 description={collection?.seo?.description || collection?.description || undefined}
-                canonical={`https://${Config.domain}/collections/${collection.handle}/`}
+                canonical={`https://${Config.domain}/${router.locale}/collections/${collection.handle}/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

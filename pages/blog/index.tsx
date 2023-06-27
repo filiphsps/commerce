@@ -84,7 +84,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
         <Page className="BlogPage">
             <NextSeo
                 title="Blog"
-                canonical={`https://${Config.domain}/blog/`}
+                canonical={`https://${Config.domain}/${router.locale}/blog/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')

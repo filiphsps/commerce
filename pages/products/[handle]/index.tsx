@@ -685,7 +685,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
                 description={product?.seo?.description || product?.description || ''}
-                canonical={`https://${Config.domain}/products/${product.handle}/`}
+                canonical={`https://${Config.domain}/${router.locale}/products/${product.handle}/`}
                 languageAlternates={
                     router?.locales
                         ?.filter((locale) => locale !== '__default')
