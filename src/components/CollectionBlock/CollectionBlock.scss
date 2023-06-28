@@ -4,9 +4,7 @@
     position: relative;
 
     .CollectionBlock-Header {
-        &:empty {
-            padding-bottom: 0px;
-        }
+        padding: 0.5rem 0px 0.5rem 0px;
 
         .CollectionBlock-Header-Title {
             margin-bottom: 0px;
@@ -19,8 +17,8 @@
 
         .CollectionBlock-Header-Description {
             padding: 0.5rem 0px 1rem 0px;
-            font-size: 1.35rem;
-            line-height: 2.15rem;
+            font-size: 1.25rem;
+            line-height: 2rem;
         }
     }
 

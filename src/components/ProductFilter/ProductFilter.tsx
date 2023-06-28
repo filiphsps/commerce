@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const FilterWrapper = styled.div`
     position: relative;
-    margin: 0px 0px 2rem 0px;
+    margin: 0px 0px 1rem 0px;
 `;
 const Filters = styled.div``;
 const Filter = styled.div`
@@ -91,10 +91,7 @@ interface ProductFilterProps {
     // eslint-disable-next-line no-unused-vars
     onChange: (filter: any) => void;
 }
-const ProductFilter: FunctionComponent<ProductFilterProps> = ({
-    products,
-    onChange
-}) => {
+const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChange }) => {
     const [filters, setFilters] = useState<any>({
         tags: [],
         vendors: [],
@@ -144,23 +141,14 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                             <LanguageString id="sorting" />
                         </OptionsTitle>
                         <Option
-                            className={
-                                (filters.sorting == 'none' && 'Selected') || ''
-                            }
-                            onClick={() =>
-                                setFilters({ ...filters, sorting: 'none' })
-                            }
+                            className={(filters.sorting == 'none' && 'Selected') || ''}
+                            onClick={() => setFilters({ ...filters, sorting: 'none' })}
                         >
                             Popular
                         </Option>
                         <Option
-                            className={
-                                (filters.sorting == 'abcAsc' && 'Selected') ||
-                                ''
-                            }
-                            onClick={() =>
-                                setFilters({ ...filters, sorting: 'abcAsc' })
-                            }
+                            className={(filters.sorting == 'abcAsc' && 'Selected') || ''}
+                            onClick={() => setFilters({ ...filters, sorting: 'abcAsc' })}
                         >
                             Brand Asc.
                         </Option>
@@ -173,23 +161,13 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                         {tags.sort().map((item) => (
                             <Option
                                 key={`tags_${item}`}
-                                className={
-                                    (filters.tags.includes(item) &&
-                                        'Selected') ||
-                                    ''
-                                }
+                                className={(filters.tags.includes(item) && 'Selected') || ''}
                                 onClick={() => {
                                     let new_filter = filters.tags;
 
                                     if (filters.tags.includes(item))
-                                        new_filter = filters.tags.filter(
-                                            (tag) => tag !== item
-                                        );
-                                    else
-                                        new_filter = [
-                                            ...(filters.tags || []),
-                                            item
-                                        ];
+                                        new_filter = filters.tags.filter((tag) => tag !== item);
+                                    else new_filter = [...(filters.tags || []), item];
 
                                     setFilters({
                                         ...filters,
@@ -209,18 +187,13 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({
                         {vendors.sort().map((item) => (
                             <Option
                                 key={`brand_${item}`}
-                                className={
-                                    filters.vendors.includes(item) && 'Selected'
-                                }
+                                className={filters.vendors.includes(item) && 'Selected'}
                                 onClick={() => {
                                     let new_filter = filters.vendors;
 
                                     if (filters.vendors.includes(item))
-                                        new_filter = filters.vendors.filter(
-                                            (tag) => tag !== item
-                                        );
-                                    else
-                                        new_filter = [...filters.vendors, item];
+                                        new_filter = filters.vendors.filter((tag) => tag !== item);
+                                    else new_filter = [...filters.vendors, item];
 
                                     setFilters({
                                         ...filters,

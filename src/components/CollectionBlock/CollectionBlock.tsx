@@ -16,7 +16,7 @@ import useSWR from 'swr';
 const SubTitle = styled.div`
     margin: -0.5rem 0px 2rem 0px;
     color: #404756;
-    font-size: 1.65rem;
+    font-size: 1.5rem;
     line-height: 2rem;
 
     h1 {
@@ -131,6 +131,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                                 </Link>
                             )
                         }
+                        noMargin
                         plainTitle={props.plainTitle}
                     />
                     {props?.showDescription && (

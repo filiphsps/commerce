@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
+
 import { Content } from '@prismicio/client';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageContent from '../../src/components/PageContent';
@@ -15,15 +16,16 @@ const Container = styled.section`
 `;
 
 const ImageContainer = styled.div`
+    overflow: hidden;
     position: relative;
     width: 100%;
+    border-radius: var(--block-border-radius);
 
     img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: center;
-        border-radius: var(--block-border-radius);
     }
 `;
 
@@ -36,8 +38,9 @@ export type CarouselProps = SliceComponentProps<Content.CarouselSlice>;
  * Component for "Carousel" Slices.
  */
 const Carousel = ({ slice }: CarouselProps): JSX.Element => {
-    const speed = slice.primary.delay || 3000;
+    const speed = Number.parseInt(slice.primary.delay || '3000');
     const { outerWidth } = useWindowSize();
+    const [isMobile, setIsMobile] = useState(false);
 
     const settings = {
         dots: false,
@@ -49,15 +52,20 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
         slidesToScroll: 1
     };
 
+    useEffect(() => {
+        if (!outerWidth) return;
+
+        if (outerWidth > 960 && isMobile) setIsMobile(false);
+        else if (outerWidth <= 960 && !isMobile) setIsMobile(true);
+    }, [outerWidth]);
+
     return (
         <>
             <Container>
                 <PageContent>
                     <Slider {...settings}>
                         {slice.items.map((slide, index) => {
-                            const image =
-                                ((!outerWidth || outerWidth > 960) && slide?.image) ||
-                                slide.mobile_image;
+                            const image = isMobile ? slide.mobile_image : slide.image;
                             return (
                                 <Link key={index} href={slide.href!}>
                                     <ImageContainer>

@@ -851,6 +851,37 @@ interface CollectionSliceDefaultPrimary {
      */
     handle: prismic.KeyTextField;
     /**
+     * Title field in *Collection → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection.primary.title
+     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
+     *
+     */
+    title: prismic.RichTextField;
+    /**
+     * Body field in *Collection → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection.primary.body
+     * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
+     *
+     */
+    body: prismic.RichTextField;
+    /**
+     * Alignment field in *Collection → Primary*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: left
+     * - **API ID Path**: collection.primary.alignment
+     * - **Documentation**: https://prismic.io/docs/core-concepts/select
+     *
+     */
+    alignment: prismic.SelectField<'left' | 'center' | 'right', 'filled'>;
+    /**
      * Item Limit field in *Collection → Primary*
      *
      * - **Field Type**: Number
@@ -870,7 +901,7 @@ interface CollectionSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/core-concepts/select
      *
      */
-    direction: prismic.SelectField<'horizontal' | 'vertical', 'filled'>;
+    direction: prismic.SelectField<'horizontal' | 'vertical' | 'grid', 'filled'>;
     /**
      * Hide Title field in *Collection → Primary*
      *

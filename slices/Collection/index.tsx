@@ -1,13 +1,60 @@
+import { Content, asHTML, asText } from '@prismicio/client';
+import styled, { css } from 'styled-components';
+
 import CollectionBlock from '../../src/components/CollectionBlock';
-import { Content } from '@prismicio/client';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
 
 const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
+`;
+
+const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 0.5rem;
+    padding: 1rem 0px;
+
+    @media (max-width: 950px) {
+        padding: 1rem 0px 0.5rem 0px;
+    }
+
+    ${({ alignment }) =>
+        alignment == 'center' &&
+        css`
+            margin-bottom: 1.25rem;
+            align-items: center;
+            text-align: center;
+
+            @media (max-width: 950px) {
+                align-items: start;
+                text-align: left;
+            }
+        `};
+`;
+const Title = styled.div`
+    text-transform: uppercase;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.1rem;
+
+    @media (max-width: 950px) {
+        font-size: 2.25rem;
+    }
+`;
+const Body = styled.div`
+    font-size: 2rem;
+    line-height: 2.5rem;
+    max-width: 64rem;
+
+    @media (max-width: 950px) {
+        font-size: 1.75rem;
+        line-height: 2.25rem;
+    }
 `;
 
 /**
@@ -22,11 +69,25 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
     return (
         <Container>
             <PageContent>
+                {asText(slice.primary.title).length > 0 && (
+                    <Header alignment={slice.primary.alignment}>
+                        <Title
+                            dangerouslySetInnerHTML={{
+                                __html: asHTML(slice.primary.title)
+                            }}
+                        />
+                        <Body
+                            dangerouslySetInnerHTML={{
+                                __html: asHTML(slice.primary.body)
+                            }}
+                        />
+                    </Header>
+                )}
                 <CollectionBlock
                     handle={slice.primary.handle!}
                     isHorizontal={slice.primary.direction === 'horizontal'}
                     limit={slice.primary.limit || 16}
-                    hideTitle={slice.primary.hide_title}
+                    hideTitle={asText(slice.primary.title).length > 0 || slice.primary.hide_title}
                     plainTitle
                     data={context.prefetch?.collections?.[slice.primary.handle!]}
                     store={context.store}

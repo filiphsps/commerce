@@ -84,7 +84,8 @@ const Title = styled.div`
     //flex-grow: 1;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 1.65rem;
+    font-size: 1.75rem;
+    line-height: 1.75rem;
 
     &:hover,
     &:active,

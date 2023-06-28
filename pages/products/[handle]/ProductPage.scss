@@ -10,7 +10,7 @@
             text-transform: uppercase;
 
             .ProductPage-Content-Header-Vendor {
-                font-size: 1.65rem;
+                font-size: 1.5rem;
                 font-weight: 500;
                 color: $color-dark;
                 cursor: pointer;
@@ -239,10 +239,7 @@
                         overflow-y: hidden;
 
                         @media (max-width: $width-max-mobile) {
-                            grid-template-columns: repeat(
-                                auto-fill,
-                                minmax(12rem, 1fr)
-                            );
+                            grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
                             width: calc(100vw - 2rem);
                         }
 

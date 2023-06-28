@@ -516,7 +516,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                     />
                 </Price>
             )}
-            <Price highlight={!!selectedVariant.compareAtPrice}>
+            <Price highlight={selectedVariant.compareAtPrice != null}>
                 <Currency
                     value={Number.parseFloat(selectedVariant.price?.amount!)}
                     currency={selectedVariant.price?.currencyCode!}

@@ -13,6 +13,33 @@
             "imageUrl": "",
             "primary": {
                 "handle": { "type": "Text", "config": { "label": "Handle", "placeholder": "" } },
+                "title": {
+                    "type": "StructuredText",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": "",
+                        "allowTargetBlank": true,
+                        "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,embed"
+                    }
+                },
+                "body": {
+                    "type": "StructuredText",
+                    "config": {
+                        "label": "Body",
+                        "placeholder": "",
+                        "allowTargetBlank": true,
+                        "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                    }
+                },
+                "alignment": {
+                    "type": "Select",
+                    "config": {
+                        "label": "Alignment",
+                        "placeholder": "",
+                        "options": ["left", "center", "right"],
+                        "default_value": "left"
+                    }
+                },
                 "limit": {
                     "type": "Number",
                     "config": { "label": "Item Limit", "placeholder": "16" }
@@ -22,7 +49,7 @@
                     "config": {
                         "label": "Direction",
                         "placeholder": "",
-                        "options": ["horizontal", "vertical"],
+                        "options": ["horizontal", "vertical", "grid"],
                         "default_value": "horizontal"
                     }
                 },

@@ -21,6 +21,33 @@
 				"__TYPE__": "FieldContent",
 				"value": "company",
 				"type": "Text"
+			},
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Est esse quis aliquip dolore ex velit cupidatat ipsum. Incididunt cillum exercitation voluptate ullamco in proident."
+						}
+					}
+				]
+			},
+			"body": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Veniam ipsum qui ipsum fugiat mollit nisi duis sunt amet nostrud. Enim consectetur ad anim incididunt quis enim et ut fugiat Lorem ea dolore aliqua. Esse ad aliqua cupidatat pariatur qui."
+						}
+					}
+				]
+			},
+			"alignment": {
+				"__TYPE__": "FieldContent",
+				"value": "left",
+				"type": "Select"
 			}
 		},
 		"items": []

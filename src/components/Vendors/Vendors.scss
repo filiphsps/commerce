@@ -4,7 +4,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     grid-gap: 1rem;
-    margin: 0px 0px 2rem 0px;
+    margin: 0px 0px 1rem 0px;
 
     @media (max-width: $width-max-mobile) {
         display: flex;
