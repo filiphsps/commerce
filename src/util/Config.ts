@@ -3,10 +3,6 @@ export const Config = {
     version: process.env.VERSION,
     domain: process.env.DOMAIN || 'www.sweetsideofsweden.com',
     GTM: process.env.GTM,
-    brevo: process.env.BREVO_ENABLED,
-    features: {
-        accounts: process.env.FEATURE_ACCOUNTS === 'true'
-    },
 
     shopify: {
         shop_id:

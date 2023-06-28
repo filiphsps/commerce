@@ -12,25 +12,41 @@ const Container = styled.div`
     flex-direction: column;
     gap: 1rem;
 `;
+const ReviewsContainer = styled.section``;
 const Review = styled.div`
-    background: #fefefe;
-    border-radius: var(--block-border-radius);
+    padding-bottom: 1rem;
+    border-bottom: 0.2rem solid #404756;
 `;
 const Meta = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
 `;
 const Title = styled.div`
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
-    opacity: 0.75;
+    line-height: 2.25rem;
+    letter-spacing: 0.05rem;
     text-transform: uppercase;
 `;
-const Author = styled.div``;
+const Author = styled.div`
+    padding-top: 0.25rem;
+
+    // TODO: The following is just the label from the product page
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #404756;
+`;
 const Body = styled.div`
     padding-top: 1rem;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+`;
+
+const FormHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 const Form = styled.div`
@@ -106,36 +122,42 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
 
     return (
         <Container>
-            {reviews.reviews.map((review) => (
-                <Review key={review.id}>
-                    <Meta>
-                        <div>
-                            <Title>{review.title}</Title>
-                            <Author>By {review.author}</Author>
-                        </div>
-                        <ReactStars
-                            size={20}
-                            count={5}
-                            value={review.rating}
-                            isHalf={true}
-                            edit={false}
-                            activeColor="#D8B309"
-                        />
-                    </Meta>
-                    <Body>{review.body}</Body>
-                </Review>
-            ))}
+            <ReviewsContainer>
+                {reviews.reviews.map((review) => (
+                    <Review key={review.id}>
+                        <Meta>
+                            <div>
+                                <Title>{review.title}</Title>
+                                <Author>By {review.author}</Author>
+                            </div>
+                            <ReactStars
+                                size={20}
+                                count={5}
+                                value={review.rating}
+                                isHalf={true}
+                                edit={false}
+                                activeColor="#D8B309"
+                            />
+                        </Meta>
+                        <Body>{review.body}</Body>
+                    </Review>
+                ))}
+            </ReviewsContainer>
             {!submitted ? (
                 <Form>
-                    <ReactStars
-                        size={32}
-                        count={5}
-                        isHalf={false}
-                        edit={!loading}
-                        value={rating}
-                        onChange={setRating}
-                        activeColor="#D8B309"
-                    />
+                    <FormHeader>
+                        <Title>Leave a review</Title>
+                        <ReactStars
+                            size={32}
+                            count={5}
+                            isHalf={false}
+                            edit={!loading}
+                            value={rating}
+                            onChange={setRating}
+                            activeColor="#D8B309"
+                        />
+                    </FormHeader>
+
                     <Input
                         disabled={loading}
                         placeholder="Name"

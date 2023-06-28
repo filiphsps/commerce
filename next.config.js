@@ -39,8 +39,6 @@ let config = {
         ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,
         ACCENT_SECONDARY: process.env.ACCENT_SECONDARY,
 
-        // Feature flags
-        FEATURE_ACCOUNTS: process.env.FEATURE_ACCOUNTS,
         VERSION: manifest.version
     },
 

@@ -123,41 +123,6 @@ export const Tag = styled.div`
     &.Vegan {
         background: #228b22;
     }
-    &.Raspberry {
-        background: #e30b5c;
-    }
-    &.Strawberry {
-        background: #fb2943;
-    }
-    &.Fruity {
-        background: #663046;
-    }
-    &.Chocolate {
-        background: #7f4e1e;
-    }
-    &.Marshmallow {
-        background: #f0eee4;
-        color: #333;
-    }
-    &.Licorice {
-        background: #333;
-    }
-    &.Toffee {
-        background: #cc8149;
-    }
-    &.Creamy {
-        background: #b3956c;
-    }
-    &.Coffee {
-        background: #6f4d3f;
-    }
-    &.Salty {
-        background: #4d423e;
-    }
-    &.Soft {
-        background: #ace1f0;
-        color: #333;
-    }
 `;
 const Description = styled.div`
     font-size: 1.5rem;
@@ -178,7 +143,6 @@ const Description = styled.div`
         line-height: 2.25rem;
         letter-spacing: 0.05rem;
         text-transform: uppercase;
-        color: #404756;
     }
     h3 {
         font-size: 1.75rem;
@@ -194,19 +158,6 @@ const Description = styled.div`
         &:last-of-type {
             margin-bottom: 0px;
         }
-    }
-`;
-
-const Metadata = styled.div`
-    font-size: 1.05rem;
-    line-height: 1.5rem;
-    letter-spacing: -0.065rem;
-    color: #404756;
-    opacity: 0.75;
-
-    ${Label} {
-        letter-spacing: unset;
-        padding-right: 0.5rem;
     }
 `;
 
@@ -841,17 +792,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                                     />
                                 </TabContent>
                                 <TabContent className={tab == 'ingredients' ? 'Active' : ''}>
-                                    <Metadata>
-                                        <Label>Ingredients</Label>
+                                    <Description>
+                                        <h2>Ingredients</h2>
                                         {(product as any)?.ingredients?.value ||
-                                            `No ingredients found.`}
-                                    </Metadata>
-                                    {selectedVariant.sku && (
-                                        <Metadata>
-                                            <Label>SKU</Label>
-                                            {selectedVariant.sku}
-                                        </Metadata>
-                                    )}
+                                            `No ingredients found.`}{' '}
+                                        <br />
+                                        {selectedVariant.sku && (
+                                            <>
+                                                <h2>SKU</h2>
+                                                {selectedVariant.sku}
+                                            </>
+                                        )}
+                                    </Description>
                                 </TabContent>
                                 <TabContent className={tab == 'reviews' ? 'Active' : ''}>
                                     <Reviews product={product as any} reviews={reviews} />
