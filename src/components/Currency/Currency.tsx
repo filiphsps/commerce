@@ -22,7 +22,7 @@ const Currency: FunctionComponent<CurrencyProps> = ({
     return (
         <div className={`Currency ${className || ''}`}>
             {prefix && <span className="Currency-Prefix">{prefix}</span>}
-            <Tender value={price || 0} currency={currency} />
+            <Tender value={price || 0} currency={currency || 'USD'} />
             {suffix && <span className="Currency-Suffix">{suffix}</span>}
         </div>
     );

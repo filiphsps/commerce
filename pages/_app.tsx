@@ -14,7 +14,9 @@ import PageProvider from '../src/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
+import { StyleSheetManager } from 'styled-components';
 import { appWithTranslation } from 'next-i18next';
+import isPropValid from '@emotion/is-prop-valid';
 import preval from '../src/data.preval';
 import prismicConfig from '../slicemachine.config.json';
 import useSWR from 'swr';
@@ -157,12 +159,14 @@ const StoreApp = withStore(
                     languageIsoCode={language}
                 >
                     <CartProvider countryCode={country}>
-                        <PageProvider
-                            store={store}
-                            pagePropsAnalyticsData={pageProps.analytics || {}}
-                        >
-                            <Component key={router.asPath} {...pageProps} store={store} />
-                        </PageProvider>
+                        <StyleSheetManager shouldForwardProp={isPropValid}>
+                            <PageProvider
+                                store={store}
+                                pagePropsAnalyticsData={pageProps.analytics || {}}
+                            >
+                                <Component key={router.asPath} {...pageProps} store={store} />
+                            </PageProvider>
+                        </StyleSheetManager>
                     </CartProvider>
                 </ShopifyProvider>
                 <PrismicPreview repositoryName={prismicConfig.repositoryName} />

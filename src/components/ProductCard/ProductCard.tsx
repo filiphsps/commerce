@@ -7,6 +7,7 @@ import {
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 
 import Button from '../Button';
+import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
@@ -260,7 +261,7 @@ const Badge = styled.div`
     &.Vegan {
         font-weight: 700;
         font-size: 1.25rem;
-        background: #228b22;
+        background: #1b6e1b;
     }
 `;
 
@@ -385,7 +386,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                                         Number.parseFloat(selectedVariant.compareAtPrice.amount) *
                                         quantity
                                     }
-                                    currency={selectedVariant.compareAtPrice.currencyCode!}
+                                    currency={
+                                        selectedVariant.compareAtPrice.currencyCode! ||
+                                        Config.i18n.currencies[0]
+                                    }
                                     store={store}
                                 />
                             </PreviousPrice>
@@ -398,7 +402,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                                     Number.parseFloat(selectedVariant.price?.amount || '') *
                                     quantity
                                 }
-                                currency={selectedVariant.price?.currencyCode!}
+                                currency={
+                                    selectedVariant.price?.currencyCode! ||
+                                    Config.i18n.currencies[0]
+                                }
                                 store={store}
                             />
                         </Price>

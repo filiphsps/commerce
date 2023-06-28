@@ -261,7 +261,7 @@ const Content = styled.tr`
     display: grid;
     position: relative;
     min-height: 10rem;
-    width: calc(100vw - 3rem);
+    width: calc(100vw - 2rem);
     max-width: 100%;
     grid-template-columns: 8rem 1fr 6rem 14rem;
     grid-template-rows: 1fr;
@@ -370,14 +370,14 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
                                 Number.parseFloat(variant.compareAtPrice?.amount || '') *
                                 line.quantity!
                             }
-                            currency={variant.price.currencyCode}
+                            currency={variant.price.currencyCode || Config.i18n.currencies[0]}
                             className="Currency-Sale"
                             store={store}
                         />
                     )}
                     <Currency
                         price={Number.parseFloat(variant.price?.amount || '') * line.quantity!}
-                        currency={variant.price.currencyCode}
+                        currency={variant.price.currencyCode || Config.i18n.currencies[0]}
                         className={(discount > 0 && 'Currency-Discount') || ''}
                         store={store}
                     />

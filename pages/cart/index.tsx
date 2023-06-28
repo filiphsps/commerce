@@ -50,7 +50,7 @@ const FreeShippingBanner = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: calc(100vw - 3rem);
+    max-width: calc(100vw - 2rem);
     padding: 1.5rem;
     border-radius: var(--block-border-radius);
     background: #efefef;
@@ -153,7 +153,7 @@ const SummaryContent = styled.div`
 
         Button {
             height: 4.5rem;
-            padding: 1rem 1.5rem;
+            padding: 1rem 1rem;
             font-size: 1.5rem;
         }
     }
@@ -226,8 +226,8 @@ const SummaryContainer = styled.div`
     z-index: 5;
 
     @media (max-width: 950px) {
-        /*max-width: calc(100vw - 3rem);
-        max-width: calc(100dvw - 3rem);
+        /*max-width: calc(100vw - 2rem);
+        max-width: calc(100dvw - 2rem);
         position: sticky;
         bottom: -1px;*/
         transition: 150ms ease-in-out;
@@ -236,13 +236,13 @@ const SummaryContainer = styled.div`
             z-index: 9999999;
             width: 100vw;
             max-width: 100vw;
-            margin: 0px -1.5rem 0px -1.5rem;
+            margin: 0px -1rem 0px -1rem;
             left: 0px;
             right: 0px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
             ${SummaryContent} {
-                padding: 2rem 1.5rem 1.5rem;
+                padding: 2rem 1rem 1rem;
                 padding-right: 10rem;
                 border-radius: 0px;
 
@@ -252,7 +252,7 @@ const SummaryContainer = styled.div`
             ${SummarySummary} {
                 background: var(--color-text-primary);
                 color: var(--accent-primary);
-                padding: 1.25rem 1.5rem;
+                padding: 1.25rem 1rem;
                 border-radius: var(--block-border-radius);
                 margin-bottom: 1rem;
             }
@@ -285,8 +285,8 @@ const RecommendationsContent = styled(PageContent)`
     width: 100%;
 
     @media (max-width: 950px) {
-        width: calc(100vw - 3rem);
-        max-width: calc(100vw - 3rem);
+        width: calc(100vw - 2rem);
+        max-width: calc(100vw - 2rem);
         padding: 0px;
     }
 `;
@@ -480,7 +480,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     <Currency
                                         prefix={'Free shipping on orders above'}
                                         price={75}
-                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
+                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
                                         store={store}
                                     />
                                 </FreeShippingBannerText>
@@ -489,14 +489,14 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                         price={Number.parseFloat(
                                             cart.cost?.totalAmount?.amount || '0'
                                         )}
-                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
+                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
                                         store={store}
                                         className="Total"
                                     />
                                     {`/`}
                                     <Currency
                                         price={75}
-                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
+                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
                                         store={store}
                                         className="Left"
                                     />
@@ -535,7 +535,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             price={Number.parseFloat(
                                                 cart.cost?.totalAmount?.amount || '0'
                                             )}
-                                            currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
+                                            currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
                                             prefix={
                                                 <span
                                                     style={{
@@ -587,7 +587,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 >
                                     <FiShoppingCart
                                         style={{
-                                            marginRight: '1.5rem',
+                                            marginRight: '1rem',
                                             width: '2rem',
                                             height: '1.75rem',
                                             fontSize: '1.25rem'

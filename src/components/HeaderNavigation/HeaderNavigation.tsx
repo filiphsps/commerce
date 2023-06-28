@@ -8,14 +8,11 @@ const Container = styled.div`
     position: absolute;
     top: 6rem;
     z-index: 99999;
-    overflow-y: scroll;
-    overscroll-behavior: auto auto;
     height: 100%;
     width: 70vw;
     width: 70dvw;
     height: calc(100vh - 10rem);
     height: calc(100dvh - 10rem);
-    padding: 2rem;
     background: #fefefe;
     border-bottom: 0.5rem solid var(--accent-primary);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
@@ -34,12 +31,15 @@ const Container = styled.div`
 `;
 
 const Navigation = styled.div`
+    overflow-y: scroll;
+    overscroll-behavior-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     height: 100%;
     width: 100%;
+    padding: 2rem;
 `;
 const NavigationItem = styled.div`
     padding-bottom: 1.75rem;

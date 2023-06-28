@@ -63,7 +63,7 @@ const FooterWrapper = styled.div`
     grid-gap: 1.5rem;
     width: 1465px;
     max-width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
 `;
 const FooterBlocksContainer = styled.div`
     display: flex;

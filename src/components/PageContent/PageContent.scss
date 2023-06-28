@@ -3,14 +3,14 @@
 .PageContent {
     width: 100%;
     max-width: calc(#{$width-max-page} - 4rem);
-    margin: 1rem auto 0px auto;
+    margin: 0.75rem auto 0.75rem auto;
 
     @media (max-width: $width-max-page) {
         padding: 0px 1rem;
     }
 
     @media (max-width: 950px) {
-        padding: 0px 1.5rem;
+        padding: 0px 1rem;
     }
 
     &.PageContent-NoPadding {

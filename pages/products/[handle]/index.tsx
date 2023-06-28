@@ -66,12 +66,12 @@ const ProductContainer = styled.div`
     min-height: calc(100dvh - 42rem);
     width: calc(1465px - 4rem);
     max-width: calc(100vw - 4rem);
-    margin: 0px 1.5rem;
+    margin: 0px 1rem;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
         gap: 0rem;
-        max-width: calc(100vw - 3rem);
+        max-width: calc(100vw - 2rem);
         margin: 0px;
     }
 `;
@@ -86,7 +86,7 @@ const Assets = styled.div`
         overflow: hidden;
         height: 28rem;
         max-height: 30vh;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     @media (min-width: 950px) {
@@ -117,11 +117,12 @@ export const Tag = styled.div`
     padding: 0.5rem 1rem;
     text-transform: uppercase;
     font-size: 1.25rem;
+    font-weight: 600;
     background: var(--accent-secondary-dark);
     color: var(--color-text-primary);
 
     &.Vegan {
-        background: #228b22;
+        background: #1b6e1b;
     }
 `;
 const Description = styled.div`
@@ -328,7 +329,7 @@ const Recommendations = styled(ContentBlock)`
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
-        margin: 1.5rem 0px;
+        margin: 1rem 0px;
     }
 `;
 const RecommendationsTitle = styled.h3`
@@ -346,8 +347,8 @@ const RecommendationsContent = styled(PageContent)`
     width: 100%;
 
     @media (max-width: 950px) {
-        width: calc(100vw - 3rem);
-        max-width: calc(100vw - 3rem);
+        width: calc(100vw - 2rem);
+        max-width: calc(100vw - 2rem);
         padding: 0px;
     }
 `;
@@ -512,14 +513,14 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                 <Price sale>
                     <Currency
                         value={Number.parseFloat(selectedVariant.compareAtPrice?.amount!)}
-                        currency={selectedVariant.price?.currencyCode!}
+                        currency={selectedVariant.price?.currencyCode! || Config.i18n.currencies[0]}
                     />
                 </Price>
             )}
             <Price highlight={selectedVariant.compareAtPrice != null}>
                 <Currency
                     value={Number.parseFloat(selectedVariant.price?.amount!)}
-                    currency={selectedVariant.price?.currencyCode!}
+                    currency={selectedVariant.price?.currencyCode! || Config.i18n.currencies[0]}
                 />
             </Price>
         </PriceContainer>

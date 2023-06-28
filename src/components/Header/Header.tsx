@@ -168,7 +168,7 @@ const CartIconWrapper = styled.div`
             box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
             @media (min-width: 950px) {
-                padding: 0px 1.5rem;
+                padding: 0px 1rem;
             }
 
             &:hover,
