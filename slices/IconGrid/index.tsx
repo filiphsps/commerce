@@ -16,20 +16,25 @@ const ContentContainer = styled.div`
     align-items: center;
     gap: 2rem;
 
-    padding: 2rem 1rem;
+    padding: 1rem;
     margin-bottom: 1rem;
     background: var(--accent-primary);
-    border: 0.2rem solid var(--accent-primary-dark);
     color: var(--color-text-primary);
 
-    @media (max-width: 950px) {
+    @media (min-width: 960px) {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+    }
+    @media (max-width: 1465px) {
         flex-direction: column;
         gap: 1rem;
     }
 `;
 const Item = styled.div`
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 2rem auto;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -41,15 +46,14 @@ const ItemIcon = styled.div`
     filter: invert(100%);
 `;
 const ItemContent = styled.h3`
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 0.05rem;
     text-transform: uppercase;
     text-align: center;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1465px) {
         text-align: left;
-        font-size: 1.25rem;
     }
 `;
 

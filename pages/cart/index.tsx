@@ -480,7 +480,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     <Currency
                                         prefix={'Free shipping on orders above'}
                                         price={75}
-                                        currency="USD"
+                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
                                         store={store}
                                     />
                                 </FreeShippingBannerText>
@@ -496,7 +496,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                     {`/`}
                                     <Currency
                                         price={75}
-                                        currency="USD"
+                                        currency={cart.cost?.totalAmount?.currencyCode || 'USD'}
                                         store={store}
                                         className="Left"
                                     />
