@@ -9,6 +9,9 @@ const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     gap: 1rem;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
 `;
 const Grid = styled.div`
     display: grid;
@@ -23,6 +26,10 @@ const Item = styled.div`
     min-height: 2rem;
     max-height: 18rem;
     border-radius: var(--block-border-radius);
+
+    @media (max-width: 950px) {
+        max-height: 6rem;
+    }
 
     a {
         display: block;

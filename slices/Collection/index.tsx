@@ -2,6 +2,7 @@ import { Content, asHTML, asText } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
 import CollectionBlock from '../../src/components/CollectionBlock';
+import Link from 'next/link';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 
@@ -9,6 +10,21 @@ const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
+
+    @media (max-width: 950px) {
+        overflow: hidden;
+
+        .CollectionBlock-Horizontal {
+            width: 100vw;
+
+            .CollectionBlock-Content {
+                margin-left: -1.5rem;
+                padding-left: 1.5rem;
+                scroll-padding-inline-start: 1.5rem;
+                scroll-padding-inline-end: 1.5rem;
+            }
+        }
+    }
 `;
 
 const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
@@ -71,11 +87,14 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
             <PageContent>
                 {asText(slice.primary.title).length > 0 && (
                     <Header alignment={slice.primary.alignment}>
-                        <Title
-                            dangerouslySetInnerHTML={{
-                                __html: asHTML(slice.primary.title)
-                            }}
-                        />
+                        <Link href={`/collections/${slice.primary.handle!}`}>
+                            {' '}
+                            <Title
+                                dangerouslySetInnerHTML={{
+                                    __html: asHTML(slice.primary.title)
+                                }}
+                            />
+                        </Link>
                         <Body
                             dangerouslySetInnerHTML={{
                                 __html: asHTML(slice.primary.body)
