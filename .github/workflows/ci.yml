@@ -99,10 +99,9 @@ jobs:
             - name: 📐 Install & Configure Vercel CLI
               run: |
                   npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
-                  npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: 🚚 Push to Vercel
-              run: npx vercel deploy --prod --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+              run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: 🔥 Purge CloudFlare cache
               run: 'curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ID }}/purge_cache" -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_TOKEN }}" -H "Content-Type: application/json" --data "{\"purge_everything\":true}"'
