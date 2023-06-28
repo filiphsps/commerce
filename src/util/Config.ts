@@ -16,7 +16,7 @@ export const Config = {
             'https://',
             ''
         ),
-        token: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
+        token: process.env.SHOPIFY_TOKEN || '5862a57ad46168483b8cf5ab0e08cec4',
         api: '2023-04',
         checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com'
     },

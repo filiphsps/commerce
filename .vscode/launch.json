@@ -6,13 +6,13 @@
             "name": "Next.js: debug server-side",
             "type": "node-terminal",
             "request": "launch",
-            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 STORE_LOCALES=\"en-US,en-GB,sv-SE\" npm run dev"
+            "command": "npm run dev"
         },
         {
             "name": "Next.js: debug full stack",
             "type": "node-terminal",
             "request": "launch",
-            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 STORE_LOCALES=\"en-US,en-GB,sv-SE\" npm run dev",
+            "command": "npm run dev",
             "serverReadyAction": {
                 "pattern": "started server on .+, url: (https?://.+)",
                 "uriFormat": "%s",
@@ -23,13 +23,13 @@
             "name": "Build",
             "type": "node-terminal",
             "request": "launch",
-            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 STORE_LOCALES=\"en-US,en-GB\" npm run build"
+            "command": "npm run build"
         },
         {
             "name": "Start",
             "type": "node-terminal",
             "request": "launch",
-            "command": "SHOPIFY_DOMAIN=\"sweet-side-of-sweden.myshopify.com\" SHOPIFY_TOKEN=9999e3dceb5bc1faee8441045bf04045 STORE_LOCALES=\"en-US,en-GB\" PORT=3000 npm run start"
+            "command": "PORT=3000 npm run start"
         }
     ]
 }

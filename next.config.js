@@ -29,7 +29,7 @@ let config = {
         // Settings
         DOMAIN: process.env.DOMAIN || 'www.sweetsideofsweden.com',
         SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN || '9999e3dceb5bc1faee8441045bf04045',
+        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN || '5862a57ad46168483b8cf5ab0e08cec4',
         PRISMIC_REPO: process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2',
         STORE_LOCALES: process.env.STORE_LOCALES || 'en-US',
         STORE_CURRENCIES: process.env.STORE_CURRENCIES || 'USD',
