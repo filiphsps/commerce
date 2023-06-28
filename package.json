@@ -64,7 +64,7 @@
         "rooks": "7.14.1",
         "sass": "1.63.6",
         "sharp": "0.32.1",
-        "styled-components": "6.0.0",
+        "styled-components": "5.3.11",
         "swr": "2.2.0",
         "typescript": "5.1.5",
         "uuid": "9.0.0"
