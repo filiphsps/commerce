@@ -1,19 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { AnalyticsPageType, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
 import {
-    AnalyticsEventName,
-    ProductProvider,
-    ShopifyAddToCartPayload,
-    getClientBrowserParameters,
-    sendShopifyAnalytics,
-    useCart,
-    useProduct
-} from '@shopify/hydrogen-react';
-import {
-    CartLine,
     Collection,
-    CurrencyCode,
-    LanguageCode,
     Product,
     ProductEdge,
     ProductVariant,
@@ -530,42 +519,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
     }, [product, selectedVariant, quantity, cart, cartStore, setCartStore]);
 
     useEffect(() => {
-        if (!product || !selectedVariant || !cart.lines || (cart?.totalQuantity || 0) <= 0) return;
-
-        const params = getClientBrowserParameters();
-        const cartPayload: ShopifyAddToCartPayload = {
-            ...params,
-            url: params.url.replace(`/${router.locale}`, ''),
-            path: params.path.replace(`/${router.locale}`, ''),
-            navigationType: 'navigate',
-            hasUserConsent: true,
-            shopId: `gid://shopify/Shop/${Config.shopify.shop_id}`,
-            currency: 'USD' as CurrencyCode, // FIXME
-            acceptedLanguage: 'EN' as LanguageCode,
-            cartId: cart.id!,
-            totalValue: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-            products: cart.lines!.map((line: CartLine) => ({
-                productGid: line.merchandise.product.id,
-                name: line.merchandise.product.title!,
-                variantGid: line.merchandise.id!,
-                variantName: line.merchandise.title!,
-                brand: line.merchandise.product.vendor!,
-                price: line.merchandise.price?.amount!,
-                quantity: line.quantity,
-                sku: line.merchandise.sku!
-            }))
-        };
-
-        sendShopifyAnalytics(
-            {
-                eventName: AnalyticsEventName.ADD_TO_CART,
-                payload: cartPayload
-            },
-            Config.shopify.domain
-        );
-    }, [cart.lines]);
-
-    useEffect(() => {
         if (!product || !selectedVariant) return;
         (window as any)?.dataLayer?.push(
             { ecommerce: null },
@@ -1056,7 +1009,7 @@ export async function getStaticProps({ params, locale }): Promise<GetStaticProps
             reviews,
             errors,
             analytics: {
-                pageType: 'product',
+                pageType: AnalyticsPageType.product,
                 resourceId: product?.id
             }
         },

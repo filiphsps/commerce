@@ -77,8 +77,11 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                     query localization @inContext(language: ${language}, country: ${country}) {
                         localization {
                             availableCountries {
-                                isoCode
                                 name
+                                isoCode
+                                currency {
+                                    isoCode
+                                }
                             }
                         }
                     }
@@ -89,6 +92,8 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 query: gql`
                     query shop @inContext(language: ${language}, country: ${country}) {
                         shop {
+                            id
+                            
                             brand {
                                 logo {
                                     image {
@@ -124,16 +129,21 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 `
             });
 
-            const res = (
-                await prismic().getSingle('store', {
-                    lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
-                })
-            ).data;
+            let res: Record<string, any>;
+
+            try {
+                res = (
+                    await prismic().getSingle('store', {
+                        lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
+                    })
+                ).data;
+            } catch {
+                res = (await prismic().getSingle('store')).data;
+            }
 
             const currencies = res.currencies.map((item) => item.currency);
-
-            // FIXME: add custom_header_tags, custom_body_tags; or do this through gtm and instead just provide a gtm_id.
             return resolve({
+                id: shopData?.shop?.id || '',
                 name: res.store_name,
                 logo: {
                     src: shopData?.shop?.brand?.logo?.image?.url || res.logo

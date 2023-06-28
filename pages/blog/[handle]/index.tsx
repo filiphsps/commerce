@@ -4,6 +4,7 @@ import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { FunctionComponent } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
 import ContentComponent from '../../../src/components/Content';
@@ -332,7 +333,7 @@ export async function getStaticProps({ params, locale }) {
             article,
             blog,
             analytics: {
-                pageType: 'article'
+                pageType: AnalyticsPageType.article
             }
         },
         revalidate: 60

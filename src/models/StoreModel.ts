@@ -1,6 +1,7 @@
 import { CountryCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 export interface StoreModel {
+    id: string;
     name: string;
     description?: string;
     logo: {
@@ -40,6 +41,9 @@ export interface StoreModel {
         countries: Array<{
             isoCode: CountryCode;
             name: string;
+            currency: {
+                isoCode: string;
+            };
         }>;
     };
 }

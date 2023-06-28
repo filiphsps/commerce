@@ -61,7 +61,7 @@ export const newShopify = new ApolloClient({
 
 export const shopifyClient = createStorefrontClient({
     publicStorefrontToken: Config.shopify.token,
-    storeDomain: `https://${Config.shopify.domain}`,
+    storeDomain: `https://${Config.domain.replace('www', 'checkout')}`,
     storefrontApiVersion: Config.shopify.api
 });
 
@@ -69,7 +69,6 @@ export const storefrontClient = new ApolloClient({
     ssrMode: true,
     link: new HttpLink({
         uri: shopifyClient.getStorefrontApiUrl(),
-        // TODO: 'buyerIp' https://shopify.dev/docs/custom-storefronts/hydrogen-react#step-4-update-the-storefront-client
         headers: shopifyClient.getPublicTokenHeaders()
     }),
     cache: new InMemoryCache({

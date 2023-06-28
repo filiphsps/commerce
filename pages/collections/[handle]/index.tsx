@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
 import React, { FunctionComponent } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '../../../src/components/CollectionBlock';
@@ -155,8 +156,9 @@ export async function getStaticProps({ params, locale }) {
             collection: collection,
             vendors: vendors ?? null,
             analytics: {
-                pageType: 'collection',
-                resourceId: collection?.id
+                pageType: AnalyticsPageType.collection,
+                resourceId: collection?.id,
+                collectionHandle: collection?.handle
             }
         },
         revalidate: 10

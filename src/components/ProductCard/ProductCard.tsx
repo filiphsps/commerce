@@ -423,7 +423,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                 <AddButton
                     className={addedToCart ? 'Added' : ''}
                     onClick={() => {
-                        if (!product || !selectedVariant) return;
+                        if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
+                        else if (!product || !selectedVariant) return;
 
                         setAddedToCart(true);
                         cart.linesAdd([
@@ -454,7 +455,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                             setAddedToCart(false);
                         }, 3000);
                     }}
-                    disabled={!selectedVariant.availableForSale}
+                    disabled={
+                        !selectedVariant.availableForSale ||
+                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
+                    }
                 >
                     <span data-nosnippet>
                         {(!selectedVariant.availableForSale && 'Out of Stock') ||

@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import React, { FunctionComponent } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { Config } from '../src/util/Config';
 import { CustomPageDocument } from '../prismicio-types';
 import Error from 'next/error';
@@ -88,7 +89,7 @@ export async function getStaticProps({ locale, locales, query, previewData }) {
             page,
             prefetch,
             analytics: {
-                pageType: 'index'
+                pageType: AnalyticsPageType.home
             }
         },
         revalidate: 60

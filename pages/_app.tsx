@@ -1,17 +1,9 @@
 import 'destyle.css';
 import './app.scss';
 
-import {
-    AnalyticsEventName,
-    CartProvider,
-    ShopifyProvider,
-    getClientBrowserParameters,
-    sendShopifyAnalytics,
-    useShopifyCookies
-} from '@shopify/hydrogen-react';
-import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
-import React, { useEffect } from 'react';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 
 import Color from 'color';
@@ -35,81 +27,18 @@ Router.events.on('routeChangeError', (err) => {
     NProgress.done();
 });
 
-const sendPageView = (analyticsPageData: any, locale: string = Config.i18n.locales[0]) => {
-    const clientParams = getClientBrowserParameters();
-    const payload = {
-        ...clientParams,
-        path: clientParams.path.replace(`/${locale}`, ''),
-        url: clientParams.url.replace(`/${locale}`, ''),
-        navigationType: 'navigate',
-        ...analyticsPageData
-    };
-    sendShopifyAnalytics(
-        {
-            eventName: AnalyticsEventName.PAGE_VIEW,
-            payload
-        },
-        // TODO: do this properly
-        `checkout.${Config.domain
-            .replace('www.', '')
-            .replace('preview.', '')
-            .replace('staging.', '')}`
-    );
-};
-
 const StoreApp = withStore(
-    ({ Component, pageProps, locale }) => {
+    ({ Component, pageProps, locale: initialLocale }) => {
         const router = useRouter();
 
-        useShopifyCookies({
-            hasUserConsent: true,
-            domain:
-                (process.env.NODE_ENV !== 'development' &&
-                    `${Config.domain}`
-                        .replace('checkout.', '')
-                        .replace('www.', '')
-                        .replace('preview.', '')
-                        .replace('staging.', '')) ||
-                undefined
+        const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
+            fallbackData: preval.store
         });
 
-        const country = (
-            locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
-        ).toUpperCase() as CountryCode;
-        const language = (
-            locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
-        ).toUpperCase() as LanguageCode;
+        const country = NextLocaleToCountry(router.locale || initialLocale);
+        const language = NextLocaleToLanguage(router.locale || initialLocale);
 
-        const { data: store } = useSWR(
-            [`store`],
-            () => StoreApi({ locale: router.locale }) as any,
-            {
-                fallbackData: preval.store
-            }
-        );
-
-        const analyticsShopData = {
-            shopId: `gid://shopify/Shop/${Config.shopify.shop_id}`,
-            currency: 'USD',
-            acceptedLanguage: language
-        };
-        const analytics = {
-            hasUserConsent: true,
-            ...analyticsShopData,
-            ...pageProps.analytics
-        };
-        useEffect(() => {
-            const handleRouteChange = () => {
-                sendPageView(analytics, router.locale);
-            };
-
-            router.events.on('routeChangeComplete', handleRouteChange);
-
-            return () => {
-                router.events.off('routeChangeComplete', handleRouteChange);
-            };
-        }, [analytics, router.events]);
-        // FIXME: Send initial pageView too
+        if (!store) return null;
 
         return (
             <>
@@ -220,22 +149,19 @@ const StoreApp = withStore(
 
                 {/* Page */}
                 <ShopifyProvider
-                    storefrontId={`${Config.shopify.shop_id}`}
-                    storeDomain={`https://${Config.shopify.domain}`}
+                    storefrontId={`${store.id}`}
+                    storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
                     storefrontApiVersion={Config.shopify.api}
                     storefrontToken={Config.shopify.token}
                     countryIsoCode={country}
                     languageIsoCode={language}
                 >
-                    {/* TODO: Add analytics for cart events */}
                     <CartProvider countryCode={country}>
-                        <PageProvider store={store}>
-                            <Component
-                                key={router.asPath}
-                                {...pageProps}
-                                {...analytics}
-                                store={store}
-                            />
+                        <PageProvider
+                            store={store}
+                            pagePropsAnalyticsData={pageProps.analytics || {}}
+                        >
+                            <Component key={router.asPath} {...pageProps} store={store} />
                         </PageProvider>
                     </CartProvider>
                 </ShopifyProvider>
@@ -252,7 +178,8 @@ const StoreApp = withStore(
         cart: {
             open: false,
             item: null
-        }
+        },
+        locale: null
     },
     {
         listener: () => {},

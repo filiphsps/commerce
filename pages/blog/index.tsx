@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import React, { FunctionComponent } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
@@ -146,7 +147,7 @@ export async function getStaticProps({ locale }) {
             props: {
                 blog,
                 analytics: {
-                    pageType: 'blog'
+                    pageType: AnalyticsPageType.blog
                 }
             },
             revalidate: 60

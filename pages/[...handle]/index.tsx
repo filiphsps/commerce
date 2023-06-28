@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import React, { FunctionComponent } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
@@ -117,7 +118,8 @@ export async function getStaticProps({ params, locale, previewData }) {
                 page,
                 prefetch,
                 analytics: {
-                    pageType: 'page'
+                    pageType: AnalyticsPageType.page,
+                    resourceId: `gid://shopify/OnlineStorePage/${params?.handle?.join('-')}`
                 }
             },
             revalidate: 10

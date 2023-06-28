@@ -1,7 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
+import {
+    AnalyticsPageType,
+    CartLineProvider,
+    CartWithActions,
+    useCart
+} from '@shopify/hydrogen-react';
 import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { CartLineProvider, CartWithActions, useCart } from '@shopify/hydrogen-react';
 import React, { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
@@ -556,9 +561,17 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                 <Button
                                     className={'CheckoutButton'}
                                     disabled={
-                                        (cart?.totalQuantity || 0) <= 0 || !cart.lines || loading
+                                        (cart?.totalQuantity || 0) <= 0 ||
+                                        !cart.lines ||
+                                        loading ||
+                                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
                                     }
                                     onClick={async () => {
+                                        if (
+                                            cart.status !== 'idle' &&
+                                            cart.status !== 'uninitialized'
+                                        )
+                                            return;
                                         setLoading(true);
 
                                         try {
@@ -623,7 +636,7 @@ export async function getStaticProps({}) {
     return {
         props: {
             analytics: {
-                pageType: 'cart'
+                pageType: AnalyticsPageType.cart
             }
         }
     };
