@@ -1,12 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { Config } from '../util/Config';
 import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { shopify } from './shopify';
 
 export const CheckoutApi = async ({
     items,
-    locale = Config.i18n.locales[0]
+    locale = i18n.locales[1]
 }: {
     items: any[];
     locale: string;
@@ -42,7 +42,7 @@ export const CheckoutApi = async ({
                 variables: {
                     input: {
                         buyerIdentity: {
-                            countryCode: (locale || Config.i18n.locales[0]).split('-')[-1] || 'US'
+                            countryCode: (locale || i18n.locales[1]).split('-')[-1] || 'US'
                         },
                         lineItems: line_items
                     }

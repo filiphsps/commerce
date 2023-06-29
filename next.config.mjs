@@ -1,5 +1,5 @@
 import manifest from './package.json' assert { type: 'json' };
-import { i18n } from './next-i18next.config.js';
+import { i18n } from './next-i18next.config.cjs';
 import { withSentryConfig } from '@sentry/nextjs';
 import createNextPluginPreval from 'next-plugin-preval/config.js';
 
@@ -13,6 +13,9 @@ let config = {
     swcMinify: true,
     i18n,
     productionBrowserSourceMaps: true,
+    experimental: {
+        esmExternals: true
+    },
 
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com']

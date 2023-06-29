@@ -2,9 +2,9 @@ import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { Config } from '../util/Config';
 import { PRODUCT_FRAGMENT } from './product';
 import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const RecommendationApi = async ({
@@ -17,13 +17,13 @@ export const RecommendationApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
 
-        if (locale === 'x-default') locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
-            locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
         ).toUpperCase() as CountryCode;
         const language = (
-            locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
         ).toUpperCase() as LanguageCode;
 
         try {

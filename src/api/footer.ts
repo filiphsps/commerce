@@ -1,13 +1,13 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { Config } from '../util/Config';
+import { i18n } from '../../next-i18next.config.cjs';
 import { prismic } from './prismic';
 
-export const FooterApi = async (locale = Config.i18n.locales[0]) => {
+export const FooterApi = async (locale = i18n.defaultLocale) => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await prismic().getSingle('footer', {
-                lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
+                lang: locale === 'x-default' ? i18n.locales[1] : locale
             });
 
             return resolve({
@@ -20,7 +20,7 @@ export const FooterApi = async (locale = Config.i18n.locales[0]) => {
                 }))
             });
         } catch (error) {
-            if (error.message.includes('No documents') && locale !== Config.i18n.locales[0]) {
+            if (error.message.includes('No documents') && locale !== i18n.locales[1]) {
                 return resolve(await FooterApi()); // Try again with default locale
             }
 

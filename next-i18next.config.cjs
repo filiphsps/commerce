@@ -8,4 +8,4 @@ const i18n = {
     localeDetection: false
 };
 
-export { i18n };
+module.exports = { i18n };

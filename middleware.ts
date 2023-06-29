@@ -1,28 +1,33 @@
-import { Config } from './src/util/Config';
 import { NextResponse } from 'next/server';
-import acceptLanguage from 'accept-language';
+import { i18n } from './next-i18next.config.cjs';
+import parser from 'accept-language-parser';
 
-var locales = Config.i18n.locales;
-acceptLanguage.languages(locales.length > 0 ? locales : ['en-US']);
+const PUBLIC_FILE = /\.(.*)$/;
+// FIXME: MAke these dynamic
 
 // Based on https://github.com/vercel/next.js/discussions/18419#discussioncomment-3838336
-export let middleware = (request) => {
-    if (request.nextUrl.pathname.startsWith('/_next')) {
-        return undefined;
-    } else if (request.nextUrl.pathname.startsWith('/api')) {
-        return undefined;
-    } else if (request.nextUrl.pathname.startsWith('/monitoring')) {
-        return undefined;
+// then later also on https://stackoverflow.com/a/75845778/3142553
+export let middleware = (req) => {
+    if (
+        req.nextUrl.pathname.startsWith('/_next') ||
+        req.nextUrl.pathname.startsWith('/_next') ||
+        req.nextUrl.pathname.includes('/monitoring') ||
+        PUBLIC_FILE.test(req.nextUrl.pathname)
+    ) {
+        return null;
     }
 
-    if (!/\.(.*)$/.test(request.nextUrl.pathname) && request.nextUrl.locale === 'x-default') {
-        const newUrl = request.nextUrl.clone();
-        const headers = request.headers.get('accept-language');
-        const userLang = acceptLanguage.get(headers);
+    const acceptLanguageHeader = req.headers.get('accept-language');
+
+    if (req.nextUrl.locale === 'x-default') {
+        const newUrl = req.nextUrl.clone();
+        const headers = req.headers.get('accept-language');
+        const userLang = parser.pick(i18n.locales, acceptLanguageHeader);
 
         if (!headers) return NextResponse.rewrite(newUrl);
-        const savedLocale = request.cookies.get('NEXT_LOCALE');
-        const newLocale = savedLocale || userLang || locales;
+        const savedLocale = req.cookies.get('NEXT_LOCALE');
+        const newLocale =
+            savedLocale || userLang || i18n.locales.filter((i) => i !== 'x-default').at(0);
         newUrl.locale = newLocale;
 
         if (newUrl) return NextResponse.redirect(newUrl);

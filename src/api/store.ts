@@ -2,22 +2,22 @@ import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { Config } from '../util/Config';
 import { StoreModel } from '../models/StoreModel';
 import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { prismic } from './prismic';
 import { storefrontClient } from './shopify';
 
 export const LocalesApi = async ({ locale }): Promise<string[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (locale === 'x-default') locale = Config.i18n.locales[0];
+            if (locale === 'x-default') locale = i18n.locales[1];
 
             const country = (
-                locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+                locale?.split('-')[1] || i18n.locales[1].split('-')[1]
             ).toUpperCase() as CountryCode;
             const language = (
-                locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+                locale?.split('-')[0] || i18n.locales[1].split('-')[0]
             ).toUpperCase() as LanguageCode;
 
             const { data: localData } = await storefrontClient.query({
@@ -63,13 +63,13 @@ export const LocalesApi = async ({ locale }): Promise<string[]> => {
 export const StoreApi = async ({ locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (locale === 'x-default') locale = Config.i18n.locales[0];
+            if (locale === 'x-default') locale = i18n.locales[1];
 
             const country = (
-                locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+                locale?.split('-')[1] || i18n.locales[1].split('-')[1]
             ).toUpperCase() as CountryCode;
             const language = (
-                locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+                locale?.split('-')[0] || i18n.locales[1].split('-')[0]
             ).toUpperCase() as LanguageCode;
 
             const { data: localData } = await storefrontClient.query({
@@ -134,7 +134,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
             try {
                 res = (
                     await prismic().getSingle('store', {
-                        lang: locale === 'x-default' ? Config.i18n.locales[0] : locale
+                        lang: locale === 'x-default' ? i18n.locales[1] : locale
                     })
                 ).data;
             } catch {
@@ -166,7 +166,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 },
                 currencies:
                     shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
-                languages: Config.i18n.locales,
+                languages: i18n.locales,
                 social: res.social,
                 block: {
                     border_radius: res.border_radius || '0.5rem'
@@ -179,7 +179,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
             });
         } catch (error) {
             console.error(error);
-            if (error.message.includes('No documents') && locale !== Config.i18n.locales[0]) {
+            if (error.message.includes('No documents') && locale !== i18n.locales[1]) {
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }
 

@@ -16,6 +16,7 @@ import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import SearchHeader from '../SearchHeader';
 import { StoreModel } from '../../models/StoreModel';
+import { i18n } from '../../../next-i18next.config.cjs';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -78,11 +79,11 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         fallbackData: preval.header
     });
 
-    const locale = router.locale || Config.i18n.locales[0];
+    const locale = router.locale || i18n.locales[1];
     const country = NextLocaleToCountry(locale);
     useAnalytics({
         locale: {
-            locale: router.locale || Config.i18n.locales[0],
+            locale: router.locale || i18n.locales[1],
             language: NextLocaleToLanguage(locale),
             country,
             currency: NextLocaleToCurrency({ country, store })

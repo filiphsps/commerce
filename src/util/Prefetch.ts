@@ -1,11 +1,10 @@
 import { CollectionApi } from '../api/collection';
-import { Config } from './Config';
 import { CustomPageDocument } from '../../prismicio-types';
+import { i18n } from '../../next-i18next.config.cjs';
 
 const Prefetch = (page: CustomPageDocument<string>, query: any, locale: string) => {
-    if (locale === 'default')
-        locale = Config.i18n.locales[1];
-    
+    if (locale === 'x-default') locale = i18n.locales[1];
+
     return new Promise<{
         collections?: any;
         products?: any;

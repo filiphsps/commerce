@@ -9,11 +9,11 @@ import {
 import { ShopifyWeightUnit, WeightModel } from '../models/WeightModel';
 import { newShopify, storefrontClient } from './shopify';
 
-import { Config } from '../util/Config';
 import { ProductModel } from '../models/ProductModel';
 import { ProductVariantModel } from '../models/ProductVariantModel';
 import TitleToHandle from '../util/TitleToHandle';
 import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 
 export const PRODUCT_FRAGMENT = `
     id
@@ -210,13 +210,13 @@ export const ProductApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
-        if (locale === 'x-default') locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
-            locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
         ).toUpperCase() as CountryCode;
         const language = (
-            locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
         ).toUpperCase() as LanguageCode;
 
         try {
@@ -250,7 +250,7 @@ export const ProductIdApi = async ({ id, locale: loc }: { id: string; locale?: s
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('Invalid ID'));
 
-        const locale = loc === 'x-default' ? Config.i18n.locales[0] : loc;
+        const locale = loc === 'x-default' ? i18n.locales[1] : loc;
         // FIXME: Don't assume en-US
         const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
         const country = locale ? locale.split('-').at(-1)?.toUpperCase() || 'US' : 'US';

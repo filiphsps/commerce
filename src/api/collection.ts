@@ -8,8 +8,8 @@ import {
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { CollectionModel } from '../models/CollectionModel';
-import { Config } from '../util/Config';
 import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const COLLECTION_FRAGMENT = `
@@ -85,13 +85,13 @@ export const CollectionApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
-        if (locale === 'x-default') locale = Config.i18n.locales[0];
+        if (locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
-            locale?.split('-')[1] || Config.i18n.locales[0].split('-')[1]
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
         ).toUpperCase() as CountryCode;
         const language = (
-            locale?.split('-')[0] || Config.i18n.locales[0].split('-')[0]
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
         ).toUpperCase() as LanguageCode;
 
         try {

@@ -17,6 +17,7 @@ import { ProductApi } from '../../api/product';
 import { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
+import { i18n } from '../../../next-i18next.config.cjs';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -292,7 +293,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
     const TempImage = Image as any;
 
     const locale =
-        router?.locale && router?.locale != 'x-default' ? router?.locale : Config.i18n.locales[0];
+        router?.locale && router?.locale != 'x-default' ? router?.locale : i18n.locales[1];
 
     const { data: product } = useSWR([line?.merchandise?.product?.handle!], ([handle]) =>
         ProductApi({ handle: handle || '', locale })

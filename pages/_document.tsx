@@ -3,6 +3,7 @@ import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 import { Config } from '../src/util/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
+import { i18n } from '../next-i18next.config.cjs';
 
 class Document extends NextDocument {
     static async getInitialProps(ctx) {
@@ -34,8 +35,7 @@ class Document extends NextDocument {
         return (
             <Html
                 lang={
-                    (this.props.locale !== 'x-default' &&
-                        (this.props.locale || Config.i18n.locales[0])) ||
+                    (this.props.locale !== 'x-default' && (this.props.locale || i18n.locales[0])) ||
                     undefined
                 }
             >
