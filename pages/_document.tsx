@@ -40,18 +40,11 @@ class Document extends NextDocument {
                 }
             >
                 <Head>
-                    <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="" />
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
                     <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
                     <link rel="preconnect" href="https://images.prismic.io" crossOrigin="" />
                     <link rel="preconnect" href={`https://${Config.shopify.checkout_domain}`} />
-
-                    <link
-                        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
-                        rel="stylesheet"
-                    />
                 </Head>
-                <body itemScope itemType="http://schema.org/WebPage">
+                <body>
                     <Main />
                     <NextScript />
 

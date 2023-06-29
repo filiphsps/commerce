@@ -10,6 +10,8 @@ import Color from 'color';
 import { Config } from '../src/util/Config';
 import Head from 'next/head';
 import NProgress from 'nprogress';
+import { NextWebVitalsMetric } from 'next/app';
+import { Open_Sans } from 'next/font/google';
 import PageProvider from '../src/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
@@ -19,6 +21,13 @@ import preval from '../src/data.preval';
 import prismicConfig from '../slicemachine.config.json';
 import useSWR from 'swr';
 import { withStore } from 'react-context-hook';
+
+const openSans = Open_Sans({
+    weight: ['300', '400', '600', '700'],
+    subsets: ['latin'],
+    display: 'swap',
+    preload: true
+});
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -42,6 +51,13 @@ const StoreApp = withStore(
 
         return (
             <>
+                <style jsx global>{`
+                    html,
+                    body {
+                        font-family: ${openSans.style.fontFamily}, -apple-system, BlinkMacSystemFont,
+                            'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    }
+                `}</style>
                 <DefaultSeo
                     {...SEO}
                     themeColor={Color(store.accent.primary).hex().toString()}
@@ -188,3 +204,22 @@ const StoreApp = withStore(
 );
 
 export default appWithTranslation(StoreApp);
+
+export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric) {
+    if (process.env.NODE_ENV !== 'production') return;
+
+    (window as any)?.dataLayer?.push({
+        event: 'web-vital',
+        event_category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
+        event_action: name,
+        // Google Analytics metrics must be integers, so the value is rounded.
+        // For CLS the value is first multiplied by 1000 for greater precision
+        // (note: increase the multiplier for greater precision if needed).
+        event_value: Math.round(name === 'CLS' ? value * 1000 : value),
+        // The 'id' value will be unique to the current page load. When sending
+        // multiple values from the same page (e.g. for CLS), Google Analytics can
+        // compute a total by grouping on this ID (note: requires `eventLabel` to
+        // be a dimension in your report).
+        event_label: id
+    });
+}
