@@ -1,7 +1,7 @@
 # Don't change the line below!
 #! oxygen_storefront_id: 2130225
 
-name: Storefront 2130225
+name: 💨 Oxygen
 on: [push]
 
 permissions:
@@ -10,41 +10,38 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to Oxygen
+    name: 🚚 Oxygen Deploy
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    env:
+        CI: true
     steps:
       - uses: actions/checkout@v3
 
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          check-latest: true
-
-      - name: Get yarn cache directory
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
+          node-version: 'lts/*'
+          cache: 'npm'
+          
+      - name: 💾 Cache node modules
+        uses: actions/cache@v3
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-oxygen-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+              ${{ runner.os }}-node-oxygen-
 
-      - name: Install dependencies
-        id: 'install-dependencies'
-        run: yarn
+      - name: 📦 Download dependencies
+        run: npm ci
 
-      - name: Build and Publish to Oxygen
+      - name: 🚚Build and Publish to Oxygen
         id: deploy
         uses: shopify/oxygenctl-action@v4
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_2130225 }}
-          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL yarn build"
+          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL npm run build"
 
-      # Create GitHub Deployment
       - name: Create GitHub Deployment
         uses: shopify/github-deployment-action@v1
         if: always()
