@@ -13,6 +13,8 @@ jobs:
     name: 🚚 Deploy
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    env:
+        CI: true
     steps:
       - uses: actions/checkout@v3
 
@@ -21,10 +23,21 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
+          
+      - name: 💾 Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-oxygen-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-node-oxyen-
+
+      - name: 📦 Download dependencies
+        run: npm ci
 
       - name: Build and Publish to Oxygen
         id: deploy
         uses: shopify/oxygenctl-action@v4
         with:
           oxygen_deployment_token: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_2097457 }}
-          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL npm build"
+          build_command: "HYDROGEN_ASSET_BASE_URL=$OXYGEN_ASSET_BASE_URL npm run build"
