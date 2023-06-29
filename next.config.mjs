@@ -16,7 +16,6 @@ let config = {
     experimental: {
         esmExternals: true
     },
-
     images: {
         domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com']
     },

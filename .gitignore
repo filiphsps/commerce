@@ -8,6 +8,7 @@ node_modules/
 
 # next.js
 .next/
+next.lock/
 out/
 dist/
 public/sitemap*.xml*

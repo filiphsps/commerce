@@ -40,27 +40,15 @@ class Document extends NextDocument {
                 }
             >
                 <Head>
-                    <link rel="preconnect" href="https://fonts.googleapis.com" />
+                    <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
                     <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
-                    <link
-                        rel="preconnect"
-                        href="https://sweet-side-of-sweden.myshopify.com/"
-                        crossOrigin=""
-                    />
+                    <link rel="preconnect" href="https://images.prismic.io" crossOrigin="" />
+                    <link rel="preconnect" href={`https://${Config.shopify.checkout_domain}`} />
+
                     <link
                         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
                         rel="stylesheet"
-                    />
-                    <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-                    />
-                    <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                     />
                 </Head>
                 <body itemScope itemType="http://schema.org/WebPage">
