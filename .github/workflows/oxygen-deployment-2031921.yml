@@ -1,5 +1,5 @@
 # Don't change the line below!
-#! oxygen_storefront_id: 2097457
+#! oxygen_storefront_id: 2031921
 
 name: 💨 Oxygen
 on: [push]
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   deploy:
-    name: 🚚 Deploy
+    name: 🚚 Oxygen Deploy
     timeout-minutes: 30
     runs-on: ubuntu-latest
     env:
@@ -30,12 +30,12 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-oxygen-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-              ${{ runner.os }}-node-oxyen-
+              ${{ runner.os }}-node-oxygen-
 
       - name: 📦 Download dependencies
         run: npm ci
 
-      - name: Build and Publish to Oxygen
+      - name: 🚚Build and Publish to Oxygen
         id: deploy
         uses: shopify/oxygenctl-action@v4
         with:
