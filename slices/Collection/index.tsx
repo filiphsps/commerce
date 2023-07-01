@@ -10,21 +10,6 @@ const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
-
-    @media (max-width: 950px) {
-        overflow: hidden;
-
-        .CollectionBlock-Horizontal {
-            width: 100vw;
-
-            .CollectionBlock-Content {
-                margin-left: -1.5rem;
-                padding-left: 1.5rem;
-                scroll-padding-inline-start: 1.5rem;
-                scroll-padding-inline-end: 1.5rem;
-            }
-        }
-    }
 `;
 
 const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
