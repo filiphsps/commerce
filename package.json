@@ -74,7 +74,7 @@
         "@slicemachine/adapter-next": "0.3.2",
         "@testing-library/react": "14.0.0",
         "@types/enzyme": "3.10.13",
-        "@types/node": "18.16.18",
+        "@types/node": "18.16.19",
         "@types/react": "18.2.14",
         "@types/styled-components": "5.1.26",
         "enzyme": "3.11.0",
