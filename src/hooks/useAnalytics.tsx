@@ -129,6 +129,29 @@ export function useAnalytics({
             eventName: AnalyticsEventName.ADD_TO_CART,
             payload
         });
+
+        (window as any).dataLayer.push({ ecommerce: null });
+        (window as any)?.dataLayer?.push(
+            { ecommerce: null },
+            {
+                event: 'add_to_cart',
+                currency: cost?.totalAmount?.currencyCode || 'USD',
+                value: Number.parseFloat(cost?.totalAmount?.amount || '0'),
+                ecommerce: {
+                    items: [
+                        {
+                            item_id: products.at(-1)?.sku!,
+                            item_name: products.at(-1)?.name,
+                            item_variant: products.at(-1)?.variantName,
+                            item_brand: products.at(-1)?.brand,
+                            currency: cost?.totalAmount?.currencyCode || 'USD',
+                            price: Number.parseFloat(products.at(-1)?.price || '0'),
+                            quantity: products.at(-1)?.quantity || 0
+                        }
+                    ]
+                }
+            }
+        );
     }, [lines, status]);
 
     // Handle country code change
