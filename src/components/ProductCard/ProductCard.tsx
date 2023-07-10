@@ -4,48 +4,62 @@ import {
     ProductVariantEdge,
     Image as ShopifyImage
 } from '@shopify/hydrogen-react/storefront-api-types';
+import styled, { css } from 'styled-components';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 
 import Button from '../Button';
+import Color from 'color';
 import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
-import styled from 'styled-components';
 import { useStore } from 'react-context-hook';
 
-const Container = styled.div`
+const Container = styled.section`
+    flex: 1 auto;
     overflow: hidden;
     position: relative;
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
     gap: 0.5rem;
-    min-width: 16rem;
-    padding: 1rem;
-    border: 0.2rem solid #e9e9e9;
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    width: 18rem;
     border-radius: var(--block-border-radius);
-    background: #efefef;
+    color: var(--foreground);
     scroll-snap-align: start;
 
-    @media (max-width: 950px) {
-        padding: 0.5rem;
-    }
+    background: var(--background);
+    background: radial-gradient(circle, var(--background) 0%, var(--background-dark) 100%);
+    padding: var(--block-padding);
 `;
-const ProductImage = styled.div`
-    height: 15rem;
-    width: calc(100% + 2rem);
-    padding: 1.25rem;
-    margin: -1rem -1rem 0px -1rem;
-    background: #fefefe;
-    border-radius: var(--block-border-radius);
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
+    overflow: hidden;
+    position: relative;
+    height: auto;
+    width: 100%;
+    padding: 1.75rem;
+    border-radius: calc(var(--block-border-radius) * 0.75);
     transition: 150ms ease-in-out;
     user-select: none;
+    background: #fefefe;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+    ${({ isHorizontal }) =>
+        (isHorizontal &&
+            css`
+                height: 14rem;
+            `) ||
+        css`
+            @media (min-width: 950px) {
+                height: 14rem;
+                display: grid;
+                justify-content: center;
+                align-items: center;
+                grid-template-columns: 1fr;
+            }
+        `}
 
     &:hover {
         padding: 0.5rem;
@@ -56,8 +70,13 @@ const ProductImageWrapper = styled.div`
     height: 100%;
     width: 100%;
 
+    span {
+        max-height: 100%;
+    }
+
     img {
         object-fit: contain;
+        object-position: center;
         mix-blend-mode: multiply;
     }
 `;
@@ -65,15 +84,14 @@ const ProductImageWrapper = styled.div`
 const Details = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     padding-top: 0.5rem;
 `;
 const Brand = styled.div`
-    text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 1.25rem;
-    color: #404756;
+    line-height: 1.5rem;
 
     &:hover,
     &:active,
@@ -82,11 +100,9 @@ const Brand = styled.div`
     }
 `;
 const Title = styled.div`
-    //flex-grow: 1;
-    text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 1.75rem;
-    line-height: 1.75rem;
+    line-height: 2rem;
 
     &:hover,
     &:active,
@@ -94,20 +110,16 @@ const Title = styled.div`
         color: var(--accent-primary);
     }
 `;
-const Description = styled.div`
-    padding: 0.25rem 0px 0.5rem 0px;
-    flex-grow: 1;
-    font-size: 1.15rem;
-    color: #404756;
-`;
 const VariantsContainer = styled.div`
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: center;
     align-items: flex-end;
+    justify-self: end;
     gap: 1rem;
     width: 100%;
+    height: 100%;
     padding-top: 1rem;
     transition: 150ms ease-in-out;
 `;
@@ -117,10 +129,11 @@ const Variants = styled.div`
     min-width: 0px;
 `;
 const Variant = styled.div`
-    height: 1.4rem;
+    height: 1.75rem;
     border-radius: var(--block-border-radius);
-    font-weight: 600;
-    font-size: 1.15rem;
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.5rem;
     text-align: center;
     cursor: pointer;
     opacity: 0.5;
@@ -136,14 +149,27 @@ const Variant = styled.div`
 
 const Actions = styled.div`
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
+    grid-template-columns: auto 1fr;
+    justify-content: space-between;
+    gap: 0.5rem;
 `;
 const AddButton = styled(Button)`
-    padding: 1rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 1.25rem;
-    width: 100%;
+    line-height: 1.25rem;
+    font-weight: 700;
     transition: 150ms ease-in-out;
+    border-radius: calc(var(--block-border-radius) * 0.75);
+    padding: 0.75rem 1rem;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+    @media (min-width: 950px) {
+        font-size: 1rem;
+        line-height: 1rem;
+    }
 
     &.Added {
         background: var(--accent-secondary-dark);
@@ -154,6 +180,7 @@ const Quantity = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    justify-self: end;
     gap: 0.5rem;
     font-weight: 600;
     text-align: center;
@@ -161,16 +188,12 @@ const Quantity = styled.div`
 `;
 const QuantityAction = styled.div`
     overflow: hidden;
-    width: 1rem;
+    width: 1.25rem;
     margin-top: -0.25rem;
-    font-size: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
     cursor: pointer;
     transition: 150ms ease-in-out;
-
-    @media (max-width: 950px) {
-        font-size: 1.5rem;
-        width: 1.5rem;
-    }
 
     &.Inactive {
         width: 0px;
@@ -182,8 +205,8 @@ const QuantityAction = styled.div`
     }
 `;
 const QuantityValue = styled.div`
-    min-width: 1.25rem;
-    font-size: 1.5rem;
+    min-width: 1rem;
+    font-size: 1.25rem;
 
     @media (max-width: 950px) {
         font-size: 1.75rem;
@@ -203,7 +226,7 @@ const Price = styled.div`
     font-weight: 700;
 
     &.Discount {
-        color: #d91e18;
+        color: var(--color-sale);
     }
 `;
 const PreviousPrice = styled.div`
@@ -214,32 +237,37 @@ const PreviousPrice = styled.div`
 
 const Badges = styled.div`
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    align-items: start;
+    justify-content: start;
     gap: 0.5rem;
     z-index: 1;
+    pointer-events: none;
 `;
 const BadgeText = styled.div``;
 const BadgePrice = styled(Currency)`
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
 `;
 const Badge = styled.div`
     flex-shrink: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    gap: 0.5rem;
     height: auto;
     padding: 0.5rem 0.75rem;
-    background: var(--accent-primary);
+    background: var(--accent-primary-light);
     color: var(--color-text-primary);
-    text-transform: uppercase;
     font-weight: 600;
+    font-size: 1.25rem;
+    border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     &.Sale {
         background: #d91e18;
@@ -248,6 +276,7 @@ const Badge = styled.div`
     &.From {
         background: #efefef;
         color: var(--color-text-dark);
+        font-size: 1.25rem;
 
         ${BadgeText} {
             color: #404756;
@@ -255,11 +284,11 @@ const Badge = styled.div`
     }
 
     &.New {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 1.25rem;
     }
     &.Vegan {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 1.25rem;
         background: #1b6e1b;
     }
@@ -267,16 +296,19 @@ const Badge = styled.div`
 
 interface VariantImageProps {
     image?: ShopifyImage;
+    isHorizontal?: boolean;
 }
-const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
+const VariantImage: FunctionComponent<VariantImageProps> = ({ image, isHorizontal }) => {
     if (!image) return null;
 
     return (
         <Image
             src={image.url}
-            layout="fill"
+            layout={(!isHorizontal && 'responsive') || 'fill'}
             alt={image.altText || ''}
             title={image.altText || undefined}
+            height={(!isHorizontal && (image.height || 0)) || undefined}
+            width={(!isHorizontal && (image.width || 0)) || undefined}
         />
     );
 };
@@ -314,8 +346,25 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
     if (short_desc[short_desc.length - 1] === ' ')
         short_desc = short_desc.substring(0, short_desc.length - 1);
 
+    const image = product?.images?.edges?.find(
+        (edge) => edge?.node?.id === selectedVariant?.image?.id
+    )?.node as ShopifyImage;
+
     return (
-        <Container className="ProductCard">
+        <Container
+            className="ProductCard"
+            style={
+                {
+                    '--background': (product as any).accent?.background || '#efefef',
+                    '--background-dark': Color((product as any).accent?.background || '#efefef')
+                        .saturate(0.75)
+                        .darken(0.25)
+                        .hex()
+                        .toString(),
+                    '--foreground': (product as any).accent?.foreground || '#030303'
+                } as React.CSSProperties
+            }
+        >
             <Badges data-nosnippet>
                 {!is_sale && product.variants?.edges && product.variants.edges.length > 1 ? (
                     <Badge className="From">
@@ -348,16 +397,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                     </Badge>
                 ) : null}
             </Badges>
-            <ProductImage>
+            <ProductImage isHorizontal>
                 <Link href={`/products/${product.handle}`}>
                     <ProductImageWrapper>
-                        <VariantImage
-                            image={
-                                product?.images?.edges?.find(
-                                    (edge) => edge?.node?.id === selectedVariant?.image?.id
-                                )?.node as ShopifyImage
-                            }
-                        />
+                        <VariantImage image={image} isHorizontal />
                     </ProductImageWrapper>
                 </Link>
             </ProductImage>
@@ -372,20 +415,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                 <Title>
                     <Link href={`/products/${product.handle}`}>{product.title}</Link>
                 </Title>
-                <Description>
-                    {short_desc}
-                    {short_desc.length > 5 ? '...' : ''}
-                </Description>
 
                 <VariantsContainer>
                     <Prices>
                         {selectedVariant.compareAtPrice?.amount && (
                             <PreviousPrice>
                                 <Currency
-                                    price={
-                                        Number.parseFloat(selectedVariant.compareAtPrice.amount) *
-                                        quantity
-                                    }
+                                    price={Number.parseFloat(selectedVariant.compareAtPrice.amount)}
                                     currency={
                                         selectedVariant.compareAtPrice.currencyCode! ||
                                         Config.i18n.currencies[0]
@@ -398,10 +434,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                             className={(selectedVariant.compareAtPrice?.amount && 'Discount') || ''}
                         >
                             <Currency
-                                price={
-                                    Number.parseFloat(selectedVariant.price?.amount || '') *
-                                    quantity
-                                }
+                                price={Number.parseFloat(selectedVariant.price?.amount || '')}
                                 currency={
                                     selectedVariant.price?.currencyCode! ||
                                     Config.i18n.currencies[0]
@@ -467,12 +500,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
                         !selectedVariant.availableForSale ||
                         (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
+                    data-nosnippet
                 >
-                    <span data-nosnippet>
-                        {(!selectedVariant.availableForSale && 'Out of Stock') ||
-                            (addedToCart && 'Added!') ||
-                            'Add to Cart'}
-                    </span>
+                    {(!selectedVariant.availableForSale && 'Out of Stock') ||
+                        (addedToCart && 'Added!') ||
+                        'Add to Cart'}
                 </AddButton>
                 <Quantity>
                     <QuantityAction

@@ -9,9 +9,9 @@ import Router, { useRouter } from 'next/router';
 import Color from 'color';
 import { Config } from '../src/util/Config';
 import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
 import { NextWebVitalsMetric } from 'next/app';
-import { Open_Sans } from 'next/font/google';
 import PageProvider from '../src/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
@@ -22,8 +22,8 @@ import prismicConfig from '../slicemachine.config.json';
 import useSWR from 'swr';
 import { withStore } from 'react-context-hook';
 
-const openSans = Open_Sans({
-    weight: ['300', '400', '600', '700'],
+const font = Lexend_Deca({
+    weight: ['400', '500', '600', '700'],
     subsets: ['latin'],
     display: 'swap',
     preload: true
@@ -54,7 +54,7 @@ const StoreApp = withStore(
                 <style jsx global>{`
                     html,
                     body {
-                        font-family: ${openSans.style.fontFamily}, -apple-system, BlinkMacSystemFont,
+                        font-family: ${font.style.fontFamily}, -apple-system, BlinkMacSystemFont,
                             'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
                     }
                 `}</style>
@@ -90,6 +90,12 @@ const StoreApp = withStore(
                             --color-text-dark: #0e0e0e;
                             --color-danger: #d91e18;
                             --color-sale: #d91e18;
+                            --color-block: #e6e6e6;
+                            --color-success: #1b6e1b;
+                            --color-success-light: ${Color('#1b6e1b')
+                                .lighten(0.25)
+                                .hex()
+                                .toString()};
                             --accent-primary: ${Color(store.accent.primary).hex().toString()};
                             --accent-primary-dark: ${Color(store.accent.primary)
                                 .darken(0.25)
@@ -99,6 +105,10 @@ const StoreApp = withStore(
                                 .lighten(0.45)
                                 .hex()
                                 .toString()};
+                                --accent-primary-extra-light: ${Color(store.accent.primary)
+                                    .lighten(0.75)
+                                    .hex()
+                                    .toString()};
                             --accent-secondary: ${Color(store.accent.secondary).hex().toString()};
                             --accent-secondary-dark: ${Color(store.accent.secondary)
                                 .darken(0.25)
@@ -108,8 +118,10 @@ const StoreApp = withStore(
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --block-border-radius: ${store.block.border_radius};
-                            background: var(--accent-primary);
+                            --page-width: 1465px;
+                            --block-border-radius: 1.25rem;
+                            --block-padding: 0.75rem;
+                            --block-padding-large: 1.25rem;
                         }
                     `}</style>
                     {/* eslint-enable indent */}

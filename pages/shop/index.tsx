@@ -52,7 +52,6 @@ const Action = styled.div`
     font-weight: 700;
     font-size: 1.25rem;
     text-transform: uppercase;
-    color: #404756;
     cursor: pointer;
 `;
 
@@ -91,6 +90,7 @@ const FilterTitle = styled.div`
     text-transform: uppercase;
     font-size: 1.5rem;
     font-weight: 700;
+    color: #404756;
 `;
 const FilterItems = styled.div`
     display: flex;
@@ -224,18 +224,7 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 }
             />
 
-            <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: props.page?.data.title || 'Shop',
-                            url: `/shop`
-                        }
-                    ]}
-                    store={props.store}
-                />
-                <PageHeader title={(data as any)?.title} subtitle={(data as any)?.description} />
-
+            <PageContent primary>
                 <PageHeader
                     title={props.page?.data.title || props.page?.data.meta_title || 'Shop'}
                     subtitle={
@@ -385,6 +374,16 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                         <PageLoader />
                     )}
                 </Container>
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: props.page?.data.title || 'Shop',
+                            url: `/shop`
+                        }
+                    ]}
+                    store={props.store}
+                />
             </PageContent>
         </Page>
     );

@@ -48,6 +48,16 @@
 				"__TYPE__": "FieldContent",
 				"value": "left",
 				"type": "Select"
+			},
+			"accent": {
+				"__TYPE__": "FieldContent",
+				"value": "#38789d",
+				"type": "Color"
+			},
+			"accent_dark": {
+				"__TYPE__": "FieldContent",
+				"value": "#d7d9fd",
+				"type": "Color"
 			}
 		},
 		"items": []

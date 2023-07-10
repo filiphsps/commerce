@@ -15,7 +15,6 @@ const Container = styled.div`
 const ReviewsContainer = styled.section``;
 const Review = styled.div`
     padding-bottom: 1rem;
-    border-bottom: 0.2rem solid #404756;
 `;
 const Meta = styled.div`
     display: grid;
@@ -26,16 +25,15 @@ const Title = styled.div`
     font-weight: 600;
     line-height: 2.25rem;
     letter-spacing: 0.05rem;
-    text-transform: uppercase;
 `;
 const Author = styled.div`
     padding-top: 0.25rem;
 
-    // TODO: The following is just the label from the product page
-    text-transform: uppercase;
+    // TODO: The following is just the label from the product page;
     font-weight: 700;
     font-size: 1.5rem;
-    color: #404756;
+    color: var(--color-text-primary);
+    opacity: 0.8;
 `;
 const Body = styled.div`
     padding-top: 1rem;
@@ -53,8 +51,10 @@ const Form = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    background: #fefefe;
+    background: var(--color-text-primary);
+    color: var(--color-text-dark);
     border-radius: var(--block-border-radius);
+    padding: 1rem;
 
     input,
     textarea {
@@ -105,7 +105,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
     const [submitted, setSubmitted] = useState(false);
 
     const { data: reviews }: any = useSWR(
-        [product?.id],
+        [`reviews_${product?.id}`],
         ([id]) =>
             fetch('/api/reviews', {
                 method: 'post',
@@ -123,7 +123,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
     return (
         <Container>
             <ReviewsContainer>
-                {reviews.reviews.map((review) => (
+                {reviews?.reviews?.map((review) => (
                     <Review key={review.id}>
                         <Meta>
                             <div>

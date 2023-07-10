@@ -26,6 +26,7 @@ const Item = styled.div`
     min-height: 2rem;
     max-height: 18rem;
     border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
     @media (max-width: 950px) {
         max-height: 6rem;
@@ -69,10 +70,12 @@ const TitleContainer = styled.div`
     width: 100%;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
     transition: 150ms ease-in-out border;
+    border-radius: var(--block-border-radius);
+    border-color: var(--accent-primary);
 
     &:hover,
     &:active {
-        border: 0.2rem solid var(--accent-primary);
+        border: 0.5rem solid var(--accent-primary);
     }
 `;
 

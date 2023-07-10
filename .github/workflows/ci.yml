@@ -111,6 +111,7 @@ jobs:
               run: 'curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ID }}/purge_cache" -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_TOKEN }}" -H "Content-Type: application/json" --data "{\"purge_everything\":true}"'
 
     deploy-oxygen:
+        if: false
         name: 🚚 Deploy Oxygen
         needs: [test, build]
         timeout-minutes: 30

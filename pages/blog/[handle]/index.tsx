@@ -31,13 +31,20 @@ const ContentWrapper = styled.div`
 const Content = styled.article`
     width: 100%;
     margin: 0px auto 1.5rem auto;
+
+    a {
+        color: var(--color-text-primary);
+        border-bottom-color: var(--color-text-primary);
+    }
 `;
 
 const Banner = styled.div`
+    overflow: hidden;
     position: relative;
     width: 100%;
     height: 18rem;
     margin: 0px auto 1rem auto;
+    border-radius: var(--block-border-radius);
 
     img {
         object-fit: cover;
@@ -57,9 +64,8 @@ const ArticleTitle = styled.h1`
     margin-bottom: 0.5rem;
 `;
 const ArticleMeta = styled.div`
-    text-transform: uppercase;
     margin: 0px auto;
-    color: #404756;
+    opacity: 0.85;
     font-size: 1.25rem;
     font-weight: 600;
     font-size: 2rem;
@@ -68,7 +74,9 @@ const ArticleAuthor = styled.div``;
 const ArticleDate = styled.div``;
 
 const ArticleTags = styled.div`
+    overflow: hidden;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
 `;
@@ -79,7 +87,10 @@ const ArticleTag = styled.div`
     height: 2rem;
     padding: 1rem 0.5rem;
     text-transform: uppercase;
-    background: #efefef;
+    background: var(--accent-secondary-dark);
+    color: var(--color-text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: var(--block-border-radius);
 `;
 
 const ArticleContent = styled(ContentComponent)`
@@ -89,10 +100,9 @@ const ArticleContent = styled(ContentComponent)`
     margin: 0px auto;
 
     &::first-letter {
-        color: var(--accent-primary-dark);
-        initial-letter: 2;
+        //initial-letter: 2.25;
         font-weight: 700;
-        padding: 0px 1rem 0.25rem 0px;
+        //padding: 0px 1rem 0.25rem 0px;
     }
 `;
 
@@ -107,7 +117,7 @@ const Sidebar = styled.div`
 `;
 const SidebarContent = styled.div`
     position: sticky;
-    top: 10rem;
+    top: 12rem;
 `;
 const SidebarTitle = styled.div`
     text-transform: uppercase;
@@ -117,11 +127,10 @@ const SidebarTitle = styled.div`
 `;
 const SidebarLink = styled.div`
     width: 100%;
-    text-transform: uppercase;
     font-size: 1.5rem;
+    font-weight: 400;
     margin: 1rem 0px;
-    padding: 0px 0px 0.5rem 0px;
-    border-bottom: 0.2rem solid #efefef;
+    padding: 0px 0px 0.25rem 0px;
     transition: 150ms ease-in-out;
 
     a:hover {
@@ -192,21 +201,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 publisherLogo={store.favicon.src}
             />
 
-            <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'blog'} />,
-                            url: '/blog/'
-                        },
-                        {
-                            title: article.title,
-                            url: `/blog/${article.handle}/`
-                        }
-                    ]}
-                    store={store}
-                />
-
+            <PageContent primary>
                 <ContentWrapper>
                     <Content>
                         <ArticleHeader>
@@ -255,6 +250,20 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                         </SidebarContent>
                     </Sidebar>
                 </ContentWrapper>
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'blog'} />,
+                            url: '/blog/'
+                        },
+                        {
+                            title: article.title,
+                            url: `/blog/${article.handle}/`
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
         </Page>
     );

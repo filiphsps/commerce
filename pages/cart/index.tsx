@@ -8,6 +8,7 @@ import {
 } from '@shopify/hydrogen-react';
 import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import React, { FunctionComponent, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import Button from '../../src/components/Button';
@@ -25,7 +26,6 @@ import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
-import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -33,7 +33,7 @@ import useSWR from 'swr';
 const Content = styled.div`
     display: grid;
     grid-template-columns: 1fr minmax(auto, 28rem);
-    gap: 2rem;
+    gap: 1rem;
     max-width: 100%;
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
@@ -41,56 +41,72 @@ const Content = styled.div`
     }
 `;
 const ContentWrapper = styled.div`
-    display: block;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100;
 `;
 
-const FreeShippingBanner = styled.div`
+const FreeShippingBanner = styled.div<{ active?: boolean }>`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: calc(100vw - 2rem);
-    padding: 1.5rem;
+    padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: #efefef;
+    background: var(--color-block);
     font-size: 1.5rem;
     font-weight: 800;
-    text-transform: uppercase;
 
-    @media (max-width: 950px) {
-        padding: 1rem;
-    }
+    ${({ active }) =>
+        active &&
+        css`
+            background: var(--color-success);
+            background: linear-gradient(
+                320deg,
+                var(--color-success-light) 0%,
+                var(--color-success) 100%
+            );
+            color: var(--color-text-primary);
+
+            .Currency {
+                color: var(--accent-secondary);
+            }
+        `}
 `;
 const FreeShippingBannerText = styled.div`
     display: flex;
     gap: 0.25rem;
-    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+    font-weight: 700;
+`;
+const FreeShippingBannerTitle = styled.div`
+    width: 100%;
+    font-size: 1.75rem;
+    line-height: 2rem;
+    font-weight: 500;
 
-    &.Full {
-        color: var(--accent-primary);
+    .Currency {
+        padding-left: 0.25rem;
     }
 `;
 const FreeShippingBannerMeta = styled.div`
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     gap: 1rem;
     justify-content: center;
     align-items: center;
 
     .Currency {
+        display: inline;
         font-weight: 900;
-        color: var(--accent-primary);
 
         .Currency-Prefix,
         .Currency-Suffix {
             font-weight: 600;
             color: initial;
         }
-    }
-
-    .Progress {
-        font-size: 1.75rem;
     }
 `;
 const ProgressBar = styled.div`
@@ -105,9 +121,7 @@ const Progress = styled.div`
     border-radius: var(--block-border-radius);
 
     &.Full {
-        ${ProgressBar} {
-            background: var(--accent-primary);
-        }
+        display: none;
     }
 `;
 
@@ -125,27 +139,50 @@ const ItemsContainer = styled.table`
     tbody,
     thead {
         overflow: hidden;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         width: 100%;
         max-width: 100%;
     }
+
+    @media (min-width: 1465px) {
+        border-spacing: 0px;
+        table-layout: auto;
+        border-collapse: collapse;
+
+        tbody {
+            max-width: 100%;
+
+            display: grid;
+            grid-template-columns: calc(50% - 0.5rem) calc(50% - 0.5rem);
+            gap: 1rem;
+        }
+    }
 `;
 
-const SummaryContent = styled.div`
+const Sidebar = styled.section`
     position: sticky;
-    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: var(--color-text-dark);
+
+    @media (min-width: 950px) {
+        top: 10rem;
+    }
+`;
+const SummaryContent = styled.div`
+    padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: #efefef;
+    background: var(--color-block);
     transition: 150ms ease-in-out;
 
     .CheckoutButton {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-    }
-
-    @media (min-width: 950px) {
-        top: 8rem;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
     }
 
     @media (max-width: 950px) {
@@ -160,29 +197,18 @@ const SummaryContent = styled.div`
 `;
 const SummaryItemPrice = styled.div`
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    text-align: right;
-    gap: 0ox;
-    font-weight: 600;
-    font-size: 1rem;
-
-    .Currency-Prefix {
-        width: 5.5rem;
-        padding-right: 1rem;
-        text-align: start;
-    }
-
-    span {
-        display: inline-block;
-        text-transform: initial;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    width: 100%;
+    gap: 1px;
+    font-size: 1.75rem;
+    line-height: 2rem;
+    font-weight: 500;
 
     .Total {
-        font-size: 1.5rem;
+        font-size: 2.5rem;
+        line-height: 2.75rem;
         font-weight: 700;
 
         span {
@@ -195,23 +221,18 @@ const SummaryItemPrice = styled.div`
     }
 `;
 const SummaryItemShipping = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
     font-size: 1.25rem;
-
-    @media (max-width: 950px) {
-        font-size: 1.25rem;
-    }
+    line-height: 1.5rem;
+    font-weight: 700;
+    width: 100%;
 `;
 const SummarySummary = styled.div`
-    display: grid;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    grid-template-columns: 1fr auto;
     gap: 1rem;
     padding-bottom: 1rem;
-    text-transform: uppercase;
 
     @media (max-width: 950px) {
         border-top: none;
@@ -261,25 +282,38 @@ const SummaryContainer = styled.div`
 `;
 
 const Recommendations = styled(ContentBlock)`
-    display: block;
-    width: 100%;
-    margin-top: 4rem;
-    border-radius: var(--block-border-radius);
-
-    @media (max-width: 950px) {
-        margin-top: 2.5rem;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 `;
 const RecommendationsTitle = styled.h3`
-    text-transform: uppercase;
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--accent-primary);
+    display: block;
+    padding: var(--block-padding-large);
+    background: var(--accent-primary);
+    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    border-radius: var(--block-border-radius);
+    color: var(--color-text-primary);
+
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
 
     @media (max-width: 950px) {
         font-size: 2.25rem;
         font-weight: 700;
     }
+`;
+const RecommendationsContentWrapper = styled.div`
+    display: block;
+    padding: var(--block-padding-large);
+    background: var(--color-block);
+    background: linear-gradient(
+        320deg,
+        var(--accent-secondary) 0%,
+        var(--accent-primary-dark) 100%
+    );
+    border-radius: var(--block-border-radius);
+    color: var(--color-text-primary);
 `;
 const RecommendationsContent = styled(PageContent)`
     width: 100%;
@@ -385,15 +419,22 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const { data: recommendations } = useSWR(['recommendations'], () =>
-        RecommendationApi({
-            id:
-                (cart.totalQuantity &&
-                    cart.totalQuantity > 0 &&
-                    cart.lines?.[0]?.merchandise?.product?.id) ||
-                '8463374614833', // FIXME: don't hardcode this
-            locale: router?.locale
-        })
+    const { data: recommendations } = useSWR(
+        [
+            (cart.totalQuantity &&
+                cart.totalQuantity > 0 &&
+                cart.lines?.[0]?.merchandise?.product?.id) ||
+                '8452878893361'
+        ],
+        () =>
+            RecommendationApi({
+                id:
+                    (cart.totalQuantity &&
+                        cart.totalQuantity > 0 &&
+                        cart.lines?.[0]?.merchandise?.product?.id) ||
+                    '8452878893361', // FIXME: don't hardcode this
+                locale: router?.locale
+            })
     );
 
     const freeShipping = Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > 75;
@@ -439,18 +480,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 }
             />
 
-            <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'cart'} />,
-                            url: '/cart/'
-                        }
-                    ]}
-                    store={store}
+            <PageContent primary>
+                <PageHeader
+                    title="Cart"
+                    subtitle="Manage your shopping bag here and begin the checkout process when you're ready!"
                 />
-
-                <PageHeader title="Cart" />
 
                 <Content>
                     <ContentWrapper>
@@ -474,159 +508,181 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             </ItemsContainer>
                         </ItemsContainerWrapper>
 
-                        <FreeShippingBanner>
-                            <FreeShippingBannerMeta>
-                                <FreeShippingBannerText className={freeShipping ? 'Full' : ''}>
-                                    <Currency
-                                        prefix={'Free shipping on orders above'}
-                                        price={75}
-                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
-                                        store={store}
-                                    />
-                                </FreeShippingBannerText>
-                                <FreeShippingBannerText className="Progress">
-                                    <Currency
-                                        price={Number.parseFloat(
-                                            cart.cost?.totalAmount?.amount || '0'
-                                        )}
-                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
-                                        store={store}
-                                        className="Total"
-                                    />
-                                    {`/`}
-                                    <Currency
-                                        price={75}
-                                        currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
-                                        store={store}
-                                        className="Left"
-                                    />
-                                </FreeShippingBannerText>
-                            </FreeShippingBannerMeta>
-                            <Progress className={freeShipping ? 'Full' : ''}>
-                                <ProgressBar
-                                    style={{
-                                        width: `${
-                                            (freeShipping && 100) ||
-                                            ((Number.parseFloat(
-                                                cart.cost?.totalAmount?.amount! || '0'
-                                            ) || 0) /
-                                                75) *
-                                                100
-                                        }%`
-                                    }}
-                                />
-                            </Progress>
-                        </FreeShippingBanner>
+                        {(cart?.totalQuantity || 0) > 0 && (
+                            <>
+                                {(recommendations?.length && recommendations.length > 1 && (
+                                    <>
+                                        <Recommendations>
+                                            <RecommendationsTitle>
+                                                Customers like you also bought
+                                            </RecommendationsTitle>
+                                            <RecommendationsContentWrapper>
+                                                <RecommendationsContent>
+                                                    <CollectionBlock
+                                                        data={
+                                                            {
+                                                                // FIXME: this is hacky
+                                                                products: {
+                                                                    edges: recommendations.map(
+                                                                        (product) => ({
+                                                                            node: product
+                                                                        })
+                                                                    )
+                                                                }
+                                                            } as Collection
+                                                        }
+                                                        isHorizontal
+                                                        store={store}
+                                                    />
+                                                </RecommendationsContent>
+                                            </RecommendationsContentWrapper>
+                                        </Recommendations>
+                                    </>
+                                )) || <PageLoader />}
+                            </>
+                        )}
                     </ContentWrapper>
 
                     <SummaryContainer>
-                        <SummaryContent>
-                            <div className="CartPage-Content-Total-Content">
-                                <SummarySummary
-                                    className={
-                                        !cart?.totalQuantity || cart.totalQuantity <= 0
-                                            ? 'Empty'
-                                            : ''
-                                    }
-                                >
-                                    <SummaryItemPrice>
+                        <Sidebar>
+                            <SummaryContent>
+                                <div className="CartPage-Content-Total-Content">
+                                    <SummarySummary
+                                        className={
+                                            !cart?.totalQuantity || cart.totalQuantity <= 0
+                                                ? 'Empty'
+                                                : ''
+                                        }
+                                    >
+                                        <SummaryItemPrice>
+                                            Subtotal
+                                            <Currency
+                                                className="Total"
+                                                price={Number.parseFloat(
+                                                    cart.cost?.totalAmount?.amount || '0'
+                                                )}
+                                                currency={
+                                                    cart.cost?.totalAmount?.currencyCode ||
+                                                    Config.i18n.currencies[0]
+                                                }
+                                                store={store}
+                                            />
+                                        </SummaryItemPrice>
+                                        {!freeShipping && (
+                                            <SummaryItemShipping>
+                                                Shipping calculated at checkout
+                                            </SummaryItemShipping>
+                                        )}
+                                    </SummarySummary>
+                                </div>
+
+                                <div>
+                                    <Button
+                                        className={'CheckoutButton'}
+                                        disabled={
+                                            (cart?.totalQuantity || 0) <= 0 ||
+                                            !cart.lines ||
+                                            loading ||
+                                            (cart.status !== 'idle' &&
+                                                cart.status !== 'uninitialized')
+                                        }
+                                        onClick={async () => {
+                                            if (
+                                                cart.status !== 'idle' &&
+                                                cart.status !== 'uninitialized'
+                                            )
+                                                return;
+                                            setLoading(true);
+
+                                            try {
+                                                await Checkout({
+                                                    cart
+                                                });
+                                            } catch (error) {
+                                                Sentry.captureException(error);
+                                                alert(error.message);
+                                                setLoading(false);
+                                            }
+                                        }}
+                                    >
+                                        <FiShoppingCart
+                                            style={{
+                                                marginRight: '1rem',
+                                                width: '2rem',
+                                                height: '1.75rem',
+                                                fontSize: '1.25rem'
+                                            }}
+                                        />
+                                        <LanguageString
+                                            id={(loading && 'loading...') || 'begin_checkout'}
+                                        />
+                                    </Button>
+                                </div>
+                            </SummaryContent>
+
+                            <FreeShippingBanner active={freeShipping}>
+                                <FreeShippingBannerMeta>
+                                    {(!freeShipping && (
+                                        <FreeShippingBannerTitle>
+                                            Add a few more items to get FREE shipping on this order!
+                                        </FreeShippingBannerTitle>
+                                    )) || (
+                                        <FreeShippingBannerTitle>
+                                            FREE shipping on this order!
+                                        </FreeShippingBannerTitle>
+                                    )}
+                                    <FreeShippingBannerText>
                                         <Currency
-                                            className="Total"
                                             price={Number.parseFloat(
                                                 cart.cost?.totalAmount?.amount || '0'
                                             )}
-                                            currency={cart.cost?.totalAmount?.currencyCode  || Config.i18n.currencies[0]}
-                                            prefix={
-                                                <span
-                                                    style={{
-                                                        textTransform: 'uppercase'
-                                                    }}
-                                                >
-                                                    <LanguageString id={'total'} />
-                                                </span>
+                                            currency={
+                                                cart.cost?.totalAmount?.currencyCode ||
+                                                Config.i18n.currencies[0]
                                             }
                                             store={store}
+                                            className="Total"
                                         />
-                                    </SummaryItemPrice>
-                                    <SummaryItemShipping>
-                                        {(!freeShipping && (
-                                            <LanguageString id={'excl_shipping'} />
-                                        )) ||
-                                            'Free shipping!'}
-                                    </SummaryItemShipping>
-                                </SummarySummary>
-                            </div>
-
-                            <div>
-                                <Button
-                                    className={'CheckoutButton'}
-                                    disabled={
-                                        (cart?.totalQuantity || 0) <= 0 ||
-                                        !cart.lines ||
-                                        loading ||
-                                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
-                                    }
-                                    onClick={async () => {
-                                        if (
-                                            cart.status !== 'idle' &&
-                                            cart.status !== 'uninitialized'
-                                        )
-                                            return;
-                                        setLoading(true);
-
-                                        try {
-                                            await Checkout({
-                                                cart
-                                            });
-                                        } catch (error) {
-                                            Sentry.captureException(error);
-                                            alert(error.message);
-                                            setLoading(false);
-                                        }
-                                    }}
-                                >
-                                    <FiShoppingCart
+                                        {`/`}
+                                        <Currency
+                                            price={75}
+                                            currency={
+                                                cart.cost?.totalAmount?.currencyCode ||
+                                                Config.i18n.currencies[0]
+                                            }
+                                            store={store}
+                                            className="Left"
+                                        />
+                                    </FreeShippingBannerText>
+                                </FreeShippingBannerMeta>
+                                <Progress className={freeShipping ? 'Full' : ''}>
+                                    <ProgressBar
                                         style={{
-                                            marginRight: '1rem',
-                                            width: '2rem',
-                                            height: '1.75rem',
-                                            fontSize: '1.25rem'
+                                            width: `${
+                                                (freeShipping && 100) ||
+                                                ((Number.parseFloat(
+                                                    cart.cost?.totalAmount?.amount! || '0'
+                                                ) || 0) /
+                                                    75) *
+                                                    100
+                                            }%`
                                         }}
                                     />
-                                    <LanguageString
-                                        id={(loading && 'loading...') || 'begin_checkout'}
-                                    />
-                                </Button>
-                            </div>
-                        </SummaryContent>
+                                </Progress>
+                            </FreeShippingBanner>
+                        </Sidebar>
                     </SummaryContainer>
                 </Content>
 
-                {(cart?.totalQuantity || 0) > 0 && (
-                    <>
-                        {(recommendations?.length && recommendations.length > 1 && (
-                            <Recommendations>
-                                <RecommendationsTitle>Recommended Products</RecommendationsTitle>
-                                <RecommendationsContent>
-                                    <CollectionBlock
-                                        data={
-                                            {
-                                                // FIXME: this is hacky
-                                                products: {
-                                                    edges: recommendations.map((product) => ({
-                                                        node: product
-                                                    }))
-                                                }
-                                            } as Collection
-                                        }
-                                        isHorizontal
-                                        store={store}
-                                    />
-                                </RecommendationsContent>
-                            </Recommendations>
-                        )) || <PageLoader />}
-                    </>
-                )}
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'cart'} />,
+                            url: '/cart/'
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
         </Page>
     );

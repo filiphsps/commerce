@@ -1,6 +1,5 @@
 import { Content, asHTML } from '@prismicio/client';
 
-import ContentBlock from '../../src/components/ContentBlock';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import TextBlockComponent from '../../src/components/TextBlock';
@@ -23,20 +22,18 @@ export type TextBlockProps = SliceComponentProps<Content.TextBlockSlice>;
 const TextBlock = ({ slice }: TextBlockProps): JSX.Element => {
     return (
         <Container>
-            <ContentBlock>
-                <PageContent>
-                    {slice?.items?.map((item, index) => {
-                        return (
-                            // eslint-disable-next-line react/jsx-no-undef
-                            <TextBlockComponent
-                                key={index}
-                                image={(item?.image?.url && (item.image as any)) || undefined}
-                                body={asHTML(item?.text) || ''}
-                            />
-                        );
-                    })}
-                </PageContent>
-            </ContentBlock>
+            <PageContent>
+                {slice?.items?.map((item, index) => {
+                    return (
+                        // eslint-disable-next-line react/jsx-no-undef
+                        <TextBlockComponent
+                            key={index}
+                            image={(item?.image?.url && (item.image as any)) || undefined}
+                            body={asHTML(item?.text) || ''}
+                        />
+                    );
+                })}
+            </PageContent>
         </Container>
     );
 };

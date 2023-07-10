@@ -1,12 +1,18 @@
 import styled from 'styled-components';
 
 const Content = styled.div`
+    max-width: 100%;
+    height: 100%;
+    font-size: 1.75rem;
+    line-height: 2rem;
+
     a {
         color: var(--accent-primary);
+        border-bottom: 0.2rem dotted var(--accent-primary);
 
         &:hover {
             color: var(--accent-primary-light);
-            text-decoration: underline;
+            border-bottom-color: var(--accent-primary-light);
         }
     }
 
@@ -14,7 +20,6 @@ const Content = styled.div`
         margin-bottom: 1.5rem;
         font-size: 1.75rem;
         line-height: 2.25rem;
-        color: #404756;
 
         &:last-child {
             margin-bottom: 0px;
@@ -30,7 +35,7 @@ const Content = styled.div`
         padding-left: 1rem;
         font-size: 1.75rem;
         margin-bottom: 1.5rem;
-        color: #404756;
+        opacity: 0.85;
 
         li {
             margin-bottom: 0.5rem;
@@ -41,32 +46,28 @@ const Content = styled.div`
     }
 
     h1 {
-        margin-bottom: 0.5rem;
-        font-size: 3.25rem;
-        line-height: 3.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-    h2 {
-        margin-bottom: 0.5rem;
-        font-size: 2.75rem;
-        line-height: 3rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-    h3 {
-        margin-bottom: 0.5rem;
-        font-size: 2rem;
+        font-size: 3rem;
         line-height: 3.25rem;
         font-weight: 600;
-        text-transform: uppercase;
+        padding-bottom: 1.5rem;
+    }
+    h2 {
+        font-size: 2.75rem;
+        line-height: 3rem;
+        font-weight: 600;
+        padding-bottom: 1rem;
+    }
+    h3 {
+        font-size: 2rem;
+        line-height: 3.25rem;
+        font-weight: 500;
+        padding-bottom: 1rem;
     }
 
     img {
         width: 100%;
         max-width: 100% !important;
         object-fit: contain;
-        mix-blend-mode: multiply;
         margin-bottom: 1rem;
     }
 `;

@@ -61,6 +61,11 @@
                         "placeholder_true": "Hide",
                         "default_value": false
                     }
+                },
+                "accent": { "type": "Color", "config": { "label": "Accent", "placeholder": "" } },
+                "accent_dark": {
+                    "type": "Color",
+                    "config": { "label": "Accent Dark", "placeholder": "" }
                 }
             },
             "items": {}

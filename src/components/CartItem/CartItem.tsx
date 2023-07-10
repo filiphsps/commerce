@@ -32,14 +32,11 @@ const SectionContent = styled.div`
 
 const Details = styled(SectionContent)`
     width: 100%;
-    text-transform: uppercase;
     display: flex;
     flex-direction: column;
-    color: var(--color-text-dark);
 `;
 const DetailsBrand = styled.div`
     font-weight: 700;
-    letter-spacing: 0.05rem;
     transition: 150ms ease-in-out;
 
     &:hover {
@@ -48,11 +45,11 @@ const DetailsBrand = styled.div`
 `;
 const DetailsTitle = styled.div`
     font-size: 1.75rem;
-    font-weight: 700;
+    line-height: 2rem;
+    font-weight: 500;
     transition: 150ms ease-in-out;
     word-wrap: break-word;
     hyphens: auto;
-    padding-bottom: 0.25rem;
 
     &:hover {
         color: var(--accent-primary);
@@ -62,7 +59,6 @@ const DetailsTitle = styled.div`
         font-size: 1.5rem;
     }
 `;
-const DetailsVariant = styled.div``;
 
 const ImageWrapper = styled.div`
     max-width: 8rem;
@@ -117,8 +113,9 @@ const ProductImage = styled(Section)`
 const Price = styled(SectionContent)`
     width: 100%;
     height: 100%;
+    font-size: 1.75rem;
+    line-height: 2rem;
     font-weight: 700;
-    font-size: 1.5rem;
     text-align: center;
 
     .Currency {
@@ -186,6 +183,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
     height: 3rem;
     background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
+    color: var(--color-text-dark);
     transition: 150ms all ease-in-out;
 
     ${(props) =>
@@ -268,11 +266,9 @@ const Content = styled.tr`
     grid-template-rows: 1fr;
     grid-template-areas: 'image meta price quantity';
     gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 0.5rem 0px;
-
-    padding: 1rem;
-    background: #efefef;
+    padding: var(--block-padding);
+    background: var(--color-block);
+    color: var(--color-text-dark);
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
@@ -359,7 +355,6 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
                     <DetailsTitle>
                         <Link href={`/products/${product?.handle}`}>{product?.title}</Link>
                     </DetailsTitle>
-                    <DetailsVariant>{variant?.title}</DetailsVariant>
                 </Details>
             </MetaSection>
 

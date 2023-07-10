@@ -22,7 +22,8 @@ const EmailCaptureContent = styled.div`
     gap: 2rem;
     max-width: 100%;
     width: 1465px;
-    padding: 1rem 2rem;
+    margin: 0px auto;
+    padding: 1rem;
 
     @media (max-width: 950px) {
         display: flex;
@@ -82,7 +83,7 @@ const EmailCaptureDescription = styled.div`
 
 const Form = styled.div`
     display: grid;
-    grid-template-columns 1fr;
+    grid-template-columns: 1fr;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -90,7 +91,7 @@ const Form = styled.div`
 
     @media (min-width: 950px) {
         padding: 0px;
-        grid-template-columns auto auto;
+        grid-template-columns: auto auto;
         justify-content: start;
     }
 `;

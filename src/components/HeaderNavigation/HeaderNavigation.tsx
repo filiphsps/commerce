@@ -6,23 +6,19 @@ import { useRouter } from 'next/router';
 
 const Container = styled.div`
     position: absolute;
-    top: 6rem;
+    top: 6.5rem;
     z-index: 99999;
-    height: 100%;
-    width: 70vw;
-    width: 70dvw;
-    height: calc(100vh - 10rem);
-    height: calc(100dvh - 10rem);
-    background: #fefefe;
-    border-bottom: 0.5rem solid var(--accent-primary);
-    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+    width: 80vw;
+    width: 80dvw;
+    height: calc(100vh - 10.5rem);
+    height: calc(100dvh - 10.5rem);
+    background: var(--color-text-primary);
+    color: var(--color-text-dark);
     transition: 150ms ease-in-out;
 
     left: -100vw;
     &.Open {
         left: 0px;
-    }
-    &.Modern {
     }
 
     @media (min-width: 950px) {
@@ -35,18 +31,19 @@ const Navigation = styled.div`
     overscroll-behavior-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    gap: 2rem;
     height: 100%;
     width: 100%;
     padding: 2rem;
 `;
 const NavigationItem = styled.div`
-    padding-bottom: 1.75rem;
-    font-size: 2rem;
-    font-weight: 600;
-    line-height: 2rem;
-    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+    font-weight: 700;
 
     a {
         transition: 150ms ease-in-out;
@@ -62,9 +59,8 @@ const NavigationItem = styled.div`
     }
 `;
 const NavigationSubItem = styled.div`
-    padding: 1rem 0px 0px 1rem;
-    font-size: 1.75rem;
-    line-height: 1.75rem;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
     font-weight: 500;
 
     &:last-child {
