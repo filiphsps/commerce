@@ -1,11 +1,11 @@
 import { Content, asHTML } from '@prismicio/client';
 
-import ContentBlock from '../../src/components/ContentBlock';
 import { FiChevronUp } from 'react-icons/fi';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import TextBlock from '../../src/components/TextBlock';
 import styled from 'styled-components';
+import Color from 'color';
 
 const Container = styled.section`
     width: 100%;
@@ -13,20 +13,24 @@ const Container = styled.section`
     margin: 0px;
 `;
 
+const Content = styled.div`
+    color: var(--foreground);
+    padding: var(--block-padding-large);
+    background: var(--color-block);
+    border-radius: var(--block-border-radius);
+    background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
+`;
+
 const Summary = styled.summary`
-    display: grid;
-    grid-template-columns: 2rem auto;
+    display: flex;
     gap: 1rem;
     justify-self: flex-start;
     align-items: center;
-    padding: 0px 0px 0.5rem 0px;
+    font-size: 2rem;
+    line-height: 2.5rem;
     font-weight: 700;
-    font-size: 1.75rem;
-    line-height: 2.25rem;
-    text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    border-bottom: 0.2rem solid var(--color-text-dark);
     transition: 150ms all ease-in-out;
 
     &:hover {
@@ -40,13 +44,16 @@ const Summary = styled.summary`
 
     .Icon {
         width: 2rem;
-        font-size: 1.75rem;
+        font-size: 2rem;
         line-height: 2rem;
         transition: 150ms ease-in-out;
     }
 `;
 const Details = styled.details`
     transition: 150ms ease-in-out;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-weight: 500;
 
     &[open] ${Summary} {
         margin-bottom: 1rem;
@@ -66,9 +73,21 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
  */
 const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     return (
-        <Container>
-            <ContentBlock>
-                <PageContent>
+        <Container
+            style={
+                {
+                    '--background': slice.primary.accent || 'var(--color-block)',
+                    '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
+                    '--foreground':
+                        (slice.primary.accent &&
+                            Color(slice.primary.accent).isDark() &&
+                            'var(--color-text-primary)') ||
+                        'var(--color-text-dark)'
+                } as React.CSSProperties
+            }
+        >
+            <PageContent>
+                <Content>
                     <Details className={`Slice-Collapse-Body`}>
                         <Summary>
                             <FiChevronUp className="Icon" /> {slice?.primary?.title}
@@ -76,8 +95,8 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
 
                         {<TextBlock body={asHTML(slice?.primary?.text || '') || ''} />}
                     </Details>
-                </PageContent>
-            </ContentBlock>
+                </Content>
+            </PageContent>
         </Container>
     );
 };

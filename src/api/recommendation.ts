@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
 
+import Color from 'color';
+import { FastAverageColor } from 'fast-average-color';
 import { PRODUCT_FRAGMENT } from './product';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
@@ -43,6 +45,40 @@ export const RecommendationApi = async ({
             if (errors) return reject(new Error(errors.join('\n')));
             if (!data?.productRecommendations)
                 return reject(new Error('404: The requested document cannot be found'));
+
+            if (data.productRecommendations)
+                data.productRecommendations = await Promise.all(
+                    data.productRecommendations.map(async (product) => {
+                        if (!product?.images?.edges?.at(0)?.node?.url) return product;
+
+                        try {
+                            const color = await new FastAverageColor().getColorAsync(
+                                product?.images?.edges?.at(0)?.node?.url || ''
+                            );
+
+                            product.accent = {
+                                background: Color(color.hex).hex().toString(),
+                                foreground:
+                                    (color.isDark &&
+                                        Color(color.hex)
+                                            .lighten(0.5)
+                                            .saturate(0.5)
+                                            .lighten(0.75)
+                                            .hex()
+                                            .toString()) ||
+                                    Color(color.hex)
+                                        .lighten(0.5)
+                                        .desaturate(0.5)
+                                        .darken(0.8)
+                                        .hex()
+                                        .toString()
+                            };
+                            return product;
+                        } catch {
+                            return product;
+                        }
+                    })
+                );
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
         } catch (error) {

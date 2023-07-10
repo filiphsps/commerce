@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { FiChevronDown, FiMenu, FiSearch, FiShoppingCart, FiX } from 'react-icons/fi';
+import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
 import Button from '../Button';
@@ -16,31 +16,32 @@ import { useStore } from 'react-context-hook';
 
 const Content = styled.div`
     display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-columns: auto 1fr 1fr;
-    gap: 1.5rem;
-    max-width: 1465px;
+    grid-template-columns: auto 12rem 1fr;
+    gap: 1rem;
+    max-width: var(--page-width);
     width: 100%;
-    padding: 0.75rem 2rem;
+    height: 6.5rem;
+    padding: 1rem;
+    margin: 0px auto;
+    user-select: none;
 
-    @media (max-width: 1430px) {
-        padding: 0.75rem 1rem;
+    .Icon {
+        font-size: 3rem;
+        line-height: 3rem;
     }
-    @media (max-width: 950px) {
-        padding: 0.75rem 2rem;
-        position: relative;
-        grid-template-columns: auto auto 1fr;
-        gap: 1rem;
+
+    @media (min-width: 950px) {
+        grid-template-columns: 12rem 1fr auto;
+        gap: 2rem;
+        height: 100%;
     }
 `;
 const Logo = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0px;
-    padding-right: 1rem;
-    cursor: pointer;
+    height: 100%;
+    padding: 0.5rem 0.25rem;
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
     user-select: none;
@@ -48,25 +49,16 @@ const Logo = styled.div`
     a {
         position: relative;
         display: block;
-        height: 4rem;
-        width: 8rem;
+        height: 100%;
+        width: 100%;
 
         img {
             object-fit: contain;
         }
     }
 
-    @media (max-width: 950px) {
-        padding-right: 0px;
-
-        a {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            height: 4rem;
-            width: 12rem;
-        }
+    @media (min-width: 950px) {
+        padding: 0.5rem 1rem;
     }
 `;
 const Navigation = styled.nav`
@@ -78,7 +70,8 @@ const Navigation = styled.nav`
     text-transform: uppercase;
     font-size: 1.5rem;
     letter-spacing: 0.05rem;
-    color: var(--color-text-primary);
+
+    color: var(--color-text-dark);
 
     @media (max-width: 950px) {
         display: none;
@@ -98,7 +91,7 @@ const Navigation = styled.nav`
         }
 
         &.Active {
-            color: var(--color-text-primary);
+            color: var(--accent-primary);
             font-weight: 700;
         }
     }
@@ -111,6 +104,7 @@ const Actions = styled.div`
 
     .SearchBar {
         max-width: 24rem;
+
         input {
             height: 3.25rem;
             border-radius: var(--block-border-radius);
@@ -119,76 +113,49 @@ const Actions = styled.div`
     }
 `;
 
+const SearchIcon = styled.div`
+    height: 100%;
+    width: 5rem;
+
+    @media (min-width: 950px) {
+        display: none;
+    }
+`;
 const CartIconWrapper = styled.div`
     position: relative;
-    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 5rem;
+
+    background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
     color: var(--color-text-primary);
 
-    .Wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        padding: 0.5rem 0px;
-        border-radius: 1.75rem;
-        cursor: pointer;
-        border: 0.2rem solid transparent;
-    }
-
     .Icon {
-        font-size: 2rem;
-        line-height: 100%;
         cursor: pointer;
         transition: 150ms all ease-in-out;
-
-        &:hover,
-        &:active {
-            transform: scale(1.15);
-            color: var(--accent-secondary);
-        }
     }
 
-    &.Active {
+    @media (min-width: 950px) {
+        height: 3.25rem;
+
         .Icon {
-            font-size: 2rem;
-            margin-left: 0.5rem;
-
-            @media (min-width: 950px) {
-                font-size: 1.75rem;
-                margin-left: 1rem;
-            }
-        }
-
-        .Wrapper {
-            height: 3.5rem;
-            padding: 0px 1.15rem;
-            background: var(--accent-primary);
-            color: var(--color-text-primary);
-            border-color: var(--accent-primary);
-            box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-
-            @media (min-width: 950px) {
-                padding: 0px 1rem;
-            }
-
-            &:hover,
-            &:active {
-                background: var(--accent-secondary-dark);
-                color: var(--color-text-primary);
-
-                .Icon {
-                    color: var(--color-text-primary);
-                    transform: none;
-                }
-            }
+            font-size: 1.75rem;
+            width: 4rem;
         }
     }
 `;
 const CartIcon = styled.span`
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-align: center;
-    transition: 150ms all ease-in-out;
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+
+    background: var(--accent-secondary);
+    border-radius: 100%;
 `;
 
 const CartPopup = styled.section`
@@ -315,14 +282,13 @@ const Menu = styled.div`
     z-index: 9999;
     overflow: hidden;
     position: absolute;
-    top: 6rem;
+    top: 7rem;
     left: 0px;
     right: 0px;
     max-height: 0px;
     transition: max-height 500ms ease-in-out;
     background: var(--color-text-primary);
     color: var(--color-text-dark);
-    border-bottom: 0.4rem solid var(--accent-primary);
     cursor: unset;
 
     &:hover {
@@ -394,10 +360,11 @@ const HamburgerMenu = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 4rem;
-    margin: 0px -0.75rem 0px -1.25rem;
-    font-size: 2.5rem;
+    width: 5rem;
     cursor: pointer;
+    background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
+    color: var(--color-text-primary);
 
     @media (min-width: 950px) {
         display: none;
@@ -405,75 +372,11 @@ const HamburgerMenu = styled.div`
 `;
 
 const Header = styled.header`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--accent-primary);
+    display: grid;
     top: 8rem;
-    height: 6rem;
-
-    &.Modern {
-        ${CartIconWrapper} {
-            color: var(--color-text-primary);
-
-            .Icon {
-                &:hover,
-                &:active {
-                    color: var(--color-text-primary);
-                }
-            }
-
-            &.Active {
-                .Wrapper {
-                    background: var(--color-text-primary);
-                    color: var(--color-text-dark);
-
-                    &:hover,
-                    &:active {
-                        background: var(--accent-secondary-dark);
-                        color: var(--color-text-primary);
-
-                        .Icon {
-                            color: var(--color-text-primary);
-                            transform: none;
-                        }
-                    }
-                }
-            }
-        }
-
-        ${Actions}, ${HamburgerMenu} {
-            color: #fefefe;
-        }
-
-        .SearchBar {
-            input {
-                border-width: 0px;
-                height: 3.25rem;
-            }
-
-            @media (max-width: 950px) {
-                margin-left: -0.5rem;
-                max-width: 100%;
-                input {
-                    height: 4rem;
-                }
-            }
-        }
-
-        ${Logo} {
-            padding: 0px;
-            padding-right: 1rem;
-
-            @media (max-width: 950px) {
-                padding-right: 0px;
-            }
-        }
-
-        ${CartPopup} {
-            top: 5.5rem;
-        }
-    }
+    width: 100%;
+    background: var(--color-text-primary);
+    box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.25);
 `;
 
 interface HeaderProps {
@@ -517,7 +420,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
         <Header className="Modern">
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
-                    {sidebarOpen ? <FiX /> : <FiMenu />}
+                    {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
                 </HamburgerMenu>
 
                 <Logo>
@@ -581,107 +484,101 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
                 <Actions>
                     <SearchBar open={searchOpen} />
-                    <div>
+                    <SearchIcon>
                         <CartIconWrapper onClick={() => setSearchOpen(!searchOpen)}>
                             <FiSearch className="Icon" />
                         </CartIconWrapper>
-                    </div>
-                    <div>
-                        <CartIconWrapper className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
-                            <Link href={'/cart/'} className="Wrapper">
-                                {(cart?.totalQuantity || 0) > 0 && (
-                                    <CartIcon className="Header-Content-CartBadge">
-                                        {cart?.totalQuantity || 0}
-                                    </CartIcon>
-                                )}
-                                <FiShoppingCart className="Icon" />
-                            </Link>
+                    </SearchIcon>
+                    <CartIconWrapper className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
+                        <Link href={'/cart/'} className="Wrapper">
+                            {(cart?.totalQuantity || 0) > 0 && <CartIcon />}
+                            <FiShoppingBag className="Icon" />
+                        </Link>
 
-                            {cartStore.item ? (
-                                <CartPopup
-                                    className={
-                                        ((cartStore.open || beginCheckout) &&
-                                            router.asPath !== '/cart/' &&
-                                            'Open') ||
-                                        ''
-                                    }
-                                >
-                                    <CartPopupItemHeader>
-                                        <CartPopupItemTitle>
-                                            <span>✓</span> Added to the cart
-                                        </CartPopupItemTitle>
-                                        <FiX
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() =>
-                                                setCartStore({
-                                                    ...cartStore,
-                                                    open: false
-                                                })
-                                            }
-                                        />
-                                    </CartPopupItemHeader>
-                                    <CartPopupItem>
-                                        <CartPopupItemImageWrapper>
-                                            <CartPopupItemImage>
-                                                <Image
-                                                    src={cartStore.item.images[0].src}
-                                                    layout="fill"
-                                                />
-                                            </CartPopupItemImage>
-                                        </CartPopupItemImageWrapper>
-                                        <CartPopupItemMeta>
-                                            <CartPopupItemMetaVendor>
-                                                {cartStore.item.vendor}
-                                            </CartPopupItemMetaVendor>
-                                            <CartPopupItemMetaTitle>
-                                                {cartStore.item.title}
-                                            </CartPopupItemMetaTitle>
-                                            <CartPopupItemMetaVariant>
-                                                <Tag>{cartStore.item.variant.title}</Tag>
-                                            </CartPopupItemMetaVariant>
-                                        </CartPopupItemMeta>
-                                    </CartPopupItem>
-                                    <CartPopupContent>
-                                        <Link
-                                            href="/cart"
-                                            onClick={() => {
-                                                setCartStore({
-                                                    ...cartStore,
-                                                    open: false
-                                                });
-                                            }}
-                                        >
-                                            <Button className="Secondary" disabled={beginCheckout}>
-                                                View cart
-                                            </Button>
-                                        </Link>
-                                        <Button
-                                            disabled={beginCheckout}
-                                            onClick={async () => {
-                                                try {
-                                                    if (beginCheckout) return;
-
-                                                    setBeginCheckout(true);
-
-                                                    await Checkout({
-                                                        cart,
-                                                        locale: router.locale
-                                                    });
-                                                } catch (error) {
-                                                    Sentry.captureException(error);
-                                                    console.error(error);
-                                                    alert(error.message);
-                                                    setBeginCheckout(false);
-                                                }
-                                            }}
-                                        >
-                                            Checkout
+                        {cartStore.item ? (
+                            <CartPopup
+                                className={
+                                    ((cartStore.open || beginCheckout) &&
+                                        router.asPath !== '/cart/' &&
+                                        'Open') ||
+                                    ''
+                                }
+                            >
+                                <CartPopupItemHeader>
+                                    <CartPopupItemTitle>
+                                        <span>✓</span> Added to the cart
+                                    </CartPopupItemTitle>
+                                    <FiX
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() =>
+                                            setCartStore({
+                                                ...cartStore,
+                                                open: false
+                                            })
+                                        }
+                                    />
+                                </CartPopupItemHeader>
+                                <CartPopupItem>
+                                    <CartPopupItemImageWrapper>
+                                        <CartPopupItemImage>
+                                            <Image
+                                                src={cartStore.item.images[0].src}
+                                                layout="fill"
+                                            />
+                                        </CartPopupItemImage>
+                                    </CartPopupItemImageWrapper>
+                                    <CartPopupItemMeta>
+                                        <CartPopupItemMetaVendor>
+                                            {cartStore.item.vendor}
+                                        </CartPopupItemMetaVendor>
+                                        <CartPopupItemMetaTitle>
+                                            {cartStore.item.title}
+                                        </CartPopupItemMetaTitle>
+                                        <CartPopupItemMetaVariant>
+                                            <Tag>{cartStore.item.variant.title}</Tag>
+                                        </CartPopupItemMetaVariant>
+                                    </CartPopupItemMeta>
+                                </CartPopupItem>
+                                <CartPopupContent>
+                                    <Link
+                                        href="/cart"
+                                        onClick={() => {
+                                            setCartStore({
+                                                ...cartStore,
+                                                open: false
+                                            });
+                                        }}
+                                    >
+                                        <Button className="Secondary" disabled={beginCheckout}>
+                                            View cart
                                         </Button>
-                                    </CartPopupContent>
-                                </CartPopup>
-                            ) : null}
-                        </CartIconWrapper>
-                    </div>
+                                    </Link>
+                                    <Button
+                                        disabled={beginCheckout}
+                                        onClick={async () => {
+                                            try {
+                                                if (beginCheckout) return;
+
+                                                setBeginCheckout(true);
+
+                                                await Checkout({
+                                                    cart,
+                                                    locale: router.locale
+                                                });
+                                            } catch (error) {
+                                                Sentry.captureException(error);
+                                                console.error(error);
+                                                alert(error.message);
+                                                setBeginCheckout(false);
+                                            }
+                                        }}
+                                    >
+                                        Checkout
+                                    </Button>
+                                </CartPopupContent>
+                            </CartPopup>
+                        ) : null}
+                    </CartIconWrapper>
                 </Actions>
             </Content>
         </Header>

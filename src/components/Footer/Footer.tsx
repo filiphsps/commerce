@@ -35,6 +35,7 @@ const Logo = styled.div`
 const Address = styled.address`
     font-size: 1.25rem;
     line-height: 1.75rem;
+    font-weight: 400;
 
     @media (max-width: 950px) {
         text-align: center;
@@ -70,6 +71,7 @@ const FooterBlocksContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     text-align: left;
+    gap: 1rem;
 
     @media (max-width: 950px) {
         display: grid;
@@ -82,10 +84,10 @@ const FooterBlock = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    text-transform: uppercase;
-    padding-bottom: 1.5rem;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+
+    font-size: 1.75rem;
+    line-height: 2rem;
+    font-weight: 400;
 
     @media (min-width: 950px) {
         padding-bottom: 0px;
@@ -95,10 +97,9 @@ const FooterBlock = styled.div`
 `;
 
 const BlockTitle = styled.div`
-    font-size: 1.5rem;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
     font-weight: 700;
-    padding-bottom: 0.5rem;
-    text-transform: uppercase;
 `;
 
 const LegalAndCopyright = styled.div`

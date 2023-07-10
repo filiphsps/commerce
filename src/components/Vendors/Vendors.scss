@@ -4,7 +4,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     grid-gap: 1rem;
-    margin: 0px 0px 1rem 0px;
 
     @media (max-width: $width-max-mobile) {
         display: flex;
@@ -19,18 +18,17 @@
         justify-content: center;
         align-items: center;
         padding: 1rem 0.5rem;
-        color: $color-black;
-        background: $color-silvery;
+        color: var(--color-text-dark);
+        background: var(--accent-secondary);
 
-        border: 0.2rem solid darken($color-silvery, 2.5%);
         box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
 
         border-radius: var(--block-border-radius);
         text-align: center;
         text-decoration: none;
         text-transform: uppercase;
-        font-size: 1.05rem;
-        font-weight: 600;
+        font-size: 1.25rem;
+        font-weight: 700;
         cursor: pointer;
 
         &.ShowMore {
@@ -39,7 +37,7 @@
 
         &.Selected,
         &:hover {
-            border-color: $color-primary;
+            background: var(--accent-secondary-dark);
         }
 
         @media (max-width: $width-max-mobile) {

@@ -18,6 +18,7 @@ import Breadcrumbs from '../../../src/components/Breadcrumbs';
 import Button from '../../../src/components/Button';
 import CollectionBlock from '../../../src/components/CollectionBlock';
 import { Config } from '../../../src/util/Config';
+import Content from '../../../src/components/Content';
 import ContentBlock from '../../../src/components/ContentBlock';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
@@ -36,8 +37,10 @@ import { ReviewsModel } from '../../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../../src/api/reviews';
 import { StoreModel } from '../../../src/models/StoreModel';
 import TitleToHandle from '../../../src/util/TitleToHandle';
+import color from 'color';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 import { useWindowSize } from 'rooks';
 
@@ -48,7 +51,7 @@ const Label = styled.label`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
-    color: #404756;
+    color: var(--foreground);
 `;
 
 const ProductContainerWrapper = styled.div`
@@ -83,7 +86,6 @@ const Assets = styled.div`
     max-height: 60rem;
 
     @media (max-width: 950px) {
-        overflow: hidden;
         height: 28rem;
         max-height: 30vh;
         margin-bottom: 1rem;
@@ -104,6 +106,7 @@ const Details = styled.div`
 
 const Tags = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
 
     @media (max-width: 950px) {
@@ -120,46 +123,16 @@ export const Tag = styled.div`
     font-weight: 600;
     background: var(--accent-secondary-dark);
     color: var(--color-text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     &.Vegan {
         background: #1b6e1b;
     }
 `;
-const Description = styled.div`
-    font-size: 1.5rem;
-    line-height: 2.25rem;
-
-    h1 {
-        margin-bottom: 1rem;
-        font-size: 2.5rem;
-        font-weight: 600;
-        line-height: 2.75rem;
-        letter-spacing: 0.05rem;
-        text-transform: uppercase;
-    }
-    h2 {
-        margin-bottom: 1rem;
-        font-size: 2rem;
-        font-weight: 600;
-        line-height: 2.25rem;
-        letter-spacing: 0.05rem;
-        text-transform: uppercase;
-    }
-    h3 {
-        font-size: 1.75rem;
-        font-weight: 600;
-        line-height: 2rem;
-        letter-spacing: 0.05rem;
-        color: #404756;
-    }
-
-    p {
-        margin-bottom: 1rem;
-
-        &:last-of-type {
-            margin-bottom: 0px;
-        }
-    }
+const Description = styled(Content)`
+    overflow: hidden;
 `;
 
 const Actions = styled.div`
@@ -182,6 +155,7 @@ const AddToCart = styled(Button)`
     padding-left: 2rem;
     padding-right: 2rem;
     font-weight: 600;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     svg {
         font-size: 1.75rem;
@@ -208,6 +182,7 @@ const QuantitySelector = styled.div`
     display: grid;
     grid-template-rows: auto 1fr;
     gap: 0.5rem;
+    color: var(--color-text-dark);
 
     input {
         border-width: 0px;
@@ -222,10 +197,10 @@ const QuantityWrapper = styled.div`
     display: grid;
     grid-template-columns: 4.5rem 1fr 4.5rem;
     height: 4rem;
-    border: 0.2rem solid #efefef;
     background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
     outline: none;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     button {
         display: flex;
@@ -233,7 +208,7 @@ const QuantityWrapper = styled.div`
         align-items: center;
         height: 100%;
         width: 100%;
-        font-size: 1.5rem;
+        font-size: 1.75rem;
 
         &:hover {
             color: var(--accent-primary);
@@ -267,7 +242,6 @@ const Header = styled.div`
 
     @media (max-width: 950px) {
         margin-bottom: 1rem;
-        grid-template-columns: 1fr;
     }
 `;
 const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
@@ -316,27 +290,34 @@ const PriceContainer = styled.div`
     height: 100%;
     width: 100%;
 
-    @media (max-width: 950px) {
-        justify-content: center;
-        align-items: center;
-    }
+    color: var(--color-text-dark);
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const Recommendations = styled(ContentBlock)`
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
     margin-top: 4rem;
     border-radius: var(--block-border-radius);
+    overflow: hidden;
+
+    background: var(--color-block);
+    background: radial-gradient(circle, var(--color-block) 0%, var(--color-block) 100%);
+    padding: var(--block-padding-large);
 
     @media (max-width: 950px) {
         margin: 1rem 0px;
     }
 `;
 const RecommendationsTitle = styled.h3`
-    text-transform: uppercase;
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--accent-primary);
+    color: var(--color-text-dark);
 
     @media (max-width: 950px) {
         font-size: 2.25rem;
@@ -344,7 +325,8 @@ const RecommendationsTitle = styled.h3`
     }
 `;
 const RecommendationsContent = styled(PageContent)`
-    width: 100%;
+    width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
 
     @media (max-width: 950px) {
         width: calc(100vw - 2rem);
@@ -358,21 +340,18 @@ const Tabs = styled.div`
     gap: 1.5rem;
     width: 100%;
     margin-top: 0.5rem;
-    border-bottom: 0.15rem solid #efefef;
 `;
 const Tab = styled.div`
-    padding: 1rem 0.25rem 0.5rem 0.25rem;
+    padding: 1rem 0.25rem 0px 0.25rem;
     text-transform: uppercase;
     font-weight: 800;
     font-size: 1.5rem;
     text-align: center;
-    border-bottom: 0.4rem solid transparent;
     cursor: pointer;
     transition: 150ms ease-in-out;
     opacity: 0.5;
 
     &.Active {
-        border-bottom-color: var(--accent-primary);
         opacity: 1;
     }
 `;
@@ -386,27 +365,18 @@ const TabContent = styled.div`
     }
 `;
 
-const AddToCartCTA = styled.div`
-    z-index: 5;
-    position: fixed;
-    display: grid;
-    grid-template-columns: minmax(8rem, auto) 1fr;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    width: 100vw;
-    padding: 1.5rem 2rem;
-    background: var(--color-text-primary);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-    border-top-left-radius: var(--block-border-radius);
-    border-top-right-radius: var(--block-border-radius);
+const ReviewsContainer = styled.div`
+    color: var(--color-text-primary);
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--accent-primary);
+    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    margin-top: 0.5rem;
+`;
 
-    ${PriceContainer} {
-        align-items: start;
-    }
+const PageContainer = styled(Page)`
+    background: linear-gradient(180deg, var(--background) 0%, var(--background-dark) 100%);
+    color: var(--foreground);
 `;
 
 interface ProductPageProps {
@@ -416,16 +386,45 @@ interface ProductPageProps {
     reviews?: ReviewsModel;
     store: StoreModel;
 }
-const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, reviews, store }) => {
+const ProductPage: FunctionComponent<ProductPageProps> = ({
+    recommendations: recommendationsData,
+    reviews,
+    store
+}) => {
     const router = useRouter();
     const cart = useCart();
-    const { product, variants, selectedVariant: initialVariant } = useProduct();
+    const { product: data, variants, selectedVariant: initialVariant } = useProduct();
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('details');
     const { outerWidth } = useWindowSize();
     const [isMobile, setIsMobile] = useState(false);
     const [cartStore, setCartStore] = useStore<any>('cart');
+
+    const { data: product } = useSWR(
+        [data?.handle],
+        () =>
+            ProductApi({
+                handle: product.handle!,
+                locale: router.locale
+            }),
+        {
+            fallbackData: data
+        }
+    );
+
+    const { data: recommendations } = useSWR(
+        [`recommendations_${data?.id}`],
+        () =>
+            RecommendationApi({
+                id: data?.id!,
+                locale: router.locale
+            }),
+        {
+            fallbackData: recommendationsData
+        }
+    );
+
     useEffect(() => {
         if (!outerWidth) return;
 
@@ -533,21 +532,22 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                         title={product.title!}
                         subtitle={
                             <Link href={`/collections/${TitleToHandle(product.vendor!)}`}>
-                                {product.vendor!.toLocaleUpperCase?.()}
+                                {product.vendor}
                             </Link>
                         }
                         reverse
-                        noMargin
                     />
                     {(reviews?.count && reviews.count > 0 && (
-                        <ReviewStars
-                            score={reviews?.rating || 0}
-                            totalReviews={reviews?.count || 0}
-                        />
+                        <ReviewsContainer>
+                            <ReviewStars
+                                score={reviews?.rating || 0}
+                                totalReviews={reviews?.count || 0}
+                            />
+                        </ReviewsContainer>
                     )) ||
                         null}
                 </div>
-                {!isMobile && pricing}
+                {pricing}
             </Header>
         </>
     );
@@ -588,7 +588,21 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
     );
 
     return (
-        <Page className="ProductPage">
+        <PageContainer
+            className="ProductPage"
+            style={
+                {
+                    '--background': (product as any).accent?.background || 'transparent',
+                    '--background-dark': color((product as any).accent?.background || 'transparent')
+                        .saturate(0.75)
+                        .darken(0.25)
+                        .hex()
+                        .toString(),
+                    '--foreground':
+                        (product as any).accent?.foreground || 'var(--color-text-primary)'
+                } as React.CSSProperties
+            }
+        >
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
                 description={product?.seo?.description || product?.description || ''}
@@ -718,20 +732,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                 />
             ))}
 
-            <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: product.vendor,
-                            url: `/collections/${TitleToHandle(product.vendor!)}`
-                        },
-                        {
-                            title: product.title,
-                            url: `/products/${product.handle}`
-                        }
-                    ]}
-                    store={store}
-                />
+            <PageContent primary>
                 <ProductContainerWrapper>
                     <ProductContainer>
                         {isMobile && information}
@@ -754,62 +755,53 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                             <ProductOptions />
                             <Actions>
                                 {quantityAction}
-                                {!isMobile && addToCartAction}
+                                {addToCartAction}
                             </Actions>
 
-                            {isMobile && (
-                                <AddToCartCTA>
-                                    {pricing}
-                                    {addToCartAction}
-                                </AddToCartCTA>
-                            )}
-
-                            <>
-                                <Tabs>
-                                    <Tab
-                                        className={tab == 'details' ? 'Active' : ''}
-                                        onClick={() => setTab('details')}
-                                    >
-                                        Details
-                                    </Tab>
-                                    <Tab
-                                        className={tab == 'ingredients' ? 'Active' : ''}
-                                        onClick={() => setTab('ingredients')}
-                                    >
-                                        Ingredients
-                                    </Tab>
-                                    <Tab
-                                        className={tab == 'reviews' ? 'Active' : ''}
-                                        onClick={() => setTab('reviews')}
-                                    >
-                                        Reviews
-                                    </Tab>
-                                </Tabs>
-                                <TabContent className={tab == 'details' ? 'Active' : ''}>
-                                    <Description
-                                        dangerouslySetInnerHTML={{
-                                            __html: product.descriptionHtml || ''
-                                        }}
-                                    />
-                                </TabContent>
-                                <TabContent className={tab == 'ingredients' ? 'Active' : ''}>
-                                    <Description>
-                                        <h2>Ingredients</h2>
-                                        {(product as any)?.ingredients?.value ||
-                                            `No ingredients found.`}{' '}
-                                        <br />
-                                        {selectedVariant.sku && (
-                                            <>
-                                                <h2>SKU</h2>
-                                                {selectedVariant.sku}
-                                            </>
-                                        )}
-                                    </Description>
-                                </TabContent>
-                                <TabContent className={tab == 'reviews' ? 'Active' : ''}>
-                                    <Reviews product={product as any} reviews={reviews} />
-                                </TabContent>
-                            </>
+                            <Tabs>
+                                <Tab
+                                    className={tab == 'details' ? 'Active' : ''}
+                                    onClick={() => setTab('details')}
+                                >
+                                    Details
+                                </Tab>
+                                <Tab
+                                    className={tab == 'information' ? 'Active' : ''}
+                                    onClick={() => setTab('information')}
+                                >
+                                    Information
+                                </Tab>
+                                <Tab
+                                    className={tab == 'reviews' ? 'Active' : ''}
+                                    onClick={() => setTab('reviews')}
+                                >
+                                    Reviews
+                                </Tab>
+                            </Tabs>
+                            <TabContent className={tab == 'details' ? 'Active' : ''}>
+                                <Description
+                                    dangerouslySetInnerHTML={{
+                                        __html: product.descriptionHtml || ''
+                                    }}
+                                />
+                            </TabContent>
+                            <TabContent className={tab == 'information' ? 'Active' : ''}>
+                                <Description>
+                                    <h2>Ingredients</h2>
+                                    {(product as any)?.ingredients?.value ||
+                                        `No ingredients found.`}{' '}
+                                    <div style={{ paddingBottom: '1rem' }} />
+                                    {selectedVariant.sku && (
+                                        <>
+                                            <h2>SKU</h2>
+                                            {selectedVariant.sku}
+                                        </>
+                                    )}
+                                </Description>
+                            </TabContent>
+                            <TabContent className={tab == 'reviews' ? 'Active' : ''}>
+                                <Reviews product={product as any} reviews={reviews} />
+                            </TabContent>
 
                             {tags}
                         </Details>
@@ -836,8 +828,22 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({ recommendations, rev
                         </RecommendationsContent>
                     </Recommendations>
                 )}
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: product.vendor,
+                            url: `/collections/${TitleToHandle(product.vendor!)}`
+                        },
+                        {
+                            title: product.title,
+                            url: `/products/${product.handle}`
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
-        </Page>
+        </PageContainer>
     );
 };
 
@@ -963,7 +969,7 @@ export async function getStaticProps({ params, locale }): Promise<GetStaticProps
             errors,
             analytics: {
                 pageType: AnalyticsPageType.product,
-                resourceId: product?.id
+                resourceId: product?.id || null
             }
         },
         revalidate: 10

@@ -57,7 +57,15 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                 }
             />
 
-            <PageContent>
+            <PageContent primary>
+                <PageHeader title={page.data.title} subtitle={page.data.description} />
+
+                <SliceZone
+                    slices={page.data.slices}
+                    components={components}
+                    context={{ prefetch, store }}
+                />
+
                 <Breadcrumbs
                     pages={(router.query.handle as string[])?.map((item) => {
                         return {
@@ -67,13 +75,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                     })}
                     store={store}
                 />
-                <PageHeader title={page.data.title} subtitle={page.data.description} />
             </PageContent>
-            <SliceZone
-                slices={page.data.slices}
-                components={components}
-                context={{ prefetch, store }}
-            />
         </Page>
     );
 };
@@ -119,7 +121,7 @@ export async function getStaticProps({ params, locale, previewData }) {
                 prefetch,
                 analytics: {
                     pageType: AnalyticsPageType.page,
-                    resourceId: `gid://shopify/OnlineStorePage/${params?.handle?.join('-')}`
+                    resourceId: `gid://shopify/OnlineStorePage/${params?.handle?.join('-')}` || null
                 }
             },
             revalidate: 10

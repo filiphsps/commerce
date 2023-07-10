@@ -16,10 +16,10 @@ const ContentContainer = styled.div`
     align-items: center;
     gap: 2rem;
 
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: var(--accent-primary);
-    color: var(--color-text-primary);
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--accent-secondary);
+    color: var(--color-text-dark);
 
     @media (min-width: 960px) {
         display: grid;
@@ -43,7 +43,6 @@ const ItemIcon = styled.div`
     position: relative;
     height: 2rem;
     width: 2rem;
-    filter: invert(100%);
 `;
 const ItemContent = styled.h3`
     font-size: 1.25rem;

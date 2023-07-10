@@ -24,28 +24,27 @@ const Container = styled.div`
 
 const Previews = styled.div`
     position: relative;
-    overflow-x: auto;
     display: flex;
     flex-direction: row;
     gap: 1rem;
     width: 100%;
 
     @media (max-width: 950px) {
-        overflow-x: hidden;
-        overflow-y: auto;
         flex-direction: column;
     }
 `;
 const Preview = styled.div`
+    overflow: hidden;
     width: 12rem;
     height: 10rem;
     padding: 0.8rem;
-    background: #efefef;
-    border: 0.2rem solid #efefef;
+    background: var(--color-block);
+    border: 0.2rem solid var(--color-block);
     cursor: pointer;
     transition: 150ms ease-in-out;
     border-radius: var(--block-border-radius);
     user-select: none;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     &.Selected,
     &:hover,
@@ -55,10 +54,9 @@ const Preview = styled.div`
     }
 
     @media (max-width: 950px) {
-        overflow: hidden;
-        padding: 0px;
-        width: 3.5rem;
-        height: 3.5rem;
+        padding: 0.15rem;
+        width: 4.5rem;
+        height: 4.5rem;
         border-width: 0px;
 
         img {
@@ -69,10 +67,13 @@ const Preview = styled.div`
 `;
 
 const Primary = styled.div`
+    overflow: hidden;
     width: 100%;
     height: 100%;
     padding: 2rem;
     background: #efefef;
+    border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const ImageWrapper = styled.div`

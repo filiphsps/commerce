@@ -804,6 +804,26 @@ interface CollapsibleTextSliceDefaultPrimary {
      *
      */
     text: prismic.RichTextField;
+    /**
+     * Accent field in *CollapsibleText → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collapsible_text.primary.accent
+     * - **Documentation**: https://prismic.io/docs/core-concepts/color
+     *
+     */
+    accent: prismic.ColorField;
+    /**
+     * Accent Dark field in *CollapsibleText → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collapsible_text.primary.accent_dark
+     * - **Documentation**: https://prismic.io/docs/core-concepts/color
+     *
+     */
+    accent_dark: prismic.ColorField;
 }
 /**
  * Default variation for CollapsibleText Slice
@@ -913,6 +933,26 @@ interface CollectionSliceDefaultPrimary {
      *
      */
     hide_title: prismic.BooleanField;
+    /**
+     * Accent field in *Collection → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection.primary.accent
+     * - **Documentation**: https://prismic.io/docs/core-concepts/color
+     *
+     */
+    accent: prismic.ColorField;
+    /**
+     * Accent Dark field in *Collection → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection.primary.accent_dark
+     * - **Documentation**: https://prismic.io/docs/core-concepts/color
+     *
+     */
+    accent_dark: prismic.ColorField;
 }
 /**
  * Default variation for Collection Slice

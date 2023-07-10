@@ -54,7 +54,6 @@ const ArticleImage = styled.div`
     background: #efefef;
 
     img {
-        mix-blend-mode: multiply;
         object-fit: cover;
         height: 100%;
         width: 100%;
@@ -97,18 +96,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                 }
             />
 
-            <PageContent>
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: <LanguageString id={'blog'} />,
-                            url: '/blog'
-                        }
-                    ]}
-                    store={store}
-                    hideSocial={true}
-                />
-
+            <PageContent primary>
                 <PageHeader title={blog.title} />
 
                 <div>
@@ -129,6 +117,17 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                         </Link>
                     ))}
                 </div>
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: <LanguageString id={'blog'} />,
+                            url: '/blog'
+                        }
+                    ]}
+                    store={store}
+                    hideSocial={true}
+                />
             </PageContent>
         </Page>
     );

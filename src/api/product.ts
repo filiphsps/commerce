@@ -9,6 +9,8 @@ import {
 import { ShopifyWeightUnit, WeightModel } from '../models/WeightModel';
 import { newShopify, storefrontClient } from './shopify';
 
+import Color from 'color';
+import { FastAverageColor } from 'fast-average-color';
 import { ProductModel } from '../models/ProductModel';
 import { ProductVariantModel } from '../models/ProductVariantModel';
 import TitleToHandle from '../util/TitleToHandle';
@@ -237,6 +239,31 @@ export const ProductApi = async ({
             if (!data?.productByHandle)
                 return reject(new Error('404: The requested document cannot be found'));
 
+            try {
+                const color = await new FastAverageColor().getColorAsync(
+                    data.productByHandle.images?.edges?.at(0)?.node?.url || ''
+                );
+
+                data.productByHandle.accent = {
+                    background: Color(color.hex).hex().toString(),
+                    foreground:
+                        (color.isDark &&
+                            Color(color.hex)
+                                .lighten(0.5)
+                                .saturate(0.5)
+                                .lighten(0.75)
+                                .hex()
+                                .toString()) ||
+                        Color(color.hex).lighten(0.5).desaturate(0.5).darken(0.8).hex().toString()
+                };
+            } catch {}
+
+            try {
+                data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
+                    .replaceAll(/ /g, ' ')
+                    .replaceAll('\u00A0', ' ');
+            } catch {}
+
             return resolve(/*flattenConnection(*/ data.productByHandle /*)*/);
         } catch (error) {
             Sentry.captureException(error);
@@ -364,6 +391,40 @@ export const ProductsApi = async (
             if (!data.products)
                 return reject(new Error('404: The requested document cannot be found'));
 
+            if (data.products?.edges)
+                data.products.edges = await Promise.all(
+                    data.products.edges.map(async (edge) => {
+                        if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
+
+                        try {
+                            const color = await new FastAverageColor().getColorAsync(
+                                edge.node?.images?.edges?.at(0)?.node?.url || ''
+                            );
+
+                            edge.node.accent = {
+                                background: Color(color.hex).hex().toString(),
+                                foreground:
+                                    (color.isDark &&
+                                        Color(color.hex)
+                                            .lighten(0.5)
+                                            .saturate(0.5)
+                                            .lighten(0.75)
+                                            .hex()
+                                            .toString()) ||
+                                    Color(color.hex)
+                                        .lighten(0.5)
+                                        .desaturate(0.5)
+                                        .darken(0.8)
+                                        .hex()
+                                        .toString()
+                            };
+                            return edge;
+                        } catch {
+                            return edge;
+                        }
+                    })
+                );
+
             return resolve({
                 products: data.products.edges,
                 cursor: data.products.edges.at(-1).cursor,
@@ -436,6 +497,40 @@ export const ProductsPaginationApi = async ({
                     }
                 `
             });
+
+            if (data.products?.edges)
+                data.products.edges = await Promise.all(
+                    data.products.edges.map(async (edge) => {
+                        if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
+
+                        try {
+                            const color = await new FastAverageColor().getColorAsync(
+                                edge.node?.images?.edges?.at(0)?.node?.url || ''
+                            );
+
+                            edge.node.accent = {
+                                background: Color(color.hex).hex().toString(),
+                                foreground:
+                                    (color.isDark &&
+                                        Color(color.hex)
+                                            .lighten(0.5)
+                                            .saturate(0.5)
+                                            .lighten(0.75)
+                                            .hex()
+                                            .toString()) ||
+                                    Color(color.hex)
+                                        .lighten(0.5)
+                                        .desaturate(0.5)
+                                        .darken(0.8)
+                                        .hex()
+                                        .toString()
+                            };
+                            return edge;
+                        } catch {
+                            return edge;
+                        }
+                    })
+                );
 
             const page_info = data.products.pageInfo;
             resolve({

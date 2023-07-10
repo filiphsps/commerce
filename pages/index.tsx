@@ -8,6 +8,7 @@ import { CustomPageDocument } from '../prismicio-types';
 import Error from 'next/error';
 import { NextSeo } from 'next-seo';
 import Page from '../src/components/Page';
+import PageContent from '../src/components/PageContent';
 import { Prefetch } from '../src/util/Prefetch';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
@@ -52,11 +53,13 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                     []
                 }
             />
-            <SliceZone
-                slices={page.data.slices}
-                components={components}
-                context={{ prefetch, store }}
-            />
+            <PageContent primary>
+                <SliceZone
+                    slices={page.data.slices}
+                    components={components}
+                    context={{ prefetch, store }}
+                />
+            </PageContent>
         </Page>
     );
 };

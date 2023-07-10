@@ -10,7 +10,7 @@ body {
     overscroll-behavior-x: none;
     font-size: 12px;
     touch-action: manipulation;
-    color: $color-black;
+    color: var(--color-text-primary);
     text-size-adjust: none;
 
     @media screen and (max-width: 950px) {
@@ -34,7 +34,12 @@ body {
 }
 
 .PageProvider {
-    background: #fefefe;
+    background: var(--accent-primary);
+    background: linear-gradient(
+        180deg,
+        var(--accent-primary-extra-light) 0%,
+        var(--accent-primary) 100%
+    );
 
     &.SideBar-Open {
         @media screen and (max-width: 950px) {

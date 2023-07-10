@@ -46,6 +46,7 @@
         "color": "4.2.3",
         "destyle.css": "4.0.0",
         "easy-currencies": "1.7.0",
+        "fast-average-color": "^9.3.0",
         "graphql": "16.7.1",
         "next": "13.4.8",
         "next-i18next": "14.0.0",

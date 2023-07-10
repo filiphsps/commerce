@@ -21,6 +21,7 @@ const OptionTitle = styled.div`
     font-weight: 700;
     font-size: 1.5rem;
     color: #404756;
+    color: var(--foreground);
 `;
 const OptionValues = styled.div`
     display: flex;
@@ -43,8 +44,8 @@ const OptionValue = styled.div<{
     border-radius: var(--block-border-radius);
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
     transition: 150ms all ease-in-out;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     @media (max-width: 950px) {
         font-size: 1.5rem;

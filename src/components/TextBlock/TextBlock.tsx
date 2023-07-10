@@ -12,6 +12,14 @@ const Container = styled.div`
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
     }
+
+    &.Block {
+        color: var(--color-text-dark);
+
+        h1 {
+            padding-bottom: 1rem;
+        }
+    }
 `;
 const ImageContainer = styled.div`
     overflow: hidden;
@@ -24,6 +32,7 @@ const ImageContainer = styled.div`
     max-width: 46rem;
     padding: 4rem;
     background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
 
     img {
         object-fit: contain;
@@ -39,9 +48,9 @@ const Content = styled(ContentComponent)`
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    padding: 2rem;
-    margin-bottom: 1rem;
-    background: #efefef;
+    padding: var(--block-padding-large);
+    background: var(--color-block);
+    border-radius: var(--block-border-radius);
 
     &.Plain {
         max-width: 72rem;
@@ -74,7 +83,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
         );
 
     return (
-        <Container className="TextBlock">
+        <Container className="TextBlock Block">
             <ImageContainer>
                 <Image
                     src={image?.url}

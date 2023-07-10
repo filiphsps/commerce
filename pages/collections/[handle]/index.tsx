@@ -21,7 +21,12 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 const Body = styled(Content)`
-    margin-top: 2rem;
+    overflow: hidden;
+
+    a {
+        color: var(--color-text-primary);
+        border-bottom-color: var(--color-text-primary);
+    }
 `;
 
 interface CollectionPageProps {
@@ -58,22 +63,8 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                 }
             />
 
-            <PageContent
-                style={{
-                    margin: '1rem auto 2rem auto'
-                }}
-            >
-                <Breadcrumbs
-                    pages={[
-                        {
-                            title: collection?.title || router.query.handle,
-                            url: `/collections/${router.query.handle}`
-                        }
-                    ]}
-                    store={store}
-                />
-
-                <PageHeader title={collection.title} plainTitle />
+            <PageContent primary>
+                <PageHeader title={collection.title} />
 
                 <CollectionBlock
                     handle={`${router.query.handle}`}
@@ -88,8 +79,19 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                         __html: collection?.descriptionHtml || ''
                     }}
                 />
+
+                <Vendors />
+
+                <Breadcrumbs
+                    pages={[
+                        {
+                            title: collection?.title || router.query.handle,
+                            url: `/collections/${router.query.handle}`
+                        }
+                    ]}
+                    store={store}
+                />
             </PageContent>
-            <Vendors />
         </Page>
     );
 };
@@ -157,8 +159,8 @@ export async function getStaticProps({ params, locale }) {
             vendors: vendors ?? null,
             analytics: {
                 pageType: AnalyticsPageType.collection,
-                resourceId: collection?.id,
-                collectionHandle: collection?.handle
+                resourceId: collection?.id || null,
+                collectionHandle: collection?.handle || null
             }
         },
         revalidate: 10

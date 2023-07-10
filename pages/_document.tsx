@@ -48,7 +48,7 @@ class Document extends NextDocument {
                     <Main />
                     <NextScript />
 
-                    {Config.GTM && (
+                    {Config.GTM && process.env.NODE_ENV !== 'development' && (
                         <Script id="gtm" strategy="afterInteractive">
                             {`// Originally adapted from https://www.sean-lloyd.com/post/delay-google-analytics-improve-pagespeed-insights-score/
                             // TODO: Turn this into an actual package.

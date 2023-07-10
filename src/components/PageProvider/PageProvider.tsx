@@ -48,6 +48,7 @@ const Announcement = styled.div`
     }
     &.secondary {
         background: var(--accent-secondary);
+        color: var(--color-text-dark);
 
         a {
             color: var(--accent-primary);

@@ -8,10 +8,6 @@ import { SearchApi } from '../../api/search';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
-const Wrapper = styled(PageContent)`
-    margin: 0px auto;
-`;
-
 const Container = styled.div`
     overflow: hidden;
     display: flex;
@@ -38,9 +34,10 @@ const Content = styled.div`
     padding: 1rem 0px 2rem 0px;
 
     @media (max-width: 950px) {
+        padding: 1rem 0px;
         overflow-y: scroll;
-        max-height: calc(100vh - 10rem);
-        max-height: calc(100dvh - 10rem);
+        max-height: calc(100vh - 28rem);
+        max-height: calc(100dvh - 28rem);
         grid-template-columns: 1fr;
     }
 `;
@@ -54,7 +51,6 @@ const SectionLabel = styled.div`
     font-weight: 600;
     line-height: 2rem;
     padding-bottom: 1rem;
-    text-transform: uppercase;
     color: #404756;
 `;
 
@@ -87,13 +83,12 @@ const ProductMeta = styled.div`
 const ProductMetaTitle = styled.div`
     font-size: 1.5rem;
     font-weight: 600;
-    text-transform: uppercase;
+    color: var(--color-text-dark);
 `;
 const ProductMetaVendor = styled.div`
     font-weight: 700;
     font-size: 1.25rem;
     letter-spacing: 0.05rem;
-    text-transform: uppercase;
     color: #404756;
 `;
 
@@ -129,10 +124,10 @@ const Collections = styled.div`
 const Collection = styled.a`
     display: block;
     width: 100%;
-    text-transform: uppercase;
     font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
+    color: var(--color-text-dark);
 
     &:hover {
         color: var(--accent-primary);
@@ -144,9 +139,7 @@ interface SearchHeaderProps {
     country?: string;
 }
 const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
-    const { data } = useSWR([props.query || null], ([url]) =>
-        SearchApi(url || '')
-    );
+    const { data } = useSWR([props.query || null], ([url]) => SearchApi(url || ''));
 
     useEffect(() => {
         if (!props.query) return;
@@ -161,31 +154,23 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
 
     return (
         <Container>
-            <Wrapper>
+            <PageContent primary>
                 <Content>
                     <Section>
                         <SectionLabel>Products</SectionLabel>
                         {data ? (
                             <Products>
                                 {data?.products?.map?.((product) => (
-                                    <Link
-                                        key={product.id}
-                                        href={`/products/${product.handle}`}
-                                    >
+                                    <Link key={product.id} href={`/products/${product.handle}`}>
                                         <Product title={product.title}>
                                             <ProductImage>
-                                                <Image
-                                                    src={product.image}
-                                                    layout="fill"
-                                                />
+                                                <Image src={product.image} layout="fill" />
                                             </ProductImage>
                                             <ProductMeta>
                                                 <ProductMetaVendor>
                                                     {product.vendor.title}
                                                 </ProductMetaVendor>
-                                                <ProductMetaTitle>
-                                                    {product.title}
-                                                </ProductMetaTitle>
+                                                <ProductMetaTitle>{product.title}</ProductMetaTitle>
                                             </ProductMeta>
                                         </Product>
                                     </Link>
@@ -204,9 +189,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                                         key={collection.id}
                                         href={`/collections/${collection.handle}`}
                                     >
-                                        <Collection>
-                                            {collection.title}
-                                        </Collection>
+                                        <Collection>{collection.title}</Collection>
                                     </Link>
                                 ))}
                             </Collections>
@@ -215,7 +198,7 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                         )}
                     </Section>
                 </Content>
-            </Wrapper>
+            </PageContent>
         </Container>
     );
 };

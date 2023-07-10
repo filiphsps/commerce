@@ -8,12 +8,22 @@ const Container = styled.div<{ open?: boolean }>`
     overflow: hidden;
 
     @media (max-width: 950px) {
-        width: 0px;
+        position: absolute;
+        min-width: 100%;
+        width: 100%;
+        left: 0px;
+        bottom: -5rem;
+        padding: 1rem;
+        background: var(--color-text-primary);
+        transition: 150ms ease-in-out;
+        pointer-events: none;
+        opacity: 0;
 
         ${({ open }) =>
             open &&
             css`
-                width: 100%;
+                pointer-events: initial;
+                opacity: 1;
             `}
     }
 `;

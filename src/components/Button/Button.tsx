@@ -72,9 +72,7 @@ const Button: FunctionComponent<ButtonProps> = (props) => {
     return (
         <ButtonWrapper
             type={props.type}
-            className={`Button ${props.className} ${
-                props.disabled && 'Button-Disabled'
-            }`}
+            className={`Button ${props.className} ${props.disabled && 'Button-Disabled'}`}
             onClick={(!props.disabled && props.onClick) || null}
         >
             {props.children}

@@ -1,42 +1,35 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import React, { FunctionComponent, useRef } from 'react';
+import styled, { css } from 'styled-components';
 
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '../../api/collection';
 import LanguageString from '../LanguageString';
-import Link from '../Link';
-import PageHeader from '../PageHeader';
+import Link from 'next/link';
 import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import { StoreModel } from '../../models/StoreModel';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const SubTitle = styled.div`
-    margin: -0.5rem 0px 2rem 0px;
-    color: #404756;
-    font-size: 1.5rem;
-    line-height: 2rem;
-
-    h1 {
-        font-weight: 600;
-    }
-`;
+const Title = styled.div``;
+const Subtitle = styled.div``;
 
 const Actions = styled.div`
     position: absolute;
-    top: 3rem;
-    right: -4rem;
-    bottom: 0px;
-    left: -4rem;
+    z-index: 99999;
+    top: -2rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     pointer-events: none;
 
-    @media (max-width: 1500px) {
-        display: none;
+    @media (min-width: 1500px) {
+        //left: -4.5rem;
+        //right: -4.5rem;
     }
 `;
 const Action = styled.div`
@@ -55,6 +48,83 @@ const Action = styled.div`
     }
 `;
 
+const Meta = styled.div``;
+
+const Content = styled.div<{
+    horizontal?: boolean;
+}>`
+    column-count: 2;
+    column-gap: 1rem;
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    section + section {
+        margin-top: 1rem;
+
+        @media (min-width: 950px) {
+            margin-top: 0px;
+        }
+
+        ${({ horizontal }) =>
+            horizontal &&
+            css`
+                margin-top: 0px;
+            `}
+    }
+
+    ${({ horizontal }) =>
+        horizontal &&
+        css`
+            column: none;
+            display: grid;
+            overflow-x: auto;
+            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+            grid-auto-columns: auto;
+            grid-template-rows: 1fr;
+            grid-auto-flow: column;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        `}
+
+    @media (min-width: 950px) {
+        ${({ horizontal }) =>
+            !horizontal &&
+            css`
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr));
+                justify-content: start;
+
+                section {
+                    width: 100%;
+                }
+            `}
+    }
+`;
+
+const Container = styled.div<{
+    horizontal?: boolean;
+}>`
+    position: relative;
+    width: 100%;
+
+    ${({ horizontal }) =>
+        horizontal &&
+        css`
+            width: calc(100% + var(--block-padding-large) * 2);
+            margin-left: calc(var(--block-padding-large) * -1);
+
+            ${Content} {
+                padding: 0px var(--block-padding-large);
+                scroll-padding-left: var(--block-padding-large);
+            }
+        `}
+`;
+
 interface CollectionBlockProps {
     handle?: string;
     limit?: number;
@@ -70,22 +140,29 @@ interface CollectionBlockProps {
     plainTitle?: boolean;
     store: StoreModel;
 }
-const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
+const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
+    hideTitle,
+    data,
+    handle,
+    limit,
+    isHorizontal,
+    store
+}) => {
     const router = useRouter();
 
-    const { data } = useSWR(
-        props.handle ? [`${props.handle}`] : null,
+    const { data: collection } = useSWR(
+        handle ? [handle] : null,
         ([url]) => CollectionApi({ handle: url, locale: router.locale }),
         {
-            fallbackData: props?.data
+            fallbackData: data
         }
     );
 
     const content_ref = useRef();
 
-    const products = (data?.products?.edges || props?.data?.products?.edges || []).map(
+    const products = (collection?.products?.edges || collection?.products?.edges || []).map(
         (edge, index) => {
-            if (props.limit && index >= props.limit) return null;
+            if (limit && index >= limit) return null;
             if (!edge?.node) return null;
 
             const product = edge.node;
@@ -93,61 +170,44 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                 <ProductProvider key={product?.id} data={product}>
                     <ProductCard
                         handle={product?.handle}
-                        isHorizontal={props.isHorizontal}
-                        store={props.store}
+                        isHorizontal={isHorizontal}
+                        store={store}
                     />
                 </ProductProvider>
             );
         }
     );
 
-    const view_more = props.limit &&
-        data?.products?.edges &&
-        data.products.edges.length > props.limit && (
+    const view_more = limit &&
+        collection?.products?.edges &&
+        collection.products.edges.length > limit && (
             <Link
                 className="ProductCard CollectionBlock-Content-ShowMore"
-                to={`/collections/${props.handle}`}
+                href={`/collections/${handle}`}
             >
                 <LanguageString id={'see_all'} />
             </Link>
         );
 
     return (
-        <div
-            className={`CollectionBlock ${
-                props.isHorizontal ? 'CollectionBlock-Horizontal' : 'CollectionBlock-Grid'
-            }`}
-        >
-            {!props.hideTitle && (
-                <div className="CollectionBlock-Header">
-                    <PageHeader
-                        title={
-                            (props.noLink && data?.title) || (
-                                <Link
-                                    to={`/collections/${props.handle}`}
-                                    as={'/collections/[handle]'}
-                                >
-                                    {data?.title}
-                                </Link>
-                            )
-                        }
-                        noMargin
-                        plainTitle={props.plainTitle}
+        <Container horizontal={isHorizontal}>
+            {!hideTitle && (
+                <Meta>
+                    <Link href={`/collections/${handle}`}>
+                        <Title>{data?.title}</Title>
+                    </Link>
+                    <Subtitle
+                        dangerouslySetInnerHTML={{
+                            __html: data?.descriptionHtml || data?.seo?.description || ''
+                        }}
                     />
-                    {props?.showDescription && (
-                        <SubTitle
-                            dangerouslySetInnerHTML={{
-                                __html: data?.descriptionHtml || ''
-                            }}
-                        ></SubTitle>
-                    )}
-                </div>
+                </Meta>
             )}
-            <div className="CollectionBlock-Content" ref={content_ref as any}>
+            <Content ref={content_ref as any} horizontal={isHorizontal}>
                 {products.length > 0 && products}
                 {view_more}
-            </div>
-            {props.isHorizontal && (
+            </Content>
+            {isHorizontal && (
                 <Actions>
                     <Action
                         onClick={() => {
@@ -171,7 +231,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = (props) => {
                     </Action>
                 </Actions>
             )}
-        </div>
+        </Container>
     );
 };
 

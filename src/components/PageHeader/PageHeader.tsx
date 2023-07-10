@@ -2,42 +2,38 @@ import React, { FunctionComponent, memo } from 'react';
 
 import styled from 'styled-components';
 
-const Wrapper = styled.div``;
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text-primary);
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--background);
+    background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+`;
 
-// TODO: replace this with generic header component(s).
 const Title = styled.h2`
-    margin-bottom: 1rem;
-
-    &.no-margin {
-        margin-bottom: 0px;
-    }
-
-    &:not(.plain-title) {
-        color: var(--accent-primary);
-    }
-
-    text-transform: uppercase;
     font-size: 2.5rem;
-    font-weight: 600;
-
-    @media (max-width: 950px) {
-        font-size: 2.25rem;
-        font-weight: 700;
-    }
+    line-height: 2.75rem;
+    font-weight: 700;
 `;
 const SubTitle = styled.h3`
-    color: #404756;
     font-size: 1.75rem;
-    line-height: 1.75rem;
-    font-weight: 800;
+    line-height: 2rem;
+    font-weight: 400;
 
     a {
+        display: inline-block;
         transition: 150ms ease-in-out all;
         cursor: pointer;
+        border-bottom: 0.2rem dotted var(--color-text-primary);
+        margin-bottom: 0.25rem;
 
         &:hover,
         :focus {
-            color: var(--accent-primary-dark);
+            color: var(--accent-secondary-dark);
+            border-bottom-color: var(--accent-secondary-dark);
         }
     }
 `;
@@ -46,34 +42,29 @@ interface PageHeaderProps {
     title?: string | JSX.Element | null;
     subtitle?: string | JSX.Element | null;
     reverse?: boolean;
-    plainTitle?: boolean;
-    noMargin?: boolean;
 }
-const PageHeader: FunctionComponent<PageHeaderProps> = ({
-    title,
-    subtitle,
-    reverse,
-    plainTitle,
-    noMargin
-}) => {
-    if (reverse)
-        return (
-            <Wrapper className={`${noMargin ? 'no-margin' : ''}`}>
-                <SubTitle className={`${noMargin ? 'no-margin' : ''}`}>{subtitle}</SubTitle>
-                <Title className={`${noMargin ? 'no-margin' : ''}`}>{title}</Title>
-            </Wrapper>
-        );
+const PageHeader: FunctionComponent<PageHeaderProps> = ({ title, subtitle, reverse }) => {
     return (
-        <Wrapper className={`${noMargin ? 'no-margin' : ''}`}>
-            <Title
-                className={`${(plainTitle && 'plain-title') || ''} ${noMargin ? 'no-margin' : ''}`}
-            >
-                {title}
-            </Title>
-            {subtitle && (
-                <SubTitle className={`${noMargin ? 'no-margin' : ''}`}>{subtitle}</SubTitle>
+        <Content
+            style={
+                {
+                    '--background': 'var(--accent-primary)',
+                    '--background-dark': 'var(--accent-primary-dark)'
+                } as React.CSSProperties
+            }
+        >
+            {(reverse && (
+                <>
+                    <SubTitle>{subtitle}</SubTitle>
+                    <Title>{title}</Title>
+                </>
+            )) || (
+                <>
+                    <Title>{title}</Title>
+                    {subtitle && <SubTitle>{subtitle}</SubTitle>}
+                </>
             )}
-        </Wrapper>
+        </Content>
     );
 };
 

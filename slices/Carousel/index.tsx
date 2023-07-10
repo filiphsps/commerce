@@ -18,11 +18,19 @@ const Container = styled.section`
     margin: 0px;
 `;
 
+const Content = styled.div`
+    overflow: hidden;
+    border-radius: var(--block-border-radius);
+
+    .slick-slide > div {
+        margin-bottom: -4px;
+    }
+`;
+
 const ImageContainer = styled.div`
     overflow: hidden;
     position: relative;
     width: 100%;
-    border-radius: var(--block-border-radius);
 
     img {
         width: 100%;
@@ -66,27 +74,29 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
         <>
             <Container>
                 <PageContent>
-                    <Slider {...settings}>
-                        {slice.items.map((slide, index) => {
-                            const image = isMobile ? slide.mobile_image : slide.image;
-                            return (
-                                <Link key={index} href={slide.href!}>
-                                    <ImageContainer>
-                                        <Image
-                                            className="Image"
-                                            src={image?.url || ''}
-                                            alt={image?.alt || ''}
-                                            title={image?.alt || undefined}
-                                            placeholder="empty"
-                                            width={image.dimensions?.width}
-                                            height={image.dimensions?.height}
-                                            priority={true}
-                                        />
-                                    </ImageContainer>
-                                </Link>
-                            );
-                        })}
-                    </Slider>
+                    <Content>
+                        <Slider {...settings}>
+                            {slice.items.map((slide, index) => {
+                                const image = isMobile ? slide.mobile_image : slide.image;
+                                return (
+                                    <Link key={index} href={slide.href!}>
+                                        <ImageContainer>
+                                            <Image
+                                                className="Image"
+                                                src={image?.url || ''}
+                                                alt={image?.alt || ''}
+                                                title={image?.alt || undefined}
+                                                placeholder="empty"
+                                                width={image.dimensions?.width}
+                                                height={image.dimensions?.height}
+                                                priority={true}
+                                            />
+                                        </ImageContainer>
+                                    </Link>
+                                );
+                            })}
+                        </Slider>
+                    </Content>
                 </PageContent>
             </Container>
         </>

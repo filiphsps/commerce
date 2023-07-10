@@ -8,6 +8,8 @@ import {
 import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
 
 import { CollectionModel } from '../models/CollectionModel';
+import Color from 'color';
+import { FastAverageColor } from 'fast-average-color';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
@@ -112,6 +114,42 @@ export const CollectionApi = async ({
             if (!data?.collectionByHandle)
                 return reject(new Error('404: The requested document cannot be found'));
 
+            data.collectionByHandle.products.edges = await Promise.all(
+                data.collectionByHandle.products.edges.map(async (edge) => {
+                    if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
+
+                    try {
+                        const color = await new FastAverageColor().getColorAsync(
+                            edge.node?.images?.edges?.at(0)?.node?.url || ''
+                        );
+
+                        edge.node.accent = {
+                            background: Color(color.hex).hex().toString(),
+                            foreground:
+                                (color.isDark &&
+                                    Color(color.hex)
+                                        .lighten(0.5)
+                                        .saturate(0.5)
+                                        .lighten(0.75)
+                                        .hex()
+                                        .toString()) ||
+                                Color(color.hex)
+                                    .lighten(0.5)
+                                    .desaturate(0.5)
+                                    .darken(0.8)
+                                    .hex()
+                                    .toString()
+                        };
+                        return edge;
+                    } catch {
+                        return edge;
+                    }
+                })
+            );
+
+            data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml
+                .replaceAll(/ /g, ' ')
+                .replaceAll('\u00A0', ' ');
             return resolve(/*flattenConnection(*/ data.collectionByHandle /*)*/);
         } catch (error) {
             Sentry.captureException(error);

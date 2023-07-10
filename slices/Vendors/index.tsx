@@ -1,5 +1,4 @@
 import { Content } from '@prismicio/client';
-import ContentBlock from '../../src/components/ContentBlock';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import VendorsComponent from '../../src/components/Vendors';
@@ -22,11 +21,9 @@ export type VendorsProps = SliceComponentProps<Content.VendorsSlice>;
 const Vendors = ({}: VendorsProps): JSX.Element => {
     return (
         <Container>
-            <ContentBlock>
-                <PageContent>
-                    <VendorsComponent />
-                </PageContent>
-            </ContentBlock>
+            <PageContent>
+                <VendorsComponent />
+            </PageContent>
         </Container>
     );
 };
