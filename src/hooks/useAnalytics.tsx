@@ -130,7 +130,7 @@ export function useAnalytics({
             payload
         });
 
-        (window as any).dataLayer.push({ ecommerce: null });
+        (window as any)?.dataLayer?.push({ ecommerce: null });
         (window as any)?.dataLayer?.push(
             { ecommerce: null },
             {
