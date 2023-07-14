@@ -101,6 +101,7 @@ const Content = styled.div<{
 
                 section {
                     width: 100%;
+                    max-width: 24rem;
                 }
             `}
     }

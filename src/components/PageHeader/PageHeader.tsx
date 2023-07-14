@@ -5,7 +5,8 @@ import styled from 'styled-components';
 const Content = styled.div`
     display: flex;
     flex-direction: column;
-    color: var(--color-text-primary);
+    gap: 0.25rem;
+    color: var(--foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--background);
@@ -15,19 +16,19 @@ const Content = styled.div`
 
 const Title = styled.h2`
     font-size: 2.5rem;
-    line-height: 2.75rem;
+    line-height: 3rem;
     font-weight: 700;
 `;
 const SubTitle = styled.h3`
     font-size: 1.75rem;
-    line-height: 2rem;
+    line-height: 2.25rem;
     font-weight: 400;
 
     a {
         display: inline-block;
         transition: 150ms ease-in-out all;
         cursor: pointer;
-        border-bottom: 0.2rem dotted var(--color-text-primary);
+        border-bottom: 0.2rem dotted var(--foreground);
         margin-bottom: 0.25rem;
 
         &:hover,
@@ -42,14 +43,25 @@ interface PageHeaderProps {
     title?: string | JSX.Element | null;
     subtitle?: string | JSX.Element | null;
     reverse?: boolean;
+    background?: string;
+    backgroundDark?: string;
+    foreground?: string;
 }
-const PageHeader: FunctionComponent<PageHeaderProps> = ({ title, subtitle, reverse }) => {
+const PageHeader: FunctionComponent<PageHeaderProps> = ({
+    title,
+    subtitle,
+    reverse,
+    background,
+    backgroundDark,
+    foreground
+}) => {
     return (
         <Content
             style={
                 {
-                    '--background': 'var(--accent-primary)',
-                    '--background-dark': 'var(--accent-primary-dark)'
+                    '--foreground': foreground || 'var(--color-text-primary)',
+                    '--background': background || 'var(--accent-primary)',
+                    '--background-dark': backgroundDark || 'var(--accent-primary-dark)'
                 } as React.CSSProperties
             }
         >

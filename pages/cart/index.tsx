@@ -306,7 +306,7 @@ const RecommendationsTitle = styled.h3`
 const RecommendationsContentWrapper = styled.div`
     display: block;
     padding: var(--block-padding-large);
-    background: var(--color-block);
+    background: var(--accent-secondary);
     background: linear-gradient(
         320deg,
         var(--accent-secondary) 0%,

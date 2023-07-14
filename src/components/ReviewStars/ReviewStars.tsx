@@ -1,5 +1,6 @@
+import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
+
 import { FunctionComponent } from 'react';
-import { BsStarFill, BsStarHalf, BsStar } from 'react-icons/bs';
 import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';
 
@@ -27,17 +28,27 @@ const ReviewsWrapper = styled.div`
         display: flex;
         flex-direction: row;
         gap: 0.5rem;
+        overflow: unset !important;
+        margin-top: -0.25rem;
 
         span {
             display: flex !important;
             justify-content: center;
             align-items: center;
             height: 100%;
+            overflow: unset !important;
 
             svg {
                 font-size: 1.75rem;
             }
         }
+    }
+`;
+
+const IconWrapper = styled.div`
+    //mix-blend-mode: luminosity;
+    svg {
+        filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.45));
     }
 `;
 
@@ -63,9 +74,21 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
                 edit={false}
                 a11y={false}
                 activeColor="#D8B309"
-                filledIcon={BsStarFill}
-                halfIcon={BsStarHalf}
-                emptyIcon={BsStar}
+                filledIcon={
+                    <IconWrapper>
+                        <BsStarFill />
+                    </IconWrapper>
+                }
+                halfIcon={
+                    <IconWrapper>
+                        <BsStarHalf />
+                    </IconWrapper>
+                }
+                emptyIcon={
+                    <IconWrapper>
+                        <BsStar />
+                    </IconWrapper>
+                }
             />
             {!hideLabel && (
                 <ReviewsLabel onClick={() => onShowReviews?.()}>

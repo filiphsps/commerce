@@ -11,47 +11,46 @@ import {
 import { FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductsApi } from '../../../src/api/product';
+import { ProductApi, ProductsApi } from '../../src/api/product';
 import styled, { css } from 'styled-components';
 
-import Breadcrumbs from '../../../src/components/Breadcrumbs';
-import Button from '../../../src/components/Button';
-import CollectionBlock from '../../../src/components/CollectionBlock';
-import { Config } from '../../../src/util/Config';
-import Content from '../../../src/components/Content';
-import ContentBlock from '../../../src/components/ContentBlock';
+import Breadcrumbs from '../../src/components/Breadcrumbs';
+import Button from '../../src/components/Button';
+import CollectionBlock from '../../src/components/CollectionBlock';
+import { Config } from '../../src/util/Config';
+import Content from '../../src/components/Content';
+import ContentBlock from '../../src/components/ContentBlock';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
-import Gallery from '../../../src/components/Gallery';
+import Gallery from '../../src/components/Gallery';
 import { GetStaticPropsResult } from 'next';
-import Input from '../../../src/components/Input';
+import Input from '../../src/components/Input';
 import Link from 'next/link';
-import Page from '../../../src/components/Page';
-import PageContent from '../../../src/components/PageContent';
-import PageHeader from '../../../src/components/PageHeader';
-import { ProductOptions } from '../../../src/components/ProductOptions';
-import { RecommendationApi } from '../../../src/api/recommendation';
-import { RedirectProductApi } from '../../../src/api/redirects';
-import Reviews from '../../../src/components/Reviews';
-import { ReviewsModel } from '../../../src/models/ReviewsModel';
-import { ReviewsProductApi } from '../../../src/api/reviews';
-import { StoreModel } from '../../../src/models/StoreModel';
-import TitleToHandle from '../../../src/util/TitleToHandle';
-import color from 'color';
+import Page from '../../src/components/Page';
+import PageContent from '../../src/components/PageContent';
+import PageHeader from '../../src/components/PageHeader';
+import { ProductOptions } from '../../src/components/ProductOptions';
+import { RecommendationApi } from '../../src/api/recommendation';
+import { RedirectProductApi } from '../../src/api/redirects';
+import Reviews from '../../src/components/Reviews';
+import { ReviewsModel } from '../../src/models/ReviewsModel';
+import { ReviewsProductApi } from '../../src/api/reviews';
+import { StoreModel } from '../../src/models/StoreModel';
+import TitleToHandle from '../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 import { useWindowSize } from 'rooks';
 
-const ReviewStars = dynamic(() => import('../../../src/components/ReviewStars'), { ssr: false });
+const ReviewStars = dynamic(() => import('../../src/components/ReviewStars'), { ssr: false });
 
 // TODO: replace this with generic label.
 const Label = styled.label`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
-    color: var(--foreground);
+    color: var(--primary-foreground);
 `;
 
 const ProductContainerWrapper = styled.div`
@@ -93,7 +92,7 @@ const Assets = styled.div`
 
     @media (min-width: 950px) {
         position: sticky;
-        top: 8rem;
+        top: 10rem;
     }
 `;
 const Details = styled.div`
@@ -104,6 +103,7 @@ const Details = styled.div`
     margin: 1rem 0px;
 `;
 
+// FIXME: Turn this into a component
 const Tags = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -125,7 +125,7 @@ export const Tag = styled.div`
     color: var(--color-text-primary);
     padding: 0.75rem 1rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.45);
 
     &.Vegan {
         background: #1b6e1b;
@@ -284,17 +284,22 @@ const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
 
 const PriceContainer = styled.div`
     display: flex;
-    justify-content: end;
-    align-items: end;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     height: 100%;
     width: 100%;
 
-    color: var(--color-text-dark);
+    color: var(--secondary-foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--color-block);
+    background: var(--secondary);
+    background: radial-gradient(circle, var(--secondary) 0%, var(--secondary-dark) 100%);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+    @media (min-width: 950px) {
+        justify-content: end;
+    }
 `;
 
 const Recommendations = styled(ContentBlock)`
@@ -366,17 +371,17 @@ const TabContent = styled.div`
 `;
 
 const ReviewsContainer = styled.div`
-    color: var(--color-text-primary);
+    color: var(--secondary-foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    background: var(--secondary);
+    background: linear-gradient(320deg, var(--secondary) 0%, var(--secondary-dark) 100%);
     margin-top: 0.5rem;
 `;
 
 const PageContainer = styled(Page)`
-    background: linear-gradient(180deg, var(--background) 0%, var(--background-dark) 100%);
-    color: var(--foreground);
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--primary-foreground);
 `;
 
 interface ProductPageProps {
@@ -536,6 +541,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             </Link>
                         }
                         reverse
+                        background={(product as any).accent?.secondary}
+                        backgroundDark={(product as any).accent?.secondary_dark}
+                        foreground={(product as any).accent?.secondary_foreground}
                     />
                     {(reviews?.count && reviews.count > 0 && (
                         <ReviewsContainer>
@@ -592,14 +600,15 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             className="ProductPage"
             style={
                 {
-                    '--background': (product as any).accent?.background || 'transparent',
-                    '--background-dark': color((product as any).accent?.background || 'transparent')
-                        .saturate(0.75)
-                        .darken(0.25)
-                        .hex()
-                        .toString(),
-                    '--foreground':
-                        (product as any).accent?.foreground || 'var(--color-text-primary)'
+                    '--primary': (product as any).accent?.primary || 'var(--color-block)',
+                    '--primary-dark': (product as any).accent?.primary_dark || 'var(--color-block)',
+                    '--primary-foreground':
+                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)',
+                    '--secondary': (product as any).accent?.secondary || 'var(--color-block)',
+                    '--secondary-dark':
+                        (product as any).accent?.secondary_dark || 'var(--color-block)',
+                    '--secondary-foreground':
+                        (product as any).accent?.secondary_foreground || 'var(--color-text-primary)'
                 } as React.CSSProperties
             }
         >
@@ -793,7 +802,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     <div style={{ paddingBottom: '1rem' }} />
                                     {selectedVariant.sku && (
                                         <>
-                                            <h2>SKU</h2>
+                                            <h2>SKU/EAN</h2>
                                             {selectedVariant.sku}
                                         </>
                                     )}

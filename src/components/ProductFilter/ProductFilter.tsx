@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import LanguageString from '../LanguageString';
-import { ProductModel } from '../../models/ProductModel';
+import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
 const FilterWrapper = styled.div`
@@ -87,7 +87,7 @@ const OptionsTitle = styled.div`
 `;
 
 interface ProductFilterProps {
-    products: ProductModel[];
+    products: Product[];
     // eslint-disable-next-line no-unused-vars
     onChange: (filter: any) => void;
 }
@@ -110,7 +110,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
 
         products?.forEach((product) => {
             new_tags.push(...(product.tags || []));
-            new_vendors.push(product.vendor.title);
+            new_vendors.push(product.vendor);
         });
 
         // Remove duplicates

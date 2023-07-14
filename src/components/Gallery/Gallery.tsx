@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
@@ -112,9 +112,10 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                 <ImageWrapper>
                     <Image
                         src={image.url}
-                        alt={image.altText || undefined}
+                        alt={image.altText!}
                         title={image.altText || undefined}
-                        layout="fill"
+                        fill
+                        priority
                     />
                 </ImageWrapper>
             </Primary>
@@ -129,9 +130,9 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                             <ImageWrapper>
                                 <Image
                                     src={image.url}
-                                    alt={image.altText || undefined}
+                                    alt={image.altText!}
                                     title={image.altText || undefined}
-                                    layout="fill"
+                                    fill
                                 />
                             </ImageWrapper>
                         </Preview>

@@ -1,10 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT } from './product';
 
-import Color from 'color';
-import { FastAverageColor } from 'fast-average-color';
-import { PRODUCT_FRAGMENT } from './product';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
@@ -52,27 +50,9 @@ export const RecommendationApi = async ({
                         if (!product?.images?.edges?.at(0)?.node?.url) return product;
 
                         try {
-                            const color = await new FastAverageColor().getColorAsync(
-                                product?.images?.edges?.at(0)?.node?.url || ''
+                            product.accent = await ExtractAccentColorsFromImage(
+                                product?.images?.edges?.at(0)?.node?.url
                             );
-
-                            product.accent = {
-                                background: Color(color.hex).hex().toString(),
-                                foreground:
-                                    (color.isDark &&
-                                        Color(color.hex)
-                                            .lighten(0.5)
-                                            .saturate(0.5)
-                                            .lighten(0.75)
-                                            .hex()
-                                            .toString()) ||
-                                    Color(color.hex)
-                                        .lighten(0.5)
-                                        .desaturate(0.5)
-                                        .darken(0.8)
-                                        .hex()
-                                        .toString()
-                            };
                             return product;
                         } catch {
                             return product;

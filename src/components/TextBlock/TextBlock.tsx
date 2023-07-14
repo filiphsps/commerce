@@ -57,6 +57,16 @@ const Content = styled(ContentComponent)`
         height: auto;
         padding: 0px;
         background: none;
+
+        a {
+            color: var(--color-primary-text);
+            border-color: var(--color-primary-text);
+
+            &:hover {
+                color: var(--accent-secondary-dark);
+                border-color: var(--accent-secondary-dark);
+            }
+        }
     }
 `;
 

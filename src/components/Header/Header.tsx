@@ -61,15 +61,67 @@ const Logo = styled.div`
         padding: 0.5rem 1rem;
     }
 `;
+
+const Menu = styled.div`
+    z-index: 9999;
+    overflow: hidden;
+    position: absolute;
+    top: 7rem;
+    left: 0px;
+    right: 0px;
+    max-height: 0px;
+    transition: max-height 500ms ease-in-out;
+    background: var(--color-text-primary);
+    color: var(--color-text-dark);
+    cursor: unset;
+
+    &:hover {
+        max-height: 100vh;
+    }
+`;
+const MenuContent = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 2rem;
+    padding: 2rem 2rem 1rem 2rem;
+    max-width: 1465px;
+    margin: 0px auto;
+`;
+const MenuItemTitle = styled.div`
+    font-weight: 500;
+`;
+const MenuItemDescription = styled.div`
+    font-weight: 500;
+    font-size: 1.15rem;
+    text-transform: none;
+    opacity: 0.75;
+    margin-top: 0.5rem;
+`;
+const MenuItem = styled.div`
+    margin-bottom: 1rem;
+    padding-right: 1.2rem;
+    transition: padding 150ms ease-in-out;
+
+    &.Active,
+    &:hover {
+        padding-left: 1rem;
+        padding-right: 0px;
+        border-left: 0.2rem solid var(--accent-primary);
+
+        ${MenuItemTitle} {
+            font-weight: 700;
+        }
+    }
+`;
+
 const Navigation = styled.nav`
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 2rem;
     height: 100%;
-    text-transform: uppercase;
     font-size: 1.5rem;
-    letter-spacing: 0.05rem;
+    line-height: 1.5rem;
 
     color: var(--color-text-dark);
 
@@ -80,22 +132,68 @@ const Navigation = styled.nav`
     a {
         transition: 150ms all ease-in-out;
         cursor: pointer;
-        border-bottom: solid 0.2rem transparent;
-        transform: translateY(0.2rem);
         transition: 150ms ease-in-out;
 
         &:hover,
-        &:active {
-            border-bottom: solid 0.2rem var(--accent-primary);
-            transform: translateY(0px);
+        &:active,
+        &.Active {
+            color: var(--accent-primary-dark);
+            -webkit-text-stroke-width: 0.075ex;
+
+            svg {
+                stroke-width: 0.225ex;
+            }
         }
 
         &.Active {
-            color: var(--accent-primary);
-            font-weight: 700;
+            background: var(--accent-primary);
+            color: var(--color-text-primary);
+            border-radius: var(--block-border-radius);
+            padding: 1rem;
+            margin: 0px -0.5rem;
         }
     }
 `;
+const NavigationItem = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    height: 6rem;
+    cursor: pointer;
+
+    svg {
+        display: inline-block;
+        height: 2rem;
+        font-size: 1.25rem;
+        line-height: 100%;
+        vertical-align: middle;
+    }
+
+    a {
+        text-transform: uppercase;
+
+        &.Top {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            text-transform: uppercase;
+            gap: 0.25rem;
+            text-transform: unset;
+        }
+    }
+
+    &:hover ${Menu} {
+        max-height: 100vh;
+    }
+`;
+const NavigationViewAll = styled.div`
+    svg {
+        font-size: 2rem;
+        stroke-width: 0.175ex;
+    }
+`;
+
 const Actions = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -278,83 +376,6 @@ const CartPopupContent = styled.div`
     width: 100%;
 `;
 
-const Menu = styled.div`
-    z-index: 9999;
-    overflow: hidden;
-    position: absolute;
-    top: 7rem;
-    left: 0px;
-    right: 0px;
-    max-height: 0px;
-    transition: max-height 500ms ease-in-out;
-    background: var(--color-text-primary);
-    color: var(--color-text-dark);
-    cursor: unset;
-
-    &:hover {
-        max-height: 100vh;
-    }
-`;
-const MenuContent = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: 2rem;
-    padding: 2rem 2rem 1rem 2rem;
-    max-width: 1465px;
-    margin: 0px auto;
-`;
-const MenuItemTitle = styled.div`
-    font-weight: 500;
-`;
-const MenuItemDescription = styled.div`
-    font-weight: 500;
-    font-size: 1.15rem;
-    text-transform: none;
-    opacity: 0.75;
-    margin-top: 0.5rem;
-`;
-const MenuItem = styled.div`
-    margin-bottom: 1rem;
-    padding-right: 1.2rem;
-    transition: padding 150ms ease-in-out;
-
-    &.Active,
-    &:hover {
-        padding-left: 1rem;
-        padding-right: 0px;
-        border-left: 0.2rem solid var(--accent-primary);
-
-        ${MenuItemTitle} {
-            font-weight: 700;
-        }
-    }
-`;
-
-const NavigationItem = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    height: 6rem;
-    cursor: pointer;
-
-    svg {
-        display: inline-block;
-        height: 2rem;
-        font-size: 1.25rem;
-        line-height: 100%;
-        vertical-align: middle;
-    }
-
-    a {
-        height: 1.75rem;
-    }
-
-    &:hover ${Menu} {
-        max-height: 100vh;
-    }
-`;
-
 const HamburgerMenu = styled.div`
     display: flex;
     justify-content: center;
@@ -436,15 +457,20 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                 <Link
                                     href={`/${item?.handle || ''}`}
                                     title={item.title}
-                                    className={
+                                    className={`Top ${
                                         (router.asPath === '/' && item?.handle === null) ||
                                         `/${item?.handle}` === router.asPath
                                             ? 'Active'
                                             : ''
-                                    }
+                                    }`}
                                 >
                                     {item?.title || null}
-                                    {(item?.children?.length > 0 && <FiChevronDown />) || null}
+                                    {(item?.children?.length > 0 && (
+                                        <NavigationViewAll>
+                                            <FiChevronDown />
+                                        </NavigationViewAll>
+                                    )) ||
+                                        null}
                                 </Link>
                                 {(item.children.length && (
                                     <Menu>

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { ProductModel } from '../models/ProductModel';
+import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import TitleToHandle from '../util/TitleToHandle';
 import { VendorModel } from '../models/VendorModel';
 import { gql } from '@apollo/client';
@@ -8,7 +8,7 @@ import { shopify } from './shopify';
 
 export const Convertor = (
     products: Array<{
-        node: ProductModel;
+        node: Product;
     }>
 ): Array<VendorModel> => {
     let vendors: any[] = [];

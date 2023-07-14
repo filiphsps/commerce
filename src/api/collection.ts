@@ -5,11 +5,8 @@ import {
     CountryCode,
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { PRODUCT_FRAGMENT, Convertor as ProductConvertor } from './product';
+import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT } from './product';
 
-import { CollectionModel } from '../models/CollectionModel';
-import Color from 'color';
-import { FastAverageColor } from 'fast-average-color';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
@@ -45,37 +42,6 @@ export const COLLECTION_FRAGMENT = `
         value
     }
 `;
-
-export const Convertor = (collection: any): CollectionModel | null => {
-    if (!collection) return null;
-
-    const res = {
-        id: collection?.id,
-        handle: collection?.handle,
-        is_brand: collection.isBrand?.value && collection.isBrand?.value == 'true' ? true : false,
-
-        seo: {
-            title: collection?.seo?.title || collection?.title,
-            description: collection?.seo?.description || collection?.description || '',
-            keywords: collection?.keywords?.value || ''
-        },
-
-        title: collection?.title,
-        body: collection?.descriptionHtml,
-        image: collection?.image
-            ? {
-                  id: collection?.image?.id,
-                  alt: collection?.image?.altText ?? null,
-                  src: collection?.image?.originalSrc,
-                  height: collection?.image?.height,
-                  width: collection?.image?.width
-              }
-            : null,
-
-        items: collection?.products?.edges?.map((product) => ProductConvertor(product.node))
-    };
-    return res as any as CollectionModel;
-};
 
 export const CollectionApi = async ({
     handle,
@@ -119,27 +85,9 @@ export const CollectionApi = async ({
                     if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
 
                     try {
-                        const color = await new FastAverageColor().getColorAsync(
-                            edge.node?.images?.edges?.at(0)?.node?.url || ''
+                        edge.node.accent = await ExtractAccentColorsFromImage(
+                            edge.node?.images?.edges?.at(0)?.node?.url
                         );
-
-                        edge.node.accent = {
-                            background: Color(color.hex).hex().toString(),
-                            foreground:
-                                (color.isDark &&
-                                    Color(color.hex)
-                                        .lighten(0.5)
-                                        .saturate(0.5)
-                                        .lighten(0.75)
-                                        .hex()
-                                        .toString()) ||
-                                Color(color.hex)
-                                    .lighten(0.5)
-                                    .desaturate(0.5)
-                                    .darken(0.8)
-                                    .hex()
-                                    .toString()
-                        };
                         return edge;
                     } catch {
                         return edge;

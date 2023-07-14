@@ -4,11 +4,13 @@ const Content = styled.div`
     max-width: 100%;
     height: 100%;
     font-size: 1.75rem;
+    font-weight: 400;
     line-height: 2rem;
 
     a {
         color: var(--accent-primary);
         border-bottom: 0.2rem dotted var(--accent-primary);
+        font-weight: 600;
 
         &:hover {
             color: var(--accent-primary-light);

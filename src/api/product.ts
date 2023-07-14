@@ -6,16 +6,13 @@ import {
     Product,
     ProductEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { ShopifyWeightUnit, WeightModel } from '../models/WeightModel';
-import { newShopify, storefrontClient } from './shopify';
+import { FinalColor, extractColors } from 'extract-colors';
 
 import Color from 'color';
-import { FastAverageColor } from 'fast-average-color';
-import { ProductModel } from '../models/ProductModel';
-import { ProductVariantModel } from '../models/ProductVariantModel';
-import TitleToHandle from '../util/TitleToHandle';
+import getPixels from 'get-pixels';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
+import { storefrontClient } from './shopify';
 
 export const PRODUCT_FRAGMENT = `
     id
@@ -92,114 +89,69 @@ export const PRODUCT_FRAGMENT = `
     }
 `;
 
-export const Convertor = (product: any): ProductModel | null => {
-    if (!product) return null;
+// TODO: cache this, or maybe even create a shopify app that provides this data
+export const ExtractAccentColorsFromImage = (
+    url?: string
+): Promise<{
+    background: string;
+    foreground: string;
+}> => {
+    const setupColors = (colors: FinalColor[]) => {
+        const sorted = colors.sort((a, b) => b.area - a.area);
 
-    let metafields = {
-        ingredients: product.ingredients?.value ?? null
+        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.15);
+        const secondary = Color(sorted.at(1)!.hex).darken(0.15).desaturate(0.15);
+        if (primary.saturationl() < 2 && primary.saturationv() < 2 && sorted.at(0)!.area < 0.4) {
+            return setupColors(sorted.slice(1));
+        }
+
+        let primaryForegroundColor =
+            (primary.isDark() &&
+                primary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
+            primary.lighten(0.5).desaturate(0.5).darken(0.8);
+        let secondaryForegroundColor =
+            (secondary.isDark() &&
+                secondary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
+            secondary.lighten(0.5).desaturate(0.5).darken(0.8);
+
+        // Increase brightness if it's too dark
+        if (primary.isDark() && primaryForegroundColor.lightness() < 85)
+            primaryForegroundColor = primaryForegroundColor.lighten(1);
+        if (secondary.isDark() && secondaryForegroundColor.lightness() < 85)
+            secondaryForegroundColor = secondaryForegroundColor.lighten(1);
+
+        return {
+            primary: primary.hex().toString(),
+            primary_dark: primary.darken(0.15).hex().toString(),
+            primary_foreground: primaryForegroundColor.hex().toString(),
+            secondary: secondary.hex().toString(),
+            secondary_dark: secondary.darken(0.15).hex().toString(),
+            secondary_foreground: secondaryForegroundColor.hex().toString()
+        };
     };
 
-    const images = product?.images.edges.map(({ node }) => ({
-        id: node.id?.includes('=') ? atob(node?.id) : node?.id,
-        alt: node.altText ?? null,
-        src: node.url || node.originalSrc,
-        height: node.height,
-        width: node.width
-    }));
+    return new Promise(async (resolve, reject) => {
+        if (!url) return reject(new Error('No image url.'));
 
-    return {
-        id: (product?.id?.includes('=') ? atob(product.id) : product.id).split('/').at(-1),
-        handle: product?.handle,
-        created_at: product.createdAt,
+        try {
+            if (typeof window === 'undefined') {
+                return getPixels(url, async (error, pixels) => {
+                    if (error) return reject(error);
 
-        title: product?.title,
-        description: product?.description,
-        body: product?.descriptionHtml,
-        type: product?.productType,
-        tags: product?.tags,
-        seo: {
-            title: product?.seo?.title,
-            description: product?.seo?.description,
-            keywords: product?.keywords?.value || ''
-        },
+                    const data = [...pixels.data];
+                    const width = Math.round(Math.sqrt(data.length / 4));
+                    const height = width;
 
-        vendor: {
-            title: product?.vendor,
-            handle: TitleToHandle(product?.vendor)
-        },
-
-        pricing: {
-            currency: product?.priceRange.maxVariantPrice.currencyCode,
-            range: {
-                min: Number.parseFloat(product?.priceRange.minVariantPrice.amount),
-                max: Number.parseFloat(product?.priceRange.maxVariantPrice.amount)
+                    return resolve(setupColors(await extractColors({ data, width, height })));
+                });
+            } else {
+                return resolve(setupColors(await extractColors(url, { crossOrigin: 'anonymous' })));
             }
-        },
-        options: product?.options.map((option) => ({
-            id: option.name,
-            title: option.name,
-            type: 'multi_choice',
-            default: option.values[0],
-            values: option.values.map((value) => ({
-                id: value,
-                title: value
-            }))
-        })),
-        variants: product?.variants.edges.map(({ node: variant }): ProductVariantModel => {
-            const imageId = variant.image?.id?.includes('=')
-                ? atob(variant.image?.id)
-                : variant.image?.id;
-            const defaultImage = images.findIndex((image) => image.id === imageId);
-
-            // FIXME: do this in some weight component.
-            let weight = {
-                value: null,
-                unit: null
-            } as any as WeightModel;
-
-            switch (variant.weightUnit as ShopifyWeightUnit) {
-                case 'KILOGRAMS':
-                    weight.value = variant.weight * 1000;
-                    weight.unit = 'g';
-                    break;
-                case 'GRAMS':
-                    weight.value = variant.weight;
-                    weight.unit = 'g';
-                    break;
-                case 'POUNDS':
-                    weight.value = variant.weight * 16;
-                    weight.unit = 'oz';
-                    break;
-                case 'OUNCES':
-                    weight.value = variant.weight;
-                    weight.unit = 'oz';
-                    break;
-                default:
-                    throw new Error(`Invalid weight unit "${variant.weightUnit}"`);
-            }
-
-            return {
-                id: (variant?.id?.includes('=') ? atob(variant.id) : variant.id).split('/').at(-1),
-                title: variant.title,
-                default_image: defaultImage ?? 0,
-                sku: variant.sku,
-                barcode: variant.barcode,
-                pricing: {
-                    currency: variant.price.currencyCode,
-                    range: Number.parseFloat(variant.price.amount),
-                    compare_at_range: Number.parseFloat(variant.compareAtPriceV2?.amount) || null
-                },
-                options: variant.selectedOptions.map(({ name, value }) => ({
-                    id: name,
-                    value
-                })),
-                weight,
-                available: variant.availableForSale
-            };
-        }),
-        images,
-        metadata: metafields
-    };
+        } catch (error) {
+            console.error(error);
+            return reject(error);
+        }
+    });
 };
 
 export const ProductApi = async ({
@@ -240,22 +192,9 @@ export const ProductApi = async ({
                 return reject(new Error('404: The requested document cannot be found'));
 
             try {
-                const color = await new FastAverageColor().getColorAsync(
-                    data.productByHandle.images?.edges?.at(0)?.node?.url || ''
+                data.productByHandle.accent = await ExtractAccentColorsFromImage(
+                    data.productByHandle.images?.edges?.at(0)?.node?.url
                 );
-
-                data.productByHandle.accent = {
-                    background: Color(color.hex).hex().toString(),
-                    foreground:
-                        (color.isDark &&
-                            Color(color.hex)
-                                .lighten(0.5)
-                                .saturate(0.5)
-                                .lighten(0.75)
-                                .hex()
-                                .toString()) ||
-                        Color(color.hex).lighten(0.5).desaturate(0.5).darken(0.8).hex().toString()
-                };
             } catch {}
 
             try {
@@ -265,47 +204,6 @@ export const ProductApi = async ({
             } catch {}
 
             return resolve(/*flattenConnection(*/ data.productByHandle /*)*/);
-        } catch (error) {
-            Sentry.captureException(error);
-            console.error(error);
-            return reject(error);
-        }
-    });
-};
-
-export const ProductIdApi = async ({ id, locale: loc }: { id: string; locale?: string }) => {
-    return new Promise(async (resolve, reject) => {
-        if (!id) return reject(new Error('Invalid ID'));
-
-        const locale = loc === 'x-default' ? i18n.locales[1] : loc;
-        // FIXME: Don't assume en-US
-        const language = locale ? locale.split('-')[0].toUpperCase() : 'EN';
-        const country = locale ? locale.split('-').at(-1)?.toUpperCase() || 'US' : 'US';
-
-        let formatted_id = id;
-        if (!id.includes('/')) formatted_id = `gid://shopify/Product/${id}`;
-
-        try {
-            const { data, errors } = await newShopify.query({
-                query: gql`
-                query getProduct($id: ID!) @inContext(language: ${language}, country: ${country}) {
-                    node(id: $id) {
-                        ...on Product {
-                            ${PRODUCT_FRAGMENT}
-                        }
-                    }
-                }
-                `,
-                variables: {
-                    id: btoa(formatted_id)
-                }
-            });
-
-            if (errors && errors.length > 0) return reject(errors);
-
-            if (!data?.node) return reject(new Error('TODO:'));
-
-            return resolve(Convertor(data?.node));
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);
@@ -397,27 +295,9 @@ export const ProductsApi = async (
                         if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
 
                         try {
-                            const color = await new FastAverageColor().getColorAsync(
-                                edge.node?.images?.edges?.at(0)?.node?.url || ''
+                            edge.node.accent = await ExtractAccentColorsFromImage(
+                                edge.node?.images?.edges?.at(0)?.node?.url
                             );
-
-                            edge.node.accent = {
-                                background: Color(color.hex).hex().toString(),
-                                foreground:
-                                    (color.isDark &&
-                                        Color(color.hex)
-                                            .lighten(0.5)
-                                            .saturate(0.5)
-                                            .lighten(0.75)
-                                            .hex()
-                                            .toString()) ||
-                                    Color(color.hex)
-                                        .lighten(0.5)
-                                        .desaturate(0.5)
-                                        .darken(0.8)
-                                        .hex()
-                                        .toString()
-                            };
                             return edge;
                         } catch {
                             return edge;
@@ -504,27 +384,9 @@ export const ProductsPaginationApi = async ({
                         if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
 
                         try {
-                            const color = await new FastAverageColor().getColorAsync(
-                                edge.node?.images?.edges?.at(0)?.node?.url || ''
+                            edge.node.accent = await ExtractAccentColorsFromImage(
+                                edge.node?.images?.edges?.at(0)?.node?.url
                             );
-
-                            edge.node.accent = {
-                                background: Color(color.hex).hex().toString(),
-                                foreground:
-                                    (color.isDark &&
-                                        Color(color.hex)
-                                            .lighten(0.5)
-                                            .saturate(0.5)
-                                            .lighten(0.75)
-                                            .hex()
-                                            .toString()) ||
-                                    Color(color.hex)
-                                        .lighten(0.5)
-                                        .desaturate(0.5)
-                                        .darken(0.8)
-                                        .hex()
-                                        .toString()
-                            };
                             return edge;
                         } catch {
                             return edge;

@@ -5,8 +5,9 @@ body {
     width: 100%;
     max-width: 100vw;
     padding: 0px;
-    -moz-osx-font-smoothing: auto;
-    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: always;
+    -webkit-font-smoothing: always;
+    font-smooth: always;
     overscroll-behavior-x: none;
     font-size: 12px;
     touch-action: manipulation;
@@ -34,6 +35,7 @@ body {
 }
 
 .PageProvider {
+    overscroll-behavior-x: none;
     background: var(--accent-primary);
     background: linear-gradient(
         180deg,

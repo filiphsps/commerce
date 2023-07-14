@@ -8,10 +8,9 @@ import styled, { css } from 'styled-components';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 
 import Button from '../Button';
-import Color from 'color';
 import { Config } from '../../util/Config';
 import Currency from '../Currency';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
@@ -304,7 +303,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image, isHorizonta
     return (
         <Image
             src={image.url}
-            layout={(!isHorizontal && 'responsive') || 'fill'}
+            fill={isHorizontal}
             alt={image.altText || ''}
             title={image.altText || undefined}
             height={(!isHorizontal && (image.height || 0)) || undefined}
@@ -355,13 +354,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
             className="ProductCard"
             style={
                 {
-                    '--background': (product as any).accent?.background || '#efefef',
-                    '--background-dark': Color((product as any).accent?.background || '#efefef')
-                        .saturate(0.75)
-                        .darken(0.25)
-                        .hex()
-                        .toString(),
-                    '--foreground': (product as any).accent?.foreground || '#030303'
+                    '--background': (product as any).accent?.primary || 'var(--color-block)',
+                    '--background-dark': (product as any).accent?.primary_dark || '',
+                    '--foreground':
+                        (product as any).accent?.primary_foreground || 'var(--color-text-dark)'
                 } as React.CSSProperties
             }
         >
