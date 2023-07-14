@@ -15,7 +15,7 @@ const Container = styled.div<{ open?: boolean }>`
         bottom: -5rem;
         padding: 1rem;
         background: var(--color-text-primary);
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
         pointer-events: none;
         opacity: 0;
 

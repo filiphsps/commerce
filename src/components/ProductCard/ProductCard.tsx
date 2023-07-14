@@ -13,7 +13,9 @@ import Currency from '../Currency';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
+import { PRODUCT_ACCENT_CACHE_TIMEOUT } from '../../api/product';
 import { StoreModel } from '../../models/StoreModel';
+import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useStore } from 'react-context-hook';
 
@@ -41,7 +43,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     width: 100%;
     padding: 1.75rem;
     border-radius: calc(var(--block-border-radius) * 0.75);
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     user-select: none;
     background: #fefefe;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
@@ -124,7 +126,7 @@ const VariantsContainer = styled.div`
     width: 100%;
     height: 100%;
     padding-top: 1rem;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 `;
 const Variants = styled.div`
     display: flex;
@@ -164,7 +166,7 @@ const AddButton = styled(Button)`
     font-size: 1.25rem;
     line-height: 1.25rem;
     font-weight: 700;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     border-radius: calc(var(--block-border-radius) * 0.75);
     padding: 0.75rem 1rem;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
@@ -196,7 +198,7 @@ const QuantityAction = styled.div`
     font-size: 1.5rem;
     font-weight: 700;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &.Inactive {
         width: 0px;
@@ -322,8 +324,9 @@ interface ProductCardProps {
     handle?: string;
     isHorizontal?: boolean;
     store: StoreModel;
+    className?: string;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) => {
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
@@ -334,6 +337,20 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
         if (quantity > 0) return;
         setQuantity(1);
     }, [quantity]);
+
+    // FIXME: Remove this when our Shopify app does this.
+    useEffect(() => {
+        if (!globalThis.color_cache) {
+            globalThis.color_cache = new TinyCache();
+        }
+
+        if (!product?.images?.edges?.at(0)?.node?.url || !(product as any).accent) return;
+
+        const url = product.images.edges.at(0)?.node?.url!;
+        if (!globalThis.color_cache.get(url)) {
+            globalThis.color_cache.put(url, (product as any).accent, PRODUCT_ACCENT_CACHE_TIMEOUT);
+        }
+    }, [product]);
 
     // TODO: Placeholder card?
     if (!product || !selectedVariant) return null;
@@ -357,7 +374,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
 
     return (
         <Container
-            className="ProductCard"
+            className={`ProductCard ${className || ''}`}
             style={
                 {
                     '--background': (product as any).accent?.primary || 'var(--color-block)',

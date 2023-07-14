@@ -53,7 +53,7 @@ const FooterContainer = styled.footer`
     padding-top: 1rem;
 
     a {
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
         &:hover {
             color: var(--accent-secondary-dark);
         }

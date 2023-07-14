@@ -42,7 +42,7 @@ const Preview = styled.div`
     background: var(--color-block);
     border: 0.2rem solid var(--color-block);
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     border-radius: var(--block-border-radius);
     user-select: none;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);

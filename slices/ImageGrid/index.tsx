@@ -41,7 +41,7 @@ const Item = styled.div`
         img {
             object-fit: cover;
             object-position: center center;
-            transition: 150ms ease-in-out;
+            transition: 250ms ease-in-out;
         }
 
         &:active,
@@ -70,7 +70,7 @@ const TitleContainer = styled.div`
     height: 100%;
     width: 100%;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
-    transition: 150ms ease-in-out border;
+    transition: 250ms ease-in-out border;
     border-radius: var(--block-border-radius);
     border-color: var(--accent-primary);
 

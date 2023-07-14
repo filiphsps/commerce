@@ -353,7 +353,7 @@ const Tab = styled.div`
     font-size: 1.5rem;
     text-align: center;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     opacity: 0.5;
 
     &.Active {

@@ -102,7 +102,7 @@ const Product = styled.a`
     border-radius: var(--block-border-radius);
     border: 0.2rem solid #efefef;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &:hover,
     &:active {

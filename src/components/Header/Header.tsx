@@ -131,9 +131,9 @@ const Navigation = styled.nav`
     }
 
     a {
-        transition: 150ms all ease-in-out;
+        transition: 250ms all ease-in-out;
         cursor: pointer;
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
 
         &:hover,
         &:active,
@@ -234,7 +234,7 @@ const CartIconWrapper = styled.div`
 
     .Icon {
         cursor: pointer;
-        transition: 150ms all ease-in-out;
+        transition: 250ms all ease-in-out;
     }
 
     @media (min-width: 950px) {
@@ -272,7 +272,7 @@ const CartPopup = styled.section`
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
     opacity: 0;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     pointer-events: none;
 
     @media (min-width: 950px) {

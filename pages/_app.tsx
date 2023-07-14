@@ -87,6 +87,7 @@ const StoreApp = withStore(
                     <style>{`
                         body {
                             --color-text-primary: #fefefe;
+                            --color-text-secondary: #161616;
                             --color-text-dark: #0e0e0e;
                             --color-danger: #d91e18;
                             --color-sale: #d91e18;

@@ -19,7 +19,7 @@ const ButtonWrapper = styled.button`
     cursor: pointer;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
     user-select: none;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
 
     &:hover {
         background: var(--accent-primary-light);

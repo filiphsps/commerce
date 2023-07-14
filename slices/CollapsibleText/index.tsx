@@ -31,7 +31,7 @@ const Summary = styled.summary`
     font-weight: 700;
     cursor: pointer;
     user-select: none;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
 
     &:hover {
         border-color: var(--accent-primary);
@@ -46,11 +46,11 @@ const Summary = styled.summary`
         width: 2rem;
         font-size: 2rem;
         line-height: 2rem;
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
     }
 `;
 const Details = styled.details`
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     font-size: 1.5rem;
     line-height: 1.75rem;
     font-weight: 500;

@@ -37,7 +37,7 @@ const Details = styled(SectionContent)`
 `;
 const DetailsBrand = styled.div`
     font-weight: 700;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);
@@ -47,7 +47,7 @@ const DetailsTitle = styled.div`
     font-size: 1.75rem;
     line-height: 2rem;
     font-weight: 500;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
     word-wrap: break-word;
     hyphens: auto;
 
@@ -90,7 +90,7 @@ const ProductImage = styled(Section)`
     border-radius: var(--block-border-radius);
     border: 0.2rem solid #fefefe;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &:hover {
         border-color: var(--accent-primary);
@@ -184,7 +184,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
     background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
     color: var(--color-text-dark);
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
 
     ${(props) =>
         props.disabled &&

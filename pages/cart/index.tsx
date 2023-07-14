@@ -176,7 +176,7 @@ const SummaryContent = styled.div`
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     .CheckoutButton {
         display: inline-flex;
@@ -251,7 +251,7 @@ const SummaryContainer = styled.div`
         max-width: calc(100dvw - 2rem);
         position: sticky;
         bottom: -1px;*/
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
 
         &.Floating {
             z-index: 9999999;
@@ -306,7 +306,7 @@ const RecommendationsTitle = styled.h3`
 const RecommendationsContentWrapper = styled.div`
     display: block;
     padding: var(--block-padding-large);
-    background: var(--accent-secondary);
+    background: var(--accent-primary-dark);
     background: linear-gradient(
         320deg,
         var(--accent-secondary) 0%,

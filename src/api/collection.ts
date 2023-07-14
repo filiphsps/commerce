@@ -5,7 +5,7 @@ import {
     CountryCode,
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT } from './product';
+import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT_MINIMAL } from './product';
 
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
@@ -31,7 +31,7 @@ export const COLLECTION_FRAGMENT = `
     products(first: 250) {
         edges {
             node {
-                ${PRODUCT_FRAGMENT}
+                ${PRODUCT_FRAGMENT_MINIMAL}
             }
         }
     }

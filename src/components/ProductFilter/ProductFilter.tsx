@@ -15,7 +15,7 @@ const Filter = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     grid-gap: 1.5rem;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
 
     @media (max-width: 950px) {
         flex-direction: row;
@@ -38,7 +38,7 @@ const Toggle = styled.div`
     text-transform: uppercase;
     font-size: 1.25rem;
     background: #efefef;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
     border-radius: var(--block-border-radius);
 
     &.Open {
@@ -69,7 +69,7 @@ const Option = styled.div`
     cursor: pointer;
     user-select: none;
     opacity: 0.75;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
 
     &.Selected {
         color: var(--accent-primary);

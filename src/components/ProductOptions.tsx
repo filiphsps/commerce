@@ -44,7 +44,7 @@ const OptionValue = styled.div<{
     border-radius: var(--block-border-radius);
     font-weight: 600;
     cursor: pointer;
-    transition: 150ms all ease-in-out;
+    transition: 250ms all ease-in-out;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     @media (max-width: 950px) {

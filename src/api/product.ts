@@ -15,10 +15,50 @@ import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
-declare global {
-    // eslint-disable-next-line no-unused-vars
-    var color_cache: any | undefined;
-}
+export const PRODUCT_FRAGMENT_MINIMAL = `
+    id
+    handle
+    createdAt
+    title
+    vendor
+    tags
+    variants(first: 3) {
+        edges {
+            node {
+                id
+                title
+                price {
+                    amount
+                    currencyCode
+                }
+                compareAtPrice {
+                    amount
+                }
+                availableForSale
+                weight
+                weightUnit
+                image {
+                    id
+                }
+                selectedOptions {
+                    name
+                    value
+                }
+            }
+        }
+    }
+    images(first: 3) {
+        edges {
+            node {
+                id
+                altText
+                url
+                height
+                width
+            }
+        }
+    }
+`;
 
 export const PRODUCT_FRAGMENT = `
     id
@@ -93,10 +133,13 @@ export const PRODUCT_FRAGMENT = `
     keywords: metafield(namespace: "store", key: "keywords") {
         value
     }
+    originalName: metafield(namespace: "store", key: "original-name") {
+        value
+    }
 `;
 
-// TODO: cache this, or maybe even create a shopify app that provides this data
-interface ExtractAccentColorsFromImageRes {
+// TODO: Remove this when our shopify app handles it and sets it as metadata instead.
+export interface ExtractAccentColorsFromImageRes {
     primary: string;
     primary_dark: string;
     primary_foreground: string;
@@ -104,11 +147,12 @@ interface ExtractAccentColorsFromImageRes {
     secondary_dark: string;
     secondary_foreground: string;
 }
+export const PRODUCT_ACCENT_CACHE_TIMEOUT = 6 * 60 * 60 * 1000; // Set 6 hour maximum timeout
 export const ExtractAccentColorsFromImage = (
     url?: string
 ): Promise<ExtractAccentColorsFromImageRes> => {
-    if (!global.color_cache) {
-        global.color_cache = new TinyCache();
+    if (!globalThis.color_cache) {
+        globalThis.color_cache = new TinyCache();
     }
 
     const setupColors = (colors: FinalColor[]): ExtractAccentColorsFromImageRes => {
@@ -116,7 +160,7 @@ export const ExtractAccentColorsFromImage = (
 
         let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.1);
         const secondary = Color(sorted.at(1)!.hex).darken(0.15).desaturate(0.15);
-        if (primary.saturationl() < 2 && primary.saturationv() < 2 && sorted.at(0)!.area < 0.4) {
+        if (primary.saturationl() < 10 && primary.saturationv() < 10) {
             return setupColors(sorted.slice(1));
         }
 
@@ -148,8 +192,8 @@ export const ExtractAccentColorsFromImage = (
     return new Promise(async (resolve, reject) => {
         if (!url) return reject(new Error('No image url.'));
 
-        if (global.color_cache) {
-            const res = global.color_cache.get(url) as ExtractAccentColorsFromImageRes | null;
+        if (globalThis.color_cache) {
+            const res = globalThis.color_cache.get(url) as ExtractAccentColorsFromImageRes | null;
             if (res) return resolve(res);
         }
 
@@ -164,9 +208,8 @@ export const ExtractAccentColorsFromImage = (
 
                     const res = setupColors(await extractColors({ data, width, height }));
 
-                    // TEMP: Cache for faster build
-                    if (global.color_cache) {
-                        global.color_cache.put(url, res);
+                    if (globalThis.color_cache) {
+                        globalThis.color_cache.put(url, res, PRODUCT_ACCENT_CACHE_TIMEOUT);
                     }
 
                     return resolve(res);
@@ -174,8 +217,8 @@ export const ExtractAccentColorsFromImage = (
             } else {
                 const res = setupColors(await extractColors(url, { crossOrigin: 'anonymous' }));
 
-                if (global.color_cache) {
-                    global.color_cache.put(url, res);
+                if (globalThis.color_cache) {
+                    globalThis.color_cache.put(url, res, PRODUCT_ACCENT_CACHE_TIMEOUT);
                 }
                 return resolve(res);
             }

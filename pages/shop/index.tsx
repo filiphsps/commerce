@@ -71,7 +71,7 @@ const Filters = styled.div`
         overflow: hidden;
         width: auto;
         height: 0px;
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
         opacity: 0;
 
         &.Open {
@@ -104,7 +104,7 @@ const FilterItem = styled.div`
     cursor: pointer;
     color: #404756;
     border-color: var(--accent-primary);
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &.Active,
     &:hover {
@@ -142,7 +142,7 @@ const PaginationAction = styled.div`
     font-weight: 600;
     font-size: 1.25rem;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     @media (max-width: 950px) {
         width: 100%;

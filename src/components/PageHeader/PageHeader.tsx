@@ -26,7 +26,7 @@ const SubTitle = styled.h3`
 
     a {
         display: inline-block;
-        transition: 150ms ease-in-out all;
+        transition: 250ms ease-in-out all;
         cursor: pointer;
         border-bottom: 0.2rem dotted var(--foreground);
         margin-bottom: 0.25rem;

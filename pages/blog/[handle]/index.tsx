@@ -131,7 +131,7 @@ const SidebarLink = styled.div`
     font-weight: 400;
     margin: 1rem 0px;
     padding: 0px 0px 0.25rem 0px;
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     a:hover {
         color: var(--accent-primary);

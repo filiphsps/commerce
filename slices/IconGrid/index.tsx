@@ -19,7 +19,7 @@ const ContentContainer = styled.div`
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary);
-    color: var(--color-text-dark);
+    color: var(--color-text-secondary);
 
     @media (min-width: 960px) {
         display: grid;

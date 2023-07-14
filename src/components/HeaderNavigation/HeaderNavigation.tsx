@@ -14,7 +14,7 @@ const Container = styled.div`
     height: calc(100dvh - 10.5rem);
     background: var(--color-text-primary);
     color: var(--color-text-dark);
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     left: -100vw;
     &.Open {
@@ -46,7 +46,7 @@ const NavigationItem = styled.div`
     font-weight: 700;
 
     a {
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
     }
 
     a.Active {

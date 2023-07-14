@@ -38,7 +38,7 @@ const Article = styled.div`
         font-size: 2rem;
         font-weight: 600;
         text-transform: uppercase;
-        transition: 150ms ease-in-out;
+        transition: 250ms ease-in-out;
 
         &:hover {
             color: var(--accent-primary);

@@ -49,7 +49,7 @@ const Title = styled.div`
     line-height: 2.5rem;
     font-weight: 700;
     border-bottom: 0.2rem dotted var(--foreground);
-    transition: 150ms ease-in-out;
+    transition: 250ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);
