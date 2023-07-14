@@ -6,9 +6,6 @@ async function getLocalesData() {
     const locale = i18n.defaultLocale;
     const locales = await LocalesApi({ locale });
 
-    // eslint-disable-next-line no-console
-    console.log(locales);
-
     return {
         locales
     };

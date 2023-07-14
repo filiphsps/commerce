@@ -229,10 +229,6 @@ const Prices = styled.div`
 const Price = styled.div`
     font-size: 1.5rem;
     font-weight: 700;
-
-    &.Discount {
-        color: var(--color-sale);
-    }
 `;
 const PreviousPrice = styled.div`
     font-weight: 700;
@@ -255,7 +251,6 @@ const Badges = styled.div`
 `;
 const BadgeText = styled.div``;
 const BadgePrice = styled(Currency)`
-    font-size: 1rem;
     font-weight: 700;
 `;
 const Badge = styled.div`
@@ -271,6 +266,7 @@ const Badge = styled.div`
     color: var(--color-text-primary);
     font-weight: 600;
     font-size: 1.25rem;
+    line-height: 1.25rem;
     border-radius: var(--block-border-radius);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
@@ -282,6 +278,7 @@ const Badge = styled.div`
         background: #efefef;
         color: var(--color-text-dark);
         font-size: 1.25rem;
+        line-height: 1.25rem;
 
         ${BadgeText} {
             color: #404756;
@@ -291,10 +288,12 @@ const Badge = styled.div`
     &.New {
         font-weight: 600;
         font-size: 1.25rem;
+        line-height: 1.25rem;
     }
     &.Vegan {
         font-weight: 600;
         font-size: 1.25rem;
+        line-height: 1.25rem;
         background: #1b6e1b;
     }
 `;
@@ -449,9 +448,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                                 />
                             </PreviousPrice>
                         )}
-                        <Price
-                            className={(selectedVariant.compareAtPrice?.amount && 'Discount') || ''}
-                        >
+                        <Price>
                             <Currency
                                 price={Number.parseFloat(selectedVariant.price?.amount || '')}
                                 currency={

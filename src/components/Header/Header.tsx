@@ -268,7 +268,7 @@ const CartPopup = styled.section`
     background: var(--accent-secondary-light);
     color: var(--color-text-dark);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 50px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
     opacity: 0;
@@ -291,7 +291,6 @@ const CartPopupItem = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
-    text-transform: uppercase;
 `;
 const CartPopupItemHeader = styled.div`
     display: grid;
@@ -304,16 +303,16 @@ const CartPopupItemHeader = styled.div`
     background: var(--accent-primary);
     padding: 1.25rem 1.5rem;
     border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     svg {
         font-size: 2rem;
     }
 `;
 const CartPopupItemTitle = styled.div`
-    text-transform: uppercase;
     font-size: 1.25rem;
     line-height: 1.25rem;
-    font-weight: 900;
+    font-weight: 700;
     text-align: left;
 
     span {
@@ -327,6 +326,7 @@ const CartPopupItemImageWrapper = styled.div`
     overflow: hidden;
     height: 100%;
     padding: 1rem;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 const CartPopupItemImage = styled.div`
     position: relative;
@@ -351,6 +351,7 @@ const CartPopupItemMeta = styled.div`
     padding: 1rem;
     background: #fefefe;
     border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 const CartPopupItemMetaVendor = styled.div`
     font-size: 1.25rem;
@@ -375,6 +376,10 @@ const CartPopupContent = styled.div`
     grid-template-columns: 1fr auto;
     gap: 1rem;
     width: 100%;
+
+    button {
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    }
 `;
 
 const HamburgerMenu = styled.div`

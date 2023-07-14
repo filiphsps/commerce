@@ -108,9 +108,10 @@ const Tags = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-top: 1rem;
 
     @media (max-width: 950px) {
-        margin: 0px 0px 0.5rem 0px;
+        margin: 1rem 0px 0.5rem 0px;
     }
 `;
 export const Tag = styled.div`
@@ -132,7 +133,7 @@ export const Tag = styled.div`
     }
 `;
 const Description = styled(Content)`
-    overflow: hidden;
+    overflow-x: hidden;
 `;
 
 const Actions = styled.div`
@@ -366,7 +367,32 @@ const TabContent = styled.div`
     padding: 0.5rem 0px;
 
     &.Active {
-        display: block;
+        display: flex;
+        overflow: unset;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: 1rem;
+        height: 100%;
+
+        ${Description} {
+            overflow: unset;
+        }
+    }
+`;
+const InformationContent = styled(TabContent)`
+    &.Active {
+        gap: 1.5rem;
+
+        p {
+            font-size: 1.5rem;
+            line-height: 1.75rem;
+        }
+
+        ${Content} {
+            padding: var(--block-padding-large);
+            border-radius: var(--block-border-radius);
+            background: var(--color-block);
+        }
     }
 `;
 
@@ -407,14 +433,14 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [cartStore, setCartStore] = useStore<any>('cart');
 
     const { data: product } = useSWR(
-        [data?.handle],
+        [`product_${data?.handle}`],
         () =>
             ProductApi({
-                handle: product.handle!,
+                handle: data?.handle!,
                 locale: router.locale
-            }),
+            }) as Promise<Product>,
         {
-            fallbackData: data
+            fallbackData: data as Product
         }
     );
 
@@ -794,20 +820,33 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     }}
                                 />
                             </TabContent>
-                            <TabContent className={tab == 'information' ? 'Active' : ''}>
+                            <InformationContent className={tab == 'information' ? 'Active' : ''}>
                                 <Description>
-                                    <h2>Ingredients</h2>
-                                    {(product as any)?.ingredients?.value ||
-                                        `No ingredients found.`}{' '}
-                                    <div style={{ paddingBottom: '1rem' }} />
-                                    {selectedVariant.sku && (
-                                        <>
-                                            <h2>SKU/EAN</h2>
-                                            {selectedVariant.sku}
-                                        </>
-                                    )}
+                                    <h3>Ingredients</h3>
+                                    <p>
+                                        {(product as any)?.ingredients?.value ||
+                                            `No ingredients found.`}
+                                    </p>
                                 </Description>
-                            </TabContent>
+
+                                {(product as any)?.originalName?.value && (
+                                    <Description>
+                                        <h3>Local Product Name</h3>
+                                        <p>{(product as any)?.originalName?.value}</p>
+                                    </Description>
+                                )}
+
+                                <Description>
+                                    <h3>SKU/EAN</h3>
+                                    <ul>
+                                        {product.variants.edges.map((variant) => (
+                                            <li key={variant.node.id}>{`${variant.node.title} - ${
+                                                variant.node.barcode || 'N/A'
+                                            }`}</li>
+                                        ))}
+                                    </ul>
+                                </Description>
+                            </InformationContent>
                             <TabContent className={tab == 'reviews' ? 'Active' : ''}>
                                 <Reviews product={product as any} reviews={reviews} />
                             </TabContent>

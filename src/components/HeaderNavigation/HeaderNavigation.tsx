@@ -40,6 +40,7 @@ const NavigationItem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: start;
+    gap: 0.75rem;
     width: 100%;
     font-size: 2.5rem;
     line-height: 2.75rem;

@@ -22,7 +22,17 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     title
     vendor
     tags
-    variants(first: 3) {
+    priceRange {
+        maxVariantPrice {
+            amount
+            currencyCode
+        }
+        minVariantPrice {
+            amount
+            currencyCode
+        }
+    }
+    variants(first: 5) {
         edges {
             node {
                 id
@@ -47,7 +57,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             }
         }
     }
-    images(first: 3) {
+    images(first: 5) {
         edges {
             node {
                 id

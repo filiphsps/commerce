@@ -70,11 +70,15 @@ const Preview = styled.div`
 const Primary = styled.div`
     overflow: hidden;
     width: 100%;
-    height: 100%;
+    height: auto;
     padding: 2rem;
     background: #efefef;
     border-radius: var(--block-border-radius);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+    @media (min-width: 950px) {
+        aspect-ratio: 5 / 4;
+    }
 `;
 
 const ImageWrapper = styled.div`

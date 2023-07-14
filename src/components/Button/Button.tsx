@@ -14,7 +14,6 @@ const ButtonWrapper = styled.button`
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: 0.05rem;
-    text-transform: uppercase;
     text-align: center;
     cursor: pointer;
     box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);

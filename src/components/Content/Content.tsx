@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Content = styled.div`
+    overflow-x: hidden;
     max-width: 100%;
     height: 100%;
     font-size: 1.75rem;
@@ -49,19 +50,19 @@ const Content = styled.div`
 
     h1 {
         font-size: 3rem;
-        line-height: 3.25rem;
+        line-height: 3.5rem;
         font-weight: 600;
         padding-bottom: 1.5rem;
     }
     h2 {
         font-size: 2.75rem;
-        line-height: 3rem;
+        line-height: 3.25rem;
         font-weight: 600;
         padding-bottom: 1rem;
     }
     h3 {
-        font-size: 2rem;
-        line-height: 3.25rem;
+        font-size: 2.25rem;
+        line-height: 2.75rem;
         font-weight: 500;
         padding-bottom: 1rem;
     }
