@@ -6,6 +6,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import Button from '../Button';
 import { Checkout } from '../../../pages/cart';
 import Image from 'next/legacy/image';
+import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import { Tag } from '../../../pages/products/[handle]';
@@ -550,6 +551,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                             <Image
                                                 src={cartStore.item.images[0].src}
                                                 layout="fill"
+                                                loader={ImageLoader}
                                             />
                                         </CartPopupItemImage>
                                     </CartPopupItemImageWrapper>

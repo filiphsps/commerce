@@ -1,12 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { gql } from '@apollo/client';
-import { newShopify } from './shopify';
+import { storefrontClient } from './shopify';
 
 export const BlogApi = async ({ handle }: { handle: string; locale?: string }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await newShopify.query({
+            const { data, errors } = await storefrontClient.query({
                 query: gql`
                     query blog($handle: String!) {
                         blogByHandle(handle: $handle) {
@@ -82,7 +82,7 @@ export const ArticleApi = async ({
 }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await newShopify.query({
+            const { data, errors } = await storefrontClient.query({
                 query: gql`
                     query blog($blog: String!) {
                         blogByHandle(handle: $blog) {

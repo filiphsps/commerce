@@ -7,6 +7,7 @@ import { Config } from '../../util/Config';
 import EmailCapture from '../EmailCapture';
 import { FooterApi } from '../../api/footer';
 import Image from 'next/image';
+import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
 import preval from '../../../src/data.preval';
@@ -214,7 +215,14 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     <FooterBlocksContainer>
                         <FooterBlock>
                             <Logo>
-                                {store?.logo?.src && <Image src={store.logo.src} alt="Logo" fill />}
+                                {store?.logo?.src && (
+                                    <Image
+                                        src={store.logo.src}
+                                        alt="Logo"
+                                        fill
+                                        loader={ImageLoader}
+                                    />
+                                )}
                             </Logo>
 
                             <Address

@@ -11,6 +11,7 @@ import { SliceComponentProps } from '@prismicio/react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 import { useWindowSize } from 'rooks';
+import { ImageLoader } from '../../src/util/ImageLoader';
 
 const Container = styled.section`
     width: 100%;
@@ -81,16 +82,22 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                 return (
                                     <Link key={index} href={slide.href!}>
                                         <ImageContainer>
-                                            <Image
-                                                className="Image"
-                                                src={image?.url || ''}
-                                                alt={image?.alt || ''}
-                                                title={image?.alt || undefined}
-                                                placeholder="empty"
-                                                width={image.dimensions?.width}
-                                                height={image.dimensions?.height}
-                                                priority={true}
-                                            />
+                                            {image?.url && (
+                                                <Image
+                                                    className="Image"
+                                                    src={image.url || ''}
+                                                    alt={image.alt || ''}
+                                                    title={image?.alt || undefined}
+                                                    width={image.dimensions?.width}
+                                                    height={image.dimensions?.height}
+                                                    priority={true}
+                                                    placeholder={'blur'}
+                                                    blurDataURL={`/_next/image?url=${encodeURIComponent(
+                                                        image.url
+                                                    )}&w=16&q=1`}
+                                                    loader={ImageLoader}
+                                                />
+                                            )}
                                         </ImageContainer>
                                     </Link>
                                 );

@@ -11,6 +11,7 @@ import Button from '../Button';
 import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/image';
+import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
@@ -77,6 +78,9 @@ const ProductImageWrapper = styled.div`
         object-fit: contain;
         object-position: center;
         mix-blend-mode: multiply;
+        width: 100% !important;
+        position: relative !important;
+        height: 100% !important;
     }
 `;
 
@@ -295,19 +299,21 @@ const Badge = styled.div`
 
 interface VariantImageProps {
     image?: ShopifyImage;
-    isHorizontal?: boolean;
 }
-const VariantImage: FunctionComponent<VariantImageProps> = ({ image, isHorizontal }) => {
+const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
     if (!image) return null;
 
     return (
         <Image
             src={image.url}
-            fill={isHorizontal}
             alt={image.altText || ''}
             title={image.altText || undefined}
-            height={(!isHorizontal && (image.height || 0)) || undefined}
-            width={(!isHorizontal && (image.width || 0)) || undefined}
+            height={image.height || 0}
+            width={image.width || 0}
+            placeholder={'blur'}
+            blurDataURL={`/_next/image?url=${encodeURIComponent(image.url)}&w=16&q=1`}
+            sizes={'18rem'}
+            loader={ImageLoader}
         />
     );
 };
@@ -396,7 +402,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store }) => {
             <ProductImage isHorizontal>
                 <Link href={`/products/${product.handle}`}>
                     <ProductImageWrapper>
-                        <VariantImage image={image} isHorizontal />
+                        <VariantImage image={image} />
                     </ProductImageWrapper>
                 </Link>
             </ProductImage>

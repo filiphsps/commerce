@@ -9,10 +9,16 @@ import {
 import { FinalColor, extractColors } from 'extract-colors';
 
 import Color from 'color';
+import TinyCache from 'tinycache';
 import getPixels from 'get-pixels';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
+
+declare global {
+    // eslint-disable-next-line no-unused-vars
+    var color_cache: any | undefined;
+}
 
 export const PRODUCT_FRAGMENT = `
     id
@@ -90,16 +96,25 @@ export const PRODUCT_FRAGMENT = `
 `;
 
 // TODO: cache this, or maybe even create a shopify app that provides this data
+interface ExtractAccentColorsFromImageRes {
+    primary: string;
+    primary_dark: string;
+    primary_foreground: string;
+    secondary: string;
+    secondary_dark: string;
+    secondary_foreground: string;
+}
 export const ExtractAccentColorsFromImage = (
     url?: string
-): Promise<{
-    background: string;
-    foreground: string;
-}> => {
-    const setupColors = (colors: FinalColor[]) => {
+): Promise<ExtractAccentColorsFromImageRes> => {
+    if (!global.color_cache) {
+        global.color_cache = new TinyCache();
+    }
+
+    const setupColors = (colors: FinalColor[]): ExtractAccentColorsFromImageRes => {
         const sorted = colors.sort((a, b) => b.area - a.area);
 
-        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.15);
+        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.1);
         const secondary = Color(sorted.at(1)!.hex).darken(0.15).desaturate(0.15);
         if (primary.saturationl() < 2 && primary.saturationv() < 2 && sorted.at(0)!.area < 0.4) {
             return setupColors(sorted.slice(1));
@@ -133,6 +148,11 @@ export const ExtractAccentColorsFromImage = (
     return new Promise(async (resolve, reject) => {
         if (!url) return reject(new Error('No image url.'));
 
+        if (global.color_cache) {
+            const res = global.color_cache.get(url) as ExtractAccentColorsFromImageRes | null;
+            if (res) return resolve(res);
+        }
+
         try {
             if (typeof window === 'undefined') {
                 return getPixels(url, async (error, pixels) => {
@@ -142,10 +162,22 @@ export const ExtractAccentColorsFromImage = (
                     const width = Math.round(Math.sqrt(data.length / 4));
                     const height = width;
 
-                    return resolve(setupColors(await extractColors({ data, width, height })));
+                    const res = setupColors(await extractColors({ data, width, height }));
+
+                    // TEMP: Cache for faster build
+                    if (global.color_cache) {
+                        global.color_cache.put(url, res);
+                    }
+
+                    return resolve(res);
                 });
             } else {
-                return resolve(setupColors(await extractColors(url, { crossOrigin: 'anonymous' })));
+                const res = setupColors(await extractColors(url, { crossOrigin: 'anonymous' }));
+
+                if (global.color_cache) {
+                    global.color_cache.put(url, res);
+                }
+                return resolve(res);
             }
         } catch (error) {
             console.error(error);

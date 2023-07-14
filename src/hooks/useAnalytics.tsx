@@ -66,6 +66,9 @@ export function useAnalytics({
 
     // Page view analytics
     useEffect(() => {
+        // Don't send during development!
+        if (process.env.NODE_ENV === 'development') return;
+
         if (!pageAnalytics.shopId || path === previousPath) return;
 
         const payload: ShopifyPageViewPayload = {
@@ -89,6 +92,9 @@ export function useAnalytics({
 
     // Add to cart analytics
     useEffect(() => {
+        // Don't send during development!
+        if (process.env.NODE_ENV === 'development') return;
+
         if (!pageAnalytics.shopId) return;
         if (
             previousStatus !== 'updating' ||

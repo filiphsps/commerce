@@ -2,6 +2,7 @@ import React, { FunctionComponent, memo } from 'react';
 
 import ContentComponent from '../Content';
 import Image from 'next/legacy/image';
+import { ImageLoader } from '../../util/ImageLoader';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -101,6 +102,7 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
                     width={image?.dimensions?.width || 0}
                     height={image?.dimensions?.height || 0}
                     layout="intrinsic"
+                    loader={ImageLoader}
                 />
             </ImageContainer>
             <Content

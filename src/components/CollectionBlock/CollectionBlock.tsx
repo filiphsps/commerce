@@ -126,6 +126,13 @@ const Container = styled.div<{
         `}
 `;
 
+const ViewMore = styled.section`
+width: 18rem;
+    padding: var(--block-padding);
+    background: var(--accent-secondary-dark);
+    scroll-snap-align: start;
+`;
+
 interface CollectionBlockProps {
     handle?: string;
     limit?: number;
@@ -182,12 +189,14 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     const view_more = limit &&
         collection?.products?.edges &&
         collection.products.edges.length > limit && (
-            <Link
-                className="ProductCard CollectionBlock-Content-ShowMore"
-                href={`/collections/${handle}`}
-            >
-                <LanguageString id={'see_all'} />
-            </Link>
+            <ViewMore>
+                <Link
+                    className="ProductCard CollectionBlock-Content-ShowMore"
+                    href={`/collections/${handle}`}
+                >
+                    View More
+                </Link>
+            </ViewMore>
         );
 
     return (

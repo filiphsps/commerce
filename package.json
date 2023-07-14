@@ -5,7 +5,7 @@
     "type": "module",
     "engines": {
         "npm": ">=8",
-        "node": "18"
+        "node": ">=18.12"
     },
     "cacheDirectories": [
         ".next/cache"
@@ -70,6 +70,7 @@
         "slick-carousel": "1.8.1",
         "styled-components": "5.3.11",
         "swr": "2.2.0",
+        "tinycache": "1.1.2",
         "typescript": "5.1.6",
         "uuid": "9.0.0"
     },

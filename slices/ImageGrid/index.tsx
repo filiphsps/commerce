@@ -1,5 +1,6 @@
 import { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
+import { ImageLoader } from '../../src/util/ImageLoader';
 import Link from 'next/link';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
@@ -100,6 +101,7 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                                     alt={image?.alt || title || ''}
                                     width={image.dimensions?.width!}
                                     height={image.dimensions?.height!}
+                                    loader={ImageLoader}
                                 />
 
                                 {title ? (

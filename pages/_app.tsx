@@ -105,10 +105,10 @@ const StoreApp = withStore(
                                 .lighten(0.45)
                                 .hex()
                                 .toString()};
-                                --accent-primary-extra-light: ${Color(store.accent.primary)
-                                    .lighten(0.75)
-                                    .hex()
-                                    .toString()};
+                            --accent-primary-extra-light: ${Color(store.accent.primary)
+                                .lighten(0.75)
+                                .hex()
+                                .toString()};
                             --accent-secondary: ${Color(store.accent.secondary).hex().toString()};
                             --accent-secondary-dark: ${Color(store.accent.secondary)
                                 .darken(0.25)

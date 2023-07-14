@@ -88,10 +88,9 @@ export const CollectionApi = async ({
                         edge.node.accent = await ExtractAccentColorsFromImage(
                             edge.node?.images?.edges?.at(0)?.node?.url
                         );
-                        return edge;
-                    } catch {
-                        return edge;
-                    }
+                    } catch {}
+
+                    return edge;
                 })
             );
 

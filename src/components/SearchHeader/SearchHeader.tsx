@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useEffect } from 'react';
 
 import Image from 'next/legacy/image';
+import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import PageContent from '../PageContent';
 import PageLoader from '../PageLoader';
@@ -164,7 +165,11 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                                     <Link key={product.id} href={`/products/${product.handle}`}>
                                         <Product title={product.title}>
                                             <ProductImage>
-                                                <Image src={product.image} layout="fill" />
+                                                <Image
+                                                    src={product.image}
+                                                    layout="fill"
+                                                    loader={ImageLoader}
+                                                />
                                             </ProductImage>
                                             <ProductMeta>
                                                 <ProductMetaVendor>

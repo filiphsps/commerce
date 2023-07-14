@@ -374,8 +374,8 @@ const ReviewsContainer = styled.div`
     color: var(--secondary-foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--secondary);
-    background: linear-gradient(320deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+    background: var(--color-block);
+    color: var(--color-text-dark);
     margin-top: 0.5rem;
 `;
 

@@ -17,7 +17,10 @@ let config = {
         esmExternals: true
     },
     images: {
-        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com']
+        minimumCacheTTL: 60,
+        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com'],
+        deviceSizes: [640, 750, 828, 950, 1200, 1450, 2048, 3840],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
     },
     compiler: {
         styledComponents: {

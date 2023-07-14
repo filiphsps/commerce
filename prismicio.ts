@@ -1,7 +1,7 @@
 import * as prismic from '@prismicio/client';
 import * as prismicNext from '@prismicio/next';
 
-import config from './slicemachine.config.json';
+import config from './slicemachine.config.json' assert { type: 'json' };
 
 /**
  * The project's Prismic repository name.

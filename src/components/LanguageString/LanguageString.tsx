@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react';
-import en from '../../../public/static/locales/en_US/common.json';
+import en from '../../../public/static/locales/en_US/common.json' assert { type: 'json' };
 import { useRouter } from 'next/router';
 
 interface LanguageStringProps {
