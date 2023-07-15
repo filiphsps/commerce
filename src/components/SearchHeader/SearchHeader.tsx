@@ -1,13 +1,16 @@
 import React, { FunctionComponent, useEffect } from 'react';
 
-import Image from 'next/legacy/image';
+import Button from '../Button';
+import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import PageContent from '../PageContent';
 import PageLoader from '../PageLoader';
 import { SearchApi } from '../../api/search';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useStore } from 'react-context-hook';
 
 const Container = styled.div`
     overflow: hidden;
@@ -114,44 +117,30 @@ const Product = styled.a`
     }
 `;
 
-const Collections = styled.div`
-    display: grid;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 1rem;
-    background: #efefef;
-    border-radius: var(--block-border-radius);
-`;
-const Collection = styled.a`
-    display: block;
-    width: 100%;
-    font-size: 1.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    color: var(--color-text-dark);
-
-    &:hover {
-        color: var(--accent-primary);
-    }
-`;
-
 interface SearchHeaderProps {
     query?: string;
     country?: string;
 }
-const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
-    const { data } = useSWR([props.query || null], ([url]) => SearchApi(url || ''));
+const SearchHeader: FunctionComponent<SearchHeaderProps> = ({ query }) => {
+    const router = useRouter();
+    const [, setSearch] = useStore<any>('search');
+    const { data } = useSWR([`search_${query}`], () =>
+        SearchApi({ query: query || '', limit: 4, locale: router.locale })
+    );
 
     useEffect(() => {
-        if (!props.query) return;
+        if (!query) return;
 
-        (window as any)?.dataLayer?.push({
-            event: 'search',
-            query: props.query
-        });
-    }, [props.query]);
+        (window as any)?.dataLayer?.push(
+            { ecommerce: null },
+            {
+                event: 'search',
+                query: query
+            }
+        );
+    }, [query]);
 
-    if (!props.query) return null;
+    if (!query) return null;
 
     return (
         <Container>
@@ -161,47 +150,55 @@ const SearchHeader: FunctionComponent<SearchHeaderProps> = (props) => {
                         <SectionLabel>Products</SectionLabel>
                         {data ? (
                             <Products>
-                                {data?.products?.map?.((product) => (
-                                    <Link key={product.id} href={`/products/${product.handle}`}>
-                                        <Product title={product.title}>
-                                            <ProductImage>
-                                                <Image
-                                                    src={product.image}
-                                                    layout="fill"
-                                                    loader={ImageLoader}
-                                                />
-                                            </ProductImage>
-                                            <ProductMeta>
-                                                <ProductMetaVendor>
-                                                    {product.vendor.title}
-                                                </ProductMetaVendor>
-                                                <ProductMetaTitle>{product.title}</ProductMetaTitle>
-                                            </ProductMeta>
-                                        </Product>
-                                    </Link>
-                                ))}
+                                {data?.products?.map?.((product) => {
+                                    const image = product.images.edges.at(0)?.node;
+                                    return (
+                                        <Link key={product.id} href={`/products/${product.handle}`}>
+                                            <Product title={product.title}>
+                                                <ProductImage>
+                                                    {image && (
+                                                        <Image
+                                                            src={image.url}
+                                                            alt={image.altText || ''}
+                                                            title={image.altText || undefined}
+                                                            fill
+                                                            placeholder={'blur'}
+                                                            blurDataURL={`/_next/image?url=${encodeURIComponent(
+                                                                image?.url || ''
+                                                            )}&w=16&q=1`}
+                                                            loader={ImageLoader}
+                                                        />
+                                                    )}
+                                                </ProductImage>
+                                                <ProductMeta>
+                                                    <ProductMetaVendor>
+                                                        {product.vendor}
+                                                    </ProductMetaVendor>
+                                                    <ProductMetaTitle>
+                                                        {product.title}
+                                                    </ProductMetaTitle>
+                                                </ProductMeta>
+                                            </Product>
+                                        </Link>
+                                    );
+                                })}
                             </Products>
                         ) : (
                             <PageLoader />
                         )}
                     </Section>
-                    <Section>
-                        <SectionLabel>Collections</SectionLabel>
-                        {data ? (
-                            <Collections>
-                                {data?.collections?.map((collection) => (
-                                    <Link
-                                        key={collection.id}
-                                        href={`/collections/${collection.handle}`}
-                                    >
-                                        <Collection>{collection.title}</Collection>
-                                    </Link>
-                                ))}
-                            </Collections>
-                        ) : (
-                            <PageLoader />
-                        )}
-                    </Section>
+
+                    <Button
+                        onClick={() => {
+                            const q = encodeURI(query);
+
+                            setSearch({ open: false, phrase: '' });
+
+                            router.push(`/search/?q=${q}`);
+                        }}
+                    >
+                        View more results
+                    </Button>
                 </Content>
             </PageContent>
         </Container>

@@ -1,7 +1,8 @@
-import React, { FunctionComponent, memo, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { FiX } from 'react-icons/fi';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 const Container = styled.div<{ open?: boolean }>`
@@ -32,6 +33,7 @@ interface SearchBarProps {
     open?: boolean;
 }
 const SearchBar: FunctionComponent<SearchBarProps> = ({ open }) => {
+    const router = useRouter();
     const [search, setSearch] = useStore<any>('search');
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -50,6 +52,13 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({ open }) => {
                 onClick={() => setSearch({ ...search, open: true })}
                 onChange={(e) => setSearch({ ...search, phrase: e?.target?.value || '' })}
                 onFocus={() => setSearch({ ...search, open: true })}
+                onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return;
+
+                    const q = encodeURI(search?.phrase);
+                    setSearch({ open: false, phrase: '' });
+                    router.push(`/search/?q=${q}`);
+                }}
                 spellCheck={false}
             />
             {search?.phrase && search?.open && (
@@ -69,4 +78,4 @@ const SearchBar: FunctionComponent<SearchBarProps> = ({ open }) => {
     );
 };
 
-export default memo(SearchBar);
+export default SearchBar;

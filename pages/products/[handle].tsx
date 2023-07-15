@@ -445,12 +445,14 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     );
 
     const { data: recommendations } = useSWR(
-        [`recommendations_${data?.id}`],
+        [(data?.id && `recommendations_${data?.id}`) || ''],
         () =>
-            RecommendationApi({
-                id: data?.id!,
-                locale: router.locale
-            }),
+            (data?.id &&
+                RecommendationApi({
+                    id: data?.id!,
+                    locale: router.locale
+                })) ||
+            undefined,
         {
             fallbackData: recommendationsData
         }

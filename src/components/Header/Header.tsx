@@ -27,8 +27,8 @@ const Content = styled.div`
     user-select: none;
 
     .Icon {
-        font-size: 3rem;
-        line-height: 3rem;
+        font-size: 2.5rem;
+        line-height: 2.5rem;
     }
 
     @media (min-width: 950px) {
@@ -248,8 +248,8 @@ const CartIconWrapper = styled.div`
 `;
 const CartIcon = styled.span`
     position: absolute;
-    right: 0.5rem;
-    top: 0.5rem;
+    right: 0.75rem;
+    top: 0.75rem;
     height: 1rem;
     width: 1rem;
 
@@ -393,6 +393,11 @@ const HamburgerMenu = styled.div`
     border-radius: var(--block-border-radius);
     color: var(--color-text-primary);
 
+    svg.Icon {
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+
     @media (min-width: 950px) {
         display: none;
     }
@@ -424,6 +429,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const [searchOpen, setSearchOpen] = useState(false);
     const [cartStore, setCartStore] = useStore<any>('cart');
     const timer: any = useRef(null);
+
+    useEffect(() => {
+        if (searchOpen && router.route === '/search') setSearchOpen(false);
+    }, [router.route]);
 
     useEffect(() => {
         if (router.asPath === '/cart/') return setCartStore({ ...cartStore, open: false });
@@ -515,9 +524,13 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </Navigation>
 
                 <Actions>
-                    <SearchBar open={searchOpen} />
+                    <SearchBar open={searchOpen && router.route !== '/search'} />
                     <SearchIcon>
-                        <CartIconWrapper onClick={() => setSearchOpen(!searchOpen)}>
+                        <CartIconWrapper
+                            onClick={() =>
+                                setSearchOpen((router.route !== '/search' && !searchOpen) || false)
+                            }
+                        >
                             <FiSearch className="Icon" />
                         </CartIconWrapper>
                     </SearchIcon>

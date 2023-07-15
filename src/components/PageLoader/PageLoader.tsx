@@ -4,7 +4,10 @@ import Loader from '../Loader';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--block-padding-large);
 `;
 
 interface PageLoaderProps {

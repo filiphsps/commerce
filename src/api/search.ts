@@ -1,68 +1,77 @@
 import * as Sentry from '@sentry/nextjs';
 
-import TitleToHandle from '../util/TitleToHandle';
-import { VendorModel } from '../models/VendorModel';
-import algoliasearch from 'algoliasearch/lite';
+import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
 
-export const SearchApi = async (
-    query: string = ''
-): Promise<{
-    products: Array<{
-        id: string;
-        handle: string;
-        title: string;
-        vendor: VendorModel;
-        image: string;
-    }>;
-    collections: Array<{
-        id: string;
-        handle: string;
-        title: string;
-        image?: string;
-    }>;
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
+import { storefrontClient } from './shopify';
+
+export const SearchApi = async ({
+    query,
+    locale,
+    limit
+}: {
+    query: string;
+    locale?: string;
+    limit?: number;
+}): Promise<{
+    products: Product[];
+    productFilters: any[];
 }> => {
     return new Promise(async (resolve, reject) => {
-        if (!query) return reject(new Error('TODO:'));
+        if (locale === 'x-default') locale = i18n.locales[1];
+
+        const country = (
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
+        ).toUpperCase() as CountryCode;
+        const language = (
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
+        ).toUpperCase() as LanguageCode;
+
+        const search = async ({ type }: { type: 'PRODUCT' }) => {
+            const { data } = await storefrontClient.query({
+                query: gql`
+                    query searchProducts($query: String!, $first: Int) @inContext(language: ${language}, country: ${country}) {
+                        search(query: $query, first: $first, types: ${type}) {
+                            productFilters {
+                                id
+                                label
+                                type
+                                values {
+                                    id
+                                    label
+                                    count
+                                    input
+                                }
+                            }
+                            edges {
+                                node {
+                                    ... on Product {
+                                        ${PRODUCT_FRAGMENT_MINIMAL}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    query,
+                    first: limit || 75
+                }
+            });
+
+            return {
+                result: data?.search?.edges?.map((item) => item?.node) || [],
+                productFilters: data?.search?.productFilters || []
+            };
+        };
 
         try {
-            const client = algoliasearch('K6GKG8PPW8', '4b66d1e9840c871fc80eac49b6ca35fd');
-
-            const search = await client.search([
-                {
-                    indexName: 'shopify_products',
-                    params: {
-                        query
-                    }
-                },
-                {
-                    indexName: 'shopify_collections',
-                    params: {
-                        query
-                    }
-                }
-            ]);
-
-            const res = search.results;
-            const products = res[0].hits.map((item) => ({
-                id: item.objectID,
-                handle: (item as any).handle,
-                title: (item as any).title,
-                vendor: {
-                    title: (item as any).vendor,
-                    handle: TitleToHandle((item as any).vendor)
-                },
-                image: (item as any).image
-            }));
-            const collections = res[1].hits.map((item) => ({
-                id: item.objectID,
-                handle: (item as any).handle,
-                title: (item as any).title,
-                image: (item as any).image
-            }));
-
+            const { result: products, productFilters } = await search({ type: 'PRODUCT' });
             return resolve({
                 products,
-                collections
+                productFilters
             });
         } catch (error) {
             Sentry.captureException(error);

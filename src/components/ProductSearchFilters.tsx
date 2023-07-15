@@ -1,0 +1,160 @@
+import { FunctionComponent, useState } from 'react';
+import styled, { css } from 'styled-components';
+
+import Input from './Input';
+import { Label } from './Label';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--accent-primary);
+    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    color: var(--color-text-primary);
+`;
+
+const Filter = styled.div``;
+const FilterLabel = styled(Label)``;
+
+const Values = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
+    @media (max-width: 950px) {
+        margin: 1rem 0px 0.5rem 0px;
+    }
+`;
+const ListOption = styled.div<{ selected?: boolean }>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    background: var(--color-block);
+    color: var(--color-text-dark);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    border-radius: var(--block-border-radius);
+    //box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+
+    ${({ selected }) =>
+        selected &&
+        css`
+            background: var(--accent-primary);
+            color: var(--color-text-primary);
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+        `}
+`;
+
+const RangeOption = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    ${Input} {
+        width: 100%;
+        background: var(--color-block);
+    }
+`;
+const RangeLabels = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0px 0.5rem;
+    width: 100%;
+`;
+const RangeLabel = styled(FilterLabel)`
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+`;
+
+interface FilterOptionsProps {
+    filter: any;
+    options: any;
+    setOptions: any;
+}
+export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({
+    filter,
+    options,
+    setOptions
+}) => {
+    switch (filter.type) {
+        case 'LIST': {
+            return (
+                <Values>
+                    {filter.values.map((value) => (
+                        <ListOption
+                            key={value.id}
+                            selected={options[filter.id] === value.id}
+                            onClick={setOptions({
+                                ...options,
+                                [filter.id]: value.id
+                            })}
+                        >
+                            {value.label}
+                        </ListOption>
+                    ))}
+                </Values>
+            );
+        }
+        case 'PRICE_RANGE': {
+            return (
+                <Values>
+                    {filter.values.map((value) => {
+                        const input = JSON.parse(value.input)[value.id.split('.').at(-1)];
+
+                        return (
+                            <RangeOption key={value.id}>
+                                <Input type="range" min={input.min} max={input.max} step={0.5} />
+                                <RangeLabels>
+                                    <RangeLabel>{input.min}</RangeLabel>
+                                    <RangeLabel>{input.max}</RangeLabel>
+                                </RangeLabels>
+                            </RangeOption>
+                        );
+                    })}
+                </Values>
+            );
+        }
+
+        // TODO: Handle this
+        default: {
+            return null;
+        }
+    }
+};
+
+interface ProductSearchFiltersProps {
+    filters: any[];
+    open?: boolean;
+}
+export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> = ({
+    filters,
+    open
+}) => {
+    const [options, setOptions] = useState<any>({});
+
+    // TODO
+    if (!open) return null;
+
+    if (!filters) return null;
+
+    return (
+        <Container>
+            {filters.map((filter) => (
+                <Filter key={filter.id}>
+                    <FilterLabel>{filter.label}</FilterLabel>
+                    <FilterOptions filter={filter} options={options} setOptions={setOptions} />
+                </Filter>
+            ))}
+        </Container>
+    );
+};

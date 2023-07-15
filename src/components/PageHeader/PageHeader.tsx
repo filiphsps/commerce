@@ -6,20 +6,20 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    color: var(--foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--background);
     background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
+    color: var(--foreground);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const Title = styled.h2`
+export const Title = styled.h2`
     font-size: 2.5rem;
     line-height: 3rem;
     font-weight: 700;
 `;
-const SubTitle = styled.h3`
+export const Subtitle = styled.h3`
     font-size: 1.75rem;
     line-height: 2.25rem;
     font-weight: 400;
@@ -67,13 +67,13 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
         >
             {(reverse && (
                 <>
-                    <SubTitle>{subtitle}</SubTitle>
+                    <Subtitle>{subtitle}</Subtitle>
                     <Title>{title}</Title>
                 </>
             )) || (
                 <>
                     <Title>{title}</Title>
-                    {subtitle && <SubTitle>{subtitle}</SubTitle>}
+                    {subtitle && <Subtitle>{subtitle}</Subtitle>}
                 </>
             )}
         </Content>

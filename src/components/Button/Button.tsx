@@ -63,18 +63,26 @@ interface ButtonProps {
     disabled?: boolean;
     onClick?: any;
     type?: any;
-
+    title?: string;
     className?: string;
     children?: any;
 }
-const Button: FunctionComponent<ButtonProps> = (props) => {
+const Button: FunctionComponent<ButtonProps> = ({
+    type,
+    className,
+    disabled,
+    onClick,
+    children,
+    title
+}) => {
     return (
         <ButtonWrapper
-            type={props.type}
-            className={`Button ${props.className} ${props.disabled && 'Button-Disabled'}`}
-            onClick={(!props.disabled && props.onClick) || null}
+            type={type}
+            className={`Button ${className} ${disabled && 'Button-Disabled'}`}
+            onClick={(!disabled && onClick) || null}
+            title={title}
         >
-            {props.children}
+            {children}
         </ButtonWrapper>
     );
 };

@@ -135,12 +135,12 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
                     sidebarOpen={sidebarOpen}
                 />
-                {(search?.open && <SearchHeader query={search?.phrase} />) || null}
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}
                     toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
                 />
+                {(search?.open && <SearchHeader query={search?.phrase} />) || null}
             </div>
             {bellow.length > 0 && (
                 <Announcements>

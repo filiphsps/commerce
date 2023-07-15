@@ -2,7 +2,7 @@ import 'destyle.css';
 import './app.scss';
 
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-import { DefaultSeo, SocialProfileJsonLd } from 'next-seo';
+import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 
@@ -174,6 +174,15 @@ const StoreApp = withStore(
                             undefined
                     }}
                     sameAs={store.social?.map(({ url }) => url)}
+                />
+                <SiteLinksSearchBoxJsonLd
+                    url={`https://${Config.domain}/`}
+                    potentialActions={[
+                        {
+                            target: `https://${Config.domain}/search/?q`,
+                            queryInput: 'search_term_string'
+                        }
+                    ]}
                 />
 
                 {/* Page */}
