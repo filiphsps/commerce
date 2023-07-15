@@ -27,7 +27,7 @@ const Item = styled.div`
     min-height: 2rem;
     max-height: 18rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     @media (max-width: 950px) {
         max-height: 6rem;

@@ -220,11 +220,11 @@ export const ExtractAccentColorsFromImage = (
         let primaryForegroundColor =
             (primary.isDark() &&
                 primary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
-            primary.lighten(0.5).desaturate(0.5).darken(0.8);
+            primary.lighten(0.5).desaturate(0.5).darken(1);
         let secondaryForegroundColor =
             (secondary.isDark() &&
                 secondary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
-            secondary.lighten(0.5).desaturate(0.5).darken(0.8);
+            secondary.lighten(0.5).desaturate(0.5).darken(1);
 
         // Increase brightness if it's too dark
         if (primary.isDark() && primaryForegroundColor.lightness() < 85)

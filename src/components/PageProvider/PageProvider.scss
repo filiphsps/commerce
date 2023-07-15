@@ -36,12 +36,8 @@ body {
 
 .PageProvider {
     overscroll-behavior-x: none;
-    background: var(--accent-primary);
-    background: linear-gradient(
-        180deg,
-        var(--accent-primary-extra-light) 0%,
-        var(--accent-primary) 100%
-    );
+    background: var(--color-text-primary);
+    color: var(--color-text-dark);
 
     &.SideBar-Open {
         @media screen and (max-width: 950px) {

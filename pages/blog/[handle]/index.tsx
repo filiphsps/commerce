@@ -31,11 +31,6 @@ const ContentWrapper = styled.div`
 const Content = styled.article`
     width: 100%;
     margin: 0px auto 1.5rem auto;
-
-    a {
-        color: var(--color-text-primary);
-        border-bottom-color: var(--color-text-primary);
-    }
 `;
 
 const Banner = styled.div`

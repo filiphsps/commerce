@@ -62,8 +62,8 @@ const Form = styled.div`
         -webkit-appearance: none;
         display: block;
         padding: 1rem 1rem;
-        background: #fefefe;
-        border: 0.2rem solid #efefef;
+        background: var(--color-text-primary);
+        border: 0.2rem solid var(--color-text-primary);
         border-radius: var(--block-border-radius);
         outline: none;
         resize: none;
@@ -80,7 +80,7 @@ const Form = styled.div`
         font-size: 1.25rem;
         background: #fefefe;
         color: #404756;
-        border: 0.2rem solid #efefef;
+        border: 0.2rem solid var(--color-text-primary);
 
         &:hover {
             background: var(--accent-primary);

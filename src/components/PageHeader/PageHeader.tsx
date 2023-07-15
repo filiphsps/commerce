@@ -28,7 +28,6 @@ export const Subtitle = styled.h3`
         display: inline-block;
         transition: 250ms ease-in-out all;
         cursor: pointer;
-        border-bottom: 0.2rem dotted var(--foreground);
         margin-bottom: 0.25rem;
 
         &:hover,

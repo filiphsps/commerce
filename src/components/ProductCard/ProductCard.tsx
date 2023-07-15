@@ -30,11 +30,11 @@ const Container = styled.section<{ available?: boolean }>`
     gap: 0.5rem;
     width: 18rem;
     border-radius: var(--block-border-radius);
-    color: var(--foreground);
+    color: var(--primary-foreground);
     scroll-snap-align: start;
 
-    background: var(--background);
-    background: radial-gradient(circle, var(--background) 0%, var(--background-dark) 100%);
+    background: var(--primary);
+    background: radial-gradient(circle, var(--primary) 0%, var(--primary-dark) 100%);
     padding: var(--block-padding);
 
     ${({ available }) =>
@@ -52,7 +52,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     border-radius: calc(var(--block-border-radius) * 0.75);
     transition: 250ms ease-in-out;
     user-select: none;
-    background: #fefefe;
+    background: var(--color-text-primary);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     ${({ isHorizontal }) =>
@@ -71,7 +71,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
         `}
 
     &:hover {
-        padding: 0.5rem;
+        padding: 1.25rem;
     }
 `;
 const ProductImageWrapper = styled.div`
@@ -98,28 +98,35 @@ const Details = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding-top: 0.5rem;
+    min-height: calc(var(--block-padding) * 9.5);
+    margin-top: calc(var(--block-padding) / 2);
 `;
 const Brand = styled.div`
-    font-weight: 400;
     font-size: 1.25rem;
-    line-height: 1.75rem;
+    line-height: 1.5rem;
+    font-weight: 400;
 
     &:hover,
     &:active,
     &:focus {
-        color: var(--accent-secondary-dark);
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        text-underline-offset: 0.25rem;
     }
 `;
 const Title = styled.div`
-    font-weight: 600;
     font-size: 1.75rem;
     line-height: 2rem;
+    font-weight: 700;
 
     &:hover,
     &:active,
     &:focus {
-        color: var(--accent-primary);
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        text-underline-offset: 0.25rem;
     }
 `;
 const VariantsContainer = styled.div`
@@ -137,24 +144,28 @@ const VariantsContainer = styled.div`
 `;
 const Variants = styled.div`
     display: flex;
+    align-items: end;
+    justify-content: end;
     gap: 1rem;
-    min-width: 0px;
+    width: 100%;
+    height: 100%;
 `;
 const Variant = styled.div`
-    border-radius: var(--block-border-radius);
+    height: 2.25rem;
+    padding: 0.25rem;
+    margin: -0.25rem;
     font-weight: 500;
     font-size: 1.5rem;
-    line-height: 1.5rem;
-    text-align: center;
-    cursor: pointer;
+    line-height: 1.75rem;
+    text-align: right;
     opacity: 0.5;
+    cursor: pointer;
 
     &.Active,
     &:hover,
     &:active,
     &:focus {
         opacity: 1;
-        border-color: var(--accent-primary);
     }
 `;
 
@@ -163,24 +174,24 @@ const Actions = styled.div`
     grid-template-columns: auto 1fr;
     justify-content: space-between;
     gap: 0.5rem;
+    margin-top: 0.25rem;
 `;
 const AddButton = styled(Button)`
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 3rem;
+    padding: 0.75rem 1rem;
     font-size: 1.25rem;
-    line-height: 1.25rem;
+    line-height: unset;
     font-weight: 700;
     transition: 250ms ease-in-out;
     border-radius: calc(var(--block-border-radius) * 0.75);
-    padding: 0.75rem 1rem;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-
-    @media (min-width: 950px) {
-        font-size: 1rem;
-        line-height: 1rem;
-    }
+    border: 0.25rem solid var(--primary-foreground);
+    box-shadow: unset;
+    background: transparent;
+    color: var(--primary-foreground);
 
     &.Added {
         background: var(--accent-secondary-dark);
@@ -196,12 +207,17 @@ const Quantity = styled.div`
     font-weight: 600;
     text-align: center;
     user-select: none;
+
+    svg {
+        stroke-width: 3;
+    }
 `;
 const QuantityAction = styled.div`
     overflow: hidden;
     width: 1.25rem;
     margin-top: -0.25rem;
     font-size: 1.5rem;
+    line-height: 1.75rem;
     font-weight: 700;
     cursor: pointer;
     transition: 250ms ease-in-out;
@@ -212,16 +228,12 @@ const QuantityAction = styled.div`
     }
 
     &:hover {
-        color: var(--accent-primary);
+        color: var(--secondary);
     }
 `;
 const QuantityValue = styled.div`
     min-width: 1rem;
-    font-size: 1.25rem;
-
-    @media (max-width: 950px) {
-        font-size: 1.75rem;
-    }
+    font-size: 1.75rem;
 `;
 
 const Prices = styled.div`
@@ -234,7 +246,7 @@ const Prices = styled.div`
 `;
 const Price = styled.div`
     font-size: 2rem;
-    line-height: 2rem;
+    line-height: 1.75rem;
     font-weight: 700;
 `;
 const PreviousPrice = styled.div`
@@ -270,7 +282,7 @@ const Badge = styled.div`
     align-items: center;
     gap: 0.5rem;
     height: auto;
-    padding: 0.5rem 0.75rem;
+    padding: calc(var(--block-padding) * 0.75) var(--block-padding);
     background: var(--accent-primary-light);
     color: var(--color-text-primary);
     font-weight: 600;
@@ -393,10 +405,15 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
             available={selectedVariant.availableForSale}
             style={
                 {
-                    '--background': (product as any).accent?.primary || 'var(--color-block)',
-                    '--background-dark': (product as any).accent?.primary_dark || '',
-                    '--foreground':
-                        (product as any).accent?.primary_foreground || 'var(--color-text-dark)'
+                    '--primary': (product as any).accent?.primary || 'var(--color-block)',
+                    '--primary-dark': (product as any).accent?.primary_dark || 'var(--color-block)',
+                    '--primary-foreground':
+                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)',
+                    '--secondary': (product as any).accent?.secondary || 'var(--color-block)',
+                    '--secondary-dark':
+                        (product as any).accent?.secondary_dark || 'var(--color-block)',
+                    '--secondary-foreground':
+                        (product as any).accent?.secondary_foreground || 'var(--color-text-primary)'
                 } as React.CSSProperties
             }
         >
@@ -506,6 +523,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                                 return (
                                     <Variant
                                         key={variant.id}
+                                        title={variant.selectedOptions
+                                            .map((i) => `${i.name}: ${i.value}`)
+                                            .join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
                                         className={
                                             selectedVariant.id === variant.id ? 'Active' : ''

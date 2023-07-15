@@ -12,7 +12,7 @@ const Container = styled.div`
     width: 80dvw;
     height: calc(100vh - 10.5rem);
     height: calc(100dvh - 10.5rem);
-    background: var(--color-text-primary);
+    background: var(--accent-secondary-light);
     color: var(--color-text-dark);
     transition: 250ms ease-in-out;
 

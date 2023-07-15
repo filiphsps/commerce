@@ -17,12 +17,12 @@ import { useStore } from 'react-context-hook';
 
 const Content = styled.div`
     display: grid;
-    grid-template-columns: auto 12rem 1fr;
+    grid-template-columns: auto 11.25rem 1fr;
     gap: 1rem;
     max-width: var(--page-width);
     width: 100%;
-    height: 6.5rem;
-    padding: 1rem;
+    height: auto;
+    padding: var(--block-padding-large);
     margin: 0px auto;
     user-select: none;
 
@@ -32,16 +32,17 @@ const Content = styled.div`
     }
 
     @media (min-width: 950px) {
-        grid-template-columns: 12rem 1fr auto;
+        grid-template-columns: 10rem 1fr auto;
         gap: 2rem;
-        height: 100%;
+        height: 6rem;
+        padding: var(--block-padding);
     }
 `;
 const Logo = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 4.5rem;
     padding: 0.5rem 0.25rem;
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
@@ -59,7 +60,8 @@ const Logo = styled.div`
     }
 
     @media (min-width: 950px) {
-        padding: 0.5rem 1rem;
+        padding: 0.25rem 0.75rem;
+        height: 100%;
     }
 `;
 
@@ -67,12 +69,12 @@ const Menu = styled.div`
     z-index: 9999;
     overflow: hidden;
     position: absolute;
-    top: 7rem;
+    top: 6rem;
     left: 0px;
     right: 0px;
     max-height: 0px;
     transition: max-height 500ms ease-in-out;
-    background: var(--color-text-primary);
+    background: var(--accent-secondary-light);
     color: var(--color-text-dark);
     cursor: unset;
 
@@ -150,8 +152,8 @@ const Navigation = styled.nav`
             background: var(--accent-primary);
             color: var(--color-text-primary);
             border-radius: var(--block-border-radius);
-            padding: 1rem;
-            margin: 0px -0.5rem;
+            padding: var(--block-padding);
+            margin: 0px calc(calc(var(--block-padding) / 2) * -1);
         }
     }
 `;
@@ -160,7 +162,7 @@ const NavigationItem = styled.div`
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    height: 6rem;
+    height: 100%;
     cursor: pointer;
 
     svg {
@@ -231,6 +233,10 @@ const CartIconWrapper = styled.div`
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
     color: var(--color-text-primary);
+
+    &:hover {
+        background: var(--accent-primary-dark);
+    }
 
     .Icon {
         cursor: pointer;
@@ -321,7 +327,7 @@ const CartPopupItemTitle = styled.div`
     }
 `;
 const CartPopupItemImageWrapper = styled.div`
-    background: #fefefe;
+    background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
     overflow: hidden;
     height: 100%;
@@ -349,7 +355,7 @@ const CartPopupItemMeta = styled.div`
     width: 100%;
     height: 100%;
     padding: 1rem;
-    background: #fefefe;
+    background: var(--color-text-primary);
     border-radius: var(--block-border-radius);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 `;
@@ -407,7 +413,7 @@ const Header = styled.header`
     display: grid;
     top: 8rem;
     width: 100%;
-    background: var(--color-text-primary);
+    background: var(--accent-secondary-light);
     box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.25);
 `;
 

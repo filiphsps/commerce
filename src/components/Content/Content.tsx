@@ -10,7 +10,6 @@ const Content = styled.div`
 
     a {
         color: var(--accent-primary);
-        border-bottom: 0.2rem dotted var(--accent-primary);
         font-weight: 600;
 
         &:hover {

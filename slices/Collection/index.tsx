@@ -48,12 +48,14 @@ const Title = styled.div`
     font-size: 2.25rem;
     line-height: 2.5rem;
     font-weight: 700;
-    border-bottom: 0.2rem dotted var(--foreground);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 0.2rem;
+    text-underline-offset: 0.25rem;
     transition: 250ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary);
-        border-bottom: 0.2rem dotted var(--accent-primary);
     }
 `;
 const Body = styled.div`

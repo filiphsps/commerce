@@ -17,5 +17,8 @@ DOMAIN=my-example-store.com
 
 2. Deploy to platform of choice.
 
+## Good-to-remember links
+[prismic-next](https://prismic.io/docs/technical-reference/prismicio-next)
+
 ## Maintainers
   * 2019-2023 - Filiph Siitam Sandström - @filiphsps.

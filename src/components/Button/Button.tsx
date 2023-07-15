@@ -16,7 +16,7 @@ const ButtonWrapper = styled.button`
     letter-spacing: 0.05rem;
     text-align: center;
     cursor: pointer;
-    box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
     user-select: none;
     transition: 250ms all ease-in-out;
 

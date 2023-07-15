@@ -24,16 +24,21 @@ const Container = styled.div`
 `;
 const ImageContainer = styled.div`
     overflow: hidden;
+    height: 100%;
+    width: 100%;
+    max-width: 46rem;
+    background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
+`;
+const ImageWrapper = styled.div`
+    overflow: hidden;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
-    max-width: 46rem;
-    padding: 4rem;
-    background: var(--accent-primary);
-    border-radius: var(--block-border-radius);
+    padding: var(--block-padding);
 
     img {
         object-fit: contain;
@@ -96,14 +101,16 @@ const TextBlock: FunctionComponent<TextBlockProps> = ({ body, image }) => {
     return (
         <Container className="TextBlock Block">
             <ImageContainer>
-                <Image
-                    src={image?.url}
-                    alt={image?.alt || 'Decorative image to content'}
-                    width={image?.dimensions?.width || 0}
-                    height={image?.dimensions?.height || 0}
-                    layout="intrinsic"
-                    loader={ImageLoader}
-                />
+                <ImageWrapper>
+                    <Image
+                        src={image?.url}
+                        alt={image?.alt || 'Decorative image to content'}
+                        width={image?.dimensions?.width || 0}
+                        height={image?.dimensions?.height || 0}
+                        layout="intrinsic"
+                        loader={ImageLoader}
+                    />
+                </ImageWrapper>
             </ImageContainer>
             <Content
                 dangerouslySetInnerHTML={{

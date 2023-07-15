@@ -244,8 +244,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                     href={`/collections/${handle}`}
                 >
                     <p>
-                        View all <span>{collection.products.edges.length}</span> products in
-                        the collection
+                        View all <span>{collection.products.edges.length}</span> products in the
+                        collection
                     </p>
                 </Link>
             </ViewMore>

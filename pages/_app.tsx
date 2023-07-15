@@ -54,8 +54,16 @@ const StoreApp = withStore(
                 <style jsx global>{`
                     html,
                     body {
-                        font-family: ${font.style.fontFamily}, -apple-system, BlinkMacSystemFont,
-                            'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                        font-family:
+                            ${font.style.fontFamily},
+                            -apple-system,
+                            BlinkMacSystemFont,
+                            'Segoe UI',
+                            Roboto,
+                            Oxygen,
+                            Ubuntu,
+                            Cantarell,
+                            sans-serif;
                     }
                 `}</style>
                 <DefaultSeo
@@ -195,15 +203,16 @@ const StoreApp = withStore(
                     languageIsoCode={language}
                 >
                     <CartProvider countryCode={country}>
-                        <PageProvider
-                            store={store}
-                            pagePropsAnalyticsData={pageProps.analytics || {}}
-                        >
-                            <Component key={router.asPath} {...pageProps} store={store} />
-                        </PageProvider>
+                        <PrismicPreview repositoryName={prismicConfig.repositoryName}>
+                            <PageProvider
+                                store={store}
+                                pagePropsAnalyticsData={pageProps.analytics || {}}
+                            >
+                                <Component key={router.asPath} {...pageProps} store={store} />
+                            </PageProvider>
+                        </PrismicPreview>
                     </CartProvider>
                 </ShopifyProvider>
-                <PrismicPreview repositoryName={prismicConfig.repositoryName} />
             </>
         );
     },
