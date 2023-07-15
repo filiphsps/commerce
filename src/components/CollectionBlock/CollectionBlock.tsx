@@ -245,7 +245,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                 >
                     <p>
                         View all <span>{collection.products.edges.length}</span> products in
-                        collection
+                        the collection
                     </p>
                 </Link>
             </ViewMore>
