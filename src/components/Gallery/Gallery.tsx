@@ -70,7 +70,7 @@ const Preview = styled.div`
 const Primary = styled.div`
     overflow: hidden;
     width: 100%;
-    height: auto;
+    height: 100%;
     padding: 2rem;
     background: #efefef;
     border-radius: var(--block-border-radius);

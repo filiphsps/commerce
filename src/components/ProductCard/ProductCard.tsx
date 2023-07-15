@@ -19,7 +19,7 @@ import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useStore } from 'react-context-hook';
 
-const Container = styled.section`
+const Container = styled.section<{ available?: boolean }>`
     flex: 1 auto;
     overflow: hidden;
     position: relative;
@@ -35,6 +35,12 @@ const Container = styled.section`
     background: var(--background);
     background: radial-gradient(circle, var(--background) 0%, var(--background-dark) 100%);
     padding: var(--block-padding);
+
+    ${({ available }) =>
+        !available &&
+        css`
+            opacity: 0.5;
+        `}
 `;
 export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     overflow: hidden;
@@ -374,6 +380,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
     return (
         <Container
             className={`ProductCard ${className || ''}`}
+            available={selectedVariant.availableForSale}
             style={
                 {
                     '--background': (product as any).accent?.primary || 'var(--color-block)',

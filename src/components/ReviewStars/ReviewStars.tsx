@@ -12,7 +12,6 @@ const ReviewsLabel = styled.div`
     font-size: 1.5rem;
     line-height: 100%;
     font-weight: 600;
-    text-transform: uppercase;
 `;
 
 const ReviewsWrapper = styled.div`
@@ -94,7 +93,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
                 <ReviewsLabel onClick={() => onShowReviews?.()}>
                     {Math.floor(score * 100) / 100}{' '}
                     {totalReviews !== undefined &&
-                        `(${totalReviews} review${totalReviews != 1 ? 's' : ''})`}
+                        `(${totalReviews} Review${totalReviews != 1 ? 's' : ''})`}
                 </ReviewsLabel>
             )}
         </ReviewsWrapper>

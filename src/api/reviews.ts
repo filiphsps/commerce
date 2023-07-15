@@ -8,10 +8,10 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
     try {
         const data = (await (
             await fetch(
-                `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?product_id=${id.replace(
-                    'gid://shopify/Product/',
-                    ''
-                )}&version=v4&shop=${Config.shopify.domain}`
+                `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?product_id=${
+                    (id.includes('/') && id.split('/').at(-1)) || id
+                }&version=v4&shop=${Config.shopify.domain}`,
+                { next: { revalidate: 10 } }
             )
         ).json()) as any;
 

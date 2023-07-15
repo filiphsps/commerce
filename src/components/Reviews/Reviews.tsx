@@ -14,7 +14,11 @@ const Container = styled.div`
 `;
 const ReviewsContainer = styled.section``;
 const Review = styled.div`
-    padding-bottom: 1rem;
+    padding: var(--block-padding-large);
+    margin-bottom: 1rem;
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
+    color: var(--color-text-dark);
 `;
 const Meta = styled.div`
     display: grid;
@@ -28,11 +32,8 @@ const Title = styled.div`
 `;
 const Author = styled.div`
     padding-top: 0.25rem;
-
-    // TODO: The following is just the label from the product page;
     font-weight: 700;
     font-size: 1.5rem;
-    color: var(--color-text-primary);
     opacity: 0.8;
 `;
 const Body = styled.div`
@@ -106,11 +107,11 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
 
     const { data: reviews }: any = useSWR(
         [`reviews_${product?.id}`],
-        ([id]) =>
+        () =>
             fetch('/api/reviews', {
                 method: 'post',
                 body: JSON.stringify({
-                    id
+                    id: product?.id
                 })
             }).then((res) => res.json()),
         {

@@ -41,7 +41,6 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
-import { useWindowSize } from 'rooks';
 
 const ReviewStars = dynamic(() => import('../../src/components/ReviewStars'), { ssr: false });
 
@@ -134,6 +133,11 @@ export const Tag = styled.div`
 `;
 const Description = styled(Content)`
     overflow-x: hidden;
+
+    a {
+        color: var(--color-text-primary);
+        border-bottom-color: var(--color-text-primary);
+    }
 `;
 
 const Actions = styled.div`
@@ -169,6 +173,7 @@ const AddToCart = styled(Button)`
 `;
 const Quantity = styled(Input)`
     height: 4rem;
+    padding: 0px;
     max-width: 10rem;
     text-align: center;
     font-size: 1.5rem;
@@ -291,11 +296,11 @@ const PriceContainer = styled.div`
     height: 100%;
     width: 100%;
 
-    color: var(--secondary-foreground);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--secondary);
-    background: radial-gradient(circle, var(--secondary) 0%, var(--secondary-dark) 100%);
+    background: var(--accent-primary);
+    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    color: var(--color-text-primary);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     @media (min-width: 950px) {
@@ -365,6 +370,7 @@ const TabContent = styled.div`
     display: none;
     overflow: hidden;
     padding: 0.5rem 0px;
+    height: 0px;
 
     &.Active {
         display: flex;
@@ -380,6 +386,8 @@ const TabContent = styled.div`
     }
 `;
 const InformationContent = styled(TabContent)`
+    color: var(--color-text-dark);
+
     &.Active {
         gap: 1.5rem;
 
@@ -397,12 +405,12 @@ const InformationContent = styled(TabContent)`
 `;
 
 const ReviewsContainer = styled.div`
-    color: var(--secondary-foreground);
-    padding: var(--block-padding-large);
+    margin: -1.5rem 0px 1rem 0px;
+    padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--color-block);
-    color: var(--color-text-dark);
-    margin-top: 0.5rem;
+    background: var(--accent-primary);
+    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    color: var(--color-text-primary);
 `;
 
 const PageContainer = styled(Page)`
@@ -428,8 +436,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('details');
-    const { outerWidth } = useWindowSize();
-    const [isMobile, setIsMobile] = useState(false);
     const [cartStore, setCartStore] = useStore<any>('cart');
 
     const { data: product } = useSWR(
@@ -457,13 +463,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             fallbackData: recommendationsData
         }
     );
-
-    useEffect(() => {
-        if (!outerWidth) return;
-
-        if (outerWidth >= 950 && isMobile) setIsMobile(false);
-        else if (outerWidth <= 950 && !isMobile) setIsMobile(true);
-    }, [outerWidth]);
 
     // TODO: Better way to pick default
     const selectedVariant = initialVariant || (variants?.[0]! as ProductVariant);
@@ -569,22 +568,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             </Link>
                         }
                         reverse
-                        background={(product as any).accent?.secondary}
-                        backgroundDark={(product as any).accent?.secondary_dark}
-                        foreground={(product as any).accent?.secondary_foreground}
                     />
-                    {(reviews?.count && reviews.count > 0 && (
-                        <ReviewsContainer>
-                            <ReviewStars
-                                score={reviews?.rating || 0}
-                                totalReviews={reviews?.count || 0}
-                            />
-                        </ReviewsContainer>
-                    )) ||
-                        null}
                 </div>
                 {pricing}
             </Header>
+            {(reviews?.count && reviews.count > 0 && (
+                <ReviewsContainer>
+                    <ReviewStars score={reviews?.rating || 0} totalReviews={reviews?.count || 0} />
+                </ReviewsContainer>
+            )) ||
+                null}
         </>
     );
     const addToCartAction = (
@@ -772,7 +765,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             <PageContent primary>
                 <ProductContainerWrapper>
                     <ProductContainer>
-                        {isMobile && information}
                         <Assets>
                             <Gallery
                                 selected={selectedVariant?.image?.id || null}
@@ -780,14 +772,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             />
                         </Assets>
                         <Details>
-                            {!isMobile && information}
-
-                            {false && reviews?.rating && (
-                                <ReviewStars
-                                    score={reviews?.rating || 5}
-                                    totalReviews={reviews?.count || 0}
-                                />
-                            )}
+                            {information}
 
                             <ProductOptions />
                             <Actions>
