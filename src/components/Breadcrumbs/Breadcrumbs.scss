@@ -3,24 +3,22 @@
 .Breadcrumbs {
     overflow: hidden;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    height: 3.5rem;
-    transform: translateZ(0);
 
-    color: var(--color-text-primary);
+    color: var(--color-dark);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--background);
-    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    background: var(--color-block);
+    letter-spacing: -0.0125rem;
 
     .Breadcrumbs-Content {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        padding: 0px;
         margin: 0px;
         text-transform: uppercase;
         list-style-type: none;
@@ -29,30 +27,27 @@
             display: flex;
             flex-wrap: nowrap;
             width: 100%;
-            padding: 1rem 0px;
-            font-size: 1.15rem;
-            line-height: 1.15rem;
+            font-size: 1.25rem;
+            line-height: 1.5rem;
+            line-height: 100%;
+            font-weight: 600;
             white-space: nowrap;
             cursor: pointer;
 
-            @media (max-width: 950px) {
-                font-size: 1.05rem;
-            }
-
             .Link {
                 display: block;
-                color: var(--color-text-primary);
+                color: var(--color-dark);
 
                 &:hover,
                 &:active {
-                    color: var(--accent-secondary);
+                    color: var(--accent-primary);
                 }
             }
 
             &:last-child {
                 .Link {
-                    color: var(--accent-secondary);
-                    font-weight: 600;
+                    color: var(--accent-primary);
+                    font-weight: 700;
                 }
 
                 &:after {

@@ -11,11 +11,10 @@ import React, { FunctionComponent, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import Button from '../../src/components/Button';
+import { Button } from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
-import ContentBlock from '../../src/components/ContentBlock';
 import Currency from '../../src/components/Currency';
 import { FiShoppingCart } from 'react-icons/fi';
 import LanguageString from '../../src/components/LanguageString';
@@ -33,25 +32,25 @@ import useSWR from 'swr';
 const Content = styled.div`
     display: grid;
     grid-template-columns: 1fr minmax(auto, 28rem);
-    gap: 1rem;
+    gap: var(--block-spacer);
     max-width: 100%;
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: var(--block-spacer);
     }
 `;
 const ContentWrapper = styled.div`
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100;
 `;
 
 const FreeShippingBanner = styled.div<{ active?: boolean }>`
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
@@ -67,7 +66,7 @@ const FreeShippingBanner = styled.div<{ active?: boolean }>`
                 var(--color-success-light) 0%,
                 var(--color-success) 100%
             );
-            color: var(--color-text-primary);
+            color: var(--color-bright);
 
             .Currency {
                 color: var(--accent-secondary);
@@ -94,7 +93,7 @@ const FreeShippingBannerTitle = styled.div`
 const FreeShippingBannerMeta = styled.div`
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: var(--block-spacer);
     justify-content: center;
     align-items: center;
 
@@ -117,7 +116,7 @@ const Progress = styled.div`
     overflow: hidden;
     width: 100%;
     height: 2rem;
-    background: var(--color-text-primary);
+    background: var(--accent-primary-text);
     border-radius: var(--block-border-radius);
 
     &.Full {
@@ -141,7 +140,7 @@ const ItemsContainer = styled.table`
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: var(--block-spacer);
         width: 100%;
         max-width: 100%;
     }
@@ -156,7 +155,7 @@ const ItemsContainer = styled.table`
 
             display: grid;
             grid-template-columns: calc(50% - 0.5rem) calc(50% - 0.5rem);
-            gap: 1rem;
+            gap: var(--block-spacer);
         }
     }
 `;
@@ -165,8 +164,8 @@ const Sidebar = styled.section`
     position: sticky;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    color: var(--color-text-dark);
+    gap: var(--block-spacer);
+    color: var(--color-dark);
 
     @media (min-width: 950px) {
         top: 10rem;
@@ -182,11 +181,11 @@ const SummaryContent = styled.div`
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+        box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
     }
 
     @media (max-width: 950px) {
-        padding: 1rem;
+        padding: var(--block-padding-large);
 
         Button {
             height: 4.5rem;
@@ -217,7 +216,7 @@ const SummaryItemPrice = styled.div`
     }
 
     .Currency-Sale {
-        color: #d91e18;
+        color: var(--color-sale);
     }
 `;
 const SummaryItemShipping = styled.div`
@@ -231,7 +230,7 @@ const SummarySummary = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 1rem;
+    gap: var(--block-spacer);
     padding-bottom: 1rem;
 
     @media (max-width: 950px) {
@@ -260,7 +259,7 @@ const SummaryContainer = styled.div`
             margin: 0px -1rem 0px -1rem;
             left: 0px;
             right: 0px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
             ${SummaryContent} {
                 padding: 2rem 1rem 1rem;
@@ -271,7 +270,7 @@ const SummaryContainer = styled.div`
             }
 
             ${SummarySummary} {
-                background: var(--color-text-primary);
+                background: var(--accent-primary-text);
                 color: var(--accent-primary);
                 padding: 1.25rem 1rem;
                 border-radius: var(--block-border-radius);
@@ -281,18 +280,17 @@ const SummaryContainer = styled.div`
     }
 `;
 
-const Recommendations = styled(ContentBlock)`
+const Recommendations = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
 const RecommendationsTitle = styled.h3`
     display: block;
     padding: var(--block-padding-large);
-    background: var(--accent-primary);
-    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+    background: var(--color-block);
     border-radius: var(--block-border-radius);
-    color: var(--color-text-primary);
+    color: var(--color-dark);
 
     font-size: 2.25rem;
     line-height: 2.5rem;
@@ -306,14 +304,9 @@ const RecommendationsTitle = styled.h3`
 const RecommendationsContentWrapper = styled.div`
     display: block;
     padding: var(--block-padding-large);
-    background: var(--accent-primary-dark);
-    background: linear-gradient(
-        320deg,
-        var(--accent-secondary) 0%,
-        var(--accent-primary-dark) 100%
-    );
     border-radius: var(--block-border-radius);
-    color: var(--color-text-primary);
+    background: var(--color-block);
+    color: var(--color-dark);
 `;
 const RecommendationsContent = styled(PageContent)`
     width: 100%;

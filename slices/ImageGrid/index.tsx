@@ -9,7 +9,7 @@ import styled from 'styled-components';
 const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
     padding: 0px;
     margin: 0px;
@@ -17,7 +17,7 @@ const Container = styled.section`
 const Grid = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
 const Item = styled.div`
     overflow: hidden;
@@ -27,10 +27,13 @@ const Item = styled.div`
     min-height: 2rem;
     max-height: 18rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     @media (max-width: 950px) {
         max-height: 6rem;
+    }
+
+    &:hover {
+        box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
     }
 
     a {
@@ -58,7 +61,7 @@ const Title = styled.div`
     text-align: center;
     text-transform: uppercase;
     font-size: 2rem;
-    color: var(--color-text-primary);
+    color: var(--color-bright);
 `;
 const TitleContainer = styled.div`
     position: absolute;
@@ -69,7 +72,7 @@ const TitleContainer = styled.div`
     padding: 2rem 2rem 1.8rem 2rem;
     height: 100%;
     width: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, transparent 100%);
     transition: 250ms ease-in-out border;
     border-radius: var(--block-border-radius);
     border-color: var(--accent-primary);

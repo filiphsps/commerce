@@ -7,7 +7,7 @@ import styled from 'styled-components';
 const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
 
 /**

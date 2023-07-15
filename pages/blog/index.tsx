@@ -21,8 +21,8 @@ import { useRouter } from 'next/router';
 const Article = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    grid-gap: 1rem;
-    margin-bottom: 1rem;
+    gap: var(--block-spacer);
+    margin-bottom: var(--block-padding);
     padding: 0.5rem 0px;
     cursor: pointer;
     border: 0.2rem solid #efefef;
@@ -51,7 +51,7 @@ const ArticleImage = styled.div`
     height: 12rem;
     width: 12rem;
     border-radius: var(--block-border-radius);
-    background: #efefef;
+    background: var(--color-block);
 
     img {
         object-fit: cover;
@@ -62,7 +62,6 @@ const ArticleImage = styled.div`
 const ArticleDate = styled.div`
     font-size: 1.25rem;
     font-weight: 600;
-    letter-spacing: 0.05rem;
     margin: -0.15rem 0px 0.25rem 0px;
     text-transform: uppercase;
     opacity: 0.75;
@@ -101,7 +100,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
 
                 <div>
                     {blog.articles.map((article) => (
-                        <Link key={article.id} href={`/blog/${article.handle}`}>
+                        <Link key={article.id} href={`/blog/${article.handle}/`}>
                             <Article>
                                 <ArticleImage>
                                     <Image src={article.image.url} layout="fill" />

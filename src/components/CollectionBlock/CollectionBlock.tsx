@@ -21,14 +21,19 @@ const Actions = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     pointer-events: none;
+
+    @media (min-width: 950px) {
+        display: flex;
+    }
 `;
 const Action = styled.div`
     font-size: 4rem;
-    color: #404756;
+    color: var(--color-dark);
+    opacity: 0.75;
     cursor: pointer;
     transition: 250ms ease-in-out;
     pointer-events: all;
@@ -48,29 +53,16 @@ const Content = styled.div<{
     horizontal?: boolean;
 }>`
     column-count: 2;
-    column-gap: 1rem;
-    gap: 1rem;
+    column-gap: var(--block-spacer);
+    gap: var(--block-spacer);
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-
-    section + section {
-        margin-top: 1rem;
-
-        @media (min-width: 950px) {
-            margin-top: 0px;
-        }
-
-        ${({ horizontal }) =>
-            horizontal &&
-            css`
-                margin-top: 0px;
-            `}
-    }
 
     ${({ horizontal }) =>
         horizontal &&
         css`
-            padding: 0px var(--block-padding-large);
+            //padding: 0px var(--block-spacer-large);
+            //margin: calc(var(--block-spacer-large) * -1) 0px;
             column: none;
             display: grid;
             overflow-x: auto;
@@ -78,7 +70,8 @@ const Content = styled.div<{
             grid-auto-columns: auto;
             grid-template-rows: 1fr;
             grid-auto-flow: column;
-            scroll-padding-left: var(--block-padding-large);
+            overscroll-behavior-x: contain;
+            scroll-padding-left: var(--block-padding);
 
             &::-webkit-scrollbar {
                 display: none;
@@ -87,24 +80,33 @@ const Content = styled.div<{
             -ms-overflow-style: none;
 
             .First {
-                margin-left: var(--block-padding-large);
+                margin-left: var(--block-spacer);
+            }
+
+            section {
+                box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
             }
         `}
 
-    @media (min-width: 950px) {
-        ${({ horizontal }) =>
-            !horizontal &&
-            css`
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr));
-                justify-content: start;
+    ${({ horizontal }) =>
+        !horizontal &&
+        css`
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(calc(var(--component-product-card-width) - var(--block-spacer) * 2), 1fr)
+            );
 
-                section {
-                    width: 100%;
-                    max-width: 24rem;
-                }
-            `}
-    }
+            @media (min-width: 950px) {
+                justify-content: start;
+            }
+
+            section {
+                width: 100%;
+                min-width: unset;
+                max-width: var(--component-product-card-width);
+            }
+        `}
 `;
 
 const Container = styled.div<{
@@ -116,8 +118,8 @@ const Container = styled.div<{
     ${({ horizontal }) =>
         horizontal &&
         css`
-            width: calc(100% + var(--block-padding-large) * 2);
-            margin-left: calc(var(--block-padding-large) * -1);
+            width: calc(100% + var(--block-spacer) * 2);
+            margin-left: calc(var(--block-spacer) * -1);
 
             ${Content} {
             }
@@ -131,14 +133,14 @@ const ViewMore = styled.section<{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 18rem;
+    width: var(--component-product-card-width);
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary);
     color: var(--accent-primary-dark);
     text-decoration: underline;
     text-decoration-style: dotted;
     text-decoration-thickness: 0.2rem;
-    text-underline-offset: 0.25rem;
+    text-underline-offset: var(--block-border-width);
     font-size: 2rem;
     line-height: 2.5rem;
     font-weight: 600;
@@ -158,10 +160,10 @@ const ViewMore = styled.section<{
     ${({ horizontal }) =>
         horizontal &&
         css`
-            margin-right: calc(50vw - calc(18rem / 2) - 2.5rem);
+            margin-right: calc(50vw - calc(var(--component-product-card-width) / 2));
 
             @media (min-width: 950px) {
-                margin-right: 2.75rem;
+                margin-right: calc(var(--block-padding-large) * 2);
             }
         `}
 
@@ -241,7 +243,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
             <ViewMore horizontal={isHorizontal}>
                 <Link
                     className="ProductCard CollectionBlock-Content-ShowMore"
-                    href={`/collections/${handle}`}
+                    href={`/collections/${handle}/`}
                 >
                     <p>
                         View all <span>{collection.products.edges.length}</span> products in the
@@ -255,7 +257,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         <Container horizontal={isHorizontal}>
             {!hideTitle && (
                 <Meta>
-                    <Link href={`/collections/${handle}`}>
+                    <Link href={`/collections/${handle}/`}>
                         <Title>{data?.title}</Title>
                     </Link>
                     <Subtitle

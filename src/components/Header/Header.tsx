@@ -3,10 +3,11 @@ import * as Sentry from '@sentry/nextjs';
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 
-import Button from '../Button';
+import { Button } from '../Button';
 import { Checkout } from '../../../pages/cart';
 import Image from 'next/legacy/image';
 import { ImageLoader } from '../../util/ImageLoader';
+import Input from '../Input';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import { Tag } from '../../../pages/products/[handle]';
@@ -18,11 +19,11 @@ import { useStore } from 'react-context-hook';
 const Content = styled.div`
     display: grid;
     grid-template-columns: auto 11.25rem 1fr;
-    gap: 1rem;
+    gap: var(--block-spacer);
     max-width: var(--page-width);
     width: 100%;
     height: auto;
-    padding: var(--block-padding-large);
+    padding: var(--block-padding);
     margin: 0px auto;
     user-select: none;
 
@@ -33,9 +34,8 @@ const Content = styled.div`
 
     @media (min-width: 950px) {
         grid-template-columns: 10rem 1fr auto;
-        gap: 2rem;
-        height: 6rem;
-        padding: var(--block-padding);
+        gap: var(--block-spacer-large);
+        height: calc(4.5rem + calc(var(--block-padding) * 2));
     }
 `;
 const Logo = styled.div`
@@ -73,9 +73,10 @@ const Menu = styled.div`
     left: 0px;
     right: 0px;
     max-height: 0px;
-    transition: max-height 500ms ease-in-out;
+    transition: 250ms ease-in-out;
     background: var(--accent-secondary-light);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
+    box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
     cursor: unset;
 
     &:hover {
@@ -85,7 +86,7 @@ const Menu = styled.div`
 const MenuContent = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: 2rem;
+    gap: var(--block-spacer-large);
     padding: 2rem 2rem 1rem 2rem;
     max-width: 1465px;
     margin: 0px auto;
@@ -95,22 +96,17 @@ const MenuItemTitle = styled.div`
 `;
 const MenuItemDescription = styled.div`
     font-weight: 500;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     text-transform: none;
     opacity: 0.75;
     margin-top: 0.5rem;
 `;
 const MenuItem = styled.div`
-    margin-bottom: 1rem;
-    padding-right: 1.2rem;
-    transition: padding 150ms ease-in-out;
+    margin-bottom: var(--block-spacer);
+    transition: 250ms ease-in-out;
 
     &.Active,
     &:hover {
-        padding-left: 1rem;
-        padding-right: 0px;
-        border-left: 0.2rem solid var(--accent-primary);
-
         ${MenuItemTitle} {
             font-weight: 700;
         }
@@ -121,39 +117,36 @@ const Navigation = styled.nav`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 2rem;
+    gap: var(--block-spacer-large);
     height: 100%;
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-
-    color: var(--color-text-dark);
+    font-weight: 500;
+    font-size: 1.75rem;
+    line-height: 1.75rem;
+    color: var(--color-dark);
 
     @media (max-width: 950px) {
         display: none;
     }
 
     a {
-        transition: 250ms all ease-in-out;
         cursor: pointer;
-        transition: 250ms ease-in-out;
 
         &:hover,
         &:active,
         &.Active {
-            color: var(--accent-primary-dark);
-            -webkit-text-stroke-width: 0.075ex;
-
-            svg {
-                stroke-width: 0.225ex;
-            }
+            color: var(--accent-primary);
+            /*text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: var(--block-border-width);*/
         }
 
         &.Active {
-            background: var(--accent-primary);
-            color: var(--color-text-primary);
-            border-radius: var(--block-border-radius);
-            padding: var(--block-padding);
-            margin: 0px calc(calc(var(--block-padding) / 2) * -1);
+            text-decoration: underline;
+            text-decoration-style: solid;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: var(--block-border-width);
+            font-weight: 700;
         }
     }
 `;
@@ -161,7 +154,7 @@ const NavigationItem = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     height: 100%;
     cursor: pointer;
 
@@ -188,12 +181,13 @@ const NavigationItem = styled.div`
 
     &:hover ${Menu} {
         max-height: 100vh;
+        border-bottom: 0.05rem solid var(--accent-secondary);
     }
 `;
 const NavigationViewAll = styled.div`
     svg {
         font-size: 2rem;
-        stroke-width: 0.175ex;
+        stroke-width: 0.24ex;
     }
 `;
 
@@ -201,15 +195,15 @@ const Actions = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     .SearchBar {
         max-width: 24rem;
 
-        input {
-            height: 3.25rem;
+        ${Input} {
+            height: 100%;
             border-radius: var(--block-border-radius);
-            color: var(--color-text-dark);
+            color: var(--color-dark);
         }
     }
 `;
@@ -232,22 +226,18 @@ const CartIconWrapper = styled.div`
 
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
+    cursor: pointer;
+    transition: 250ms all ease-in-out;
 
     &:hover {
-        background: var(--accent-primary-dark);
-    }
-
-    .Icon {
-        cursor: pointer;
-        transition: 250ms all ease-in-out;
+        background: var(--accent-secondary);
+        color: var(--accent-secondary-text);
     }
 
     @media (min-width: 950px) {
-        height: 3.25rem;
-
         .Icon {
-            font-size: 1.75rem;
+            font-size: 2.5rem;
             width: 4rem;
         }
     }
@@ -270,13 +260,13 @@ const CartPopup = styled.section`
     width: 32rem;
     padding: 1.5rem;
     right: -0.5rem;
-    top: 4rem;
+    top: 8rem;
     background: var(--accent-secondary-light);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
     grid-template-rows: auto 1fr auto;
-    gap: 1rem;
+    gap: var(--block-spacer);
     opacity: 0;
     transition: 250ms ease-in-out;
     pointer-events: none;
@@ -293,7 +283,7 @@ const CartPopup = styled.section`
 const CartPopupItem = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1rem;
+    gap: var(--block-spacer);
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
@@ -305,11 +295,11 @@ const CartPopupItemHeader = styled.div`
     grid-template-columns: 1fr 2rem;
     gap: 0px;
     margin-bottom: 1rem;
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
     background: var(--accent-primary);
     padding: 1.25rem 1.5rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     svg {
         font-size: 2rem;
@@ -327,12 +317,12 @@ const CartPopupItemTitle = styled.div`
     }
 `;
 const CartPopupItemImageWrapper = styled.div`
-    background: var(--color-text-primary);
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
     overflow: hidden;
     height: 100%;
-    padding: 1rem;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    padding: var(--block-padding-large);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 `;
 const CartPopupItemImage = styled.div`
     position: relative;
@@ -354,17 +344,16 @@ const CartPopupItemMeta = styled.div`
     justify-content: start;
     width: 100%;
     height: 100%;
-    padding: 1rem;
-    background: var(--color-text-primary);
+    padding: var(--block-padding-large);
+    background: var(--accent-primary-text);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 `;
 const CartPopupItemMetaVendor = styled.div`
     font-size: 1.25rem;
     font-weight: 600;
-    letter-spacing: 0.05rem;
     opacity: 0.75;
-    color: #404756;
+    color: var(--color-block);
 `;
 const CartPopupItemMetaTitle = styled.div`
     margin-bottom: 1rem;
@@ -380,11 +369,11 @@ const CartPopupItemMetaVariant = styled.div`
 const CartPopupContent = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
 
     button {
-        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+        box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
     }
 `;
 
@@ -397,7 +386,7 @@ const HamburgerMenu = styled.div`
     cursor: pointer;
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
 
     svg.Icon {
         font-size: 3rem;
@@ -414,7 +403,8 @@ const Header = styled.header`
     top: 8rem;
     width: 100%;
     background: var(--accent-secondary-light);
-    box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.25);
+    border-bottom: 0.05rem solid var(--accent-secondary);
+    box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
 `;
 
 interface HeaderProps {
@@ -593,7 +583,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                 </CartPopupItem>
                                 <CartPopupContent>
                                     <Link
-                                        href="/cart"
+                                        href="/cart/"
                                         onClick={() => {
                                             setCartStore({
                                                 ...cartStore,

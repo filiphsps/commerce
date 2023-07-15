@@ -8,7 +8,7 @@ import {
 import styled, { css } from 'styled-components';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 
-import Button from '../Button';
+import { Button } from '../Button';
 import { Config } from '../../util/Config';
 import Currency from '../Currency';
 import Image from 'next/image';
@@ -21,26 +21,27 @@ import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 const Container = styled.section<{ available?: boolean }>`
-    flex: 1 auto;
-    overflow: hidden;
     position: relative;
+    flex: 1 auto;
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: 0.5rem;
-    width: 18rem;
-    border-radius: var(--block-border-radius);
-    color: var(--primary-foreground);
-    scroll-snap-align: start;
-
-    background: var(--primary);
-    background: radial-gradient(circle, var(--primary) 0%, var(--primary-dark) 100%);
+    gap: var(--block-spacer-small);
+    min-width: var(--component-product-card-width);
     padding: var(--block-padding);
+    scroll-snap-align: start;
+    border-radius: var(--block-border-radius);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    //background: linear-gradient(320deg, var(--primary-dark) -100%, var(--primary) 100%);
 
     ${({ available }) =>
         !available &&
         css`
-            opacity: 0.5;
+            opacity: 0.75;
+            filter: brightness(0.85);
+            background: var(--color-block);
+            color: var(--color-dark);
         `}
 `;
 export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
@@ -48,12 +49,12 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     position: relative;
     height: auto;
     width: 100%;
-    padding: 1.75rem;
+    padding: var(--block-padding);
     border-radius: calc(var(--block-border-radius) * 0.75);
     transition: 250ms ease-in-out;
     user-select: none;
-    background: var(--color-text-primary);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    background: var(--color-bright);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     ${({ isHorizontal }) =>
         (isHorizontal &&
@@ -71,7 +72,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
         `}
 
     &:hover {
-        padding: 1.25rem;
+        padding: calc(var(--block-padding) * 0.85);
     }
 `;
 const ProductImageWrapper = styled.div`
@@ -86,7 +87,6 @@ const ProductImageWrapper = styled.div`
     img {
         object-fit: contain;
         object-position: center;
-        mix-blend-mode: multiply;
         width: 100% !important;
         position: relative !important;
         height: 100% !important;
@@ -98,13 +98,23 @@ const Details = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    min-height: calc(var(--block-padding) * 9.5);
-    margin-top: calc(var(--block-padding) / 2);
+    justify-self: stretch;
+    min-height: 10rem;
+    gap: calc(var(--block-spacer-small) / 4);
+
+    @media (min-width: 950px) {
+        gap: calc(var(--block-spacer-small) / 2);
+    }
 `;
 const Brand = styled.div`
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+
+    @media (min-width: 950px) {
+        font-size: 1.5rem;
+        line-height: 1.75rem;
+    }
 
     &:hover,
     &:active,
@@ -112,21 +122,30 @@ const Brand = styled.div`
         text-decoration: underline;
         text-decoration-style: dotted;
         text-decoration-thickness: 0.2rem;
-        text-underline-offset: 0.25rem;
+        text-underline-offset: var(--block-border-width);
     }
 `;
 const Title = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
     font-size: 1.75rem;
     line-height: 2rem;
     font-weight: 700;
 
+    @media (min-width: 950px) {
+        font-size: 2rem;
+        line-height: 2.25rem;
+    }
+
     &:hover,
     &:active,
     &:focus {
         text-decoration: underline;
         text-decoration-style: dotted;
         text-decoration-thickness: 0.2rem;
-        text-underline-offset: 0.25rem;
+        text-underline-offset: var(--block-border-width);
     }
 `;
 const VariantsContainer = styled.div`
@@ -136,17 +155,17 @@ const VariantsContainer = styled.div`
     justify-content: center;
     align-items: flex-end;
     justify-self: end;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
-    padding-top: 1rem;
+    margin-top: var(--block-spacer-large);
     transition: 250ms ease-in-out;
 `;
 const Variants = styled.div`
     display: flex;
     align-items: end;
     justify-content: end;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
 `;
@@ -171,68 +190,107 @@ const Variant = styled.div`
 
 const Actions = styled.div`
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(auto, auto) auto;
     justify-content: space-between;
-    gap: 0.5rem;
-    margin-top: 0.25rem;
+    gap: var(--block-spacer-small);
 `;
-const AddButton = styled(Button)`
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 3rem;
-    padding: 0.75rem 1rem;
-    font-size: 1.25rem;
-    line-height: unset;
-    font-weight: 700;
-    transition: 250ms ease-in-out;
-    border-radius: calc(var(--block-border-radius) * 0.75);
-    border: 0.25rem solid var(--primary-foreground);
-    box-shadow: unset;
-    background: transparent;
-    color: var(--primary-foreground);
+const AddButton = styled(Button)<{ added: boolean }>`
+    && {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        min-width: 100%;
+        padding: var(--block-padding-small) var(--block-padding);
+        border-radius: var(--block-border-radius-small);
+        border: var(--block-border-width) solid var(--primary-foreground);
+        color: var(--primary-foreground);
+        background: transparent;
+        box-shadow: none;
+        line-height: 1.75rem;
+        font-size: 1.5rem;
+        font-weight: 500;
+        transition: 250ms ease-in-out;
 
-    &.Added {
-        background: var(--accent-secondary-dark);
-        font-weight: 700;
+        @media (min-width: 950px) {
+            padding: calc(var(--block-padding) / 2) var(--block-padding);
+            font-size: 1.75rem;
+            line-height: 2rem;
+            flex-wrap: nowrap;
+            flex-grow: 1;
+        }
+
+        &:enabled:hover {
+            background: var(--primary-foreground);
+            border-color: var(--primary-foreground);
+            color: var(--primary-dark);
+            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+        }
+
+        &:enabled.Added,
+        &:enabled:active {
+            background: var(--secondary-dark);
+            border-color: var(--secondary);
+            color: var(--secondary-foreground);
+            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+        }
     }
 `;
 const Quantity = styled.div`
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     justify-self: end;
-    gap: 0.5rem;
-    font-weight: 600;
+    gap: calc(var(--block-spacer-small));
+    height: 100%;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-weight: 500;
     text-align: center;
     user-select: none;
 
     svg {
-        stroke-width: 3;
+        font-weight: 700;
+        stroke-width: 0.4ex;
     }
 `;
 const QuantityAction = styled.div`
-    overflow: hidden;
-    width: 1.25rem;
-    margin-top: -0.25rem;
-    font-size: 1.5rem;
-    line-height: 1.75rem;
-    font-weight: 700;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: var(--block-padding-large);
+    height: 100%;
+    border-radius: var(--block-border-radius);
     cursor: pointer;
     transition: 250ms ease-in-out;
 
-    &.Inactive {
-        width: 0px;
-        margin-left: -0.5rem;
+    &:first-child {
+        justify-content: start;
     }
 
-    &:hover {
-        color: var(--secondary);
+    &.Inactive {
+        width: 0px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    @media (min-width: 950px) {
+        &:hover {
+            color: var(--primary-dark);
+        }
+    }
+
+    &:active {
+        color: var(--primary-dark);
+        background: var(--primary-foreground);
+        border-color: var(--primary);
     }
 `;
 const QuantityValue = styled.div`
-    min-width: 1rem;
+    min-width: 1.25rem;
     font-size: 1.75rem;
 `;
 
@@ -246,7 +304,7 @@ const Prices = styled.div`
 `;
 const Price = styled.div`
     font-size: 2rem;
-    line-height: 1.75rem;
+    line-height: 2.25rem;
     font-weight: 700;
 `;
 const PreviousPrice = styled.div`
@@ -254,19 +312,19 @@ const PreviousPrice = styled.div`
     line-height: 1.5rem;
     font-weight: 500;
     text-decoration: line-through;
-    opacity: 0.85;
+    opacity: 0.75;
 `;
 
 const Badges = styled.div`
     position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.5rem;
+    top: var(--block-spacer-small);
+    left: var(--block-spacer-small);
+    right: var(--block-spacer-small);
+    bottom: var(--block-spacer-small);
     display: flex;
     align-items: start;
     justify-content: start;
-    gap: 0.5rem;
+    gap: calc(var(--block-spacer-small) / 2);
     z-index: 1;
     pointer-events: none;
 `;
@@ -280,42 +338,34 @@ const Badge = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     height: auto;
-    padding: calc(var(--block-padding) * 0.75) var(--block-padding);
+    padding: var(--block-padding-small) var(--block-padding);
     background: var(--accent-primary-light);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
     font-weight: 600;
     font-size: 1.25rem;
-    line-height: 1.25rem;
+    line-height: 1.5rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 0.5rem 0px var(--color-block-shadow);
 
     &.Sale {
-        background: #d91e18;
+        background: var(--color-sale);
     }
-
     &.From {
-        background: #efefef;
-        color: var(--color-text-dark);
-        font-size: 1.25rem;
-        line-height: 1.25rem;
+        background: var(--color-block);
+        color: var(--color-dark);
 
         ${BadgeText} {
-            color: #404756;
+            color: var(--color-dark);
         }
     }
-
     &.New {
-        font-weight: 600;
-        font-size: 1.25rem;
-        line-height: 1.25rem;
+        background: var(--accent-primary-light);
+        color: var(--accent-primary-text);
     }
     &.Vegan {
-        font-weight: 600;
-        font-size: 1.25rem;
-        line-height: 1.25rem;
-        background: #1b6e1b;
+        background: var(--color-green);
     }
 `;
 
@@ -332,8 +382,6 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             title={image.altText || undefined}
             height={image.height || 0}
             width={image.width || 0}
-            placeholder={'blur'}
-            blurDataURL={`/_next/image?url=${encodeURIComponent(image.url)}&w=16&q=1`}
             sizes={'14rem'}
             loader={ImageLoader}
         />
@@ -417,7 +465,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                 } as React.CSSProperties
             }
         >
-            <Badges data-nosnippet>
+            <Badges>
                 {!is_sale && product.variants?.edges && product.variants.edges.length > 1 ? (
                     <Badge className="From">
                         <BadgeText>From</BadgeText>
@@ -450,22 +498,22 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                 ) : null}
             </Badges>
             <ProductImage isHorizontal>
-                <Link href={`/products/${product.handle}`}>
+                <Link href={`/products/${product.handle}/`}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
                     </ProductImageWrapper>
                 </Link>
             </ProductImage>
-            <Details>
+            <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${TitleToHandle(product.vendor)}`}>
+                        <Link href={`/collections/${TitleToHandle(product.vendor)}/`}>
                             {product.vendor}
                         </Link>
                     </Brand>
                 )}
                 <Title>
-                    <Link href={`/products/${product.handle}`}>{product.title}</Link>
+                    <Link href={`/products/${product.handle}/`}>{product.title}</Link>
                 </Title>
 
                 <VariantsContainer>
@@ -540,7 +588,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
             </Details>
             <Actions>
                 <AddButton
-                    className={addedToCart ? 'Added' : ''}
+                    type="button"
+                    title="Add to Cart"
+                    added={addedToCart}
                     onClick={() => {
                         if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
                         else if (!product || !selectedVariant) return;
@@ -587,7 +637,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}
-                        onClick={() => setQuantity(quantity - 1)}
+                        onClick={() => setQuantity(quantity - 1 || 0)}
                     >
                         <FiMinus />
                     </QuantityAction>

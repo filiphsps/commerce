@@ -2,7 +2,10 @@ import React, { FunctionComponent } from 'react';
 
 import styled from 'styled-components';
 
-const Container = styled.main``;
+const Container = styled.main`
+    min-height: calc(100vh - 20rem);
+    min-height: calc(100dvh - 20rem);
+`;
 
 interface PageProps {
     className?: string;

@@ -16,6 +16,7 @@ import PageProvider from '../src/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
+import { ThemeProvider } from 'styled-components';
 import { appWithTranslation } from 'next-i18next';
 import preval from '../src/data.preval';
 import prismicConfig from '../slicemachine.config.json';
@@ -89,22 +90,11 @@ const StoreApp = withStore(
                     <link rel="icon" type="image/png" href={store.favicon.src} />
                     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                     <link rel="apple-touch-icon" href={store.favicon.src} />
+
                     {/* General application styling */}
-                    {/* TODO: Move this to app layout */}
                     {/* eslint-disable indent */}
                     <style>{`
-                        body {
-                            --color-text-primary: #fefefe;
-                            --color-text-secondary: #161616;
-                            --color-text-dark: #0e0e0e;
-                            --color-danger: #d91e18;
-                            --color-sale: #d91e18;
-                            --color-block: #e6e6e6;
-                            --color-success: #1b6e1b;
-                            --color-success-light: ${Color('#1b6e1b')
-                                .lighten(0.25)
-                                .hex()
-                                .toString()};
+                        :root {
                             --accent-primary: ${Color(store.accent.primary).hex().toString()};
                             --accent-primary-dark: ${Color(store.accent.primary)
                                 .darken(0.25)
@@ -114,10 +104,7 @@ const StoreApp = withStore(
                                 .lighten(0.45)
                                 .hex()
                                 .toString()};
-                            --accent-primary-extra-light: ${Color(store.accent.primary)
-                                .lighten(0.75)
-                                .hex()
-                                .toString()};
+                            --accent-primary-text: #ececec;
                             --accent-secondary: ${Color(store.accent.secondary).hex().toString()};
                             --accent-secondary-dark: ${Color(store.accent.secondary)
                                 .darken(0.25)
@@ -127,10 +114,7 @@ const StoreApp = withStore(
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --page-width: 1465px;
-                            --block-border-radius: 1.25rem;
-                            --block-padding: 0.75rem;
-                            --block-padding-large: 1.25rem;
+                            --accent-secondary-text: #161616;
                         }
                     `}</style>
                     {/* eslint-enable indent */}
@@ -203,14 +187,16 @@ const StoreApp = withStore(
                     languageIsoCode={language}
                 >
                     <CartProvider countryCode={country}>
-                        <PrismicPreview repositoryName={prismicConfig.repositoryName}>
-                            <PageProvider
-                                store={store}
-                                pagePropsAnalyticsData={pageProps.analytics || {}}
-                            >
-                                <Component key={router.asPath} {...pageProps} store={store} />
-                            </PageProvider>
-                        </PrismicPreview>
+                        <ThemeProvider theme={{}}>
+                            <PrismicPreview repositoryName={prismicConfig.repositoryName}>
+                                <PageProvider
+                                    store={store}
+                                    pagePropsAnalyticsData={pageProps.analytics || {}}
+                                >
+                                    <Component key={router.asPath} {...pageProps} store={store} />
+                                </PageProvider>
+                            </PrismicPreview>
+                        </ThemeProvider>
                     </CartProvider>
                 </ShopifyProvider>
             </>

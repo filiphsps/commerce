@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 const Container = styled.div<{ primary?: boolean }>`
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     max-width: var(--page-width);
     width: 100%;
     margin: 0px auto;
@@ -12,8 +12,8 @@ const Container = styled.div<{ primary?: boolean }>`
     ${({ primary }) =>
         primary &&
         css`
-            padding: 1rem;
-            gap: 1rem;
+            padding: var(--block-spacer);
+            gap: var(--block-spacer);
         `}
 `;
 

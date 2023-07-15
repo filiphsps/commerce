@@ -31,7 +31,7 @@ const Container = styled.div`
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: var(--block-spacer);
     }
 `;
 const Content = styled.div``;
@@ -40,7 +40,7 @@ const Actions = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     margin-bottom: -0.5rem;
     user-select: none;
 
@@ -63,7 +63,7 @@ const Filters = styled.div`
     top: 8rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 16rem;
     user-select: none;
 
@@ -81,8 +81,8 @@ const Filters = styled.div`
     }
 `;
 const Filter = styled.div`
-    padding: 1rem;
-    background: #efefef;
+    padding: var(--block-padding-large);
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
 `;
 const FilterTitle = styled.div`
@@ -90,7 +90,7 @@ const FilterTitle = styled.div`
     text-transform: uppercase;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #404756;
+    color: var(--color-block);
 `;
 const FilterItems = styled.div`
     display: flex;
@@ -102,7 +102,7 @@ const FilterItem = styled.div`
     font-size: 1.25rem;
     font-weight: 500;
     cursor: pointer;
-    color: #404756;
+    color: var(--color-block);
     border-color: var(--accent-primary);
     transition: 250ms ease-in-out;
 
@@ -111,7 +111,7 @@ const FilterItem = styled.div`
         font-weight: 600;
         padding-left: 0.25rem;
         border-left: 0.2rem solid var(--accent-primary);
-        color: var(--color-text-dark);
+        color: var(--color-dark);
     }
 `;
 
@@ -119,7 +119,7 @@ const Pagination = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: var(--block-spacer);
     margin: 1rem 0px;
     width: 100%;
 
@@ -131,11 +131,11 @@ const PaginationAction = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     width: 12rem;
     padding: 1rem;
     background: var(--accent-primary);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
     border-radius: var(--block-border-radius);
     text-transform: uppercase;
     text-align: center;
@@ -149,17 +149,17 @@ const PaginationAction = styled.div`
     }
 
     &:hover {
-        gap: 1rem;
+        gap: var(--block-spacer);
     }
 
     &.Disabled {
         opacity: 0.5;
         cursor: not-allowed;
         background: #efefef;
-        color: #404756;
+        color: var(--color-block);
 
         &:hover {
-            gap: 0.5rem;
+            gap: var(--block-spacer-small);
         }
     }
 `;

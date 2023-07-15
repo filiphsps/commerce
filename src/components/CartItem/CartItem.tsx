@@ -75,7 +75,6 @@ const ImageWrapper = styled.div`
 
     img {
         display: block;
-        mix-blend-mode: multiply;
         width: 100%;
         height: 100%;
     }
@@ -86,7 +85,7 @@ const ProductImage = styled(Section)`
     height: 100%;
     width: 100%;
     max-width: 8rem;
-    background: #fefefe;
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
     border: 0.2rem solid #fefefe;
     cursor: pointer;
@@ -176,15 +175,15 @@ const MetaSection = styled(Section)`
 const RemoveButton = styled(CartLineQuantityAdjustButton)`
     &:hover {
         background: var(--color-danger);
-        color: var(--color-text-primary);
+        color: var(--color-bright);
     }
 `;
 const Quantity = styled.div<{ disabled?: boolean }>`
     height: 3rem;
-    background: var(--color-text-primary);
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
-    color: var(--color-text-dark);
-    transition: 250ms all ease-in-out;
+    color: var(--color-dark);
+    transition: 250ms ease-in-out;
 
     ${(props) =>
         props.disabled &&
@@ -211,7 +210,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
 
     button:hover {
         background: var(--accent-primary);
-        color: var(--color-text-primary);
+        color: var(--accent-primary-text);
     }
 `;
 const QuantitySection = styled(Section)`
@@ -220,7 +219,7 @@ const QuantitySection = styled(Section)`
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 1rem;
+    gap: var(--block-spacer);
     padding-left: 1rem;
 
     button {
@@ -265,10 +264,10 @@ const Content = styled.tr`
     grid-template-columns: 8rem 1fr 6rem 14rem;
     grid-template-rows: 1fr;
     grid-template-areas: 'image meta price quantity';
-    gap: 1rem;
+    gap: var(--block-spacer);
     padding: var(--block-padding);
     background: var(--color-block);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
@@ -329,7 +328,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
         <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
-                    <Link href={`/products/${product?.handle}`}>
+                    <Link href={`/products/${product?.handle}/`}>
                         <TempImage
                             src={
                                 product.images.edges.find(
@@ -348,12 +347,12 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${TitleToHandle(product?.vendor)}`}>
+                        <Link href={`/collections/${TitleToHandle(product?.vendor)}/`}>
                             {product?.vendor}
                         </Link>
                     </DetailsBrand>
                     <DetailsTitle>
-                        <Link href={`/products/${product?.handle}`}>{product?.title}</Link>
+                        <Link href={`/products/${product?.handle}/`}>{product?.title}</Link>
                     </DetailsTitle>
                 </Details>
             </MetaSection>

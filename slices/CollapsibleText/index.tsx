@@ -23,7 +23,7 @@ const Content = styled.div`
 
 const Summary = styled.summary`
     display: flex;
-    gap: 1rem;
+    gap: var(--block-spacer);
     justify-self: flex-start;
     align-items: center;
     font-size: 2rem;
@@ -57,6 +57,7 @@ const Details = styled.details`
 
     &[open] ${Summary} {
         margin-bottom: 1rem;
+
         .Icon {
             rotate: 180deg;
         }
@@ -82,7 +83,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                         (slice.primary.accent &&
                             Color(slice.primary.accent).isDark() &&
                             'var(--color-text-primary)') ||
-                        'var(--color-text-dark)'
+                        'var(--color-dark)'
                 } as React.CSSProperties
             }
         >

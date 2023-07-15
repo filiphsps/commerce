@@ -7,12 +7,12 @@ import { Label } from './Label';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
     background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
 `;
 
 const Filter = styled.div``;
@@ -21,7 +21,7 @@ const FilterLabel = styled(Label)``;
 const Values = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     margin-top: 1rem;
 
     @media (max-width: 950px) {
@@ -35,26 +35,26 @@ const ListOption = styled.div<{ selected?: boolean }>`
     padding: 0.75rem 1rem;
     font-size: 1rem;
     background: var(--color-block);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
     font-weight: 600;
     font-size: 1.25rem;
     line-height: 1.25rem;
     border-radius: var(--block-border-radius);
-    //box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    //box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     ${({ selected }) =>
         selected &&
         css`
             background: var(--accent-primary);
-            color: var(--color-text-primary);
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+            color: var(--accent-primary-text);
+            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         `}
 `;
 
 const RangeOption = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     width: 100%;
 
     ${Input} {
@@ -66,7 +66,7 @@ const RangeLabels = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: var(--block-spacer);
     padding: 0px 0.5rem;
     width: 100%;
 `;

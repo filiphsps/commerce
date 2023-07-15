@@ -1,17 +1,106 @@
 @import '../src/scss/_app.scss';
 
 // Components
-@import '../src/components/Alert/Alert.scss';
 @import '../src/components/Breadcrumbs/Breadcrumbs.scss';
-@import '../src/components/ContentBlock/ContentBlock.scss';
 @import '../src/components/Currency/Currency.scss';
-@import '../src/components/Header/Header.scss';
-@import '../src/components/Link/Link.scss';
-@import '../src/components/Page/Page.scss';
-@import '../src/components/PageProvider/PageProvider.scss';
-@import '../src/components/SearchBar/SearchBar.scss';
 @import '../src/components/SocialShare/SocialShare.scss';
 @import '../src/components/Vendors/Vendors.scss';
 
-//Pages
-@import './[...handle]/CustomPage.scss';
+html,
+body {
+    width: 100%;
+    max-width: 100vw;
+    padding: 0px;
+    -moz-osx-font-smoothing: always;
+    -webkit-font-smoothing: always;
+    font-smooth: always;
+    overscroll-behavior-x: none;
+    font-size: 11px;
+    touch-action: manipulation;
+    text-size-adjust: none;
+    color: var(--color-dark);
+    background: var(--color-bright);
+
+    @media screen and (max-width: 950px) {
+        font-size: 0.6rem;
+    }
+
+    .zEWidget-launcher {
+        z-index: 1 !important;
+        margin: 2rem !important;
+    }
+
+    // TODO: Figure out a way to stop this from blocking elements
+    #dummy-chat-button-iframe {
+        right: 2rem !important;
+        bottom: 2rem !important;
+
+        @media screen and (max-width: 950px) {
+            right: 1.75rem !important;
+            bottom: 3rem !important;
+        }
+    }
+}
+
+:root {
+    // TODO: styled-components theme, or even better
+    //       through our CMS.
+
+    --color-bright: #fefefe;
+    --color-dark: #0e0e0e;
+
+    --color-sale: #d91e18;
+
+    --color-success: #1b6e1b;
+    --color-success-light: #228a22;
+    --color-danger: #d91e18;
+
+    --color-block: #e6e6e6;
+    --color-block-shadow: rgba(0, 0, 0, 0.35);
+
+    --color-gray: #848484;
+    --color-green: #1b6e1b;
+
+    --component-product-card-width: 20rem;
+
+    --page-width: 1465px;
+
+    --block-border-radius: 1.25rem;
+    --block-border-radius-small: 1rem;
+    --block-border-width: 0.35rem;
+
+    --block-padding: 1rem;
+    --block-padding-small: 0.5rem;
+    --block-padding-large: 1.5rem;
+
+    --block-spacer: 1rem;
+    --block-spacer-small: 0.75rem;
+    --block-spacer-large: 1.5rem;
+
+    @media (max-width: 950px) {
+        --component-product-card-width: 19.5rem;
+
+        --block-border-width: 0.35rem;
+
+        --block-padding: 0.85rem;
+        --block-padding-small: 0.5rem;
+        --block-padding-large: 1.5rem;
+
+        --block-spacer: 0.75rem;
+        --block-spacer-small: 0.5rem;
+        --block-spacer-large: 1.25rem;
+    }
+}
+
+#nprogress {
+    pointer-events: none;
+}
+#nprogress .bar {
+    background: var(--accent-secondary-dark);
+    position: fixed;
+    z-index: $int-max;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--block-padding);
+}

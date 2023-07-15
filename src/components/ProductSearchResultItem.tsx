@@ -14,7 +14,7 @@ const Container = styled.div`
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
 `;
 const Meta = styled.div`
     display: flex;
@@ -42,13 +42,13 @@ const PricingPrice = styled(Title)`
 `;
 
 const ImageWrapper = styled.div`
-    background: #fefefe;
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
     overflow: hidden;
     height: 100%;
     width: 100%;
     padding: 1rem;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     img {
         height: 100%;
@@ -65,7 +65,7 @@ export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemP
     product
 }) => {
     return (
-        <Link href={`/products/${product.handle}`}>
+        <Link href={`/products/${product.handle}/`}>
             <Container>
                 <ImageWrapper>
                     <Image data={product.images?.edges?.at(0)?.node || undefined} />

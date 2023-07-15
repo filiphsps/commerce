@@ -22,11 +22,6 @@ import { useRouter } from 'next/router';
 
 const Body = styled(Content)`
     overflow: hidden;
-
-    a {
-        color: var(--color-text-primary);
-        border-bottom-color: var(--color-text-primary);
-    }
 `;
 
 interface CollectionPageProps {

@@ -21,12 +21,12 @@ const ReviewsWrapper = styled.div`
     align-items: center;
     height: 3rem;
     max-height: 3rem;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     div.react-stars {
         display: flex;
         flex-direction: row;
-        gap: 0.5rem;
+        gap: var(--block-spacer-small);
         overflow: unset !important;
         margin-top: -0.25rem;
 
@@ -45,9 +45,8 @@ const ReviewsWrapper = styled.div`
 `;
 
 const IconWrapper = styled.div`
-    //mix-blend-mode: luminosity;
     svg {
-        filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.45));
+        filter: drop-shadow(0px 0px 10px var(--color-block-shadow));
     }
 `;
 

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
+import { Title } from '../../src/components/PageHeader/PageHeader';
 
 const Container = styled.section`
     width: 100%;
@@ -16,7 +17,7 @@ const Container = styled.section`
 const Content = styled.div`
     display: flex;
     flex-direction: column;
-    gap: var(--block-padding-large);
+    gap: var(--block-spacer-large);
 
     padding: var(--block-padding-large);
     background: var(--background);
@@ -30,7 +31,7 @@ const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
     flex-direction: column;
     justify-content: center;
     align-items: start;
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
 
     ${({ alignment }) =>
         alignment == 'center' &&
@@ -44,15 +45,15 @@ const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
             }
         `};
 `;
-const Title = styled.div`
+const CollectionTitle = styled(Title)`
     font-size: 2.25rem;
     line-height: 2.5rem;
-    font-weight: 700;
+    transition: 250ms ease-in-out;
+
     text-decoration: underline;
     text-decoration-style: dotted;
     text-decoration-thickness: 0.2rem;
-    text-underline-offset: 0.25rem;
-    transition: 250ms ease-in-out;
+    text-underline-offset: var(--block-border-width);
 
     &:hover {
         color: var(--accent-primary);
@@ -83,8 +84,8 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                     '--foreground':
                         (slice.primary.accent &&
                             Color(slice.primary.accent).isDark() &&
-                            'var(--color-text-primary)') ||
-                        'var(--color-text-dark)'
+                            'var(--color-bright)') ||
+                        'var(--color-dark)'
                 } as React.CSSProperties
             }
         >
@@ -93,8 +94,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                     {asText(slice.primary.title).length > 0 && (
                         <Header alignment={slice.primary.alignment}>
                             <Link href={`/collections/${slice.primary.handle!}`}>
-                                {' '}
-                                <Title
+                                <CollectionTitle
                                     dangerouslySetInnerHTML={{
                                         __html: asHTML(slice.primary.title)
                                     }}

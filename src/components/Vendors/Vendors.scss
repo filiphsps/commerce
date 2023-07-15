@@ -1,52 +1,6 @@
 @import '../../scss/app';
 
 .Vendors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    grid-gap: 1rem;
-
-    @media (max-width: $width-max-mobile) {
-        display: flex;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-        grid-gap: 0px;
-    }
-
     .Vendors-Vendor {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem 0.5rem;
-        background: var(--accent-secondary);
-        color: var(--color-text-secondary);
-
-        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.25);
-
-        border-radius: var(--block-border-radius);
-        text-align: center;
-        text-decoration: none;
-        font-size: 1.25rem;
-        font-weight: 700;
-        cursor: pointer;
-
-        &.ShowMore {
-            font-weight: 700;
-        }
-
-        &.Selected,
-        &:hover {
-            background: var(--accent-secondary-dark);
-        }
-
-        @media (max-width: $width-max-mobile) {
-            padding: 1rem 1.25rem;
-            margin-right: 1rem;
-            color: $color-dark;
-        }
     }
-}
-
-.ContentBlock-Dark .Vendors .Vendors-Vendor {
-    background: $color-white;
 }

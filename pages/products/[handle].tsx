@@ -15,11 +15,11 @@ import { ProductApi, ProductsApi } from '../../src/api/product';
 import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import Button from '../../src/components/Button';
+import { Button } from '../../src/components/Button';
 import CollectionBlock from '../../src/components/CollectionBlock';
+import Color from 'color';
 import { Config } from '../../src/util/Config';
 import Content from '../../src/components/Content';
-import ContentBlock from '../../src/components/ContentBlock';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
 import Gallery from '../../src/components/Gallery';
@@ -36,44 +36,36 @@ import Reviews from '../../src/components/Reviews';
 import { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
 import { StoreModel } from '../../src/models/StoreModel';
+import { Subtitle } from '../../src/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
-const ReviewStars = dynamic(() => import('../../src/components/ReviewStars'), { ssr: false });
+const ReviewStars = dynamic(() => import('../../src/components/ReviewStars'));
 
 // TODO: replace this with generic label.
 const Label = styled.label`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
-    color: var(--primary-foreground);
 `;
 
 const ProductContainerWrapper = styled.div`
     display: grid;
     justify-content: center;
     align-items: center;
-    padding-top: 0.5rem;
 `;
 const ProductContainer = styled.div`
     position: relative;
     display: grid;
     grid-template-columns: 1.15fr 1fr;
     gap: 2rem;
-    min-height: calc(100vh - 42rem);
-    min-height: calc(100dvh - 42rem);
-    width: calc(1465px - 4rem);
-    max-width: calc(100vw - 4rem);
-    margin: 0px 1rem;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
         gap: 0rem;
-        max-width: calc(100vw - 2rem);
-        margin: 0px;
     }
 `;
 const Assets = styled.div`
@@ -97,20 +89,20 @@ const Assets = styled.div`
 const Details = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
-    margin: 1rem 0px;
 `;
 
 // FIXME: Turn this into a component
 const Tags = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    gap: var(--block-spacer-small);
+    width: 100%;
+    margin: 1rem 0px 0.5rem 0px;
 
-    @media (max-width: 950px) {
-        margin: 1rem 0px 0.5rem 0px;
+    @media (min-width: 950px) {
+        margin: 0px;
     }
 `;
 export const Tag = styled.div`
@@ -122,10 +114,9 @@ export const Tag = styled.div`
     font-size: 1.25rem;
     font-weight: 600;
     background: var(--accent-secondary-dark);
-    color: var(--color-text-primary);
-    padding: 0.75rem 1rem;
+    color: var(--accent-primary-text);
+    padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.45);
 
     &.Vegan {
         background: #1b6e1b;
@@ -133,36 +124,35 @@ export const Tag = styled.div`
 `;
 const Description = styled(Content)`
     overflow-x: hidden;
-
-    a {
-        color: var(--color-text-primary);
-        border-bottom-color: var(--color-text-primary);
-    }
 `;
 
 const Actions = styled.div`
     display: flex;
     align-items: end;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     @media (max-width: 950px) {
         align-items: start;
         flex-direction: column;
     }
 `;
-const AddToCart = styled(Button)`
+const AddToCart = styled(Button)<{ added: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--block-spacer);
     height: 4rem;
     width: auto;
     padding-left: 2rem;
     padding-right: 2rem;
-    font-weight: 600;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+
+    // TODO
+    ${({ added }) => added && css``}
 
     svg {
+        stroke-width: 0.4ex;
         font-size: 1.75rem;
     }
 
@@ -174,7 +164,7 @@ const AddToCart = styled(Button)`
 const Quantity = styled(Input)`
     height: 4rem;
     padding: 0px;
-    max-width: 10rem;
+    //max-width: 10rem;
     text-align: center;
     font-size: 1.5rem;
 
@@ -187,10 +177,10 @@ const Quantity = styled(Input)`
 const QuantitySelector = styled.div`
     display: grid;
     grid-template-rows: auto 1fr;
-    gap: 0.5rem;
-    color: var(--color-text-dark);
+    gap: var(--block-spacer-small);
+    color: var(--color-dark);
 
-    input {
+    ${Input} {
         border-width: 0px;
     }
 
@@ -201,31 +191,41 @@ const QuantitySelector = styled.div`
 `;
 const QuantityWrapper = styled.div`
     display: grid;
-    grid-template-columns: 4.5rem 1fr 4.5rem;
-    height: 4rem;
-    background: var(--color-text-primary);
+    grid-template-columns: 4rem 1fr 4rem;
+    height: 4.25rem;
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
+    border: 0.25rem solid var(--color-block);
     outline: none;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
-    button {
+    ${Button} {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100%;
         width: 100%;
         font-size: 1.75rem;
+        line-height: 1.75rem;
+        background: none;
+        color: var(--color-dark);
 
-        &:hover {
-            color: var(--accent-primary);
+        &:enabled:hover {
+            background: var(--accent-primary);
+            color: var(--accent-primary-text);
+        }
+
+        svg {
+            stroke-width: 0.4ex;
+            font-size: 2rem;
         }
     }
 
-    input {
+    ${Input} {
         height: 100%;
+        width: auto;
 
         @media (min-width: 950px) {
-            width: 4rem;
+            min-width: 4rem;
         }
     }
 
@@ -237,7 +237,7 @@ const QuantityWrapper = styled.div`
 const Header = styled.div`
     display: grid;
     grid-template-columns: 1fr minmax(8rem, auto);
-    gap: 0.5rem;
+    gap: var(--block-spacer-small);
     margin-bottom: 1rem;
 
     @media (min-width: 950px) {
@@ -299,26 +299,23 @@ const PriceContainer = styled.div`
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
-    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
-    color: var(--color-text-primary);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    color: var(--accent-primary-text);
 
     @media (min-width: 950px) {
         justify-content: end;
     }
 `;
 
-const Recommendations = styled(ContentBlock)`
+const Recommendations = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
-    margin-top: 4rem;
+    margin-top: 1rem;
     border-radius: var(--block-border-radius);
     overflow: hidden;
 
     background: var(--color-block);
-    background: radial-gradient(circle, var(--color-block) 0%, var(--color-block) 100%);
     padding: var(--block-padding-large);
 
     @media (max-width: 950px) {
@@ -328,7 +325,7 @@ const Recommendations = styled(ContentBlock)`
 const RecommendationsTitle = styled.h3`
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--color-text-dark);
+    color: var(--color-dark);
 
     @media (max-width: 950px) {
         font-size: 2.25rem;
@@ -348,28 +345,34 @@ const RecommendationsContent = styled(PageContent)`
 
 const Tabs = styled.div`
     display: flex;
-    gap: 1.5rem;
+    gap: var(--block-spacer);
     width: 100%;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 `;
 const Tab = styled.div`
-    padding: 1rem 0.25rem 0px 0.25rem;
-    text-transform: uppercase;
-    font-weight: 800;
-    font-size: 1.5rem;
+    padding: var(--block-padding) var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
+    color: var(--color-dark);
     text-align: center;
-    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 600;
     transition: 250ms ease-in-out;
-    opacity: 0.5;
+    cursor: pointer;
+
+    &.Active,
+    &:hover {
+        background: var(--accent-primary-light);
+        color: var(--accent-primary-text);
+    }
 
     &.Active {
-        opacity: 1;
+        background: var(--accent-primary);
     }
 `;
 const TabContent = styled.div`
     display: none;
     overflow: hidden;
-    padding: 0.5rem 0px;
     height: 0px;
 
     &.Active {
@@ -377,7 +380,7 @@ const TabContent = styled.div`
         overflow: unset;
         flex-direction: column;
         flex-grow: 1;
-        gap: 1rem;
+        gap: var(--block-spacer);
         height: 100%;
 
         ${Description} {
@@ -386,7 +389,7 @@ const TabContent = styled.div`
     }
 `;
 const InformationContent = styled(TabContent)`
-    color: var(--color-text-dark);
+    color: var(--color-dark);
 
     &.Active {
         gap: 1.5rem;
@@ -409,14 +412,10 @@ const ReviewsContainer = styled.div`
     padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
-    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
 `;
 
-const PageContainer = styled(Page)`
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: var(--primary-foreground);
-`;
+const PageContainer = styled(Page)``;
 
 interface ProductPageProps {
     error?: string;
@@ -563,7 +562,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     <PageHeader
                         title={product.title!}
                         subtitle={
-                            <Link href={`/collections/${TitleToHandle(product.vendor!)}`}>
+                            <Link href={`/collections/${TitleToHandle(product.vendor!)}/`}>
                                 {product.vendor}
                             </Link>
                         }
@@ -582,7 +581,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     );
     const addToCartAction = (
         <AddToCart
-            className={`Button ${addedToCart ? 'Added' : ''}`}
+            type="button"
+            title="Add to Cart"
+            added={addedToCart}
             disabled={quantity <= 0 || !selectedVariant?.availableForSale}
             onClick={addToCart}
         >
@@ -598,9 +599,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         <QuantitySelector>
             <Label>Quantity</Label>
             <QuantityWrapper>
-                <button onClick={() => setQuantity(quantity - 1)}>
+                <Button type="button" onClick={() => setQuantity(quantity - 1)}>
                     <FiMinus />
-                </button>
+                </Button>
                 <Quantity
                     type="number"
                     value={quantity}
@@ -609,9 +610,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         setQuantity(val);
                     }}
                 />
-                <button onClick={() => setQuantity(quantity + 1)}>
+                <Button type="button" onClick={() => setQuantity(quantity + 1)}>
                     <FiPlus />
-                </button>
+                </Button>
             </QuantityWrapper>
         </QuantitySelector>
     );
@@ -621,15 +622,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             className="ProductPage"
             style={
                 {
-                    '--primary': (product as any).accent?.primary || 'var(--color-block)',
-                    '--primary-dark': (product as any).accent?.primary_dark || 'var(--color-block)',
-                    '--primary-foreground':
-                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)',
-                    '--secondary': (product as any).accent?.secondary || 'var(--color-block)',
-                    '--secondary-dark':
-                        (product as any).accent?.secondary_dark || 'var(--color-block)',
-                    '--secondary-foreground':
-                        (product as any).accent?.secondary_foreground || 'var(--color-text-primary)'
+                    '--accent-primary': (product as any).accent?.primary || 'var(--color-block)',
+                    '--accent-primary-light':
+                        ((product as any).accent?.primary &&
+                            Color((product as any).accent?.primary)
+                                .lighten(0.25)
+                                .hex()
+                                .toString()) ||
+                        'var(--color-block)',
+                    '--accent-primary-dark':
+                        (product as any).accent?.primary_dark || 'var(--color-block)',
+                    '--accent-primary-text':
+                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)'
                 } as React.CSSProperties
             }
         >
@@ -809,7 +813,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                             </TabContent>
                             <InformationContent className={tab == 'information' ? 'Active' : ''}>
                                 <Description>
-                                    <h3>Ingredients</h3>
+                                    <Subtitle>Ingredients</Subtitle>
                                     <p>
                                         {(product as any)?.ingredients?.value ||
                                             `No ingredients found.`}
@@ -818,13 +822,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
                                 {(product as any)?.originalName?.value && (
                                     <Description>
-                                        <h3>Local Product Name</h3>
+                                        <Subtitle>Local Product Name</Subtitle>
                                         <p>{(product as any)?.originalName?.value}</p>
                                     </Description>
                                 )}
 
                                 <Description>
-                                    <h3>SKU/EAN</h3>
+                                    <Subtitle>SKU/EAN</Subtitle>
                                     <ul>
                                         {product.variants.edges.map((variant) => (
                                             <li key={variant.node.id}>{`${variant.node.title} - ${

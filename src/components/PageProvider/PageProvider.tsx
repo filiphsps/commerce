@@ -28,18 +28,18 @@ const Announcement = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 4rem;
     width: 100%;
-    padding: 0px 1rem;
+    height: 100%;
+    padding: var(--block-padding) var(--block-padding-large);
     text-transform: uppercase;
     font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: 0.1rem;
+    line-height: 1.5rem;
+    font-weight: 700;
     text-align: center;
 
     &.primary {
         background: var(--accent-primary-dark);
-        color: var(--color-text-primary);
+        color: var(--accent-primary-text);
 
         a {
             font-weight: 800;
@@ -48,7 +48,7 @@ const Announcement = styled.div`
     }
     &.secondary {
         background: var(--accent-secondary);
-        color: var(--color-text-secondary);
+        color: var(--accent-secondary-text);
 
         a {
             color: var(--accent-primary);
@@ -60,6 +60,27 @@ const Announcement = styled.div`
 const Announcements = styled.div`
     width: 100%;
 `;
+
+const Container = styled.div`
+    overscroll-behavior-x: none;
+
+    // TODO: Move this to a prop
+    &.SideBar-Open {
+        @media screen and (max-width: 950px) {
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+        }
+    }
+`;
+
+const HeaderContainer = styled.div`
+    position: sticky;
+    z-index: 99999999;
+    top: -1px;
+`;
+
+const Overlay = styled.div``;
 
 interface PageProviderProps {
     store: StoreModel;
@@ -110,7 +131,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const bellow = header?.announcements.filter((item) => item.location === 'bellow') || [];
 
     return (
-        <div
+        <Container
             className={`PageProvider ${props.className || ''} ${
                 (sidebarOpen && 'SideBar-Open') || ''
             }`}
@@ -128,7 +149,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     ))}
                 </Announcements>
             )}
-            <div className="HeaderWrapper">
+            <HeaderContainer>
                 <Header
                     store={props?.store}
                     navigation={navigation}
@@ -141,7 +162,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
                 />
                 {(search?.open && <SearchHeader query={search?.phrase} />) || null}
-            </div>
+            </HeaderContainer>
             {bellow.length > 0 && (
                 <Announcements>
                     {bellow.map((item, index) => (
@@ -158,7 +179,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
 
-            <div
+            <Overlay
                 onClick={() => {
                     // Make sure we close the search ui if the customer
                     // clicks/taps outside of it
@@ -168,9 +189,9 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 }}
             >
                 {props.children}
-            </div>
+            </Overlay>
             <Footer store={props?.store} />
-        </div>
+        </Container>
     );
 };
 

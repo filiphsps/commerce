@@ -211,34 +211,25 @@ export const ExtractAccentColorsFromImage = (
     const setupColors = (colors: FinalColor[]): ExtractAccentColorsFromImageRes => {
         const sorted = colors.sort((a, b) => b.area - a.area);
 
-        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.1);
+        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.15);
         const secondary = Color(sorted.at(1)!.hex).darken(0.15).desaturate(0.15);
+
         if (primary.saturationl() < 10 && primary.saturationv() < 10) {
             return setupColors(sorted.slice(1));
         }
 
-        let primaryForegroundColor =
-            (primary.isDark() &&
-                primary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
-            primary.lighten(0.5).desaturate(0.5).darken(1);
-        let secondaryForegroundColor =
-            (secondary.isDark() &&
-                secondary.desaturate(0.75).whiten(0.75).lighten(2.75).darken(0.05)) ||
-            secondary.lighten(0.5).desaturate(0.5).darken(1);
-
-        // Increase brightness if it's too dark
-        if (primary.isDark() && primaryForegroundColor.lightness() < 85)
-            primaryForegroundColor = primaryForegroundColor.lighten(1);
-        if (secondary.isDark() && secondaryForegroundColor.lightness() < 85)
-            secondaryForegroundColor = secondaryForegroundColor.lighten(1);
+        const primaryIsDark = primary.lightness() < 65;
+        if (primaryIsDark && !primary.isDark()) {
+            primary = primary.saturate(0.25).darken(0.45);
+        }
 
         return {
             primary: primary.hex().toString(),
-            primary_dark: primary.darken(0.15).hex().toString(),
-            primary_foreground: primaryForegroundColor.hex().toString(),
+            primary_dark: primary.darken(0.35).hex().toString(),
+            primary_foreground: (primaryIsDark && '#ececec') || '#0e0e0e',
             secondary: secondary.hex().toString(),
-            secondary_dark: secondary.darken(0.15).hex().toString(),
-            secondary_foreground: secondaryForegroundColor.hex().toString()
+            secondary_dark: secondary.darken(0.35).hex().toString(),
+            secondary_foreground: (secondary.isDark() && '#ececec') || '#0e0e0e'
         };
     };
 

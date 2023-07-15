@@ -36,55 +36,6 @@ const Prefetch = (page: CustomPageDocument<string>, query: any, locale: string) 
                                 ].products.edges.slice(0, slice?.primary?.limit);
                         }
                         break;
-                    /*case 'ContentBlock':
-                        const res = await Prefetch(
-                            {
-                                slices: slice?.data?.slices
-                            } as any,
-                            query
-                        );
-
-                        collections = {
-                            ...collections,
-                            ...res?.collections
-                        };
-                        products = {
-                            ...products,
-                            ...res?.products
-                        };
-                        shop = {
-                            ...shop,
-                            ...res?.shop
-                        };
-                        break;
-                    case 'ContentBlock':
-                        for (let i = 0; i < slice?.data?.items?.length; i++) {
-                            const slices = slice?.data?.items?.[i]?.slices;
-                            const res = await Prefetch(
-                                {
-                                    slices
-                                } as any,
-                                query
-                            );
-
-                            collections = {
-                                ...collections,
-                                ...res?.collections
-                            };
-                            products = {
-                                ...products,
-                                ...res?.products
-                            };
-                            shop = {
-                                ...shop,
-                                ...res?.shop
-                            };
-                        }
-                        break;
-                    case 'shopblock':
-                        shop = (await ProductsApi()) ?? {};
-                        vendors = (await VendorsApi()) ?? {};
-                        break;*/
                 }
             } catch (error) {
                 console.error(error);

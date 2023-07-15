@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from 'react';
+import { Subtitle, Title } from '../PageHeader/PageHeader';
 
-import Button from '../Button';
+import { Button } from '../Button';
 import Input from '../Input';
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import ReactStars from 'react-rating-stars-component';
@@ -10,36 +11,35 @@ import useSWR from 'swr';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
-const ReviewsContainer = styled.section``;
+const ReviewsContainer = styled.section`
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer);
+`;
 const Review = styled.div`
     padding: var(--block-padding-large);
-    margin-bottom: 1rem;
     border-radius: var(--block-border-radius);
     background: var(--color-block);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
 `;
 const Meta = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
 `;
-const Title = styled.div`
-    font-size: 2rem;
-    font-weight: 600;
-    line-height: 2.25rem;
-    letter-spacing: 0.05rem;
-`;
-const Author = styled.div`
-    padding-top: 0.25rem;
-    font-weight: 700;
-    font-size: 1.5rem;
-    opacity: 0.8;
+const ReviewTitle = styled(Title)``;
+const Author = styled(Subtitle)`
+    opacity: 0.75;
 `;
 const Body = styled.div`
-    padding-top: 1rem;
+    margin-top: 1rem;
     font-size: 1.5rem;
     line-height: 2.25rem;
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--color-bright);
+    color: var(--color-dark);
 `;
 
 const FormHeader = styled.div`
@@ -48,22 +48,21 @@ const FormHeader = styled.div`
     align-items: center;
 `;
 
-const Form = styled.div`
+const Form = styled.section`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    background: var(--color-text-primary);
-    color: var(--color-text-dark);
+    gap: var(--block-spacer);
+    background: var(--color-bright);
+    color: var(--color-dark);
     border-radius: var(--block-border-radius);
-    padding: 1rem;
 
     input,
     textarea {
-        -webkit-appearance: none;
+        appearance: none;
         display: block;
-        padding: 1rem 1rem;
-        background: var(--color-text-primary);
-        border: 0.2rem solid var(--color-text-primary);
+        padding: var(--block-padding-large) var(--block-padding-large);
+        background: var(--color-bright);
+        border: 0.2rem solid var(--color-block);
         border-radius: var(--block-border-radius);
         outline: none;
         resize: none;
@@ -78,17 +77,17 @@ const Form = styled.div`
         max-width: 12rem;
         padding: 1rem;
         font-size: 1.25rem;
-        background: #fefefe;
-        color: #404756;
-        border: 0.2rem solid var(--color-text-primary);
+        background: var(--color-bright);
+        color: var(--color-block);
+        border: 0.2rem solid var(--color-bright);
 
         &:hover {
             background: var(--accent-primary);
-            color: var(--color-text-primary);
+            color: var(--accent-primary-text);
         }
 
         &.Button-Disabled {
-            color: #404756;
+            color: var(--color-block);
         }
     }
 `;
@@ -128,7 +127,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
                     <Review key={review.id}>
                         <Meta>
                             <div>
-                                <Title>{review.title}</Title>
+                                <ReviewTitle>{review.title}</ReviewTitle>
                                 <Author>By {review.author}</Author>
                             </div>
                             <ReactStars
@@ -147,7 +146,7 @@ const Reviews: FunctionComponent<ReviewsProps> = ({ product, reviews: data }) =>
             {!submitted ? (
                 <Form>
                     <FormHeader>
-                        <Title>Leave a review</Title>
+                        <ReviewTitle>Leave a review</ReviewTitle>
                         <ReactStars
                             size={32}
                             count={5}

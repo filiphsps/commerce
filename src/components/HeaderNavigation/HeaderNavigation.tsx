@@ -13,7 +13,7 @@ const Container = styled.div`
     height: calc(100vh - 10.5rem);
     height: calc(100dvh - 10.5rem);
     background: var(--accent-secondary-light);
-    color: var(--color-text-dark);
+    color: var(--color-dark);
     transition: 250ms ease-in-out;
 
     left: -100vw;

@@ -10,7 +10,7 @@ const Container = styled.div`
     grid-template-rows: 1fr auto;
     width: 100%;
     height: 100%;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     @media (max-width: 950px) {
         grid-template-rows: 1fr;
@@ -27,8 +27,9 @@ const Previews = styled.div`
     position: relative;
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: var(--block-spacer);
     width: 100%;
+    height: 100%;
 
     @media (max-width: 950px) {
         flex-direction: column;
@@ -45,7 +46,6 @@ const Preview = styled.div`
     transition: 250ms ease-in-out;
     border-radius: var(--block-border-radius);
     user-select: none;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 
     &.Selected,
     &:hover,
@@ -72,13 +72,8 @@ const Primary = styled.div`
     width: 100%;
     height: 100%;
     padding: 2rem;
-    background: #efefef;
+    background: var(--color-block);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-
-    @media (min-width: 950px) {
-        aspect-ratio: 5 / 4;
-    }
 `;
 
 const ImageWrapper = styled.div`

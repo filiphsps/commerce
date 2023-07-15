@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '../src/components/Breadcrumbs';
-import Button from '../src/components/Button';
+import { Button } from '../src/components/Button';
 import { Config } from '../src/util/Config';
 import Input from '../src/components/Input';
 import { Label } from '../src/components/Label';
@@ -25,7 +25,7 @@ const Content = styled.section`
     display: flex;
     flex-direction: column;
     min-height: 60vh;
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
 
 const SearchButton = styled(Button)`
@@ -33,7 +33,7 @@ const SearchButton = styled(Button)`
 
     svg {
         font-size: 2rem;
-        stroke-width: 0.35ex;
+        stroke-width: 0.4ex;
     }
 `;
 
@@ -56,8 +56,8 @@ const SearchBarClear = styled.div`
     align-items: center;
     height: 100%;
     padding: 0px var(--block-padding-large);
-    color: var(--color-text-dark);
-    background: var(--color-text-primary);
+    color: var(--color-dark);
+    background: var(--color-bright);
     border-radius: var(--block-border-radius);
     font-size: 2.25rem;
     line-height: 2.25rem;
@@ -66,7 +66,7 @@ const SearchBarClear = styled.div`
 const SearchHeader = styled.section`
     display: grid;
     grid-template-columns: 1fr 5.25rem;
-    gap: 1rem;
+    gap: var(--block-spacer);
     height: 5rem;
 
     ${Input}, button {
@@ -78,7 +78,7 @@ const SearchHeader = styled.section`
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: var(--block-spacer-small);
 
         svg {
             margin-top: -0.1rem;
@@ -93,8 +93,7 @@ const ContentHeader = styled(SearchHeader)`
     padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
-    background: linear-gradient(320deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
 
     ${Label} {
         height: 100%;

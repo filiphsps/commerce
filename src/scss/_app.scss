@@ -1,4 +1,4 @@
-$color-text-primary: #fefefe;
+$color-text-primary: var(--color-bright);
 
 $color-primary: var(--accent-primary);
 $color-primary-dark: var(--accent-primary-dark);
@@ -8,7 +8,7 @@ $color-secondary: var(--accent-secondary);
 $color-secondary-dark: var(--accent-secondary-dark);
 $color-secondary-light: var(--accent-secondary-light);
 
-$color-dark: #404756;
+$color-dark: var(--color-block);
 $color-silvery: #efefef;
 
 $color-link: #0984e3;
@@ -20,7 +20,7 @@ $color-sale: #d91e18;
 
 $color-black: #1c1c1c;
 $color-light-gray: #f2f2f2;
-$color-white: #fefefe;
+$color-white: var(--color-bright);
 
 $width-max-mobile: 950px;
 $width-min-tablet: 1024px;

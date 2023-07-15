@@ -14,7 +14,7 @@ const Filter = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    grid-gap: 1.5rem;
+    gap: 1.5rem;
     transition: 250ms all ease-in-out;
 
     @media (max-width: 950px) {
@@ -33,7 +33,7 @@ const Toggle = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: var(--block-padding);
     margin-bottom: -2rem;
     text-transform: uppercase;
     font-size: 1.25rem;
@@ -43,7 +43,7 @@ const Toggle = styled.div`
 
     &.Open {
         background: var(--accent-primary);
-        color: var(--color-text-primary);
+        color: var(--accent-primary-text);
         opacity: 1;
         margin-bottom: 1rem;
     }
@@ -56,13 +56,13 @@ const Toggle = styled.div`
 const Options = styled.div`
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 0.5rem;
+    gap: var(--block-spacer-small);
 `;
 
 const Option = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
-    grid-gap: 1rem;
+    gap: var(--block-spacer);
     align-items: center;
     font-size: 1.25rem;
     text-transform: uppercase;

@@ -49,7 +49,7 @@ const FooterContainer = styled.footer`
     align-items: center;
     width: 100%;
     background: var(--accent-primary-dark);
-    color: var(--color-text-primary);
+    color: var(--accent-primary-text);
     padding-top: 1rem;
 
     a {
@@ -62,32 +62,34 @@ const FooterContainer = styled.footer`
 const FooterWrapper = styled.div`
     display: grid;
     grid-template-rows: auto 1fr;
-    grid-gap: 1.5rem;
+    gap: 1.5rem;
     width: 1465px;
     max-width: 100%;
-    padding: 1rem;
+    padding: var(--block-padding-large);
 `;
 const FooterBlocksContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-align: left;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     @media (max-width: 950px) {
         display: grid;
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 `;
 const FooterBlock = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
+    gap: 0.25rem;
     width: 100%;
     height: 100%;
 
-    font-size: 1.75rem;
-    line-height: 2rem;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
     font-weight: 400;
 
     @media (min-width: 950px) {
@@ -118,11 +120,6 @@ const FooterBottomSection = styled.section`
 
     @media (min-width: 950px) {
         grid-template-columns: 1fr 1fr;
-    }
-
-    // Make the footer a bit taller to deal with the support chat
-    @media (max-width: 1450px) {
-        padding-bottom: 8rem;
     }
 `;
 const FooterBottomSectionBlock = styled.div`
@@ -168,12 +165,12 @@ const Copyright = styled.div`
         display: flex;
         justify-content: flex-end;
         align-items: flex-end;
-        gap: 0.5rem;
+        gap: var(--block-spacer-small);
         text-align: right;
     }
 `;
 const Policy = styled(Link)`
-    padding: 1rem 0px;
+    padding: var(--block-padding-large) 0px;
     font-size: 1.25rem;
     font-weight: 800;
     text-transform: uppercase;

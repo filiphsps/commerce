@@ -7,7 +7,7 @@
     .ShopBlock-Actions {
         display: grid;
         grid-template-columns: 1fr auto auto;
-        grid-gap: 1rem;
+        gap: var(--block-spacer);
         justify-content: space-between;
         align-items: center;
         padding-bottom: 1rem;

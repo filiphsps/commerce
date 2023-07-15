@@ -8,7 +8,7 @@ import { useProduct } from '@shopify/hydrogen-react';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--block-spacer);
     margin-bottom: 1rem;
 
     &:empty {
@@ -20,12 +20,12 @@ const OptionTitle = styled.div`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
-    color: #404756;
+    color: var(--color-block);
     color: var(--foreground);
 `;
 const OptionValues = styled.div`
     display: flex;
-    gap: 1rem;
+    gap: var(--block-spacer);
 `;
 const OptionValue = styled.div<{
     selected?: boolean;
@@ -34,22 +34,21 @@ const OptionValue = styled.div<{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    grid-gap: 0.25rem;
+    gap: 0.25rem;
     max-width: 18rem;
-    padding: 1rem 1.5rem;
+    padding: var(--block-padding) var(--block-padding-large);
     margin: 0px 0px 0.5rem 0px;
     text-transform: uppercase;
-    background: var(--color-text-primary);
-    border: 0.2rem solid #efefef;
+    background: var(--color-bright);
+    border: 0.2rem solid var(--color-bright);
     border-radius: var(--block-border-radius);
     font-weight: 600;
     cursor: pointer;
     transition: 250ms all ease-in-out;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     @media (max-width: 950px) {
         font-size: 1.5rem;
-        border-color: var(--color-text-primary);
     }
 
     ${(props) =>

@@ -11,7 +11,7 @@ const ShopBlockWrapper = styled.div`
     position: relative;
     display: grid;
     grid-template-columns: 1fr 12rem;
-    grid-gap: 1.5rem;
+    gap: 1.5rem;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;

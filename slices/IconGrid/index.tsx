@@ -7,19 +7,19 @@ import styled from 'styled-components';
 const Container = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: 1rem;
+    gap: var(--block-spacer-large);
 `;
 
 const ContentContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: var(--block-spacer-large);
 
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary);
-    color: var(--color-text-secondary);
+    color: var(--accent-secondary-text);
 
     @media (min-width: 960px) {
         display: grid;
@@ -29,15 +29,17 @@ const ContentContainer = styled.div`
     }
     @media (max-width: 1465px) {
         flex-direction: column;
-        gap: 1rem;
+
+        gap: var(--block-spacer);
     }
 `;
 const Item = styled.div`
     display: grid;
-    grid-template-columns: 2rem auto;
+    grid-template-columns: var(--block-spacer-large) auto;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: var(--block-spacer-large);
+    padding: var(--block-padding-small);
 `;
 const ItemIcon = styled.div`
     position: relative;
@@ -47,7 +49,6 @@ const ItemIcon = styled.div`
 const ItemContent = styled.h3`
     font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0.05rem;
     text-transform: uppercase;
     text-align: center;
 

@@ -1,8 +1,6 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import { useEffect, useState } from 'react';
-
 import { Content } from '@prismicio/client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +8,6 @@ import PageContent from '../../src/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import { useWindowSize } from 'rooks';
 import { ImageLoader } from '../../src/util/ImageLoader';
 
 const Container = styled.section`
@@ -33,6 +30,19 @@ const ImageContainer = styled.div`
     position: relative;
     width: 100%;
 
+    .Desktop {
+        display: none;
+    }
+
+    @media (min-width: 950px) {
+        .Mobile {
+            display: none;
+        }
+        .Desktop {
+            display: block;
+        }
+    }
+
     img {
         width: 100%;
         height: 100%;
@@ -51,8 +61,6 @@ export type CarouselProps = SliceComponentProps<Content.CarouselSlice>;
  */
 const Carousel = ({ slice }: CarouselProps): JSX.Element => {
     const speed = Number.parseInt(slice.primary.delay || '3000');
-    const { outerWidth } = useWindowSize();
-    const [isMobile, setIsMobile] = useState(false);
 
     const settings = {
         dots: false,
@@ -64,13 +72,6 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
         slidesToScroll: 1
     };
 
-    useEffect(() => {
-        if (!outerWidth) return;
-
-        if (outerWidth > 960 && isMobile) setIsMobile(false);
-        else if (outerWidth <= 960 && !isMobile) setIsMobile(true);
-    }, [outerWidth]);
-
     return (
         <>
             <Container>
@@ -78,25 +79,34 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                     <Content>
                         <Slider {...settings}>
                             {slice.items.map((slide, index) => {
-                                const image = isMobile ? slide.mobile_image : slide.image;
                                 return (
                                     <Link key={index} href={slide.href!}>
                                         <ImageContainer>
-                                            {image?.url && (
-                                                <Image
-                                                    className="Image"
-                                                    src={image.url || ''}
-                                                    alt={image.alt || ''}
-                                                    title={image?.alt || undefined}
-                                                    width={image.dimensions?.width}
-                                                    height={image.dimensions?.height}
-                                                    priority={true}
-                                                    placeholder={'blur'}
-                                                    blurDataURL={`/_next/image?url=${encodeURIComponent(
-                                                        image.url
-                                                    )}&w=16&q=1`}
-                                                    loader={ImageLoader}
-                                                />
+                                            {slide.image?.url && slide.mobile_image?.url && (
+                                                <>
+                                                    <Image
+                                                        className="Image Mobile"
+                                                        src={slide.mobile_image.url || ''}
+                                                        alt={slide.mobile_image.alt || ''}
+                                                        title={slide.mobile_image?.alt || undefined}
+                                                        width={slide.mobile_image.dimensions?.width}
+                                                        height={
+                                                            slide.mobile_image.dimensions?.height
+                                                        }
+                                                        priority={true}
+                                                        loader={ImageLoader}
+                                                    />
+                                                    <Image
+                                                        className="Image Desktop"
+                                                        src={slide.image.url || ''}
+                                                        alt={slide.image.alt || ''}
+                                                        title={slide.image?.alt || undefined}
+                                                        width={slide.image.dimensions?.width}
+                                                        height={slide.image.dimensions?.height}
+                                                        priority={false}
+                                                        loader={ImageLoader}
+                                                    />
+                                                </>
                                             )}
                                         </ImageContainer>
                                     </Link>

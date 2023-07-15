@@ -8,14 +8,14 @@ import styled from 'styled-components';
 const Container = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
     }
 
     &.Block {
-        color: var(--color-text-dark);
+        color: var(--color-dark);
 
         h1 {
             padding-bottom: 1rem;
@@ -38,7 +38,7 @@ const ImageWrapper = styled.div`
     align-items: center;
     height: 100%;
     width: 100%;
-    padding: var(--block-padding);
+    padding: var(--block-padding-large);
 
     img {
         object-fit: contain;
@@ -47,6 +47,7 @@ const ImageWrapper = styled.div`
     @media (max-width: 950px) {
         max-height: 18rem;
         max-width: 100%;
+        padding: var(--block-padding);
     }
 `;
 const Content = styled(ContentComponent)`

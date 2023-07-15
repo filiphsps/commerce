@@ -38,7 +38,7 @@ const Banner = styled.div`
     position: relative;
     width: 100%;
     height: 18rem;
-    margin: 0px auto 1rem auto;
+    margin: 0px auto var(--block-padding) auto;
     border-radius: var(--block-border-radius);
 
     img {
@@ -48,7 +48,7 @@ const Banner = styled.div`
 
 const ArticleHeader = styled.div`
     margin-bottom: 3rem;
-    padding: 0.5rem 0px 1rem 0px;
+    padding: var(--block-padding-small) 0px var(--block-padding) 0px;
     border-bottom: 0.2rem solid #efefef;
 `;
 const ArticleTitle = styled.h1`
@@ -60,7 +60,7 @@ const ArticleTitle = styled.h1`
 `;
 const ArticleMeta = styled.div`
     margin: 0px auto;
-    opacity: 0.85;
+    opacity: 0.75;
     font-size: 1.25rem;
     font-weight: 600;
     font-size: 2rem;
@@ -72,19 +72,18 @@ const ArticleTags = styled.div`
     overflow: hidden;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    gap: var(--block-spacer-small);
+    margin-top: var(--block-padding-small);
 `;
 const ArticleTag = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     height: 2rem;
-    padding: 1rem 0.5rem;
+    padding: var(--block-padding) var(--block-padding-large);
     text-transform: uppercase;
     background: var(--accent-secondary-dark);
-    color: var(--color-text-primary);
-    padding: 0.75rem 1rem;
+    color: var(--accent-primary-text);
     border-radius: var(--block-border-radius);
 `;
 
@@ -118,7 +117,6 @@ const SidebarTitle = styled.div`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.25rem;
-    letter-spacing: 0.05rem;
 `;
 const SidebarLink = styled.div`
     width: 100%;
@@ -232,7 +230,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                             <SidebarTitle>Latest Articles</SidebarTitle>
                             {blog.articles.map((article) => (
                                 <SidebarLink key={article.id}>
-                                    <Link href={`/blog/${article.handle}`}>{article.title}</Link>
+                                    <Link href={`/blog/${article.handle}/`}>{article.title}</Link>
                                 </SidebarLink>
                             ))}
 
