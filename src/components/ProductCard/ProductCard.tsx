@@ -1,3 +1,4 @@
+import { ConvertToLocalMeasurementSystem, PRODUCT_ACCENT_CACHE_TIMEOUT } from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import {
@@ -13,10 +14,10 @@ import Currency from '../Currency';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
-import { PRODUCT_ACCENT_CACHE_TIMEOUT } from '../../api/product';
 import { StoreModel } from '../../models/StoreModel';
 import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
+import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 
 const Container = styled.section<{ available?: boolean }>`
@@ -102,7 +103,7 @@ const Details = styled.div`
 const Brand = styled.div`
     font-weight: 400;
     font-size: 1.25rem;
-    line-height: 1.5rem;
+    line-height: 1.75rem;
 
     &:hover,
     &:active,
@@ -136,14 +137,13 @@ const VariantsContainer = styled.div`
 `;
 const Variants = styled.div`
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
     min-width: 0px;
 `;
 const Variant = styled.div`
-    height: 1.75rem;
     border-radius: var(--block-border-radius);
     font-weight: 500;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     line-height: 1.5rem;
     text-align: center;
     cursor: pointer;
@@ -233,13 +233,16 @@ const Prices = styled.div`
     text-transform: uppercase;
 `;
 const Price = styled.div`
-    font-size: 1.5rem;
+    font-size: 2rem;
+    line-height: 2rem;
     font-weight: 700;
 `;
 const PreviousPrice = styled.div`
-    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    font-weight: 500;
     text-decoration: line-through;
-    color: #404756;
+    opacity: 0.85;
 `;
 
 const Badges = styled.div`
@@ -319,7 +322,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             width={image.width || 0}
             placeholder={'blur'}
             blurDataURL={`/_next/image?url=${encodeURIComponent(image.url)}&w=16&q=1`}
-            sizes={'18rem'}
+            sizes={'14rem'}
             loader={ImageLoader}
         />
     );
@@ -332,11 +335,18 @@ interface ProductCardProps {
     className?: string;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) => {
+    const router = useRouter();
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
     const { product, selectedVariant, setSelectedVariant } = useProduct();
     const [cartStore, setCartStore] = useStore<any>('cart');
+
+    useEffect(() => {
+        if (!product) return;
+
+        setSelectedVariant(product?.variants?.edges?.at(-1)?.node || selectedVariant || null);
+    }, []);
 
     useEffect(() => {
         if (quantity > 0) return;
@@ -471,15 +481,40 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                     <Variants>
                         {product.variants?.edges &&
                             product.variants.edges.length > 1 &&
-                            product.variants.edges.map((edge: ProductVariantEdge) => (
-                                <Variant
-                                    key={edge.node.id}
-                                    onClick={() => setSelectedVariant(edge.node)}
-                                    className={selectedVariant.id === edge.node.id ? 'Active' : ''}
-                                >
-                                    {edge.node.title}
-                                </Variant>
-                            ))}
+                            product.variants.edges.map((edge: ProductVariantEdge) => {
+                                if (!edge.node) return null;
+                                const variant = edge.node;
+                                let title = variant.title;
+
+                                // Handle variants that should have their weight as their actual title
+                                // FIXME: Remove `Size` when we've migrated to using Weight
+                                if (
+                                    variant.selectedOptions.length === 1 &&
+                                    ['Size', 'Weight'].includes(
+                                        variant.selectedOptions.at(0)!.name
+                                    ) &&
+                                    variant.weight &&
+                                    variant.weightUnit
+                                ) {
+                                    title = ConvertToLocalMeasurementSystem({
+                                        locale: router.locale,
+                                        weight: variant.weight,
+                                        weightUnit: variant.weightUnit
+                                    });
+                                }
+
+                                return (
+                                    <Variant
+                                        key={variant.id}
+                                        onClick={() => setSelectedVariant(variant)}
+                                        className={
+                                            selectedVariant.id === variant.id ? 'Active' : ''
+                                        }
+                                    >
+                                        {title}
+                                    </Variant>
+                                );
+                            })}
                     </Variants>
                 </VariantsContainer>
             </Details>

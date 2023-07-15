@@ -4,11 +4,14 @@ import {
     CountryCode,
     LanguageCode,
     Product,
-    ProductEdge
+    ProductEdge,
+    WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { FinalColor, extractColors } from 'extract-colors';
 
 import Color from 'color';
+import ConvertUnits from 'convert-units';
+import { NextLocaleToCountry } from '../util/Locale';
 import TinyCache from 'tinycache';
 import getPixels from 'get-pixels';
 import { gql } from '@apollo/client';
@@ -147,6 +150,46 @@ export const PRODUCT_FRAGMENT = `
         value
     }
 `;
+
+// Handle metric and imperial
+export const ConvertToLocalMeasurementSystem = ({
+    locale,
+    weight,
+    weightUnit
+}: {
+    locale?: string;
+    weight: number;
+    weightUnit: WeightUnit;
+}): string => {
+    const weightUnitToConvertUnits = (unit: WeightUnit) => {
+        switch (unit) {
+            case 'GRAMS':
+                return 'g';
+            case 'KILOGRAMS':
+                return 'kg';
+            case 'OUNCES':
+                return 'oz';
+            case 'POUNDS':
+                return 'lb';
+
+            // TODO: Handle this; which should never be possible tbh
+            default:
+                return 'g';
+        }
+    };
+
+    const country = NextLocaleToCountry(locale);
+    // FIXME: Support more than just US here, because apparently there's
+    //        more countries out there using imperial..
+    const metric = country !== 'US';
+    const unit = weightUnitToConvertUnits(weightUnit);
+    // TODO: Do this properly.
+    const targetUnit = (metric && 'g') || 'oz';
+
+    const res = ConvertUnits(weight).from(unit).to(targetUnit);
+    // TODO: Precision should be depending on unit.
+    return `${Math.round(res)}${targetUnit}`;
+};
 
 // TODO: Remove this when our shopify app handles it and sets it as metadata instead.
 export interface ExtractAccentColorsFromImageRes {
