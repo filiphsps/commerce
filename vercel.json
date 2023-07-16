@@ -4,6 +4,6 @@
     "public": false,
     "github": {
         "silent": true,
-        "enabled": false
+        "enabled": true
     }
 }
