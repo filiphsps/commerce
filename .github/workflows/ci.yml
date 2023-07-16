@@ -69,6 +69,7 @@ jobs:
               run: npm run build
 
     deploy-vercel:
+        if: false
         name: 🚚 Deploy Vercel
         needs: [test]
         timeout-minutes: 30
