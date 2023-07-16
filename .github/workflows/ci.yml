@@ -80,7 +80,7 @@ jobs:
             VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
             VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        if: github.ref == 'refs/heads/master'
+        # if: github.ref == 'refs/heads/master'
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v3
