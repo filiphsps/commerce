@@ -18,6 +18,24 @@ export const middleware = (req: NextRequest) => {
         return null;
     }
 
+    // Fix invalid country codes
+    if (req.nextUrl.locale === 'x-default') {
+        const localeRegex = /\/[A-Za-z][A-Za-z]-[A-Za-z][A-Za-z]\//im;
+        const localeFromUrl = req.url.match(localeRegex)?.at(0)?.replaceAll('/', '');
+
+        if (localeFromUrl && req.nextUrl.locale !== localeFromUrl) {
+            const language = localeFromUrl.split('-')[0];
+            const country = localeFromUrl.split('-')[1].toUpperCase();
+            const locale = `${language}-${country}`;
+
+            const newUrl = req.nextUrl.clone();
+            newUrl.locale = (i18n.locales.includes(locale) && locale) || 'x-default';
+            newUrl.href = newUrl.href.replace(`/${localeFromUrl}`, '');
+            return NextResponse.redirect(newUrl);
+        }
+    }
+
+    // Handle locale detection
     const acceptLanguageHeader = req.headers.get('accept-language') || '';
     if (req.nextUrl.locale === 'x-default') {
         const newUrl = req.nextUrl.clone();

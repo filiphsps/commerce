@@ -121,6 +121,7 @@ export async function getStaticProps({ params, locale, previewData }) {
                 prefetch,
                 analytics: {
                     pageType: AnalyticsPageType.page,
+                    // TODO: fetch this ID from shopify
                     resourceId: `gid://shopify/OnlineStorePage/${params?.handle?.join('-')}` || null
                 }
             },
