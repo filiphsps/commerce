@@ -5,7 +5,7 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '../src/components/Breadcrumbs';
 import { Button } from '../src/components/Button';
 import { Config } from '../src/util/Config';
-import Input from '../src/components/Input';
+import { Input } from '../src/components/Input';
 import { Label } from '../src/components/Label';
 import LanguageString from '../src/components/LanguageString';
 import { NextSeo } from 'next-seo';

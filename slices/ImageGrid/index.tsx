@@ -13,6 +13,7 @@ const Container = styled.section`
     width: 100%;
     padding: 0px;
     margin: 0px;
+    user-select: none;
 `;
 const Grid = styled.div`
     display: grid;

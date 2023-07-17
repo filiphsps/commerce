@@ -24,7 +24,7 @@ import { Currency } from 'react-tender';
 import Error from 'next/error';
 import Gallery from '../../src/components/Gallery';
 import { GetStaticPropsResult } from 'next';
-import Input from '../../src/components/Input';
+import { Input } from '../../src/components/Input';
 import Link from 'next/link';
 import Page from '../../src/components/Page';
 import PageContent from '../../src/components/PageContent';
@@ -588,7 +588,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             onClick={addToCart}
         >
             <FiShoppingCart />
-            <span data-nosnippet>
+            <span>
                 {(selectedVariant?.availableForSale &&
                     ((addedToCart && 'Added!') || 'Add to Cart')) ||
                     'Out of Stock'}

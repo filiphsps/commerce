@@ -96,11 +96,11 @@ body {
     pointer-events: none;
 }
 #nprogress .bar {
-    background: var(--accent-secondary-dark);
+    background: var(--accent-secondary);
     position: fixed;
-    z-index: $int-max;
+    z-index: 2147483647;
     top: 0;
     left: 0;
     width: 100%;
-    height: var(--block-padding);
+    height: var(--block-padding-small);
 }

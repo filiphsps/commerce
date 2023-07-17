@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { FiX } from 'react-icons/fi';
-import Input from '../Input';
+import { Input } from '../Input';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
 

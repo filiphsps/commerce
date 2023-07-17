@@ -45,9 +45,7 @@ const ImageWrapper = styled.div`
     }
 
     @media (max-width: 950px) {
-        max-height: 18rem;
-        max-width: 100%;
-        padding: var(--block-padding);
+        height: 18rem;
     }
 `;
 const Content = styled(ContentComponent)`

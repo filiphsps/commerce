@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
-const Input = styled.input`
+export const Input = styled.input`
     appearance: none;
-    max-width: 100%;
-    max-height: 100%;
-    padding: var(--block-padding-large);
+    width: 100%;
+    padding: var(--block-padding) var(--block-padding-large);
     border: var(--block-border-width) solid var(--color-bright);
     border-radius: var(--block-border-radius);
     color: var(--color-dark);
@@ -13,6 +12,11 @@ const Input = styled.input`
     line-height: 1.25rem;
     font-weight: 600;
     outline: none;
+
+    @media (max-width: 950px) {
+        font-size: 1.5rem;
+        padding: var(--block-padding-small) var(--block-padding);
+    }
 
     &:active,
     &:focus,
@@ -50,5 +54,3 @@ const Input = styled.input`
         opacity: 0.75;
     }
 `;
-
-export default Input;

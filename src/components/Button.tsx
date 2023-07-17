@@ -19,6 +19,7 @@ export const Button = styled.button`
 
     @media (max-width: 950px) {
         font-size: 1.5rem;
+        padding: var(--block-padding-small) var(--block-padding);
     }
 
     &:hover {

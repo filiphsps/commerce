@@ -213,14 +213,6 @@ const AddButton = styled(Button)<{ added: boolean }>`
         font-weight: 500;
         transition: 250ms ease-in-out;
 
-        @media (min-width: 950px) {
-            padding: calc(var(--block-padding) / 2) var(--block-padding);
-            font-size: 1.75rem;
-            line-height: 2rem;
-            flex-wrap: nowrap;
-            flex-grow: 1;
-        }
-
         &:enabled:hover {
             background: var(--primary-foreground);
             border-color: var(--primary-foreground);
@@ -628,7 +620,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                         !selectedVariant.availableForSale ||
                         (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
-                    data-nosnippet
                 >
                     {(!selectedVariant.availableForSale && 'Out of Stock') ||
                         (addedToCart && 'Added!') ||

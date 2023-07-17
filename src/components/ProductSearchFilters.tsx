@@ -1,7 +1,7 @@
 import { FunctionComponent, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import Input from './Input';
+import { Input } from './Input';
 import { Label } from './Label';
 
 const Container = styled.div`

@@ -58,7 +58,7 @@ class Document extends NextDocument {
                             function initGTM () {
                                 if(ran) return;
                                 ran = true;
-                                
+
                                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -78,7 +78,7 @@ class Document extends NextDocument {
                                 document.removeEventListener('click', initGTMOnEvent);
                                 document.removeEventListener('touchstart', initGTMOnEvent);
                             }
-                            
+
                             // Backup options
                             if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
                                 setTimeout(initGTM, 10000);

@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { Button } from '../Button';
-import Input from '../Input';
+import { Input } from '../Input';
 import { NewsletterApi } from '../../api/newsletter';
 import styled from 'styled-components';
 
@@ -81,26 +81,29 @@ const EmailCaptureDescription = styled.div`
 `;
 
 const Form = styled.div`
+    overflow: hidden;
     display: grid;
     grid-template-columns: auto auto;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     gap: var(--block-spacer-small);
-    padding: 0px 1rem;
+    margin: 0px 1rem;
+    height: 4rem;
+    max-height: 6rem;
 
     @media (min-width: 950px) {
         max-height: 6rem;
-        padding: 0px;
+        margin: 0px;
         grid-template-columns: auto auto;
         justify-content: start;
     }
 `;
 const EmailCaptureInput = styled(Input)`
+    max-height: 100%;
     height: 100%;
-    width: 100%;
     font-size: 1.5rem;
     text-align: center;
-    border-color: var(--color-block);
+    border-width: 0px;
 
     @media (min-width: 950px) {
         text-align: left;
@@ -108,7 +111,7 @@ const EmailCaptureInput = styled(Input)`
 `;
 const EmailCaptureSubmit = styled(Button)`
     display: block;
-    height: calc(100% - 0.25rem);
+    height: 100%;
     width: 100%;
     font-size: 1.5rem;
 `;

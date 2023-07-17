@@ -2,7 +2,7 @@ import { FunctionComponent, useState } from 'react';
 import { Subtitle, Title } from '../PageHeader/PageHeader';
 
 import { Button } from '../Button';
-import Input from '../Input';
+import { Input } from '../Input';
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';

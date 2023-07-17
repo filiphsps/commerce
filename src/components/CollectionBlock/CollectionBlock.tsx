@@ -1,5 +1,5 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import React, { FunctionComponent, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -17,40 +17,60 @@ const Subtitle = styled.div``;
 const Actions = styled.div`
     position: absolute;
     z-index: 99999;
-    top: -2rem;
-    right: 0;
+    top: 0;
+    right: var(--block-padding);
     bottom: 0;
-    left: 0;
-    display: none;
+    left: var(--block-padding);
+    display: grid;
+    grid-template-areas: 'left right';
     justify-content: space-between;
     align-items: center;
+    width: calc(100% - calc(var(--block-padding) * 2));
     pointer-events: none;
+    user-select: none;
 
-    @media (min-width: 950px) {
-        display: flex;
+    @media (max-width: 950px) {
+        display: none;
     }
 `;
-const Action = styled.div`
-    font-size: 4rem;
-    color: var(--color-dark);
-    opacity: 0.75;
+const Action = styled.div<{ hide?: boolean; position: 'left' | 'right' }>`
+    z-index: 99999;
+    grid-area: ${({ position }) => position};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(var(--block-padding-large) * 2);
+    width: calc(var(--block-padding-large) * 2);
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--accent-secondary-text);
     cursor: pointer;
     transition: 250ms ease-in-out;
     pointer-events: all;
-    user-select: none;
-    margin-top: -0.5rem;
+
+    background: var(--accent-secondary);
+    border-radius: var(--block-border-radius);
+    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     &:hover,
     &:active {
-        color: var(--accent-primary);
-        transform: scale(1.15);
+        background: var(--accent-secondary-dark);
     }
+
+    ${({ hide }) =>
+        hide &&
+        css`
+            opacity: 0;
+            pointer-events: none;
+        `}
 `;
 
 const Meta = styled.div``;
 
 const Content = styled.div<{
     horizontal?: boolean;
+    showLeftShadow?: boolean;
+    showRightShadow?: boolean;
 }>`
     column-count: 2;
     column-gap: var(--block-spacer);
@@ -61,17 +81,16 @@ const Content = styled.div<{
     ${({ horizontal }) =>
         horizontal &&
         css`
-            //padding: 0px var(--block-spacer-large);
-            //margin: calc(var(--block-spacer-large) * -1) 0px;
+            padding: var(--block-padding-large) 0px;
+            margin: calc(var(--block-padding-large) * -1) 0px;
             column: none;
             display: grid;
             overflow-x: auto;
             grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
-            grid-auto-columns: auto;
             grid-template-rows: 1fr;
             grid-auto-flow: column;
             overscroll-behavior-x: contain;
-            scroll-padding-left: var(--block-padding);
+            scroll-padding-left: var(--block-padding-large);
 
             &::-webkit-scrollbar {
                 display: none;
@@ -80,11 +99,49 @@ const Content = styled.div<{
             -ms-overflow-style: none;
 
             .First {
-                margin-left: var(--block-spacer);
+                margin-left: calc(var(--block-spacer-large));
             }
 
             section {
                 box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                bottom: 0px;
+                left: 0px;
+                height: 100%;
+                transition: 250ms ease-in-out;
+                pointer-events: none;
+
+                --shadow-width: calc(var(--block-padding) * 2);
+                --shadow: rgba(0, 0, 0, 0.5);
+                background-image: linear-gradient(to right, transparent, transparent),
+                    linear-gradient(to right, transparent, transparent),
+                    ${({ showLeftShadow }: any) =>
+                        (showLeftShadow &&
+                            'linear-gradient(to right, var(--shadow), transparent)') ||
+                        'linear-gradient(to right, transparent, transparent)'},
+                    ${({ showRightShadow }: any) =>
+                        (showRightShadow &&
+                            'linear-gradient(to left, var(--shadow), transparent)') ||
+                        'linear-gradient(to left, transparent, transparent)'};
+                background-position:
+                    left center,
+                    right center,
+                    left center,
+                    right center;
+                background-repeat: no-repeat;
+                background-color: transparent;
+                background-size:
+                    var(--shadow-width) 100%,
+                    var(--shadow-width) 100%,
+                    var(--shadow-width) 100%,
+                    var(--shadow-width) 100%;
+                background-attachment: local, local, scroll, scroll;
             }
         `}
 
@@ -104,7 +161,6 @@ const Content = styled.div<{
             section {
                 width: 100%;
                 min-width: unset;
-                max-width: var(--component-product-card-width);
             }
         `}
 `;
@@ -118,11 +174,8 @@ const Container = styled.div<{
     ${({ horizontal }) =>
         horizontal &&
         css`
-            width: calc(100% + var(--block-spacer) * 2);
-            margin-left: calc(var(--block-spacer) * -1);
-
-            ${Content} {
-            }
+            width: calc(100% + var(--block-padding-large) * 2);
+            margin-left: calc(var(--block-padding-large) * -1);
         `}
 `;
 
@@ -147,6 +200,7 @@ const ViewMore = styled.section<{
     text-align: center;
     scroll-snap-align: start;
     transition: 250ms ease-in-out;
+    user-select: none;
 
     a {
         display: flex;
@@ -160,10 +214,16 @@ const ViewMore = styled.section<{
     ${({ horizontal }) =>
         horizontal &&
         css`
-            margin-right: calc(50vw - calc(var(--component-product-card-width) / 2));
+            margin-right: calc(
+                50vw -
+                    calc(
+                        var(--component-product-card-width) / 2 +
+                            calc(var(--block-spacer-small) * 2)
+                    )
+            );
 
             @media (min-width: 950px) {
-                margin-right: calc(var(--block-padding-large) * 2);
+                margin-right: var(--block-padding-large);
             }
         `}
 
@@ -207,6 +267,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     store
 }) => {
     const router = useRouter();
+    const [shadowLeft, setShadowLeft] = useState(false);
+    const [shadowRight, setShadowRight] = useState(false);
 
     const { data: collection } = useSWR(
         handle ? [handle] : null,
@@ -216,7 +278,22 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         }
     );
 
-    const content_ref = useRef();
+    const contentRef = useRef<HTMLDivElement>();
+    useEffect(() => {
+        if (!contentRef.current) return () => {};
+
+        const onScroll = () => {
+            const { scrollWidth = 0, scrollLeft = 0, offsetWidth = 0 } = contentRef.current || {};
+            setShadowLeft(scrollLeft > 0);
+            setShadowRight(scrollLeft + offsetWidth < scrollWidth);
+        };
+
+        onScroll();
+        contentRef.current?.addEventListener('scroll', onScroll);
+        return () => {
+            contentRef.current?.removeEventListener('scroll', onScroll);
+        };
+    }, [contentRef.current]);
 
     const products = (collection?.products?.edges || collection?.products?.edges || []).map(
         (edge, index) => {
@@ -242,11 +319,12 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         collection.products.edges.length > limit && (
             <ViewMore horizontal={isHorizontal}>
                 <Link
+                    title={`Browse all products in "${collection.title}"`}
                     className="ProductCard CollectionBlock-Content-ShowMore"
                     href={`/collections/${handle}/`}
                 >
                     <p>
-                        View all <span>{collection.products.edges.length}</span> products in the
+                        View all <span>{collection.products.edges.length}</span> products in this
                         collection
                     </p>
                 </Link>
@@ -267,27 +345,28 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                     />
                 </Meta>
             )}
-            <Content ref={content_ref as any} horizontal={isHorizontal}>
-                {products.length > 0 && products}
-                {view_more}
-            </Content>
+
             {isHorizontal && (
                 <Actions>
                     <Action
+                        position={'left'}
+                        hide={!contentRef?.current || !shadowLeft}
                         onClick={() => {
-                            if (!content_ref?.current) return;
-                            (content_ref.current as any).scroll?.({
-                                left: (content_ref.current as any).scrollLeft - 150
+                            if (!contentRef?.current) return;
+                            contentRef.current.scroll?.({
+                                left: contentRef.current.scrollLeft - 400
                             });
                         }}
                     >
                         <FiChevronLeft />
                     </Action>
                     <Action
+                        position={'right'}
+                        hide={!contentRef?.current || !shadowRight}
                         onClick={() => {
-                            if (!content_ref?.current) return;
-                            (content_ref.current as any).scroll?.({
-                                left: (content_ref.current as any).scrollLeft + 150
+                            if (!contentRef?.current) return;
+                            contentRef.current.scroll?.({
+                                left: contentRef.current.scrollLeft + 400
                             });
                         }}
                     >
@@ -295,6 +374,16 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                     </Action>
                 </Actions>
             )}
+
+            <Content
+                ref={contentRef as any}
+                horizontal={isHorizontal}
+                showLeftShadow={shadowLeft}
+                showRightShadow={shadowRight}
+            >
+                {products.length > 0 && products}
+                {view_more}
+            </Content>
         </Container>
     );
 };

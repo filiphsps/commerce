@@ -7,7 +7,7 @@ import { Button } from '../Button';
 import { Checkout } from '../../../pages/cart';
 import Image from 'next/legacy/image';
 import { ImageLoader } from '../../util/ImageLoader';
-import Input from '../Input';
+import { Input } from '../Input';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import { Tag } from '../../../pages/products/[handle]';
