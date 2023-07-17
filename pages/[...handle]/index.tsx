@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import React, { FunctionComponent } from 'react';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -88,41 +89,69 @@ export async function getStaticPaths({ locales }) {
             ?.map((page) => [
                 {
                     params: { handle: [page] }
-                },
-                ...locales.map((locale) => ({
-                    params: { handle: [page] },
-                    locale: locale
-                }))
+                }
+                /*...locales
+                    .filter((locale) => locale !== 'x-default')
+                    .map((locale) => ({
+                        params: { handle: [page] },
+                        locale: locale
+                    }))*/
             ])
             .flat()
             .filter((a) => a?.params?.handle)
             .filter((a) => a.params.handle != 'homepage' && a.params.handle != 'shop')
     ];
-    return { paths, fallback: true };
+
+    return { paths, fallback: 'blocking' };
 }
 
-export async function getStaticProps({ params, locale, previewData }) {
+export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {
     try {
+        // Workaround for invalid locale casing and ssg
+        if (params?.handle && Array.isArray(params?.handle)) {
+            if (/^[a-z][a-z]-[A-Z][A-Z]/im.test(params?.handle?.[0])) {
+                const invalidLocale = params?.handle?.[0];
+                const fixedLocale = `${invalidLocale.split('-')[0].toLowerCase()}-${invalidLocale
+                    .split('-')[1]
+                    .toUpperCase()}`;
+
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: `${
+                            (invalidLocale !== fixedLocale && `/${fixedLocale}`) || ''
+                        }/${
+                            (params?.handle?.length > 1 && params?.handle?.slice(1).join('/')) || ''
+                        }`
+                    },
+                    revalidate: false
+                };
+            }
+        }
+
+        const handle = ((Array.isArray(params?.handle) && params?.handle?.join('/')) ||
+            params?.handle?.toString())!;
+
         const client = createClient({ previewData });
         let page: any = null;
         try {
-            page = await client.getByUID('custom_page', params?.handle?.join('/'), {
+            page = await client.getByUID('custom_page', handle, {
                 lang: locale
             });
         } catch {
-            page = await client.getByUID('custom_page', params?.handle?.join('/'));
+            page = await client.getByUID('custom_page', handle);
         }
         const prefetch = (page && (await Prefetch(page, params, locale))) || null;
 
         return {
             props: {
-                handle: params?.handle?.join('/'),
+                handle: handle,
                 page,
                 prefetch,
                 analytics: {
                     pageType: AnalyticsPageType.page,
                     // TODO: fetch this ID from shopify
-                    resourceId: `gid://shopify/OnlineStorePage/${params?.handle?.join('-')}` || null
+                    resourceId: `gid://shopify/OnlineStorePage/${handle}` || null
                 }
             },
             revalidate: 10
@@ -140,6 +169,6 @@ export async function getStaticProps({ params, locale, previewData }) {
             revalidate: 1
         };
     }
-}
+};
 
 export default CustomPage;

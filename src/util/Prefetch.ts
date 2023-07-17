@@ -2,7 +2,7 @@ import { CollectionApi } from '../api/collection';
 import { CustomPageDocument } from '../../prismicio-types';
 import { i18n } from '../../next-i18next.config.cjs';
 
-const Prefetch = (page: CustomPageDocument<string>, query: any, locale: string) => {
+const Prefetch = (page: CustomPageDocument<string>, query: any, locale?: string) => {
     if (locale === 'x-default') locale = i18n.locales[1];
 
     return new Promise<{
