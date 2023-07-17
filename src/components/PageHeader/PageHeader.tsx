@@ -1,11 +1,12 @@
 import React, { FunctionComponent, memo } from 'react';
 
+import Content from '../Content';
 import styled from 'styled-components';
 
-const Content = styled.div`
+const Container = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0rem;
+    gap: var(--block-spacer-small);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--background);
@@ -22,10 +23,11 @@ export const Subtitle = styled.h3`
     line-height: 2rem;
     font-weight: 400;
 
-    a {
+    ${Content} a, a {
         display: inline-block;
         transition: 250ms ease-in-out all;
         cursor: pointer;
+        color: var(--foreground);
 
         &:hover,
         :focus {
@@ -53,7 +55,7 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
     foreground
 }) => {
     return (
-        <Content
+        <Container
             style={
                 {
                     '--foreground': foreground || 'var(--accent-primary-text)',
@@ -72,7 +74,7 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
                     {subtitle && <Subtitle>{subtitle}</Subtitle>}
                 </>
             )}
-        </Content>
+        </Container>
     );
 };
 

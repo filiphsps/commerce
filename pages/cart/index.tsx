@@ -246,10 +246,6 @@ const SummaryContainer = styled.div`
     z-index: 5;
 
     @media (max-width: 950px) {
-        /*max-width: calc(100vw - 2rem);
-        max-width: calc(100dvw - 2rem);
-        position: sticky;
-        bottom: -1px;*/
         transition: 250ms ease-in-out;
 
         &.Floating {

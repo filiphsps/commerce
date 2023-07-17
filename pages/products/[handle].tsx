@@ -849,7 +849,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
                 {recommendations?.length && recommendations.length >= 1 && (
                     <Recommendations>
-                        <RecommendationsTitle>You might also like</RecommendationsTitle>
+                        <RecommendationsTitle>People like you also loved</RecommendationsTitle>
                         <RecommendationsContent>
                             <CollectionBlock
                                 data={

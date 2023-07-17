@@ -77,7 +77,7 @@ const Container = styled.div`
 const HeaderContainer = styled.div`
     position: sticky;
     z-index: 99999999;
-    top: -1px;
+    top: 0px;
 `;
 
 const Overlay = styled.div``;

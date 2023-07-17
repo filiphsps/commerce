@@ -17,11 +17,17 @@ import PageHeader from '../../../src/components/PageHeader';
 import { StoreModel } from '../../../src/models/StoreModel';
 import Vendors from '../../../src/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
+import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
 const Body = styled(Content)`
     overflow: hidden;
+`;
+
+const ShortDescription = styled(Content)`
+    overflow: hidden;
+    max-width: 64rem;
 `;
 
 interface CollectionPageProps {
@@ -59,7 +65,24 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
             />
 
             <PageContent primary>
-                <PageHeader title={collection.title} />
+                <PageHeader
+                    title={collection.title}
+                    subtitle={
+                        (collection as any).shortDescription?.value && (
+                            <ShortDescription
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        (
+                                            convertSchemaToHtml(
+                                                (collection as any).shortDescription.value,
+                                                false
+                                            ) as string
+                                        )?.replaceAll(`="null"`, '') || ''
+                                }}
+                            />
+                        )
+                    }
+                />
 
                 <CollectionBlock
                     handle={`${router.query.handle}`}

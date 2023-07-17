@@ -40,6 +40,7 @@
         "@sentry/nextjs": "7.58.1",
         "@shopify/hydrogen": "2023.4.6",
         "@shopify/hydrogen-react": "2023.4.5",
+        "@thebeyondgroup/shopify-rich-text-renderer": "0.2.0",
         "@types/get-pixels": "3.3.2",
         "accept-language-parser": "1.5.0",
         "axios": "1.4.0",

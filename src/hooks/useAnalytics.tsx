@@ -116,7 +116,7 @@ export function useAnalytics({
                         variantName: merchandise.title,
                         price: Number.parseFloat(cost.amountPerQuantity?.amount || '0'),
                         quantity
-                    } as any)
+                    }) as any
             ) || [];
 
         const payload: ShopifyAddToCartPayload = {
@@ -164,6 +164,7 @@ export function useAnalytics({
         if (!buyerIdentity || locale.country === buyerIdentity?.countryCode) return;
 
         buyerIdentityUpdate({
+            ...(buyerIdentity as any),
             countryCode: locale.country
         });
     }, [locale.locale]);

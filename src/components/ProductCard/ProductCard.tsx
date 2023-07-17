@@ -26,14 +26,14 @@ const Container = styled.section<{ available?: boolean }>`
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: var(--block-spacer-small);
+    gap: var(--block-spacer);
     min-width: var(--component-product-card-width);
     padding: var(--block-padding);
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
     background: var(--primary);
     color: var(--primary-foreground);
-    //background: linear-gradient(320deg, var(--primary-dark) -100%, var(--primary) 100%);
+    background: radial-gradient(circle, var(--primary) 0%, var(--primary-dark) 200%);
 
     ${({ available }) =>
         !available &&
@@ -547,7 +547,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                                 // FIXME: Remove `Size` when we've migrated to using Weight
                                 if (
                                     variant.selectedOptions.length === 1 &&
-                                    ['Size', 'Weight'].includes(
+                                    ['Size', 'Weight', 'Storlek'].includes(
                                         variant.selectedOptions.at(0)!.name
                                     ) &&
                                     variant.weight &&

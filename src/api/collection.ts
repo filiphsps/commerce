@@ -41,6 +41,9 @@ export const COLLECTION_FRAGMENT = `
     isBrand: metafield(namespace: "store", key: "is_brand") {
         value
     }
+    shortDescription: metafield(namespace: "store", key: "short_description") {
+        value
+    }
 `;
 
 export const CollectionApi = async ({

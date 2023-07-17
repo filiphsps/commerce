@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import { Button } from '../Button';
 import { Checkout } from '../../../pages/cart';
@@ -11,7 +12,6 @@ import { Input } from '../Input';
 import Link from 'next/link';
 import SearchBar from '../SearchBar';
 import { Tag } from '../../../pages/products/[handle]';
-import styled from 'styled-components';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
@@ -398,13 +398,20 @@ const HamburgerMenu = styled.div`
     }
 `;
 
-const Header = styled.header`
+const Header = styled.header<{ scrolled?: boolean }>`
     display: grid;
     top: 8rem;
     width: 100%;
     background: var(--accent-secondary-light);
-    border-bottom: 0.05rem solid var(--accent-secondary);
-    box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
+    transition: 250ms ease-in-out;
+    border-bottom: calc(var(--block-border-width) / 2) solid transparent;
+
+    ${({ scrolled }) =>
+        scrolled &&
+        css`
+            border-bottom-color: var(--accent-secondary);
+            box-shadow: 0px 1rem 1rem -0.25rem var(--color-block-shadow);
+        `}
 `;
 
 interface HeaderProps {
@@ -423,6 +430,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     const router = useRouter();
     const [beginCheckout, setBeginCheckout] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
+    const [scrollTop, setScrollTop] = useState(0);
     const [cartStore, setCartStore] = useStore<any>('cart');
     const timer: any = useRef(null);
 
@@ -448,8 +456,17 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
         };
     }, [cart.lines]);
 
+    useEffect(() => {
+        const onScroll = (event: any) => {
+            setScrollTop(event.target.documentElement.scrollTop);
+        };
+        window.addEventListener('scroll', onScroll);
+
+        return () => window.removeEventListener('scroll', onScroll);
+    }, [scrollTop]);
+
     return (
-        <Header className="Modern">
+        <Header className="Modern" scrolled={scrollTop >= 40}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
