@@ -35,7 +35,7 @@ class Document extends NextDocument {
         return (
             <Html
                 lang={
-                    (this.props.locale !== 'x-default' && (this.props.locale || i18n.locales[0])) ||
+                    (this.props.locale && this.props.locale !== 'x-default' && this.props.locale) ||
                     undefined
                 }
             >

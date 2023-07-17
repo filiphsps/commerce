@@ -93,7 +93,10 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                 <Content>
                     {asText(slice.primary.title).length > 0 && (
                         <Header alignment={slice.primary.alignment}>
-                            <Link href={`/collections/${slice.primary.handle!}`}>
+                            <Link
+                                href={`/collections/${slice.primary.handle!}`}
+                                title={`View all products in "${asText(slice.primary.title)}"`}
+                            >
                                 <CollectionTitle
                                     dangerouslySetInnerHTML={{
                                         __html: asHTML(slice.primary.title)

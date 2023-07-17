@@ -77,6 +77,7 @@
     "devDependencies": {
         "@slicemachine/adapter-next": "0.3.4",
         "@testing-library/react": "14.0.0",
+        "@types/accept-language-parser": "1.5.3",
         "@types/color": "3.0.3",
         "@types/convert-units": "2.3.6",
         "@types/enzyme": "3.10.13",

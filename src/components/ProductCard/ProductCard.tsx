@@ -49,7 +49,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     position: relative;
     height: auto;
     width: 100%;
-    padding: var(--block-padding);
+    padding: var(--block-padding-large);
     border-radius: calc(var(--block-border-radius) * 0.75);
     transition: 250ms ease-in-out;
     user-select: none;
@@ -72,7 +72,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
         `}
 
     &:hover {
-        padding: calc(var(--block-padding) * 0.85);
+        padding: var(--block-padding-small);
     }
 `;
 const ProductImageWrapper = styled.div`

@@ -9,6 +9,8 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
     gap: var(--block-spacer);
+    overflow: hidden;
+    height: 100%;
 
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
@@ -53,6 +55,7 @@ const Content = styled(ContentComponent)`
     flex-direction: column;
     justify-content: center;
     height: 100%;
+    max-height: 100%;
     padding: var(--block-padding-large);
     background: var(--color-block);
     border-radius: var(--block-border-radius);

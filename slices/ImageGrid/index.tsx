@@ -30,7 +30,11 @@ const Item = styled.div`
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
-        max-height: 6rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        max-height: 8rem;
     }
 
     &:hover {
@@ -52,7 +56,7 @@ const Item = styled.div`
         &:focus,
         &:hover {
             img {
-                transform: scale(1.15);
+                transform: scale(1.05);
             }
         }
     }
@@ -73,14 +77,20 @@ const TitleContainer = styled.div`
     padding: 2rem 2rem 1.8rem 2rem;
     height: 100%;
     width: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, transparent 100%);
-    transition: 250ms ease-in-out border;
+    background: linear-gradient(0deg, var(--color-block-shadow) 0%, transparent 100%);
+    transition: 250ms ease-in-out outline-color;
     border-radius: var(--block-border-radius);
-    border-color: var(--accent-primary);
+    outline: var(--block-border-width) solid transparent;
+    outline-offset: calc(var(--block-border-width) * -1);
+    text-shadow: var(--color-dark) 0px 0px 1.25rem;
+
+    @media (max-width: 950px) {
+        align-items: center;
+    }
 
     &:hover,
     &:active {
-        border: 0.5rem solid var(--accent-primary);
+        outline-color: var(--accent-primary);
     }
 `;
 
