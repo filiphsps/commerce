@@ -22,7 +22,7 @@ const Content = styled.div`
     gap: var(--block-spacer);
     max-width: var(--page-width);
     width: 100%;
-    height: auto;
+    height: 100%;
     padding: var(--block-padding);
     margin: 0px auto;
     user-select: none;
@@ -35,9 +35,9 @@ const Content = styled.div`
     @media (min-width: 950px) {
         grid-template-columns: 10rem 1fr auto;
         gap: var(--block-spacer-large);
-        height: calc(4.5rem + calc(var(--block-padding) * 2));
     }
 `;
+
 const Logo = styled.div`
     display: flex;
     justify-content: center;
@@ -400,7 +400,6 @@ const HamburgerMenu = styled.div`
 
 const Header = styled.header<{ scrolled?: boolean }>`
     display: grid;
-    top: 8rem;
     width: 100%;
     background: var(--accent-secondary-light);
     transition: 250ms ease-in-out;
@@ -412,6 +411,10 @@ const Header = styled.header<{ scrolled?: boolean }>`
             border-bottom-color: var(--accent-secondary);
             box-shadow: 0px 1rem 1rem -0.25rem var(--color-block-shadow);
         `}
+
+    @media (min-width: 950px) {
+        height: calc(4.5rem + calc(var(--block-padding) * 2));
+    }
 `;
 
 interface HeaderProps {

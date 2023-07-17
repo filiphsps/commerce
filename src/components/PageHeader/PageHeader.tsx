@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
+import React, { CSSProperties, FunctionComponent, memo } from 'react';
 
 import Content from '../Content';
 import styled from 'styled-components';
@@ -46,18 +46,26 @@ interface PageHeaderProps {
     background?: string;
     backgroundDark?: string;
     foreground?: string;
+
+    className?: string;
+    style?: CSSProperties;
 }
 const PageHeader: FunctionComponent<PageHeaderProps> = ({
     title,
     subtitle,
     reverse,
     background,
-    foreground
+    foreground,
+
+    className,
+    style
 }) => {
     return (
         <Container
+            className={className}
             style={
                 {
+                    ...(style || {}),
                     '--foreground': foreground || 'var(--accent-primary-text)',
                     '--background': background || 'var(--accent-primary)'
                 } as React.CSSProperties

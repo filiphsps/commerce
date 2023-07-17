@@ -20,7 +20,7 @@ export const COLLECTION_FRAGMENT = `
     image {
         id
         altText
-        originalSrc
+        url
         height
         width
     }
@@ -42,6 +42,9 @@ export const COLLECTION_FRAGMENT = `
         value
     }
     shortDescription: metafield(namespace: "store", key: "short_description") {
+        value
+    }
+    accents: metafield(namespace: "store", key: "accents") {
         value
     }
 `;
