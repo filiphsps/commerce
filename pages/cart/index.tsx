@@ -121,12 +121,6 @@ const RecommendationsContentWrapper = styled.div`
 `;
 const RecommendationsContent = styled(PageContent)`
     width: 100%;
-
-    @media (max-width: 950px) {
-        width: calc(100vw - 2rem);
-        max-width: calc(100vw - 2rem);
-        padding: 0px;
-    }
 `;
 
 // Const hacky workaround for ga4 cross-domain

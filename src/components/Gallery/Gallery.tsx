@@ -6,19 +6,19 @@ import { ImageLoader } from '../../util/ImageLoader';
 import styled from 'styled-components';
 
 const Container = styled.div`
+    position: relative;
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-areas: 'primary' 'previews';
     width: 100%;
+    height: 100%;
     gap: var(--block-spacer);
+    transition: 250ms ease-in-out;
 
-    @media (max-width: 950px) {
-        grid-template-rows: 1fr;
-        grid-template-columns: 1fr auto;
-    }
-
-    &.Single {
-        grid-template-rows: 1fr;
-        grid-template-columns: 1fr;
+    @media (min-width: 950px) {
+        overflow: unset;
+        //grid-template-areas: 'previews primary';
+        //grid-template-columns: auto 1fr;
+        border-radius: none;
     }
 
     img {
@@ -27,53 +27,79 @@ const Container = styled.div`
         mix-blend-mode: multiply;
         object-fit: contain;
         object-position: center;
+        max-height: 70vh;
+    }
+
+    & > div:only-child {
+        grid-column: 1 / -1;
     }
 `;
 
 const Previews = styled.div`
     position: relative;
+    grid-area: previews;
     display: flex;
     flex-direction: row;
-    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
+    gap: var(--block-spacer);
 
-    @media (max-width: 950px) {
-        flex-direction: column;
+    @media (min-width: 950px) {
+        display: flex;
+        position: relative;
+        inset: unset;
+        //flex-direction: column;
+        height: fit-content;
     }
 `;
 const Preview = styled.div`
     overflow: hidden;
-    width: 12rem;
-    height: auto;
+    width: fit-content;
+    height: 6rem;
     padding: var(--block-padding);
     background: var(--color-block);
-    border: var(--block-border-width) solid var(--color-block);
+    border-radius: var(--block-border-radius);
     cursor: pointer;
     transition: 250ms ease-in-out;
-    border-radius: var(--block-border-radius);
     user-select: none;
+    opacity: 0.5;
+
+    @media (min-width: 950px) {
+        width: 12rem;
+        height: fit-content;
+        border: var(--block-border-width) solid var(--color-block);
+        opacity: 1;
+    }
 
     &.Selected,
     &:hover,
     &:active {
         border-color: var(--accent-primary);
+        opacity: 1;
     }
 
     @media (max-width: 950px) {
-        padding: 0.15rem;
-        width: 4.5rem;
-        height: 4.5rem;
-        border-width: 0px;
+        img {
+            width: auto;
+            object-fit: cover;
+            height: 100%;
+        }
     }
 `;
 
 const Primary = styled.div`
-    overflow: hidden;
-    width: 100%;
+    position: relative;
+    grid-area: primary;
+    width: auto;
+    height: fit-content;
     padding: calc(var(--block-padding-large) * 2);
     background: var(--color-block);
     border-radius: var(--block-border-radius);
+
+    @media (min-width: 950px) {
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 const ImageWrapper = styled.div`
@@ -104,7 +130,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
         images.edges.find((image) => image.node && image.node.id === selected)?.node ||
         images.edges[0].node;
     return (
-        <Container className={(images.edges.length <= 1 && 'Single') || ''}>
+        <Container>
             <Primary>
                 <ImageWrapper>
                     <Image
@@ -118,9 +144,9 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                     />
                 </ImageWrapper>
             </Primary>
-            <Previews>
-                {(images.edges.length > 1 &&
-                    images.edges.map(({ node: image }) => (
+            {(images?.edges?.length > 1 && (
+                <Previews>
+                    {images.edges.map(({ node: image }) => (
                         <Preview
                             key={image.id}
                             onClick={() => setSelected(image.id)}
@@ -137,9 +163,10 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                                 />
                             </ImageWrapper>
                         </Preview>
-                    ))) ||
-                    null}
-            </Previews>
+                    ))}
+                </Previews>
+            )) ||
+                null}
         </Container>
     );
 };

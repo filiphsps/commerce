@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
+import { Badge, BadgeContainer } from '../../src/components/Badges';
 import {
     Collection,
     Product,
@@ -17,7 +18,6 @@ import styled, { css } from 'styled-components';
 import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Button } from '../../src/components/Button';
 import CollectionBlock from '../../src/components/CollectionBlock';
-import Color from 'color';
 import { Config } from '../../src/util/Config';
 import Content from '../../src/components/Content';
 import { Currency } from 'react-tender';
@@ -50,43 +50,46 @@ const Label = styled.label`
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
+    line-height: 1.75rem;
 `;
 
 const ProductContainerWrapper = styled.div`
+    position: relative;
     display: grid;
-    justify-content: center;
+    justify-content: stretch;
     align-items: center;
 `;
 const ProductContainer = styled.div`
     position: relative;
     display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 2rem;
+    grid-template-areas: 'assets' 'header' 'details';
+    grid-template-columns: 1fr;
+    gap: var(--block-spacer-large);
 
-    @media (max-width: 950px) {
-        grid-template-columns: 1fr;
-        gap: 0rem;
+    @media (min-width: 950px) {
+        gap: var(--block-spacer-large) calc(var(--block-spacer-large) * 2);
+        grid-template-areas:
+            'assets header'
+            'assets details';
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr;
     }
 `;
 const Assets = styled.div`
+    grid-area: assets;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     width: 100%;
-    max-height: 60rem;
-
-    @media (max-width: 950px) {
-        height: 28rem;
-        max-height: 30vh;
-        margin-bottom: 1rem;
-    }
+    height: fit-content;
 
     @media (min-width: 950px) {
         position: sticky;
-        top: 10rem;
+        top: 8rem;
     }
 `;
 const Details = styled.div`
+    grid-area: details;
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
@@ -94,46 +97,20 @@ const Details = styled.div`
 `;
 
 // FIXME: Turn this into a component
-const Tags = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--block-spacer-small);
-    width: 100%;
-    margin: 1rem 0px 0.5rem 0px;
 
-    @media (min-width: 950px) {
-        margin: 0px;
-    }
-`;
-export const Tag = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    text-transform: uppercase;
-    font-size: 1.25rem;
-    font-weight: 600;
-    background: var(--accent-secondary-dark);
-    color: var(--accent-primary-text);
-    padding: var(--block-padding) var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-
-    &.Vegan {
-        background: #1b6e1b;
-    }
-`;
 const Description = styled(Content)`
     overflow-x: hidden;
 `;
 
 const Actions = styled.div`
-    display: flex;
-    align-items: end;
+    display: grid;
     gap: var(--block-spacer);
+    align-items: start;
+    flex-direction: column;
 
-    @media (max-width: 950px) {
-        align-items: start;
-        flex-direction: column;
+    @media (min-width: 950px) {
+        flex-direction: row;
+        align-items: end;
     }
 `;
 const AddToCart = styled(Button)<{ added: boolean }>`
@@ -141,7 +118,7 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer);
-    height: 4rem;
+    height: 6rem;
     width: auto;
     padding-left: 2rem;
     padding-right: 2rem;
@@ -157,7 +134,7 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     }
 
     @media (max-width: 950px) {
-        height: 5rem;
+        height: 6rem;
         width: 100%;
     }
 `;
@@ -183,13 +160,9 @@ const QuantitySelector = styled.div`
     ${Input} {
         border-width: 0px;
     }
-
-    @media (max-width: 950px) {
-        width: 100%;
-        margin-top: -0.5rem;
-    }
 `;
 const QuantityWrapper = styled.div`
+    overflow: hidden;
     display: grid;
     grid-template-columns: 4rem 1fr 4rem;
     height: 4.25rem;
@@ -235,21 +208,25 @@ const QuantityWrapper = styled.div`
 `;
 
 const Header = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer);
+`;
+const HeaderContent = styled.div`
+    grid-area: header;
     display: grid;
-    grid-template-columns: 1fr minmax(8rem, auto);
+    grid-template-areas:
+        'page-header pricing'
+        'reviews reviews';
     gap: var(--block-spacer-small);
-    margin-bottom: 1rem;
 
     @media (min-width: 950px) {
         h3 {
             padding-bottom: 0.25rem;
         }
     }
-
-    @media (max-width: 950px) {
-        margin-bottom: 1rem;
-    }
 `;
+
 const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
     position: relative;
     display: block;
@@ -289,6 +266,7 @@ const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
 `;
 
 const PriceContainer = styled.div`
+    grid-area: pricing;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -333,14 +311,7 @@ const RecommendationsTitle = styled.h3`
     }
 `;
 const RecommendationsContent = styled(PageContent)`
-    width: calc(100vw - 2rem);
-    max-width: calc(100vw - 2rem);
-
-    @media (max-width: 950px) {
-        width: calc(100vw - 2rem);
-        max-width: calc(100vw - 2rem);
-        padding: 0px;
-    }
+    width: 100%;
 `;
 
 const Tabs = styled.div`
@@ -408,7 +379,7 @@ const InformationContent = styled(TabContent)`
 `;
 
 const ReviewsContainer = styled.div`
-    margin: -1.5rem 0px 1rem 0px;
+    grid-area: reviews;
     padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
@@ -500,6 +471,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         }, 3000);
     }, [product, selectedVariant, quantity, cart, cartStore, setCartStore]);
 
+    // TODO: Move to useAnalytics
     useEffect(() => {
         if (!product || !selectedVariant) return;
         (window as any)?.dataLayer?.push(
@@ -528,15 +500,6 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     // NOTE: this should never happen
     if (!product) return null;
 
-    const tags = (
-        <Tags>
-            {product?.tags?.map((tag) => (
-                <Tag key={tag} className={tag}>
-                    {tag}
-                </Tag>
-            ))}
-        </Tags>
-    );
     const pricing = (
         <PriceContainer>
             {selectedVariant.compareAtPrice && (
@@ -556,28 +519,31 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         </PriceContainer>
     );
     const information = (
-        <>
-            <Header>
-                <div>
-                    <PageHeader
-                        title={product.title!}
-                        subtitle={
-                            <Link href={`/collections/${TitleToHandle(product.vendor!)}/`}>
-                                {product.vendor}
-                            </Link>
-                        }
-                        reverse
-                    />
-                </div>
+        <Header>
+            <HeaderContent>
+                <PageHeader
+                    title={product.title!}
+                    subtitle={
+                        <Link href={`/collections/${TitleToHandle(product.vendor!)}/`}>
+                            {product.vendor}
+                        </Link>
+                    }
+                    reverse
+                />
+
                 {pricing}
-            </Header>
-            {(reviews?.count && reviews.count > 0 && (
-                <ReviewsContainer>
-                    <ReviewStars score={reviews?.rating || 0} totalReviews={reviews?.count || 0} />
-                </ReviewsContainer>
-            )) ||
-                null}
-        </>
+
+                {(reviews?.count && reviews.count > 0 && (
+                    <ReviewsContainer>
+                        <ReviewStars
+                            score={reviews?.rating || 0}
+                            totalReviews={reviews?.count || 0}
+                        />
+                    </ReviewsContainer>
+                )) ||
+                    null}
+            </HeaderContent>
+        </Header>
     );
     const addToCartAction = (
         <AddToCart
@@ -622,18 +588,18 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
             className="ProductPage"
             style={
                 {
-                    '--accent-primary': (product as any).accent?.primary || 'var(--color-block)',
-                    '--accent-primary-light':
-                        ((product as any).accent?.primary &&
-                            Color((product as any).accent?.primary)
-                                .lighten(0.25)
-                                .hex()
-                                .toString()) ||
-                        'var(--color-block)',
-                    '--accent-primary-dark':
-                        (product as any).accent?.primary_dark || 'var(--color-block)',
+                    '--accent-primary': (product as any).accent?.primary || undefined,
+                    '--accent-primary-light': (product as any).accent?.primary_light || undefined,
+                    '--accent-primary-dark': (product as any).accent?.primary_dark || undefined,
                     '--accent-primary-text':
-                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)'
+                        (product as any).accent?.primary_foreground || undefined,
+
+                    '--accent-secondary': (product as any).accent?.secondary || undefined,
+                    '--accent-secondary-light':
+                        (product as any).accent?.secondary_light || undefined,
+                    '--accent-secondary-dark': (product as any).accent?.secondary_dark || undefined,
+                    '--accent-secondary-text':
+                        (product as any).accent?.secondary_foreground || undefined
                 } as React.CSSProperties
             }
         >
@@ -674,7 +640,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     url: image!.url as string,
                                     width: image!.width as number,
                                     height: image!.height as number,
-                                    alt: image!.altText || ''
+                                    alt: image!.altText || '',
+                                    secureUrl: image!.url as string
                                 };
                             })
                             .filter((item) => item) || []
@@ -775,10 +742,12 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                 images={(product as any).images || null}
                             />
                         </Assets>
-                        <Details>
-                            {information}
 
+                        {information}
+
+                        <Details>
                             <ProductOptions />
+
                             <Actions>
                                 {quantityAction}
                                 {addToCartAction}
@@ -810,7 +779,16 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                         __html: product.descriptionHtml || ''
                                     }}
                                 />
+
+                                <BadgeContainer>
+                                    {product?.tags?.map((tag) => (
+                                        <Badge key={tag} className={tag}>
+                                            {tag}
+                                        </Badge>
+                                    ))}
+                                </BadgeContainer>
                             </TabContent>
+
                             <InformationContent className={tab == 'information' ? 'Active' : ''}>
                                 <Description>
                                     <Subtitle>Ingredients</Subtitle>
@@ -838,11 +816,10 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                                     </ul>
                                 </Description>
                             </InformationContent>
+
                             <TabContent className={tab == 'reviews' ? 'Active' : ''}>
                                 <Reviews product={product as any} reviews={reviews} />
                             </TabContent>
-
-                            {tags}
                         </Details>
                     </ProductContainer>
                 </ProductContainerWrapper>

@@ -52,6 +52,25 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                     ]) ||
                     []
                 }
+                openGraph={{
+                    url: `https://${Config.domain}/${router.locale}/`,
+                    type: 'website',
+                    title: page.data.meta_title || '',
+                    description: asText(page.data.meta_description) || store?.description || '',
+                    siteName: store.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                    images:
+                        (page.data.meta_image && [
+                            {
+                                url: page.data.meta_image!.url as string,
+                                width: page.data.meta_image!.dimensions?.width || 0,
+                                height: page.data.meta_image!.dimensions?.height || 0,
+                                alt: page.data.meta_image!.alt || '',
+                                secureUrl: page.data.meta_image!.url as string
+                            }
+                        ]) ||
+                        []
+                }}
             />
             <PageContent primary>
                 <SliceZone

@@ -31,7 +31,7 @@ const Announcement = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: var(--block-padding) var(--block-padding-large);
+    padding: var(--block-padding-large);
     text-transform: uppercase;
     font-size: 1.25rem;
     line-height: 1.5rem;
@@ -59,6 +59,7 @@ const Announcement = styled.div`
     }
 `;
 const Announcements = styled.div`
+    z-index: 9999;
     width: 100%;
 `;
 

@@ -12,7 +12,6 @@ import { Input } from '../Input';
 import Link from 'next/link';
 import { Pluralize } from '../../util/Pluralize';
 import SearchBar from '../SearchBar';
-import { Tag } from '../../../pages/products/[handle]';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
@@ -376,10 +375,6 @@ const CartPopupItemMetaTitle = styled.div`
     font-weight: 600;
     color: var(--accent-primary);
 `;
-const CartPopupItemMetaVariant = styled.div`
-    display: flex;
-    align-items: flex-end;
-`;
 const CartPopupContent = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
@@ -617,9 +612,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                         <CartPopupItemMetaTitle>
                                             {cartStore.item.title}
                                         </CartPopupItemMetaTitle>
-                                        <CartPopupItemMetaVariant>
-                                            <Tag>{cartStore.item.variant.title}</Tag>
-                                        </CartPopupItemMetaVariant>
                                     </CartPopupItemMeta>
                                 </CartPopupItem>
                                 <CartPopupContent>

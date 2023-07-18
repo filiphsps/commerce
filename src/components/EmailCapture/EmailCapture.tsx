@@ -8,6 +8,8 @@ import { NewsletterApi } from '../../api/newsletter';
 import styled from 'styled-components';
 
 const Container = styled.div`
+    position: relative;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;

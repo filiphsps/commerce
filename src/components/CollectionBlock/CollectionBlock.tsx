@@ -151,10 +151,7 @@ const Content = styled.div<{
             display: grid;
             grid-template-columns: repeat(
                 auto-fit,
-                minmax(
-                    calc(var(--component-product-card-width) - var(--block-padding-large) * 2),
-                    auto
-                )
+                minmax(calc(var(--component-product-card-width) - var(--block-padding) * 2), auto)
             );
 
             @media (min-width: 950px) {

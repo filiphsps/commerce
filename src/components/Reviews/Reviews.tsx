@@ -62,31 +62,24 @@ const Form = styled.section`
         display: block;
         padding: var(--block-padding-large) var(--block-padding-large);
         background: var(--color-bright);
-        border: 0.2rem solid var(--color-block);
+        border: var(--block-border-width) solid var(--color-block);
         border-radius: var(--block-border-radius);
         outline: none;
         resize: none;
+        font-size: 1.5rem;
+        line-height: 2.25rem;
 
         &.Body {
             height: 12rem;
         }
     }
 
-    .Button {
-        margin-top: 0.25rem;
-        max-width: 12rem;
-        padding: 1rem;
-        font-size: 1.25rem;
-        background: var(--color-bright);
-        color: var(--color-block);
-        border: 0.2rem solid var(--color-bright);
+    ${Button} {
+        max-width: 18rem;
+        padding: var(--block-padding-large);
 
-        &:hover {
-            background: var(--accent-primary);
-            color: var(--accent-primary-text);
-        }
-
-        &.Button-Disabled {
+        &&:disabled,
+        &[disabled] {
             color: var(--color-block);
         }
     }

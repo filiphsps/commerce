@@ -4,6 +4,7 @@ import Content from '../Content';
 import styled from 'styled-components';
 
 const Container = styled.div`
+    grid-area: page-header;
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);

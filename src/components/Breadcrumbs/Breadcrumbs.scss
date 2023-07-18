@@ -1,6 +1,7 @@
 @import '../../scss/app';
 
 .Breadcrumbs {
+    z-index: 9999;
     overflow: hidden;
     overflow-x: auto;
     overscroll-behavior-x: contain;
