@@ -64,8 +64,7 @@ const FancyBrandLogo = styled.div`
     max-height: 100%;
     aspect-ratio: 1 / 1;
     height: 100%;
-    width: 100%;
-    flex-grow: 1;
+    width: auto;
     box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     @media (max-width: 950px) {

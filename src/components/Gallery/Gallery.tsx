@@ -9,7 +9,6 @@ const Container = styled.div`
     display: grid;
     grid-template-rows: 1fr auto;
     width: 100%;
-    height: 100%;
     gap: var(--block-spacer);
 
     @media (max-width: 950px) {
@@ -20,6 +19,14 @@ const Container = styled.div`
     &.Single {
         grid-template-rows: 1fr;
         grid-template-columns: 1fr;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        mix-blend-mode: multiply;
+        object-fit: contain;
+        object-position: center;
     }
 `;
 
@@ -38,10 +45,10 @@ const Previews = styled.div`
 const Preview = styled.div`
     overflow: hidden;
     width: 12rem;
-    height: 10rem;
-    padding: 0.8rem;
+    height: auto;
+    padding: var(--block-padding);
     background: var(--color-block);
-    border: 0.2rem solid var(--color-block);
+    border: var(--block-border-width) solid var(--color-block);
     cursor: pointer;
     transition: 250ms ease-in-out;
     border-radius: var(--block-border-radius);
@@ -50,7 +57,6 @@ const Preview = styled.div`
     &.Selected,
     &:hover,
     &:active {
-        border-width: 0.2rem;
         border-color: var(--accent-primary);
     }
 
@@ -59,32 +65,23 @@ const Preview = styled.div`
         width: 4.5rem;
         height: 4.5rem;
         border-width: 0px;
-
-        img {
-            object-fit: cover;
-            object-position: center;
-        }
     }
 `;
 
 const Primary = styled.div`
     overflow: hidden;
     width: 100%;
-    height: 100%;
-    padding: 2rem;
+    padding: calc(var(--block-padding-large) * 2);
     background: var(--color-block);
     border-radius: var(--block-border-radius);
 `;
 
 const ImageWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    width: 100%;
     height: 100%;
-
-    img {
-        mix-blend-mode: multiply;
-        object-fit: contain;
-    }
 `;
 
 interface GalleryProps {
@@ -114,15 +111,16 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                         src={image.url}
                         alt={image.altText || ''}
                         title={image.altText || undefined}
-                        fill
+                        width={image.width || 0}
+                        height={image.height || 0}
                         priority
                         loader={ImageLoader}
                     />
                 </ImageWrapper>
             </Primary>
-            {images.edges.length > 1 ? (
-                <Previews>
-                    {images.edges.map(({ node: image }) => (
+            <Previews>
+                {(images.edges.length > 1 &&
+                    images.edges.map(({ node: image }) => (
                         <Preview
                             key={image.id}
                             onClick={() => setSelected(image.id)}
@@ -133,14 +131,15 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                                     src={image.url}
                                     alt={image.altText || ''}
                                     title={image.altText || undefined}
-                                    fill
+                                    width={125}
+                                    height={125}
                                     loader={ImageLoader}
                                 />
                             </ImageWrapper>
                         </Preview>
-                    ))}
-                </Previews>
-            ) : null}
+                    ))) ||
+                    null}
+            </Previews>
         </Container>
     );
 };

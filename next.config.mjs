@@ -18,7 +18,7 @@ let config = {
     },
     images: {
         minimumCacheTTL: 60,
-        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com'],
+        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com', '*.github.io'],
         deviceSizes: [640, 750, 828, 950, 1200, 1450, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
     },

@@ -22,9 +22,10 @@ interface PageContentProps {
     primary?: boolean;
     className?: string;
     children?: any;
+    id?: string;
 }
 const PageContent: FunctionComponent<PageContentProps> = (props) => {
-    return <Container primary={props.primary}>{props.children}</Container>;
+    return <Container {...props} />;
 };
 
 export default PageContent;
