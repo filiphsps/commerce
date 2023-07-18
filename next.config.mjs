@@ -12,7 +12,8 @@ let config = {
     trailingSlash: true,
     swcMinify: true,
     i18n,
-    productionBrowserSourceMaps: true,
+    productionBrowserSourceMaps: false,
+    compress: false,
     experimental: {
         esmExternals: true
     },
