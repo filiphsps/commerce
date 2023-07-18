@@ -7,8 +7,16 @@ interface useCartUtilsProps {
     locale: Locale;
 }
 export function useCartUtils({ locale }: useCartUtilsProps) {
-    const { query } = useRouter();
-    const { buyerIdentity, buyerIdentityUpdate, discountCodes, discountCodesUpdate } = useCart();
+    const router = useRouter();
+    const { query, isReady } = router;
+    const {
+        buyerIdentity,
+        buyerIdentityUpdate,
+        discountCodes,
+        discountCodesUpdate,
+        status,
+        cartCreate
+    } = useCart();
 
     // Handle country code change
     useEffect(() => {
@@ -26,7 +34,8 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
         const discount = query.discount.toString();
 
         // TODO: Notification?
+        // TODO: Create a cart if you haven't already
         if (discountCodes?.length && discountCodes?.find?.((i) => i?.code == discount)) return;
         discountCodesUpdate([...(discountCodes || ([] as any)), discount]);
-    }, [query]);
+    }, [router, isReady]);
 }
