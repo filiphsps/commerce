@@ -31,11 +31,14 @@ const EmailCaptureContent = styled.div`
     }
 `;
 const EmailCaptureTitle = styled.div`
-    text-transform: uppercase;
     font-size: 4.25em;
     line-height: 4.25rem;
     font-weight: 700;
     color: var(--accent-primary);
+
+    @media (min-width: 950px) {
+        text-transform: uppercase;
+    }
 
     @media (max-width: 950px) {
         padding: 0px;
@@ -61,7 +64,6 @@ const EmailCaptureDescription = styled.div`
             justify-content: center;
             align-items: center;
             white-space: nowrap;
-            //color: var(--accent-secondary-dark);
             background: var(--accent-secondary-dark);
             padding: 0px 0.25rem;
             height: 2.25rem;

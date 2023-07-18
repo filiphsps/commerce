@@ -11,6 +11,7 @@ body {
     width: 100%;
     max-width: 100vw;
     padding: 0px;
+    margin: 0px;
     -moz-osx-font-smoothing: always;
     -webkit-font-smoothing: always;
     font-smooth: always;
@@ -22,7 +23,7 @@ body {
     background: var(--color-bright);
 
     @media screen and (max-width: 950px) {
-        font-size: 0.6rem;
+        font-size: 0.615rem;
     }
 
     .zEWidget-launcher {
@@ -60,6 +61,7 @@ body {
 
     --color-gray: #848484;
     --color-green: #1b6e1b;
+    --color-green-light: #e1faea;
 
     --component-product-card-width: 20rem;
 
@@ -67,6 +69,7 @@ body {
 
     --block-border-radius: 1.25rem;
     --block-border-radius-small: 1rem;
+    --block-border-radius-tiny: 0.75rem;
     --block-border-width: 0.35rem;
 
     --block-padding: 1rem;
@@ -82,7 +85,7 @@ body {
 
         --block-border-width: 0.35rem;
 
-        --block-padding: 0.85rem;
+        --block-padding: 1rem;
         --block-padding-small: 0.5rem;
         --block-padding-large: 1.5rem;
 

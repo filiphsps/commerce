@@ -20,6 +20,7 @@ import { i18n } from '../../../next-i18next.config.cjs';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useCartUtils } from '../../hooks/useCartUtils';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
@@ -77,8 +78,7 @@ const Container = styled.div`
 const HeaderContainer = styled.div`
     position: sticky;
     z-index: 99999999;
-    top: 0px;
-    margin-top: -1px;
+    top: -1px;
 `;
 
 const Overlay = styled.div``;
@@ -114,6 +114,14 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         domain: Config.domain,
         shopId: store.id,
         pagePropsAnalyticsData
+    });
+    useCartUtils({
+        locale: {
+            locale: router.locale || i18n.locales[1],
+            language: NextLocaleToLanguage(locale),
+            country,
+            currency: NextLocaleToCurrency({ country, store })
+        } as Locale
     });
 
     const onRouteChangeStart = useCallback(() => {

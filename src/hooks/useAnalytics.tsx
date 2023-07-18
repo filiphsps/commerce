@@ -86,7 +86,7 @@ export function useAnalytics({
         });
     }, [path]);
 
-    const { lines, id: cartId, buyerIdentity, buyerIdentityUpdate, cost, status } = useCart();
+    const { lines, id: cartId, cost, status } = useCart();
     const previousLines = usePrevious(lines);
     const previousStatus = usePrevious(status);
 
@@ -158,14 +158,4 @@ export function useAnalytics({
             }
         );
     }, [lines, status]);
-
-    // Handle country code change
-    useEffect(() => {
-        if (!buyerIdentity || locale.country === buyerIdentity?.countryCode) return;
-
-        buyerIdentityUpdate({
-            ...(buyerIdentity as any),
-            countryCode: locale.country
-        });
-    }, [locale.locale]);
 }

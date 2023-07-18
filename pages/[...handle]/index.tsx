@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { GetStaticProps, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import React, { FunctionComponent } from 'react';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -8,6 +7,7 @@ import Breadcrumbs from '../../src/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import Error from 'next/error';
+import { GetStaticProps } from 'next';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
@@ -89,13 +89,13 @@ export async function getStaticPaths({ locales }) {
             ?.map((page) => [
                 {
                     params: { handle: [page] }
-                }
-                /*...locales
+                },
+                ...locales
                     .filter((locale) => locale !== 'x-default')
                     .map((locale) => ({
                         params: { handle: [page] },
                         locale: locale
-                    }))*/
+                    }))
             ])
             .flat()
             .filter((a) => a?.params?.handle)
@@ -107,28 +107,6 @@ export async function getStaticPaths({ locales }) {
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {
     try {
-        // Workaround for invalid locale casing and ssg
-        if (params?.handle && Array.isArray(params?.handle)) {
-            if (/^[a-z][a-z]-[A-Z][A-Z]/im.test(params?.handle?.[0])) {
-                const invalidLocale = params?.handle?.[0];
-                const fixedLocale = `${invalidLocale.split('-')[0].toLowerCase()}-${invalidLocale
-                    .split('-')[1]
-                    .toUpperCase()}`;
-
-                return {
-                    redirect: {
-                        permanent: false,
-                        destination: `${
-                            (invalidLocale !== fixedLocale && `/${fixedLocale}`) || ''
-                        }/${
-                            (params?.handle?.length > 1 && params?.handle?.slice(1).join('/')) || ''
-                        }`
-                    },
-                    revalidate: false
-                };
-            }
-        }
-
         const handle = ((Array.isArray(params?.handle) && params?.handle?.join('/')) ||
             params?.handle?.toString())!;
 

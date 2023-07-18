@@ -924,7 +924,7 @@ export async function getStaticPaths({ locales }) {
             .filter((a) => a?.params?.handle)
     ];
 
-    return { paths, fallback: true };
+    return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }): Promise<GetStaticPropsResult<{}>> {

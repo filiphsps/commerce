@@ -264,7 +264,7 @@ const Content = styled.tr`
     grid-template-columns: 8rem 1fr 6rem 14rem;
     grid-template-rows: 1fr;
     grid-template-areas: 'image meta price quantity';
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-small);
     padding: var(--block-padding);
     background: var(--color-block);
     color: var(--color-dark);

@@ -10,6 +10,7 @@ import Image from 'next/legacy/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import { Input } from '../Input';
 import Link from 'next/link';
+import { Pluralize } from '../../util/Pluralize';
 import SearchBar from '../SearchBar';
 import { Tag } from '../../../pages/products/[handle]';
 import { useCart } from '@shopify/hydrogen-react';
@@ -23,7 +24,7 @@ const Content = styled.div`
     max-width: var(--page-width);
     width: 100%;
     height: 100%;
-    padding: var(--block-padding);
+    padding: var(--block-padding) var(--block-spacer-large);
     margin: 0px auto;
     user-select: none;
 
@@ -74,6 +75,7 @@ const Menu = styled.div`
     right: 0px;
     max-height: 0px;
     transition: 250ms ease-in-out;
+    border-color: var(--accent-secondary);
     background: var(--accent-secondary-light);
     color: var(--color-dark);
     box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
@@ -224,8 +226,8 @@ const CartIconWrapper = styled.div`
     height: 100%;
     width: 5rem;
 
-    background: var(--accent-primary);
     border-radius: var(--block-border-radius);
+    background: var(--accent-primary);
     color: var(--accent-primary-text);
     cursor: pointer;
     transition: 250ms all ease-in-out;
@@ -244,13 +246,28 @@ const CartIconWrapper = styled.div`
 `;
 const CartIcon = styled.span`
     position: absolute;
-    right: 0.75rem;
-    top: 0.75rem;
-    height: 1rem;
-    width: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: calc(var(--block-spacer-small) * -1);
+    top: calc(var(--block-spacer-small) * -1);
+    height: 2rem;
+    width: 2rem;
+    aspect-ratio: 1 / 1;
 
     background: var(--accent-secondary);
+    color: var(--accent-secondary-text);
     border-radius: 100%;
+
+    font-weight: 600;
+    font-size: 1rem;
+
+    pointer-events: none;
+
+    @media (min-width: 950px) {
+        right: calc(var(--block-spacer-small) * -0.5);
+        top: calc(var(--block-spacer-small) * -0.5);
+    }
 `;
 
 const CartPopup = styled.section`
@@ -260,7 +277,7 @@ const CartPopup = styled.section`
     width: 32rem;
     padding: 1.5rem;
     right: -0.5rem;
-    top: 8rem;
+    top: calc(6rem + var(--block-spacer));
     background: var(--accent-secondary-light);
     color: var(--color-dark);
     border-radius: var(--block-border-radius);
@@ -299,7 +316,6 @@ const CartPopupItemHeader = styled.div`
     background: var(--accent-primary);
     padding: 1.25rem 1.5rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     svg {
         font-size: 2rem;
@@ -322,7 +338,6 @@ const CartPopupItemImageWrapper = styled.div`
     overflow: hidden;
     height: 100%;
     padding: var(--block-padding-large);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 `;
 const CartPopupItemImage = styled.div`
     position: relative;
@@ -347,7 +362,6 @@ const CartPopupItemMeta = styled.div`
     padding: var(--block-padding-large);
     background: var(--accent-primary-text);
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 `;
 const CartPopupItemMetaVendor = styled.div`
     font-size: 1.25rem;
@@ -409,7 +423,7 @@ const Header = styled.header<{ scrolled?: boolean }>`
         scrolled &&
         css`
             border-bottom-color: var(--accent-secondary);
-            box-shadow: 0px 1rem 1rem -0.25rem var(--color-block-shadow);
+            box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
         `}
 
     @media (min-width: 950px) {
@@ -551,12 +565,19 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         </CartIconWrapper>
                     </SearchIcon>
                     <CartIconWrapper className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
-                        <Link href={'/cart/'} className="Wrapper">
-                            {(cart?.totalQuantity || 0) > 0 && <CartIcon />}
+                        <Link
+                            href={'/cart/'}
+                            className="Wrapper"
+                            title={`There are ${cart?.totalQuantity || 0} ${Pluralize({
+                                count: cart?.totalQuantity || 0,
+                                noun: 'item'
+                            })} in your cart`}
+                        >
+                            {!!cart?.totalQuantity && <CartIcon>{cart?.totalQuantity}</CartIcon>}
                             <FiShoppingBag className="Icon" />
                         </Link>
 
-                        {cartStore.item ? (
+                        {router.pathname !== '/cart' && cartStore.item ? (
                             <CartPopup
                                 className={
                                     ((cartStore.open || beginCheckout) &&
