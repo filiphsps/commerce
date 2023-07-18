@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
-import { Badge, BadgeContainer } from '../../src/components/Badges';
+import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     Collection,
     Product,
@@ -15,35 +15,35 @@ import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../src/api/product';
 import styled, { css } from 'styled-components';
 
-import Breadcrumbs from '../../src/components/Breadcrumbs';
-import { Button } from '../../src/components/Button';
-import CollectionBlock from '../../src/components/CollectionBlock';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { Button } from '@/components/Button';
+import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
-import Content from '../../src/components/Content';
+import Content from '@/components/Content';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
-import Gallery from '../../src/components/Gallery';
+import Gallery from '@/components/Gallery';
 import { GetStaticPropsResult } from 'next';
-import { Input } from '../../src/components/Input';
+import { Input } from '@/components/Input';
 import Link from 'next/link';
-import Page from '../../src/components/Page';
-import PageContent from '../../src/components/PageContent';
-import PageHeader from '../../src/components/PageHeader';
-import { ProductOptions } from '../../src/components/ProductOptions';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
+import { ProductOptions } from '@/components/ProductOptions';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
-import Reviews from '../../src/components/Reviews';
+import Reviews from '@/components/Reviews';
 import { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
 import { StoreModel } from '../../src/models/StoreModel';
-import { Subtitle } from '../../src/components/PageHeader/PageHeader';
+import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
-const ReviewStars = dynamic(() => import('../../src/components/ReviewStars'));
+const ReviewStars = dynamic(() => import('@/components/ReviewStars'));
 
 // TODO: replace this with generic label.
 const Label = styled.label`

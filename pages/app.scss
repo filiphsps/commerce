@@ -1,10 +1,10 @@
 @import '../src/scss/_app.scss';
 
 // Components
-@import '../src/components/Breadcrumbs/Breadcrumbs.scss';
-@import '../src/components/Currency/Currency.scss';
-@import '../src/components/SocialShare/SocialShare.scss';
-@import '../src/components/Vendors/Vendors.scss';
+@import '@/components/Breadcrumbs/Breadcrumbs.scss';
+@import '@/components/Currency/Currency.scss';
+@import '@/components/SocialShare/SocialShare.scss';
+@import '@/components/Vendors/Vendors.scss';
 
 html,
 body {

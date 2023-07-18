@@ -1,7 +1,7 @@
 import { Content } from '@prismicio/client';
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
-import VendorsComponent from '../../src/components/Vendors';
+import VendorsComponent from '@/components/Vendors';
 import styled from 'styled-components';
 
 const Container = styled.section`

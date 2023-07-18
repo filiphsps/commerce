@@ -9,17 +9,17 @@ import {
 import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import React, { FunctionComponent, useState } from 'react';
 
-import Breadcrumbs from '../../src/components/Breadcrumbs';
-import CartItem from '../../src/components/CartItem';
-import { CartSummary } from '../../src/components/CartSummary';
-import CollectionBlock from '../../src/components/CollectionBlock';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import CartItem from '@/components/CartItem';
+import { CartSummary } from '@/components/CartSummary';
+import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
-import LanguageString from '../../src/components/LanguageString';
+import LanguageString from '@/components/LanguageString';
 import { NextSeo } from 'next-seo';
-import Page from '../../src/components/Page';
-import PageContent from '../../src/components/PageContent';
-import PageHeader from '../../src/components/PageHeader';
-import PageLoader from '../../src/components/PageLoader';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
+import PageLoader from '@/components/PageLoader';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';

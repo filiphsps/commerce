@@ -1,6 +1,6 @@
 import { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 

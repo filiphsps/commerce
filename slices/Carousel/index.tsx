@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Content } from '@prismicio/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import Slider from 'react-slick';
 import styled from 'styled-components';

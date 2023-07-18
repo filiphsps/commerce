@@ -1,9 +1,9 @@
 import { Content, asHTML } from '@prismicio/client';
 
 import { FiChevronUp } from 'react-icons/fi';
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
-import TextBlock from '../../src/components/TextBlock';
+import TextBlock from '@/components/TextBlock';
 import styled from 'styled-components';
 import Color from 'color';
 

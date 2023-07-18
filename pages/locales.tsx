@@ -1,17 +1,17 @@
 import { Fragment, FunctionComponent } from 'react';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '../src/components/Breadcrumbs';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../src/util/Config';
-import Content from '../src/components/Content';
+import Content from '@/components/Content';
 import { CountriesApi } from '../src/api/store';
 import { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
-import Page from '../src/components/Page';
-import PageContent from '../src/components/PageContent';
-import PageHeader from '../src/components/PageHeader';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import { StoreModel } from '../src/models/StoreModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';

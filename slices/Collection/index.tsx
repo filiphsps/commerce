@@ -1,12 +1,12 @@
 import { Content, asHTML, asText } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
-import CollectionBlock from '../../src/components/CollectionBlock';
+import CollectionBlock from '@/components/CollectionBlock';
 import Link from 'next/link';
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
-import { Title } from '../../src/components/PageHeader/PageHeader';
+import { Title } from '@/components/PageHeader/PageHeader';
 
 const Container = styled.section`
     width: 100%;

@@ -1,8 +1,8 @@
 import { Content, asHTML } from '@prismicio/client';
 
-import PageContent from '../../src/components/PageContent';
+import PageContent from '@/components/PageContent';
 import { SliceComponentProps } from '@prismicio/react';
-import TextBlockComponent from '../../src/components/TextBlock';
+import TextBlockComponent from '@/components/TextBlock';
 import styled from 'styled-components';
 
 const Container = styled.section`
