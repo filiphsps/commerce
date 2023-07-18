@@ -8,15 +8,12 @@ import {
 } from '@shopify/hydrogen-react';
 import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import React, { FunctionComponent, useState } from 'react';
-import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '../../src/components/Breadcrumbs';
-import { Button } from '../../src/components/Button';
 import CartItem from '../../src/components/CartItem';
+import { CartSummary } from '../../src/components/CartSummary';
 import CollectionBlock from '../../src/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
-import Currency from '../../src/components/Currency';
-import { FiShoppingCart } from 'react-icons/fi';
 import LanguageString from '../../src/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '../../src/components/Page';
@@ -25,103 +22,33 @@ import PageHeader from '../../src/components/PageHeader';
 import PageLoader from '../../src/components/PageLoader';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
+import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const Content = styled.div`
     display: grid;
-    grid-template-columns: 1fr minmax(auto, 28rem);
-    gap: var(--block-spacer);
+    grid-template-columns: 1fr minmax(auto, 36rem);
+    grid-template-areas:
+        'header sidebar'
+        'content sidebar';
+    gap: var(--block-spacer-large);
     max-width: 100%;
+
     @media (max-width: 950px) {
         grid-template-columns: 1fr;
-        gap: var(--block-spacer);
+        grid-template-areas: 'header' 'sidebar' 'content';
+        gap: var(--block-spacer-large);
     }
 `;
 const ContentWrapper = styled.div`
+    grid-area: content;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-large);
     width: 100;
-`;
-
-const FreeShippingBanner = styled.div<{ active?: boolean }>`
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-small);
-    padding: var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-    background: var(--color-block);
-    font-size: 1.5rem;
-    font-weight: 800;
-
-    ${({ active }) =>
-        active &&
-        css`
-            background: var(--color-success);
-            background: linear-gradient(
-                320deg,
-                var(--color-success-light) 0%,
-                var(--color-success) 100%
-            );
-            color: var(--color-bright);
-
-            .Currency {
-                color: var(--accent-secondary);
-            }
-        `}
-`;
-const FreeShippingBannerText = styled.div`
-    display: flex;
-    gap: 0.25rem;
-    font-size: 2.5rem;
-    line-height: 2.75rem;
-    font-weight: 700;
-`;
-const FreeShippingBannerTitle = styled.div`
-    width: 100%;
-    font-size: 1.75rem;
-    line-height: 2rem;
-    font-weight: 500;
-
-    .Currency {
-        padding-left: 0.25rem;
-    }
-`;
-const FreeShippingBannerMeta = styled.div`
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--block-spacer);
-    justify-content: center;
-    align-items: center;
-
-    .Currency {
-        display: inline;
-        font-weight: 900;
-
-        .Currency-Prefix,
-        .Currency-Suffix {
-            font-weight: 600;
-            color: initial;
-        }
-    }
-`;
-const ProgressBar = styled.div`
-    height: 100%;
-    background: var(--accent-secondary);
-`;
-const Progress = styled.div`
-    overflow: hidden;
-    width: 100%;
-    height: 2rem;
-    background: var(--accent-primary-text);
-    border-radius: var(--block-border-radius);
-
-    &.Full {
-        display: none;
-    }
 `;
 
 const ItemsContainerWrapper = styled.div`
@@ -145,7 +72,7 @@ const ItemsContainer = styled.table`
         max-width: 100%;
     }
 
-    @media (min-width: 1465px) {
+    @media (min-width: 1418px) {
         border-spacing: 0px;
         table-layout: auto;
         border-collapse: collapse;
@@ -160,119 +87,16 @@ const ItemsContainer = styled.table`
     }
 `;
 
-const Sidebar = styled.section`
-    position: sticky;
+const Sidebar = styled.article`
+    grid-area: sidebar;
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer);
-    color: var(--color-dark);
+    gap: var(--block-spacer-large);
+    height: fit-content;
 
     @media (min-width: 950px) {
-        top: 10rem;
-    }
-`;
-const SummaryContent = styled.div`
-    padding: var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-    background: var(--color-block);
-    transition: 250ms ease-in-out;
-
-    .CheckoutButton {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-    }
-
-    @media (max-width: 950px) {
-        padding: var(--block-padding-large);
-
-        Button {
-            height: 4.5rem;
-            padding: 1rem 1rem;
-            font-size: 1.5rem;
-        }
-    }
-`;
-const SummaryItemPrice = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: end;
-    width: 100%;
-    gap: 1px;
-    font-size: 1.75rem;
-    line-height: 2rem;
-    font-weight: 500;
-
-    .Total {
-        font-size: 2.5rem;
-        line-height: 2.75rem;
-        font-weight: 700;
-
-        span {
-            font-size: 1.25rem;
-        }
-    }
-
-    .Currency-Sale {
-        color: var(--color-sale);
-    }
-`;
-const SummaryItemShipping = styled.div`
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-    font-weight: 700;
-    width: 100%;
-`;
-const SummarySummary = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: var(--block-spacer);
-    padding-bottom: 1rem;
-
-    @media (max-width: 950px) {
-        border-top: none;
-        padding-top: 0px;
-    }
-
-    &.Empty {
-        border-top: none;
-    }
-`;
-const SummaryContainer = styled.div`
-    z-index: 5;
-
-    @media (max-width: 950px) {
-        transition: 250ms ease-in-out;
-
-        &.Floating {
-            z-index: 9999999;
-            width: 100vw;
-            max-width: 100vw;
-            margin: 0px -1rem 0px -1rem;
-            left: 0px;
-            right: 0px;
-            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-
-            ${SummaryContent} {
-                padding: 2rem 1rem 1rem;
-                padding-right: 10rem;
-                border-radius: 0px;
-
-                background: var(--accent-secondary-light);
-            }
-
-            ${SummarySummary} {
-                background: var(--accent-primary-text);
-                color: var(--accent-primary);
-                padding: 1.25rem 1rem;
-                border-radius: var(--block-border-radius);
-                margin-bottom: 1rem;
-            }
-        }
+        position: sticky;
+        top: 8rem;
     }
 `;
 
@@ -283,19 +107,10 @@ const Recommendations = styled.div`
 `;
 const RecommendationsTitle = styled.h3`
     display: block;
-    padding: var(--block-padding-large);
-    background: var(--color-block);
-    border-radius: var(--block-border-radius);
     color: var(--color-dark);
-
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+    font-size: 2rem;
+    line-height: 2.25rem;
     font-weight: 700;
-
-    @media (max-width: 950px) {
-        font-size: 2.25rem;
-        font-weight: 700;
-    }
 `;
 const RecommendationsContentWrapper = styled.div`
     display: block;
@@ -410,10 +225,11 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     const { data: recommendations } = useSWR(
         [
-            (cart.totalQuantity &&
+            `recommendations_${
+                cart.totalQuantity &&
                 cart.totalQuantity > 0 &&
-                cart.lines?.[0]?.merchandise?.product?.id) ||
-                '8452878893361'
+                cart.lines?.[0]?.merchandise?.product?.id
+            }`
         ],
         () =>
             RecommendationApi({
@@ -421,7 +237,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                     (cart.totalQuantity &&
                         cart.totalQuantity > 0 &&
                         cart.lines?.[0]?.merchandise?.product?.id) ||
-                    '8452878893361', // FIXME: don't hardcode this
+                    undefined,
                 locale: router?.locale
             })
     );
@@ -470,12 +286,15 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             />
 
             <PageContent primary>
-                <PageHeader
-                    title="Cart"
-                    subtitle="Manage your shopping bag here and begin the checkout process when you're ready!"
-                />
-
                 <Content>
+                    <PageHeader
+                        style={{ gridArea: 'header' }}
+                        title="Shopping Cart"
+                        subtitle="Manage your shopping bag here and begin the checkout process when you're ready!"
+                        background="var(--color-block)"
+                        foreground="var(--color-dark)"
+                    />
+
                     <ContentWrapper>
                         <ItemsContainerWrapper>
                             <ItemsContainer>
@@ -497,170 +316,53 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                             </ItemsContainer>
                         </ItemsContainerWrapper>
 
-                        {(cart?.totalQuantity || 0) > 0 && (
-                            <>
-                                {(recommendations?.length && recommendations.length > 1 && (
-                                    <>
-                                        <Recommendations>
-                                            <RecommendationsTitle>
-                                                Customers like you also bought
-                                            </RecommendationsTitle>
-                                            <RecommendationsContentWrapper>
-                                                <RecommendationsContent>
-                                                    <CollectionBlock
-                                                        data={
-                                                            {
-                                                                // FIXME: this is hacky
-                                                                products: {
-                                                                    edges: recommendations.map(
-                                                                        (product) => ({
-                                                                            node: product
-                                                                        })
-                                                                    )
-                                                                }
-                                                            } as Collection
-                                                        }
-                                                        isHorizontal
-                                                        store={store}
-                                                    />
-                                                </RecommendationsContent>
-                                            </RecommendationsContentWrapper>
-                                        </Recommendations>
-                                    </>
-                                )) || <PageLoader />}
-                            </>
-                        )}
+                        {(recommendations?.length && (
+                            <Recommendations>
+                                <RecommendationsTitle>Dont Forget</RecommendationsTitle>
+                                <RecommendationsContentWrapper>
+                                    <RecommendationsContent>
+                                        <CollectionBlock
+                                            data={
+                                                {
+                                                    // FIXME: this is hacky
+                                                    products: {
+                                                        edges: recommendations?.map((product) => ({
+                                                            node: product
+                                                        }))
+                                                    }
+                                                } as Collection
+                                            }
+                                            isHorizontal
+                                            store={store}
+                                        />
+                                    </RecommendationsContent>
+                                </RecommendationsContentWrapper>
+                            </Recommendations>
+                        )) ||
+                            null}
                     </ContentWrapper>
 
-                    <SummaryContainer>
-                        <Sidebar>
-                            <SummaryContent>
-                                <div className="CartPage-Content-Total-Content">
-                                    <SummarySummary
-                                        className={
-                                            !cart?.totalQuantity || cart.totalQuantity <= 0
-                                                ? 'Empty'
-                                                : ''
-                                        }
-                                    >
-                                        <SummaryItemPrice>
-                                            Subtotal
-                                            <Currency
-                                                className="Total"
-                                                price={Number.parseFloat(
-                                                    cart.cost?.totalAmount?.amount || '0'
-                                                )}
-                                                currency={
-                                                    cart.cost?.totalAmount?.currencyCode ||
-                                                    Config.i18n.currencies[0]
-                                                }
-                                                store={store}
-                                            />
-                                        </SummaryItemPrice>
-                                        {!freeShipping && (
-                                            <SummaryItemShipping>
-                                                Shipping calculated at checkout
-                                            </SummaryItemShipping>
-                                        )}
-                                    </SummarySummary>
-                                </div>
+                    <Sidebar>
+                        <CartSummary
+                            showLoader={loading}
+                            freeShipping={freeShipping}
+                            onCheckout={async () => {
+                                if (cart.status !== 'idle' && cart.status !== 'uninitialized')
+                                    return;
+                                setLoading(true);
 
-                                <div>
-                                    <Button
-                                        className={'CheckoutButton'}
-                                        disabled={
-                                            (cart?.totalQuantity || 0) <= 0 ||
-                                            !cart.lines ||
-                                            loading ||
-                                            (cart.status !== 'idle' &&
-                                                cart.status !== 'uninitialized')
-                                        }
-                                        onClick={async () => {
-                                            if (
-                                                cart.status !== 'idle' &&
-                                                cart.status !== 'uninitialized'
-                                            )
-                                                return;
-                                            setLoading(true);
-
-                                            try {
-                                                await Checkout({
-                                                    cart
-                                                });
-                                            } catch (error) {
-                                                Sentry.captureException(error);
-                                                alert(error.message);
-                                                setLoading(false);
-                                            }
-                                        }}
-                                    >
-                                        <FiShoppingCart
-                                            style={{
-                                                marginRight: '1rem',
-                                                width: '2rem',
-                                                height: '1.75rem',
-                                                fontSize: '1.25rem'
-                                            }}
-                                        />
-                                        <LanguageString
-                                            id={(loading && 'loading...') || 'begin_checkout'}
-                                        />
-                                    </Button>
-                                </div>
-                            </SummaryContent>
-
-                            <FreeShippingBanner active={freeShipping}>
-                                <FreeShippingBannerMeta>
-                                    {(!freeShipping && (
-                                        <FreeShippingBannerTitle>
-                                            Add a few more items to get FREE shipping on this order!
-                                        </FreeShippingBannerTitle>
-                                    )) || (
-                                        <FreeShippingBannerTitle>
-                                            FREE shipping on this order!
-                                        </FreeShippingBannerTitle>
-                                    )}
-                                    <FreeShippingBannerText>
-                                        <Currency
-                                            price={Number.parseFloat(
-                                                cart.cost?.totalAmount?.amount || '0'
-                                            )}
-                                            currency={
-                                                cart.cost?.totalAmount?.currencyCode ||
-                                                Config.i18n.currencies[0]
-                                            }
-                                            store={store}
-                                            className="Total"
-                                        />
-                                        {`/`}
-                                        <Currency
-                                            price={75}
-                                            currency={
-                                                cart.cost?.totalAmount?.currencyCode ||
-                                                Config.i18n.currencies[0]
-                                            }
-                                            store={store}
-                                            className="Left"
-                                        />
-                                    </FreeShippingBannerText>
-                                </FreeShippingBannerMeta>
-                                <Progress className={freeShipping ? 'Full' : ''}>
-                                    <ProgressBar
-                                        style={{
-                                            width: `${
-                                                (freeShipping && 100) ||
-                                                ((Number.parseFloat(
-                                                    cart.cost?.totalAmount?.amount! || '0'
-                                                ) || 0) /
-                                                    75) *
-                                                    100
-                                            }%`
-                                        }}
-                                    />
-                                </Progress>
-                            </FreeShippingBanner>
-                        </Sidebar>
-                    </SummaryContainer>
+                                try {
+                                    await Checkout({
+                                        cart
+                                    });
+                                } catch (error) {
+                                    Sentry.captureException(error);
+                                    alert(error.message);
+                                    setLoading(false);
+                                }
+                            }}
+                        />
+                    </Sidebar>
                 </Content>
 
                 <Breadcrumbs

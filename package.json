@@ -46,6 +46,7 @@
         "axios": "1.4.0",
         "color": "4.2.3",
         "convert-units": "2.3.4",
+        "cross-fetch": "4.0.0",
         "destyle.css": "4.0.0",
         "easy-currencies": "1.7.0",
         "extract-colors": "3.0.0",

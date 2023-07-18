@@ -3,7 +3,6 @@ import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 import { Config } from '../src/util/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
-import { i18n } from '../next-i18next.config.cjs';
 
 class Document extends NextDocument {
     static async getInitialProps(ctx) {

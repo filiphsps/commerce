@@ -7,11 +7,12 @@ import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
+// TODO: Migrate to the new recommendations api
 export const RecommendationApi = async ({
     id,
     locale
 }: {
-    id: string;
+    id?: string;
     locale?: string;
 }): Promise<Product[]> => {
     return new Promise(async (resolve, reject) => {

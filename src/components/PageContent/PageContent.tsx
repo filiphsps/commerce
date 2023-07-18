@@ -12,8 +12,8 @@ const Container = styled.div<{ primary?: boolean }>`
     ${({ primary }) =>
         primary &&
         css`
-            padding: var(--block-spacer);
-            gap: var(--block-spacer);
+            padding: var(--block-spacer-large);
+            gap: var(--block-spacer-large);
         `}
 `;
 

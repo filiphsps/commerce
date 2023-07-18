@@ -7,7 +7,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
-    padding: var(--block-padding-large);
+    padding: var(--padding);
     border-radius: var(--block-border-radius);
     background: var(--background);
     color: var(--foreground);
@@ -46,6 +46,7 @@ interface PageHeaderProps {
     background?: string;
     backgroundDark?: string;
     foreground?: string;
+    padding?: string;
 
     className?: string;
     style?: CSSProperties;
@@ -56,6 +57,7 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
     reverse,
     background,
     foreground,
+    padding,
 
     className,
     style
@@ -67,7 +69,8 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
                 {
                     ...(style || {}),
                     '--foreground': foreground || 'var(--accent-primary-text)',
-                    '--background': background || 'var(--accent-primary)'
+                    '--background': background || 'var(--accent-primary)',
+                    '--padding': padding || 'var(--block-padding-large)'
                 } as React.CSSProperties
             }
         >
