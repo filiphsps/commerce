@@ -142,8 +142,6 @@ export function useAnalytics({
             payload
         });
 
-        console.log(lines.at(-1));
-
         (window as any)?.dataLayer?.push(
             {
                 ecommerce: null

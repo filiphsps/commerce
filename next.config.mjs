@@ -25,9 +25,11 @@ let config = {
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
     },
     compiler: {
-        /*removeConsole: {
-            exclude: ['error']
-        },*/
+        removeConsole:
+            (process.env.NODE_ENV === 'production' && {
+                exclude: ['error', 'warn']
+            }) ||
+            false,
         styledComponents: {
             ssr: true,
             minify: false,

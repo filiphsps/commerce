@@ -1,12 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 
-import React, { FunctionComponent } from 'react';
-
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import Error from 'next/error';
+import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
 import LanguageString from '@/components/LanguageString';
 import { NextSeo } from 'next-seo';
@@ -102,7 +101,7 @@ export async function getStaticPaths({ locales }) {
             .filter((a) => a.params.handle != 'homepage' && a.params.handle != 'shop')
     ];
 
-    return { paths, fallback: 'blocking' };
+    return { paths, fallback: true };
 }
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {

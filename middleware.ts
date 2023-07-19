@@ -18,29 +18,19 @@ export default function middleware(req: NextRequest) {
         return null;
     }
 
-    if (req.nextUrl.locale !== 'x-default') return undefined;
+    if (req.nextUrl.locale === 'x-default') {
+        const newUrl = req.nextUrl.clone();
+        const acceptLanguageHeader = req.headers.get('accept-language') || '';
+        const userLang = AcceptLanguageParser.pick(i18n.locales.slice(1), acceptLanguageHeader);
 
-    // Handle locale detection
-    const acceptLanguageHeader = req.headers.get('accept-language') || '';
-    const newUrl = req.nextUrl.clone();
-    const headers = req.headers.get('accept-language');
-    const userLang = AcceptLanguageParser.pick(i18n.locales, acceptLanguageHeader);
+        const savedLocale = req.cookies.get('NEXT_LOCALE')?.value;
+        const newLocale = savedLocale || userLang || i18n.locales.slice(1).at(0);
 
-    if (!headers) return NextResponse.rewrite(newUrl);
-    const savedLocale = req.cookies.get('NEXT_LOCALE')?.value;
-    const newLocale =
-        savedLocale || userLang || i18n.locales.filter((i) => i !== 'x-default').at(0);
+        if (newLocale) {
+            newUrl.locale = newLocale;
 
-    if (newLocale) {
-        newUrl.locale = newLocale;
-
-        if (newUrl) return NextResponse.redirect(newUrl);
+            if (newUrl) return NextResponse.redirect(newUrl);
+        }
     }
     return undefined;
 }
-
-export const config = {
-    matcher: [
-        '/((?!api|favicon.ico|monitoring|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)/'
-    ]
-};
