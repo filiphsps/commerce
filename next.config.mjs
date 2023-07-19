@@ -1,7 +1,7 @@
-import manifest from './package.json' assert { type: 'json' };
-import { i18n } from './next-i18next.config.cjs';
 import { withSentryConfig } from '@sentry/nextjs';
 import createNextPluginPreval from 'next-plugin-preval/config.js';
+import { i18n } from './next-i18next.config.cjs';
+import manifest from './package.json' assert { type: 'json' };
 
 const withNextPluginPreval = createNextPluginPreval();
 
@@ -15,7 +15,8 @@ let config = {
     productionBrowserSourceMaps: false,
     compress: false,
     experimental: {
-        esmExternals: true
+        esmExternals: true,
+        swcTraceProfiling: true
     },
     images: {
         minimumCacheTTL: 60,
@@ -24,9 +25,12 @@ let config = {
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
     },
     compiler: {
+        /*removeConsole: {
+            exclude: ['error']
+        },*/
         styledComponents: {
             ssr: true,
-            minify: true,
+            minify: false,
             transpileTemplateLiterals: true,
             pure: true
         }
@@ -64,6 +68,21 @@ let config = {
                 source: '/x-default/:slug*',
                 destination: '/:slug',
                 permanent: true
+            }
+        ];
+    },
+
+    async headers() {
+        return [
+            {
+                // Sets security headers for all routes
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'no-referrer-when-downgrade'
+                    }
+                ]
             }
         ];
     }
