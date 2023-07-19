@@ -49,6 +49,7 @@ export const SearchApi = async ({
                                 node {
                                     ... on Product {
                                         ${PRODUCT_FRAGMENT_MINIMAL}
+                                        trackingParameters
                                     }
                                 }
                             }

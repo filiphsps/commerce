@@ -9,6 +9,7 @@ import { ShopifyAnalyticsProduct, useCart } from '@shopify/hydrogen-react';
 
 import { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Locale } from '../util/Locale';
+import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { ShopifySalesChannel } from '@shopify/hydrogen';
 import { useEffect } from 'react';
 import { usePrevious } from './usePrevious';
@@ -42,6 +43,7 @@ export function useAnalytics({
     shopId,
     pagePropsAnalyticsData
 }: useAnalyticsProps) {
+    const router = useRouter();
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
     if (!shopId || !domain) {
@@ -86,7 +88,7 @@ export function useAnalytics({
         });
     }, [path]);
 
-    const { lines, id: cartId, cost, status } = useCart();
+    const { lines, id: cartId, cost, status, cartFragment } = useCart();
     const previousLines = usePrevious(lines);
     const previousStatus = usePrevious(status);
 
@@ -95,6 +97,7 @@ export function useAnalytics({
         // Don't send during development!
         if (process.env.NODE_ENV === 'development') return;
 
+        // Logic error here, this doesn't send for the first item
         if (!pageAnalytics.shopId) return;
         if (
             previousStatus !== 'updating' ||
@@ -108,13 +111,16 @@ export function useAnalytics({
 
         const products: Array<ShopifyAnalyticsProduct> =
             (lines as Array<CartLine>).map(
-                ({ merchandise, quantity, cost }) =>
+                ({ merchandise, quantity }) =>
                     ({
+                        sku: merchandise.sku,
                         productGid: merchandise.product.id,
                         variantGid: merchandise.id,
                         name: merchandise.product.title,
                         variantName: merchandise.title,
-                        price: Number.parseFloat(cost.amountPerQuantity?.amount || '0'),
+                        brand: merchandise.product.vendor,
+                        currency: merchandise.price.currencyCode,
+                        price: Number.parseFloat(merchandise.price?.amount!) || undefined,
                         quantity
                     }) as any
             ) || [];
@@ -136,24 +142,39 @@ export function useAnalytics({
             payload
         });
 
+        console.log(lines.at(-1));
+
         (window as any)?.dataLayer?.push(
-            { ecommerce: null },
             {
+                ecommerce: null
+            },
+            {
+                // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#example_3
                 event: 'add_to_cart',
-                currency: cost?.totalAmount?.currencyCode || 'USD',
-                value: Number.parseFloat(cost?.totalAmount?.amount || '0'),
+
+                currency: cost?.totalAmount?.currencyCode!,
+                value: Number.parseFloat(cost?.totalAmount?.amount!),
                 ecommerce: {
-                    items: [
-                        {
-                            item_id: products.at(-1)?.sku!,
-                            item_name: products.at(-1)?.name,
-                            item_variant: products.at(-1)?.variantName,
-                            item_brand: products.at(-1)?.brand,
-                            currency: cost?.totalAmount?.currencyCode || 'USD',
-                            price: Number.parseFloat(products.at(-1)?.price || '0'),
-                            quantity: products.at(-1)?.quantity || 0
-                        }
-                    ]
+                    items: ((line: CartLine) => {
+                        return [
+                            {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale:
+                                        (router.locale !== 'x-default' && router.locale) ||
+                                        router.locales?.[1],
+                                    productId: line.merchandise.product.id,
+                                    variantId: line.merchandise.id
+                                }),
+                                item_name: line.merchandise.product.title,
+                                item_variant: line.merchandise.title,
+                                item_brand: line.merchandise.product.vendor,
+                                currency: line.merchandise.price.currencyCode,
+                                price:
+                                    Number.parseFloat(line.merchandise.price?.amount!) || undefined,
+                                quantity: line.quantity
+                            }
+                        ];
+                    })(lines.at(-1) as any)
                 }
             }
         );

@@ -10,7 +10,6 @@ const PUBLIC_FILE = /\.(.*)$/;
 // then later also on https://stackoverflow.com/a/75845778/3142553
 export default function middleware(req: NextRequest) {
     if (
-        process.env.NODE_ENV === 'development' ||
         req.nextUrl.pathname.startsWith('/_next/') ||
         req.nextUrl.pathname.includes('/api/') ||
         req.nextUrl.pathname.startsWith('/monitoring/') ||

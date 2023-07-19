@@ -6,6 +6,7 @@ import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 
+import { CartFragment } from 'src/api/cart';
 import Color from 'color';
 import { Config } from '../src/util/Config';
 import Head from 'next/head';
@@ -186,7 +187,7 @@ const StoreApp = withStore(
                     countryIsoCode={country}
                     languageIsoCode={language}
                 >
-                    <CartProvider countryCode={country}>
+                    <CartProvider countryCode={country} cartFragment={CartFragment}>
                         <ThemeProvider theme={{}}>
                             <PrismicPreview repositoryName={prismicConfig.repositoryName}>
                                 <PageProvider

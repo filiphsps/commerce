@@ -8,14 +8,15 @@ interface useCartUtilsProps {
 }
 export function useCartUtils({ locale }: useCartUtilsProps) {
     const router = useRouter();
-    const { query, isReady } = router;
     const {
         buyerIdentity,
         buyerIdentityUpdate,
         discountCodes,
         discountCodesUpdate,
         status,
-        cartCreate
+        totalQuantity,
+        cartCreate,
+        error
     } = useCart();
 
     // Handle country code change
@@ -30,12 +31,26 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
 
     // Discount codes in url
     useEffect(() => {
-        if (!query || !query.discount) return;
-        const discount = query.discount.toString();
+        // TODO: Create a cart if one doesn't exist
+        if (!router.query || (!router.query.discount && status !== 'idle')) return;
+        const discount = router.query.discount?.toString();
+        if (!discount) return;
+
+        delete router.query.discount;
+        router.replace(
+            {
+                pathname: router.pathname!,
+                query: router.query
+            },
+            undefined,
+            { shallow: true }
+        );
 
         // TODO: Notification?
-        // TODO: Create a cart if you haven't already
-        if (discountCodes?.length && discountCodes?.find?.((i) => i?.code == discount)) return;
         discountCodesUpdate([...(discountCodes || ([] as any)), discount]);
-    }, [router, isReady]);
+
+        if (error) console.error(error);
+
+        // TODO: Check cart errors and validate that the code was actually valid...
+    }, [router.query, status]);
 }

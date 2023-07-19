@@ -7,7 +7,7 @@ import {
     useCart
 } from '@shopify/hydrogen-react';
 import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
@@ -20,6 +20,7 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
+import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { StoreModel } from '../../src/models/StoreModel';
 import styled from 'styled-components';
@@ -152,7 +153,15 @@ const getCrossDomainLinkerParameter = () => {
     return null;
 };
 
-export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: string }) => {
+export const Checkout = async ({
+    cart,
+    locale,
+    locales
+}: {
+    cart: CartWithActions;
+    locale?: string;
+    locales?: string[];
+}) => {
     if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines)
         throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
@@ -168,19 +177,20 @@ export const Checkout = async ({ cart }: { cart: CartWithActions; locale?: strin
             {
                 event: 'begin_checkout',
                 currency: cart.cost?.totalAmount?.currencyCode!,
-                value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
+                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                 ecommerce: {
                     items: cart.lines.map((line: CartLine) => ({
-                        item_id: line.merchandise.id,
+                        item_id: ProductToMerchantsCenterId({
+                            locale: (locale !== 'x-default' && locale) || locales?.[1],
+                            productId: line.merchandise.product.id,
+                            variantId: line.merchandise.id
+                        }),
                         item_name: line.merchandise.product.title,
                         item_variant: line.merchandise.title,
                         item_brand: line.merchandise.product.vendor,
                         currency: line.merchandise.price.currencyCode!,
-                        quantity: line.quantity,
-                        discount:
-                            Number.parseFloat(line.merchandise.price?.amount! || '0') -
-                            Number.parseFloat(line.cost.amountPerQuantity?.amount! || '0'),
-                        price: Number.parseFloat(line.merchandise.price?.amount! || '0')
+                        price: Number.parseFloat(line.merchandise.price?.amount!) || undefined,
+                        quantity: line.quantity
                     }))
                 }
             }
@@ -246,18 +256,26 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 ecommerce: null
             },
             {
+                // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#example_45
+                // TODO: Move this to the analytics pageview event
                 event: 'view_cart',
-                currency: 'USD',
-                value: Number.parseFloat(cart.cost?.totalAmount?.amount || '0'),
+                currency: cart.cost?.totalAmount?.currencyCode!,
+                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                 ecommerce: {
-                    items: cart.lines.map((item: CartLine) => ({
-                        item_id: item.merchandise.id,
-                        item_name: item.merchandise.product.title,
-                        item_variant: item.merchandise.title,
-                        item_brand: item.merchandise.product.vendor,
-                        currency: item.merchandise.price.currencyCode,
-                        quantity: item.quantity,
-                        price: Number.parseFloat(item.merchandise.price?.amount! || '0')
+                    items: cart.lines.map((line: CartLine) => ({
+                        item_id: ProductToMerchantsCenterId({
+                            locale:
+                                (router.locale !== 'x-default' && router.locale) ||
+                                router.locales?.[1],
+                            productId: line.merchandise.product.id,
+                            variantId: line.merchandise.id
+                        }),
+                        item_name: line.merchandise.product.title,
+                        item_variant: line.merchandise.title,
+                        item_brand: line.merchandise.product.vendor,
+                        currency: line.merchandise.price.currencyCode,
+                        price: Number.parseFloat(line.merchandise.price?.amount!) || undefined,
+                        quantity: line.quantity
                     }))
                 }
             }
@@ -347,7 +365,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                                 try {
                                     await Checkout({
-                                        cart
+                                        cart,
+                                        locale: router.locale,
+                                        locales: router.locales
                                     });
                                 } catch (error) {
                                     Sentry.captureException(error);

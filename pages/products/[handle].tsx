@@ -30,6 +30,7 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { ProductOptions } from '@/components/ProductOptions';
+import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
 import Reviews from '@/components/Reviews';
@@ -477,19 +478,27 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         (window as any)?.dataLayer?.push(
             { ecommerce: null },
             {
+                // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
                 event: 'view_item',
+
                 currency: selectedVariant.price?.currencyCode,
                 value: Number.parseFloat(selectedVariant.price?.amount || ''),
                 ecommerce: {
                     items: [
                         {
-                            item_id: selectedVariant.sku || selectedVariant.id?.split('/').at(-1),
+                            item_id: ProductToMerchantsCenterId({
+                                locale:
+                                    (router.locale !== 'x-default' && router.locale) ||
+                                    router.locales?.[1],
+                                productId: product.id,
+                                variantId: selectedVariant.id!
+                            }),
                             item_name: product.title,
                             item_variant: selectedVariant.title,
                             item_brand: product.vendor,
                             currency: selectedVariant.price?.currencyCode,
-                            price: Number.parseFloat(selectedVariant.price?.amount || ''),
-                            quantity
+                            price: Number.parseFloat(selectedVariant.price?.amount!) || undefined,
+                            quantity: 1
                         }
                     ]
                 }
@@ -654,10 +663,13 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     keyOverride={`item_${variant?.id}`}
                     productName={`${product.vendor} ${product.title} ${variant.title}`}
                     brand={product.vendor}
-                    sku={`shopify_${(router?.locale || 'en-US').split('-')[1]}_${product.id
-                        ?.split('/')
-                        .at(-1)}_${variant?.id.split('/').at(-1)}`}
-                    mpn={variant.barcode || undefined}
+                    sku={ProductToMerchantsCenterId({
+                        locale:
+                            (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                        productId: product.id,
+                        variantId: variant.id
+                    })}
+                    mpn={variant.barcode || variant.sku || undefined}
                     images={
                         (product.images?.edges
                             ?.map?.((edge) => edge?.node?.url)

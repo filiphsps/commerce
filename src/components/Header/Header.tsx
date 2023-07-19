@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Button } from '../Button';
@@ -638,7 +638,8 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
                                                 await Checkout({
                                                     cart,
-                                                    locale: router.locale
+                                                    locale: router.locale,
+                                                    locales: router.locales
                                                 });
                                             } catch (error) {
                                                 Sentry.captureException(error);
