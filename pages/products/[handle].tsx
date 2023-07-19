@@ -881,14 +881,7 @@ const ProductPageWrapper: FunctionComponent<ProductPageProps> = (props) => {
     if (props.error || !props.product) return <Error statusCode={500} title={props.error} />;
 
     return (
-        <ProductProvider
-            data={props.product}
-            initialVariantId={
-                (router.query.variant && `gid://shopify/ProductVariant/${router.query.variant}`) ||
-                props.product.variants.edges.at(-1)?.node.id ||
-                undefined
-            }
-        >
+        <ProductProvider data={props.product} initialVariantId={null}>
             <ProductPage {...props} />
         </ProductProvider>
     );

@@ -32,5 +32,6 @@ export default function middleware(req: NextRequest) {
             if (newUrl) return NextResponse.redirect(newUrl);
         }
     }
+
     return undefined;
 }

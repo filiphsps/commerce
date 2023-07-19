@@ -1,6 +1,6 @@
-import { FunctionComponent, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
+import { FunctionComponent } from 'react';
 import { useProduct } from '@shopify/hydrogen-react';
 
 //import { useRouter } from 'next/router';
@@ -71,29 +71,18 @@ const Option = styled.div``;
 
 interface ProductOptionProps {}
 export const ProductOptions: FunctionComponent<ProductOptionProps> = ({}) => {
-    const { setSelectedOption, options, selectedOptions /*, selectedVariant*/ } = useProduct();
-    //const router = useRouter();
+    const { setSelectedOption, options, selectedOptions } = useProduct();
+    /*const router = useRouter();
 
+    const prevVariantId = usePrevious(selectedVariant?.id);
     useEffect(() => {
-        // FIXME: this runs twice and causes the router to throw errors.
+        if (!selectedVariant?.id || selectedVariant?.id === prevVariantId || !router.isReady)
+            return;
+
+        console.log(router.query.variant, selectedVariant.id);
+
         return;
-
-        /*if (!selectedVariant || !selectedVariant.id) return;
-        else if (!router.isReady) return;
-
-        const id = selectedVariant.id.split('/').at(-1);
-        if (!id || router.query.variant == id) return;
-        try {
-            router.replace({
-                query: {
-                    ...router.query,
-                    variant: id || undefined
-                }
-            });
-        } catch {
-            // FIXME: Handle errors
-        }*/
-    }, [selectedOptions]);
+    }, [selectedVariant]);*/
 
     return (
         <Container>
