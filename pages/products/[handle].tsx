@@ -15,8 +15,8 @@ import {
     ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
+import { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../src/api/product';
@@ -47,7 +47,6 @@ import { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
-import { useButtonCallbacks } from 'src/hooks/useButtonCallbacks';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -79,7 +78,7 @@ const ProductContainer = styled.div`
         grid-template-areas:
             'assets header'
             'assets details';
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr minmax(36rem, 40%);
         grid-template-rows: auto 1fr;
     }
 `;
@@ -142,6 +141,7 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     @media (min-width: 950px) {
         font-size: 1.5rem;
         line-height: 1.75rem;
+        height: 5rem;
     }
 `;
 const Quantity = styled(Input)`
@@ -396,7 +396,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const router = useRouter();
     const cart = useCart();
     const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
-    const { product: data, selectedVariant } = useProduct();
+    const { product: data, setSelectedOption, selectedVariant } = useProduct();
+
+    const addedTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+    const [added, setAdded] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('details');
 
@@ -406,7 +410,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         const id = selectedVariant?.id?.split('/')?.at(-1);
         if (!id || variantQuery == id) return;
 
-        setVariantQuery(id, 'replaceIn');
+        //setVariantQuery(id, 'replaceIn');
     }, [setVariantQuery, variantQuery, selectedVariant, router.isReady]);
 
     const { data: product } = useSWR(
@@ -448,41 +452,37 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         }
     );
 
-    const {
-        isLoading,
-        isActive: isAddedActive,
-        onClick: onAddToCartButton
-    } = useButtonCallbacks({
-        handler: async () => {
+    const setProductOption = useCallback(
+        ({ name, value }: { name: string; value: string }) => {
+            setSelectedOption(name, value);
+        },
+        [setSelectedOption, product, selectedVariant]
+    );
+
+    const addOrUpdateCartLine = useCallback(
+        ({ quantity, variantId }: { quantity: number; variantId: string }) => {
             cart.linesAdd([
                 {
-                    merchandiseId: selectedVariant?.id!,
-                    quantity
+                    merchandiseId: variantId,
+                    quantity: quantity
                 }
             ]);
 
-            /*setCartStore({
-                    ...cartStore,
-                    item: {
-                        title: product?.title,
-                        vendor: product?.vendor,
-                        variant: {
-                            title: selectedVariant.title
-                        },
-                        images: [
-                            {
-                                src: product?.images?.edges?.[0]?.node?.url
-                            }
-                        ]
-                    },
-                    open: true
-                });   */
-        }
-    });
+            if (addedTimeout.current) clearTimeout(addedTimeout.current);
+            setAdded(true);
+            addedTimeout.current = setTimeout(() => {
+                setAdded(false);
+            }, 3000);
+        },
+        [cart, selectedVariant, quantity, addedTimeout]
+    );
 
     // This should never be able to happen at this moment.
     // TODO: Placeholders to support things like this?
     if (!store || !product) return null;
+
+    // TODO: this wont be needed once we properly init it ourselves
+    const cartReady = ['uninitialized', 'idle'].includes(cart.status);
 
     const pricing = (
         <PriceContainer>
@@ -535,16 +535,38 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         <AddToCart
             type="button"
             title="Add to Cart"
-            added={isAddedActive}
-            disabled={isLoading || quantity <= 0 || !selectedVariant?.availableForSale}
-            onClick={onAddToCartButton}
+            added={added}
+            disabled={!cartReady || quantity <= 0 || !selectedVariant?.availableForSale}
+            onClick={() =>
+                cartReady && addOrUpdateCartLine({ quantity, variantId: selectedVariant?.id! })
+            }
         >
-            <FiShoppingCart />
             {(() => {
-                if (!selectedVariant?.availableForSale) return 'Out of Stock';
-                else if (isLoading) return 'Hang on...';
-                else if (isAddedActive) return 'Added';
-                return 'Add to Cart';
+                if (!selectedVariant?.availableForSale)
+                    return (
+                        <>
+                            <span>Out of Stock</span>
+                        </>
+                    );
+                else if (!cartReady)
+                    return (
+                        <>
+                            <span>Hang on...</span>
+                        </>
+                    );
+                else if (added)
+                    return (
+                        <>
+                            <FiCheck />
+                            <span>Added</span>
+                        </>
+                    );
+                return (
+                    <>
+                        <FiShoppingCart />
+                        <span> Add to Cart</span>
+                    </>
+                );
             })()}
         </AddToCart>
     );
@@ -736,7 +758,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         {information}
 
                         <Details>
-                            <ProductOptions />
+                            <ProductOptions onOptionChange={setProductOption} />
 
                             {quantityAction}
                             {addToCartAction}
@@ -856,16 +878,15 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (
     props
 ) => {
-    const defaultVariantId =
-        props.product?.variants.edges.at(-1)?.node.id.split('/').at(-1) || null;
-    const [variantQuery] = useQueryParam('variant', withDefault(StringParam, defaultVariantId));
+    const [variantQuery] = useQueryParam('variant', withDefault(StringParam, null));
 
-    if (props.error) return <Error statusCode={500} title={props.error} />;
+    // TODO: Proper error page
+    if (props.errors && props.errors?.length > 0)
+        return <Error statusCode={500} title={props.errors?.at(0)} />;
     else if (!props.product) return <Error statusCode={404} />;
 
     const initialVariantId =
-        (variantQuery && `gid://shopify/ProductVariant/${variantQuery?.toString()}`) ||
-        defaultVariantId;
+        (variantQuery && `gid://shopify/ProductVariant/${variantQuery?.toString()}`) || undefined;
 
     return (
         <ProductProvider data={props.product} initialVariantId={initialVariantId}>
@@ -897,7 +918,7 @@ export async function getStaticPaths({ locales }) {
 }
 
 export const getStaticProps: GetStaticProps<{
-    error?: string | null;
+    errors?: string[] | null;
     product?: Product | null;
     recommendations?: Product[] | null;
     reviews?: ReviewsModel | null;
@@ -934,7 +955,7 @@ export const getStaticProps: GetStaticProps<{
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
-    let errors: any[] = [];
+    let errors: string[] = [];
 
     try {
         product = await ProductApi({
@@ -951,7 +972,7 @@ export const getStaticProps: GetStaticProps<{
         if (error) Sentry.captureException(error);
         return {
             props: {
-                error: error?.message || null
+                errors: (error?.message && [error?.message]) || null
             },
             revalidate: 60
         };
@@ -977,16 +998,16 @@ export const getStaticProps: GetStaticProps<{
                 id: product?.id,
                 locale
             });
-        } catch (error) {
+        } catch (error: any) {
             Sentry.captureException(error);
-            if (error) errors.push(error);
+            if (error) errors.push(error?.message?.toString());
         }
 
         try {
             reviews = await ReviewsProductApi({ id: product?.id });
-        } catch (error) {
+        } catch (error: any) {
             Sentry.captureException(error);
-            if (error) errors.push(error);
+            if (error) errors.push(error?.message?.toString());
         }
     }
 
@@ -995,14 +1016,14 @@ export const getStaticProps: GetStaticProps<{
             product,
             recommendations,
             reviews,
-            errors,
+            errors: (errors.length > 0 && errors) || null,
             analytics: {
                 pageType: AnalyticsPageType.product,
                 resourceId: product?.id || null,
                 products: analyticsProducts
-            }
-        } as any,
-        revalidate: 10
+            } as any
+        },
+        revalidate: 60
     };
 };
 

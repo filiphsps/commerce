@@ -42,6 +42,10 @@ class Document extends NextDocument {
                     <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
                     <link rel="preconnect" href="https://images.prismic.io" crossOrigin="" />
                     <link rel="preconnect" href={`https://${Config.shopify.checkout_domain}`} />
+                    <meta
+                        name="format-detection"
+                        content="telephone=no, date=no, email=no, address=no"
+                    />
                 </Head>
                 <body>
                     <Main />

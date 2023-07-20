@@ -35,6 +35,11 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             currencyCode
         }
     }
+    options(first: 250) {
+        id
+        name
+        values
+    }
     variants(first: 5) {
         edges {
             node {
@@ -399,7 +404,7 @@ export const ProductsApi = async (
                         products(
                             first: ${limit},
                             sortKey: BEST_SELLING
-                            ${cursor ? `, after: "${cursor}"` : ''}) 
+                            ${cursor ? `, after: "${cursor}"` : ''})
                         {
                             edges {
                                 cursor

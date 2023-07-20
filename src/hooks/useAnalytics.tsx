@@ -6,10 +6,11 @@ import {
 } from '@shopify/hydrogen';
 import { AnalyticsPageType, ShopifyAnalyticsProduct, useCart } from '@shopify/hydrogen-react';
 import { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen';
+import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
 import { Locale } from '../util/Locale';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
+import { ShopifyPriceToNumber } from 'src/util/Pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen';
 import { useEffect } from 'react';
 import { usePrevious } from './usePrevious';
@@ -31,6 +32,11 @@ const trimDomain = (domain?: string): string | undefined => {
     return result;
 };
 
+const shouldSendEvents = () => {
+    if (process.env.NODE_ENV === 'development') return false;
+    return true;
+};
+
 interface AnalyticsEcommercePayload {
     currency: CurrencyCode;
     value: number;
@@ -40,7 +46,7 @@ const sendEcommerceEvent = ({
     event,
     payload
 }: {
-    event: 'view_item';
+    event: 'view_item' | 'add_to_cart';
     payload: AnalyticsEcommercePayload;
 }) => {
     if (!(window as any)?.dataLayer) return;
@@ -66,25 +72,28 @@ export function useAnalytics({
     shopId,
     pagePropsAnalyticsData
 }: useAnalyticsProps) {
-    const router = useRouter();
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
     if (!shopId || !domain) {
         console.error(`Invalid shopId`, shopId);
     }
 
+    const { lines, id: cartId, cost, status, totalQuantity } = useCart();
+    const previousStatus = usePrevious(status);
+    const previousQuantity = usePrevious(totalQuantity);
+
     const viewPayload = {
         navigationType: 'navigate'
     } as unknown as ShopifyPageViewPayload;
 
-    const pageAnalytics = {
+    const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
         shopifySalesChannel: ShopifySalesChannel.hydrogen,
         currency: locale.currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true,
-        ...pagePropsAnalyticsData
+        ...(pagePropsAnalyticsData as any)
     };
 
     const { asPath: path } = useRouter();
@@ -104,22 +113,21 @@ export function useAnalytics({
                 sendEcommerceEvent({
                     event: 'view_item',
                     payload: {
-                        currency: pageAnalytics.currency,
-                        value: Number.parseFloat(product.price!) || 0,
+                        currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                        value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount, product.price),
                         items: [
                             {
                                 item_id: ProductToMerchantsCenterId({
-                                    locale:
-                                        (router.locale !== 'x-default' && router.locale) ||
-                                        router.locales?.[1],
+                                    locale: locale.locale,
                                     productId: product.productGid!,
                                     variantId: product.variantGid!
                                 }),
                                 item_name: product.name,
                                 item_variant: product.variantName,
                                 item_brand: product.brand,
-                                currency: pageAnalytics.currency,
-                                price: Number.parseFloat(product.price!) || undefined,
+                                currency:
+                                    pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                                price: ShopifyPriceToNumber(undefined, product.price!),
                                 quantity: product.quantity
                             }
                         ]
@@ -129,8 +137,7 @@ export function useAnalytics({
             }
         }
 
-        // Don't send during development!
-        if (process.env.NODE_ENV === 'development') return;
+        if (!shouldSendEvents()) return;
 
         const payload: ShopifyPageViewPayload = {
             ...getClientBrowserParameters(),
@@ -146,26 +153,23 @@ export function useAnalytics({
         });
     }, [previousPath]);
 
-    const { lines, id: cartId, cost, status } = useCart();
-    const previousLines = usePrevious(lines);
-    const previousStatus = usePrevious(status);
-
     // Add to cart analytics
     useEffect(() => {
-        // Don't send during development!
-        if (process.env.NODE_ENV === 'development') return;
-
-        // Logic error here, this doesn't send for the first item
+        // TODO: create useCartEvents hooks to simplify this
         if (!pageAnalytics.shopId) return;
         if (
-            previousStatus !== 'updating' ||
+            !previousStatus ||
+            !['updating', 'creating'].includes(previousStatus) ||
             status !== 'idle' ||
             !lines ||
-            !previousLines ||
             lines.length <= 0 ||
-            lines.length <= previousLines.length
+            !totalQuantity ||
+            totalQuantity <= 0 ||
+            totalQuantity < (previousQuantity || 0)
         )
             return;
+
+        if (!shouldSendEvents()) return;
 
         const products: Array<ShopifyAnalyticsProduct> =
             (lines as Array<CartLine>).map(
@@ -200,38 +204,29 @@ export function useAnalytics({
             payload
         });
 
-        (window as any)?.dataLayer?.push(
-            {
-                ecommerce: null
-            },
-            {
-                // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#example_3
-                event: 'add_to_cart',
-                ecommerce: {
-                    currency: cost?.totalAmount?.currencyCode!,
-                    value: Number.parseFloat(cost?.totalAmount?.amount!),
-                    items: ((line: CartLine) => {
-                        return [
-                            {
-                                item_id: ProductToMerchantsCenterId({
-                                    locale:
-                                        (router.locale !== 'x-default' && router.locale) ||
-                                        router.locales?.[1],
-                                    productId: line.merchandise.product.id,
-                                    variantId: line.merchandise.id
-                                }),
-                                item_name: line.merchandise.product.title,
-                                item_variant: line.merchandise.title,
-                                item_brand: line.merchandise.product.vendor,
-                                currency: line.merchandise.price.currencyCode,
-                                price:
-                                    Number.parseFloat(line.merchandise.price?.amount!) || undefined,
-                                quantity: line.quantity
-                            }
-                        ];
-                    })(lines.at(-1) as any)
-                }
+        sendEcommerceEvent({
+            event: 'add_to_cart',
+            payload: {
+                currency: cost?.totalAmount?.currencyCode! || pageAnalytics.currency,
+                value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount),
+                items: ((line: CartLine) => {
+                    return [
+                        {
+                            item_id: ProductToMerchantsCenterId({
+                                locale: locale.locale,
+                                productId: line.merchandise.product.id,
+                                variantId: line.merchandise.id
+                            }),
+                            item_name: line.merchandise.product.title,
+                            item_variant: line.merchandise.title,
+                            item_brand: line.merchandise.product.vendor,
+                            currency: line.merchandise.price.currencyCode,
+                            price: ShopifyPriceToNumber(undefined, line.merchandise.price?.amount!),
+                            quantity: line.quantity
+                        }
+                    ];
+                })(lines.at(-1) as any)
             }
-        );
+        });
     }, [lines, status]);
 }

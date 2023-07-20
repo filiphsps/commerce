@@ -1,6 +1,7 @@
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 
 import { FunctionComponent } from 'react';
+import { Pluralize } from 'src/util/Pluralize';
 import ReactStars from 'react-rating-stars-component';
 import styled from 'styled-components';
 
@@ -62,6 +63,8 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
     hideLabel,
     onShowReviews
 }) => {
+    if (!totalReviews) return null;
+
     return (
         <ReviewsWrapper>
             <ReactStars
@@ -90,9 +93,7 @@ const ReviewStars: FunctionComponent<ReviewStarsProps> = ({
             />
             {!hideLabel && (
                 <ReviewsLabel onClick={() => onShowReviews?.()}>
-                    {Math.floor(score * 100) / 100}{' '}
-                    {totalReviews !== undefined &&
-                        `(${totalReviews} Review${totalReviews != 1 ? 's' : ''})`}
+                    {totalReviews} {Pluralize({ count: totalReviews, noun: 'review' })}
                 </ReviewsLabel>
             )}
         </ReviewsWrapper>

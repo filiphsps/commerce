@@ -1,6 +1,6 @@
+import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { FunctionComponent } from 'react';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 
@@ -30,6 +30,7 @@ const OptionValues = styled.div`
 `;
 const OptionValue = styled.div<{
     selected?: boolean;
+    disabled?: boolean;
 }>`
     padding: var(--block-padding) var(--block-padding-large);
     border-radius: var(--block-border-radius);
@@ -41,11 +42,28 @@ const OptionValue = styled.div<{
     transition: 250ms ease-in-out;
     cursor: pointer;
 
-    ${(props) =>
-        props.selected &&
+    ${({ selected }) =>
+        selected &&
         css`
             background: var(--accent-primary);
             color: var(--accent-primary-text);
+        `}
+
+    ${({ disabled }) =>
+        disabled &&
+        css`
+            opacity: 0.5;
+            pointer-events: none;
+
+            background: var(--color-block);
+            color: var(--color-dark);
+
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: inherit;
+                    background: inherit;
+                }
+            }
         `}
 `;
 const Option = styled.div<{ disabled: boolean }>`
@@ -71,34 +89,49 @@ const Option = styled.div<{ disabled: boolean }>`
         `}
 `;
 
-interface ProductOptionProps {}
-export const ProductOptions: FunctionComponent<ProductOptionProps> = ({}) => {
+interface ProductOptionProps {
+    // eslint-disable-next-line no-unused-vars
+    onOptionChange: (props: { name: string; value: string }) => void;
+}
+export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOptionChange }) => {
     const router = useRouter();
-    const { setSelectedOption, options, selectedOptions } = useProduct();
+    const { options, selectedOptions } = useProduct();
+    const [disabled, setDisabled] = useState(true);
 
-    // TODO: Disable options that aren't purchasable available, ie out of stock.
+    // We need this because of ssr
+    useEffect(() => {
+        if (disabled === !router.isReady) return;
+        setDisabled(!router.isReady);
+    }, [router]);
+
     return (
         <Container>
             {options?.map((option) => {
                 if (!option || !option.values || !option.name || option.values.length <= 1)
                     return null;
 
-                const disabled = !router.isReady;
                 return (
                     <Option key={option.name} disabled={disabled}>
                         <OptionTitle>{option.name}</OptionTitle>
                         <OptionValues>
-                            {option.values.map((value) => (
-                                <OptionValue
-                                    key={value}
-                                    selected={selectedOptions?.[option.name!] === value}
-                                    onClick={() =>
-                                        !disabled && setSelectedOption(option.name!, value!)
-                                    }
-                                >
-                                    {value}
-                                </OptionValue>
-                            ))}
+                            {option.values.map((value) => {
+                                // TODO: Disable options that aren't purchasable available, ie out of stock.
+                                return (
+                                    <OptionValue
+                                        key={value}
+                                        //disabled={!inStock}
+                                        selected={selectedOptions?.[option.name!] === value}
+                                        onClick={() =>
+                                            onOptionChange({
+                                                name: option.name!,
+                                                value: value!
+                                            })
+                                        }
+                                    >
+                                        {value}
+                                    </OptionValue>
+                                );
+                            })}
                         </OptionValues>
                     </Option>
                 );
