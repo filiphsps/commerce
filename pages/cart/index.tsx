@@ -176,9 +176,9 @@ export const Checkout = async ({
             },
             {
                 event: 'begin_checkout',
-                currency: cart.cost?.totalAmount?.currencyCode!,
-                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                 ecommerce: {
+                    currency: cart.cost?.totalAmount?.currencyCode!,
+                    value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                     items: cart.lines.map((line: CartLine) => ({
                         item_id: ProductToMerchantsCenterId({
                             locale: (locale !== 'x-default' && locale) || locales?.[1],
@@ -259,9 +259,9 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#example_45
                 // TODO: Move this to the analytics pageview event
                 event: 'view_cart',
-                currency: cart.cost?.totalAmount?.currencyCode!,
-                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                 ecommerce: {
+                    currency: cart.cost?.totalAmount?.currencyCode!,
+                    value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                     items: cart.lines.map((line: CartLine) => ({
                         item_id: ProductToMerchantsCenterId({
                             locale:

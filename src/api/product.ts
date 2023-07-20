@@ -102,6 +102,18 @@ export const PRODUCT_FRAGMENT = `
         name
         values
     }
+    sellingPlanGroups(first: 250) {
+        edges {
+            node {
+                appName
+                name
+                options {
+                    name,
+                    values
+                }
+            }
+        }
+    }
     variants(first: 250) {
         edges {
             node {
@@ -322,7 +334,7 @@ export const ProductApi = async ({
                     .replaceAll('\u00A0', ' ');
             } catch {}
 
-            return resolve(/*flattenConnection(*/ data.productByHandle /*)*/);
+            return resolve(data.productByHandle);
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);
@@ -404,7 +416,7 @@ export const ProductsApi = async (
                 `
             });
 
-            if (errors) return reject(new Error(errors.join('\n')));
+            if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
             if (!data.products)
                 return reject(new Error('404: The requested document cannot be found'));
 

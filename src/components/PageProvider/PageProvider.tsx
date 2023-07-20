@@ -68,7 +68,7 @@ const Container = styled.div`
 
     // TODO: Move this to a prop
     &.SideBar-Open {
-        @media screen and (max-width: 950px) {
+        @media (max-width: 950px) {
             height: 100vh;
             height: 100dvh;
             overflow: hidden;

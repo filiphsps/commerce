@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { FunctionComponent } from 'react';
 import { useProduct } from '@shopify/hydrogen-react';
+import { useRouter } from 'next/router';
 
 //import { useRouter } from 'next/router';
 
@@ -30,75 +31,70 @@ const OptionValues = styled.div`
 const OptionValue = styled.div<{
     selected?: boolean;
 }>`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.25rem;
-    max-width: 18rem;
     padding: var(--block-padding) var(--block-padding-large);
-    margin: 0px 0px 0.5rem 0px;
-    text-transform: uppercase;
-    background: var(--color-bright);
-    border: 0.2rem solid var(--color-bright);
     border-radius: var(--block-border-radius);
+    background: var(--color-block);
+    color: var(--color-dark);
+    text-align: center;
+    font-size: 1.25rem;
     font-weight: 600;
+    transition: 250ms ease-in-out;
     cursor: pointer;
-    transition: 250ms all ease-in-out;
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-
-    @media (max-width: 950px) {
-        font-size: 1.5rem;
-    }
 
     ${(props) =>
         props.selected &&
         css`
-             {
-                color: var(--accent-primary);
-                border-color: var(--accent-primary);
+            background: var(--accent-primary);
+            color: var(--accent-primary-text);
+        `}
+`;
+const Option = styled.div<{ disabled: boolean }>`
+    opacity: 0.5;
+    pointer-events: none;
+
+    ${({ disabled }) =>
+        !disabled &&
+        css`
+            opacity: unset;
+            pointer-events: unset;
+
+            ${OptionValue} {
+                cursor: pointer;
+
+                @media (hover: hover) and (pointer: fine) {
+                    &:hover {
+                        color: var(--accent-primary-text);
+                        background: var(--accent-primary);
+                    }
+                }
             }
         `}
-
-    @media (min-width: 950px) {
-        &:hover {
-            color: var(--accent-primary);
-            border-color: var(--accent-primary);
-        }
-    }
 `;
-const Option = styled.div``;
 
 interface ProductOptionProps {}
 export const ProductOptions: FunctionComponent<ProductOptionProps> = ({}) => {
+    const router = useRouter();
     const { setSelectedOption, options, selectedOptions } = useProduct();
-    /*const router = useRouter();
 
-    const prevVariantId = usePrevious(selectedVariant?.id);
-    useEffect(() => {
-        if (!selectedVariant?.id || selectedVariant?.id === prevVariantId || !router.isReady)
-            return;
-
-        console.log(router.query.variant, selectedVariant.id);
-
-        return;
-    }, [selectedVariant]);*/
-
+    // TODO: Disable options that aren't purchasable available, ie out of stock.
     return (
         <Container>
             {options?.map((option) => {
                 if (!option || !option.values || !option.name || option.values.length <= 1)
                     return null;
 
+                const disabled = !router.isReady;
                 return (
-                    <Option key={option.name}>
+                    <Option key={option.name} disabled={disabled}>
                         <OptionTitle>{option.name}</OptionTitle>
                         <OptionValues>
                             {option.values.map((value) => (
                                 <OptionValue
                                     key={value}
                                     selected={selectedOptions?.[option.name!] === value}
-                                    onClick={() => setSelectedOption(option.name!, value!)}
+                                    onClick={() =>
+                                        !disabled && setSelectedOption(option.name!, value!)
+                                    }
                                 >
                                     {value}
                                 </OptionValue>

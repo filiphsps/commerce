@@ -12,9 +12,11 @@ import { Config } from '../src/util/Config';
 import Head from 'next/head';
 import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
+import NextAdapterPages from 'next-query-params/pages';
 import type { NextWebVitalsMetric } from 'next/app';
 import PageProvider from '@/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
+import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { ThemeProvider } from 'styled-components';
@@ -33,10 +35,8 @@ const font = Lexend_Deca({
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
-Router.events.on('routeChangeError', (err) => {
-    console.error(err);
-    NProgress.done();
-});
+Router.events.on('routeChangeError', () => NProgress.done());
+Router.events.on('hashChangeComplete', () => NProgress.done());
 
 const StoreApp = withStore(
     ({ Component, pageProps, locale: initialLocale }) => {
@@ -179,27 +179,33 @@ const StoreApp = withStore(
                 />
 
                 {/* Page */}
-                <ShopifyProvider
-                    storefrontId={`${store.id}`}
-                    storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
-                    storefrontApiVersion={Config.shopify.api}
-                    storefrontToken={Config.shopify.token}
-                    countryIsoCode={country}
-                    languageIsoCode={language}
-                >
-                    <CartProvider countryCode={country} cartFragment={CartFragment}>
-                        <ThemeProvider theme={{}}>
-                            <PrismicPreview repositoryName={prismicConfig.repositoryName}>
-                                <PageProvider
-                                    store={store}
-                                    pagePropsAnalyticsData={pageProps.analytics || {}}
-                                >
-                                    <Component key={router.asPath} {...pageProps} store={store} />
-                                </PageProvider>
-                            </PrismicPreview>
-                        </ThemeProvider>
-                    </CartProvider>
-                </ShopifyProvider>
+                <QueryParamProvider adapter={NextAdapterPages}>
+                    <ShopifyProvider
+                        storefrontId={`${store.id}`}
+                        storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
+                        storefrontApiVersion={Config.shopify.api}
+                        storefrontToken={Config.shopify.token}
+                        countryIsoCode={country}
+                        languageIsoCode={language}
+                    >
+                        <CartProvider countryCode={country} cartFragment={CartFragment}>
+                            <ThemeProvider theme={{}}>
+                                <PrismicPreview repositoryName={prismicConfig.repositoryName}>
+                                    <PageProvider
+                                        store={store}
+                                        pagePropsAnalyticsData={pageProps.analytics || {}}
+                                    >
+                                        <Component
+                                            key={router.asPath}
+                                            {...pageProps}
+                                            store={store}
+                                        />
+                                    </PageProvider>
+                                </PrismicPreview>
+                            </ThemeProvider>
+                        </CartProvider>
+                    </ShopifyProvider>
+                </QueryParamProvider>
             </>
         );
     },

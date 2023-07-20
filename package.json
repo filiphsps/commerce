@@ -54,6 +54,7 @@
         "next": "13.4.9",
         "next-i18next": "14.0.0",
         "next-plugin-preval": "1.2.5",
+        "next-query-params": "4.2.3",
         "next-seo": "6.1.0",
         "node-html-parser": "6.1.5",
         "nprogress": "0.2.0",
@@ -73,6 +74,7 @@
         "swr": "2.2.0",
         "tinycache": "1.1.2",
         "typescript": "5.1.6",
+        "use-query-params": "2.2.1",
         "uuid": "9.0.0"
     },
     "devDependencies": {

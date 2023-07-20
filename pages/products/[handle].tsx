@@ -1,18 +1,26 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { AnalyticsPageType, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
+import {
+    AnalyticsPageType,
+    ProductProvider,
+    ShopifyAnalyticsProduct,
+    ShopifyPageViewPayload,
+    useCart,
+    useProduct
+} from '@shopify/hydrogen-react';
 import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     Collection,
     Product,
     ProductEdge,
-    ProductVariant,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductsApi } from '../../src/api/product';
+import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -23,7 +31,6 @@ import Content from '@/components/Content';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
 import Gallery from '@/components/Gallery';
-import { GetStaticPropsResult } from 'next';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import Page from '@/components/Page';
@@ -40,9 +47,9 @@ import { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import dynamic from 'next/dynamic';
+import { useButtonCallbacks } from 'src/hooks/useButtonCallbacks';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useStore } from 'react-context-hook';
 
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'));
 
@@ -103,58 +110,51 @@ const Description = styled(Content)`
     overflow-x: hidden;
 `;
 
-const Actions = styled.div`
-    display: grid;
-    gap: var(--block-spacer);
-    align-items: start;
-    flex-direction: column;
-
-    @media (min-width: 950px) {
-        flex-direction: row;
-        align-items: end;
-    }
-`;
 const AddToCart = styled(Button)<{ added: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer);
-    height: 6rem;
-    width: auto;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-size: 1.5rem;
-    line-height: 1.5rem;
+    padding: var(--block-padding-large);
+    height: 100%;
+    width: 100%;
+    font-size: 1.75rem;
+    line-height: 2rem;
 
-    // TODO
-    ${({ added }) => added && css``}
+    ${({ added }) =>
+        added &&
+        css`
+            &&,
+            &:hover,
+            &:active {
+                outline: var(--color-green) solid var(--block-border-width);
+                outline-offset: calc(var(--block-border-width) * -1);
+                background: var(--color-green-light);
+                color: var(--color-green);
+            }
+        `}
 
     svg {
         stroke-width: 0.4ex;
         font-size: 1.75rem;
     }
 
-    @media (max-width: 950px) {
-        height: 6rem;
-        width: 100%;
+    @media (min-width: 950px) {
+        font-size: 1.5rem;
+        line-height: 1.75rem;
     }
 `;
 const Quantity = styled(Input)`
-    height: 4rem;
     padding: 0px;
-    //max-width: 10rem;
+    height: 100%;
+    width: 100%;
     text-align: center;
     font-size: 1.5rem;
-
-    @media (max-width: 950px) {
-        height: 4.5rem;
-        width: 100%;
-        max-width: 100%;
-    }
 `;
 const QuantitySelector = styled.div`
     display: grid;
     grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
     gap: var(--block-spacer-small);
     color: var(--color-dark);
 
@@ -166,11 +166,16 @@ const QuantityWrapper = styled.div`
     overflow: hidden;
     display: grid;
     grid-template-columns: 4rem 1fr 4rem;
-    height: 4.25rem;
+    height: 3.75rem;
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
     border: 0.25rem solid var(--color-block);
     outline: none;
+
+    @media (min-width: 950px) {
+        height: 4.25rem;
+        width: min-content;
+    }
 
     ${Button} {
         display: flex;
@@ -196,15 +201,11 @@ const QuantityWrapper = styled.div`
 
     ${Input} {
         height: 100%;
-        width: auto;
+        min-width: 4rem;
 
         @media (min-width: 950px) {
             min-width: 4rem;
         }
-    }
-
-    @media (max-width: 950px) {
-        height: 4.5rem;
     }
 `;
 
@@ -290,7 +291,7 @@ const Recommendations = styled.div`
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
-    margin-top: 1rem;
+    margin: 1rem;
     border-radius: var(--block-border-radius);
     overflow: hidden;
 
@@ -387,42 +388,40 @@ const ReviewsContainer = styled.div`
     color: var(--accent-primary-text);
 `;
 
-const PageContainer = styled(Page)``;
-
-interface ProductPageProps {
-    error?: string;
-    product: Product;
-    recommendations?: Product[];
-    reviews?: ReviewsModel;
-    store: StoreModel;
-}
-const ProductPage: FunctionComponent<ProductPageProps> = ({
+const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
     recommendations: recommendationsData,
-    reviews,
+    reviews: reviewsData,
     store
 }) => {
     const router = useRouter();
     const cart = useCart();
-    const { product: data, variants, selectedVariant: initialVariant } = useProduct();
-    const [addedToCart, setAddedToCart] = useState(false);
+    const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
+    const { product: data, selectedVariant } = useProduct();
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('details');
-    const [cartStore, setCartStore] = useStore<any>('cart');
+
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        const id = selectedVariant?.id?.split('/')?.at(-1);
+        if (!id || variantQuery == id) return;
+
+        setVariantQuery(id, 'replaceIn');
+    }, [setVariantQuery, variantQuery, selectedVariant, router.isReady]);
 
     const { data: product } = useSWR(
-        [`product_${data?.handle}`],
-        () =>
-            ProductApi({
-                handle: data?.handle!,
-                locale: router.locale
-            }) as Promise<Product>,
+        {
+            handle: data?.handle!,
+            locale: router.locale
+        },
+        ProductApi,
         {
             fallbackData: data as Product
         }
     );
 
     const { data: recommendations } = useSWR(
-        [(data?.id && `recommendations_${data?.id}`) || ''],
+        [`recommendations_${data?.id}`],
         () =>
             (data?.id &&
                 RecommendationApi({
@@ -431,98 +430,76 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                 })) ||
             undefined,
         {
-            fallbackData: recommendationsData
+            fallbackData: recommendationsData || undefined
         }
     );
 
-    // TODO: Better way to pick default
-    const selectedVariant = initialVariant || (variants?.[0]! as ProductVariant);
+    const { data: reviews } = useSWR(
+        [`reviews_${data?.id}`],
+        () =>
+            (data?.id &&
+                ReviewsProductApi({
+                    id: data?.id!,
+                    locale: router.locale
+                })) ||
+            undefined,
+        {
+            fallbackData: reviewsData || undefined
+        }
+    );
 
-    // FIXME: Utility function
-    const addToCart = useCallback(() => {
-        if (!selectedVariant || !selectedVariant.id) return;
-
-        cart.linesAdd([
-            {
-                merchandiseId: selectedVariant.id,
-                quantity
-            }
-        ]);
-
-        setAddedToCart(true);
-        setCartStore({
-            ...cartStore,
-            item: {
-                title: product?.title,
-                vendor: product?.vendor,
-                variant: {
-                    title: selectedVariant.title
-                },
-                images: [
-                    {
-                        src: product?.images?.edges?.[0]?.node?.url
-                    }
-                ]
-            },
-            open: true
-        });
-
-        setTimeout(() => {
-            setAddedToCart(false);
-        }, 3000);
-    }, [product, selectedVariant, quantity, cart, cartStore, setCartStore]);
-
-    // TODO: Move to useAnalytics
-    useEffect(() => {
-        if (!product || !selectedVariant) return;
-        (window as any)?.dataLayer?.push(
-            { ecommerce: null },
-            {
-                // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
-                event: 'view_item',
-
-                currency: selectedVariant.price?.currencyCode,
-                value: Number.parseFloat(selectedVariant.price?.amount || ''),
-                ecommerce: {
-                    items: [
-                        {
-                            item_id: ProductToMerchantsCenterId({
-                                locale:
-                                    (router.locale !== 'x-default' && router.locale) ||
-                                    router.locales?.[1],
-                                productId: product.id,
-                                variantId: selectedVariant.id!
-                            }),
-                            item_name: product.title,
-                            item_variant: selectedVariant.title,
-                            item_brand: product.vendor,
-                            currency: selectedVariant.price?.currencyCode,
-                            price: Number.parseFloat(selectedVariant.price?.amount!) || undefined,
-                            quantity: 1
-                        }
-                    ]
+    const {
+        isLoading,
+        isActive: isAddedActive,
+        onClick: onAddToCartButton
+    } = useButtonCallbacks({
+        handler: async () => {
+            cart.linesAdd([
+                {
+                    merchandiseId: selectedVariant?.id!,
+                    quantity
                 }
-            }
-        );
-    }, [cart.lines]);
+            ]);
 
-    // NOTE: this should never happen
-    if (!product) return null;
+            /*setCartStore({
+                    ...cartStore,
+                    item: {
+                        title: product?.title,
+                        vendor: product?.vendor,
+                        variant: {
+                            title: selectedVariant.title
+                        },
+                        images: [
+                            {
+                                src: product?.images?.edges?.[0]?.node?.url
+                            }
+                        ]
+                    },
+                    open: true
+                });   */
+        }
+    });
+
+    // This should never be able to happen at this moment.
+    // TODO: Placeholders to support things like this?
+    if (!store || !product) return null;
 
     const pricing = (
         <PriceContainer>
-            {selectedVariant.compareAtPrice && (
+            {selectedVariant?.compareAtPrice && (
                 <Price sale>
                     <Currency
-                        value={Number.parseFloat(selectedVariant.compareAtPrice?.amount!)}
-                        currency={selectedVariant.price?.currencyCode! || Config.i18n.currencies[0]}
+                        value={Number.parseFloat(selectedVariant?.compareAtPrice?.amount!)}
+                        currency={
+                            selectedVariant?.price?.currencyCode! || Config.i18n.currencies[0]
+                        }
                     />
                 </Price>
             )}
-            <Price highlight={selectedVariant.compareAtPrice != null}>
+            <Price highlight={selectedVariant?.compareAtPrice != null}>
                 <Currency
-                    value={Number.parseFloat(selectedVariant.price?.amount!)}
-                    currency={selectedVariant.price?.currencyCode! || Config.i18n.currencies[0]}
+                    value={Number.parseFloat(selectedVariant?.price?.amount!)}
+                    currency={selectedVariant?.price?.currencyCode! || Config.i18n.currencies[0]}
                 />
             </Price>
         </PriceContainer>
@@ -558,16 +535,17 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
         <AddToCart
             type="button"
             title="Add to Cart"
-            added={addedToCart}
-            disabled={quantity <= 0 || !selectedVariant?.availableForSale}
-            onClick={addToCart}
+            added={isAddedActive}
+            disabled={isLoading || quantity <= 0 || !selectedVariant?.availableForSale}
+            onClick={onAddToCartButton}
         >
             <FiShoppingCart />
-            <span>
-                {(selectedVariant?.availableForSale &&
-                    ((addedToCart && 'Added!') || 'Add to Cart')) ||
-                    'Out of Stock'}
-            </span>
+            {(() => {
+                if (!selectedVariant?.availableForSale) return 'Out of Stock';
+                else if (isLoading) return 'Hang on...';
+                else if (isAddedActive) return 'Added';
+                return 'Add to Cart';
+            })()}
         </AddToCart>
     );
     const quantityAction = (
@@ -593,7 +571,7 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
     );
 
     return (
-        <PageContainer
+        <Page
             className="ProductPage"
             style={
                 {
@@ -760,10 +738,8 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                         <Details>
                             <ProductOptions />
 
-                            <Actions>
-                                {quantityAction}
-                                {addToCartAction}
-                            </Actions>
+                            {quantityAction}
+                            {addToCartAction}
 
                             <Tabs>
                                 <Tab
@@ -838,7 +814,9 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
 
                 {recommendations?.length && recommendations.length >= 1 && (
                     <Recommendations>
-                        <RecommendationsTitle>People like you also loved</RecommendationsTitle>
+                        <RecommendationsTitle>
+                            We think you&apos;ll also love these products
+                        </RecommendationsTitle>
                         <RecommendationsContent>
                             <CollectionBlock
                                 data={
@@ -871,17 +849,26 @@ const ProductPage: FunctionComponent<ProductPageProps> = ({
                     store={store}
                 />
             </PageContent>
-        </PageContainer>
+        </Page>
     );
 };
 
-const ProductPageWrapper: FunctionComponent<ProductPageProps> = (props) => {
-    const router = useRouter();
+const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (
+    props
+) => {
+    const defaultVariantId =
+        props.product?.variants.edges.at(-1)?.node.id.split('/').at(-1) || null;
+    const [variantQuery] = useQueryParam('variant', withDefault(StringParam, defaultVariantId));
 
-    if (props.error || !props.product) return <Error statusCode={500} title={props.error} />;
+    if (props.error) return <Error statusCode={500} title={props.error} />;
+    else if (!props.product) return <Error statusCode={404} />;
+
+    const initialVariantId =
+        (variantQuery && `gid://shopify/ProductVariant/${variantQuery?.toString()}`) ||
+        defaultVariantId;
 
     return (
-        <ProductProvider data={props.product} initialVariantId={null}>
+        <ProductProvider data={props.product} initialVariantId={initialVariantId}>
             <ProductPage {...props} />
         </ProductProvider>
     );
@@ -909,20 +896,25 @@ export async function getStaticPaths({ locales }) {
     return { paths, fallback: 'blocking' };
 }
 
-export async function getStaticProps({ params, locale }): Promise<GetStaticPropsResult<{}>> {
+export const getStaticProps: GetStaticProps<{
+    error?: string | null;
+    product?: Product | null;
+    recommendations?: Product[] | null;
+    reviews?: ReviewsModel | null;
+    store?: StoreModel;
+    analytics?: ShopifyPageViewPayload;
+}> = async ({ params, locale }) => {
     let handle = '';
-    if (Array.isArray(params.handle)) {
-        handle = params?.handle?.join('');
+    if (Array.isArray(params?.handle)) {
+        handle = params?.handle?.join('') || '';
     } else {
-        handle = params?.handle;
+        handle = params?.handle || '';
     }
 
-    if (handle === 'undefined' || !handle)
+    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
             props: {
-                data: {
-                    product: null
-                }
+                product: null
             },
             revalidate: false
         };
@@ -939,6 +931,7 @@ export async function getStaticProps({ params, locale }): Promise<GetStaticProps
     }
 
     let product: Product | null = null;
+    let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
     let errors: any[] = [];
@@ -964,22 +957,37 @@ export async function getStaticProps({ params, locale }): Promise<GetStaticProps
         };
     }
 
-    try {
-        if (product)
+    if (product) {
+        // TODO: Find a better way of handling variants here
+        const variant = product?.variants.edges.at(0)?.node!;
+        analyticsProducts.push({
+            productGid: product?.id!,
+            variantGid: variant.id,
+            name: product.title!,
+            variantName: variant.title,
+            brand: product.vendor,
+            category: product.productType,
+            price: variant.price.amount,
+            sku: variant.sku || variant.barcode,
+            quantity: 1
+        });
+
+        try {
             recommendations = await RecommendationApi({
                 id: product?.id,
                 locale
             });
-    } catch (error) {
-        Sentry.captureException(error);
-        if (error) errors.push(error);
-    }
+        } catch (error) {
+            Sentry.captureException(error);
+            if (error) errors.push(error);
+        }
 
-    try {
-        if (product) reviews = await ReviewsProductApi(product?.id);
-    } catch (error) {
-        Sentry.captureException(error);
-        if (error) errors.push(error);
+        try {
+            reviews = await ReviewsProductApi({ id: product?.id });
+        } catch (error) {
+            Sentry.captureException(error);
+            if (error) errors.push(error);
+        }
     }
 
     return {
@@ -990,11 +998,12 @@ export async function getStaticProps({ params, locale }): Promise<GetStaticProps
             errors,
             analytics: {
                 pageType: AnalyticsPageType.product,
-                resourceId: product?.id || null
+                resourceId: product?.id || null,
+                products: analyticsProducts
             }
-        },
+        } as any,
         revalidate: 10
     };
-}
+};
 
 export default ProductPageWrapper;

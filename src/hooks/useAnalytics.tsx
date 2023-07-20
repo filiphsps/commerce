@@ -4,10 +4,10 @@ import {
     sendShopifyAnalytics,
     useShopifyCookies
 } from '@shopify/hydrogen';
+import { AnalyticsPageType, ShopifyAnalyticsProduct, useCart } from '@shopify/hydrogen-react';
+import { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen';
-import { ShopifyAnalyticsProduct, useCart } from '@shopify/hydrogen-react';
 
-import { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { Locale } from '../util/Locale';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { ShopifySalesChannel } from '@shopify/hydrogen';
@@ -29,6 +29,29 @@ const trimDomain = (domain?: string): string | undefined => {
     }
 
     return result;
+};
+
+interface AnalyticsEcommercePayload {
+    currency: CurrencyCode;
+    value: number;
+    items?: Array<{}>;
+}
+const sendEcommerceEvent = ({
+    event,
+    payload
+}: {
+    event: 'view_item';
+    payload: AnalyticsEcommercePayload;
+}) => {
+    if (!(window as any)?.dataLayer) return;
+
+    (window as any)?.dataLayer?.push(
+        { ecommerce: null },
+        {
+            event: event,
+            ecommerce: payload
+        }
+    );
 };
 
 interface useAnalyticsProps {
@@ -60,23 +83,58 @@ export function useAnalytics({
         shopifySalesChannel: ShopifySalesChannel.hydrogen,
         currency: locale.currency,
         acceptedLanguage: locale.language,
-        hasUserConsent: true
+        hasUserConsent: true,
+        ...pagePropsAnalyticsData
     };
 
     const { asPath: path } = useRouter();
     const previousPath = usePrevious(path);
 
     // Page view analytics
+    // FIXME: figure out why this fires twice.
     useEffect(() => {
+        if (!pageAnalytics.shopId || path == previousPath) return;
+
+        switch (pageAnalytics.pageType) {
+            // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
+            case AnalyticsPageType.product: {
+                if (!pageAnalytics.products || pageAnalytics.products.length <= 0) break;
+
+                const product = pageAnalytics.products.at(0)!;
+                sendEcommerceEvent({
+                    event: 'view_item',
+                    payload: {
+                        currency: pageAnalytics.currency,
+                        value: Number.parseFloat(product.price!) || 0,
+                        items: [
+                            {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale:
+                                        (router.locale !== 'x-default' && router.locale) ||
+                                        router.locales?.[1],
+                                    productId: product.productGid!,
+                                    variantId: product.variantGid!
+                                }),
+                                item_name: product.name,
+                                item_variant: product.variantName,
+                                item_brand: product.brand,
+                                currency: pageAnalytics.currency,
+                                price: Number.parseFloat(product.price!) || undefined,
+                                quantity: product.quantity
+                            }
+                        ]
+                    }
+                });
+                break;
+            }
+        }
+
         // Don't send during development!
         if (process.env.NODE_ENV === 'development') return;
-
-        if (!pageAnalytics.shopId || path === previousPath) return;
 
         const payload: ShopifyPageViewPayload = {
             ...getClientBrowserParameters(),
             ...pageAnalytics,
-            ...pagePropsAnalyticsData,
             url: `https://${domain}${path}`,
             path: path,
             canonicalUrl: `https://${domain}${path}`
@@ -86,9 +144,9 @@ export function useAnalytics({
             eventName: AnalyticsEventName.PAGE_VIEW,
             payload
         });
-    }, [path]);
+    }, [previousPath]);
 
-    const { lines, id: cartId, cost, status, cartFragment } = useCart();
+    const { lines, id: cartId, cost, status } = useCart();
     const previousLines = usePrevious(lines);
     const previousStatus = usePrevious(status);
 
@@ -149,10 +207,9 @@ export function useAnalytics({
             {
                 // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#example_3
                 event: 'add_to_cart',
-
-                currency: cost?.totalAmount?.currencyCode!,
-                value: Number.parseFloat(cost?.totalAmount?.amount!),
                 ecommerce: {
+                    currency: cost?.totalAmount?.currencyCode!,
+                    value: Number.parseFloat(cost?.totalAmount?.amount!),
                     items: ((line: CartLine) => {
                         return [
                             {

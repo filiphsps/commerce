@@ -4,7 +4,13 @@ import { Config } from '../util/Config';
 import { ReviewsModel } from '../models/ReviewsModel';
 import { parse } from 'node-html-parser';
 
-export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
+export const ReviewsProductApi = async ({
+    id,
+    locale
+}: {
+    id: string;
+    locale?: string;
+}): Promise<ReviewsModel> => {
     try {
         const data = (await (
             await fetch(
@@ -74,12 +80,14 @@ export const ReviewsProductApi = async (id: string): Promise<ReviewsModel> => {
 
 export const ReviewProductApi = async ({
     id,
+    locale,
     rating,
     author,
     title,
     body
 }: {
     id: string;
+    locale?: string;
     rating: number;
     author: string;
     title: string;

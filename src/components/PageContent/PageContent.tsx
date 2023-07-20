@@ -1,5 +1,6 @@
-import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
+
+import { FunctionComponent } from 'react';
 
 const Container = styled.div<{ primary?: boolean }>`
     display: flex;
@@ -12,8 +13,13 @@ const Container = styled.div<{ primary?: boolean }>`
     ${({ primary }) =>
         primary &&
         css`
-            padding: var(--block-spacer-large);
-            gap: var(--block-spacer-large);
+            padding: var(--block-spacer);
+            gap: var(--block-spacer);
+
+            @media (min-width: 950px) {
+                padding: var(--block-spacer-large);
+                gap: var(--block-padding-large);
+            }
         `}
 `;
 
