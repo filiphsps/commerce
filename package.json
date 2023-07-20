@@ -43,7 +43,6 @@
         "@thebeyondgroup/shopify-rich-text-renderer": "0.2.0",
         "@types/get-pixels": "3.3.2",
         "accept-language-parser": "1.5.0",
-        "axios": "1.4.0",
         "color": "4.2.3",
         "convert-units": "2.3.4",
         "cross-fetch": "4.0.0",
