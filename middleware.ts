@@ -11,8 +11,8 @@ const PUBLIC_FILE = /\.(.*)$/;
 export default function middleware(req: NextRequest) {
     if (
         req.nextUrl.pathname.startsWith('/_next/') ||
-        req.nextUrl.pathname.includes('/api/') ||
         req.nextUrl.pathname.startsWith('/monitoring/') ||
+        req.nextUrl.pathname.includes('/api/') ||
         PUBLIC_FILE.test(req.nextUrl.pathname)
     ) {
         return null;
@@ -28,6 +28,7 @@ export default function middleware(req: NextRequest) {
 
         if (newLocale) {
             newUrl.locale = newLocale;
+            newUrl.host = req.headers.get('host')!;
 
             if (newUrl) return NextResponse.redirect(newUrl);
         }
@@ -35,3 +36,6 @@ export default function middleware(req: NextRequest) {
 
     return undefined;
 }
+export const config = {
+    matcher: '/((?!api|static|.*\\..*|_next).*)'
+};

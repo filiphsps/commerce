@@ -14,8 +14,6 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
         discountCodes,
         discountCodesUpdate,
         status,
-        totalQuantity,
-        cartCreate,
         error
     } = useCart();
 

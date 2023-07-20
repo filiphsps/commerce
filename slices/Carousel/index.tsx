@@ -1,11 +1,11 @@
-import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
+import PageContent from '@/components/PageContent';
 import { Content } from '@prismicio/client';
+import { SliceComponentProps } from '@prismicio/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import PageContent from '@/components/PageContent';
-import { SliceComponentProps } from '@prismicio/react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 import { ImageLoader } from '../../src/util/ImageLoader';
@@ -103,7 +103,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         title={slide.image?.alt || undefined}
                                                         width={slide.image.dimensions?.width}
                                                         height={slide.image.dimensions?.height}
-                                                        priority={false}
+                                                        priority={true}
                                                         loader={ImageLoader}
                                                     />
                                                 </>
