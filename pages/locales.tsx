@@ -120,12 +120,12 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
                 title="Locales"
                 canonical={`https://${Config.domain}/${router.locale}/locales/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/locales/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }locales/`
+                    })) || []
                 }
             />
 

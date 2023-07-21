@@ -2,13 +2,13 @@ import * as Sentry from '@sentry/nextjs';
 
 import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
-import React, { FunctionComponent } from 'react';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
 import ContentComponent from '@/components/Content';
 import Error from 'next/error';
+import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import LanguageString from '@/components/LanguageString';
 import Link from 'next/link';
@@ -149,15 +149,12 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 description={article.seo.description || article.excerpt}
                 canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href:
-                                (locale !== 'x-default' &&
-                                    `https://${Config.domain}/${locale}/blog/${article.handle}/`) ||
-                                `https://${Config.domain}/blog/${article.handle}/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }blog/${article.handle}/`
+                    })) || []
                 }
                 openGraph={{
                     url: `https://${Config.domain}/${router.locale}/blog/${article.handle}/`,

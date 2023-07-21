@@ -1,12 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 
-import React, { FunctionComponent } from 'react';
-
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import Error from 'next/error';
+import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import LanguageString from '@/components/LanguageString';
 import Link from 'next/link';
@@ -87,10 +86,9 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href:
-                            (locale !== 'x-default' &&
-                                `https://${Config.domain}/${locale}/blog/`) ||
-                            `https://${Config.domain}/blog/`
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }blog/`
                     })) || []
                 }
             />

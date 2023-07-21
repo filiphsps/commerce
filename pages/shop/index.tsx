@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CollectionBlock from '@/components/CollectionBlock';
@@ -206,12 +206,12 @@ const ShopPage: FunctionComponent<ShopPageProps> = (props) => {
                 }
                 canonical={`https://${Config.domain}/${router.locale}/shop/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/shop/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }shop/`
+                    })) || []
                 }
                 additionalMetaTags={
                     (props.page?.data.keywords && [

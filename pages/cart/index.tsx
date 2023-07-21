@@ -288,12 +288,12 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 title="Cart"
                 canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/cart/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }cart/`
+                    })) || []
                 }
             />
 

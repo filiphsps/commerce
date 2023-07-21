@@ -1,11 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import React, { FunctionComponent } from 'react';
-
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { Config } from '../src/util/Config';
 import { CustomPageDocument } from '../prismicio-types';
 import Error from 'next/error';
+import { FunctionComponent } from 'react';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -36,12 +35,12 @@ const HomePage: FunctionComponent<HomePageProps> = (props) => {
                 description={asText(page.data.meta_description) || store?.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }`
+                    })) || []
                 }
                 additionalMetaTags={
                     (page.data.keywords && [

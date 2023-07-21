@@ -39,20 +39,21 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                 description={asText(page.data.meta_description) || page.data.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}${router.asPath}`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}${
+                            (locale !== 'x-default' && `/${locale}`) || ''
+                        }${router.asPath}`
+                    })) || []
                 }
                 additionalMetaTags={
-                    (page.data.keywords && [
-                        {
-                            property: 'keywords',
-                            content: page.data.keywords
-                        }
-                    ]) ||
+                    (page.data.keywords &&
+                        ([
+                            {
+                                property: 'keywords',
+                                content: page.data.keywords
+                            }
+                        ] as any)) ||
                     []
                 }
             />

@@ -74,7 +74,7 @@ export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemP
         <Link href={href}>
             <Container>
                 <ImageWrapper>
-                    <Image data={product.images?.edges?.at(0)?.node || undefined} sizes={'10vw'} />
+                    <Image data={product.images?.edges?.at(0)?.node || undefined} width={125} />
                 </ImageWrapper>
                 <Meta>
                     <MetaVendor>{product.vendor}</MetaVendor>

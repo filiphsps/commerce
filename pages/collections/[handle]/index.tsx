@@ -110,12 +110,12 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                 description={collection?.seo?.description || collection?.description || undefined}
                 canonical={`https://${Config.domain}/${router.locale}/collections/${collection.handle}/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/collections/${collection.handle}/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }collections/${collection.handle}/`
+                    })) || []
                 }
                 additionalMetaTags={
                     ((collection as any).keywords?.value && [

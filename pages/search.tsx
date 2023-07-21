@@ -176,12 +176,11 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                 title="Search"
                 canonical={`https://${Config.domain}/${router.locale}/search/`}
                 languageAlternates={
-                    router.locales?.map((locale) => ({
+                    router?.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href:
-                            (locale !== 'x-default' &&
-                                `https://${Config.domain}/${locale}/search/`) ||
-                            `https://${Config.domain}/search/`
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }search/`
                     })) || []
                 }
             />
@@ -203,12 +202,19 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                             onKeyDown={(e) => e.key === 'Enter' && handleSubmit(input)}
                             autoFocus={true}
                             spellCheck={false}
+                            onBlur={() => handleSubmit(input)}
                             /* TODO: Make this configurable */
                             placeholder="Find the perfect candy, chocolate, licorice and snacks"
                         />
                         {query.length > 0 && (
                             <SearchBarClear>
-                                <FiX className="Icon" onClick={() => handleSubmit('')} />
+                                <FiX
+                                    className="Icon"
+                                    onClick={() => {
+                                        setInput('');
+                                        handleSubmit('');
+                                    }}
+                                />
                             </SearchBarClear>
                         )}
                     </SearchBar>

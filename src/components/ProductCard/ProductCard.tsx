@@ -374,6 +374,8 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             title={image.altText || undefined}
             height={250 || 0}
             width={250 || 0}
+            unoptimized={true}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loader={ImageLoader}
         />
     );
@@ -638,9 +640,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                         (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
                 >
-                    {(!selectedVariant.availableForSale && 'Out of Stock') ||
-                        (addedToCart && 'Added!') ||
-                        'Add to Cart'}
+                    <span data-nosnippet>
+                        {(!selectedVariant.availableForSale && 'Out of Stock') ||
+                            (addedToCart && 'Added!') ||
+                            'Add to Cart'}
+                    </span>
                 </AddButton>
                 <Quantity>
                     <QuantityAction

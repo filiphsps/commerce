@@ -573,26 +573,26 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 if (!selectedVariant?.availableForSale)
                     return (
                         <>
-                            <span>Out of Stock</span>
+                            <span data-nosnippet>Out of Stock</span>
                         </>
                     );
                 else if (!cartReady)
                     return (
                         <>
-                            <span>Hang on...</span>
+                            <span data-nosnippet>Hang on...</span>
                         </>
                     );
                 else if (added)
                     return (
                         <>
                             <FiCheck />
-                            <span>Added</span>
+                            <span data-nosnippet>Added</span>
                         </>
                     );
                 return (
                     <>
                         <FiShoppingCart />
-                        <span> Add to Cart</span>
+                        <span data-nosnippet> Add to Cart</span>
                     </>
                 );
             })()}
@@ -645,12 +645,12 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 description={product?.seo?.description || product?.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}/products/${product.handle}/`}
                 languageAlternates={
-                    router?.locales
-                        ?.filter((locale) => locale !== 'x-default')
-                        .map((locale) => ({
-                            hrefLang: locale,
-                            href: `https://${Config.domain}/${locale}/products/${product.handle}/`
-                        })) || []
+                    router?.locales?.map((locale) => ({
+                        hrefLang: locale,
+                        href: `https://${Config.domain}/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }products/${product.handle}/`
+                    })) || []
                 }
                 additionalMetaTags={
                     ((product as any).keywords?.value && [
