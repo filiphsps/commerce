@@ -102,7 +102,7 @@ const StoreApp = withStore(
                                 .hex()
                                 .toString()};
                             --accent-primary-light: ${Color(store.accent.primary)
-                                .lighten(0.45)
+                                .lighten(0.75)
                                 .hex()
                                 .toString()};
                             --accent-primary-text: #ececec;
@@ -115,7 +115,7 @@ const StoreApp = withStore(
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary-text: #161616;
+                            --accent-secondary-text: #101418;
                         }
                     `}</style>
                     {/* eslint-enable indent */}

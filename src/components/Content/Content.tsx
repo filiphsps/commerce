@@ -52,18 +52,30 @@ const Content = styled.div`
         line-height: 3.5rem;
         font-weight: 600;
         padding-bottom: 1.5rem;
+
+        &:last-child {
+            padding-bottom: 0px;
+        }
     }
     h2 {
         font-size: 2.75rem;
         line-height: 3.25rem;
         font-weight: 600;
         padding-bottom: 1rem;
+
+        &:last-child {
+            padding-bottom: 0px;
+        }
     }
     h3 {
         font-size: 2.25rem;
         line-height: 2.75rem;
         font-weight: 500;
         padding-bottom: 1rem;
+
+        &:last-child {
+            padding-bottom: 0px;
+        }
     }
 
     img {

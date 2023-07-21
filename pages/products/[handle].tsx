@@ -220,11 +220,33 @@ const HeaderContent = styled.div`
     grid-template-areas:
         'page-header pricing'
         'reviews reviews';
+    grid-template-columns: auto minmax(8rem, auto);
     gap: var(--block-spacer-small);
 
     @media (min-width: 950px) {
+        justify-content: space-between;
+
         h3 {
-            padding-bottom: 0.25rem;
+            font-size: 2.25rem;
+            line-height: 2.75rem;
+            margin-bottom: calc(var(--block-spacer-small) * -0.75);
+        }
+
+        h2 {
+            font-size: 2.75rem;
+            line-height: 3.5rem;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        h3 {
+            font-size: 2.75rem;
+            line-height: 3.25rem;
+        }
+
+        h2 {
+            font-size: 3.5rem;
+            line-height: 4rem;
         }
     }
 `;

@@ -91,7 +91,6 @@ export const SearchPredictionApi = async ({
     locale?: string;
 }): Promise<{
     products: Product[];
-    productFilters: any[];
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
@@ -126,8 +125,7 @@ export const SearchPredictionApi = async ({
         });
 
         return resolve({
-            result: data?.search?.edges?.map((item) => item?.node) || [],
-            productFilters: data?.search?.productFilters || []
-        });
+            product: []
+        } as any);
     });
 };

@@ -8,10 +8,8 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
-    padding: var(--padding);
-    border-radius: var(--block-border-radius);
-    background: var(--background);
     color: var(--foreground);
+    padding: var(--padding);
 `;
 
 export const Title = styled.h2`
@@ -56,7 +54,6 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
     title,
     subtitle,
     reverse,
-    background,
     foreground,
     padding,
 
@@ -69,9 +66,8 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
             style={
                 {
                     ...(style || {}),
-                    '--foreground': foreground || 'var(--accent-primary-text)',
-                    '--background': background || 'var(--accent-primary)',
-                    '--padding': padding || 'var(--block-padding-large)'
+                    '--foreground': foreground || 'var(--color-dark)',
+                    '--padding': padding || '0px'
                 } as React.CSSProperties
             }
         >

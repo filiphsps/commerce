@@ -65,16 +65,16 @@ interface ProductSearchResultItemProps {
 export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemProps> = ({
     product
 }) => {
+    const href = AppendShopifyParameters({
+        url: `/products/${product.handle}/`,
+        params: (product as any).trackingParameters
+    });
+
     return (
-        <Link
-            href={AppendShopifyParameters({
-                url: `/products/${product.handle}/}`,
-                params: (product as any).trackingParameters
-            })}
-        >
+        <Link href={href}>
             <Container>
                 <ImageWrapper>
-                    <Image data={product.images?.edges?.at(0)?.node || undefined} />
+                    <Image data={product.images?.edges?.at(0)?.node || undefined} sizes={'10vw'} />
                 </ImageWrapper>
                 <Meta>
                     <MetaVendor>{product.vendor}</MetaVendor>

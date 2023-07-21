@@ -1,6 +1,8 @@
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 
+import { Alert } from '@/components/Alert';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
@@ -45,10 +47,11 @@ const SearchBar = styled.div`
     ${Input} {
         width: 100%;
         height: 100%;
+        padding: 0px var(--block-padding-large);
         background: var(--color-block);
     }
 `;
-const SearchBarClear = styled.div`
+const SearchBarClear = styled(Button)`
     position: absolute;
     top: 0px;
     right: 0px;
@@ -56,9 +59,10 @@ const SearchBarClear = styled.div`
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 0px var(--block-padding-large);
+    width: 4rem;
+    padding: 0px;
     color: var(--color-dark);
-    background: var(--color-bright);
+    background: transparent;
     border-radius: var(--block-border-radius);
     font-size: 2.25rem;
     line-height: 2.25rem;
@@ -116,23 +120,18 @@ interface SearchPageProps {
 }
 const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
     const router = useRouter();
+    const [initial, setInitial] = useState(false);
+    const [qParam, setQParam] = useQueryParam('q', withDefault(StringParam, undefined));
     const [query, setQuery] = useState<string>('');
     const [input, setInput] = useState<string>('');
     const [showFilters, setShowFilters] = useState(false);
-
-    useEffect(() => {
-        const q = router.query?.q?.toString();
-        if (!q || q == query) return;
-
-        setQuery(q);
-    }, [router.query]);
 
     const {
         data: results,
         mutate,
         isValidating,
         isLoading
-    } = useSWR({ query: query || '', locale: router.locale }, SearchApi, {
+    } = useSWR({ query: (router.isReady && query) || '', locale: router.locale }, SearchApi, {
         refreshInterval: 0,
         revalidateOnFocus: false,
         revalidateOnMount: false,
@@ -145,22 +144,28 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
         mutate(results, { revalidate: true });
     }, []);
 
+    useEffect(() => {
+        if (!router.isReady || !query || query == qParam) return;
+
+        setQParam(query || undefined, 'replaceIn');
+    }, [router.isReady, query]);
+
     const handleSubmit = useCallback(
         (q: string) => {
-            if (q == query) return;
+            if (!router.isReady || !q || q == query) return;
             setQuery(q);
-
-            mutate(results, { revalidate: true });
-            router.replace({
-                ...router,
-                query: {
-                    ...router.query,
-                    q: (query.length > 0 && query) || undefined
-                }
-            });
         },
-        [mutate, router, query]
+        [router.isReady, query, setQuery, initial, qParam]
     );
+
+    useEffect(() => {
+        if (!router.isReady || initial || !qParam) return;
+
+        setInitial(true);
+        setInput(qParam);
+
+        handleSubmit(qParam);
+    }, [router, initial, qParam]);
 
     const { products, productFilters } = results || {};
     const count = products?.length || 0;
@@ -182,17 +187,22 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
             />
 
             <PageContent primary>
-                <PageHeader title="Search" />
+                <PageHeader
+                    title="Search"
+                    subtitle={
+                        'Find the perfect candy, chocolate, licorice and snacks for any small or big occasion'
+                    }
+                />
 
                 <SearchHeader>
                     <SearchBar>
                         <Input
                             type="search"
-                            value={input || ''}
-                            disabled={isValidating || isLoading}
-                            onChange={(e) => setInput(e.target.value || '')}
+                            value={input}
+                            onChange={(e) => setInput(() => e.target.value || '')}
                             onKeyDown={(e) => e.key === 'Enter' && handleSubmit(input)}
-                            autoFocus
+                            autoFocus={true}
+                            spellCheck={false}
                             /* TODO: Make this configurable */
                             placeholder="Find the perfect candy, chocolate, licorice and snacks"
                         />
@@ -205,7 +215,7 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
 
                     <SearchButton
                         disabled={isValidating || isLoading}
-                        onClick={() => handleSubmit(query)}
+                        onClick={() => handleSubmit(input)}
                         /* TODO: Make this configurable */
                         title="Press this to search the world of Swedish sweets and candy"
                     >
@@ -213,16 +223,24 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                     </SearchButton>
                 </SearchHeader>
 
-                {count > 1 && (
+                <Alert severity={'warning'}>
+                    {`Search is still in heavy development, please bear with us while we work on improving it 😄`}
+                </Alert>
+
+                {((count > 1 || productFilters) && (
                     <ContentHeader>
-                        {process.env.NODE_ENV === 'development' && productFilters && (
-                            <Label onClick={() => setShowFilters(!showFilters)}>
+                        {productFilters && (
+                            <Label
+                                onClick={() => setShowFilters(!showFilters)}
+                                style={{ opacity: 0.5 }}
+                            >
                                 <FiFilter /> Filter and Sort
                             </Label>
                         )}
                         {count > 1 && <Label>{count} Results</Label>}
                     </ContentHeader>
-                )}
+                )) ||
+                    null}
 
                 {process.env.NODE_ENV === 'development' && productFilters && (
                     <ProductSearchFilters filters={productFilters} open={showFilters} />

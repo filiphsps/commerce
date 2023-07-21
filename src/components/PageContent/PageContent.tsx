@@ -13,13 +13,8 @@ const Container = styled.div<{ primary?: boolean }>`
     ${({ primary }) =>
         primary &&
         css`
-            padding: var(--block-spacer);
-            gap: var(--block-spacer);
-
-            @media (min-width: 950px) {
-                padding: var(--block-spacer-large);
-                gap: var(--block-padding-large);
-            }
+            padding: var(--block-spacer-large);
+            gap: var(--block-spacer-large);
         `}
 `;
 

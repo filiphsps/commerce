@@ -303,7 +303,6 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         style={{ gridArea: 'header' }}
                         title="Shopping Cart"
                         subtitle="Manage your shopping bag here and begin the checkout process when you're ready!"
-                        background="var(--color-block)"
                         foreground="var(--color-dark)"
                     />
 

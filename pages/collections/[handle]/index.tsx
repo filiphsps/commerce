@@ -7,12 +7,9 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '@/components/CollectionBlock';
-import Color from 'color';
 import { Config } from '../../../src/util/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
-import Image from 'next/image';
-import { ImageLoader } from '../../../src/util/ImageLoader';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -33,26 +30,22 @@ const ShortDescription = styled(Content)`
     max-width: 64rem;
 `;
 
-const FancyBrandContent = styled(PageHeader)``;
+const FancyBrandContent = styled(PageHeader)`
+    width: 100%;
+    height: 100%;
+`;
 const FancyBrandHeader = styled.section`
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr;
-    flex-grow: 1;
-    gap: var(--block-spacer);
-    padding: var(--block-padding-large);
-    background: var(--background);
-    background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
-    border-radius: var(--block-border-radius);
     color: var(--foreground);
 
     @media (min-width: 950px) {
-        grid-template-columns: 1fr auto;
-    }
-
-    > ${FancyBrandContent} {
-        padding: 0px;
-        background: none;
+        position: relative;
+        display: flex;
+        gap: var(--block-spacer);
+        padding: calc(var(--block-padding-large) * 2);
+        background: var(--background);
+        background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
+        border-radius: var(--block-border-radius);
+        padding: var(--block-padding-large);
     }
 `;
 const FancyBrandLogo = styled.div`
@@ -61,11 +54,10 @@ const FancyBrandLogo = styled.div`
     justify-content: center;
     align-items: center;
     border-radius: var(--block-border-radius);
-    max-height: 100%;
-    aspect-ratio: 1 / 1;
-    height: 100%;
-    width: auto;
     box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+    aspect-ratio: 1 / 1;
+    height: fit-content;
+    width: fit-content;
 
     @media (max-width: 950px) {
         display: none;
@@ -77,7 +69,7 @@ const LogoWrapper = styled.div`
     width: 100%;
 
     img {
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
     }
 `;
@@ -136,39 +128,18 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                 }
             />
 
-            <PageContent primary>
-                {(isBrand && accents.length >= 2 && (
-                    <FancyBrandHeader
-                        style={
-                            {
-                                '--background': accents?.[0] || 'var(--color-block)',
-                                '--background-dark': accents?.[1] || 'var(--color-block)',
-                                '--foreground':
-                                    (accents?.[0] &&
-                                        Color(accents[0]).isDark() &&
-                                        'var(--color-bright)') ||
-                                    'var(--color-dark)'
-                            } as React.CSSProperties
-                        }
-                    >
-                        <FancyBrandContent title={collection.title} subtitle={subtitle} />
-                        {collection.image && (
-                            <FancyBrandLogo>
-                                <LogoWrapper>
-                                    <Image
-                                        src={collection.image.url}
-                                        alt={collection.image.altText || ''}
-                                        title={collection.image.altText || undefined}
-                                        //width={collection.image.width || 0}
-                                        //height={collection.image.height || 0}
-                                        fill
-                                        loader={ImageLoader}
-                                    />
-                                </LogoWrapper>
-                            </FancyBrandLogo>
-                        )}
-                    </FancyBrandHeader>
-                )) || <PageHeader title={collection.title} subtitle={subtitle} />}
+            <PageContent
+                primary
+                style={
+                    (accents?.length &&
+                        ({
+                            //'--background': accents?.[0] || 'var(--color-block)',
+                            '--foreground': accents?.[0] || 'var(--color-block)'
+                        } as React.CSSProperties)) ||
+                    {}
+                }
+            >
+                <PageHeader title={collection.title} subtitle={subtitle} />
 
                 <CollectionBlock
                     handle={`${router.query.handle}`}

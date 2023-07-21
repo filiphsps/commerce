@@ -18,12 +18,12 @@ body {
     overscroll-behavior-x: none;
     font-size: 11px;
     touch-action: manipulation;
-    text-size-adjust: none;
+    text-size-adjust: auto;
     color: var(--color-dark);
     background: var(--color-bright);
 
     @media screen and (max-width: 950px) {
-        font-size: 0.615rem;
+        font-size: 10px;
     }
 
     .zEWidget-launcher {
@@ -47,14 +47,19 @@ body {
     // TODO: styled-components theme, or even better
     //       through our CMS.
 
+    --accent-primary-text: #ececec;
+    --accent-secondary-text: #101418;
+
     --color-bright: #fefefe;
-    --color-dark: #0e0e0e;
+    --color-dark: #101418;
 
     --color-sale: #d91e18;
 
     --color-success: #1b6e1b;
     --color-success-light: #228a22;
-    --color-danger: #d91e18;
+    --color-danger: #a53d3a;
+
+    --color-lights-out: #051821;
 
     --color-block: #e6e6e6;
     --color-block-shadow: rgba(0, 0, 0, 0.35);
@@ -63,13 +68,26 @@ body {
     --color-green: #1b6e1b;
     --color-green-light: #e1faea;
 
+    --color-block-pastel-lime: #cce2cb;
+    --color-block-pastel-lime-light: color-mix(
+        in srgb,
+        var(--color-block-pastel-lime) 65%,
+        var(--color-bright)
+    );
+    --color-block-pastel-lime-dark: color-mix(
+        in srgb,
+        var(--color-block-pastel-lime) 8%,
+        var(--color-dark)
+    );
+
     --component-product-card-width: 20rem;
 
     --page-width: 1465px;
 
+    --block-border-radius-large: 2rem;
     --block-border-radius: 1.25rem;
     --block-border-radius-small: 1rem;
-    --block-border-radius-tiny: 0.75rem;
+    --block-border-radius-tiny: 0.65rem;
     --block-border-width: 0.35rem;
 
     --block-padding: 1rem;
@@ -91,7 +109,7 @@ body {
 
         --block-spacer: 0.75rem;
         --block-spacer-small: 0.5rem;
-        --block-spacer-large: 1.25rem;
+        --block-spacer-large: 1rem;
     }
 }
 

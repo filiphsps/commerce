@@ -209,7 +209,7 @@ const Action = styled.div`
 
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
-    color: var(--accent-primary-text);
+    color: var(--accent-secondary-light);
     cursor: pointer;
     transition: 250ms all ease-in-out;
 
