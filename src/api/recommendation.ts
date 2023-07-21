@@ -33,6 +33,7 @@ export const RecommendationApi = async ({
                     query productRecommendations($productId: ID!) @inContext(language: ${language}, country: ${country}) {
                         productRecommendations(productId: $productId) {
                             ${PRODUCT_FRAGMENT}
+                            trackingParameters
                         }
                     }
                 `,

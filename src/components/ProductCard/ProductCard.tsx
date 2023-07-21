@@ -379,6 +379,18 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
     );
 };
 
+export const AppendShopifyParameters = ({
+    params,
+    url
+}: {
+    params?: string | null;
+    url: string;
+}): string => {
+    if (!params) return url;
+
+    return `${url}${(url.includes('?') && '&') || '?'}${params}`;
+};
+
 interface ProductCardProps {
     handle?: string;
     isHorizontal?: boolean;
@@ -438,6 +450,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
         (edge) => edge?.node?.id === selectedVariant?.image?.id
     )?.node as ShopifyImage;
 
+    // TODO: Hotlink to variant
+    const href = AppendShopifyParameters({
+        url: `/products/${product.handle}/`,
+        params: (product as any).trackingParameters
+    });
+
     return (
         <Container
             className={`ProductCard ${className || ''}`}
@@ -489,7 +507,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                 ) : null}
             </Badges>
             <ProductImage isHorizontal>
-                <Link href={`/products/${product.handle}/`}>
+                <Link href={href}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
                     </ProductImageWrapper>
@@ -504,7 +522,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                     </Brand>
                 )}
                 <Title>
-                    <Link href={`/products/${product.handle}/`}>{product.title}</Link>
+                    <Link href={href}>{product.title}</Link>
                 </Title>
 
                 <VariantsContainer>

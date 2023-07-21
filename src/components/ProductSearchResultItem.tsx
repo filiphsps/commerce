@@ -1,6 +1,7 @@
 import { Image, ProductPrice } from '@shopify/hydrogen-react';
 import { Subtitle, Title } from './PageHeader/PageHeader';
 
+import { AppendShopifyParameters } from './ProductCard/ProductCard';
 import { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
@@ -65,7 +66,12 @@ export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemP
     product
 }) => {
     return (
-        <Link href={`/products/${product.handle}/`}>
+        <Link
+            href={AppendShopifyParameters({
+                url: `/products/${product.handle}/}`,
+                params: (product as any).trackingParameters
+            })}
+        >
             <Container>
                 <ImageWrapper>
                     <Image data={product.images?.edges?.at(0)?.node || undefined} />

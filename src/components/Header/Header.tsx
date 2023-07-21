@@ -11,7 +11,6 @@ import { ImageLoader } from '../../util/ImageLoader';
 import { Input } from '../Input';
 import Link from 'next/link';
 import { Pluralize } from '../../util/Pluralize';
-import SearchBar from '../SearchBar';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 import { useStore } from 'react-context-hook';
@@ -26,11 +25,6 @@ const Content = styled.div`
     padding: var(--block-padding) var(--block-spacer-large);
     margin: 0px auto;
     user-select: none;
-
-    .Icon {
-        font-size: 2.5rem;
-        line-height: 2.5rem;
-    }
 
     @media (min-width: 950px) {
         grid-template-columns: 10rem 1fr auto;
@@ -136,10 +130,6 @@ const Navigation = styled.nav`
         &:active,
         &.Active {
             color: var(--accent-primary);
-            /*text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);*/
         }
 
         &.Active {
@@ -209,15 +199,7 @@ const Actions = styled.div`
     }
 `;
 
-const SearchIcon = styled.div`
-    height: 100%;
-    width: 5rem;
-
-    @media (min-width: 950px) {
-        display: none;
-    }
-`;
-const CartIconWrapper = styled.div`
+const Action = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
@@ -236,14 +218,16 @@ const CartIconWrapper = styled.div`
         color: var(--accent-secondary-text);
     }
 
-    @media (min-width: 950px) {
-        .Icon {
-            font-size: 2.5rem;
-            width: 4rem;
-        }
+    font-weight: 600;
+    line-height: 1.25rem;
+    font-size: 1.25rem;
+
+    svg {
+        font-size: 2.5rem;
     }
 `;
-const CartIcon = styled.span`
+
+const CartIndicator = styled.span`
     position: absolute;
     display: flex;
     justify-content: center;
@@ -257,9 +241,6 @@ const CartIcon = styled.span`
     background: var(--accent-secondary);
     color: var(--accent-secondary-text);
     border-radius: 100%;
-
-    font-weight: 600;
-    font-size: 1rem;
 
     pointer-events: none;
 
@@ -549,17 +530,16 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </Navigation>
 
                 <Actions>
-                    <SearchBar open={searchOpen && router.route !== '/search'} />
-                    <SearchIcon>
-                        <CartIconWrapper
-                            onClick={() =>
-                                setSearchOpen((router.route !== '/search' && !searchOpen) || false)
-                            }
+                    <Action>
+                        <Link
+                            href={'/search/'}
+                            className="Wrapper"
+                            title="Search for products, collections and pages across the whole store"
                         >
-                            <FiSearch className="Icon" />
-                        </CartIconWrapper>
-                    </SearchIcon>
-                    <CartIconWrapper className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
+                            <FiSearch />
+                        </Link>
+                    </Action>
+                    <Action className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
                         <Link
                             href={'/cart/'}
                             className="Wrapper"
@@ -568,8 +548,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                 noun: 'item'
                             })} in your cart`}
                         >
-                            {!!cart?.totalQuantity && <CartIcon>{cart?.totalQuantity}</CartIcon>}
-                            <FiShoppingBag className="Icon" />
+                            {!!cart?.totalQuantity && (
+                                <CartIndicator>{cart?.totalQuantity}</CartIndicator>
+                            )}
+                            <FiShoppingBag />
                         </Link>
 
                         {router.pathname !== '/cart' && cartStore.item ? (
@@ -654,7 +636,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                 </CartPopupContent>
                             </CartPopup>
                         ) : null}
-                    </CartIconWrapper>
+                    </Action>
                 </Actions>
             </Content>
         </Header>

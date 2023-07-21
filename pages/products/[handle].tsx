@@ -391,7 +391,9 @@ const ReviewsContainer = styled.div`
 const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
     recommendations: recommendationsData,
     reviews: reviewsData,
-    store
+    store,
+
+    initialVariantId
 }) => {
     const router = useRouter();
     const cart = useCart();
@@ -405,13 +407,17 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const [tab, setTab] = useState('details');
 
     useEffect(() => {
-        if (!router.isReady) return;
+        if (
+            !router.isReady ||
+            !initialVariantId ||
+            variantQuery !== initialVariantId ||
+            !selectedVariant?.id
+        )
+            return;
 
-        const id = selectedVariant?.id?.split('/')?.at(-1);
-        if (!id || variantQuery == id) return;
-
-        //setVariantQuery(id, 'replaceIn');
-    }, [setVariantQuery, variantQuery, selectedVariant, router.isReady]);
+        const id = selectedVariant?.id?.split('/').at(-1);
+        setVariantQuery(id, 'replaceIn');
+    }, [router.isReady, selectedVariant]);
 
     const { data: product } = useSWR(
         {
@@ -878,19 +884,36 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (
     props
 ) => {
+    const router = useRouter();
     const [variantQuery] = useQueryParam('variant', withDefault(StringParam, null));
+    const [initialVariantId, setInitialVariantId] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (
+            !router.isReady ||
+            variantQuery === null ||
+            initialVariantId !== undefined ||
+            variantQuery === initialVariantId
+        )
+            return;
+
+        setInitialVariantId(variantQuery);
+    }, [router.isReady, variantQuery]);
 
     // TODO: Proper error page
     if (props.errors && props.errors?.length > 0)
         return <Error statusCode={500} title={props.errors?.at(0)} />;
     else if (!props.product) return <Error statusCode={404} />;
-
-    const initialVariantId =
-        (variantQuery && `gid://shopify/ProductVariant/${variantQuery?.toString()}`) || undefined;
-
     return (
-        <ProductProvider data={props.product} initialVariantId={initialVariantId}>
-            <ProductPage {...props} />
+        <ProductProvider
+            data={props.product}
+            initialVariantId={
+                (initialVariantId &&
+                    `gid://shopify/ProductVariant/${initialVariantId?.toString()}`) ||
+                undefined
+            }
+        >
+            <ProductPage {...props} initialVariantId={initialVariantId || undefined} />
         </ProductProvider>
     );
 };
@@ -924,6 +947,9 @@ export const getStaticProps: GetStaticProps<{
     reviews?: ReviewsModel | null;
     store?: StoreModel;
     analytics?: ShopifyPageViewPayload;
+
+    // Bogus, will actually come from the wrapper
+    initialVariantId?: string | undefined;
 }> = async ({ params, locale }) => {
     let handle = '';
     if (Array.isArray(params?.handle)) {

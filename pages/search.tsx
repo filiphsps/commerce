@@ -1,5 +1,5 @@
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -45,6 +45,7 @@ const SearchBar = styled.div`
     ${Input} {
         width: 100%;
         height: 100%;
+        background: var(--color-block);
     }
 `;
 const SearchBarClear = styled.div`
@@ -126,39 +127,28 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
         setQuery(q);
     }, [router.query]);
 
-    useEffect(() => {
-        setInput(query);
-    }, [query]);
-
     const {
         data: results,
         mutate,
         isValidating,
         isLoading
-    } = useSWR(
-        [`search_${query}` || ''],
-        () => SearchApi({ query: query || '', locale: router.locale }),
-        {
-            fallbackData: {
-                products: [],
-                collections: []
-            } as any,
-            refreshInterval: 0,
-            revalidateOnFocus: false,
-            revalidateOnMount: false,
-            revalidateOnReconnect: false,
-            refreshWhenOffline: false,
-            refreshWhenHidden: false
-        }
-    );
+    } = useSWR({ query: query || '', locale: router.locale }, SearchApi, {
+        refreshInterval: 0,
+        revalidateOnFocus: false,
+        revalidateOnMount: false,
+        revalidateOnReconnect: false,
+        refreshWhenOffline: false,
+        refreshWhenHidden: false
+    });
 
     useEffect(() => {
         mutate(results, { revalidate: true });
     }, []);
 
     const handleSubmit = useCallback(
-        (query: string) => {
-            setQuery(query);
+        (q: string) => {
+            if (q == query) return;
+            setQuery(q);
 
             mutate(results, { revalidate: true });
             router.replace({
@@ -172,11 +162,11 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
         [mutate, router, query]
     );
 
-    const { products, productFilters } = results;
-    const count = products.length;
+    const { products, productFilters } = results || {};
+    const count = products?.length || 0;
 
     return (
-        <Page className="BlogPage">
+        <Page className="SearchPage">
             <NextSeo
                 title="Search"
                 canonical={`https://${Config.domain}/${router.locale}/search/`}
@@ -234,13 +224,13 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                     </ContentHeader>
                 )}
 
-                {process.env.NODE_ENV === 'development' && (
+                {process.env.NODE_ENV === 'development' && productFilters && (
                     <ProductSearchFilters filters={productFilters} open={showFilters} />
                 )}
 
                 <Content>
                     {((isValidating || isLoading) && <PageLoader />) ||
-                        products.map((product) => (
+                        products?.map((product) => (
                             <ProductSearchResultItem key={product.id} product={product} />
                         ))}
                 </Content>

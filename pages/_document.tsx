@@ -53,40 +53,11 @@ class Document extends NextDocument {
 
                     {Config.GTM && process.env.NODE_ENV !== 'development' && (
                         <Script id="gtm" strategy="afterInteractive">
-                            {`// Originally adapted from https://www.sean-lloyd.com/post/delay-google-analytics-improve-pagespeed-insights-score/
-                            // TODO: Turn this into an actual package.
-
-                            // Initializes Google Tag Manager
-                            let ran = false;
-                            function initGTM () {
-                                if(ran) return;
-                                ran = true;
-
-                                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                                })(window,document,'script','dataLayer','${Config.GTM}');
-                            }
-
-                            // Load the script after the user scrolls, moves the mouse, or touches the screen
-                            document.addEventListener('scroll', initGTMOnEvent);
-                            document.addEventListener('click', initGTMOnEvent);
-                            document.addEventListener('touchstart', initGTMOnEvent);
-
-                            // Initializes Google Tag Manager in response to an event
-                            function initGTMOnEvent (event) {
-                                initGTM();
-                                document.removeEventListener('scroll', initGTMOnEvent);
-                                document.removeEventListener('click', initGTMOnEvent);
-                                document.removeEventListener('touchstart', initGTMOnEvent);
-                            }
-
-                            // Backup options
-                            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-                                setTimeout(initGTM, 10000);
-                            else
-                                setTimeout(initGTM, 5000);`}
+                            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                            })(window,document,'script','dataLayer','${Config.GTM}');`}
                         </Script>
                     )}
                 </body>

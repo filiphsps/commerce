@@ -20,6 +20,7 @@ export const SearchApi = async ({
     productFilters: any[];
 }> => {
     return new Promise(async (resolve, reject) => {
+        if (!query) return reject();
         if (locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
@@ -79,5 +80,54 @@ export const SearchApi = async ({
             console.error(error);
             return reject(error);
         }
+    });
+};
+
+export const SearchPredictionApi = async ({
+    query,
+    locale
+}: {
+    query: string;
+    locale?: string;
+}): Promise<{
+    products: Product[];
+    productFilters: any[];
+}> => {
+    return new Promise(async (resolve, reject) => {
+        if (!query) return reject();
+        if (locale === 'x-default') locale = i18n.locales[1];
+
+        const country = (
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
+        ).toUpperCase() as CountryCode;
+        const language = (
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
+        ).toUpperCase() as LanguageCode;
+
+        const { data } = await storefrontClient.query({
+            query: gql`
+                query predictiveSearch($query: String!) @inContext(language: ${language}, country: ${country}) {
+                    predictiveSearch(query: $query, type: [PRODUCT, QUERY]s) {
+                        products {
+                            ${PRODUCT_FRAGMENT_MINIMAL}
+                            trackingParameters
+                        }
+                        queries {
+                            styledText
+                            text
+                            trackingParameters
+                        }
+                    }
+                }
+            `,
+            variables: {
+                query
+            }
+        });
+
+        return resolve({
+            result: data?.search?.edges?.map((item) => item?.node) || [],
+            productFilters: data?.search?.productFilters || []
+        });
     });
 };
