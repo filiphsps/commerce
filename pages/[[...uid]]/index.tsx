@@ -26,7 +26,7 @@ interface CustomPageProps {
     page?: CustomPageDocument<string>;
     error?: string;
 }
-const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page, error }) => {
+const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page }) => {
     const router = useRouter();
     const path = page?.url?.split('/').filter((i) => i);
 

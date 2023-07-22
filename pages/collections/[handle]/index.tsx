@@ -30,50 +30,6 @@ const ShortDescription = styled(Content)`
     max-width: 64rem;
 `;
 
-const FancyBrandContent = styled(PageHeader)`
-    width: 100%;
-    height: 100%;
-`;
-const FancyBrandHeader = styled.section`
-    color: var(--foreground);
-
-    @media (min-width: 950px) {
-        position: relative;
-        display: flex;
-        gap: var(--block-spacer);
-        padding: calc(var(--block-padding-large) * 2);
-        background: var(--background);
-        background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
-        border-radius: var(--block-border-radius);
-        padding: var(--block-padding-large);
-    }
-`;
-const FancyBrandLogo = styled.div`
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-    aspect-ratio: 1 / 1;
-    height: fit-content;
-    width: fit-content;
-
-    @media (max-width: 950px) {
-        display: none;
-    }
-`;
-const LogoWrapper = styled.div`
-    position: relative;
-    height: 100%;
-    width: 100%;
-
-    img {
-        object-fit: contain;
-        object-position: center;
-    }
-`;
-
 interface CollectionPageProps {
     store: StoreModel;
     collection: Collection;
@@ -82,7 +38,6 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
     const router = useRouter();
 
     if (!collection) return <Error statusCode={404} />;
-    const isBrand = !!((collection as any).isBrand?.value === 'true');
     let accents: string[] = [];
     if ((collection as any).accents?.value)
         accents = JSON.parse((collection as any).accents?.value);

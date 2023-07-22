@@ -6,6 +6,7 @@ import { parse } from 'node-html-parser';
 
 export const ReviewsProductApi = async ({
     id,
+    // eslint-disable-next-line no-unused-vars
     locale
 }: {
     id: string;
@@ -80,6 +81,7 @@ export const ReviewsProductApi = async ({
 
 export const ReviewProductApi = async ({
     id,
+    // eslint-disable-next-line no-unused-vars
     locale,
     rating,
     author,
