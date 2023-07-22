@@ -4,7 +4,6 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
-import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
 import LanguageString from '@/components/LanguageString';
@@ -24,19 +23,17 @@ import { useRouter } from 'next/router';
 interface CustomPageProps {
     store: StoreModel;
     prefetch: any;
-    page: CustomPageDocument<string>;
+    page?: CustomPageDocument<string>;
     error?: string;
 }
 const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page, error }) => {
     const router = useRouter();
 
-    if (error || !page) return <Error statusCode={500} title={error} />;
-
     return (
         <Page className={`CustomPage CustomPage-${page?.type}`}>
             <NextSeo
-                title={page.data.meta_title || page.data.title || ''}
-                description={asText(page.data.meta_description) || page.data.description || ''}
+                title={page?.data.meta_title || page?.data.title || ''}
+                description={asText(page?.data.meta_description) || page?.data.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
                 languageAlternates={
                     router?.locales?.map((locale) => ({
@@ -47,89 +44,107 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                     })) || []
                 }
                 additionalMetaTags={
-                    (page.data.keywords &&
+                    (page?.data.keywords &&
                         ([
                             {
                                 property: 'keywords',
-                                content: page.data.keywords
+                                content: page?.data.keywords
                             }
                         ] as any)) ||
                     []
                 }
+                openGraph={{
+                    url: `https://${Config.domain}/${router.locale}${router.asPath}`,
+                    type: 'website',
+                    title: page?.data.meta_title || '',
+                    description: asText(page?.data.meta_description) || store?.description || '',
+                    siteName: store.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                    images:
+                        (page?.data.meta_image && [
+                            {
+                                url: page?.data.meta_image!.url as string,
+                                width: page?.data.meta_image!.dimensions?.width || 0,
+                                height: page?.data.meta_image!.dimensions?.height || 0,
+                                alt: page?.data.meta_image!.alt || '',
+                                secureUrl: page?.data.meta_image!.url as string
+                            }
+                        ]) ||
+                        []
+                }}
             />
 
             <PageContent primary>
-                <PageHeader title={page.data.title} subtitle={page.data.description} />
+                {/* TODO: This should really be a slice anyways */}
+                {(page?.uid !== 'homepage' && (
+                    <PageHeader title={page?.data.title} subtitle={page?.data.description} />
+                )) ||
+                    null}
 
                 <SliceZone
-                    slices={page.data.slices}
+                    slices={page?.data.slices}
                     components={components}
                     context={{ prefetch, store }}
                 />
 
-                <Breadcrumbs
-                    pages={(router.query.handle as string[])?.map((item) => {
-                        return {
-                            title: <LanguageString id={item} />,
-                            url: `/${item}`
-                        };
-                    })}
-                    store={store}
-                />
+                {/* TODO: Same here */}
+                {(page?.uid !== 'homepage' && (
+                    <Breadcrumbs
+                        pages={(router.query.uid as string[])?.map((item) => {
+                            return {
+                                title: <LanguageString id={item} />,
+                                url: `/${item}`
+                            };
+                        })}
+                        store={store}
+                    />
+                )) ||
+                    null}
             </PageContent>
         </Page>
     );
 };
 
 export async function getStaticPaths({ locales }) {
-    const pages = (await PagesApi()) as any;
+    const pages = await PagesApi({});
+    const paths = pages.paths.flatMap((path) => [
+        ...locales.map((locale) => ({
+            params: {
+                uid: path !== '/' && path.split('/').filter((i) => i)
+            },
+            locale
+        }))
+    ]);
 
-    let paths = [
-        ...pages
-            ?.map((page) => [
-                {
-                    params: { handle: [page] }
-                },
-                ...locales
-                    .filter((locale) => locale !== 'x-default')
-                    .map((locale) => ({
-                        params: { handle: [page] },
-                        locale: locale
-                    }))
-            ])
-            .flat()
-            .filter((a) => a?.params?.handle)
-            .filter((a) => a.params.handle != 'homepage' && a.params.handle != 'shop')
-    ];
-
-    return { paths, fallback: true };
+    return { paths: paths, fallback: true };
 }
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {
+    const client = createClient({ previewData });
     try {
-        const handle = ((Array.isArray(params?.handle) && params?.handle?.join('/')) ||
-            params?.handle?.toString())!;
+        const uid = (params?.uid && params!.uid![params!.uid!.length - 1]) || 'homepage';
 
-        const client = createClient({ previewData });
         let page: any = null;
         try {
-            page = await client.getByUID('custom_page', handle, {
+            page = await client.getByUID('custom_page', uid, {
                 lang: locale
             });
-        } catch {
-            page = await client.getByUID('custom_page', handle);
+        } catch (error) {
+            page = await client.getByUID('custom_page', uid);
         }
         const prefetch = (page && (await Prefetch(page, params, locale))) || null;
 
         return {
             props: {
-                handle: handle,
+                handle: uid,
                 page,
                 prefetch,
-                analytics: {
+                analytics: (uid !== 'homepage' && {
                     pageType: AnalyticsPageType.page,
                     // TODO: fetch this ID from shopify
-                    resourceId: `gid://shopify/OnlineStorePage/${handle}` || null
+                    resourceId: `gid://shopify/OnlineStorePage/${uid}` || null
+                }) || {
+                    pageType: AnalyticsPageType.home
                 }
             },
             revalidate: 10

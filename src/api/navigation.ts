@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
-import { prismic } from './prismic';
 
 export const NavigationApi = async (
     locale = i18n.defaultLocale
@@ -16,9 +16,13 @@ export const NavigationApi = async (
     }>
 > => {
     return new Promise(async (resolve, reject) => {
+        if (locale === 'x-default') locale = i18n.locales[1];
+
+        const client = createClient({});
+
         try {
-            const navigation = await prismic().getSingle('navigation', {
-                lang: locale === 'x-default' ? i18n.locales[1] : locale
+            const navigation = await client.getSingle('navigation', {
+                lang: locale
             });
 
             return resolve(

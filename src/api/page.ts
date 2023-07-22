@@ -1,13 +1,31 @@
 import * as Sentry from '@sentry/nextjs';
+import * as prismic from '@prismicio/client';
 
-import { prismic } from './prismic';
+import { createClient } from 'prismicio';
+import { i18n } from '../../next-i18next.config.cjs';
 
-export const PagesApi = async () => {
+export const PagesApi = async ({
+    locale
+}: {
+    locale?: string;
+}): Promise<{
+    paths: string[];
+}> => {
     return new Promise(async (resolve, reject) => {
-        try {
-            const pages = await prismic().getAllByType('custom_page');
+        if (locale === 'x-default') locale = i18n.locales[1];
 
-            return resolve(pages.map((page) => page.uid).filter((page) => page !== 'homepage'));
+        try {
+            const client = createClient({});
+            const pages = await client.getAllByType('custom_page', {
+                lang: locale
+            });
+
+            if (!pages) return reject();
+
+            const paths = pages.map((page) => prismic.asLink(page));
+            return resolve({
+                paths: paths as any
+            });
         } catch (error) {
             Sentry.captureException(error);
             console.error(error);

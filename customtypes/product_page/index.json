@@ -7,7 +7,11 @@
     "json": {
         "Main": {
             "uid": { "config": { "label": "UID" }, "type": "UID" },
-            "slices": { "type": "Slices", "fieldset": "Slice Zone", "config": { "choices": {} } }
+            "slices": {
+                "type": "Slices",
+                "fieldset": "Slice Zone",
+                "config": { "choices": { "collapsible_text": { "type": "SharedSlice" } } }
+            }
         },
         "SEO & Metadata": {
             "meta_description": {
@@ -31,6 +35,23 @@
                     "placeholder": "A title of the page used for social media and search engines"
                 },
                 "type": "Text"
+            }
+        },
+        "Secondary": {
+            "slices2": {
+                "type": "Slices",
+                "fieldset": "Slice Zone",
+                "config": {
+                    "choices": {
+                        "collection": { "type": "SharedSlice" },
+                        "carousel": { "type": "SharedSlice" },
+                        "text_block": { "type": "SharedSlice" },
+                        "image_grid": { "type": "SharedSlice" },
+                        "icon_grid": { "type": "SharedSlice" },
+                        "vendors": { "type": "SharedSlice" },
+                        "collapsible_text": { "type": "SharedSlice" }
+                    }
+                }
             }
         }
     }

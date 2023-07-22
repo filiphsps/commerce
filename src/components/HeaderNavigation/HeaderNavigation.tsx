@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
+import { FunctionComponent, memo } from 'react';
 
 import Link from 'next/link';
 import styled from 'styled-components';

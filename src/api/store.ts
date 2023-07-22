@@ -3,9 +3,9 @@ import * as Sentry from '@sentry/nextjs';
 import { Country, CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { StoreModel } from '../models/StoreModel';
+import { createClient } from 'prismicio';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
-import { prismic } from './prismic';
 import { storefrontClient } from './shopify';
 
 export const CountriesApi = async ({ locale }): Promise<Country[]> => {
@@ -53,6 +53,8 @@ export const CountriesApi = async ({ locale }): Promise<Country[]> => {
 
 export const StoreApi = async ({ locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
+        const client = createClient({});
+
         try {
             if (locale === 'x-default') locale = i18n.locales[1];
 
@@ -124,12 +126,12 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
 
             try {
                 res = (
-                    await prismic().getSingle('store', {
+                    await client.getSingle('store', {
                         lang: locale === 'x-default' ? i18n.locales[1] : locale
                     })
                 ).data;
             } catch {
-                res = (await prismic().getSingle('store')).data;
+                res = (await client.getSingle('store')).data;
             }
 
             const currencies = res.currencies.map((item) => item.currency);

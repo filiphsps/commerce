@@ -37,15 +37,19 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { ProductOptions } from '@/components/ProductOptions';
+import { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
 import Reviews from '@/components/Reviews';
 import { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
+import { SliceZone } from '@prismicio/react';
 import { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
+import { components } from '../../slices';
+import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -313,16 +317,12 @@ const Recommendations = styled.div`
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
-    margin: 1rem;
+    margin: var(--block-spacer) 0px;
     border-radius: var(--block-border-radius);
     overflow: hidden;
 
     background: var(--color-block);
     padding: var(--block-padding-large);
-
-    @media (max-width: 950px) {
-        margin: 1rem 0px;
-    }
 `;
 const RecommendationsTitle = styled.h3`
     font-size: 2.5rem;
@@ -411,6 +411,7 @@ const ReviewsContainer = styled.div`
 `;
 
 const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
+    page,
     recommendations: recommendationsData,
     reviews: reviewsData,
     store,
@@ -791,6 +792,12 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             {quantityAction}
                             {addToCartAction}
 
+                            <SliceZone
+                                slices={page?.data.slices}
+                                components={components}
+                                context={{ store }}
+                            />
+
                             <Tabs>
                                 <Tab
                                     className={tab == 'details' ? 'Active' : ''}
@@ -861,6 +868,12 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         </Details>
                     </ProductContainer>
                 </ProductContainerWrapper>
+
+                <SliceZone
+                    slices={page?.data.slices2}
+                    components={components}
+                    context={{ store }}
+                />
 
                 {recommendations?.length && recommendations.length >= 1 && (
                     <Recommendations>
@@ -964,6 +977,7 @@ export async function getStaticPaths({ locales }) {
 
 export const getStaticProps: GetStaticProps<{
     errors?: string[] | null;
+    page?: ProductPageDocument<string> | null;
     product?: Product | null;
     recommendations?: Product[] | null;
     reviews?: ReviewsModel | null;
@@ -972,7 +986,7 @@ export const getStaticProps: GetStaticProps<{
 
     // Bogus, will actually come from the wrapper
     initialVariantId?: string | undefined;
-}> = async ({ params, locale }) => {
+}> = async ({ params, locale, previewData }) => {
     let handle = '';
     if (Array.isArray(params?.handle)) {
         handle = params?.handle?.join('') || '';
@@ -999,11 +1013,14 @@ export const getStaticProps: GetStaticProps<{
         };
     }
 
+    const client = createClient({ previewData });
+
     let product: Product | null = null;
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
     let errors: string[] = [];
+    let page: ProductPageDocument<string> | null = null;
 
     try {
         product = await ProductApi({
@@ -1042,6 +1059,16 @@ export const getStaticProps: GetStaticProps<{
         });
 
         try {
+            page = await client.getByUID('product_page', handle, {
+                lang: locale
+            });
+        } catch {
+            try {
+                page = await client.getByUID('product_page', handle);
+            } catch {}
+        }
+
+        try {
             recommendations = await RecommendationApi({
                 id: product?.id,
                 locale
@@ -1062,6 +1089,7 @@ export const getStaticProps: GetStaticProps<{
     return {
         props: {
             product,
+            page,
             recommendations,
             reviews,
             errors: (errors.length > 0 && errors) || null,

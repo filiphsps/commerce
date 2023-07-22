@@ -1,12 +1,12 @@
 import * as prismic from '@prismicio/client';
 import * as prismicNext from '@prismicio/next';
 
-import config from './slicemachine.config.json' assert { type: 'json' };
+import { Config } from 'src/util/Config';
 
 /**
  * The project's Prismic repository name.
  */
-export const repositoryName = config.repositoryName;
+export const repositoryName = Config.prismic.repo;
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field
@@ -18,19 +18,19 @@ const routes: prismic.ClientConfig['routes'] = [
     {
         type: 'custom_page',
         uid: 'homepage',
-        path: '/:lang'
-    },
-    {
-        type: 'custom_page',
-        path: '/:lang/:uid'
+        path: '/:lang?'
     },
     {
         type: 'product_page',
-        path: '/:lang/products/:uid'
+        path: '/:lang?/products/:uid'
     },
     {
         type: 'collection_page',
-        path: '/:lang/collections/:uid'
+        path: '/:lang?/collections/:uid'
+    },
+    {
+        type: 'custom_page',
+        path: '/:lang?/:uid'
     }
 ];
 
