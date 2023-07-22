@@ -461,7 +461,13 @@ export type NavigationDocument<Lang extends string = string> = prismic.PrismicDo
     Lang
 >;
 
-type ProductPageDocumentDataSlicesSlice = CollapsibleTextSlice;
+type ProductPageDocumentDataSlicesSlice =
+    | IconGridSlice
+    | VendorsSlice
+    | CollectionSlice
+    | ImageGridSlice
+    | CarouselSlice
+    | TextBlockSlice;
 
 type ProductPageDocumentDataSlices2Slice =
     | CollectionSlice

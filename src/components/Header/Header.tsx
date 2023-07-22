@@ -25,7 +25,6 @@ const Content = styled.div`
     padding: var(--block-padding) var(--block-spacer-large);
     margin: 0px auto;
     user-select: none;
-    transition: 250ms ease-in-out;
 
     @media (min-width: 950px) {
         grid-template-columns: 10rem 1fr auto;
@@ -389,7 +388,7 @@ const HamburgerMenu = styled.div`
     }
 `;
 
-const Header = styled.header<{ scrolled?: boolean; floating?: boolean }>`
+const Header = styled.header<{ scrolled?: boolean }>`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
@@ -399,32 +398,28 @@ const Header = styled.header<{ scrolled?: boolean; floating?: boolean }>`
     ${({ scrolled }) =>
         scrolled &&
         css`
-            //border-bottom-color: var(--accent-secondary);
-            //box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
+            @media (min-width: 950px) {
+                border-bottom-color: var(--accent-secondary);
+                box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
+            }
         `}
 
     ${({ scrolled }) =>
         scrolled &&
         css`
-            background: transparent;
+            @media (max-width: 950px) {
+                background: transparent;
+                padding: var(--block-padding);
+                height: calc(100% - var(--block-padding) * 2);
+            }
 
             ${Content} {
-                transition: 100ms ease-in-out;
-                background: var(--accent-secondary-light);
-                margin: var(--block-padding);
-                margin-bottom: 0px;
-                width: calc(100% - var(--block-padding) * 2);
-                //height: calc(100% - var(--block-padding) * 2);
-
                 @media (max-width: 950px) {
+                    transition: 100ms ease-in-out;
+                    border-radius: var(--block-border-radius);
+                    background: var(--accent-secondary-light);
+
                     height: 6.5rem;
-                }
-
-                box-shadow: 0px 0px 1rem 0.5rem var(--color-block-shadow);
-                border-radius: var(--block-border-radius);
-
-                @media (min-width: 950px) {
-                    margin: var(--block-padding-small) auto;
                 }
             }
         `}

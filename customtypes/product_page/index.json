@@ -10,7 +10,16 @@
             "slices": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",
-                "config": { "choices": { "collapsible_text": { "type": "SharedSlice" } } }
+                "config": {
+                    "choices": {
+                        "icon_grid": { "type": "SharedSlice" },
+                        "vendors": { "type": "SharedSlice" },
+                        "collection": { "type": "SharedSlice" },
+                        "image_grid": { "type": "SharedSlice" },
+                        "carousel": { "type": "SharedSlice" },
+                        "text_block": { "type": "SharedSlice" }
+                    }
+                }
             }
         },
         "SEO & Metadata": {

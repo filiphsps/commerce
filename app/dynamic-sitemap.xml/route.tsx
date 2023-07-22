@@ -14,33 +14,35 @@ export async function GET() {
         priority?: number;
     }
 
-    const pages = ((await PagesApi()) as any).map(
-        (page) =>
-            ({
-                location: `${page}/`,
-                priority: 0.7
-            } as SitemapEntry)
-    );
+    const pages = ((await PagesApi({})) as any).paths
+        .filter((i) => i !== '/')
+        .map(
+            (page) =>
+                ({
+                    location: `${page.slice(1)}/`,
+                    priority: 0.7
+                }) as SitemapEntry
+        );
     const collections = (await CollectionsApi()).map(
         (collection) =>
             ({
                 location: `collections/${collection.handle}/`,
                 priority: 0.8
-            } as SitemapEntry)
+            }) as SitemapEntry
     );
     const products = (await ProductsApi()).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
                 priority: 1.0
-            } as SitemapEntry)
+            }) as SitemapEntry
     );
     const blog = ((await BlogApi({ handle: 'news' })) as any).articles.map(
         (blog) =>
             ({
                 location: `blog/${blog.handle}/`,
                 priority: 0.9
-            } as SitemapEntry)
+            }) as SitemapEntry
     );
 
     const objects: Array<SitemapEntry[]> = [pages, collections, products, blog];

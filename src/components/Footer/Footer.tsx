@@ -1,17 +1,17 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
-import React, { FunctionComponent } from 'react';
-
 import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 import { Config } from '../../util/Config';
 import EmailCapture from '../EmailCapture';
 import { FooterApi } from '../../api/footer';
+import { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const Logo = styled.div`
@@ -196,8 +196,9 @@ interface FooterProps {
     country?: string;
 }
 const Footer: FunctionComponent<FooterProps> = (props) => {
+    const router = useRouter();
     const { store } = props;
-    const { data } = useSWR([`footer`], () => FooterApi(), {
+    const { data } = useSWR([`footer`], () => FooterApi({ locale: router.locale }), {
         fallbackData: preval.footer
     });
 

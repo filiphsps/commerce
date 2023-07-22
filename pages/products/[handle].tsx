@@ -115,6 +115,8 @@ const Options = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
     gap: var(--block-spacer);
 `;
 

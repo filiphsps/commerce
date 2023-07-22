@@ -22,7 +22,10 @@ export const PagesApi = async ({
 
             if (!pages) return reject();
 
-            const paths = pages.map((page) => prismic.asLink(page));
+            // TODO: remove filter when we have migrated the shop page
+            const paths = pages
+                .map((page) => prismic.asLink(page))
+                .filter((i) => i && i !== '/shop');
             return resolve({
                 paths: paths as any
             });

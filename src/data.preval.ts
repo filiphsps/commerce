@@ -11,7 +11,7 @@ async function getStoreData() {
     const store = await StoreApi({ locale });
     const navigation = await NavigationApi(locale);
     const header = await HeaderApi(locale);
-    const footer = await FooterApi(locale);
+    const footer = await FooterApi({ locale });
 
     return {
         store,
