@@ -68,15 +68,7 @@ const StoreApp = withStore(
                             sans-serif;
                     }
                 `}</style>
-                <DefaultSeo
-                    {...SEO}
-                    themeColor={Color(store.accent.primary).hex().toString()}
-                    twitter={{
-                        cardType: 'summary_large_image',
-                        handle: '@sweetsideofsweden',
-                        site: 'sweetsideofsweden.com'
-                    }}
-                />
+                <DefaultSeo {...SEO} themeColor={Color(store.accent.primary).hex().toString()} />
                 <Head>
                     <meta
                         name="viewport"
@@ -169,6 +161,8 @@ const StoreApp = withStore(
                     sameAs={store.social?.map(({ url }) => url)}
                 />
                 <SiteLinksSearchBoxJsonLd
+                    name={'Sweet Side of Sweden'}
+                    alternateName={'sweetsideofsweden'}
                     url={`https://${Config.domain}/`}
                     potentialActions={[
                         {
