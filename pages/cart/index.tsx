@@ -246,7 +246,17 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
             })
     );
 
-    const freeShipping = Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > 75;
+    let freeShippingThreshold = 85;
+    switch (cart.cost?.totalAmount?.currencyCode) {
+        case 'GBP':
+            freeShippingThreshold = 70;
+            break;
+        case 'EUR':
+            freeShippingThreshold = 80;
+            break;
+    }
+    const freeShipping =
+        Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > freeShippingThreshold;
 
     useEffect(() => {
         if (!cart?.lines) return;

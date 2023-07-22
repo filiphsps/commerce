@@ -57,8 +57,16 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
 
     if (status !== 'idle' && status !== 'updating') return null;
 
-    // TODO: Handle other currencies
-    const threshold = 75;
+    // TODO: Handle other currencies properly
+    let threshold = 85;
+    switch (cost?.totalAmount?.currencyCode) {
+        case 'GBP':
+            threshold = 70;
+            break;
+        case 'EUR':
+            threshold = 80;
+            break;
+    }
     const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) > threshold;
     const amountLeft = threshold - (Number.parseFloat(cost?.totalAmount?.amount!) || 0) || 0;
 

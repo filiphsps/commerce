@@ -205,7 +205,7 @@ export const ConvertToLocalMeasurementSystem = ({
 
     const res = ConvertUnits(weight).from(unit).to(targetUnit);
     // TODO: Precision should be depending on unit.
-    return `${Math.round(res)}${targetUnit}`;
+    return `${Math.ceil(res)}${targetUnit}`;
 };
 
 // TODO: Remove this when our shopify app handles it and sets it as metadata instead.
