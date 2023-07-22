@@ -1,17 +1,19 @@
 import {
     AnalyticsEventName,
+    AnalyticsPageType,
+    ShopifyAnalyticsProduct,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    useCart,
     useShopifyCookies
-} from '@shopify/hydrogen';
-import { AnalyticsPageType, ShopifyAnalyticsProduct, useCart } from '@shopify/hydrogen-react';
+} from '@shopify/hydrogen-react';
 import { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
 import { Locale } from '../util/Locale';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { ShopifyPriceToNumber } from 'src/util/Pricing';
-import { ShopifySalesChannel } from '@shopify/hydrogen';
+import { ShopifySalesChannel } from '@shopify/hydrogen-react';
 import { useEffect } from 'react';
 import { usePrevious } from './usePrevious';
 import { useRouter } from 'next/router';
