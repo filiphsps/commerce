@@ -300,7 +300,7 @@ export const ProductApi = async ({
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('Invalid handle'));
 
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
             locale?.split('-')[1] || i18n.locales[1].split('-')[1]

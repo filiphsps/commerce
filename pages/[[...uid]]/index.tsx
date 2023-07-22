@@ -28,6 +28,7 @@ interface CustomPageProps {
 }
 const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page, error }) => {
     const router = useRouter();
+    const path = page?.url?.split('/').filter((i) => i);
 
     return (
         <Page className={`CustomPage CustomPage-${page?.type}`}>
@@ -90,9 +91,11 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
                 {/* TODO: Same here */}
                 {(page?.uid !== 'homepage' && (
                     <Breadcrumbs
-                        pages={(router.query.uid as string[])?.map((item) => {
+                        pages={path?.map((item, index) => {
                             return {
-                                title: <LanguageString id={item} />,
+                                title: (index === path.length - 1 && page?.data.title) || (
+                                    <LanguageString id={item} />
+                                ),
                                 url: `/${item}`
                             };
                         })}
@@ -108,7 +111,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page,
 export async function getStaticPaths({ locales }) {
     const pages = await PagesApi({});
     const paths = pages.paths.flatMap((path) => [
-        ...locales.map((locale) => ({
+        ...['en-US', 'en-GB', 'de-DE', 'sv-SE'].map((locale) => ({
             params: {
                 uid: path !== '/' && path.split('/').filter((i) => i)
             },
@@ -116,7 +119,7 @@ export async function getStaticPaths({ locales }) {
         }))
     ]);
 
-    return { paths: paths, fallback: true };
+    return { paths: paths, fallback: 'blocking' };
 }
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {

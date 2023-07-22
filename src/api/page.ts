@@ -12,7 +12,7 @@ export const PagesApi = async ({
     paths: string[];
 }> => {
     return new Promise(async (resolve, reject) => {
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         try {
             const client = createClient({});

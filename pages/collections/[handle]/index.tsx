@@ -180,16 +180,17 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: collection?.handle }
                 },
-                ...locales.map((locale) => ({
+                // Make these hardcoded ones configurable
+                ...['en-US', 'en-GB', 'de-DE', 'sv-SE'].map((locale) => ({
                     params: { handle: collection?.handle },
                     locale: locale
                 }))
             ])
             .flat()
-            .filter((a) => a?.params?.handle && a.locale !== 'x-default')
+            .filter((a) => a?.params?.handle)
     ];
 
-    return { paths, fallback: true };
+    return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {

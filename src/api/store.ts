@@ -8,10 +8,10 @@ import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
-export const CountriesApi = async ({ locale }): Promise<Country[]> => {
+export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (locale === 'x-default') locale = i18n.locales[1];
+            if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
             const country = (
                 locale?.split('-')[1] || i18n.locales[1].split('-')[1]
@@ -51,12 +51,32 @@ export const CountriesApi = async ({ locale }): Promise<Country[]> => {
     });
 };
 
+export const LocalesApi = async (): Promise<string[]> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const countries = await CountriesApi({});
+            const locales = countries.flatMap((country) =>
+                country.availableLanguages.map(
+                    (language) =>
+                        `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
+                )
+            );
+
+            return resolve(locales);
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
+        }
+    });
+};
+
 export const StoreApi = async ({ locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const client = createClient({});
 
         try {
-            if (locale === 'x-default') locale = i18n.locales[1];
+            if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
             const country = (
                 locale?.split('-')[1] || i18n.locales[1].split('-')[1]
@@ -127,7 +147,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
             try {
                 res = (
                     await client.getSingle('store', {
-                        lang: locale === 'x-default' ? i18n.locales[1] : locale
+                        lang: locale
                     })
                 ).data;
             } catch {

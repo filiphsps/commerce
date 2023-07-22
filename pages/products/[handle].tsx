@@ -964,12 +964,10 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: product?.handle }
                 },
-                ...locales
-                    .filter((locale) => locale !== 'x-default')
-                    .map((locale) => ({
-                        params: { handle: product?.handle },
-                        locale: locale
-                    }))
+                ...['en-US', 'en-GB', 'de-DE', 'sv-SE'].map((locale) => ({
+                    params: { handle: product?.handle },
+                    locale: locale
+                }))
             ])
             .flat()
             .filter((a) => a?.params?.handle)
@@ -997,7 +995,7 @@ export const getStaticProps: GetStaticProps<{
         handle = params?.handle || '';
     }
 
-    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
+    if (!handle || ['null', 'undefined', '[handle]'].includes(handle) || locale === 'x-default')
         return {
             props: {
                 product: null

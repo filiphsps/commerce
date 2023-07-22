@@ -5,7 +5,7 @@ import { i18n } from '../../next-i18next.config.cjs';
 
 export const FooterApi = async ({ locale }: { locale?: string }) => {
     return new Promise(async (resolve, reject) => {
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         const client = createClient({});
         try {

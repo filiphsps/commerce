@@ -268,7 +268,7 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: article?.handle }
                 },
-                ...locales.map((locale) => ({
+                ...['en-US', 'en-GB', 'de-DE', 'sv-SE'].map((locale) => ({
                     params: { handle: article?.handle },
                     locale: locale
                 }))

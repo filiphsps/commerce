@@ -1,18 +1,22 @@
-import { Fragment, FunctionComponent } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../src/util/Config';
-import Content from '@/components/Content';
 import { CountriesApi } from '../src/api/store';
 import { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import { CustomPageDocument } from 'prismicio-types';
+import { FunctionComponent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import { SliceZone } from '@prismicio/react';
 import { StoreModel } from '../src/models/StoreModel';
+import { components } from '../slices';
+import { createClient } from 'prismicio';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -38,7 +42,7 @@ const LocaleCurrency = styled.div`
     font-weight: 700;
 `;
 
-const Locale = styled(Link)<{ active: boolean }>`
+const Locale = styled(Link)<{ selected?: boolean }>`
     display: grid;
     grid-template-columns: auto 1fr auto;
     justify-content: stretch;
@@ -83,10 +87,15 @@ const LocaleLabel = styled.div`
 `;
 
 interface LocalePageProps {
-    store: StoreModel;
+    page?: CustomPageDocument<string>;
     countries: Country[];
+    store: StoreModel;
 }
-const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: countriesData }) => {
+const LocalePage: FunctionComponent<LocalePageProps> = ({
+    page,
+    countries: countriesData,
+    store
+}) => {
     const router = useRouter();
 
     const { data: countries } = useSWR(
@@ -100,7 +109,6 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
         }
     );
 
-    const shippingToCountries = countries?.flatMap((country) => country.name) || [];
     const locales = (
         countries?.map((country) =>
             country.availableLanguages
@@ -117,7 +125,8 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
     return (
         <Page className="LocalePage">
             <NextSeo
-                title="Locales"
+                title={page?.data.meta_title || 'Locales'}
+                description={page?.data.meta_title || 'Set your region and preferred language'}
                 canonical={`https://${Config.domain}/${router.locale}/locales/`}
                 languageAlternates={
                     router?.locales?.map((locale) => ({
@@ -131,7 +140,10 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
 
             <PageContent primary>
                 <PageContent>
-                    <PageHeader title="Set your region and preferred language" />
+                    <PageHeader
+                        title={page?.data.title || 'Set your region and preferred language'}
+                        subtitle={page?.data.description || null}
+                    />
 
                     <LocalesList>
                         {locales.flatMap((locales) =>
@@ -139,7 +151,7 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
                                 return (
                                     <Locale
                                         key={locale.locale}
-                                        active={locale.locale === router.locale}
+                                        selected={locale.locale === router.locale}
                                         href="/"
                                         locale={locale.locale}
                                         title={`${locale.country} (${locale.language})`}
@@ -163,22 +175,14 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
                             })
                         )}
                     </LocalesList>
-
-                    <Content>
-                        <h3>Additionally we also ship to</h3>
-                        {shippingToCountries.map((country, index) => (
-                            <Fragment key={country}>
-                                <small>{country}</small>
-                                {(index + 1 !== shippingToCountries.length && ', ') || ''}
-                            </Fragment>
-                        ))}
-                    </Content>
                 </PageContent>
+
+                <SliceZone slices={page?.data.slices} components={components} context={{ store }} />
 
                 <Breadcrumbs
                     pages={[
                         {
-                            title: 'Locales',
+                            title: page?.data.title || 'Locales',
                             url: '/locales/'
                         }
                     ]}
@@ -189,18 +193,47 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({ store, countries: coun
     );
 };
 
-export async function getStaticProps({ locale }) {
-    return {
-        props: {
-            countries: await CountriesApi({
-                locale
-            }),
-            analytics: {
-                pageType: AnalyticsPageType.page
-            }
-        },
-        revalidate: 60
-    };
+export async function getStaticProps({ locale, previewData }) {
+    const client = createClient({ previewData });
+    try {
+        const uid = 'locales';
+
+        let page: any = null;
+        try {
+            page = await client.getByUID('custom_page', uid, {
+                lang: locale
+            });
+        } catch (error) {
+            try {
+                page = await client.getByUID('custom_page', uid);
+            } catch {}
+        }
+
+        return {
+            props: {
+                page,
+                countries: await CountriesApi({
+                    locale
+                }),
+                analytics: {
+                    pageType: AnalyticsPageType.page
+                }
+            },
+            revalidate: 60
+        };
+    } catch (error) {
+        if (error.message?.includes('No documents')) {
+            return {
+                notFound: true
+            };
+        }
+
+        Sentry.captureException(error);
+        return {
+            props: {},
+            revalidate: 1
+        };
+    }
 }
 
 export default LocalePage;

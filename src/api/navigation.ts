@@ -16,7 +16,7 @@ export const NavigationApi = async (
     }>
 > => {
     return new Promise(async (resolve, reject) => {
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         const client = createClient({});
 

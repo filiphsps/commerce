@@ -21,7 +21,7 @@ export const SearchApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
             locale?.split('-')[1] || i18n.locales[1].split('-')[1]
@@ -94,7 +94,7 @@ export const SearchPredictionApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
-        if (locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
         const country = (
             locale?.split('-')[1] || i18n.locales[1].split('-')[1]
