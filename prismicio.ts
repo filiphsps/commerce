@@ -6,7 +6,8 @@ import { Config } from 'src/util/Config';
 /**
  * The project's Prismic repository name.
  */
-export const repositoryName = Config.prismic.repo;
+export const repositoryName = Config.prismic.name;
+export const accessToken = process.env.PRISMIC_TOKEN;
 
 /**
  * A list of Route Resolver objects that define how a document's `url` field
@@ -19,6 +20,10 @@ const routes: prismic.ClientConfig['routes'] = [
         type: 'custom_page',
         uid: 'homepage',
         path: '/:lang?'
+    },
+    {
+        type: 'custom_page',
+        path: '/:lang?/locales'
     },
     {
         type: 'product_page',
@@ -43,6 +48,7 @@ const routes: prismic.ClientConfig['routes'] = [
 export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
     const client = prismic.createClient(repositoryName, {
         routes,
+        accessToken: accessToken,
         fetchOptions:
             process.env.NODE_ENV === 'production'
                 ? { next: { tags: ['prismic'] }, cache: 'force-cache' }

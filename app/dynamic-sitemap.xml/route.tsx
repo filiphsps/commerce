@@ -14,15 +14,21 @@ export async function GET() {
         priority?: number;
     }
 
-    const pages = ((await PagesApi({})) as any).paths
-        .filter((i) => i !== '/')
-        .map(
-            (page) =>
-                ({
-                    location: `${page.slice(1)}/`,
-                    priority: 0.7
-                }) as SitemapEntry
-        );
+    let pages: SitemapEntry[] = [];
+    try {
+        pages = ((await PagesApi({})) as any).paths
+            .filter((i) => i !== '/')
+            .map(
+                (page) =>
+                    ({
+                        location: `${page.slice(1)}/`,
+                        priority: 0.7
+                    }) as SitemapEntry
+            );
+    } catch (error) {
+        console.warn(error);
+    }
+
     const collections = (await CollectionsApi()).map(
         (collection) =>
             ({

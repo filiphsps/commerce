@@ -86,12 +86,12 @@ const LocaleLabel = styled.div`
     line-height: 2rem;
 `;
 
-interface LocalePageProps {
+interface CountriesPageProps {
     page?: CustomPageDocument<string>;
     countries: Country[];
     store: StoreModel;
 }
-const LocalePage: FunctionComponent<LocalePageProps> = ({
+const CountriesPage: FunctionComponent<CountriesPageProps> = ({
     page,
     countries: countriesData,
     store
@@ -123,11 +123,11 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({
     ).filter((i) => i && i.length > 0);
 
     return (
-        <Page className="LocalePage">
+        <Page className="CountriesPage">
             <NextSeo
-                title={page?.data.meta_title || 'Locales'}
+                title={page?.data.meta_title || 'Countries'}
                 description={page?.data.meta_title || 'Set your region and preferred language'}
-                canonical={`https://${Config.domain}/${router.locale}/locales/`}
+                canonical={`https://${Config.domain}/${router.locale}/countries/`}
                 languageAlternates={
                     router?.locales?.map((locale) => ({
                         hrefLang: locale,
@@ -182,8 +182,8 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({
                 <Breadcrumbs
                     pages={[
                         {
-                            title: page?.data.title || 'Locales',
-                            url: '/locales/'
+                            title: page?.data.title || 'Countries',
+                            url: '/countries/'
                         }
                     ]}
                     store={store}
@@ -196,7 +196,7 @@ const LocalePage: FunctionComponent<LocalePageProps> = ({
 export async function getStaticProps({ locale, previewData }) {
     const client = createClient({ previewData });
     try {
-        const uid = 'locales';
+        const uid = 'countries';
 
         let page: any = null;
         try {
@@ -236,4 +236,4 @@ export async function getStaticProps({ locale, previewData }) {
     }
 }
 
-export default LocalePage;
+export default CountriesPage;

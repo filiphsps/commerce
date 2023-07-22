@@ -25,11 +25,15 @@ export const PagesApi = async ({
             // TODO: remove filter when we have migrated the shop page
             const paths = pages
                 .map((page) => prismic.asLink(page))
-                .filter((i) => i && i !== '/shop');
+                .filter((i) => i && !['/shop', '/countries', '/search'].includes(i));
             return resolve({
                 paths: paths as any
             });
         } catch (error) {
+            if (error.message.includes('No documents') && locale !== i18n.locales[1]) {
+                return resolve(await PagesApi({})); // Try again with default locale
+            }
+
             Sentry.captureException(error);
             console.error(error);
             return reject(error);

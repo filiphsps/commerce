@@ -16,11 +16,10 @@ let config = {
     trailingSlash: true,
     swcMinify: true,
     i18n,
-    productionBrowserSourceMaps: false,
+    productionBrowserSourceMaps: true,
     compress: false,
     experimental: {
-        esmExternals: true,
-        swcTraceProfiling: true
+        esmExternals: true
     },
     images: {
         minimumCacheTTL: 60,
@@ -43,12 +42,13 @@ let config = {
     },
     env: {
         // Settings
-        DOMAIN: process.env.DOMAIN || 'www.sweetsideofsweden.com',
-        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com',
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN || '319eb651b3464ea882a016ca2085ebc1',
-        PRISMIC_REPO: process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2',
-        STORE_LOCALES: process.env.STORE_LOCALES || 'en-US',
-        STORE_CURRENCIES: process.env.STORE_CURRENCIES || 'USD',
+        DOMAIN: process.env.DOMAIN,
+        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
+        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
+        PRISMIC_REPO: process.env.PRISMIC_REPO,
+        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
+        STORE_LOCALES: process.env.STORE_LOCALES,
+        STORE_CURRENCIES: process.env.STORE_CURRENCIES,
         GTM: process.env.GTM,
 
         // Colors
