@@ -404,26 +404,6 @@ const Header = styled.header<{ scrolled?: boolean }>`
             }
         `}
 
-    ${({ scrolled }) =>
-        scrolled &&
-        css`
-            @media (max-width: 950px) {
-                background: transparent;
-                padding: var(--block-padding);
-                height: calc(100% - var(--block-padding) * 2);
-            }
-
-            ${Content} {
-                @media (max-width: 950px) {
-                    transition: 100ms ease-in-out;
-                    border-radius: var(--block-border-radius);
-                    background: var(--accent-secondary-light);
-
-                    height: 6.5rem;
-                }
-            }
-        `}
-
     @media (min-width: 950px) {
         height: calc(4.5rem + calc(var(--block-padding) * 2));
     }
@@ -481,7 +461,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     }, [scrollTop]);
 
     return (
-        <Header className="Modern" scrolled={scrollTop >= 60}>
+        <Header className="Modern" scrolled={scrollTop >= 40}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
