@@ -25,6 +25,7 @@ const Content = styled.div`
     padding: var(--block-padding) var(--block-spacer-large);
     margin: 0px auto;
     user-select: none;
+    transition: 250ms ease-in-out;
 
     @media (min-width: 950px) {
         grid-template-columns: 10rem 1fr auto;
@@ -388,7 +389,7 @@ const HamburgerMenu = styled.div`
     }
 `;
 
-const Header = styled.header<{ scrolled?: boolean }>`
+const Header = styled.header<{ scrolled?: boolean; floating?: boolean }>`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
@@ -398,8 +399,34 @@ const Header = styled.header<{ scrolled?: boolean }>`
     ${({ scrolled }) =>
         scrolled &&
         css`
-            border-bottom-color: var(--accent-secondary);
-            box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
+            //border-bottom-color: var(--accent-secondary);
+            //box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
+        `}
+
+    ${({ scrolled }) =>
+        scrolled &&
+        css`
+            background: transparent;
+
+            ${Content} {
+                transition: 100ms ease-in-out;
+                background: var(--accent-secondary-light);
+                margin: var(--block-padding);
+                margin-bottom: 0px;
+                width: calc(100% - var(--block-padding) * 2);
+                //height: calc(100% - var(--block-padding) * 2);
+
+                @media (max-width: 950px) {
+                    height: 6.5rem;
+                }
+
+                box-shadow: 0px 0px 1rem 0.5rem var(--color-block-shadow);
+                border-radius: var(--block-border-radius);
+
+                @media (min-width: 950px) {
+                    margin: var(--block-padding-small) auto;
+                }
+            }
         `}
 
     @media (min-width: 950px) {
@@ -459,7 +486,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     }, [scrollTop]);
 
     return (
-        <Header className="Modern" scrolled={scrollTop >= 40}>
+        <Header className="Modern" scrolled={scrollTop >= 60}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
