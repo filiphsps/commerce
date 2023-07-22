@@ -180,8 +180,7 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: collection?.handle }
                 },
-                // Make these hardcoded ones configurable
-                ...['en-US', 'en-GB', 'de-DE', 'sv-SE'].map((locale) => ({
+                ...locales.map((locale) => ({
                     params: { handle: collection?.handle },
                     locale: locale
                 }))
