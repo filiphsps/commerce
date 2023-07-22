@@ -1,23 +1,11 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
+import { ConvertToLocalMeasurementSystem } from 'src/api/product';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 
-//import { useRouter } from 'next/router';
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer);
-    margin-bottom: 1rem;
-
-    &:empty {
-        display: none;
-    }
-`;
 const OptionTitle = styled.div`
-    margin-bottom: 0.5rem;
     text-transform: uppercase;
     font-weight: 700;
     font-size: 1.5rem;
@@ -32,7 +20,13 @@ const OptionValue = styled.div<{
     selected?: boolean;
     disabled?: boolean;
 }>`
-    padding: var(--block-padding) var(--block-padding-large);
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-small);
+    justify-content: center;
+    align-items: center;
+    height: 3.75rem;
+    padding: 0px var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
     color: var(--color-dark);
@@ -41,6 +35,10 @@ const OptionValue = styled.div<{
     font-weight: 600;
     transition: 250ms ease-in-out;
     cursor: pointer;
+
+    @media (min-width: 950px) {
+        height: 4.25rem;
+    }
 
     ${({ selected }) =>
         selected &&
@@ -67,6 +65,9 @@ const OptionValue = styled.div<{
         `}
 `;
 const Option = styled.div<{ disabled: boolean }>`
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-small);
     opacity: 0.5;
     pointer-events: none;
 
@@ -105,16 +106,25 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
     }, [router]);
 
     return (
-        <Container>
+        <>
             {options?.map((option) => {
-                if (!option || !option.values || !option.name || option.values.length <= 1)
-                    return null;
+                if (!option || !option.values || !option.name) return null;
 
                 return (
                     <Option key={option.name} disabled={disabled}>
                         <OptionTitle>{option.name}</OptionTitle>
                         <OptionValues>
                             {option.values.map((value) => {
+                                let title = value;
+
+                                if (['Size', 'Weight'].includes(option.name!)) {
+                                    title = ConvertToLocalMeasurementSystem({
+                                        locale: router.locale,
+                                        weight: Number.parseFloat(value!.slice(0, -1)),
+                                        weightUnit: 'GRAMS'
+                                    });
+                                }
+
                                 // TODO: Disable options that aren't purchasable available, ie out of stock.
                                 return (
                                     <OptionValue
@@ -130,7 +140,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                                             })
                                         }
                                     >
-                                        {value}
+                                        {title}
                                     </OptionValue>
                                 );
                             })}
@@ -138,6 +148,6 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                     </Option>
                 );
             })}
-        </Container>
+        </>
     );
 };

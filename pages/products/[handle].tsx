@@ -75,15 +75,20 @@ const ProductContainer = styled.div`
     display: grid;
     grid-template-areas: 'assets' 'header' 'details';
     grid-template-columns: 1fr;
-    gap: var(--block-spacer-large);
+    gap: var(--block-spacer);
 
     @media (min-width: 950px) {
         gap: var(--block-spacer-large) calc(var(--block-spacer-large) * 2);
         grid-template-areas:
             'assets header'
             'assets details';
-        grid-template-columns: 1fr minmax(36rem, 40%);
+        grid-template-columns: 1fr 1fr;
         grid-template-rows: auto 1fr;
+        gap: var(--block-spacer-large);
+    }
+    @media (min-width: 1260px) {
+        grid-template-columns: 1fr 52rem;
+        gap: calc(var(--block-padding-large) * 2);
     }
 `;
 const Assets = styled.div`
@@ -105,6 +110,12 @@ const Details = styled.div`
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
+`;
+const Options = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--block-spacer);
 `;
 
 // FIXME: Turn this into a component
@@ -171,6 +182,7 @@ const QuantityWrapper = styled.div`
     display: grid;
     grid-template-columns: 4rem 1fr 4rem;
     height: 3.75rem;
+    width: min-content;
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
     border: 0.25rem solid var(--color-block);
@@ -224,28 +236,32 @@ const HeaderContent = styled.div`
     grid-template-areas:
         'page-header pricing'
         'reviews reviews';
-    grid-template-columns: auto minmax(8rem, auto);
+    grid-template-columns: 1fr auto;
     gap: var(--block-spacer-small);
+    justify-content: space-between;
+    margin-bottom: var(--block-padding-large);
+
+    h3 {
+        font-size: 2.25rem;
+        line-height: 2.75rem;
+        margin-bottom: calc(var(--block-spacer-small) * -1);
+    }
+
+    h2 {
+        font-size: 2.75rem;
+        line-height: 3.5rem;
+        margin-bottom: calc(var(--block-spacer-small) * -1);
+    }
 
     @media (min-width: 950px) {
-        justify-content: space-between;
-
-        h3 {
-            font-size: 2.25rem;
-            line-height: 2.75rem;
-            margin-bottom: calc(var(--block-spacer-small) * -0.75);
-        }
-
-        h2 {
-            font-size: 2.75rem;
-            line-height: 3.5rem;
-        }
+        margin-bottom: 0px;
     }
 
     @media (min-width: 1200px) {
         h3 {
             font-size: 2.75rem;
             line-height: 3.25rem;
+            margin-bottom: calc(var(--block-spacer-small) * -1);
         }
 
         h2 {
@@ -261,10 +277,6 @@ const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
     font-size: 3rem;
     line-height: 100%;
     font-weight: 600;
-
-    @media (max-width: 950px) {
-        font-size: 2.5rem;
-    }
 
     ${(props) =>
         props.sale &&
@@ -300,16 +312,7 @@ const PriceContainer = styled.div`
     align-items: center;
     flex-direction: column;
     height: 100%;
-    width: 100%;
-
-    padding: var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    color: var(--accent-primary-text);
-
-    @media (min-width: 950px) {
-        justify-content: end;
-    }
+    color: var(--accent-primary);
 `;
 
 const Recommendations = styled.div`
@@ -340,29 +343,29 @@ const RecommendationsContent = styled(PageContent)`
 
 const Tabs = styled.div`
     display: flex;
-    gap: var(--block-spacer);
+    gap: var(--block-padding-large);
     width: 100%;
-    margin-top: 1rem;
+    margin-top: var(--block-spacer);
 `;
 const Tab = styled.div`
-    padding: var(--block-padding) var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-    background: var(--color-block);
-    color: var(--color-dark);
+    //padding: calc(var(--block-padding) - var(--block-border-width))
+    //    calc(var(--block-padding-large) - var(--block-border-width));
+    //border: var(--block-border-width) solid var(--color-block);
+    //border-radius: var(--block-border-radius);
+    //background: var(--color-block);
+    color: var(--color-gray);
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
     font-weight: 600;
     transition: 250ms ease-in-out;
     cursor: pointer;
+    user-select: none;
 
     &.Active,
     &:hover {
-        background: var(--accent-primary-light);
-        color: var(--accent-primary-text);
-    }
-
-    &.Active {
-        background: var(--accent-primary);
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
     }
 `;
 const TabContent = styled.div`
@@ -404,10 +407,6 @@ const InformationContent = styled(TabContent)`
 
 const ReviewsContainer = styled.div`
     grid-area: reviews;
-    padding: var(--block-padding) var(--block-padding-large);
-    border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    color: var(--accent-primary-text);
 `;
 
 const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
@@ -787,9 +786,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         {information}
 
                         <Details>
-                            <ProductOptions onOptionChange={setProductOption} />
+                            <Options>
+                                {quantityAction}
+                                <ProductOptions onOptionChange={setProductOption} />
+                            </Options>
 
-                            {quantityAction}
                             {addToCartAction}
 
                             <SliceZone

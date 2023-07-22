@@ -16,14 +16,12 @@ const Container = styled.div`
 
     @media (min-width: 950px) {
         overflow: unset;
-        //grid-template-areas: 'previews primary';
-        //grid-template-columns: auto 1fr;
         border-radius: none;
     }
 
     img {
+        flex-shrink: 1;
         width: 100%;
-        height: auto;
         mix-blend-mode: multiply;
         object-fit: contain;
         object-position: center;
@@ -88,6 +86,7 @@ const Preview = styled.div`
 `;
 
 const Primary = styled.div`
+    overflow: hidden;
     position: relative;
     grid-area: primary;
     width: auto;
@@ -95,6 +94,12 @@ const Primary = styled.div`
     padding: calc(var(--block-padding-large) * 2);
     background: var(--color-block);
     border-radius: var(--block-border-radius);
+
+    @media (max-width: 950px) {
+        img {
+            max-height: 35vh;
+        }
+    }
 
     @media (min-width: 950px) {
         width: 100%;
@@ -107,6 +112,7 @@ const ImageWrapper = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
+    flex-shrink: 1;
     height: 100%;
 `;
 
@@ -130,7 +136,14 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
         images.edges.find((image) => image.node && image.node.id === selected)?.node ||
         images.edges[0].node;
     return (
-        <Container>
+        <Container
+            style={
+                (images?.edges?.length <= 1 && {
+                    gridTemplateAreas: '"primary"'
+                }) ||
+                {}
+            }
+        >
             <Primary>
                 <ImageWrapper>
                     <Image
