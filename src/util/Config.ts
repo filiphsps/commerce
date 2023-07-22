@@ -18,7 +18,10 @@ export const Config = {
     },
 
     prismic: {
-        repo: process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2'
+        repo: process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2',
+        name: (process.env.PRISMIC_REPO || 'https://candy-by-sweden.cdn.prismic.io/api/v2')
+            .replace('https://', '')
+            .replace('.cdn.prismic.io/api/v2', '')
     },
 
     i18n: {

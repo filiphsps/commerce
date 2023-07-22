@@ -3,28 +3,27 @@ import './app.scss';
 
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import Router, { useRouter } from 'next/router';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
+import Router, { useRouter } from 'next/router';
 
-import PageProvider from '@/components/PageProvider';
-import { PrismicPreview } from '@prismicio/next';
+import { CartFragment } from 'src/api/cart';
 import Color from 'color';
-import { appWithTranslation } from 'next-i18next';
+import { Config } from '../src/util/Config';
+import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
+import NProgress from 'nprogress';
 import NextAdapterPages from 'next-query-params/pages';
 import type { NextWebVitalsMetric } from 'next/app';
-import { Lexend_Deca } from 'next/font/google';
-import Head from 'next/head';
-import NProgress from 'nprogress';
-import { withStore } from 'react-context-hook';
-import { CartFragment } from 'src/api/cart';
-import { ThemeProvider } from 'styled-components';
-import useSWR from 'swr';
+import PageProvider from '@/components/PageProvider';
+import { PrismicPreview } from '@prismicio/next';
 import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
-import prismicConfig from '../slicemachine.config.json' assert { type: 'json' };
 import { StoreApi } from '../src/api/store';
+import { ThemeProvider } from 'styled-components';
+import { appWithTranslation } from 'next-i18next';
 import preval from '../src/data.preval';
-import { Config } from '../src/util/Config';
+import useSWR from 'swr';
+import { withStore } from 'react-context-hook';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -184,7 +183,7 @@ const StoreApp = withStore(
                     >
                         <CartProvider countryCode={country} cartFragment={CartFragment}>
                             <ThemeProvider theme={{}}>
-                                <PrismicPreview repositoryName={prismicConfig.repositoryName}>
+                                <PrismicPreview repositoryName={Config.prismic.name}>
                                     <PageProvider
                                         store={store}
                                         pagePropsAnalyticsData={pageProps.analytics || {}}
