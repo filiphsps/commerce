@@ -15,8 +15,9 @@ const Container = styled.section`
 
     @media (min-width: 950px) {
         grid-template-columns: auto auto;
-        justify-content: start;
+        justify-content: center;
         align-items: center;
+        width: 100%;
         width: fit-content;
     }
 `;
@@ -38,8 +39,7 @@ const Body = styled(Content)`
     }
 
     @media (min-width: 950px) {
-        justify-content: center;
-        max-width: 38rem;
+        align-items: center;
     }
 `;
 const Icon = styled.div`

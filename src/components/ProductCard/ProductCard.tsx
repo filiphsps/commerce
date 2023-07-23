@@ -469,7 +469,6 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             title={image.altText || undefined}
             height={250 || 0}
             width={250 || 0}
-            unoptimized={true}
             sizes="(max-width: 768px) 100vw, (max-width: 1260px) 50vw, 33vw"
             loader={ImageLoader}
         />
