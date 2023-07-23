@@ -108,12 +108,12 @@ const Details = styled.div`
 `;
 const Brand = styled.div`
     font-size: 1.5rem;
-    line-height: 1.75rem;
+    line-height: 1.5rem;
     font-weight: 500;
 
     @media (min-width: 950px) {
         font-size: 1.5rem;
-        line-height: 1.75rem;
+        line-height: 1.5rem;
     }
 
     &:hover,
@@ -148,8 +148,19 @@ const Title = styled.div`
         text-underline-offset: var(--block-border-width);
     }
 `;
+const Description = styled.div`
+    display: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin-top: var(--block-spacer);
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+`;
+
 const VariantsContainer = styled.div`
-    overflow: hidden;
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: center;
@@ -452,6 +463,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
         (edge) => edge?.node?.id === selectedVariant?.image?.id
     )?.node as ShopifyImage;
 
+    const description =
+        (product.seo?.description || product.description) &&
+        (product.seo?.description || product.description)?.substring(0, 72) + '\u2026';
+
     // TODO: Hotlink to variant
     const href = AppendShopifyParameters({
         url: `/products/${product.handle}/`,
@@ -523,9 +538,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
                         </Link>
                     </Brand>
                 )}
-                <Title>
+                <Title title={description}>
                     <Link href={href}>{product.title}</Link>
                 </Title>
+
+                {(description && <Description>{description}</Description>) || null}
 
                 <VariantsContainer>
                     <Prices>

@@ -23,8 +23,12 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     handle
     createdAt
     title
+    description
     vendor
     tags
+    seo {
+        description
+    }
     priceRange {
         maxVariantPrice {
             amount

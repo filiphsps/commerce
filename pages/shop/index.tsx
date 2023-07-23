@@ -81,16 +81,14 @@ const Filters = styled.div`
     }
 `;
 const Filter = styled.div`
-    padding: var(--block-padding-large);
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
 `;
 const FilterTitle = styled.div`
     margin-bottom: 0.5rem;
-    text-transform: uppercase;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-block);
+    color: var(--color-dark);
 `;
 const FilterItems = styled.div`
     display: flex;
@@ -102,7 +100,7 @@ const FilterItem = styled.div`
     font-size: 1.25rem;
     font-weight: 500;
     cursor: pointer;
-    color: var(--color-block);
+    color: var(--color-dark);
     border-color: var(--accent-primary);
     transition: 250ms ease-in-out;
 
@@ -111,7 +109,7 @@ const FilterItem = styled.div`
         font-weight: 600;
         padding-left: 0.25rem;
         border-left: 0.2rem solid var(--accent-primary);
-        color: var(--color-dark);
+        color: var(--accent-primary);
     }
 `;
 
