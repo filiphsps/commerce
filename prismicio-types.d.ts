@@ -875,6 +875,94 @@ type AlertSliceVariation = AlertSliceDefault;
 export type AlertSlice = prismic.SharedSlice<'alert', AlertSliceVariation>;
 
 /**
+ * Primary content in *Banner → Primary*
+ */
+export interface BannerSliceDefaultPrimary {
+    /**
+     * Primary content field in *Banner → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.primary.content
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    content: prismic.RichTextField;
+
+    /**
+     * Background field in *Banner → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: #cce2cb
+     * - **API ID Path**: banner.primary.background
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    background: prismic.ColorField;
+}
+
+/**
+ * Primary content in *Banner → Items*
+ */
+export interface BannerSliceDefaultItem {
+    /**
+     * Title field in *Banner → Items*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Target field in *Banner → Items*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].target
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    target: prismic.LinkField;
+
+    /**
+     * Button field in *Banner → Items*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: banner.items[].type
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    type: prismic.BooleanField;
+}
+
+/**
+ * Default variation for Banner Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type BannerSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<BannerSliceDefaultPrimary>,
+    Simplify<BannerSliceDefaultItem>
+>;
+
+/**
+ * Slice variation for *Banner*
+ */
+type BannerSliceVariation = BannerSliceDefault;
+
+/**
+ * Banner Shared Slice
+ *
+ * - **API ID**: `banner`
+ * - **Description**: Banner
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type BannerSlice = prismic.SharedSlice<'banner', BannerSliceVariation>;
+
+/**
  * Primary content in *Carousel → Primary*
  */
 export interface CarouselSliceDefaultPrimary {
@@ -1432,6 +1520,9 @@ declare module '@prismicio/client' {
             AlertSlice,
             AlertSliceVariation,
             AlertSliceDefault,
+            BannerSlice,
+            BannerSliceVariation,
+            BannerSliceDefault,
             CarouselSlice,
             CarouselSliceVariation,
             CarouselSliceDefault,

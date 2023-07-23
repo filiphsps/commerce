@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 export const components = {
     alert: dynamic(() => import('./Alert')),
+    banner: dynamic(() => import('./Banner')),
     carousel: dynamic(() => import('./Carousel')),
     collapsible_text: dynamic(() => import('./CollapsibleText')),
     collection: dynamic(() => import('./Collection')),
