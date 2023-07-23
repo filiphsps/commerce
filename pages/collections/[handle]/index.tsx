@@ -1,12 +1,14 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { AnalyticsPageType, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React, { FunctionComponent } from 'react';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '@/components/CollectionBlock';
+import { CollectionPageDocument } from 'prismicio-types';
 import { Config } from '../../../src/util/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
@@ -14,12 +16,18 @@ import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import { RedirectCollectionApi } from 'src/api/redirects';
+import { SliceZone } from '@prismicio/react';
 import { StoreModel } from '../../../src/models/StoreModel';
 import Vendors from '@/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
+import { asText } from '@prismicio/client';
+import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import { createClient } from 'prismicio';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Body = styled(Content)`
     overflow: hidden;
@@ -30,12 +38,25 @@ const ShortDescription = styled(Content)`
     max-width: 64rem;
 `;
 
-interface CollectionPageProps {
-    store: StoreModel;
-    collection: Collection;
-}
-const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collection }) => {
+//InferGetStaticPropsType<typeof getStaticProps>
+const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
+    store,
+    collection: collectionData,
+    page,
+    vendors
+}) => {
     const router = useRouter();
+
+    const { data: collection } = useSWR(
+        {
+            handle: collectionData?.handle!,
+            locale: router.locale
+        },
+        CollectionApi,
+        {
+            fallbackData: collectionData as Collection
+        }
+    );
 
     if (!collection) return <Error statusCode={404} />;
     let accents: string[] = [];
@@ -81,6 +102,29 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                     ]) ||
                     []
                 }
+                openGraph={{
+                    url: `https://${Config.domain}/collections/${collection.handle}/`,
+                    type: 'website',
+                    title: page?.data.meta_title || collection.seo?.title || collection.title,
+                    description:
+                        (page?.data.meta_description && asText(page?.data.meta_description)) ||
+                        collection?.seo?.description ||
+                        collection?.description ||
+                        '',
+                    siteName: store!.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                    images:
+                        (collection.image && [
+                            {
+                                url: collection.image!.url as string,
+                                width: collection.image!.width as number,
+                                height: collection.image!.height as number,
+                                alt: collection.image!.altText || '',
+                                secureUrl: collection.image!.url as string
+                            }
+                        ]) ||
+                        undefined
+                }}
             />
 
             <PageContent
@@ -101,8 +145,10 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                     data={collection}
                     noLink
                     hideTitle
-                    store={store}
+                    store={store!}
                 />
+
+                <SliceZone slices={page?.data.slices} components={components} context={{ store }} />
 
                 <Body
                     dangerouslySetInnerHTML={{
@@ -110,10 +156,14 @@ const CollectionPage: FunctionComponent<CollectionPageProps> = ({ store, collect
                     }}
                 />
 
-                <Vendors />
+                {(!page && <Vendors data={vendors} />) || null}
 
                 <Breadcrumbs
                     pages={[
+                        {
+                            title: 'Collections',
+                            url: `/collections/`
+                        },
                         {
                             title: collection?.title || router.query.handle,
                             url: `/collections/${router.query.handle}`
@@ -147,21 +197,39 @@ export async function getStaticPaths({ locales }) {
     return { paths, fallback: 'blocking' };
 }
 
-export async function getStaticProps({ params, locale }) {
+export const getStaticProps: GetStaticProps<{
+    collection?: Collection | null;
+    page?: CollectionPageDocument<string> | null;
+    vendors?: any | null;
+    store?: StoreModel;
+    analytics?: Partial<ShopifyPageViewPayload>;
+}> = async ({ params, locale, previewData }) => {
     let handle = '';
-    if (Array.isArray(params.handle)) {
-        handle = params?.handle?.join('');
+    if (Array.isArray(params?.handle)) {
+        handle = params?.handle?.join('') || '';
     } else {
-        handle = params?.handle;
+        handle = params?.handle || '';
     }
 
-    if (handle === 'undefined' || !handle)
+    const redirect = await RedirectCollectionApi({ handle, locale });
+    if (redirect) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: redirect
+            },
+            revalidate: false
+        };
+    }
+
+    const client = createClient({ previewData });
+
+    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
             notFound: true,
             revalidate: false
         };
-
-    if (locale === 'x-default') {
+    else if (locale === 'x-default') {
         return {
             props: {},
             revalidate: false
@@ -169,12 +237,23 @@ export async function getStaticProps({ params, locale }) {
     }
 
     let collection: Collection | null = null;
-    let vendors;
+    let page: CollectionPageDocument<string> | null = null;
+    let vendors: any = null;
 
     try {
         collection = await CollectionApi({ handle, locale });
     } catch (error) {
         Sentry.captureException(error);
+    }
+
+    try {
+        page = await client.getByUID('collection_page', handle, {
+            lang: locale
+        });
+    } catch {
+        try {
+            page = await client.getByUID('collection_page', handle);
+        } catch {}
     }
 
     try {
@@ -186,15 +265,16 @@ export async function getStaticProps({ params, locale }) {
     return {
         props: {
             collection: collection,
+            page,
             vendors: vendors ?? null,
             analytics: {
                 pageType: AnalyticsPageType.collection,
-                resourceId: collection?.id || null,
-                collectionHandle: collection?.handle || null
+                resourceId: collection?.id || '',
+                collectionHandle: collection?.handle || ''
             }
         },
-        revalidate: 10
+        revalidate: 60
     };
-}
+};
 
 export default CollectionPage;

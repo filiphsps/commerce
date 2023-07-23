@@ -31,10 +31,6 @@ export interface StoreModel {
     custom_header_tags?: string;
     custom_body_tags?: string;
 
-    block: {
-        border_radius: string;
-    };
-
     payment?: {
         methods: string[];
         wallets: string[];

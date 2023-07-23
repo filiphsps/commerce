@@ -1185,11 +1185,32 @@ type ImageGridSliceVariation = ImageGridSliceDefault;
 export type ImageGridSlice = prismic.SharedSlice<'image_grid', ImageGridSliceVariation>;
 
 /**
- * Primary content in *TextBlock → Items*
+ * Primary content in *Overview → Items*
  */
 export interface TextBlockSliceDefaultItem {
     /**
-     * Image field in *TextBlock → Items*
+     * Layout field in *Overview → Items*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: Image on the left or the right?
+     * - **Default Value**: left
+     * - **API ID Path**: text_block.items[].layout
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    layout: prismic.SelectField<'left' | 'right', 'filled'>;
+
+    /**
+     * Accent field in *Overview → Items*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: text_block.items[].accent
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    accent: prismic.ColorField;
+
+    /**
+     * Image field in *Overview → Items*
      *
      * - **Field Type**: Image
      * - **Placeholder**: *None*
@@ -1199,7 +1220,18 @@ export interface TextBlockSliceDefaultItem {
     image: prismic.ImageField<never>;
 
     /**
-     * Text field in *TextBlock → Items*
+     * Image Style field in *Overview → Items*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: normal
+     * - **API ID Path**: text_block.items[].image_style
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    image_style: prismic.SelectField<'normal' | 'cover', 'filled'>;
+
+    /**
+     * Text field in *Overview → Items*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
@@ -1210,10 +1242,10 @@ export interface TextBlockSliceDefaultItem {
 }
 
 /**
- * Default variation for TextBlock Slice
+ * Default variation for Overview Slice
  *
  * - **API ID**: `default`
- * - **Description**: Default
+ * - **Description**: Image on the left side
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type TextBlockSliceDefault = prismic.SharedSliceVariation<
@@ -1223,15 +1255,15 @@ export type TextBlockSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Slice variation for *TextBlock*
+ * Slice variation for *Overview*
  */
 type TextBlockSliceVariation = TextBlockSliceDefault;
 
 /**
- * TextBlock Shared Slice
+ * Overview Shared Slice
  *
  * - **API ID**: `text_block`
- * - **Description**: TextBlock
+ * - **Description**: An image with a textblock to the side of it
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type TextBlockSlice = prismic.SharedSlice<'text_block', TextBlockSliceVariation>;

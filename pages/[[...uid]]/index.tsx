@@ -6,7 +6,6 @@ import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
-import LanguageString from '@/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -55,7 +54,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                     []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/${router.locale}${router.asPath}`,
+                    url: `https://${Config.domain}${router.asPath}`,
                     type: 'website',
                     title: page?.data.meta_title || '',
                     description: asText(page?.data.meta_description) || store?.description || '',
@@ -93,9 +92,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                     <Breadcrumbs
                         pages={path?.map((item, index) => {
                             return {
-                                title: (index === path.length - 1 && page?.data.title) || (
-                                    <LanguageString id={item} />
-                                ),
+                                title: (index === path.length - 1 && page?.data.title) || item,
                                 url: `/${item}`
                             };
                         })}

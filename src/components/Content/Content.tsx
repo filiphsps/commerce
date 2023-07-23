@@ -9,12 +9,12 @@ const Content = styled.div`
     line-height: 2rem;
 
     a {
-        color: var(--accent-primary);
+        color: var(--accent-primary-dark);
         font-weight: 600;
 
         &:hover {
-            color: var(--accent-primary-light);
-            border-bottom-color: var(--accent-primary-light);
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
         }
     }
 

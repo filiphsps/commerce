@@ -1,19 +1,15 @@
-import * as Sentry from '@sentry/nextjs';
-
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Button } from '../Button';
-import { Checkout } from '../../../pages/cart';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import { Input } from '../Input';
 import Link from 'next/link';
 import { Pluralize } from '../../util/Pluralize';
+import { StoreModel } from 'src/models/StoreModel';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
-import { useStore } from 'react-context-hook';
 
 const Content = styled.div`
     display: grid;
@@ -49,6 +45,8 @@ const Logo = styled.div`
         width: 100%;
 
         img {
+            height: 100%;
+            width: 100%;
             object-fit: contain;
         }
     }
@@ -112,7 +110,8 @@ const Navigation = styled.nav`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: var(--block-spacer-large);
+    gap: calc(var(--block-spacer) * 2);
+    margin-left: var(--block-spacer);
     height: 100%;
     font-weight: 500;
     font-size: 1.75rem;
@@ -255,123 +254,6 @@ const CartIndicator = styled.span`
     }
 `;
 
-const CartPopup = styled.section`
-    z-index: 999;
-    position: absolute;
-    display: grid;
-    width: 32rem;
-    padding: 1.5rem;
-    right: -0.5rem;
-    top: calc(6rem + var(--block-spacer));
-    background: var(--accent-secondary-light);
-    color: var(--color-dark);
-    border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-    grid-template-rows: auto 1fr auto;
-    gap: var(--block-spacer);
-    opacity: 0;
-    transition: 250ms ease-in-out;
-    pointer-events: none;
-
-    @media (min-width: 950px) {
-        width: 36rem;
-    }
-
-    &.Open {
-        opacity: 1;
-        pointer-events: unset;
-    }
-`;
-const CartPopupItem = styled.div`
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--block-spacer);
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-`;
-const CartPopupItemHeader = styled.div`
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-columns: 1fr 2rem;
-    gap: 0px;
-    margin-bottom: 1rem;
-    color: var(--accent-primary-text);
-    background: var(--accent-primary);
-    padding: 1.25rem 1.5rem;
-    border-radius: var(--block-border-radius);
-
-    svg {
-        font-size: 2rem;
-    }
-`;
-const CartPopupItemTitle = styled.div`
-    font-size: 1.25rem;
-    line-height: 1.25rem;
-    font-weight: 700;
-    text-align: left;
-
-    span {
-        display: inline-block;
-        font-size: 1.5rem;
-    }
-`;
-const CartPopupItemImageWrapper = styled.div`
-    background: var(--color-bright);
-    border-radius: var(--block-border-radius);
-    overflow: hidden;
-    height: 100%;
-    padding: var(--block-padding-large);
-`;
-const CartPopupItemImage = styled.div`
-    position: relative;
-    width: 6rem;
-    min-height: 6rem;
-    height: 100%;
-
-    img {
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
-    }
-`;
-const CartPopupItemMeta = styled.div`
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 0px;
-    flex-direction: column;
-    justify-content: start;
-    width: 100%;
-    height: 100%;
-    padding: var(--block-padding-large);
-    background: var(--accent-primary-text);
-    border-radius: var(--block-border-radius);
-`;
-const CartPopupItemMetaVendor = styled.div`
-    font-size: 1.25rem;
-    font-weight: 600;
-    opacity: 0.75;
-    color: var(--color-block);
-`;
-const CartPopupItemMetaTitle = styled.div`
-    margin-bottom: 1rem;
-    font-size: 2.15rem;
-    line-height: 2.25rem;
-    font-weight: 600;
-    color: var(--accent-primary);
-`;
-const CartPopupContent = styled.div`
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--block-spacer);
-    width: 100%;
-
-    button {
-        box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-    }
-`;
-
 const HamburgerMenu = styled.div`
     display: flex;
     justify-content: center;
@@ -413,7 +295,7 @@ const Header = styled.header<{ scrolled?: boolean }>`
 `;
 
 interface HeaderProps {
-    store?: any;
+    store?: StoreModel;
     navigation?: any;
     sidebarToggle?: any;
     sidebarOpen?: boolean;
@@ -426,33 +308,12 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 }) => {
     const cart = useCart();
     const router = useRouter();
-    const [beginCheckout, setBeginCheckout] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [scrollTop, setScrollTop] = useState(0);
-    const [cartStore, setCartStore] = useStore<any>('cart');
-    const timer: any = useRef(null);
 
     useEffect(() => {
         if (searchOpen && router.route === '/search') setSearchOpen(false);
     }, [router.route]);
-
-    useEffect(() => {
-        if (router.asPath === '/cart/') return setCartStore({ ...cartStore, open: false });
-
-        if (timer.current) clearTimeout(timer.current);
-
-        if (cartStore.open) {
-            timer.current = setTimeout(() => {
-                if (!cartStore.open) return;
-                setCartStore({ ...cartStore, open: false });
-            }, 5000);
-        }
-
-        return () => {
-            clearInterval(timer.current);
-            timer.current = null;
-        };
-    }, [cart.lines]);
 
     useEffect(() => {
         const onScroll = (event: any) => {
@@ -472,7 +333,13 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
                 <Logo>
                     <Link href={'/'}>
-                        <Image src={store?.logo?.src} layout="fill" alt="Logo" />
+                        <Image
+                            src={store?.logo?.src!}
+                            width={256}
+                            height={150}
+                            alt={`Store logo`}
+                            loader={ImageLoader}
+                        />
                     </Link>
                 </Logo>
 
@@ -558,89 +425,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             )}
                             <FiShoppingBag />
                         </Link>
-
-                        {router.pathname !== '/cart' && cartStore.item ? (
-                            <CartPopup
-                                className={
-                                    ((cartStore.open || beginCheckout) &&
-                                        router.asPath !== '/cart/' &&
-                                        'Open') ||
-                                    ''
-                                }
-                            >
-                                <CartPopupItemHeader>
-                                    <CartPopupItemTitle>
-                                        <span>✓</span> Added to the cart
-                                    </CartPopupItemTitle>
-                                    <FiX
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() =>
-                                            setCartStore({
-                                                ...cartStore,
-                                                open: false
-                                            })
-                                        }
-                                    />
-                                </CartPopupItemHeader>
-                                <CartPopupItem>
-                                    <CartPopupItemImageWrapper>
-                                        <CartPopupItemImage>
-                                            <Image
-                                                src={cartStore.item.images[0].src}
-                                                layout="fill"
-                                                loader={ImageLoader}
-                                            />
-                                        </CartPopupItemImage>
-                                    </CartPopupItemImageWrapper>
-                                    <CartPopupItemMeta>
-                                        <CartPopupItemMetaVendor>
-                                            {cartStore.item.vendor}
-                                        </CartPopupItemMetaVendor>
-                                        <CartPopupItemMetaTitle>
-                                            {cartStore.item.title}
-                                        </CartPopupItemMetaTitle>
-                                    </CartPopupItemMeta>
-                                </CartPopupItem>
-                                <CartPopupContent>
-                                    <Link
-                                        href="/cart/"
-                                        onClick={() => {
-                                            setCartStore({
-                                                ...cartStore,
-                                                open: false
-                                            });
-                                        }}
-                                    >
-                                        <Button className="Secondary" disabled={beginCheckout}>
-                                            View cart
-                                        </Button>
-                                    </Link>
-                                    <Button
-                                        disabled={beginCheckout}
-                                        onClick={async () => {
-                                            try {
-                                                if (beginCheckout) return;
-
-                                                setBeginCheckout(true);
-
-                                                await Checkout({
-                                                    cart,
-                                                    locale: router.locale,
-                                                    locales: router.locales
-                                                });
-                                            } catch (error) {
-                                                Sentry.captureException(error);
-                                                console.error(error);
-                                                alert(error.message);
-                                                setBeginCheckout(false);
-                                            }
-                                        }}
-                                    >
-                                        Checkout
-                                    </Button>
-                                </CartPopupContent>
-                            </CartPopup>
-                        ) : null}
                     </Action>
                 </Actions>
             </Content>

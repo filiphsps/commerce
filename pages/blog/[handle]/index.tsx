@@ -157,7 +157,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/${router.locale}/blog/${article.handle}/`,
+                    url: `https://${Config.domain}/blog/${article.handle}/`,
                     locale: router.locale,
                     type: 'article',
                     title: article.seo.title || article.title,

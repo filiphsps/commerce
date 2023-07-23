@@ -48,6 +48,7 @@ import { SliceZone } from '@prismicio/react';
 import { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
+import { asText } from '@prismicio/client';
 import { components } from '../../slices';
 import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
@@ -778,10 +779,14 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/${router.locale}/products/${product.handle}/`,
+                    url: `https://${Config.domain}/products/${product.handle}/`,
                     type: 'website',
-                    title: `${product.seo?.title || product.title}`,
-                    description: product?.seo?.description || product?.description || '',
+                    title: page?.data.meta_title || product.seo?.title || product.title,
+                    description:
+                        (page?.data.meta_description && asText(page?.data.meta_description)) ||
+                        product?.seo?.description ||
+                        product?.description ||
+                        '',
                     siteName: store.name,
                     locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                     images:
@@ -1121,7 +1126,7 @@ export const getStaticProps: GetStaticProps<{
     recommendations?: Product[] | null;
     reviews?: ReviewsModel | null;
     store?: StoreModel;
-    analytics?: ShopifyPageViewPayload;
+    analytics?: Partial<ShopifyPageViewPayload>;
 
     // Bogus, will actually come from the wrapper
     initialVariantId?: string | undefined;
@@ -1133,22 +1138,28 @@ export const getStaticProps: GetStaticProps<{
         handle = params?.handle || '';
     }
 
-    if (!handle || ['null', 'undefined', '[handle]'].includes(handle) || locale === 'x-default')
+    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
             props: {
                 product: null
             },
             revalidate: false
         };
+    else if (locale === 'x-default') {
+        return {
+            props: {},
+            revalidate: false
+        };
+    }
 
-    const redirect = await RedirectProductApi(handle);
+    const redirect = await RedirectProductApi({ handle, locale });
     if (redirect) {
         return {
             redirect: {
-                permanent: true,
+                permanent: false,
                 destination: redirect
             },
-            revalidate: 10
+            revalidate: false
         };
     }
 
@@ -1244,9 +1255,9 @@ export const getStaticProps: GetStaticProps<{
             errors: (errors.length > 0 && errors) || null,
             analytics: {
                 pageType: AnalyticsPageType.product,
-                resourceId: product?.id || null,
+                resourceId: product?.id || '',
                 products: analyticsProducts
-            } as any
+            }
         },
         revalidate: 60
     };

@@ -48,9 +48,6 @@ export const COLLECTION_FRAGMENT = `
     shortDescription: metafield(namespace: "store", key: "short_description") {
         value
     }
-    accents: metafield(namespace: "store", key: "accents") {
-        value
-    }
 `;
 
 export const CollectionApi = async ({
@@ -61,7 +58,7 @@ export const CollectionApi = async ({
     locale?: string;
 }): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
-        if (!handle) return reject(new Error('Invalid handle'));
+        if (!handle) return reject(new Error('400: Invalid handle'));
 
         if (!locale || locale === 'x-default') locale = i18n.locales[1];
 

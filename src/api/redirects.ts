@@ -1,7 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+
 import { RedirectModel } from '../models/RedirectModel';
 import { gql } from '@apollo/client';
+import { i18n } from 'next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (
@@ -21,14 +24,27 @@ export const Convertor = (
     }));
 };
 
-export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
+export const RedirectsApi = async ({
+    locale
+}: {
+    locale?: string;
+}): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
+
+        const country = (
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
+        ).toUpperCase() as CountryCode;
+        const language = (
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
+        ).toUpperCase() as LanguageCode;
+
         try {
             // FIXME: Handle more than 250 redirects
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    query urlRedirects {
-                        urlRedirects(first: 250) {
+                    query urlRedirects($limit: Int!) @inContext(language: ${language}, country: ${country}) {
+                        urlRedirects(first: $limit) {
                             edges {
                                 node {
                                     path
@@ -37,7 +53,10 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
                             }
                         }
                     }
-                `
+                `,
+                variables: {
+                    limit: 250
+                }
             });
 
             if (errors) return reject(new Error(errors.join('\n')));
@@ -53,16 +72,36 @@ export const RedirectsApi = async (): Promise<Array<RedirectModel>> => {
     });
 };
 
-export const RedirectProductApi = async (handle: string): Promise<string | null> => {
-    return new Promise(async (resolve) => {
-        const redirects = await RedirectsApi();
-        for (let i = 0; i < redirects.length; i++) {
-            const redirect = redirects[i];
+export const RedirectApi = async ({
+    path,
+    locale
+}: {
+    path: string;
+    locale?: string;
+}): Promise<string | null> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const redirects = await RedirectsApi({ locale });
+            for (let i = 0; i < redirects.length; i++) {
+                const redirect = redirects[i];
 
-            if (!redirect.path.includes(`/${handle}`)) continue;
+                if (redirect.path !== path) continue;
 
-            return resolve(redirect.target);
+                return resolve(redirect.target);
+            }
+            return resolve(null);
+        } catch (error) {
+            return reject(error);
         }
-        return resolve(null);
     });
 };
+
+export const RedirectProductApi = async ({ handle, locale }: { handle: string; locale?: string }) =>
+    RedirectApi({ path: `/products/${handle}`, locale });
+export const RedirectCollectionApi = async ({
+    handle,
+    locale
+}: {
+    handle: string;
+    locale?: string;
+}) => RedirectApi({ path: `/collections/${handle}`, locale });

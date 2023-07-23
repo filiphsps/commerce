@@ -26,7 +26,6 @@ import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useStore } from 'react-context-hook';
 
 const Container = styled.section<{ available?: boolean }>`
     position: relative;
@@ -40,8 +39,8 @@ const Container = styled.section<{ available?: boolean }>`
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
+    //background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 200%);
     color: var(--accent-primary-text);
-    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 200%);
 
     ${({ available }) =>
         !available &&
@@ -430,7 +429,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
     const { product: productData, selectedVariant, setSelectedVariant } = useProduct();
-    const [cartStore, setCartStore] = useStore<any>('cart');
 
     const { data: product } = useSWR(
         {
@@ -686,23 +684,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                                 quantity
                             }
                         ]);
-
-                        setCartStore({
-                            ...cartStore,
-                            item: {
-                                title: product?.title,
-                                vendor: product?.vendor,
-                                variant: {
-                                    title: selectedVariant.title
-                                },
-                                images: [
-                                    {
-                                        src: product?.images?.edges?.[0]?.node?.url
-                                    }
-                                ]
-                            },
-                            open: true
-                        });
 
                         setTimeout(() => {
                             setAddedToCart(false);

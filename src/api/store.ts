@@ -106,7 +106,6 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                     query shop @inContext(language: ${language}, country: ${country}) {
                         shop {
                             id
-                            
                             brand {
                                 logo {
                                     image {
@@ -181,9 +180,6 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                     shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
                 languages: i18n.locales,
                 social: res.social,
-                block: {
-                    border_radius: res.border_radius || '0.5rem'
-                },
                 payment: {
                     methods: shopData?.shop?.paymentSettings?.acceptedCardBrands || [],
                     wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || [],

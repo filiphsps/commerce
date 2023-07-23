@@ -9,6 +9,6 @@ export const components = {
     collection: dynamic(() => import('./Collection')),
     icon_grid: dynamic(() => import('./IconGrid')),
     image_grid: dynamic(() => import('./ImageGrid')),
-    text_block: dynamic(() => import('./TextBlock')),
+    text_block: dynamic(() => import('./Overview')),
     vendors: dynamic(() => import('./Vendors'))
 };

@@ -1,12 +1,86 @@
-import React, { FunctionComponent } from 'react';
-
-import Link from 'next/link';
+import { FiChevronRight } from 'react-icons/fi';
+import { FunctionComponent } from 'react';
+import NextLink from 'next/link';
 import dynamic from 'next/dynamic';
+import styled from 'styled-components';
 
 const SocialShare = dynamic(() => import('../SocialShare'), { ssr: false });
 
+const Container = styled.nav`
+    overflow: hidden;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: var(--block-spacer);
+    color: var(--color-dark);
+    border-radius: var(--block-border-radius);
+    font-size: 1.5rem;
+    line-height: 1.5px;
+    font-weight: 700;
+`;
+
+const Content = styled.ol`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0px;
+    list-style-type: none;
+`;
+
+const Link = styled(NextLink)`
+    display: flex;
+    height: 100%;
+    color: var(--accent-primary);
+
+    span {
+        display: block;
+        height: 100%;
+    }
+
+    &:hover,
+    &:active {
+        color: var(--accent-primary-light);
+    }
+`;
+
+const Item = styled.li`
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:last-child {
+        ${Link} {
+            color: var(--accent-primary-light);
+        }
+    }
+`;
+
+const Icon = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+        display: block;
+        font-size: 1.5rem;
+        // Optically balance it,
+        // See https://medium.com/design-bridges/optical-effects-9fca82b4cd9a
+        margin-bottom: -0.05rem;
+    }
+`;
+
 interface BreadcrumbsProps {
-    pages?: Array<any>;
+    pages?: {
+        title: React.ReactNode;
+        url: string;
+    }[];
     store?: any;
     country?: string;
     hideSocial?: boolean;
@@ -15,55 +89,48 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
     const { store, hideSocial = true } = props;
 
     return (
-        <div className="Breadcrumbs">
-            <ol
-                itemScope
-                itemType="https://schema.org/BreadcrumbList"
-                className="Breadcrumbs-Content"
-            >
-                <li
-                    itemProp="itemListElement"
-                    itemScope
-                    itemType="https://schema.org/ListItem"
-                    className="Breadcrumbs-Content-Item"
-                >
-                    <Link
-                        href={'/'}
-                        itemType="https://schema.org/Thing"
-                        itemProp="item"
-                        className="Link"
-                    >
+        <Container className="Breadcrumbs">
+            <Content itemScope itemType="https://schema.org/BreadcrumbList">
+                <Item itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                    <Link href="/" itemType="https://schema.org/Thing" itemProp="item">
                         <span itemProp="name">{store?.name || store?.title}</span>
                     </Link>
                     <meta itemProp="position" content="1" />
-                </li>
+                    <Icon>
+                        <FiChevronRight />
+                    </Icon>
+                </Item>
                 {props?.pages?.map((item: any, index: any) => {
                     // FIXME: Hotfix.
                     if (item.url.includes('undefined')) return null;
 
                     return (
-                        <li
-                            key={index}
+                        <Item
+                            key={item.title}
                             itemProp="itemListElement"
                             itemScope
                             itemType="https://schema.org/ListItem"
-                            className="Breadcrumbs-Content-Item"
                         >
                             <Link
                                 href={item.url}
                                 itemType="https://schema.org/Thing"
                                 itemProp="item"
-                                className="Link"
                             >
                                 <span itemProp="name">{item.title}</span>
                             </Link>
                             <meta itemProp="position" content={index + 2} />
-                        </li>
+                            {(index + 1 < props?.pages!.length && (
+                                <Icon>
+                                    <FiChevronRight />
+                                </Icon>
+                            )) ||
+                                false}
+                        </Item>
                     );
                 })}
-            </ol>
+            </Content>
             {!hideSocial && <SocialShare />}
-        </div>
+        </Container>
     );
 };
 

@@ -1,8 +1,8 @@
-import { Content, asHTML } from '@prismicio/client';
+import { Content } from '@prismicio/client';
 
 import PageContent from '@/components/PageContent';
-import TextBlock from '@/components/TextBlock';
-import { SliceComponentProps } from '@prismicio/react';
+import { Overview } from '@/components/typography/Overview';
+import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
 import { FiChevronUp } from 'react-icons/fi';
 import styled from 'styled-components';
@@ -96,7 +96,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                             <FiChevronUp className="Icon" /> {slice?.primary?.title}
                         </Summary>
 
-                        {<TextBlock body={asHTML(slice?.primary?.text || '') || ''} />}
+                        <Overview body={<PrismicRichText field={slice?.primary?.text} />} />
                     </Details>
                 </Content>
             </PageContent>

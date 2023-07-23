@@ -1,3 +1,4 @@
+import Content from './Content';
 import { FunctionComponent } from 'react';
 import { PiInfoBold } from 'react-icons/pi';
 import styled from 'styled-components';
@@ -19,13 +20,22 @@ const Container = styled.section`
         width: fit-content;
     }
 `;
-const Content = styled.div`
+const Body = styled(Content)`
     display: flex;
     justify-content: start;
     align-items: center;
     font-size: 1.5rem;
     line-height: 1.75rem;
-    color: var(--color-block-pastel-lime-dark);
+    color: var(--color);
+
+    a {
+        color: var(--color);
+
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        text-underline-offset: var(--block-border-width);
+    }
 
     @media (min-width: 950px) {
         justify-content: center;
@@ -36,7 +46,7 @@ const Icon = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--color-block-pastel-lime-dark);
+    color: var(--color);
     font-size: 3.75rem;
     text-align: center;
 `;
@@ -48,11 +58,17 @@ interface AlertProps {
 // FIXME: Actually respect `severity`
 export const Alert: FunctionComponent<AlertProps> = ({ children }) => {
     return (
-        <Container>
+        <Container
+            style={
+                {
+                    '--color': 'var(--color-block-pastel-lime-dark)'
+                } as React.CSSProperties
+            }
+        >
             <Icon>
                 <PiInfoBold />
             </Icon>
-            <Content>{children}</Content>
+            <Body>{children}</Body>
         </Container>
     );
 };

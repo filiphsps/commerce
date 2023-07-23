@@ -205,16 +205,10 @@ const StoreApp = withStore(
         );
     },
     {
-        rates: {},
         search: {
             open: false,
             phrase: ''
-        },
-        cart: {
-            open: false,
-            item: null
-        },
-        locale: null
+        }
     },
     {
         listener: () => {},
