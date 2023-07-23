@@ -80,6 +80,9 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             }
         }
     }
+    visuals: metafield(namespace: "store", key: "visuals") {
+        value
+    }
 `;
 
 export const PRODUCT_FRAGMENT = `
@@ -161,13 +164,16 @@ export const PRODUCT_FRAGMENT = `
             }
         }
     }
+    originalName: metafield(namespace: "store", key: "original-name") {
+        value
+    }
     ingredients: metafield(namespace: "store", key: "ingredients") {
         value
     }
     keywords: metafield(namespace: "store", key: "keywords") {
         value
     }
-    originalName: metafield(namespace: "store", key: "original-name") {
+    visuals: metafield(namespace: "store", key: "visuals") {
         value
     }
 `;
@@ -215,7 +221,6 @@ export const ConvertToLocalMeasurementSystem = ({
 // TODO: Remove this when our shopify app handles it and sets it as metadata instead.
 export interface ExtractAccentColorsFromImageRes {
     primary: string;
-    primary_dark: string;
     primary_foreground: string;
     secondary: string;
     secondary_dark: string;
@@ -246,7 +251,6 @@ export const ExtractAccentColorsFromImage = (
 
         return {
             primary: primary.hex().toString(),
-            primary_dark: primary.darken(0.35).hex().toString(),
             primary_foreground: (primaryIsDark && '#ececec') || '#0e0e0e',
             secondary: secondary.hex().toString(),
             secondary_dark: secondary.darken(0.35).hex().toString(),
@@ -302,7 +306,7 @@ export const ProductApi = async ({
     locale?: string;
 }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
-        if (!handle) return reject(new Error('Invalid handle'));
+        if (!handle) return reject(new Error('400: Invalid handle'));
 
         if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
@@ -331,11 +335,12 @@ export const ProductApi = async ({
             if (!data?.productByHandle)
                 return reject(new Error('404: The requested document cannot be found'));
 
-            try {
-                data.productByHandle.accent = await ExtractAccentColorsFromImage(
-                    data.productByHandle.images?.edges?.at(0)?.node?.url
-                );
-            } catch {}
+            if (!data.productByHandle?.visuals)
+                try {
+                    data.productByHandle.accent = await ExtractAccentColorsFromImage(
+                        data.productByHandle.images?.edges?.at(0)?.node?.url
+                    );
+                } catch {}
 
             try {
                 data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
@@ -430,20 +435,26 @@ export const ProductsApi = async (
                 return reject(new Error('404: The requested document cannot be found'));
 
             if (data.products?.edges)
-                data.products.edges = await Promise.all(
-                    data.products.edges.map(async (edge) => {
-                        if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
+                try {
+                    data.products.edges = await Promise.all(
+                        data.products.edges
+                            .map(async (edge) => {
+                                if (data.products?.visuals) return null;
 
-                        try {
-                            edge.node.accent = await ExtractAccentColorsFromImage(
-                                edge.node?.images?.edges?.at(0)?.node?.url
-                            );
-                            return edge;
-                        } catch {
-                            return edge;
-                        }
-                    })
-                );
+                                if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
+
+                                try {
+                                    edge.node.accent = await ExtractAccentColorsFromImage(
+                                        edge.node?.images?.edges?.at(0)?.node?.url
+                                    );
+                                    return edge;
+                                } catch {
+                                    return edge;
+                                }
+                            })
+                            .filter((i) => i)
+                    );
+                } catch {}
 
             return resolve({
                 products: data.products.edges,
@@ -547,6 +558,80 @@ export const ProductsPaginationApi = async ({
         } catch (error) {
             console.error(error);
             reject(error);
+        }
+    });
+};
+
+export type ProductVisuals = {
+    primaryAccent: string;
+    primaryAccentDark: boolean;
+    secondaryAccent: string;
+    secondaryAccentDark: boolean;
+    transparentBackgrounds: boolean;
+};
+export const ProductVisualsApi = async ({
+    id,
+    locale
+}: {
+    id: string;
+    locale?: string;
+}): Promise<ProductVisuals> => {
+    return new Promise(async (resolve, reject) => {
+        if (!id) return reject(new Error('400: Invalid id'));
+
+        if (!locale || locale === 'x-default') locale = i18n.locales[1];
+
+        const country = (
+            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
+        ).toUpperCase() as CountryCode;
+        const language = (
+            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
+        ).toUpperCase() as LanguageCode;
+
+        try {
+            const { data, errors } = await storefrontClient.query({
+                query: gql`
+                    query metaobject($id: ID!) @inContext(language: ${language}, country: ${country}) {
+                        metaobject(id: $id) {
+                            primaryAccent: field(key: "primary_accent") {
+                                value
+                            }
+                            primaryAccentDark: field(key: "primary_accent_dark") {
+                                value
+                            }
+                            secondaryAccent: field(key: "secondary_accent") {
+                                value
+                            }
+                            secondaryAccentDark: field(key: "secondary_accent_dark") {
+                                value
+                            }
+                            transparentBackgrounds: field(key: "transparent_backgrounds") {
+                                value
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    id
+                }
+            });
+
+            if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
+            try {
+                return resolve({
+                    primaryAccent: data.metaobject.primaryAccent.value,
+                    primaryAccentDark: data.metaobject.primaryAccentDark?.value === 'true',
+                    secondaryAccent: data.metaobject.secondaryAccent.value,
+                    secondaryAccentDark: data.metaobject.secondaryAccentDark?.value === 'true',
+                    transparentBackgrounds: data.metaobject.transparentBackgrounds.value === 'true'
+                });
+            } catch (error) {
+                return reject(new Error(`404: The requested document cannot be found`));
+            }
+        } catch (error) {
+            Sentry.captureException(error);
+            console.error(error);
+            return reject(error);
         }
     });
 };

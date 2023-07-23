@@ -1,4 +1,9 @@
-import { ConvertToLocalMeasurementSystem, PRODUCT_ACCENT_CACHE_TIMEOUT } from '../../api/product';
+import {
+    ConvertToLocalMeasurementSystem,
+    PRODUCT_ACCENT_CACHE_TIMEOUT,
+    ProductVisuals,
+    ProductVisualsApi
+} from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import {
@@ -18,6 +23,7 @@ import { StoreModel } from '../../models/StoreModel';
 import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import { useStore } from 'react-context-hook';
 
 const Container = styled.section<{ available?: boolean }>`
@@ -31,9 +37,9 @@ const Container = styled.section<{ available?: boolean }>`
     padding: var(--block-padding);
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
-    background: var(--primary);
-    color: var(--primary-foreground);
-    background: radial-gradient(circle, var(--primary) 0%, var(--primary-dark) 200%);
+    background: var(--accent-primary);
+    color: var(--accent-primary-text);
+    background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 200%);
 
     ${({ available }) =>
         !available &&
@@ -215,8 +221,8 @@ const AddButton = styled(Button)<{ added: boolean }>`
         min-width: 100%;
         padding: var(--block-padding-small) var(--block-padding);
         border-radius: var(--block-border-radius-small);
-        border: var(--block-border-width) solid var(--primary-foreground);
-        color: var(--primary-foreground);
+        border: var(--block-border-width) solid var(--accent-primary-text);
+        color: var(--accent-primary-text);
         background: transparent;
         box-shadow: none;
         line-height: 1.75rem;
@@ -225,17 +231,17 @@ const AddButton = styled(Button)<{ added: boolean }>`
         transition: 250ms ease-in-out;
 
         &:enabled:hover {
-            background: var(--primary-foreground);
-            border-color: var(--primary-foreground);
-            color: var(--primary-dark);
+            background: var(--accent-primary-text);
+            border-color: var(--accent-primary-text);
+            color: var(--accent-primary-dark);
             box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         }
 
         &:enabled.Added,
         &:enabled:active {
-            background: var(--secondary-dark);
-            border-color: var(--secondary);
-            color: var(--secondary-foreground);
+            background: var(--accent-secondary-dark);
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary-text);
             box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         }
     }
@@ -282,14 +288,14 @@ const QuantityAction = styled.div`
 
     @media (min-width: 950px) {
         &:hover {
-            color: var(--primary-dark);
+            color: var(--accent-primary-dark);
         }
     }
 
     &:active {
-        color: var(--primary-dark);
-        background: var(--primary-foreground);
-        border-color: var(--primary);
+        color: var(--accent-primary-dark);
+        background: var(--accent-primary-text);
+        border-color: var(--accent-primary);
     }
 `;
 const QuantityValue = styled.div`
@@ -369,6 +375,7 @@ const Badge = styled.div`
     }
     &.Vegan {
         background: var(--color-green);
+        color: var(--color-bright);
     }
 `;
 
@@ -386,7 +393,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             height={250 || 0}
             width={250 || 0}
             unoptimized={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1260px) 50vw, 33vw"
             loader={ImageLoader}
         />
     );
@@ -405,18 +412,36 @@ export const AppendShopifyParameters = ({
 };
 
 interface ProductCardProps {
+    visuals?: ProductVisuals | null;
     handle?: string;
     isHorizontal?: boolean;
     store: StoreModel;
     className?: string;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({
+    store,
+    className,
+    visuals: visualsData
+}) => {
     const router = useRouter();
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
     const { product, selectedVariant, setSelectedVariant } = useProduct();
     const [cartStore, setCartStore] = useStore<any>('cart');
+
+    const { data: visuals } = useSWR(
+        {
+            id: (product as any).visuals?.value,
+            locale: router.locale
+        },
+        ProductVisualsApi,
+        {
+            fallbackData: (visualsData || (product as any).visualsData) as
+                | ProductVisuals
+                | undefined
+        }
+    );
 
     useEffect(() => {
         if (!product) return;
@@ -479,15 +504,33 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ store, className }) 
             available={selectedVariant.availableForSale}
             style={
                 {
-                    '--primary': (product as any).accent?.primary || 'var(--color-block)',
-                    '--primary-dark': (product as any).accent?.primary_dark || 'var(--color-block)',
-                    '--primary-foreground':
-                        (product as any).accent?.primary_foreground || 'var(--color-text-primary)',
-                    '--secondary': (product as any).accent?.secondary || 'var(--color-block)',
-                    '--secondary-dark':
-                        (product as any).accent?.secondary_dark || 'var(--color-block)',
-                    '--secondary-foreground':
-                        (product as any).accent?.secondary_foreground || 'var(--color-text-primary)'
+                    ...((visuals && {
+                        '--accent-primary': visuals?.primaryAccent,
+                        '--accent-primary-text':
+                            (visuals.primaryAccentDark && 'var(--color-bright)') ||
+                            'var(--color-dark)',
+
+                        '--accent-secondary': visuals?.secondaryAccent,
+                        '--accent-secondary-text':
+                            (visuals.secondaryAccentDark && 'var(--color-bright)') ||
+                            'var(--color-dark)'
+                    }) || {
+                        '--accent-primary': (product as any).accent?.primary || undefined,
+                        '--accent-primary-text':
+                            (product as any).accent?.primary_foreground || undefined,
+                        '--accent-secondary': (product as any).accent?.secondary || undefined,
+                        '--accent-secondary-text':
+                            (product as any).accent?.secondary_foreground || undefined
+                    }),
+
+                    '--accent-primary-light':
+                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                    '--accent-primary-dark':
+                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                    '--accent-secondary-light':
+                        'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
+                    '--accent-secondary-dark':
+                        'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
                 } as React.CSSProperties
             }
         >

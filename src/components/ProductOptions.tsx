@@ -26,7 +26,8 @@ const OptionValue = styled.div<{
     justify-content: center;
     align-items: center;
     height: 3.75rem;
-    padding: 0px var(--block-padding-large);
+    padding: 0px calc(var(--block-padding-large) - var(--block-border-width));
+    border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
     color: var(--color-dark);
@@ -43,8 +44,8 @@ const OptionValue = styled.div<{
     ${({ selected }) =>
         selected &&
         css`
-            background: var(--accent-primary);
-            color: var(--accent-primary-text);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary-dark);
         `}
 
     ${({ disabled }) =>
@@ -82,8 +83,8 @@ const Option = styled.div<{ disabled: boolean }>`
 
                 @media (hover: hover) and (pointer: fine) {
                     &:hover {
-                        color: var(--accent-primary-text);
-                        background: var(--accent-primary);
+                        color: var(--accent-primary);
+                        border-color: var(--accent-primary-dark);
                     }
                 }
             }

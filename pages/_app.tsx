@@ -88,14 +88,16 @@ const StoreApp = withStore(
                     <style>{`
                         :root {
                             --accent-primary: ${Color(store.accent.primary).hex().toString()};
-                            --accent-primary-dark: ${Color(store.accent.primary)
-                                .darken(0.25)
-                                .hex()
-                                .toString()};
-                            --accent-primary-light: ${Color(store.accent.primary)
-                                .lighten(0.75)
-                                .hex()
-                                .toString()};
+                            --accent-primary-dark: color-mix(
+                                in srgb,
+                                var(--accent-primary) 65%,
+                                var(--color-dark)
+                            );
+                            --accent-primary-light: color-mix(
+                                in srgb,
+                                var(--accent-primary) 75%,
+                                var(--color-bright)
+                            );
                             --accent-primary-text: #ececec;
                             --accent-secondary: ${Color(store.accent.secondary).hex().toString()};
                             --accent-secondary-dark: ${Color(store.accent.secondary)

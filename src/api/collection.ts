@@ -5,7 +5,11 @@ import {
     CountryCode,
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT_MINIMAL } from './product';
+import {
+    ExtractAccentColorsFromImage,
+    PRODUCT_FRAGMENT_MINIMAL,
+    ProductVisualsApi
+} from './product';
 
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
@@ -88,6 +92,14 @@ export const CollectionApi = async ({
 
             data.collectionByHandle.products.edges = await Promise.all(
                 data.collectionByHandle.products.edges.map(async (edge) => {
+                    if (edge.node.visuals?.value) {
+                        edge.node.visualsData = await ProductVisualsApi({
+                            id: edge.node.visuals.value,
+                            locale
+                        });
+                        return edge;
+                    }
+
                     if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
 
                     try {

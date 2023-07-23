@@ -115,7 +115,6 @@ const LegalAndCopyright = styled.div`
 const FooterBottomSection = styled.section`
     display: grid;
     grid-template-columns: 1fr;
-    border-top: 0.02rem solid var(--accent-primary);
     padding-top: 1rem;
 
     @media (min-width: 950px) {

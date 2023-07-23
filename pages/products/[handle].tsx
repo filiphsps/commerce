@@ -19,7 +19,7 @@ import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductsApi } from '../../src/api/product';
+import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
@@ -110,6 +110,11 @@ const Details = styled.div`
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
+
+    @media (min-width: 950px) {
+        position: sticky;
+        top: 8rem;
+    }
 `;
 const Options = styled.div`
     display: flex;
@@ -151,7 +156,7 @@ const AddToCart = styled(Button)<{ added: boolean }>`
         `}
 
     svg {
-        stroke-width: 0.4ex;
+        stroke-width: 0.3ex;
         font-size: 1.75rem;
     }
 
@@ -238,28 +243,29 @@ const HeaderContent = styled.div`
     grid-template-areas:
         'page-header pricing'
         'reviews reviews';
-    grid-template-columns: 1fr auto;
-    gap: var(--block-spacer-small);
+    grid-template-columns: auto 1fr;
+    gap: var(--block-spacer);
     justify-content: space-between;
     margin-bottom: var(--block-padding-large);
 
     h3 {
         font-size: 2.25rem;
-        line-height: 2.75rem;
+        line-height: 2.25rem;
         margin-bottom: calc(var(--block-spacer-small) * -1);
     }
 
     h2 {
-        font-size: 2.75rem;
-        line-height: 3.5rem;
+        font-size: 3rem;
+        line-height: 3rem;
         margin-bottom: calc(var(--block-spacer-small) * -1);
+        color: var(--accent-secondary-dark);
     }
 
     @media (min-width: 950px) {
         margin-bottom: 0px;
     }
 
-    @media (min-width: 1200px) {
+    @media (min-width: 1260px) {
         h3 {
             font-size: 2.75rem;
             line-height: 3.25rem;
@@ -267,8 +273,8 @@ const HeaderContent = styled.div`
         }
 
         h2 {
-            font-size: 3.5rem;
-            line-height: 4rem;
+            font-size: 3.25rem;
+            line-height: 3.5rem;
         }
     }
 `;
@@ -311,23 +317,47 @@ const PriceContainer = styled.div`
     grid-area: pricing;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     flex-direction: column;
     height: 100%;
-    color: var(--accent-primary);
+    color: var(--accent-primary-dark);
+
+    @media (min-width: 1260px) {
+        min-width: 12rem;
+    }
 `;
 
+const RecommendationsContent = styled(PageContent)`
+    z-index: 1;
+    width: 100%;
+`;
 const Recommendations = styled.div`
+    z-index: 0;
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
     margin: var(--block-spacer) 0px;
-    border-radius: var(--block-border-radius);
-    overflow: hidden;
-
-    background: var(--color-block);
     padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
+
+    &::before {
+        z-index: -1;
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: transparent;
+        transition: 250ms ease-in-out all;
+        pointer-events: none;
+
+        @media (min-width: 1465px) {
+            --size: calc(var(--page-width) + var(--block-padding-large));
+            left: calc(-100vw / 2 + var(--size) / 2);
+            right: calc(-100vw / 2 + var(--size) / 2);
+            bottom: calc(var(--block-spacer-large) * -1);
+        }
+    }
 `;
 const RecommendationsTitle = styled.h3`
     font-size: 2.5rem;
@@ -339,9 +369,6 @@ const RecommendationsTitle = styled.h3`
         font-weight: 700;
     }
 `;
-const RecommendationsContent = styled(PageContent)`
-    width: 100%;
-`;
 
 const Tabs = styled.div`
     display: flex;
@@ -350,11 +377,6 @@ const Tabs = styled.div`
     margin-top: var(--block-spacer);
 `;
 const Tab = styled.div`
-    //padding: calc(var(--block-padding) - var(--block-border-width))
-    //    calc(var(--block-padding-large) - var(--block-border-width));
-    //border: var(--block-border-width) solid var(--color-block);
-    //border-radius: var(--block-border-radius);
-    //background: var(--color-block);
     color: var(--color-gray);
     text-align: center;
     font-size: 1.5rem;
@@ -411,8 +433,66 @@ const ReviewsContainer = styled.div`
     grid-area: reviews;
 `;
 
+const ProductPageContent = styled(PageContent)<{ background?: string }>`
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        height: 0;
+        pointer-events: none;
+        background: ${({ background }) => background || 'var(--accent-secondary-light)'};
+        transition:
+            400ms ease-in-out height,
+            250ms ease-in-out right;
+
+        @media (min-width: 1260px) {
+            top: 0;
+            left: -50vw;
+            right: 100vw;
+            height: 100%;
+        }
+    }
+`;
+
+const Container = styled(Page)`
+    &.Pastel {
+        ${ProductPageContent} {
+            &::before {
+                inset: 0;
+                height: 30vh;
+
+                @media (min-width: 1260px) {
+                    right: calc(52rem + var(--block-padding-large) * 2);
+                    height: 100%;
+                }
+            }
+        }
+
+        ${Recommendations} {
+            @media (min-width: 1465px) {
+                padding: 0px;
+                border-radius: 0px;
+                overflow: hidden;
+
+                ${RecommendationsContent} {
+                    padding: 0px;
+                    //background: var(--color-bright);
+                    //border-radius: var(--block-border-radius);
+                }
+            }
+
+            &::before {
+                background: var(--accent-secondary-light);
+            }
+        }
+    }
+`;
+
 const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
     page,
+    visuals: visualsData,
     recommendations: recommendationsData,
     reviews: reviewsData,
     store,
@@ -423,6 +503,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const cart = useCart();
     const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
     const { product: data, setSelectedOption, selectedVariant } = useProduct();
+    const [pastel, setPastel] = useState(false);
 
     const addedTimeout = useRef<ReturnType<typeof setTimeout>>();
 
@@ -454,6 +535,17 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         }
     );
 
+    const { data: visuals } = useSWR(
+        {
+            id: (product as any).visuals?.value,
+            locale: router.locale
+        },
+        ProductVisualsApi,
+        {
+            fallbackData: visualsData as ProductVisuals | undefined
+        }
+    );
+
     const { data: recommendations } = useSWR(
         [`recommendations_${data?.id}`],
         () =>
@@ -481,6 +573,10 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             fallbackData: reviewsData || undefined
         }
     );
+
+    useEffect(() => {
+        if (visuals?.transparentBackgrounds && !pastel) setPastel(true);
+    }, [visuals]);
 
     const setProductOption = useCallback(
         ({ name, value }: { name: string; value: string }) => {
@@ -623,22 +719,37 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 
     return (
-        <Page
-            className="ProductPage"
+        <Container
+            className={`ProductPage ${(pastel && 'Pastel') || ''}`}
             style={
                 {
-                    '--accent-primary': (product as any).accent?.primary || undefined,
-                    '--accent-primary-light': (product as any).accent?.primary_light || undefined,
-                    '--accent-primary-dark': (product as any).accent?.primary_dark || undefined,
-                    '--accent-primary-text':
-                        (product as any).accent?.primary_foreground || undefined,
+                    ...((visuals && {
+                        '--accent-primary': visuals?.primaryAccent,
+                        '--accent-primary-text':
+                            (visuals.primaryAccentDark && 'var(--color-bright)') ||
+                            'var(--color-dark)',
 
-                    '--accent-secondary': (product as any).accent?.secondary || undefined,
+                        '--accent-secondary': visuals?.secondaryAccent,
+                        '--accent-secondary-text':
+                            (visuals.secondaryAccentDark && 'var(--color-bright)') ||
+                            'var(--color-dark)'
+                    }) || {
+                        '--accent-primary': (product as any).accent?.primary || undefined,
+                        '--accent-primary-text':
+                            (product as any).accent?.primary_foreground || undefined,
+                        '--accent-secondary': (product as any).accent?.secondary || undefined,
+                        '--accent-secondary-text':
+                            (product as any).accent?.secondary_foreground || undefined
+                    }),
+
+                    '--accent-primary-light':
+                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                    '--accent-primary-dark':
+                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
                     '--accent-secondary-light':
-                        (product as any).accent?.secondary_light || undefined,
-                    '--accent-secondary-dark': (product as any).accent?.secondary_dark || undefined,
-                    '--accent-secondary-text':
-                        (product as any).accent?.secondary_foreground || undefined
+                        'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
+                    '--accent-secondary-dark':
+                        'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
                 } as React.CSSProperties
             }
         >
@@ -775,11 +886,25 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 />
             ))}
 
-            <PageContent primary>
+            <ProductPageContent
+                primary
+                background={
+                    (visuals?.transparentBackgrounds && 'var(--accent-primary-light)') || undefined
+                }
+            >
                 <ProductContainerWrapper>
                     <ProductContainer>
                         <Assets>
                             <Gallery
+                                pastel={visuals?.transparentBackgrounds}
+                                background={
+                                    (visuals?.transparentBackgrounds && 'transparent') || undefined
+                                }
+                                previewBackground={
+                                    (visuals?.transparentBackgrounds &&
+                                        'var(--accent-secondary-light)') ||
+                                    undefined
+                                }
                                 selected={selectedVariant?.image?.id || null}
                                 images={(product as any).images || null}
                             />
@@ -877,7 +1002,16 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     components={components}
                     context={{ store }}
                 />
+            </ProductPageContent>
 
+            <ProductPageContent
+                primary
+                style={
+                    {
+                        '--color-block': (visuals && 'var(--color-bright)') || undefined
+                    } as React.CSSProperties
+                }
+            >
                 {recommendations?.length && recommendations.length >= 1 && (
                     <Recommendations>
                         <RecommendationsTitle>
@@ -914,8 +1048,8 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     ]}
                     store={store}
                 />
-            </PageContent>
-        </Page>
+            </ProductPageContent>
+        </Container>
     );
 };
 
@@ -980,6 +1114,7 @@ export const getStaticProps: GetStaticProps<{
     errors?: string[] | null;
     page?: ProductPageDocument<string> | null;
     product?: Product | null;
+    visuals?: ProductVisuals | null;
     recommendations?: Product[] | null;
     reviews?: ReviewsModel | null;
     store?: StoreModel;
@@ -1017,6 +1152,7 @@ export const getStaticProps: GetStaticProps<{
     const client = createClient({ previewData });
 
     let product: Product | null = null;
+    let visuals: ProductVisuals | null = null;
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
@@ -1059,6 +1195,14 @@ export const getStaticProps: GetStaticProps<{
             quantity: 1
         });
 
+        if ((product as any)?.visuals?.value)
+            try {
+                visuals = await ProductVisualsApi({
+                    id: (product as any)?.visuals?.value,
+                    locale
+                });
+            } catch {}
+
         try {
             page = await client.getByUID('product_page', handle, {
                 lang: locale
@@ -1090,6 +1234,7 @@ export const getStaticProps: GetStaticProps<{
     return {
         props: {
             product,
+            visuals,
             page,
             recommendations,
             reviews,

@@ -1,37 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import Image from 'next/image';
 import { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { ImageLoader } from '../../util/ImageLoader';
-import styled from 'styled-components';
-
-const Container = styled.div`
-    position: relative;
-    display: grid;
-    grid-template-areas: 'primary' 'previews';
-    width: 100%;
-    height: 100%;
-    gap: var(--block-spacer);
-    transition: 250ms ease-in-out;
-
-    @media (min-width: 950px) {
-        overflow: unset;
-        border-radius: none;
-    }
-
-    img {
-        flex-shrink: 1;
-        width: 100%;
-        mix-blend-mode: multiply;
-        object-fit: contain;
-        object-position: center;
-        max-height: 70vh;
-    }
-
-    & > div:only-child {
-        grid-column: 1 / -1;
-    }
-`;
 
 const Previews = styled.div`
     position: relative;
@@ -55,7 +27,7 @@ const Preview = styled.div`
     width: fit-content;
     height: 6rem;
     padding: var(--block-padding);
-    background: var(--color-block);
+    background: var(--background-preview);
     border-radius: var(--block-border-radius);
     cursor: pointer;
     transition: 250ms ease-in-out;
@@ -65,7 +37,7 @@ const Preview = styled.div`
     @media (min-width: 950px) {
         width: 12rem;
         height: fit-content;
-        border: var(--block-border-width) solid var(--color-block);
+        border: var(--block-border-width) solid var(--background-preview);
         opacity: 1;
     }
 
@@ -92,7 +64,7 @@ const Primary = styled.div`
     width: auto;
     height: fit-content;
     padding: calc(var(--block-padding-large) * 2);
-    background: var(--color-block);
+    background: var(--background);
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
@@ -116,11 +88,95 @@ const ImageWrapper = styled.div`
     height: 100%;
 `;
 
+const Container = styled.div<{ noBlend?: boolean }>`
+    position: relative;
+    display: grid;
+    grid-template-areas: 'primary' 'previews';
+    width: 100%;
+    height: 100%;
+    gap: var(--block-spacer);
+    transition: 250ms ease-in-out;
+
+    @media (min-width: 950px) {
+        overflow: unset;
+        border-radius: none;
+    }
+
+    img {
+        flex-shrink: 1;
+        width: 100%;
+        ${({ noBlend }) =>
+            !noBlend &&
+            css`
+                mix-blend-mode: multiply;
+            `}
+
+        object-fit: contain;
+        object-position: center;
+        max-height: 35vh;
+
+        @media (min-width: 950px) {
+            max-height: 70vh;
+        }
+    }
+
+    & > div:only-child {
+        grid-column: 1 / -1;
+    }
+
+    &.Pastel {
+        ${Previews} {
+            justify-content: center;
+
+            ${Preview} {
+                //width: 100%;
+            }
+        }
+
+        ${Primary} {
+            @keyframes float {
+                0% {
+                    transform: translateY(0.5rem) scale(1);
+                }
+                50% {
+                    transform: translateY(-0.5rem) scale(1.05);
+                }
+                100% {
+                    transform: translateY(0.5rem) scale(1);
+                }
+            }
+            transform: translateY(0);
+            animation: float 8s ease-in-out infinite;
+
+            @media (min-width: 950px) {
+                animation: none;
+            }
+
+            img {
+                height: 35vh;
+
+                @media (min-width: 950px) {
+                    height: unset;
+                }
+            }
+        }
+    }
+`;
+
 interface GalleryProps {
+    pastel?: boolean;
+    background?: string;
+    previewBackground?: string;
     selected: string | null;
     images: ImageConnection | null;
 }
-const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex, images }) => {
+const Gallery: FunctionComponent<GalleryProps> = ({
+    pastel,
+    background,
+    previewBackground,
+    selected: defaultImageIndex,
+    images
+}) => {
     const [selected, setSelected] = useState(defaultImageIndex || images?.edges[0].node.id);
 
     useEffect(() => {
@@ -137,11 +193,17 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
         images.edges[0].node;
     return (
         <Container
+            className={(pastel && 'Pastel') || ''}
+            noBlend={!!background || undefined}
             style={
-                (images?.edges?.length <= 1 && {
-                    gridTemplateAreas: '"primary"'
-                }) ||
-                {}
+                {
+                    ...((images?.edges?.length <= 1 && {
+                        gridTemplateAreas: '"primary"'
+                    }) ||
+                        {}),
+                    '--background': background || 'var(--color-block)',
+                    '--background-preview': previewBackground || 'var(--color-block)'
+                } as React.CSSProperties
             }
         >
             <Primary>
