@@ -461,9 +461,9 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             src={image.url}
             alt={image.altText || ''}
             title={image.altText || undefined}
-            height={250 || 0}
-            width={250 || 0}
-            sizes="(max-width: 768px) 100vw, (max-width: 1260px) 50vw, 33vw"
+            height={image.height || 200}
+            width={image.width || 200}
+            sizes="(max-width: 950px) 100vw, 15vw"
             loader={ImageLoader}
         />
     );
@@ -573,24 +573,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
             available={selectedVariant.availableForSale}
             style={
                 {
-                    ...((visuals && {
-                        '--accent-primary': visuals?.primaryAccent,
-                        '--accent-primary-text':
-                            (visuals.primaryAccentDark && 'var(--color-bright)') ||
-                            'var(--color-dark)',
-
-                        '--accent-secondary': visuals?.secondaryAccent,
-                        '--accent-secondary-text':
-                            (visuals.secondaryAccentDark && 'var(--color-bright)') ||
-                            'var(--color-dark)'
-                    }) || {
-                        '--accent-primary': (product as any).accent?.primary || undefined,
-                        '--accent-primary-text':
-                            (product as any).accent?.primary_foreground || undefined,
-                        '--accent-secondary': (product as any).accent?.secondary || undefined,
-                        '--accent-secondary-text':
-                            (product as any).accent?.secondary_foreground || undefined
-                    }),
+                    '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
+                    '--accent-primary-text':
+                        (visuals?.primaryAccentDark && 'var(--color-bright)') ||
+                        'var(--color-dark)',
+                    '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
+                    '--accent-secondary-text':
+                        (visuals?.secondaryAccentDark && 'var(--color-bright)') ||
+                        'var(--color-dark)',
 
                     '--accent-primary-light':
                         'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',

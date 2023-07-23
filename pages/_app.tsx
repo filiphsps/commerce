@@ -20,9 +20,9 @@ import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { ThemeProvider } from 'styled-components';
-import { appWithTranslation } from 'next-i18next';
 import preval from '../src/data.preval';
 import useSWR from 'swr';
+//import { appWithTranslation } from 'next-i18next';
 import { withStore } from 'react-context-hook';
 
 const font = Lexend_Deca({
@@ -216,7 +216,8 @@ const StoreApp = withStore(
     }
 );
 
-export default appWithTranslation(StoreApp);
+export default StoreApp;
+//export default appWithTranslation(StoreApp);
 
 export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric) {
     if (process.env.NODE_ENV !== 'production') return;

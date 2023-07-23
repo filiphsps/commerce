@@ -221,28 +221,6 @@ export const ConvertToLocalMeasurementSystem = ({
     return `${Math.ceil(res)}${targetUnit}`;
 };
 
-// TODO: Remove this when our shopify app handles it and sets it as metadata instead.
-export interface ExtractAccentColorsFromImageRes {
-    primary: string;
-    primary_foreground: string;
-    secondary: string;
-    secondary_dark: string;
-    secondary_foreground: string;
-}
-export const ExtractAccentColorsFromImage = (
-    url?: string
-): Promise<ExtractAccentColorsFromImageRes> => {
-    return new Promise(async (resolve, reject) => {
-        return resolve({
-            primary: '#F9EFD2',
-            primary_foreground: '#101418',
-            secondary: '#E8A0BF',
-            secondary_dark: '#BA90C6',
-            secondary_foreground: '#101418'
-        });
-    });
-};
-
 export const ProductApi = async ({
     handle,
     locale
@@ -279,13 +257,6 @@ export const ProductApi = async ({
             if (errors) return reject(new Error(errors.join('\n')));
             if (!data?.productByHandle)
                 return reject(new Error('404: The requested document cannot be found'));
-
-            if (!data.productByHandle?.visuals)
-                try {
-                    data.productByHandle.accent = await ExtractAccentColorsFromImage(
-                        data.productByHandle.images?.edges?.at(0)?.node?.url
-                    );
-                } catch {}
 
             try {
                 data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
@@ -379,28 +350,6 @@ export const ProductsApi = async (
             if (!data.products)
                 return reject(new Error('404: The requested document cannot be found'));
 
-            if (data.products?.edges)
-                try {
-                    data.products.edges = await Promise.all(
-                        data.products.edges
-                            .map(async (edge) => {
-                                if (data.products?.visuals) return null;
-
-                                if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
-
-                                try {
-                                    edge.node.accent = await ExtractAccentColorsFromImage(
-                                        edge.node?.images?.edges?.at(0)?.node?.url
-                                    );
-                                    return edge;
-                                } catch {
-                                    return edge;
-                                }
-                            })
-                            .filter((i) => i)
-                    );
-                } catch {}
-
             return resolve({
                 products: data.products.edges,
                 cursor: data.products.edges.at(-1).cursor,
@@ -473,22 +422,6 @@ export const ProductsPaginationApi = async ({
                     }
                 `
             });
-
-            if (data.products?.edges)
-                data.products.edges = await Promise.all(
-                    data.products.edges.map(async (edge) => {
-                        if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
-
-                        try {
-                            edge.node.accent = await ExtractAccentColorsFromImage(
-                                edge.node?.images?.edges?.at(0)?.node?.url
-                            );
-                            return edge;
-                        } catch {
-                            return edge;
-                        }
-                    })
-                );
 
             const page_info = data.products.pageInfo;
             resolve({

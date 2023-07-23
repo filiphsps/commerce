@@ -726,35 +726,27 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         <Container
             className={`ProductPage ${(pastel && 'Pastel') || ''}`}
             style={
-                {
-                    ...((visuals && {
-                        '--accent-primary': visuals?.primaryAccent,
+                (visuals &&
+                    ({
+                        '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
                         '--accent-primary-text':
                             (visuals.primaryAccentDark && 'var(--color-bright)') ||
                             'var(--color-dark)',
 
-                        '--accent-secondary': visuals?.secondaryAccent,
+                        '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
                         '--accent-secondary-text':
                             (visuals.secondaryAccentDark && 'var(--color-bright)') ||
-                            'var(--color-dark)'
-                    }) || {
-                        '--accent-primary': (product as any).accent?.primary || undefined,
-                        '--accent-primary-text':
-                            (product as any).accent?.primary_foreground || undefined,
-                        '--accent-secondary': (product as any).accent?.secondary || undefined,
-                        '--accent-secondary-text':
-                            (product as any).accent?.secondary_foreground || undefined
-                    }),
-
-                    '--accent-primary-light':
-                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                    '--accent-primary-dark':
-                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
-                    '--accent-secondary-light':
-                        'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                    '--accent-secondary-dark':
-                        'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
-                } as React.CSSProperties
+                            'var(--color-dark)',
+                        '--accent-primary-light':
+                            'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                        '--accent-primary-dark':
+                            'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                        '--accent-secondary-light':
+                            'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
+                        '--accent-secondary-dark':
+                            'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
+                    } as React.CSSProperties)) ||
+                {}
             }
         >
             <NextSeo

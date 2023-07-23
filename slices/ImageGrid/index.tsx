@@ -1,5 +1,5 @@
 import { Content } from '@prismicio/client';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { ImageLoader } from '../../src/util/ImageLoader';
 import Link from 'next/link';
 import PageContent from '@/components/PageContent';
@@ -16,6 +16,7 @@ const Container = styled.section`
     user-select: none;
 `;
 const Grid = styled.div`
+    overflow: hidden;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     gap: var(--block-spacer);
@@ -23,10 +24,9 @@ const Grid = styled.div`
 const Item = styled.div`
     overflow: hidden;
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     min-height: 2rem;
-    max-height: 18rem;
     border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
@@ -45,6 +45,7 @@ const Item = styled.div`
         display: block;
         height: 100%;
         width: 100%;
+        min-height: 18rem;
 
         img {
             object-fit: cover;
@@ -113,9 +114,11 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                                 <Image
                                     src={image?.url || ''}
                                     alt={image?.alt || title || ''}
-                                    width={image.dimensions?.width!}
-                                    height={image.dimensions?.height!}
+                                    //width={image.dimensions?.width!}
+                                    //height={image.dimensions?.height!}
+                                    //sizes="(max-width: 950px) 100vw, 33vw"
                                     loader={ImageLoader}
+                                    fill
                                 />
 
                                 {title ? (

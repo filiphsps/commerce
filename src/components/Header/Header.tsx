@@ -335,7 +335,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                     <Link href={'/'}>
                         <Image
                             src={store?.logo?.src!}
-                            width={256}
+                            width={250}
                             height={150}
                             alt={`Store logo`}
                             loader={ImageLoader}

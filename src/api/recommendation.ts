@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
-import { ExtractAccentColorsFromImage, PRODUCT_FRAGMENT } from './product';
 
+import { PRODUCT_FRAGMENT } from './product';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
@@ -45,22 +45,6 @@ export const RecommendationApi = async ({
             if (errors) return reject(new Error(errors.join('\n')));
             if (!data?.productRecommendations)
                 return reject(new Error('404: The requested document cannot be found'));
-
-            if (data.productRecommendations)
-                data.productRecommendations = await Promise.all(
-                    data.productRecommendations.map(async (product) => {
-                        if (!product?.images?.edges?.at(0)?.node?.url) return product;
-
-                        try {
-                            product.accent = await ExtractAccentColorsFromImage(
-                                product?.images?.edges?.at(0)?.node?.url
-                            );
-                            return product;
-                        } catch {
-                            return product;
-                        }
-                    })
-                );
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
         } catch (error) {

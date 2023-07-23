@@ -5,11 +5,7 @@ import {
     CountryCode,
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
-import {
-    ExtractAccentColorsFromImage,
-    PRODUCT_FRAGMENT_MINIMAL,
-    ProductVisualsApi
-} from './product';
+import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
@@ -96,14 +92,6 @@ export const CollectionApi = async ({
                         });
                         return edge;
                     }
-
-                    if (!edge.node?.images?.edges?.at(0)?.node?.url) return edge;
-
-                    try {
-                        edge.node.accent = await ExtractAccentColorsFromImage(
-                            edge.node?.images?.edges?.at(0)?.node?.url
-                        );
-                    } catch {}
 
                     return edge;
                 })
