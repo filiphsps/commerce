@@ -61,5 +61,22 @@
 			}
 		},
 		"items": []
+	},
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "full",
+		"primary": {
+			"handle": {
+				"__TYPE__": "FieldContent",
+				"value": "special",
+				"type": "Text"
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": []
+			}
+		]
 	}
 ]

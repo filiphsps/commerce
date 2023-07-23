@@ -63,7 +63,7 @@ body {
     --color-block: #e6e6e6;
     --color-block-shadow: rgba(0, 0, 0, 0.35);
 
-    --color-gray: #848484;
+    --color-gray: #969696;
     --color-green: #1b6e1b;
     --color-green-light: #e1faea;
 
@@ -85,7 +85,7 @@ body {
 
     --block-border-radius-large: 2rem;
     --block-border-radius: 1.25rem;
-    --block-border-radius-small: 1rem;
+    --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
     --block-border-radius-tiny: 0.65rem;
     --block-border-width: 0.35rem;
 

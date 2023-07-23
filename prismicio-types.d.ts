@@ -19,6 +19,42 @@ type CollectionPageDocumentDataSlicesSlice =
  */
 interface CollectionPageDocumentData {
     /**
+     * Show built-in header field in *Collection Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: collection_page.enable_header
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    enable_header: prismic.BooleanField;
+
+    /**
+     * Show built-in collection component field in *Collection Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: collection_page.enable_collection
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    enable_collection: prismic.BooleanField;
+
+    /**
+     * Show built-in description/body field in *Collection Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: collection_page.enable_body
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    enable_body: prismic.BooleanField;
+
+    /**
      * Slice Zone field in *Collection Page*
      *
      * - **Field Type**: Slice Zone
@@ -59,7 +95,52 @@ interface CollectionPageDocumentData {
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
-    meta_title: prismic.KeyTextField;
+    meta_title: prismic.KeyTextField
+    /**
+     * Primary accent field in *Collection Page*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection_page.accent_primary
+     * - **Tab**: Visuals
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */;
+    accent_primary: prismic.ColorField;
+
+    /**
+     * Primary accent luminosity field in *Collection Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: collection_page.accent_primary_dark
+     * - **Tab**: Visuals
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    accent_primary_dark: prismic.BooleanField;
+
+    /**
+     * Secondary accent field in *Collection Page*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: collection_page.accent_secondary
+     * - **Tab**: Visuals
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    accent_secondary: prismic.ColorField;
+
+    /**
+     * Secondary accent luminosity field in *Collection Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: collection_page.accent_secondary_dark
+     * - **Tab**: Visuals
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    accent_secondary_dark: prismic.BooleanField;
 }
 
 /**
@@ -1057,9 +1138,37 @@ export type CollectionSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Collection → Primary*
+ */
+export interface CollectionSliceFullPrimary {
+    /**
+     * Collection handle field in *Collection → Primary*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: ahlgrens-bilar
+     * - **API ID Path**: collection.primary.handle
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    handle: prismic.KeyTextField;
+}
+
+/**
+ * Full variation for Collection Slice
+ *
+ * - **API ID**: `full`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type CollectionSliceFull = prismic.SharedSliceVariation<
+    'full',
+    Simplify<CollectionSliceFullPrimary>,
+    never
+>;
+
+/**
  * Slice variation for *Collection*
  */
-type CollectionSliceVariation = CollectionSliceDefault;
+type CollectionSliceVariation = CollectionSliceDefault | CollectionSliceFull;
 
 /**
  * Collection Shared Slice
@@ -1332,6 +1441,7 @@ declare module '@prismicio/client' {
             CollectionSlice,
             CollectionSliceVariation,
             CollectionSliceDefault,
+            CollectionSliceFull,
             IconGridSlice,
             IconGridSliceVariation,
             IconGridSliceDefault,

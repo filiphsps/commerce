@@ -136,13 +136,13 @@ const Container = styled.div<{ noBlend?: boolean }>`
         ${Primary} {
             @keyframes float {
                 0% {
-                    transform: translateY(0.5rem) scale(1);
+                    transform: translateY(-0.5rem) scale(1.05, 1);
                 }
                 50% {
-                    transform: translateY(-0.5rem) scale(1.05);
+                    transform: translateY(0.5rem) scale(1, 1.05);
                 }
                 100% {
-                    transform: translateY(0.5rem) scale(1);
+                    transform: translateY(-0.5rem) scale(1.05, 1);
                 }
             }
             transform: translateY(0);

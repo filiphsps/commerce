@@ -382,15 +382,15 @@ const Tab = styled.div`
     text-align: center;
     font-size: 1.5rem;
     line-height: 1.75rem;
-    font-weight: 600;
+    font-weight: 500;
     transition: 250ms ease-in-out;
     cursor: pointer;
     user-select: none;
 
     &.Active,
     &:hover {
-        color: var(--accent-primary);
-        border-color: var(--accent-primary);
+        color: var(--accent-primary-dark);
+        font-weight: 700;
     }
 `;
 const TabContent = styled.div`
@@ -462,7 +462,7 @@ const Container = styled(Page)`
         ${ProductPageContent} {
             &::before {
                 inset: 0;
-                height: 30vh;
+                height: 35vh;
 
                 @media (min-width: 1260px) {
                     right: calc(52rem + var(--block-padding-large) * 2);
@@ -789,8 +789,18 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         '',
                     siteName: store.name,
                     locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
-                    images:
-                        product.images?.edges
+                    images: [
+                        ...((page?.data?.meta_image && [
+                            {
+                                url: page?.data?.meta_image!.url as string,
+                                width: page?.data?.meta_image.dimensions?.width as number,
+                                height: page?.data?.meta_image.dimensions?.height as number,
+                                alt: page?.data?.meta_image.alt || '',
+                                secureUrl: page?.data?.meta_image.url as string
+                            }
+                        ]) ||
+                            []),
+                        ...(product.images?.edges
                             ?.map((edge) => {
                                 const image = edge!.node;
 
@@ -802,7 +812,8 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     secureUrl: image!.url as string
                                 };
                             })
-                            .filter((item) => item) || []
+                            .filter((item) => item) || [])
+                    ]
                 }}
             />
 
@@ -1221,7 +1232,7 @@ export const getStaticProps: GetStaticProps<{
             page = await client.getByUID('product_page', handle, {
                 lang: locale
             });
-        } catch {
+        } catch (error) {
             try {
                 page = await client.getByUID('product_page', handle);
             } catch {}

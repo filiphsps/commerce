@@ -44,8 +44,8 @@ const OptionValue = styled.div<{
     ${({ selected }) =>
         selected &&
         css`
-            border-color: var(--accent-primary);
-            color: var(--accent-primary-dark);
+            border-color: var(--accent-primary-dark);
+            color: var(--accent-primary-text);
         `}
 
     ${({ disabled }) =>

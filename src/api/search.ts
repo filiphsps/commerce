@@ -90,7 +90,12 @@ export const SearchPredictionApi = async ({
     query: string;
     locale?: string;
 }): Promise<{
-    products: Product[];
+    products?: Product[];
+    queries?: {
+        styledText: string;
+        text: string;
+        trackingParameters?: string | null;
+    }[];
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
@@ -124,8 +129,11 @@ export const SearchPredictionApi = async ({
             }
         });
 
+        const { queries, products } = data?.predictiveSearch;
+
         return resolve({
-            product: []
-        } as any);
+            products,
+            queries
+        });
     });
 };

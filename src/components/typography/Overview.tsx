@@ -123,7 +123,7 @@ export const Overview: FunctionComponent<OverviewProps> = ({
 
     return (
         <Container style={style} className="TextBlock Block" layout={layout}>
-            <ImageContainer fill={imageStyle === 'cover'}>
+            <ImageContainer fill={imageStyle === 'cover' || undefined}>
                 <ImageWrapper>
                     <Image
                         src={image?.url}

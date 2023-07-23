@@ -19,7 +19,7 @@ const Container = styled.nav`
     border-radius: var(--block-border-radius);
     font-size: 1.5rem;
     line-height: 1.5px;
-    font-weight: 700;
+    font-weight: 600;
 `;
 
 const Content = styled.ol`
@@ -33,7 +33,7 @@ const Content = styled.ol`
 const Link = styled(NextLink)`
     display: flex;
     height: 100%;
-    color: var(--accent-primary);
+    color: var(--accent-primary-dark);
 
     span {
         display: block;
@@ -42,7 +42,7 @@ const Link = styled(NextLink)`
 
     &:hover,
     &:active {
-        color: var(--accent-primary-light);
+        color: var(--accent-secondary-dark);
     }
 `;
 
@@ -57,7 +57,8 @@ const Item = styled.li`
 
     &:last-child {
         ${Link} {
-            color: var(--accent-primary-light);
+            font-weight: 800;
+            color: var(--accent-secondary-dark);
         }
     }
 `;

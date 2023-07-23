@@ -1,10 +1,10 @@
 import { FunctionComponent, useState } from 'react';
-import { Subtitle, Title } from '../PageHeader/PageHeader';
 
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import ReactStars from 'react-rating-stars-component';
+import { Subtitle } from '../PageHeader/PageHeader';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -28,9 +28,16 @@ const Meta = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
 `;
-const ReviewTitle = styled(Title)``;
-const Author = styled(Subtitle)`
+const ReviewTitle = styled(Subtitle)`
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+    font-weight: 500;
+`;
+const Author = styled.div`
     opacity: 0.75;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-weight: 600;
 `;
 const Body = styled.div`
     margin-top: 1rem;
@@ -45,7 +52,7 @@ const Body = styled.div`
 const FormHeader = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
 `;
 
 const Form = styled.section`

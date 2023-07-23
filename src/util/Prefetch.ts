@@ -1,8 +1,18 @@
+import {
+    CollectionPageDocument,
+    CustomPageDocument,
+    ProductPageDocument
+} from '../../prismicio-types';
+
 import { CollectionApi } from '../api/collection';
-import { CustomPageDocument } from '../../prismicio-types';
 import { i18n } from '../../next-i18next.config.cjs';
 
-const Prefetch = (page: CustomPageDocument<string>, query: any, locale?: string) => {
+const Prefetch = (
+    page: CustomPageDocument<string> | ProductPageDocument<string> | CollectionPageDocument<string>,
+    query: any,
+    locale?: string,
+    initialData?: any
+) => {
     if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
     return new Promise<{
@@ -14,12 +24,11 @@ const Prefetch = (page: CustomPageDocument<string>, query: any, locale?: string)
         if (!page) return reject(new Error('404: Invalid page'));
 
         const slices = page?.data.slices;
-        let collections = {},
-            products = {},
-            shop = {},
-            vendors = {};
+        let collections = initialData?.collections || {},
+            products = initialData?.products || {},
+            shop = initialData?.shop || {},
+            vendors = initialData?.vendors || {};
 
-        // FIXME: support nested components
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
             const type = slice?.slice_type;
@@ -28,7 +37,7 @@ const Prefetch = (page: CustomPageDocument<string>, query: any, locale?: string)
             try {
                 switch (type) {
                     case 'collection':
-                        if (handle && !process.browser) {
+                        if (handle && !collections[handle] && slice.variation === 'default') {
                             collections[handle] = await CollectionApi({ handle, locale });
                             if (slice.primary.limit && slice.primary.limit > 0)
                                 collections[handle].products.edges = collections[

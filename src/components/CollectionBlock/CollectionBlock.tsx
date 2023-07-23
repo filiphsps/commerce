@@ -1,5 +1,5 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -295,24 +295,22 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         };
     }, [contentRef.current]);
 
-    const products = (collection?.products?.edges || collection?.products?.edges || []).map(
-        (edge, index) => {
-            if (limit && index >= limit) return null;
-            if (!edge?.node) return null;
+    const products = (collection?.products?.edges || []).map((edge, index) => {
+        if (limit && index >= limit) return null;
+        if (!edge?.node) return null;
 
-            const product = edge.node;
-            return (
-                <ProductProvider key={`minimal_${product?.id}`} data={product}>
-                    <ProductCard
-                        handle={product?.handle}
-                        isHorizontal={isHorizontal}
-                        store={store}
-                        className={(index === 0 && 'First') || ''}
-                    />
-                </ProductProvider>
-            );
-        }
-    );
+        const product = edge.node;
+        return (
+            <ProductProvider key={`minimal_${product?.id}`} data={product}>
+                <ProductCard
+                    handle={product?.handle}
+                    isHorizontal={isHorizontal}
+                    store={store}
+                    className={(index === 0 && 'First') || ''}
+                />
+            </ProductProvider>
+        );
+    });
 
     const view_more = limit &&
         collection?.products?.edges &&

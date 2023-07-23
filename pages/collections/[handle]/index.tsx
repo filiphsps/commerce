@@ -16,6 +16,7 @@ import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import { Prefetch } from 'src/util/Prefetch';
 import { RedirectCollectionApi } from 'src/api/redirects';
 import { SliceZone } from '@prismicio/react';
 import { StoreModel } from '../../../src/models/StoreModel';
@@ -43,7 +44,8 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
     store,
     collection: collectionData,
     page,
-    vendors
+    vendors,
+    prefetch
 }) => {
     const router = useRouter();
 
@@ -58,13 +60,10 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
         }
     );
 
-    if (!collection) return <Error statusCode={404} />;
-    let accents: string[] = [];
-    if ((collection as any).accents?.value)
-        accents = JSON.parse((collection as any).accents?.value);
+    if (!collection && !page) return <Error statusCode={404} />;
 
     const subtitle =
-        ((collection as any).shortDescription?.value && (
+        ((collection as any)?.shortDescription?.value && (
             <ShortDescription
                 dangerouslySetInnerHTML={{
                     __html:
@@ -130,33 +129,62 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
             <PageContent
                 primary
                 style={
-                    (accents?.length &&
+                    (page?.data &&
                         ({
-                            //'--background': accents?.[0] || 'var(--color-block)',
-                            '--foreground': accents?.[0] || 'var(--color-block)'
+                            '--accent-primary': page.data.accent_primary,
+                            '--accent-primary-light':
+                                'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                            '--accent-primary-dark':
+                                'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                            '--accent-primary-text':
+                                (page.data.accent_primary_dark && 'var(--color-bright)') ||
+                                'var(--color-dark)',
+
+                            '--accent-secondary': page.data.accent_secondary,
+                            '--accent-secondary-light':
+                                'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
+                            '--accent-secondary-dark':
+                                'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))',
+                            '--accent-secondary-text':
+                                (page.data.accent_secondary_dark && 'var(--color-bright)') ||
+                                'var(--color-dark)'
                         } as React.CSSProperties)) ||
-                    {}
+                    undefined
                 }
             >
-                <PageHeader title={collection.title} subtitle={subtitle} />
+                {((!page?.data || page.data.enable_header) && (
+                    <PageHeader title={collection.title} subtitle={subtitle} />
+                )) ||
+                    null}
 
-                <CollectionBlock
-                    handle={`${router.query.handle}`}
-                    data={collection}
-                    noLink
-                    hideTitle
-                    store={store!}
+                {((!page?.data || page.data.enable_collection) && (
+                    <CollectionBlock
+                        handle={`${router.query.handle}`}
+                        data={collection}
+                        noLink
+                        hideTitle
+                        store={store!}
+                    />
+                )) ||
+                    null}
+
+                <SliceZone
+                    slices={page?.data.slices}
+                    components={components}
+                    context={{ store, prefetch }}
                 />
 
-                <SliceZone slices={page?.data.slices} components={components} context={{ store }} />
-
-                <Body
-                    dangerouslySetInnerHTML={{
-                        __html: collection?.descriptionHtml || ''
-                    }}
-                />
-
-                {(!page && <Vendors data={vendors} />) || null}
+                {((!page?.data || page.data.enable_body) && (
+                    <>
+                        <Body
+                            dangerouslySetInnerHTML={{
+                                __html: collection?.descriptionHtml || ''
+                            }}
+                        />
+                        <Vendors data={vendors} />
+                    </>
+                )) ||
+                    null}
 
                 <Breadcrumbs
                     pages={[
@@ -200,6 +228,7 @@ export async function getStaticPaths({ locales }) {
 export const getStaticProps: GetStaticProps<{
     collection?: Collection | null;
     page?: CollectionPageDocument<string> | null;
+    prefetch?: any | null;
     vendors?: any | null;
     store?: StoreModel;
     analytics?: Partial<ShopifyPageViewPayload>;
@@ -236,8 +265,8 @@ export const getStaticProps: GetStaticProps<{
         };
     }
 
-    let collection: Collection | null = null;
     let page: CollectionPageDocument<string> | null = null;
+    let collection: Collection | null = null;
     let vendors: any = null;
 
     try {
@@ -255,6 +284,14 @@ export const getStaticProps: GetStaticProps<{
             page = await client.getByUID('collection_page', handle);
         } catch {}
     }
+    const prefetch =
+        (page &&
+            (await Prefetch(page!, params, locale, {
+                collections: {
+                    [handle]: collection
+                }
+            }))) ||
+        null;
 
     try {
         vendors = await VendorsApi();
@@ -264,9 +301,12 @@ export const getStaticProps: GetStaticProps<{
 
     return {
         props: {
-            collection: collection,
+            collection,
             page,
             vendors: vendors ?? null,
+
+            prefetch,
+
             analytics: {
                 pageType: AnalyticsPageType.collection,
                 resourceId: collection?.id || '',
