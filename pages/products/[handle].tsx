@@ -471,7 +471,7 @@ const Container = styled(Page)`
             }
         }
 
-        ${Recommendations} {
+        /*${Recommendations} {
             @media (min-width: 1465px) {
                 padding: 0px;
                 border-radius: 0px;
@@ -487,7 +487,7 @@ const Container = styled(Page)`
             &::before {
                 background: var(--accent-secondary-light);
             }
-        }
+        }*/
     }
 `;
 
@@ -704,7 +704,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         <QuantitySelector>
             <Label>Quantity</Label>
             <QuantityWrapper>
-                <Button type="button" onClick={() => setQuantity(quantity - 1)}>
+                <Button type="button" title="Decrease" onClick={() => setQuantity(quantity - 1)}>
                     <FiMinus />
                 </Button>
                 <Quantity
@@ -715,7 +715,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         setQuantity(val);
                     }}
                 />
-                <Button type="button" onClick={() => setQuantity(quantity + 1)}>
+                <Button type="button" title="Increase" onClick={() => setQuantity(quantity + 1)}>
                     <FiPlus />
                 </Button>
             </QuantityWrapper>

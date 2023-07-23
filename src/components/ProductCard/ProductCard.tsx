@@ -1,6 +1,5 @@
 import {
     ConvertToLocalMeasurementSystem,
-    PRODUCT_ACCENT_CACHE_TIMEOUT,
     ProductApi,
     ProductVisuals,
     ProductVisualsApi
@@ -22,7 +21,6 @@ import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import { StoreModel } from '../../models/StoreModel';
-import TinyCache from 'tinycache';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -537,20 +535,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
         if (quantity > 0) return;
         setQuantity(1);
     }, [quantity]);
-
-    // FIXME: Remove this when our Shopify app does this.
-    useEffect(() => {
-        if (!globalThis.color_cache) {
-            globalThis.color_cache = new TinyCache();
-        }
-
-        if (!product?.images?.edges?.at(0)?.node?.url || !(product as any).accent) return;
-
-        const url = product.images.edges.at(0)?.node?.url!;
-        if (!globalThis.color_cache.get(url)) {
-            globalThis.color_cache.put(url, (product as any).accent, PRODUCT_ACCENT_CACHE_TIMEOUT);
-        }
-    }, [product]);
 
     // TODO: Placeholder card?
     if (!product || !selectedVariant) return null;

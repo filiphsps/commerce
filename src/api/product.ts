@@ -7,13 +7,9 @@ import {
     ProductEdge,
     WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { FinalColor, extractColors } from 'extract-colors';
 
-import Color from 'color';
 import ConvertUnits from 'convert-units';
 import { NextLocaleToCountry } from '../util/Locale';
-import TinyCache from 'tinycache';
-import getPixels from 'get-pixels';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
@@ -233,75 +229,17 @@ export interface ExtractAccentColorsFromImageRes {
     secondary_dark: string;
     secondary_foreground: string;
 }
-export const PRODUCT_ACCENT_CACHE_TIMEOUT = 6 * 60 * 60 * 1000; // Set 6 hour maximum timeout
 export const ExtractAccentColorsFromImage = (
     url?: string
 ): Promise<ExtractAccentColorsFromImageRes> => {
-    if (!globalThis.color_cache) {
-        globalThis.color_cache = new TinyCache();
-    }
-
-    const setupColors = (colors: FinalColor[]): ExtractAccentColorsFromImageRes => {
-        const sorted = colors.sort((a, b) => b.area - a.area);
-
-        let primary = Color(sorted.at(0)!.hex).darken(0.25).desaturate(0.15);
-        const secondary = Color(sorted.at(1)!.hex).darken(0.15).desaturate(0.15);
-
-        if (primary.saturationl() < 10 && primary.saturationv() < 10) {
-            return setupColors(sorted.slice(1));
-        }
-
-        const primaryIsDark = primary.lightness() < 65;
-        if (primaryIsDark && !primary.isDark()) {
-            primary = primary.saturate(0.25).darken(0.45);
-        }
-
-        return {
-            primary: primary.hex().toString(),
-            primary_foreground: (primaryIsDark && '#ececec') || '#0e0e0e',
-            secondary: secondary.hex().toString(),
-            secondary_dark: secondary.darken(0.35).hex().toString(),
-            secondary_foreground: (secondary.isDark() && '#ececec') || '#0e0e0e'
-        };
-    };
-
     return new Promise(async (resolve, reject) => {
-        if (!url) return reject(new Error('No image url.'));
-
-        if (globalThis.color_cache) {
-            const res = globalThis.color_cache.get(url) as ExtractAccentColorsFromImageRes | null;
-            if (res) return resolve(res);
-        }
-
-        try {
-            if (typeof window === 'undefined') {
-                return getPixels(url, async (error, pixels) => {
-                    if (error) return reject(error);
-
-                    const data = [...pixels.data];
-                    const width = Math.round(Math.sqrt(data.length / 4));
-                    const height = width;
-
-                    const res = setupColors(await extractColors({ data, width, height }));
-
-                    if (globalThis.color_cache) {
-                        globalThis.color_cache.put(url, res, PRODUCT_ACCENT_CACHE_TIMEOUT);
-                    }
-
-                    return resolve(res);
-                });
-            } else {
-                const res = setupColors(await extractColors(url, { crossOrigin: 'anonymous' }));
-
-                if (globalThis.color_cache) {
-                    globalThis.color_cache.put(url, res, PRODUCT_ACCENT_CACHE_TIMEOUT);
-                }
-                return resolve(res);
-            }
-        } catch (error) {
-            console.error(error);
-            return reject(error);
-        }
+        return resolve({
+            primary: '#F9EFD2',
+            primary_foreground: '#101418',
+            secondary: '#E8A0BF',
+            secondary_dark: '#BA90C6',
+            secondary_foreground: '#101418'
+        });
     });
 };
 
