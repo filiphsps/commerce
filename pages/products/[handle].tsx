@@ -462,7 +462,7 @@ const Container = styled(Page)`
         ${ProductPageContent} {
             &::before {
                 inset: 0;
-                height: 35vh;
+                height: 40vh;
 
                 @media (min-width: 1260px) {
                     right: calc(52rem + var(--block-padding-large) * 2);

@@ -55,10 +55,6 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
             }
         `}
 
-    @media (max-width: 395px) {
-        height: 100%;
-    }
-
     &:hover {
         padding: var(--block-padding-small);
     }
