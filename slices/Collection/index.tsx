@@ -2,11 +2,11 @@ import { Content, asHTML, asText } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
 import CollectionBlock from '@/components/CollectionBlock';
-import Link from 'next/link';
 import PageContent from '@/components/PageContent';
+import { Title } from '@/components/PageHeader/PageHeader';
 import { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
-import { Title } from '@/components/PageHeader/PageHeader';
+import Link from 'next/link';
 
 const Container = styled.section`
     width: 100%;
@@ -77,6 +77,8 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
     return (
         <Container
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
             style={
                 {
                     '--background': slice.primary.accent || 'var(--color-block)',

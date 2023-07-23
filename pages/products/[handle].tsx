@@ -502,7 +502,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const router = useRouter();
     const cart = useCart();
     const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
-    const { product: data, setSelectedOption, selectedVariant } = useProduct();
+    const { product: productData, setSelectedOption, selectedVariant } = useProduct();
     const [pastel, setPastel] = useState(false);
 
     const addedTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -526,12 +526,12 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
     const { data: product } = useSWR(
         {
-            handle: data?.handle!,
+            handle: productData?.handle!,
             locale: router.locale
         },
         ProductApi,
         {
-            fallbackData: data as Product
+            fallbackData: productData as Product
         }
     );
 
@@ -547,11 +547,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 
     const { data: recommendations } = useSWR(
-        [`recommendations_${data?.id}`],
+        [`recommendations_${product?.id}`],
         () =>
-            (data?.id &&
+            (product?.id &&
                 RecommendationApi({
-                    id: data?.id!,
+                    id: product?.id!,
                     locale: router.locale
                 })) ||
             undefined,
@@ -561,11 +561,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 
     const { data: reviews } = useSWR(
-        [`reviews_${data?.id}`],
+        [`reviews_${product?.id}`],
         () =>
-            (data?.id &&
+            (product?.id &&
                 ReviewsProductApi({
-                    id: data?.id!,
+                    id: product?.id!,
                     locale: router.locale
                 })) ||
             undefined,
@@ -575,7 +575,10 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 
     useEffect(() => {
-        if (visuals?.transparentBackgrounds && !pastel) setPastel(true);
+        if (!visuals?.transparentBackgrounds || pastel) return;
+        setTimeout(() => {
+            setPastel(true);
+        }, 250);
     }, [visuals]);
 
     const setProductOption = useCallback(

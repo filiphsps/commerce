@@ -39,10 +39,17 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             currencyCode
         }
     }
-    options(first: 250) {
+    options(first: 5) {
         id
         name
         values
+    }
+    sellingPlanGroups(first: 5) {
+        edges {
+            node {
+                name
+            }
+        }
     }
     variants(first: 5) {
         edges {

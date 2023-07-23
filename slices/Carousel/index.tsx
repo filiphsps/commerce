@@ -74,7 +74,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
 
     return (
         <>
-            <Container>
+            <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
                 <PageContent>
                     <Content>
                         <Slider {...settings}>

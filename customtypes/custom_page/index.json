@@ -23,7 +23,8 @@
                         "text_block": { "type": "SharedSlice" },
                         "collapsible_text": { "type": "SharedSlice" },
                         "vendors": { "type": "SharedSlice" },
-                        "icon_grid": { "type": "SharedSlice" }
+                        "icon_grid": { "type": "SharedSlice" },
+                        "alert": { "type": "SharedSlice" }
                     }
                 }
             }

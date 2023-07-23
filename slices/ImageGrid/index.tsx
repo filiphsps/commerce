@@ -104,7 +104,7 @@ export type ImageGridProps = SliceComponentProps<Content.ImageGridSlice>;
  */
 const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
     return (
-        <Container>
+        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
                 <Grid>
                     {slice.items.map(({ href, title, image }) => (

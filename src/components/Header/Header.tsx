@@ -126,13 +126,16 @@ const Navigation = styled.nav`
     a {
         cursor: pointer;
 
-        &:hover,
-        &:active,
-        &.Active {
-            color: var(--accent-primary);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover,
+            &:active,
+            &.Active {
+                color: var(--accent-primary);
+            }
         }
 
         &.Active {
+            color: var(--accent-primary);
             text-decoration: underline;
             text-decoration-style: solid;
             text-decoration-thickness: 0.2rem;
@@ -213,9 +216,11 @@ const Action = styled.div`
     cursor: pointer;
     transition: 250ms all ease-in-out;
 
-    &:hover {
-        background: var(--accent-secondary);
-        color: var(--accent-secondary-text);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--accent-secondary);
+            color: var(--accent-secondary-text);
+        }
     }
 
     font-weight: 600;
@@ -398,10 +403,8 @@ const Header = styled.header<{ scrolled?: boolean }>`
     ${({ scrolled }) =>
         scrolled &&
         css`
-            @media (min-width: 950px) {
-                border-bottom-color: var(--accent-secondary);
-                box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
-            }
+            border-bottom-color: var(--accent-secondary);
+            box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
         `}
 
     @media (min-width: 950px) {

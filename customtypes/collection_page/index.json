@@ -7,7 +7,22 @@
     "json": {
         "Main": {
             "uid": { "config": { "label": "UID" }, "type": "UID" },
-            "slices": { "type": "Slices", "fieldset": "Slice Zone", "config": { "choices": {} } }
+            "slices": {
+                "type": "Slices",
+                "fieldset": "Slice Zone",
+                "config": {
+                    "choices": {
+                        "alert": { "type": "SharedSlice" },
+                        "icon_grid": { "type": "SharedSlice" },
+                        "vendors": { "type": "SharedSlice" },
+                        "carousel": { "type": "SharedSlice" },
+                        "collapsible_text": { "type": "SharedSlice" },
+                        "image_grid": { "type": "SharedSlice" },
+                        "collection": { "type": "SharedSlice" },
+                        "text_block": { "type": "SharedSlice" }
+                    }
+                }
+            }
         },
         "SEO & Metadata": {
             "meta_description": {

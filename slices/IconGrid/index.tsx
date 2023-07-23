@@ -67,7 +67,7 @@ export type IconGridProps = SliceComponentProps<Content.IconGridSlice>;
  */
 const IconGrid = ({ slice }: IconGridProps): JSX.Element => {
     return (
-        <Container>
+        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
                 <ContentContainer>
                     {slice.items.map((item, index) => (

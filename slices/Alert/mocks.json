@@ -1,0 +1,25 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"severity": {
+				"__TYPE__": "FieldContent",
+				"value": "info",
+				"type": "Select"
+			},
+			"content": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Ad est nisi labore laborum magna amet. Ut eu nisi dolor veniam cupidatat sint amet in deserunt exercitation aliquip veniam reprehenderit do. Nostrud excepteur reprehenderit sint amet quis ad."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

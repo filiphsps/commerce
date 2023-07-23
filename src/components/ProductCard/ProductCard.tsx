@@ -1,12 +1,14 @@
 import {
     ConvertToLocalMeasurementSystem,
     PRODUCT_ACCENT_CACHE_TIMEOUT,
+    ProductApi,
     ProductVisuals,
     ProductVisualsApi
 } from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import {
+    Product,
     ProductVariantEdge,
     Image as ShopifyImage
 } from '@shopify/hydrogen-react/storefront-api-types';
@@ -427,8 +429,19 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
-    const { product, selectedVariant, setSelectedVariant } = useProduct();
+    const { product: productData, selectedVariant, setSelectedVariant } = useProduct();
     const [cartStore, setCartStore] = useStore<any>('cart');
+
+    const { data: product } = useSWR(
+        {
+            id: productData?.handle!,
+            locale: router.locale
+        },
+        ProductApi,
+        {
+            fallbackData: productData as Product
+        }
+    );
 
     const { data: visuals } = useSWR(
         {

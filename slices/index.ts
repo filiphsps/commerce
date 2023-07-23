@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 
 export const components = {
+    alert: dynamic(() => import('./Alert')),
     carousel: dynamic(() => import('./Carousel')),
     collapsible_text: dynamic(() => import('./CollapsibleText')),
     collection: dynamic(() => import('./Collection')),

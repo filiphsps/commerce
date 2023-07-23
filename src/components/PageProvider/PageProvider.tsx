@@ -140,6 +140,10 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const above = header?.announcements.filter((item) => item.location === 'above') || [];
     const bellow = header?.announcements.filter((item) => item.location === 'bellow') || [];
 
+    // TODO: handle this way better.
+    const isSliceSimulator = router.asPath === '/slice-simulator/';
+    if (isSliceSimulator) return <>{props.children}</>;
+
     return (
         <Container
             className={`PageProvider ${props.className || ''} ${

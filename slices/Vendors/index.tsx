@@ -18,9 +18,9 @@ export type VendorsProps = SliceComponentProps<Content.VendorsSlice>;
 /**
  * Component for "Vendors" Slices.
  */
-const Vendors = ({}: VendorsProps): JSX.Element => {
+const Vendors = ({ slice }: VendorsProps): JSX.Element => {
     return (
-        <Container>
+        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
                 <VendorsComponent />
             </PageContent>

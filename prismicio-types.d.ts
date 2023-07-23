@@ -4,7 +4,15 @@ import type * as prismic from '@prismicio/client';
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type CollectionPageDocumentDataSlicesSlice = never;
+type CollectionPageDocumentDataSlicesSlice =
+    | AlertSlice
+    | IconGridSlice
+    | VendorsSlice
+    | CarouselSlice
+    | CollapsibleTextSlice
+    | ImageGridSlice
+    | CollectionSlice
+    | TextBlockSlice;
 
 /**
  * Content for Collection Page documents
@@ -76,7 +84,8 @@ type CustomPageDocumentDataSlicesSlice =
     | TextBlockSlice
     | CollapsibleTextSlice
     | VendorsSlice
-    | IconGridSlice;
+    | IconGridSlice
+    | AlertSlice;
 
 /**
  * Content for Custom Page documents
@@ -467,7 +476,9 @@ type ProductPageDocumentDataSlicesSlice =
     | CollectionSlice
     | ImageGridSlice
     | CarouselSlice
-    | TextBlockSlice;
+    | TextBlockSlice
+    | CollapsibleTextSlice
+    | AlertSlice;
 
 type ProductPageDocumentDataSlices2Slice =
     | CollectionSlice
@@ -728,6 +739,59 @@ export type AllDocumentTypes =
     | NavigationDocument
     | ProductPageDocument
     | StoreDocument;
+
+/**
+ * Primary content in *Alert → Primary*
+ */
+export interface AlertSliceDefaultPrimary {
+    /**
+     * Severity field in *Alert → Primary*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: info
+     * - **API ID Path**: alert.primary.severity
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    severity: prismic.SelectField<'info' | 'success' | 'warning' | 'error', 'filled'>;
+
+    /**
+     * Content field in *Alert → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: alert.primary.content
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    content: prismic.RichTextField;
+}
+
+/**
+ * Default variation for Alert Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type AlertSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<AlertSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *Alert*
+ */
+type AlertSliceVariation = AlertSliceDefault;
+
+/**
+ * Alert Shared Slice
+ *
+ * - **API ID**: `alert`
+ * - **Description**: Alert
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type AlertSlice = prismic.SharedSlice<'alert', AlertSliceVariation>;
 
 /**
  * Primary content in *Carousel → Primary*
@@ -1224,6 +1288,9 @@ declare module '@prismicio/client' {
             StoreDocument,
             StoreDocumentData,
             AllDocumentTypes,
+            AlertSlice,
+            AlertSliceVariation,
+            AlertSliceDefault,
             CarouselSlice,
             CarouselSliceVariation,
             CarouselSliceDefault,

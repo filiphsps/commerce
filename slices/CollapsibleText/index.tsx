@@ -1,11 +1,11 @@
 import { Content, asHTML } from '@prismicio/client';
 
-import { FiChevronUp } from 'react-icons/fi';
 import PageContent from '@/components/PageContent';
-import { SliceComponentProps } from '@prismicio/react';
 import TextBlock from '@/components/TextBlock';
-import styled from 'styled-components';
+import { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
+import { FiChevronUp } from 'react-icons/fi';
+import styled from 'styled-components';
 
 const Container = styled.section`
     width: 100%;
@@ -75,6 +75,8 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
 const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     return (
         <Container
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
             style={
                 {
                     '--background': slice.primary.accent || 'var(--color-block)',
