@@ -114,7 +114,6 @@ const ActionBar = styled.div`
 `;
 
 const Container = styled.section<{ background: string; fullWidth?: boolean; slim?: boolean }>`
-    overflow: hidden;
     display: grid;
     justify-content: center;
     align-items: center;
