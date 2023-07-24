@@ -51,8 +51,7 @@ const Header = styled.div`
         color: var(--heading-color);
         font-size: 2.75rem;
         line-height: 3.25rem;
-        font-weight: 500;
-        text-wrap: balance;
+        font-weight: 500
         @media (min-width: 950px) {
             font-size: 4rem;
             line-height: 4.25rem;
