@@ -2,7 +2,6 @@ import * as PrismicDOM from '@prismicio/helpers';
 
 import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 import { Config } from '../../util/Config';
-import EmailCapture from '../EmailCapture';
 import { FooterApi } from '../../api/footer';
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
@@ -204,97 +203,86 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
     // FIXME: Dynamic copyright copy.
 
     // FIXME: Togglable newsletter view.
+
     return (
-        <>
-            <EmailCapture />
-            <FooterContainer>
-                <FooterWrapper>
-                    <FooterBlocksContainer>
-                        <FooterBlock>
-                            <Logo>
-                                {store?.logo?.src && (
-                                    <Image
-                                        src={store.logo.src}
-                                        alt="Logo"
-                                        fill
-                                        loader={ImageLoader}
-                                    />
-                                )}
-                            </Logo>
+        <FooterContainer>
+            <FooterWrapper>
+                <FooterBlocksContainer>
+                    <FooterBlock>
+                        <Logo>
+                            {store?.logo?.src && (
+                                <Image src={store.logo.src} alt="Logo" fill loader={ImageLoader} />
+                            )}
+                        </Logo>
 
-                            <Address
-                                dangerouslySetInnerHTML={{
-                                    __html: PrismicDOM.asText(data?.address, '<br />') || ''
-                                }}
-                            />
+                        <Address
+                            dangerouslySetInnerHTML={{
+                                __html: PrismicDOM.asText(data?.address, '<br />') || ''
+                            }}
+                        />
+                    </FooterBlock>
+
+                    {data?.blocks?.map?.((block) => (
+                        <FooterBlock key={block.title}>
+                            <BlockTitle>{block.title}</BlockTitle>
+                            {block?.items.map((item) => (
+                                <Link
+                                    key={item.handle}
+                                    href={item.handle}
+                                    target={item.handle.startsWith('http') ? '_blank' : ''}
+                                >
+                                    {item.title}
+                                </Link>
+                            ))}
                         </FooterBlock>
+                    ))}
+                </FooterBlocksContainer>
 
-                        {data?.blocks?.map?.((block) => (
-                            <FooterBlock key={block.title}>
-                                <BlockTitle>{block.title}</BlockTitle>
-                                {block?.items.map((item) => (
-                                    <Link
-                                        key={item.handle}
-                                        href={item.handle}
-                                        target={item.handle.startsWith('http') ? '_blank' : ''}
-                                    >
-                                        {item.title}
-                                    </Link>
+                {/* TODO: This should be configurable in prismic. */}
+                <FooterBottomSection>
+                    <FooterBottomSectionBlock>
+                        <AcceptedPaymentMethods store={store!} />
+                        <LegalAndCopyright>
+                            <ImportantLinks>
+                                <Policy href="mailto:dennis@sweetsideofsweden.com">
+                                    Contact Us
+                                </Policy>
+                                <Policy href="/about/">About</Policy>
+                                <Policy href="/privacy-policy/">Privacy Policy</Policy>
+                            </ImportantLinks>
+                        </LegalAndCopyright>
+                    </FooterBottomSectionBlock>
+
+                    <FooterBottomSectionBlock>
+                        <Socials>
+                            {store?.social
+                                ?.filter((social) =>
+                                    ['instagram', 'facebook'].includes(social.name.toLowerCase())
+                                )
+                                .map((social) => (
+                                    <Social key={social.url} href={social.url}>
+                                        <Image
+                                            src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
+                                            fill
+                                            alt={social.name}
+                                            title={social.name}
+                                        />
+                                    </Social>
                                 ))}
-                            </FooterBlock>
-                        ))}
-                    </FooterBlocksContainer>
-
-                    {/* TODO: This should be configurable in prismic. */}
-                    <FooterBottomSection>
-                        <FooterBottomSectionBlock>
-                            <AcceptedPaymentMethods store={store!} />
-                            <LegalAndCopyright>
-                                <ImportantLinks>
-                                    <Policy href="mailto:dennis@sweetsideofsweden.com">
-                                        Contact Us
-                                    </Policy>
-                                    <Policy href="/about/">About</Policy>
-                                    <Policy href="/privacy-policy/">Privacy Policy</Policy>
-                                </ImportantLinks>
-                            </LegalAndCopyright>
-                        </FooterBottomSectionBlock>
-
-                        <FooterBottomSectionBlock>
-                            <Socials>
-                                {store?.social
-                                    ?.filter((social) =>
-                                        ['instagram', 'facebook'].includes(
-                                            social.name.toLowerCase()
-                                        )
-                                    )
-                                    .map((social) => (
-                                        <Social key={social.url} href={social.url}>
-                                            <Image
-                                                src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
-                                                fill
-                                                alt={social.name}
-                                                title={social.name}
-                                            />
-                                        </Social>
-                                    ))}
-                            </Socials>
-                            <LegalAndCopyright>
-                                <Copyright>
-                                    <span>&copy; 2020-{new Date().getFullYear()} </span>
-                                    <span>
-                                        <Link href={`https://${Config.domain}/`}>
-                                            {store?.name}
-                                        </Link>{' '}
-                                        - All rights reserved
-                                    </span>
-                                </Copyright>
-                            </LegalAndCopyright>
-                        </FooterBottomSectionBlock>
-                    </FooterBottomSection>
-                </FooterWrapper>
-            </FooterContainer>
-        </>
+                        </Socials>
+                        <LegalAndCopyright>
+                            <Copyright>
+                                <span>&copy; 2020-{new Date().getFullYear()} </span>
+                                <span>
+                                    <Link href={`https://${Config.domain}/`}>{store?.name}</Link> -
+                                    All rights reserved
+                                </span>
+                            </Copyright>
+                        </LegalAndCopyright>
+                    </FooterBottomSectionBlock>
+                </FooterBottomSection>
+            </FooterWrapper>
+        </FooterContainer>
     );
 };
 
