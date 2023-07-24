@@ -43,13 +43,15 @@
                 "config": {
                     "choices": {
                         "alert": { "type": "SharedSlice" },
-                        "icon_grid": { "type": "SharedSlice" },
                         "vendors": { "type": "SharedSlice" },
-                        "carousel": { "type": "SharedSlice" },
+                        "collection": { "type": "SharedSlice" },
+                        "text_block": { "type": "SharedSlice" },
+                        "banner": { "type": "SharedSlice" },
+                        "icon_grid": { "type": "SharedSlice" },
                         "collapsible_text": { "type": "SharedSlice" },
                         "image_grid": { "type": "SharedSlice" },
-                        "collection": { "type": "SharedSlice" },
-                        "text_block": { "type": "SharedSlice" }
+                        "carousel": { "type": "SharedSlice" },
+                        "spacing": { "type": "SharedSlice" }
                     }
                 }
             }

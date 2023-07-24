@@ -36,7 +36,6 @@ const Body = styled(Content)`
 
 const ShortDescription = styled(Content)`
     overflow: hidden;
-    max-width: 64rem;
 `;
 
 //InferGetStaticPropsType<typeof getStaticProps>

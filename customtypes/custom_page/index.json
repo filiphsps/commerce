@@ -24,7 +24,9 @@
                         "collapsible_text": { "type": "SharedSlice" },
                         "vendors": { "type": "SharedSlice" },
                         "icon_grid": { "type": "SharedSlice" },
-                        "alert": { "type": "SharedSlice" }
+                        "alert": { "type": "SharedSlice" },
+                        "banner": { "type": "SharedSlice" },
+                        "spacing": { "type": "SharedSlice" }
                     }
                 }
             }

@@ -10,7 +10,7 @@ import { StoreModel } from 'src/models/StoreModel';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const Content = styled.div<{ listView?: boolean }>`
+const Content = styled.div<{ listView?: boolean; short?: boolean }>`
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--block-spacer);
@@ -21,6 +21,25 @@ const Content = styled.div<{ listView?: boolean }>`
     section {
         min-width: unset;
     }
+
+    ${({ short, listView }) =>
+        !listView &&
+        short &&
+        css`
+            @media (min-width: 625px) {
+                && {
+                    grid-template-columns: repeat(
+                        auto-fit,
+                        minmax(
+                            var(--component-product-card-width),
+                            calc(
+                                var(--component-product-card-width) + var(--block-padding-large) * 4
+                            )
+                        )
+                    );
+                }
+            }
+        `}
 
     ${({ listView }) =>
         !listView &&
@@ -88,10 +107,17 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
                     Grid
                 </ActionBarItem>
             </ActionBar>
-            <Content listView={listView}>
+            <Content
+                listView={listView}
+                short={(collection?.products?.edges?.length || 0) <= 5 || undefined}
+            >
                 {(collection?.products?.edges || []).map(({ node: product }) => (
                     <ProductProvider key={`minimal_${product?.id}`} data={product}>
-                        <ProductCard listView={listView} handle={product?.handle} store={store} />
+                        <ProductCard
+                            listView={listView || undefined}
+                            handle={product?.handle}
+                            store={store}
+                        />
                     </ProductProvider>
                 ))}
             </Content>

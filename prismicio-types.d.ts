@@ -6,13 +6,15 @@ type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 type CollectionPageDocumentDataSlicesSlice =
     | AlertSlice
-    | IconGridSlice
     | VendorsSlice
-    | CarouselSlice
+    | CollectionSlice
+    | TextBlockSlice
+    | BannerSlice
+    | IconGridSlice
     | CollapsibleTextSlice
     | ImageGridSlice
-    | CollectionSlice
-    | TextBlockSlice;
+    | CarouselSlice
+    | SpacingSlice;
 
 /**
  * Content for Collection Page documents
@@ -166,7 +168,9 @@ type CustomPageDocumentDataSlicesSlice =
     | CollapsibleTextSlice
     | VendorsSlice
     | IconGridSlice
-    | AlertSlice;
+    | AlertSlice
+    | BannerSlice
+    | SpacingSlice;
 
 /**
  * Content for Custom Page documents
@@ -559,7 +563,9 @@ type ProductPageDocumentDataSlicesSlice =
     | CarouselSlice
     | TextBlockSlice
     | CollapsibleTextSlice
-    | AlertSlice;
+    | AlertSlice
+    | BannerSlice
+    | SpacingSlice;
 
 type ProductPageDocumentDataSlices2Slice =
     | CollectionSlice
@@ -1382,6 +1388,83 @@ type ImageGridSliceVariation = ImageGridSliceDefault;
 export type ImageGridSlice = prismic.SharedSlice<'image_grid', ImageGridSliceVariation>;
 
 /**
+ * Normal variation for Spacing Slice
+ *
+ * - **API ID**: `normal`
+ * - **Description**: Normal
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SpacingSliceNormal = prismic.SharedSliceVariation<
+    'normal',
+    Record<string, never>,
+    never
+>;
+
+/**
+ * Large variation for Spacing Slice
+ *
+ * - **API ID**: `large`
+ * - **Description**: Normal
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SpacingSliceLarge = prismic.SharedSliceVariation<'large', Record<string, never>, never>;
+
+/**
+ * Small variation for Spacing Slice
+ *
+ * - **API ID**: `small`
+ * - **Description**: Normal
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SpacingSliceSmall = prismic.SharedSliceVariation<'small', Record<string, never>, never>;
+
+/**
+ * Primary content in *Spacing → Primary*
+ */
+export interface SpacingSliceCustomPrimary {
+    /**
+     * Scaling field in *Spacing → Primary*
+     *
+     * - **Field Type**: Number
+     * - **Placeholder**: *None*
+     * - **API ID Path**: spacing.primary.scaling
+     * - **Documentation**: https://prismic.io/docs/field#number
+     */
+    scaling: prismic.NumberField;
+}
+
+/**
+ * Custom variation for Spacing Slice
+ *
+ * - **API ID**: `custom`
+ * - **Description**: Normal
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SpacingSliceCustom = prismic.SharedSliceVariation<
+    'custom',
+    Simplify<SpacingSliceCustomPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *Spacing*
+ */
+type SpacingSliceVariation =
+    | SpacingSliceNormal
+    | SpacingSliceLarge
+    | SpacingSliceSmall
+    | SpacingSliceCustom;
+
+/**
+ * Spacing Shared Slice
+ *
+ * - **API ID**: `spacing`
+ * - **Description**: Spacing
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type SpacingSlice = prismic.SharedSlice<'spacing', SpacingSliceVariation>;
+
+/**
  * Primary content in *Overview → Items*
  */
 export interface TextBlockSliceDefaultItem {
@@ -1539,6 +1622,12 @@ declare module '@prismicio/client' {
             ImageGridSlice,
             ImageGridSliceVariation,
             ImageGridSliceDefault,
+            SpacingSlice,
+            SpacingSliceVariation,
+            SpacingSliceNormal,
+            SpacingSliceLarge,
+            SpacingSliceSmall,
+            SpacingSliceCustom,
             TextBlockSlice,
             TextBlockSliceVariation,
             TextBlockSliceDefault,

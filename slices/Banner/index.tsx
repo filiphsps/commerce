@@ -5,7 +5,23 @@ import styled, { css } from 'styled-components';
 import Link from 'next/link';
 import color from 'color';
 
-const Container = styled.section<{ background: string }>`
+const Container = styled.section<{ background: string; fullWidth?: boolean }>`
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--background);
+    color: var(--content-color);
+
+    ${({ fullWidth }) =>
+        fullWidth &&
+        css`
+            position: relative;
+            width: calc(100vw - var(--block-padding-large) / 2);
+            margin-left: -50vw;
+            left: 50%;
+        `};
+
     --background: ${({ background }) => background};
 
     --mixer-color: ${({ background }) =>
@@ -13,33 +29,36 @@ const Container = styled.section<{ background: string }>`
     --heading-color: color-mix(in srgb, var(--background) 10%, var(--mixer-color));
     --heading-selected-color: color-mix(in srgb, var(--accent-primary) 85%, var(--mixer-color));
     --content-color: color-mix(in srgb, var(--background) 30%, var(--mixer-color));
-
-    background: var(--background);
-    color: var(--content-color);
 `;
 
 const Contents = styled.div`
     display: grid;
-    grid-template-rows: 1fr auto;
     justify-content: center;
     align-items: center;
+    grid-template-rows: 1fr;
     gap: calc(var(--block-padding-large) * 1.75);
-    padding: 15vh var(--block-padding-large);
+    padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
+    min-height: 30vh;
+    height: 100%;
+    max-width: 1465px;
 
     @media (min-width: 950px) {
         gap: calc(var(--block-padding-large) * 2);
+    }
+
+    @media (min-width: 1465px) {
+        padding: 4rem 10rem;
     }
 `;
 
 const Header = styled.div`
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer-small);
     width: 100%;
     text-align: center;
 
     p {
-        padding-top: var(--block-padding-small);
+        padding-top: var(--block-padding-large);
         font-size: 2rem;
         line-height: 2.5rem;
         font-weight: 400;
@@ -62,7 +81,7 @@ const Header = styled.div`
         text-wrap: balance;
         @media (min-width: 950px) {
             font-size: 4rem;
-            line-height: 5rem;
+            line-height: 4.25rem;
         }
 
         strong,
@@ -73,7 +92,7 @@ const Header = styled.div`
     }
 `;
 
-const Action = styled(Link)<{ primary?: boolean }>`
+const Action = styled(Link)<{ primary?: string }>`
     padding: var(--block-padding) calc(var(--block-padding-large) * 1.75);
     border-radius: calc(var(--block-border-radius-large) * 2);
     border: var(--block-border-width) solid var(--heading-selected-color);
@@ -92,7 +111,7 @@ const Action = styled(Link)<{ primary?: boolean }>`
     }
 
     ${({ primary }) =>
-        primary &&
+        primary === 'true' &&
         css`
             background: var(--heading-selected-color);
             color: var(--accent-primary-text);
@@ -111,6 +130,10 @@ const ActionBar = styled.div`
     justify-content: center;
     align-items: center;
     gap: var(--block-padding-large);
+
+    &:empty {
+        display: none;
+    }
 
     @media (min-width: 950px) {
         gap: calc(var(--block-padding-large) * 2);
@@ -140,8 +163,8 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                     {slice.items.map((cta, index) => (
                         <Action
                             key={index}
-                            primary={cta.type || undefined}
-                            href={asLink(cta.target)?.toString()!}
+                            primary={(cta.type || false).toString()}
+                            href={((cta.target && asLink(cta.target)?.toString()!) || {})!}
                         >
                             <PrismicRichText field={cta.title} />
                         </Action>

@@ -10,6 +10,7 @@ export const components = {
     collection: dynamic(() => import('./Collection')),
     icon_grid: dynamic(() => import('./IconGrid')),
     image_grid: dynamic(() => import('./ImageGrid')),
+    spacing: dynamic(() => import('./Spacing')),
     text_block: dynamic(() => import('./Overview')),
     vendors: dynamic(() => import('./Vendors'))
 };

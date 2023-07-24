@@ -19,7 +19,9 @@
                         "carousel": { "type": "SharedSlice" },
                         "text_block": { "type": "SharedSlice" },
                         "collapsible_text": { "type": "SharedSlice" },
-                        "alert": { "type": "SharedSlice" }
+                        "alert": { "type": "SharedSlice" },
+                        "banner": { "type": "SharedSlice" },
+                        "spacing": { "type": "SharedSlice" }
                     }
                 }
             }

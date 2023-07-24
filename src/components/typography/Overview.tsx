@@ -38,7 +38,7 @@ const ImageWrapper = styled.div`
         object-fit: contain;
     }
 `;
-const ImageContainer = styled.div<{ fill?: boolean }>`
+const ImageContainer = styled.div<{ expand?: boolean }>`
     grid-area: overview-banner;
     overflow: hidden;
     flex-basis: 40%;
@@ -49,8 +49,8 @@ const ImageContainer = styled.div<{ fill?: boolean }>`
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
 
-    ${({ fill }) =>
-        fill &&
+    ${({ expand }) =>
+        expand &&
         css`
             padding: 0px;
 
@@ -123,7 +123,7 @@ export const Overview: FunctionComponent<OverviewProps> = ({
 
     return (
         <Container style={style} className="TextBlock Block" layout={layout}>
-            <ImageContainer fill={imageStyle === 'cover' || undefined}>
+            <ImageContainer expand={imageStyle === 'cover' || undefined}>
                 <ImageWrapper>
                     <Image
                         src={image?.url}
