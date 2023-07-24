@@ -377,7 +377,6 @@ const Container = styled.section<{ available?: boolean; list?: boolean }>`
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
-    //background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-primary-dark) 200%);
     color: var(--accent-primary-text);
 
     ${({ available }) =>

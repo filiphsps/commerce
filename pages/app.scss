@@ -55,7 +55,7 @@ body {
     --color-sale: #d91e18;
 
     --color-success: #1b6e1b;
-    --color-success-light: #228a22;
+    --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
     --color-danger: #a53d3a;
 
     --color-lights-out: #051821;

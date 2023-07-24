@@ -17,6 +17,7 @@ import { storefrontClient } from './shopify';
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id
     handle
+    availableForSale
     createdAt
     title
     description
@@ -91,6 +92,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
 export const PRODUCT_FRAGMENT = `
     id
     handle
+    availableForSale
     createdAt
     title
     description
