@@ -20,4 +20,9 @@ export const Badge = styled.div`
     font-size: 1.25rem;
     line-height: 1.5rem;
     font-weight: 600;
+
+    &.Vegan {
+        background: var(--color-green);
+        color: var(--color-bright);
+    }
 `;

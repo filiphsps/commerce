@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 const Content = styled.div`
-    overflow-x: hidden;
     max-width: 100%;
-    height: 100%;
+    height: auto;
     font-size: 1.75rem;
     font-weight: 400;
     line-height: 2rem;

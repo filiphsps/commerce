@@ -33,7 +33,7 @@ const OptionValue = styled.div<{
     color: var(--color-dark);
     text-align: center;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     transition: 250ms ease-in-out;
     cursor: pointer;
 
@@ -45,7 +45,7 @@ const OptionValue = styled.div<{
         selected &&
         css`
             border-color: var(--accent-primary-dark);
-            color: var(--accent-primary-text);
+            color: var(--accent-primary-dark);
         `}
 
     ${({ disabled }) =>

@@ -131,17 +131,18 @@ const Options = styled.div`
 const Description = styled(Content)`
     overflow-x: hidden;
 `;
-
 const AddToCart = styled(Button)<{ added: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer);
-    padding: var(--block-padding-large);
-    margin: var(--block-padding-small) 0px;
-    border-radius: var(--block-border-radius-large);
     height: 100%;
     width: 100%;
+    padding: var(--block-padding-large);
+    margin: var(--block-padding-small) 0px;
+    background-color: var(--accent-secondary);
+    color: var(--accent-secondary-text);
+    border-radius: var(--block-border-radius-large);
     font-size: 2rem;
     line-height: 2.25rem;
     font-weight: 600;
@@ -340,7 +341,7 @@ const Recommendations = styled.div`
     z-index: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-large);
     width: 100%;
     margin: var(--block-spacer) 0px;
     padding: var(--block-padding-large);
@@ -365,13 +366,17 @@ const Recommendations = styled.div`
     }
 `;
 const RecommendationsTitle = styled.h3`
+    //max-width: 50vw;
+    font-weight: 500;
     font-size: 2.5rem;
-    font-weight: 600;
+    line-height: 3.25rem;
     color: var(--color-dark);
+    text-wrap: balance;
+    text-align: center;
 
     @media (max-width: 950px) {
         font-size: 2.25rem;
-        font-weight: 700;
+        line-height: 2.75rem;
     }
 `;
 
@@ -469,6 +474,7 @@ const Container = styled(Page)`
                 height: 40vh;
 
                 @media (min-width: 1260px) {
+                    left: -50vw;
                     right: calc(52rem + var(--block-padding-large) * 2);
                     height: 100%;
                 }
@@ -1017,37 +1023,35 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     components={components}
                     context={{ store }}
                 />
-            </ProductPageContent>
 
-            <ProductPageContent
-                primary
-                style={
-                    {
-                        '--color-block': (visuals && 'var(--color-bright)') || undefined
-                    } as React.CSSProperties
-                }
-            >
                 {recommendations?.length && recommendations.length >= 1 && (
-                    <Recommendations>
-                        <RecommendationsTitle>
-                            We think you&apos;ll also love these products
-                        </RecommendationsTitle>
-                        <RecommendationsContent>
-                            <CollectionBlock
-                                data={
-                                    {
-                                        products: {
-                                            edges: recommendations.map((item) => ({
-                                                node: item
-                                            }))
-                                        }
-                                    } as Collection
-                                }
-                                isHorizontal
-                                store={store}
-                            />
-                        </RecommendationsContent>
-                    </Recommendations>
+                    <PageContent
+                        style={
+                            ((pastel && { '--color-block': 'var(--accent-secondary-light)' }) ||
+                                {}) as React.CSSProperties
+                        }
+                    >
+                        <Recommendations>
+                            <RecommendationsTitle>
+                                Frequently enjoyed together with these
+                            </RecommendationsTitle>
+                            <RecommendationsContent>
+                                <CollectionBlock
+                                    data={
+                                        {
+                                            products: {
+                                                edges: recommendations.map((item) => ({
+                                                    node: item
+                                                }))
+                                            }
+                                        } as Collection
+                                    }
+                                    isHorizontal
+                                    store={store}
+                                />
+                            </RecommendationsContent>
+                        </Recommendations>
+                    </PageContent>
                 )}
 
                 <Breadcrumbs

@@ -7,6 +7,7 @@ import styled from 'styled-components';
 const SocialShare = dynamic(() => import('../SocialShare'), { ssr: false });
 
 const Container = styled.nav`
+    z-index: 999;
     overflow: hidden;
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -18,7 +19,7 @@ const Container = styled.nav`
     color: var(--color-dark);
     border-radius: var(--block-border-radius);
     font-size: 1.5rem;
-    line-height: 1.5px;
+    line-height: 1.75rem;
     font-weight: 600;
 `;
 

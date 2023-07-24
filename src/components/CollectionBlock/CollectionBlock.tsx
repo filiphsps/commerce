@@ -82,6 +82,7 @@ const Content = styled.div<{
         horizontal &&
         css`
             padding: var(--block-padding-large) 0px;
+            padding-right: var(--block-spacer-large);
             margin: calc(var(--block-padding-large) * -1) 0px;
             column: none;
             display: grid;
@@ -100,10 +101,6 @@ const Content = styled.div<{
 
             .First {
                 margin-left: calc(var(--block-spacer-large));
-            }
-
-            section {
-                box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
             }
 
             &::after {
