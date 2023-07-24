@@ -21,8 +21,7 @@ const Content = styled.div`
     gap: var(--block-spacer-large);
 
     padding: var(--block-padding-large);
-    background: var(--background);
-    background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
+    background: color-mix(in srgb, var(--background) 40%, var(--color-bright));
     border-radius: var(--block-border-radius);
     color: var(--foreground);
 `;
