@@ -10,10 +10,9 @@ const Contents = styled.div`
     justify-content: center;
     align-items: center;
     grid-template-rows: 1fr;
-    gap: calc(var(--block-padding-large) * 1.75);
     padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
     min-height: 30vh;
-    height: 100%;
+    //height: 100%;
     max-width: 1465px;
 
     @media (min-width: 950px) {
@@ -37,8 +36,8 @@ const Header = styled.div`
         line-height: 2.5rem;
         font-weight: 400;
         @media (min-width: 950px) {
-            font-size: 2.75rem;
-            line-height: 3.25rem;
+            font-size: 2.5rem;
+            line-height: 3rem;
         }
     }
 
@@ -51,10 +50,11 @@ const Header = styled.div`
         color: var(--heading-color);
         font-size: 2.75rem;
         line-height: 3.25rem;
-        font-weight: 500
+        font-weight: 500;
+
         @media (min-width: 950px) {
-            font-size: 4rem;
-            line-height: 4.25rem;
+            font-size: 3rem;
+            line-height: 3.5rem;
         }
 
         strong,
@@ -114,6 +114,7 @@ const ActionBar = styled.div`
 `;
 
 const Container = styled.section<{ background: string; fullWidth?: boolean; slim?: boolean }>`
+    overflow: hidden;
     display: grid;
     justify-content: center;
     align-items: center;

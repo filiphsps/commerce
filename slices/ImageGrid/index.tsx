@@ -18,7 +18,6 @@ const Grid = styled.div`
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: unset;
-    height: 100%;
     width: 100%;
     flex-grow: 1;
     gap: var(--block-spacer-large);
