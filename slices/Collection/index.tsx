@@ -95,7 +95,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                 >
                     <PageContent>
                         <Content>
-                            {asText(slice.primary.title).length > 0 && (
+                            {asText(slice.primary.title)?.length > 0 && (
                                 <Header alignment={slice.primary.alignment}>
                                     <Link
                                         href={`/collections/${slice.primary.handle!}`}

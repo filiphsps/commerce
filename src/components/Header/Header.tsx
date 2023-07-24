@@ -317,7 +317,10 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
     useEffect(() => {
         const onScroll = (event: any) => {
-            setScrollTop(event.target.documentElement.scrollTop);
+            // https://sweet-side-of-sweden.sentry.io/share/issue/63f138af22f04dbfa157185337d5261b/
+            if (!event?.target?.documentElement?.scrollTo) return;
+
+            setScrollTop(event?.target?.documentElement?.scrollTop);
         };
         window.addEventListener('scroll', onScroll);
 

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { Button } from '../Button';
 import { Input } from '../Input';
@@ -127,7 +127,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
     const [hidden, setHidden] = useState(false);
 
     useEffect(() => {
-        setHidden(!!localStorage.getItem('SUBSCRIBED'));
+        setHidden(!!localStorage?.getItem('SUBSCRIBED'));
     }, []);
 
     if (hidden) return null;

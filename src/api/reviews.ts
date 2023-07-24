@@ -13,6 +13,8 @@ export const ReviewsProductApi = async ({
     locale?: string;
 }): Promise<ReviewsModel> => {
     try {
+        if (!id) throw new Error('400: Invalid ID.');
+
         const data = (await (
             await fetch(
                 `https://productreviews.shopifycdn.com/proxy/v4/reviews/product?product_id=${
