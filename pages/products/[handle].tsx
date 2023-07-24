@@ -138,10 +138,13 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     align-items: center;
     gap: var(--block-spacer);
     padding: var(--block-padding-large);
+    margin: var(--block-padding-small) 0px;
+    border-radius: var(--block-border-radius-large);
     height: 100%;
     width: 100%;
-    font-size: 1.75rem;
-    line-height: 2rem;
+    font-size: 2rem;
+    line-height: 2.25rem;
+    font-weight: 600;
 
     ${({ added }) =>
         added &&
@@ -162,9 +165,10 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     }
 
     @media (min-width: 950px) {
-        font-size: 1.5rem;
-        line-height: 1.75rem;
-        height: 5rem;
+        height: 5.5rem;
+        margin: 0px;
+        font-size: 2rem;
+        line-height: 2rem;
     }
 `;
 const Quantity = styled(Input)`

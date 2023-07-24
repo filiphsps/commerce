@@ -955,9 +955,83 @@ export type BannerSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Banner → Primary*
+ */
+export interface BannerSliceSimpleSlimPrimary {
+    /**
+     * Primary content field in *Banner → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.primary.content
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    content: prismic.RichTextField;
+
+    /**
+     * Background field in *Banner → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: #cce2cb
+     * - **API ID Path**: banner.primary.background
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    background: prismic.ColorField;
+}
+
+/**
+ * Primary content in *Banner → Items*
+ */
+export interface BannerSliceSimpleSlimItem {
+    /**
+     * Title field in *Banner → Items*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Target field in *Banner → Items*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].target
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    target: prismic.LinkField;
+
+    /**
+     * Button field in *Banner → Items*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: banner.items[].type
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    type: prismic.BooleanField;
+}
+
+/**
+ * Simple - Slim variation for Banner Slice
+ *
+ * - **API ID**: `simpleSlim`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type BannerSliceSimpleSlim = prismic.SharedSliceVariation<
+    'simpleSlim',
+    Simplify<BannerSliceSimpleSlimPrimary>,
+    Simplify<BannerSliceSimpleSlimItem>
+>;
+
+/**
  * Slice variation for *Banner*
  */
-type BannerSliceVariation = BannerSliceDefault;
+type BannerSliceVariation = BannerSliceDefault | BannerSliceSimpleSlim;
 
 /**
  * Banner Shared Slice
@@ -1606,6 +1680,7 @@ declare module '@prismicio/client' {
             BannerSlice,
             BannerSliceVariation,
             BannerSliceDefault,
+            BannerSliceSimpleSlim,
             CarouselSlice,
             CarouselSliceVariation,
             CarouselSliceDefault,
