@@ -5,7 +5,7 @@ import {
 } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { Config } from './Config';
-import { StoreModel } from '../models/StoreModel';
+import type { StoreModel } from '../models/StoreModel';
 import { i18n } from '../../next-i18next.config.cjs';
 
 export type Locale = {

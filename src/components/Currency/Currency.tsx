@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
-import { StoreModel } from '../../models/StoreModel';
+import { FunctionComponent } from 'react';
+import type { StoreModel } from '../../models/StoreModel';
 import { Currency as Tender } from 'react-tender';
 
 interface CurrencyProps {

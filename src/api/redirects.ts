@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { RedirectModel } from '../models/RedirectModel';
+import type { RedirectModel } from '../models/RedirectModel';
 import { gql } from '@apollo/client';
 import { i18n } from 'next-i18next.config.cjs';
 import { storefrontClient } from './shopify';

@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from 'react';
-
+import { FunctionComponent } from 'react';
 import Link from 'next/link';
-import Loader from '../Loader';
-import { VendorModel } from '../../models/VendorModel';
+import PageLoader from '../PageLoader';
+import type { VendorModel } from '../../models/VendorModel';
 import { VendorsApi } from '../../api/vendor';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -67,7 +66,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
     if (!vendors)
         return (
             <Container className="Vendors">
-                <Loader />
+                <PageLoader />
             </Container>
         );
 

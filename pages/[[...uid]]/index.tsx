@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import { FunctionComponent } from 'react';
@@ -9,15 +8,18 @@ import { GetStaticProps } from 'next';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { PagesApi } from '../../src/api/page';
 import { Prefetch } from '../../src/util/Prefetch';
-import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { asText } from '@prismicio/client';
 import { components } from '../../slices';
 import { createClient } from '../../prismicio';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 
 interface CustomPageProps {
     store: StoreModel;
@@ -41,7 +43,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                         href: `https://${Config.domain}${
                             (locale !== 'x-default' && `/${locale}`) || ''
                         }${router.asPath}`
-                    })) || []
+                    })) || undefined
                 }
                 additionalMetaTags={
                     (page?.data.keywords &&
@@ -51,7 +53,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                                 content: page?.data.keywords
                             }
                         ] as any)) ||
-                    []
+                    undefined
                 }
                 openGraph={{
                     url: `https://${Config.domain}${router.asPath}`,
@@ -70,7 +72,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                                 secureUrl: page?.data.meta_image!.url as string
                             }
                         ]) ||
-                        []
+                        undefined
                 }}
             />
 

@@ -1,6 +1,5 @@
-import React, { FunctionComponent, memo, useState } from 'react';
+import { FunctionComponent, memo, useState } from 'react';
 
-import LanguageString from '../LanguageString';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import ProductFilter from '../ProductFilter';
@@ -78,7 +77,7 @@ const ShopBlock: FunctionComponent<ShopBlockProps> = ({ data, store }) => {
                                 );
                             })}
 
-                        {!products?.length && <LanguageString id="search_no_results" />}
+                        {!products?.length && 'No results.'}
                     </div>
                 </div>
             )) || <Loader />}

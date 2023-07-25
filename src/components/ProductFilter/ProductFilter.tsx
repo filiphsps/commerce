@@ -1,6 +1,5 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
-import LanguageString from '../LanguageString';
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
@@ -132,14 +131,12 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
                 onClick={() => setShowFilters(!showFilters)}
                 className={(showFilters && 'Open') || ''}
             >
-                <LanguageString id="filter_show" />
+                Filter products
             </Toggle>
             <Filters>
                 <Filter className={(!showFilters && 'Closed') || ''}>
                     <Options>
-                        <OptionsTitle>
-                            <LanguageString id="sorting" />
-                        </OptionsTitle>
+                        <OptionsTitle>Sorting</OptionsTitle>
                         <Option
                             className={(filters.sorting == 'none' && 'Selected') || ''}
                             onClick={() => setFilters({ ...filters, sorting: 'none' })}
@@ -155,9 +152,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
                     </Options>
 
                     <Options>
-                        <OptionsTitle>
-                            <LanguageString id="tags" />
-                        </OptionsTitle>
+                        <OptionsTitle>Tags</OptionsTitle>
                         {tags.sort().map((item) => (
                             <Option
                                 key={`tags_${item}`}
@@ -181,9 +176,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
                     </Options>
 
                     <Options>
-                        <OptionsTitle>
-                            <LanguageString id="brand" />
-                        </OptionsTitle>
+                        <OptionsTitle>Brand</OptionsTitle>
                         {vendors.sort().map((item) => (
                             <Option
                                 key={`brand_${item}`}

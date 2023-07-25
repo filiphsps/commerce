@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { Country, CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { StoreModel } from '../models/StoreModel';
+import type { StoreModel } from '../models/StoreModel';
 import { createClient } from 'prismicio';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';

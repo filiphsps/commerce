@@ -14,7 +14,7 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
-import { StoreModel } from '../src/models/StoreModel';
+import type { StoreModel } from '../src/models/StoreModel';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
 import styled from 'styled-components';

@@ -5,7 +5,7 @@ import {
     useCartLine
 } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Config } from '../../util/Config';
@@ -15,7 +15,7 @@ import Link from 'next/link';
 import Loader from '../Loader';
 import { ProductApi } from '../../api/product';
 import { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
 import { i18n } from '../../../next-i18next.config.cjs';
 import { useRouter } from 'next/router';

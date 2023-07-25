@@ -4,24 +4,31 @@ import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 
 import { Alert } from '@/components/Alert';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import { Config } from '../src/util/Config';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import LanguageString from '@/components/LanguageString';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
-import { ProductSearchFilters } from '@/components/ProductSearchFilters';
-import { ProductSearchResultItem } from '@/components/ProductSearchResultItem';
 import { SearchApi } from '../src/api/search';
-import { StoreModel } from '../src/models/StoreModel';
+import type { StoreModel } from '../src/models/StoreModel';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const ProductSearchFilters = dynamic(
+    () => import('@/components/ProductSearchFilters').then((c) => c.ProductSearchFilters),
+    { ssr: false }
+);
+const ProductSearchResultItem = dynamic(
+    () => import('@/components/ProductSearchResultItem').then((c) => c.ProductSearchResultItem),
+    { ssr: false }
+);
 
 const Content = styled.section`
     display: flex;
@@ -262,7 +269,7 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                 <Breadcrumbs
                     pages={[
                         {
-                            title: <LanguageString id={'search'} />,
+                            title: 'Search',
                             url: '/search'
                         }
                     ]}

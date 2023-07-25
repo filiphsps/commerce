@@ -1,6 +1,6 @@
 {
-    "repositoryName": "candy-by-sweden",
     "adapter": "@slicemachine/adapter-next",
-    "libraries": ["./slices"],
-    "localSliceSimulatorURL": "http://localhost:3000/slice-simulator"
+    "libraries": ["./slices", "./slices-product"],
+    "localSliceSimulatorURL": "http://localhost:3000/slice-simulator",
+    "repositoryName": "candy-by-sweden"
 }

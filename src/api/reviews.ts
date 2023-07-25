@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { Config } from '../util/Config';
-import { ReviewsModel } from '../models/ReviewsModel';
+import type { ReviewsModel } from '../models/ReviewsModel';
 import { parse } from 'node-html-parser';
 
 export const ReviewsProductApi = async ({

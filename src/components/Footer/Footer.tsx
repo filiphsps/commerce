@@ -7,7 +7,7 @@ import { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
-import { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';

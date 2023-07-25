@@ -20,7 +20,7 @@ import Currency from '../Currency';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
-import { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';

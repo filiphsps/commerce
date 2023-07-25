@@ -5,7 +5,7 @@ import { CollectionApi } from 'src/api/collection';
 import { FunctionComponent } from 'react';
 import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import { StoreModel } from 'src/models/StoreModel';
+import type { StoreModel } from 'src/models/StoreModel';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -86,7 +86,7 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
 
     return (
         <Container>
-            <Content short={(collection?.products?.edges?.length || 0) <= 5 || undefined}>
+            <Content short={(collection?.products?.edges?.length || 0) < 5 || undefined}>
                 {(collection?.products?.edges || []).map(({ node: product }) => (
                     <ProductProvider key={`minimal_${product?.id}`} data={product}>
                         <ProductCard handle={product?.handle} store={store} />

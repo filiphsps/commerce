@@ -7,7 +7,7 @@ import { ImageLoader } from '../../util/ImageLoader';
 import { Input } from '../Input';
 import Link from 'next/link';
 import { Pluralize } from '../../util/Pluralize';
-import { StoreModel } from 'src/models/StoreModel';
+import type { StoreModel } from 'src/models/StoreModel';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { HeaderModel } from '../models/HeaderModel';
+import type { HeaderModel } from '../models/HeaderModel';
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
 

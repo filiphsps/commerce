@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import TitleToHandle from '../util/TitleToHandle';
-import { VendorModel } from '../models/VendorModel';
+import type { VendorModel } from '../models/VendorModel';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 

@@ -3,25 +3,27 @@ import * as Sentry from '@sentry/nextjs';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { FunctionComponent, useState } from 'react';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
-import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import ErrorPage from 'next/error';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
 import { ProductsPaginationApi } from '../../src/api/product';
-import { StoreModel } from '../../src/models/StoreModel';
-import { VendorModel } from '../../src/models/VendorModel';
+import type { StoreModel } from '../../src/models/StoreModel';
+import type { VendorModel } from '../../src/models/VendorModel';
 import { VendorsApi } from '../../src/api/vendor';
 import { asText } from '@prismicio/client';
 import { createClient } from '../../prismicio';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 const Container = styled.div`
     display: grid;

@@ -15,7 +15,7 @@ import { HeaderApi } from '../../api/header';
 import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import SearchHeader from '../SearchHeader';
-import { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import { i18n } from '../../../next-i18next.config.cjs';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';

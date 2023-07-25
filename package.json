@@ -47,7 +47,6 @@
         "destyle.css": "4.0.0",
         "graphql": "16.7.1",
         "next": "13.4.12",
-        "next-i18next": "14.0.0",
         "next-plugin-preval": "1.2.5",
         "next-query-params": "4.2.3",
         "next-seo": "6.1.0",

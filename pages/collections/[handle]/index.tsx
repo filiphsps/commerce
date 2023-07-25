@@ -1,34 +1,38 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { AnalyticsPageType, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
-import React, { FunctionComponent } from 'react';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import CollectionBlock from '@/components/CollectionBlock';
-import { CollectionPageDocument } from 'prismicio-types';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CollectionPageDocument } from 'prismicio-types';
 import { Config } from '../../../src/util/Config';
-import Content from '@/components/Content';
 import Error from 'next/error';
+import type { FunctionComponent } from 'react';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { Prefetch } from 'src/util/Prefetch';
+import React from 'react';
 import { RedirectCollectionApi } from 'src/api/redirects';
-import { SliceZone } from '@prismicio/react';
-import { StoreModel } from '../../../src/models/StoreModel';
-import Vendors from '@/components/Vendors';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import type { StoreModel } from '../../../src/models/StoreModel';
 import { VendorsApi } from '../../../src/api/vendor';
 import { asText } from '@prismicio/client';
 import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { createClient } from 'prismicio';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const Content = dynamic(() => import('@/components/Content'));
+const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
+const Vendors = dynamic(() => import('@/components/Vendors'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 
 const Body = styled(Content)`
     overflow: hidden;

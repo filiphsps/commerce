@@ -4,19 +4,20 @@ import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
-import ContentComponent from '@/components/Content';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
-import LanguageString from '@/components/LanguageString';
 import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import { StoreModel } from '../../../src/models/StoreModel';
+import type { StoreModel } from '../../../src/models/StoreModel';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const ContentComponent = dynamic(() => import('@/components/Content'));
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -244,7 +245,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 <Breadcrumbs
                     pages={[
                         {
-                            title: <LanguageString id={'blog'} />,
+                            title: 'Blog',
                             url: '/blog/'
                         },
                         {

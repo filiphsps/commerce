@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react';
-import { WeightModel } from '../../models/WeightModel';
+import type { WeightModel } from '../../models/WeightModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -17,19 +17,11 @@ const Weight: FunctionComponent<WeightProps> = ({ data }) => {
     switch (locale) {
         case 'en-US':
             if (data.unit == 'g')
-                return (
-                    <WeightLabel>
-                        {(data.value * 0.035274).toFixed(2)}oz
-                    </WeightLabel>
-                );
+                return <WeightLabel>{(data.value * 0.035274).toFixed(2)}oz</WeightLabel>;
             else return <WeightLabel>{data.value}oz</WeightLabel>;
         default:
             if (data.unit == 'oz')
-                return (
-                    <WeightLabel>
-                        {(data.value / 0.035274).toFixed(2)}g
-                    </WeightLabel>
-                );
+                return <WeightLabel>{(data.value / 0.035274).toFixed(2)}g</WeightLabel>;
             else return <WeightLabel>{data.value}g</WeightLabel>;
     }
 };

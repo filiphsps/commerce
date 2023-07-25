@@ -7,7 +7,7 @@ import { CollectionApi } from '../../api/collection';
 import Link from 'next/link';
 import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

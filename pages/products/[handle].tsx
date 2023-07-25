@@ -25,13 +25,10 @@ import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
 import Content from '@/components/Content';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
-import Gallery from '@/components/Gallery';
-import { InfoLines } from '@/components/products/InfoLines';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import Page from '@/components/Page';
@@ -42,11 +39,9 @@ import { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
-import Reviews from '@/components/Reviews';
-import { ReviewsModel } from '../../src/models/ReviewsModel';
+import type { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
-import { SliceZone } from '@prismicio/react';
-import { StoreModel } from '../../src/models/StoreModel';
+import type { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import { asText } from '@prismicio/client';
@@ -56,7 +51,12 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const ReviewStars = dynamic(() => import('@/components/ReviewStars'));
+const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
+const Gallery = dynamic(() => import('@/components/Gallery'));
+const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
+const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
+const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines));
+const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 
 // TODO: replace this with generic label.
 const Label = styled.label`
