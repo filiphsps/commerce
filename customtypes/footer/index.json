@@ -13,14 +13,6 @@
                     "label": "Address"
                 }
             },
-            "show_language_selector": {
-                "type": "Boolean",
-                "config": { "default_value": false, "label": "Show Language Selector" }
-            },
-            "show_currency_selector": {
-                "type": "Boolean",
-                "config": { "default_value": false, "label": "Show Currency Selector" }
-            },
             "body": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",

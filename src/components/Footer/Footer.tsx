@@ -196,8 +196,8 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const router = useRouter();
     const { store } = props;
-    const { data } = useSWR([`footer`], () => FooterApi({ locale: router.locale }), {
-        fallbackData: preval.footer
+    const { data: footer } = useSWR([`footer`], () => FooterApi({ locale: router.locale }), {
+        fallbackData: preval.footer!
     });
 
     // FIXME: Dynamic copyright copy.
@@ -223,12 +223,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
                         <Address
                             dangerouslySetInnerHTML={{
-                                __html: PrismicDOM.asText(data?.address, '<br />') || ''
+                                __html: PrismicDOM.asText(footer?.address, '<br />') || ''
                             }}
                         />
                     </FooterBlock>
 
-                    {data?.blocks?.map?.((block) => (
+                    {footer?.blocks?.map?.((block) => (
                         <FooterBlock key={block.title}>
                             <BlockTitle>{block.title}</BlockTitle>
                             {block?.items.map((item) => (

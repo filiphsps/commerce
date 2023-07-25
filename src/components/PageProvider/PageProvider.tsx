@@ -97,10 +97,10 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const [search, setSearch] = useStore<any>('search');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { data: navigation } = useSWR([`navigation`], () => NavigationApi(router.locale), {
-        fallbackData: preval.navigation
+        fallbackData: preval.navigation!
     });
     const { data: header } = useSWR(['header'], () => HeaderApi(router.locale), {
-        fallbackData: preval.header
+        fallbackData: preval.header!
     });
 
     const locale = router.locale || i18n.locales[1];

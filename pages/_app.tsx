@@ -42,7 +42,7 @@ const StoreApp = withStore(
         const router = useRouter();
 
         const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
-            fallbackData: preval.store
+            fallbackData: preval.store!
         });
 
         const country = NextLocaleToCountry(router.locale || initialLocale);
