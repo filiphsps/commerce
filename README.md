@@ -11,7 +11,7 @@ Shoppy is a modern implementation of a B2C storefront.
 
 ## Usage
 
-1. Configure the values specificed in `next.config.js`. For example:
+1. Configure the values specified in `next.config.js`. For example:
 
 ```bash
 STORE=hello.myshopify.com
@@ -20,18 +20,10 @@ DOMAIN=my-example-store.com
 
 2. Deploy to platform of choice.
 
-## Good-to-remember links
+### Dependencies
 
-[prismic-next](https://prismic.io/docs/technical-reference/prismicio-next)
-
-## Generating i18n
-
-**Make sure `en-US` and `USD` are the first ones**
-
-```typescript
-console.log([...new Set(locales.flatMap((loc) => loc.map((c) => c.currency)))].join(','));
-console.log([...new Set(locales.flatMap((loc) => loc.map((c) => c.locale)))].join(','));
-```
+* Required by other packages
+  * `@sweetsideofsweden/next-plugin-preval`: `babel-plugin-module-resolver`
 
 ## Maintainers
 

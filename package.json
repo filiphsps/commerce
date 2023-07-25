@@ -12,7 +12,7 @@
     ],
     "scripts": {
         "dev": "npm run hack && next dev",
-        "build": "npm run hack && NODE_OPTIONS='--no-experimental-fetch' next build",
+        "build": "npm run hack && next build",
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap && npm run sitemap:pretty",
         "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
@@ -45,7 +45,6 @@
         "accept-language-parser": "1.5.0",
         "color": "4.2.3",
         "convert-units": "2.3.4",
-        "cross-fetch": "4.0.0",
         "destyle.css": "4.0.0",
         "graphql": "16.7.1",
         "next": "13.4.12",
@@ -68,9 +67,7 @@
         "stylis": "4.3.0",
         "swr": "2.2.0",
         "typescript": "5.1.6",
-        "unfetch": "5.0.0",
-        "use-query-params": "2.2.1",
-        "uuid": "9.0.0"
+        "use-query-params": "2.2.1"
     },
     "devDependencies": {
         "@slicemachine/adapter-next": "0.3.7",
@@ -81,7 +78,8 @@
         "@types/enzyme": "3.10.13",
         "@types/node": "18.17.0",
         "@types/react": "18.2.16",
-        "babel-plugin-module-resolver": "^5.0.0",
+        "babel-plugin-module-resolver": "5.0.0",
+        "encoding": "0.1.13",
         "enzyme": "3.11.0",
         "eslint": "8.45.0",
         "eslint-config-next": "13.4.12",
