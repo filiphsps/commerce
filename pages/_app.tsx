@@ -4,6 +4,7 @@ import './app.scss';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import Router, { useRouter } from 'next/router';
+import { StyleSheetManager, ThemeProvider } from 'styled-components';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 
 import PageProvider from '@/components/PageProvider';
@@ -15,9 +16,7 @@ import type { NextWebVitalsMetric } from 'next/app';
 import { Lexend_Deca } from 'next/font/google';
 import Head from 'next/head';
 import NProgress from 'nprogress';
-import { withStore } from 'react-context-hook';
 import { CartFragment } from 'src/api/cart';
-import { StyleSheetManager, ThemeProvider } from 'styled-components';
 import useSWR from 'swr';
 import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
@@ -37,60 +36,56 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 Router.events.on('hashChangeComplete', () => NProgress.done());
 
-const StoreApp = withStore(
-    ({ Component, pageProps, locale: initialLocale }) => {
-        const router = useRouter();
+const StoreApp = ({ Component, pageProps, locale: initialLocale }) => {
+    const router = useRouter();
 
-        const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
-            fallbackData: preval.store!
-        });
+    const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
+        fallbackData: preval.store!
+    });
 
-        const country = NextLocaleToCountry(router.locale || initialLocale);
-        const language = NextLocaleToLanguage(router.locale || initialLocale);
+    const country = NextLocaleToCountry(router.locale || initialLocale);
+    const language = NextLocaleToLanguage(router.locale || initialLocale);
 
-        if (!store) return null;
+    if (!store) return null;
 
-        return (
-            <>
-                <style jsx global>{`
-                    html,
-                    body {
-                        font-family:
-                            ${font.style.fontFamily},
-                            -apple-system,
-                            BlinkMacSystemFont,
-                            'Segoe UI',
-                            Roboto,
-                            Oxygen,
-                            Ubuntu,
-                            Cantarell,
-                            sans-serif;
-                    }
-                `}</style>
-                <DefaultSeo
-                    {...SEO}
-                    themeColor={Color(store?.accent.primary)
-                        .hex()
-                        .toString()}
+    return (
+        <>
+            <style jsx global>{`
+                html,
+                body {
+                    font-family:
+                        ${font.style.fontFamily},
+                        -apple-system,
+                        BlinkMacSystemFont,
+                        'Segoe UI',
+                        Roboto,
+                        Oxygen,
+                        Ubuntu,
+                        Cantarell,
+                        sans-serif;
+                }
+            `}</style>
+            <DefaultSeo
+                {...SEO}
+                themeColor={Color(store?.accent.primary)
+                    .hex()
+                    .toString()}
+            />
+            <Head>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 />
-                <Head>
-                    <meta
-                        name="viewport"
-                        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-                    />
-                    <meta name="apple-mobile-web-app-capable" content="yes" />
-                    <meta
-                        name="apple-mobile-web-app-status-bar-style"
-                        content="black-translucent"
-                    />
-                    <meta name="apple-mobile-web-app-title" content={store?.name} />
-                    <link rel="icon" type="image/png" href={store?.favicon.src} />
-                    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-                    <link rel="apple-touch-icon" href={store?.favicon.src} />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <meta name="apple-mobile-web-app-title" content={store?.name} />
+                <link rel="icon" type="image/png" href={store?.favicon.src} />
+                <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+                <link rel="apple-touch-icon" href={store?.favicon.src} />
 
-                    {/* General application styling */}
-                    {/* eslint-disable indent */}
-                    <style>{`
+                {/* General application styling */}
+                {/* eslint-disable indent */}
+                <style>{`
                         :root {
                             --accent-primary: ${Color(store?.accent.primary)
                                 .hex()
@@ -120,115 +115,101 @@ const StoreApp = withStore(
                             --accent-secondary-text: #101418;
                         }
                     `}</style>
-                    {/* eslint-enable indent */}
-                </Head>
+                {/* eslint-enable indent */}
+            </Head>
 
-                {/* TODO: Get this dynamically */}
-                <SocialProfileJsonLd
-                    type="Organization"
-                    name={store?.name}
-                    description={store?.description}
-                    url={`https://${Config.domain}/`}
-                    logo={store?.favicon.src}
-                    foundingDate="2023"
-                    founders={[
-                        {
-                            '@type': 'Person',
-                            name: 'Dennis Sahlin',
-                            email: 'dennis@sweetsideofsweden.com',
-                            jobTitle: 'CEO'
-                        },
-                        {
-                            '@type': 'Person',
-                            name: 'Filiph Siitam Sandström',
-                            email: 'filiph@sweetsideofsweden.com',
-                            jobTitle: 'CTO'
-                        }
-                    ]}
-                    address={{
-                        '@type': 'PostalAddress',
-                        streetAddress: 'Österrådagatan 11C',
-                        addressLocality: 'Mellerud',
-                        addressRegion: 'Västra Götaland',
-                        postalCode: '46431',
-                        addressCountry: 'Sweden'
-                    }}
-                    contactPoint={{
-                        '@type': 'ContactPoint',
-                        contactType: 'Customer relations and support',
+            {/* TODO: Get this dynamically */}
+            <SocialProfileJsonLd
+                type="Organization"
+                name={store?.name}
+                description={store?.description}
+                url={`https://${Config.domain}/`}
+                logo={store?.favicon.src}
+                foundingDate="2023"
+                founders={[
+                    {
+                        '@type': 'Person',
+                        name: 'Dennis Sahlin',
                         email: 'dennis@sweetsideofsweden.com',
-                        telephone: '+46-73-511-58-50',
-                        url: `https://${Config.domain}/${router.locale}/about/`,
-                        availableLanguage: ['English', 'Swedish'],
-                        areaServed:
-                            store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
-                            router.locales
-                                ?.filter((i) => i !== 'x-default')
-                                .map((i) => i.split('-')[1]) ||
-                            (router.locale && []) ||
-                            undefined
-                    }}
-                    sameAs={store?.social?.map(({ url }) => url)}
-                />
-                <SiteLinksSearchBoxJsonLd
-                    name={'Sweet Side of Sweden'}
-                    alternateName={'sweetsideofsweden'}
-                    url={`https://${Config.domain}/`}
-                    potentialActions={[
-                        {
-                            target: `https://${Config.domain}/search/?q`,
-                            queryInput: 'search_term_string'
-                        }
-                    ]}
-                />
+                        jobTitle: 'CEO'
+                    },
+                    {
+                        '@type': 'Person',
+                        name: 'Filiph Siitam Sandström',
+                        email: 'filiph@sweetsideofsweden.com',
+                        jobTitle: 'CTO'
+                    }
+                ]}
+                address={{
+                    '@type': 'PostalAddress',
+                    streetAddress: 'Österrådagatan 11C',
+                    addressLocality: 'Mellerud',
+                    addressRegion: 'Västra Götaland',
+                    postalCode: '46431',
+                    addressCountry: 'Sweden'
+                }}
+                contactPoint={{
+                    '@type': 'ContactPoint',
+                    contactType: 'Customer relations and support',
+                    email: 'dennis@sweetsideofsweden.com',
+                    telephone: '+46-73-511-58-50',
+                    url: `https://${Config.domain}/${router.locale}/about/`,
+                    availableLanguage: ['English', 'Swedish'],
+                    areaServed:
+                        store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
+                        router.locales
+                            ?.filter((i) => i !== 'x-default')
+                            .map((i) => i.split('-')[1]) ||
+                        (router.locale && []) ||
+                        undefined
+                }}
+                sameAs={store?.social?.map(({ url }) => url)}
+            />
+            <SiteLinksSearchBoxJsonLd
+                name={'Sweet Side of Sweden'}
+                alternateName={'sweetsideofsweden'}
+                url={`https://${Config.domain}/`}
+                potentialActions={[
+                    {
+                        target: `https://${Config.domain}/search/?q`,
+                        queryInput: 'search_term_string'
+                    }
+                ]}
+            />
 
-                {/* Page */}
-                <QueryParamProvider adapter={NextAdapterPages}>
-                    <ShopifyProvider
-                        storefrontId={`${store?.id}`}
-                        storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
-                        storefrontApiVersion={Config.shopify.api}
-                        storefrontToken={Config.shopify.token}
-                        countryIsoCode={country}
-                        languageIsoCode={language}
-                    >
-                        <CartProvider countryCode={country} cartFragment={CartFragment}>
-                            <StyleSheetManager shouldForwardProp={isPropValid}>
-                                <ThemeProvider theme={{}}>
-                                    <PrismicPreview repositoryName={Config.prismic.name}>
-                                        <PageProvider
+            {/* Page */}
+            <QueryParamProvider adapter={NextAdapterPages}>
+                <ShopifyProvider
+                    storefrontId={`${store?.id}`}
+                    storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
+                    storefrontApiVersion={Config.shopify.api}
+                    storefrontToken={Config.shopify.token}
+                    countryIsoCode={country}
+                    languageIsoCode={language}
+                >
+                    <CartProvider countryCode={country} cartFragment={CartFragment}>
+                        <StyleSheetManager shouldForwardProp={isPropValid}>
+                            <ThemeProvider theme={{}}>
+                                <PrismicPreview repositoryName={Config.prismic.name}>
+                                    <PageProvider
+                                        store={store}
+                                        pagePropsAnalyticsData={pageProps.analytics || {}}
+                                    >
+                                        <Component
+                                            key={router.asPath}
+                                            {...pageProps}
                                             store={store}
-                                            pagePropsAnalyticsData={pageProps.analytics || {}}
-                                        >
-                                            <Component
-                                                key={router.asPath}
-                                                {...pageProps}
-                                                store={store}
-                                            />
-                                        </PageProvider>
-                                    </PrismicPreview>
-                                </ThemeProvider>
-                            </StyleSheetManager>
-                        </CartProvider>
-                    </ShopifyProvider>
-                </QueryParamProvider>
-            </>
-        );
-    },
-    {
-        search: {
-            open: false,
-            phrase: ''
-        }
-    },
-    {
-        listener: () => {},
-        logging: false
-    }
-);
-
-export default StoreApp;
-//export default appWithTranslation(StoreApp);
+                                        />
+                                    </PageProvider>
+                                </PrismicPreview>
+                            </ThemeProvider>
+                        </StyleSheetManager>
+                    </CartProvider>
+                </ShopifyProvider>
+            </QueryParamProvider>
+        </>
+    );
+};
 
 export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric) {
     if (process.env.NODE_ENV !== 'production') return;
@@ -248,3 +229,5 @@ export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric)
         event_label: id
     });
 }
+
+export default StoreApp;

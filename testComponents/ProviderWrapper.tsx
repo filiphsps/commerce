@@ -1,13 +1,7 @@
-import React, { memo } from 'react';
-
-import { withStore } from 'react-context-hook';
+import { memo } from 'react';
 
 const ProviderWrapper = (props) => {
     return <>{props.children}</>;
 };
 
-export default withStore(memo(ProviderWrapper), {
-    currency: 'USD',
-    cart: null,
-    store: null
-});
+export default memo(ProviderWrapper);

@@ -1,29 +1,27 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
+import { FunctionComponent, useState } from 'react';
 import {
     Locale,
     NextLocaleToCountry,
     NextLocaleToCurrency,
     NextLocaleToLanguage
 } from '../../util/Locale';
-import React, { FunctionComponent, useCallback, useState } from 'react';
 
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
+import useSWR from 'swr';
+import { i18n } from '../../../next-i18next.config.cjs';
+import preval from '../../../src/data.preval';
+import { HeaderApi } from '../../api/header';
+import { NavigationApi } from '../../api/navigation';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useCartUtils } from '../../hooks/useCartUtils';
+import type { StoreModel } from '../../models/StoreModel';
 import { Config } from '../../util/Config';
 import Footer from '../Footer';
 import Header from '../Header';
-import { HeaderApi } from '../../api/header';
 import HeaderNavigation from '../HeaderNavigation';
-import { NavigationApi } from '../../api/navigation';
-import SearchHeader from '../SearchHeader';
-import type { StoreModel } from '../../models/StoreModel';
-import { i18n } from '../../../next-i18next.config.cjs';
-import preval from '../../../src/data.preval';
-import styled from 'styled-components';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useCartUtils } from '../../hooks/useCartUtils';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
-import { useStore } from 'react-context-hook';
 
 const Announcement = styled.div`
     display: flex;
@@ -82,8 +80,6 @@ const HeaderContainer = styled.div`
     top: -1px;
 `;
 
-const Overlay = styled.div``;
-
 interface PageProviderProps {
     store: StoreModel;
     pagePropsAnalyticsData: any;
@@ -94,7 +90,6 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const { store, pagePropsAnalyticsData } = props;
 
     const router = useRouter();
-    const [search, setSearch] = useStore<any>('search');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { data: navigation } = useSWR([`navigation`], () => NavigationApi(router.locale), {
         fallbackData: preval.navigation!
@@ -124,18 +119,6 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             currency: NextLocaleToCurrency({ country, store })
         } as Locale
     });
-
-    const onRouteChangeStart = useCallback(() => {
-        setSearch({ ...search, open: false });
-    }, []);
-
-    React.useEffect(() => {
-        router.events.on('routeChangeStart', onRouteChangeStart);
-
-        return () => {
-            router.events.off('routeChangeStart', onRouteChangeStart);
-        };
-    }, [onRouteChangeStart, router.events]);
 
     const above = header?.announcements.filter((item) => item.location === 'above') || [];
     const bellow = header?.announcements.filter((item) => item.location === 'bellow') || [];
@@ -175,7 +158,6 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     open={sidebarOpen}
                     toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
                 />
-                {(search?.open && <SearchHeader query={search?.phrase} />) || null}
             </HeaderContainer>
             {bellow.length > 0 && (
                 <Announcements>
@@ -193,17 +175,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
 
-            <Overlay
-                onClick={() => {
-                    // Make sure we close the search ui if the customer
-                    // clicks/taps outside of it
-                    if (!search.open) return;
-
-                    setSearch({ ...search, open: false });
-                }}
-            >
-                {props.children}
-            </Overlay>
+            {props.children}
             <Footer store={props?.store} />
         </Container>
     );
