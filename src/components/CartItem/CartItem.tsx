@@ -287,8 +287,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
     const line = useCartLine();
     const TempImage = Image as any;
 
-    const locale =
-        router?.locale && router?.locale != 'x-default' ? router?.locale : i18n.locales[1];
+    const locale = router.locale && router.locale != 'x-default' ? router.locale : i18n.locales[1];
 
     const { data: product } = useSWR([line?.merchandise?.product?.handle!], ([handle]) =>
         ProductApi({ handle: handle || '', locale })

@@ -9,27 +9,23 @@ import {
 import type { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { FunctionComponent, useState } from 'react';
 
-import { Config } from '../../src/util/Config';
-import { NextSeo } from 'next-seo';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import CartItem from '@/components/CartItem';
+import { CartSummary } from '@/components/CartSummary';
+import CollectionBlock from '@/components/CollectionBlock';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
+import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
+import styled from 'styled-components';
+import useSWR from 'swr';
 import { RecommendationApi } from '../../src/api/recommendation';
 import type { StoreModel } from '../../src/models/StoreModel';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
-
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const CartItem = dynamic(() => import('@/components/CartItem'), { ssr: false });
-const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary), {
-    ssr: false
-});
-const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'), { ssr: false });
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
+import { Config } from '../../src/util/Config';
 
 const Content = styled.div`
     display: grid;
@@ -245,7 +241,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                         cart.totalQuantity > 0 &&
                         cart.lines?.[0]?.merchandise?.product?.id) ||
                     undefined,
-                locale: router?.locale
+                locale: router.locale
             })
     );
 
@@ -301,7 +297,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 title="Cart"
                 canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
-                    router?.locales?.map((locale) => ({
+                    router.locales?.map((locale) => ({
                         hrefLang: locale,
                         href: `https://${Config.domain}/${
                             (locale !== 'x-default' && `${locale}/`) || ''

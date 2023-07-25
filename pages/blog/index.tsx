@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '../../src/api/blog';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';
@@ -10,13 +11,10 @@ import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import type { StoreModel } from '../../src/models/StoreModel';
-import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 const Article = styled.div`
     display: grid;

@@ -86,10 +86,20 @@ interface BreadcrumbsProps {
 const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
     const { store } = props;
 
+    // FIXME: We shouldn't require suppressHydrationWarning
     return (
         <Container className="Breadcrumbs">
-            <Content itemScope itemType="https://schema.org/BreadcrumbList">
-                <Item itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <Content
+                itemScope
+                itemType="https://schema.org/BreadcrumbList"
+                suppressHydrationWarning
+            >
+                <Item
+                    itemProp="itemListElement"
+                    itemScope
+                    itemType="https://schema.org/ListItem"
+                    suppressHydrationWarning
+                >
                     <Link href="/" itemType="https://schema.org/Thing" itemProp="item">
                         <span itemProp="name">{store?.name || store?.title}</span>
                     </Link>
@@ -108,6 +118,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                             itemProp="itemListElement"
                             itemScope
                             itemType="https://schema.org/ListItem"
+                            suppressHydrationWarning
                         >
                             <Link
                                 href={item.url}

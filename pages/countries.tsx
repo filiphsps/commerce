@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../src/util/Config';
 import { CountriesApi } from '../src/api/store';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
@@ -11,17 +12,14 @@ import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
+import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
-import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
-const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 
 const LocalesList = styled.article`
     display: grid;
@@ -104,7 +102,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
         [`locales`],
         () =>
             CountriesApi({
-                locale: router?.locale
+                locale: router.locale
             }),
         {
             fallbackData: countriesData
@@ -131,7 +129,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                 description={page?.data.meta_title || 'Set your region and preferred language'}
                 canonical={`https://${Config.domain}/${router.locale}/countries/`}
                 languageAlternates={
-                    router?.locales?.map((locale) => ({
+                    router.locales?.map((locale) => ({
                         hrefLang: locale,
                         href: `https://${Config.domain}/${
                             (locale !== 'x-default' && `${locale}/`) || ''
@@ -148,33 +146,34 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                     />
 
                     <LocalesList>
-                        {locales.flatMap((locales) =>
-                            locales.map((locale) => {
-                                return (
-                                    <Locale
-                                        key={locale.locale}
-                                        selected={locale.locale === router.locale}
-                                        href="/"
-                                        locale={locale.locale}
-                                        title={`${locale.country} (${locale.language})`}
-                                    >
-                                        <LocaleFlag>
-                                            <Image
-                                                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.locale
-                                                    .split('-')
-                                                    .at(-1)}.svg`}
-                                                alt={locale.country}
-                                                fill
-                                                aria-label={locale.country}
-                                            />
-                                        </LocaleFlag>
-                                        <LocaleLabel>
-                                            {locale.country} ({locale.language})
-                                        </LocaleLabel>
-                                        <LocaleCurrency>{locale.currency}</LocaleCurrency>
-                                    </Locale>
-                                );
-                            })
+                        {locales.flatMap(
+                            (locales) =>
+                                locales?.map((locale) => {
+                                    return (
+                                        <Locale
+                                            key={locale.locale}
+                                            selected={locale.locale === router.locale}
+                                            href="/"
+                                            locale={locale.locale}
+                                            title={`${locale.country} (${locale.language})`}
+                                        >
+                                            <LocaleFlag>
+                                                <Image
+                                                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.locale
+                                                        .split('-')
+                                                        .at(-1)}.svg`}
+                                                    alt={locale.country}
+                                                    fill
+                                                    aria-label={locale.country}
+                                                />
+                                            </LocaleFlag>
+                                            <LocaleLabel>
+                                                {locale.country} ({locale.language})
+                                            </LocaleLabel>
+                                            <LocaleCurrency>{locale.currency}</LocaleCurrency>
+                                        </Locale>
+                                    );
+                                })
                         )}
                     </LocalesList>
                 </PageContent>

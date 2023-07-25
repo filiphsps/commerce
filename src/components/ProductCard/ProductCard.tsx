@@ -684,7 +684,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                                 // FIXME: Remove `Size` when we've migrated to using Weight
                                 if (
                                     variant.selectedOptions.length === 1 &&
-                                    ['Size', 'Weight', 'Storlek'].includes(
+                                    ['Size', 'Weight'].includes(
                                         variant.selectedOptions.at(0)!.name
                                     ) &&
                                     variant.weight &&

@@ -4,6 +4,7 @@ import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 
 import { Alert } from '@/components/Alert';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import { Config } from '../src/util/Config';
 import { Input } from '@/components/Input';
@@ -11,6 +12,7 @@ import { Label } from '@/components/Label';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
 import { SearchApi } from '../src/api/search';
 import type { StoreModel } from '../src/models/StoreModel';
@@ -19,8 +21,6 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
 const ProductSearchFilters = dynamic(
     () => import('@/components/ProductSearchFilters').then((c) => c.ProductSearchFilters),
     { ssr: false }
@@ -183,7 +183,7 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                 title="Search"
                 canonical={`https://${Config.domain}/${router.locale}/search/`}
                 languageAlternates={
-                    router?.locales?.map((locale) => ({
+                    router.locales?.map((locale) => ({
                         hrefLang: locale,
                         href: `https://${Config.domain}/${
                             (locale !== 'x-default' && `${locale}/`) || ''

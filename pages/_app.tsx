@@ -22,7 +22,6 @@ import { StoreApi } from '../src/api/store';
 import { ThemeProvider } from 'styled-components';
 import preval from '../src/data.preval';
 import useSWR from 'swr';
-//import { appWithTranslation } from 'next-i18next';
 import { withStore } from 'react-context-hook';
 
 const font = Lexend_Deca({
@@ -67,7 +66,12 @@ const StoreApp = withStore(
                             sans-serif;
                     }
                 `}</style>
-                <DefaultSeo {...SEO} themeColor={Color(store.accent.primary).hex().toString()} />
+                <DefaultSeo
+                    {...SEO}
+                    themeColor={Color(store?.accent.primary)
+                        .hex()
+                        .toString()}
+                />
                 <Head>
                     <meta
                         name="viewport"
@@ -78,16 +82,18 @@ const StoreApp = withStore(
                         name="apple-mobile-web-app-status-bar-style"
                         content="black-translucent"
                     />
-                    <meta name="apple-mobile-web-app-title" content={store.name} />
-                    <link rel="icon" type="image/png" href={store.favicon.src} />
+                    <meta name="apple-mobile-web-app-title" content={store?.name} />
+                    <link rel="icon" type="image/png" href={store?.favicon.src} />
                     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-                    <link rel="apple-touch-icon" href={store.favicon.src} />
+                    <link rel="apple-touch-icon" href={store?.favicon.src} />
 
                     {/* General application styling */}
                     {/* eslint-disable indent */}
                     <style>{`
                         :root {
-                            --accent-primary: ${Color(store.accent.primary).hex().toString()};
+                            --accent-primary: ${Color(store?.accent.primary)
+                                .hex()
+                                .toString()};
                             --accent-primary-dark: color-mix(
                                 in srgb,
                                 var(--accent-primary) 65%,
@@ -99,12 +105,14 @@ const StoreApp = withStore(
                                 var(--color-bright)
                             );
                             --accent-primary-text: #ececec;
-                            --accent-secondary: ${Color(store.accent.secondary).hex().toString()};
-                            --accent-secondary-dark: ${Color(store.accent.secondary)
+                            --accent-secondary: ${Color(store?.accent.secondary)
+                                .hex()
+                                .toString()};
+                            --accent-secondary-dark: ${Color(store?.accent.secondary)
                                 .darken(0.25)
                                 .hex()
                                 .toString()};
-                            --accent-secondary-light: ${Color(store.accent.secondary)
+                            --accent-secondary-light: ${Color(store?.accent.secondary)
                                 .lighten(0.25)
                                 .hex()
                                 .toString()};
@@ -117,10 +125,10 @@ const StoreApp = withStore(
                 {/* TODO: Get this dynamically */}
                 <SocialProfileJsonLd
                     type="Organization"
-                    name={store.name}
-                    description={store.description}
+                    name={store?.name}
+                    description={store?.description}
                     url={`https://${Config.domain}/`}
-                    logo={store.favicon.src}
+                    logo={store?.favicon.src}
                     foundingDate="2023"
                     founders={[
                         {
@@ -152,14 +160,14 @@ const StoreApp = withStore(
                         url: `https://${Config.domain}/${router.locale}/about/`,
                         availableLanguage: ['English', 'Swedish'],
                         areaServed:
-                            store.payment?.countries.map(({ isoCode }) => isoCode) ||
+                            store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
                             router.locales
                                 ?.filter((i) => i !== 'x-default')
                                 .map((i) => i.split('-')[1]) ||
                             (router.locale && []) ||
                             undefined
                     }}
-                    sameAs={store.social?.map(({ url }) => url)}
+                    sameAs={store?.social?.map(({ url }) => url)}
                 />
                 <SiteLinksSearchBoxJsonLd
                     name={'Sweet Side of Sweden'}
@@ -176,7 +184,7 @@ const StoreApp = withStore(
                 {/* Page */}
                 <QueryParamProvider adapter={NextAdapterPages}>
                     <ShopifyProvider
-                        storefrontId={`${store.id}`}
+                        storefrontId={`${store?.id}`}
                         storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
                         storefrontApiVersion={Config.shopify.api}
                         storefrontToken={Config.shopify.token}

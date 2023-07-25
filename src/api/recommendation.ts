@@ -6,10 +6,10 @@ import type {
     Product
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { PRODUCT_FRAGMENT } from './product';
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
-import { storefrontClient } from './shopify';
+import { newStorefrontClient } from './shopify';
 
 // TODO: Migrate to the new recommendations api
 export const RecommendationApi = async ({
@@ -32,12 +32,11 @@ export const RecommendationApi = async ({
         ).toUpperCase() as LanguageCode;
 
         try {
-            const { data, errors } = await storefrontClient.query({
+            const { data, errors } = await newStorefrontClient.query({
                 query: gql`
                     query productRecommendations($productId: ID!) @inContext(language: ${language}, country: ${country}) {
-                        productRecommendations(productId: $productId) {
-                            ${PRODUCT_FRAGMENT}
-                            trackingParameters
+                        productRecommendations(productId: $productId, intent: RELATED) {
+                            ${PRODUCT_FRAGMENT_MINIMAL}
                         }
                     }
                 `,
@@ -46,7 +45,7 @@ export const RecommendationApi = async ({
                 }
             });
 
-            if (errors) return reject(new Error(errors.join('\n')));
+            if (errors) return reject(new Error(errors.map((i) => i.message).join('\n')));
             if (!data?.productRecommendations)
                 return reject(new Error('404: The requested document cannot be found'));
 

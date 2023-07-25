@@ -74,7 +74,7 @@ export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) =>
             <Icon>
                 <FiPackage />
             </Icon>
-            <Label>{available}</Label>
+            <Label data-nosnippet>{available}</Label>
         </Entry>
     );
 };

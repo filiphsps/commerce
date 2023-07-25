@@ -58,10 +58,10 @@ interface VendorsProps {
     data?: Array<VendorModel>;
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
-    const { data: vendors } = useSWR([''], () => VendorsApi(), {
+    const router = useRouter();
+    const { data: vendors } = useSWR(['vendors'], () => VendorsApi(), {
         fallbackData: props?.data
     }) as any;
-    const router = useRouter();
 
     if (!vendors)
         return (
@@ -80,7 +80,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                         key={vendor?.handle}
                         href={`/collections/${vendor?.handle}/`}
                         className={`Vendors-Vendor ${
-                            (router?.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') ||
+                            (router.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') ||
                             ''
                         }`}
                     >

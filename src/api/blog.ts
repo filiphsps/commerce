@@ -54,14 +54,14 @@ export const BlogApi = async ({ handle }: { handle: string; locale?: string }) =
                 excerpt: i.node.excerpt,
                 published_at: i.node.publishedAt,
 
-                image: i.node.image
-                    ? {
-                          url: i.node.image.url,
-                          width: i.node.image.width,
-                          height: i.node.image.height,
-                          alt: i.node.image.altText
-                      }
-                    : null
+                image:
+                    (i.node.image && {
+                        url: i.node.image.url,
+                        width: i.node.image.width,
+                        height: i.node.image.height,
+                        alt: i.node.image.altText
+                    }) ||
+                    null
             }));
 
             return resolve(result);

@@ -211,7 +211,13 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     <FooterBlock>
                         <Logo>
                             {store?.logo?.src && (
-                                <Image src={store.logo.src} alt="Logo" fill loader={ImageLoader} />
+                                <Image
+                                    src={store?.logo.src}
+                                    alt="Logo"
+                                    fill
+                                    sizes="(max-width: 950px) 75px, 250px"
+                                    loader={ImageLoader}
+                                />
                             )}
                         </Logo>
 

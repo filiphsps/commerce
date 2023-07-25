@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     AnalyticsPageType,
     ProductProvider,
@@ -8,63 +9,54 @@ import {
     useCart,
     useProduct
 } from '@shopify/hydrogen-react';
-import { Badge, BadgeContainer } from '@/components/Badges';
 import type {
     Collection,
     Product,
     ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { StringParam, useQueryParam, withDefault } from 'use-query-params';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
+import { StringParam, useQueryParam, withDefault } from 'use-query-params';
+import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
 
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import { Config } from '../../src/util/Config';
+import CollectionBlock from '@/components/CollectionBlock';
 import Content from '@/components/Content';
-import { Currency } from 'react-tender';
-import Error from 'next/error';
+import Gallery from '@/components/Gallery';
 import { Input } from '@/components/Input';
-import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
+import { Subtitle } from '@/components/PageHeader/PageHeader';
+import { ProductOptions } from '@/components/ProductOptions';
+import { InfoLines } from '@/components/products/InfoLines';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import dynamic from 'next/dynamic';
+import Error from 'next/error';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { createClient } from 'prismicio';
 import type { ProductPageDocument } from 'prismicio-types';
+import { Currency } from 'react-tender';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
+import useSWR from 'swr';
+import { components } from '../../slices';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
-import type { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
+import type { ReviewsModel } from '../../src/models/ReviewsModel';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { asText } from '@prismicio/client';
-import { components } from '../../slices';
-import { createClient } from 'prismicio';
-import dynamic from 'next/dynamic';
+import { Config } from '../../src/util/Config';
 import { titleToHandle } from '../../src/util/TitleToHandle';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'), { ssr: false });
-const Gallery = dynamic(() => import('@/components/Gallery'));
-const InfoLines = dynamic(
-    () => import('@/components/products/InfoLines').then((c) => c.InfoLines),
-    { ssr: false }
-);
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
-const ProductOptions = dynamic(
-    () => import('@/components/ProductOptions').then((c) => c.ProductOptions),
-    { ssr: false }
-);
-const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
-const Subtitle = dynamic(() =>
-    import('@/components/PageHeader/PageHeader').then((c) => c.Subtitle)
-);
 
 // TODO: replace this with generic label.
 const Label = styled.label`
@@ -489,24 +481,6 @@ const Container = styled(Page)`
                 }
             }
         }
-
-        /*${Recommendations} {
-            @media (min-width: 1465px) {
-                padding: 0px;
-                border-radius: 0px;
-                overflow: hidden;
-
-                ${RecommendationsContent} {
-                    padding: 0px;
-                    //background: var(--color-bright);
-                    //border-radius: var(--block-border-radius);
-                }
-            }
-
-            &::before {
-                background: var(--accent-secondary-light);
-            }
-        }*/
     }
 `;
 
@@ -773,7 +747,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 description={product?.seo?.description || product?.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}/products/${product.handle}/`}
                 languageAlternates={
-                    router?.locales?.map((locale) => ({
+                    router.locales?.map((locale) => ({
                         hrefLang: locale,
                         href: `https://${Config.domain}/${
                             (locale !== 'x-default' && `${locale}/`) || ''
@@ -798,7 +772,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         product?.seo?.description ||
                         product?.description ||
                         '',
-                    siteName: store.name,
+                    siteName: store?.name,
                     locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                     images: [
                         ...((page?.data?.meta_image && [
@@ -880,7 +854,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     minValue: 0,
                                     currency: 'USD' //variant.price.currencyCode
                                 },
-                                shippingDestination: store.payment?.countries.map(
+                                shippingDestination: store?.payment?.countries?.map(
                                     ({ isoCode }) => ({
                                         '@type': 'DefinedRegion',
                                         addressCountry: isoCode
@@ -1117,9 +1091,7 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
     }, [router.isReady, variantQuery]);
 
     // TODO: Proper error page
-    if (props.errors && props.errors?.length > 0)
-        return <Error statusCode={500} title={props.errors?.at(0)} />;
-    else if (!props.product) return <Error statusCode={404} />;
+    if (!props.product) return <Error statusCode={404} />;
     return (
         <ProductProvider
             data={props.product}
@@ -1142,10 +1114,10 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: product?.handle }
                 },
-                ...locales.map((locale) => ({
+                ...(locales?.map((locale) => ({
                     params: { handle: product?.handle },
                     locale: locale
-                }))
+                })) || [])
             ])
             .flat()
             .filter((a) => a?.params?.handle)
@@ -1155,7 +1127,6 @@ export async function getStaticPaths({ locales }) {
 }
 
 export const getStaticProps: GetStaticProps<{
-    errors?: string[] | null;
     page?: ProductPageDocument<string> | null;
     product?: Product | null;
     visuals?: ProductVisuals | null;
@@ -1206,7 +1177,6 @@ export const getStaticProps: GetStaticProps<{
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
-    let errors: string[] = [];
     let page: ProductPageDocument<string> | null = null;
 
     try {
@@ -1251,7 +1221,9 @@ export const getStaticProps: GetStaticProps<{
                     id: (product as any)?.visuals?.value,
                     locale
                 });
-            } catch {}
+            } catch (error: any) {
+                if (error) Sentry.captureException(error);
+            }
 
         try {
             page = await client.getByUID('product_page', handle, {
@@ -1269,15 +1241,13 @@ export const getStaticProps: GetStaticProps<{
                 locale
             });
         } catch (error: any) {
-            Sentry.captureException(error);
-            if (error) errors.push(error?.message?.toString());
+            if (error) Sentry.captureException(error);
         }
 
         try {
             reviews = await ReviewsProductApi({ id: product?.id });
         } catch (error: any) {
-            Sentry.captureException(error);
-            if (error) errors.push(error?.message?.toString());
+            if (error) Sentry.captureException(error);
         }
     }
 
@@ -1288,7 +1258,6 @@ export const getStaticProps: GetStaticProps<{
             page,
             recommendations,
             reviews,
-            errors: (errors.length > 0 && errors) || null,
             analytics: {
                 pageType: AnalyticsPageType.product,
                 resourceId: product?.id || '',

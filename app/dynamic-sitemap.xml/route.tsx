@@ -61,13 +61,13 @@ export async function GET() {
                 // FIXME
                 const modified = new Date().toISOString();
 
-                return locales.map((locale) => ({
+                return locales?.map((locale) => ({
                     loc: `https://${Config.domain}/${
                         (locale !== 'x-default' && `${locale}/`) || ''
                     }${item.location}`,
                     lastmod: modified,
                     priority: item.priority || 0.7,
-                    alternateRefs: locales.map((locale) => ({
+                    alternateRefs: locales?.map((locale) => ({
                         href:
                             (locale !== 'x-default' && `${url}/${locale}/${item.location}`) ||
                             `${url}/${item.location}`,

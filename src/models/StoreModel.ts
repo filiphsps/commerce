@@ -8,6 +8,8 @@ export interface StoreModel {
         src: string;
     };
 
+    currencies?: Array<string>;
+
     favicon: {
         src: string;
     };
@@ -20,21 +22,16 @@ export interface StoreModel {
         secondary: string;
     };
 
-    currencies: Array<string>;
-    languages: Array<string>;
     social: Array<{
         name: string;
         url: string;
         handle: string;
     }>;
 
-    custom_header_tags?: string;
-    custom_body_tags?: string;
-
     payment?: {
         methods: string[];
         wallets: string[];
-        countries: Array<{
+        countries?: Array<{
             isoCode: CountryCode;
             name: string;
             currency: {

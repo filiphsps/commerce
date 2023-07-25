@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ImageLoader } from '../../src/util/ImageLoader';
 import Link from 'next/link';
 import PageContent from '@/components/PageContent';
-import { SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
 const Container = styled.section`

@@ -5,6 +5,7 @@ import {
 } from '../../prismicio-types';
 
 import { CollectionApi } from '../api/collection';
+import { VendorsApi } from 'src/api/vendor';
 import { i18n } from '../../next-i18next.config.cjs';
 
 const Prefetch = (
@@ -44,6 +45,9 @@ const Prefetch = (
                                     handle
                                 ].products.edges.slice(0, slice?.primary?.limit);
                         }
+                        break;
+                    case 'vendors':
+                        vendors = await VendorsApi();
                         break;
                 }
             } catch (error) {

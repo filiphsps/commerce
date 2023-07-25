@@ -279,7 +279,7 @@ const Header = styled.header<{ scrolled?: boolean }>`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
-    transition: 250ms ease-in-out;
+    transition: 250ms ease-in-out background-color;
     border-bottom: calc(var(--block-border-width) / 2) solid transparent;
 
     ${({ scrolled }) =>
@@ -341,6 +341,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             width={250}
                             height={150}
                             alt={`Store logo`}
+                            sizes="(max-width: 950px) 75px, 250px"
                             loader={ImageLoader}
                         />
                     </Link>

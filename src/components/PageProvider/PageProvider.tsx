@@ -113,7 +113,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             currency: NextLocaleToCurrency({ country, store })
         } as Locale,
         domain: Config.domain,
-        shopId: store.id,
+        shopId: store?.id,
         pagePropsAnalyticsData
     });
     useCartUtils({

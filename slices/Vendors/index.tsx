@@ -1,6 +1,6 @@
 import { Content } from '@prismicio/client';
 import PageContent from '@/components/PageContent';
-import { SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import VendorsComponent from '@/components/Vendors';
 import styled from 'styled-components';
 
@@ -18,11 +18,11 @@ export type VendorsProps = SliceComponentProps<Content.VendorsSlice>;
 /**
  * Component for "Vendors" Slices.
  */
-const Vendors = ({ slice }: VendorsProps): JSX.Element => {
+const Vendors = ({ slice, context }: VendorsProps): JSX.Element => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
-                <VendorsComponent />
+                <VendorsComponent data={(context as any)?.prefetch?.vendors} />
             </PageContent>
         </Container>
     );

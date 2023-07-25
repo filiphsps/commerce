@@ -3,7 +3,7 @@ import 'slick-carousel/slick/slick.css';
 
 import PageContent from '@/components/PageContent';
 import { Content } from '@prismicio/client';
-import { SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Slider from 'react-slick';

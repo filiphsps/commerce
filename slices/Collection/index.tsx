@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import CollectionBlock from '@/components/CollectionBlock';
 import PageContent from '@/components/PageContent';
 import { Title } from '@/components/PageHeader/PageHeader';
-import { SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
 import Link from 'next/link';
 import { FullCollection } from './FullCollection';
@@ -125,8 +125,8 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                     slice.primary.hide_title
                                 }
                                 plainTitle
-                                data={context.prefetch?.collections?.[slice.primary.handle!]}
-                                store={context.store}
+                                data={context?.prefetch?.collections?.[slice.primary.handle!]}
+                                store={context?.store}
                             />
                         </Content>
                     </PageContent>

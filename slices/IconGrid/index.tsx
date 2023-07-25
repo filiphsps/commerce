@@ -1,7 +1,7 @@
 import { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
 import PageContent from '@/components/PageContent';
-import { SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
 const Container = styled.section`

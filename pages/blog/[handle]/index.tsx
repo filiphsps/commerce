@@ -4,7 +4,9 @@ import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../../src/util/Config';
+import ContentComponent from '@/components/Content';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
@@ -12,12 +14,8 @@ import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '../../../src/models/StoreModel';
-import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-
-const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
-const ContentComponent = dynamic(() => import('@/components/Content'));
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -150,7 +148,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 description={article.seo.description || article.excerpt}
                 canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
-                    router?.locales?.map((locale) => ({
+                    router.locales?.map((locale) => ({
                         hrefLang: locale,
                         href: `https://${Config.domain}/${
                             (locale !== 'x-default' && `${locale}/`) || ''
@@ -174,7 +172,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                             url: article.image.url
                         }
                     ],
-                    site_name: store.name
+                    site_name: store?.name
                 }}
             />
             <NewsArticleJsonLd
@@ -189,7 +187,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 datePublished={article.published_at}
                 authorName={article.author.name}
                 publisherName="Candy by Sweden"
-                publisherLogo={store.favicon.src}
+                publisherLogo={store?.favicon.src}
             />
 
             <PageContent primary>
@@ -226,7 +224,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                     <Sidebar>
                         <SidebarContent>
                             <SidebarTitle>Latest Articles</SidebarTitle>
-                            {blog.articles.map((article) => (
+                            {blog?.articles?.map((article) => (
                                 <SidebarLink key={article.id}>
                                     <Link href={`/blog/${article.handle}/`}>{article.title}</Link>
                                 </SidebarLink>
@@ -234,7 +232,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
 
                             <SidebarTitle>Tags</SidebarTitle>
                             <ArticleTags>
-                                {article.tags.map((tag) => (
+                                {article?.tags?.map((tag) => (
                                     <ArticleTag key={tag}>{tag}</ArticleTag>
                                 ))}
                             </ArticleTags>
@@ -269,10 +267,10 @@ export async function getStaticPaths({ locales }) {
                 {
                     params: { handle: article?.handle }
                 },
-                ...locales.map((locale) => ({
+                ...(locales?.map((locale) => ({
                     params: { handle: article?.handle },
                     locale: locale
-                }))
+                })) || [])
             ])
             .flat()
             .filter((a) => a?.params?.handle)
