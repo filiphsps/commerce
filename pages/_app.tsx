@@ -3,6 +3,7 @@ import './app.scss';
 
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
@@ -11,8 +12,8 @@ import PageProvider from '@/components/PageProvider';
 import isPropValid from '@emotion/is-prop-valid';
 import { PrismicPreview } from '@prismicio/next';
 import Color from 'color';
+import { i18n } from 'next-i18next.config.cjs';
 import NextAdapterPages from 'next-query-params/pages';
-import type { NextWebVitalsMetric } from 'next/app';
 import { Lexend_Deca } from 'next/font/google';
 import Head from 'next/head';
 import NProgress from 'nprogress';
@@ -36,15 +37,15 @@ Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 Router.events.on('hashChangeComplete', () => NProgress.done());
 
-const StoreApp = ({ Component, pageProps, locale: initialLocale }) => {
+const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
 
     const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
         fallbackData: preval.store!
     });
 
-    const country = NextLocaleToCountry(router.locale || initialLocale);
-    const language = NextLocaleToLanguage(router.locale || initialLocale);
+    const country = NextLocaleToCountry(router.locale || i18n.defaultLocale);
+    const language = NextLocaleToLanguage(router.locale || i18n.defaultLocale);
 
     if (!store) return null;
 

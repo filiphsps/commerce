@@ -1,5 +1,3 @@
-import { captureException } from '@sentry/nextjs';
-
 import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     AnalyticsPageType,
@@ -27,16 +25,14 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import CollectionBlock from '@/components/CollectionBlock';
 import Content from '@/components/Content';
-import Gallery from '@/components/Gallery';
 import { Input } from '@/components/Input';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
-import { ProductOptions } from '@/components/ProductOptions';
-import { InfoLines } from '@/components/products/InfoLines';
 import { asText } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
+import { captureException } from '@sentry/nextjs';
 import dynamic from 'next/dynamic';
 import Error from 'next/error';
 import Link from 'next/link';
@@ -55,6 +51,14 @@ import type { StoreModel } from '../../src/models/StoreModel';
 import { Config } from '../../src/util/Config';
 import { titleToHandle } from '../../src/util/TitleToHandle';
 
+const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
+const ProductOptions = dynamic(() =>
+    import('@/components/ProductOptions').then((c) => c.ProductOptions)
+);
+const InfoLines = dynamic(
+    () => import('@/components/products/InfoLines').then((c) => c.InfoLines),
+    { ssr: false }
+);
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
 

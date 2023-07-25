@@ -1,9 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ConvertToLocalMeasurementSystem } from 'src/api/product';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
+import { ConvertToLocalMeasurementSystem } from 'src/api/product';
 
 const OptionTitle = styled.div`
     text-transform: uppercase;
@@ -104,7 +104,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
     useEffect(() => {
         if (disabled === !router.isReady) return;
         setDisabled(!router.isReady);
-    }, [router]);
+    }, [,router]);
 
     return (
         <>
