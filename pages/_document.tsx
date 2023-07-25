@@ -1,8 +1,8 @@
 import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 
-import { Config } from '../src/util/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
+import { Config } from '../src/util/Config';
 
 class Document extends NextDocument {
     static async getInitialProps(ctx) {
@@ -24,7 +24,7 @@ class Document extends NextDocument {
                         {sheet.getStyleElement()}
                     </>
                 )
-            } as any;
+            };
         } finally {
             sheet.seal();
         }
