@@ -81,7 +81,6 @@ const Item = styled(Link)`
         img {
             transform: scale(1.1);
         }
-        //outline: var(--block-border-widths) solid black;
     }
 `;
 
@@ -103,11 +102,11 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                             <Banner
                                 src={image?.url || ''}
                                 alt={image?.alt || title || ''}
-                                width={600}
-                                height={600}
+                                width={400}
+                                height={400}
                                 //width={image.dimensions?.width!}
                                 //height={image.dimensions?.height!}
-                                sizes="(max-width: 950px) 100vw, 33vw"
+                                sizes="(max-width: 950px) 100vw, 25vw"
                                 //fill
                                 loader={ImageLoader}
                             />

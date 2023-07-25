@@ -9,7 +9,7 @@ export const ActionBar = styled.div`
     padding: 0px var(--block-padding);
     border-radius: var(--block-padding-large);
     background: var(--accent-secondary);
-    color: var(--color-dark);
+    color: var(--accent-secondary-text);
     user-select: none;
 `;
 export const ActionBarItem = styled.div<{ active?: boolean }>`
