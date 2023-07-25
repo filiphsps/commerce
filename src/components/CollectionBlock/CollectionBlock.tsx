@@ -1,15 +1,15 @@
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { CollectionApi } from '../../api/collection';
-import Link from 'next/link';
-import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type { StoreModel } from '../../models/StoreModel';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { CollectionApi } from '../../api/collection';
+import type { StoreModel } from '../../models/StoreModel';
+import ProductCard from '../ProductCard';
 
 const Title = styled.div``;
 const Subtitle = styled.div``;

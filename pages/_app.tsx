@@ -3,26 +3,27 @@ import './app.scss';
 
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 
-import { CartFragment } from 'src/api/cart';
+import PageProvider from '@/components/PageProvider';
+import isPropValid from '@emotion/is-prop-valid';
+import { PrismicPreview } from '@prismicio/next';
 import Color from 'color';
-import { Config } from '../src/util/Config';
-import Head from 'next/head';
-import { Lexend_Deca } from 'next/font/google';
-import NProgress from 'nprogress';
 import NextAdapterPages from 'next-query-params/pages';
 import type { NextWebVitalsMetric } from 'next/app';
-import PageProvider from '@/components/PageProvider';
-import { PrismicPreview } from '@prismicio/next';
+import { Lexend_Deca } from 'next/font/google';
+import Head from 'next/head';
+import NProgress from 'nprogress';
+import { withStore } from 'react-context-hook';
+import { CartFragment } from 'src/api/cart';
+import { StyleSheetManager, ThemeProvider } from 'styled-components';
+import useSWR from 'swr';
 import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
-import { ThemeProvider } from 'styled-components';
 import preval from '../src/data.preval';
-import useSWR from 'swr';
-import { withStore } from 'react-context-hook';
+import { Config } from '../src/util/Config';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -192,20 +193,22 @@ const StoreApp = withStore(
                         languageIsoCode={language}
                     >
                         <CartProvider countryCode={country} cartFragment={CartFragment}>
-                            <ThemeProvider theme={{}}>
-                                <PrismicPreview repositoryName={Config.prismic.name}>
-                                    <PageProvider
-                                        store={store}
-                                        pagePropsAnalyticsData={pageProps.analytics || {}}
-                                    >
-                                        <Component
-                                            key={router.asPath}
-                                            {...pageProps}
+                            <StyleSheetManager shouldForwardProp={isPropValid}>
+                                <ThemeProvider theme={{}}>
+                                    <PrismicPreview repositoryName={Config.prismic.name}>
+                                        <PageProvider
                                             store={store}
-                                        />
-                                    </PageProvider>
-                                </PrismicPreview>
-                            </ThemeProvider>
+                                            pagePropsAnalyticsData={pageProps.analytics || {}}
+                                        >
+                                            <Component
+                                                key={router.asPath}
+                                                {...pageProps}
+                                                store={store}
+                                            />
+                                        </PageProvider>
+                                    </PrismicPreview>
+                                </ThemeProvider>
+                            </StyleSheetManager>
                         </CartProvider>
                     </ShopifyProvider>
                 </QueryParamProvider>
