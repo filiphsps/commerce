@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { Country, CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    Country,
+    CountryCode,
+    LanguageCode
+} from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { StoreModel } from '../models/StoreModel';
 import { createClient } from 'prismicio';

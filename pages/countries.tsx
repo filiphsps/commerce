@@ -1,10 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../src/util/Config';
 import { CountriesApi } from '../src/api/store';
-import { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import { CustomPageDocument } from 'prismicio-types';
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
@@ -12,14 +11,17 @@ import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 const LocalesList = styled.article`
     display: grid;

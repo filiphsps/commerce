@@ -1,4 +1,4 @@
-import { CountryCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CountryCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 export interface StoreModel {
     id: string;

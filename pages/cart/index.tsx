@@ -6,7 +6,7 @@ import {
     CartWithActions,
     useCart
 } from '@shopify/hydrogen-react';
-import { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { FunctionComponent, useState } from 'react';
 
 import { Config } from '../../src/util/Config';

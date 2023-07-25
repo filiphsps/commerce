@@ -7,7 +7,7 @@ import {
     useCart,
     useShopifyCookies
 } from '@shopify/hydrogen-react';
-import { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
 import { Locale } from '../util/Locale';

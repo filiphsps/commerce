@@ -14,7 +14,7 @@ import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Loader from '../Loader';
 import { ProductApi } from '../../api/product';
-import { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '../../models/StoreModel';
 import TitleToHandle from '../../util/TitleToHandle';
 import { i18n } from '../../../next-i18next.config.cjs';

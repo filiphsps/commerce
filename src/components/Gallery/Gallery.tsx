@@ -2,7 +2,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import Image from 'next/image';
-import { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { ImageLoader } from '../../util/ImageLoader';
 
 const Previews = styled.div`

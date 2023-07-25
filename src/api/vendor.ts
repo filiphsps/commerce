@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import TitleToHandle from '../util/TitleToHandle';
-import type { VendorModel } from '../models/VendorModel';
 import { gql } from '@apollo/client';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { VendorModel } from '../models/VendorModel';
+import TitleToHandle from '../util/TitleToHandle';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (

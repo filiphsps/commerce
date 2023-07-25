@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { CountryCode, LanguageCode, Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    CountryCode,
+    LanguageCode,
+    Product
+} from '@shopify/hydrogen-react/storefront-api-types';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import { gql } from '@apollo/client';

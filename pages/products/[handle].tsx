@@ -9,7 +9,7 @@ import {
     useProduct
 } from '@shopify/hydrogen-react';
 import { Badge, BadgeContainer } from '@/components/Badges';
-import {
+import type {
     Collection,
     Product,
     ProductEdge,
@@ -23,7 +23,6 @@ import React, { FunctionComponent, useCallback, useEffect, useRef, useState } fr
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import { Config } from '../../src/util/Config';
 import Content from '@/components/Content';
@@ -33,16 +32,14 @@ import { Input } from '@/components/Input';
 import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { ProductOptions } from '@/components/ProductOptions';
-import { ProductPageDocument } from 'prismicio-types';
+import type { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
 import type { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { Subtitle } from '@/components/PageHeader/PageHeader';
 import TitleToHandle from '../../src/util/TitleToHandle';
 import { asText } from '@prismicio/client';
 import { components } from '../../slices';
@@ -51,12 +48,20 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
+const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'), { ssr: false });
 const Gallery = dynamic(() => import('@/components/Gallery'));
+const InfoLines = dynamic(
+    () => import('@/components/products/InfoLines').then((c) => c.InfoLines),
+    { ssr: false }
+);
+const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
-const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
-const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
+const Subtitle = dynamic(() =>
+    import('@/components/PageHeader/PageHeader').then((c) => c.Subtitle)
+);
 
 // TODO: replace this with generic label.
 const Label = styled.label`

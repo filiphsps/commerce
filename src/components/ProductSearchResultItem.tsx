@@ -4,7 +4,7 @@ import { Subtitle, Title } from './PageHeader/PageHeader';
 import { AppendShopifyParameters } from './ProductCard/ProductCard';
 import { FunctionComponent } from 'react';
 import Link from 'next/link';
-import { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
 const Container = styled.div`

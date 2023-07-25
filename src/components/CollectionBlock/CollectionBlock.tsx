@@ -2,14 +2,16 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '../../api/collection';
 import Link from 'next/link';
-import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '../../models/StoreModel';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const ProductCard = dynamic(() => import('@/components/ProductCard'));
 
 const Title = styled.div``;
 const Subtitle = styled.div``;

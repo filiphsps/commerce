@@ -6,7 +6,7 @@ import {
 } from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
-import {
+import type {
     Product,
     ProductVariantEdge,
     Image as ShopifyImage

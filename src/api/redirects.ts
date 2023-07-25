@@ -1,10 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
-import type { RedirectModel } from '../models/RedirectModel';
 import { gql } from '@apollo/client';
 import { i18n } from 'next-i18next.config.cjs';
+import type { RedirectModel } from '../models/RedirectModel';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (

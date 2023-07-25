@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 
-import { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
 const FilterWrapper = styled.div`

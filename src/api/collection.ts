@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import {
+import type {
     Collection,
     CountryCode,
     LanguageCode
