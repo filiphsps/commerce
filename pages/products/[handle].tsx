@@ -16,10 +16,10 @@ import {
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
@@ -975,11 +975,26 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                 />
 
                                 <BadgeContainer>
-                                    {product?.tags?.map((tag) => (
-                                        <Badge key={tag} className={tag}>
-                                            {tag}
-                                        </Badge>
-                                    ))}
+                                    {product?.tags?.map((tag: string) => {
+                                        let content: React.ReactNode = tag;
+                                        // TODO: make this a lookup somewhere
+                                        if (['vegan'].includes(tag.toLowerCase())) {
+                                            content = (
+                                                <Link
+                                                    title={tag}
+                                                    href={`/collections/${TitleToHandle(tag)}`}
+                                                >
+                                                    {tag}
+                                                </Link>
+                                            );
+                                        }
+
+                                        return (
+                                            <Badge key={tag} className={tag}>
+                                                {content}
+                                            </Badge>
+                                        );
+                                    })}
                                 </BadgeContainer>
                             </TabContent>
 

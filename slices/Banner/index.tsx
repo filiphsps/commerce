@@ -10,6 +10,7 @@ const Contents = styled.div`
     justify-content: center;
     align-items: center;
     grid-template-rows: 1fr;
+    gap: var(--block-padding-large);
     padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
     min-height: 30vh;
     //height: 100%;
@@ -35,6 +36,7 @@ const Header = styled.div`
         font-size: 2rem;
         line-height: 2.5rem;
         font-weight: 400;
+
         @media (min-width: 950px) {
             font-size: 2.5rem;
             line-height: 3rem;
@@ -91,10 +93,12 @@ const Action = styled(Link)<{ primary?: string }>`
             font-weight: 700;
         `}
 
-    &:hover {
-        border-color: var(--accent-secondary-light);
-        background: var(--accent-secondary-light);
-        color: var(--accent-secondary-text);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            border-color: var(--accent-secondary-light);
+            background: var(--accent-secondary-light);
+            color: var(--accent-secondary-text);
+        }
     }
 `;
 
@@ -141,6 +145,7 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
                         padding-top: 0px;
                         font-size: 1.75rem;
                         line-height: 2.25rem;
+
                         @media (min-width: 950px) {
                             font-size: 2rem;
                             line-height: 2.5rem;
@@ -155,6 +160,7 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
                     h6 {
                         font-size: 2.5rem;
                         line-height: 3rem;
+
                         @media (min-width: 950px) {
                             font-size: 3rem;
                             line-height: 3.5rem;
@@ -176,6 +182,7 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
                 }
 
                 gap: calc(var(--block-padding-large) * 1.5);
+
                 @media (min-width: 950px) {
                     gap: var(--block-padding-large);
                 }

@@ -25,4 +25,8 @@ export const Badge = styled.div`
         background: var(--color-green);
         color: var(--color-bright);
     }
+
+    a {
+        color: inherit;
+    }
 `;

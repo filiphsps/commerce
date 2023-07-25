@@ -9,7 +9,6 @@ import styled from 'styled-components';
 const Container = styled.section`
     //grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     width: 100%;
-    height: 100%;
     padding: 0px;
     margin: 0px;
     flex-grow: 1;
