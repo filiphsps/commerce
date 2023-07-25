@@ -1,15 +1,14 @@
-import * as Sentry from '@sentry/nextjs';
-
 import type {
     CountryCode,
     LanguageCode,
     Product
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import { gql } from '@apollo/client';
+import { captureException } from '@sentry/nextjs';
 import { i18n } from '../../next-i18next.config.cjs';
-import { newStorefrontClient } from './shopify';
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { storefrontClient } from './shopify';
 
 // TODO: Migrate to the new recommendations api
 export const RecommendationApi = async ({
@@ -32,7 +31,7 @@ export const RecommendationApi = async ({
         ).toUpperCase() as LanguageCode;
 
         try {
-            const { data, errors } = await newStorefrontClient.query({
+            const { data, errors } = await storefrontClient.query({
                 query: gql`
                     query productRecommendations($productId: ID!) @inContext(language: ${language}, country: ${country}) {
                         productRecommendations(productId: $productId, intent: RELATED) {
@@ -51,7 +50,7 @@ export const RecommendationApi = async ({
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

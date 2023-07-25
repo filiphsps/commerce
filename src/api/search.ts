@@ -6,10 +6,10 @@ import type {
     Product
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
-import { newStorefrontClient } from './shopify';
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { storefrontClient } from './shopify';
 
 export const SearchApi = async ({
     query,
@@ -35,7 +35,7 @@ export const SearchApi = async ({
         ).toUpperCase() as LanguageCode;
 
         const search = async ({ type }: { type: 'PRODUCT' }) => {
-            const { data } = await newStorefrontClient.query({
+            const { data } = await storefrontClient.query({
                 query: gql`
                     query searchProducts($query: String!, $first: Int) @inContext(language: ${language}, country: ${country}) {
                         search(query: $query, first: $first, types: ${type}) {
@@ -112,7 +112,7 @@ export const SearchPredictionApi = async ({
             locale?.split('-')[0] || i18n.locales[1].split('-')[0]
         ).toUpperCase() as LanguageCode;
 
-        const { data } = await newStorefrontClient.query({
+        const { data } = await storefrontClient.query({
             query: gql`
                 query predictiveSearch($query: String!) @inContext(language: ${language}, country: ${country}) {
                     predictiveSearch(query: $query, type: [PRODUCT, QUERY]s) {
