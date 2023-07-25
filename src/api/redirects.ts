@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import type { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -65,7 +65,7 @@ export const RedirectsApi = async ({
 
             return resolve(Convertor(data?.urlRedirects?.edges));
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

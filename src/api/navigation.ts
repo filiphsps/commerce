@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
@@ -37,7 +37,7 @@ export const NavigationApi = async (
                 return resolve(await NavigationApi()); // Try again with default locale
             }
 
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

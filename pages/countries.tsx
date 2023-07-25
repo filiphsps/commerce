@@ -1,25 +1,25 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../src/util/Config';
-import { CountriesApi } from '../src/api/store';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import type { CustomPageDocument } from 'prismicio-types';
-import { FunctionComponent } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '../src/models/StoreModel';
-import { components } from '../slices';
-import { createClient } from 'prismicio';
-import styled from 'styled-components';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import { NextSeo } from 'next-seo';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { createClient } from 'prismicio';
+import type { CustomPageDocument } from 'prismicio-types';
+import { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
+import { components } from '../slices';
+import { CountriesApi } from '../src/api/store';
+import type { StoreModel } from '../src/models/StoreModel';
+import { Config } from '../src/util/Config';
 
 const LocalesList = styled.article`
     display: grid;
@@ -229,7 +229,7 @@ export async function getStaticProps({ locale, previewData }) {
             };
         }
 
-        Sentry.captureException(error);
+        captureException(error);
         return {
             props: {},
             revalidate: 1

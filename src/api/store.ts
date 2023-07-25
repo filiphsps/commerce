@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import type {
     Country,
@@ -6,10 +6,10 @@ import type {
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import type { StoreModel } from '../models/StoreModel';
-import { createClient } from 'prismicio';
 import { gql } from '@apollo/client';
+import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
+import type { StoreModel } from '../models/StoreModel';
 import { storefrontClient } from './shopify';
 
 export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {
@@ -48,7 +48,7 @@ export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Cou
 
             return resolve(localData?.localization?.availableCountries);
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -68,7 +68,7 @@ export const LocalesApi = async (): Promise<string[]> => {
 
             return resolve(locales);
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -178,7 +178,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }
 
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

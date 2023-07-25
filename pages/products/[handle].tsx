@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import { Badge, BadgeContainer } from '@/components/Badges';
 import {
@@ -1191,7 +1191,7 @@ export const getStaticProps: GetStaticProps<{
             };
         }
 
-        if (error) Sentry.captureException(error);
+        if (error) captureException(error);
         return {
             props: {
                 errors: (error?.message && [error?.message]) || null
@@ -1222,7 +1222,7 @@ export const getStaticProps: GetStaticProps<{
                     locale
                 });
             } catch (error: any) {
-                if (error) Sentry.captureException(error);
+                if (error) captureException(error);
             }
 
         try {
@@ -1241,13 +1241,13 @@ export const getStaticProps: GetStaticProps<{
                 locale
             });
         } catch (error: any) {
-            if (error) Sentry.captureException(error);
+            if (error) captureException(error);
         }
 
         try {
             reviews = await ReviewsProductApi({ id: product?.id });
         } catch (error: any) {
-            if (error) Sentry.captureException(error);
+            if (error) captureException(error);
         }
     }
 

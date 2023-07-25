@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import type {
     CountryCode,
@@ -8,10 +8,10 @@ import type {
     WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import ConvertUnits from 'convert-units';
-import { NextLocaleToCountry } from '../util/Locale';
 import { gql } from '@apollo/client';
+import ConvertUnits from 'convert-units';
 import { i18n } from '../../next-i18next.config.cjs';
+import { NextLocaleToCountry } from '../util/Locale';
 import { storefrontClient } from './shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
@@ -268,7 +268,7 @@ export const ProductApi = async ({
 
             return resolve(data.productByHandle);
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -361,7 +361,7 @@ export const ProductsApi = async (
                 }
             });
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -509,7 +509,7 @@ export const ProductVisualsApi = async ({
                 return reject(new Error(`404: The requested document cannot be found`));
             }
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

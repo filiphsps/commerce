@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
-import { Config } from '../util/Config';
-import type { ReviewsModel } from '../models/ReviewsModel';
 import { parse } from 'node-html-parser';
+import type { ReviewsModel } from '../models/ReviewsModel';
+import { Config } from '../util/Config';
 
 export const ReviewsProductApi = async ({
     id,
@@ -69,7 +69,7 @@ export const ReviewsProductApi = async ({
             reviews
         };
     } catch (error) {
-        Sentry.captureException(error);
+        captureException(error);
         console.error(error);
         return {
             id: '',

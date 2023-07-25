@@ -1,10 +1,10 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
+import { gql } from '@apollo/client';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '../models/VendorModel';
-import { gql } from '@apollo/client';
-import { storefrontClient } from './shopify';
 import { titleToHandle } from '../util/TitleToHandle';
+import { storefrontClient } from './shopify';
 
 export const Convertor = (
     products: Array<{
@@ -48,7 +48,7 @@ export const VendorsApi = async () => {
 
             resolve(Convertor(res?.data?.products?.edges));
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             reject(error);
         }

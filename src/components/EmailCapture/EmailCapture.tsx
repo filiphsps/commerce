@@ -1,11 +1,11 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import { FunctionComponent, memo, useEffect, useState } from 'react';
 
+import styled from 'styled-components';
+import { NewsletterApi } from '../../api/newsletter';
 import { Button } from '../Button';
 import { Input } from '../Input';
-import { NewsletterApi } from '../../api/newsletter';
-import styled from 'styled-components';
 
 const Container = styled.div`
     position: relative;
@@ -177,7 +177,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                                         return;
                                     }
 
-                                    Sentry.captureException(error);
+                                    captureException(error);
                                     alert('Something went wrong please try again!');
                                 }
                             }}

@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
 import type {
     Collection,
@@ -102,7 +102,7 @@ export const CollectionApi = async ({
                 .replaceAll('\u00A0', ' ');
             return resolve(/*flattenConnection(*/ data.collectionByHandle /*)*/);
         } catch (error) {
-            Sentry.captureException(error);
+            captureException(error);
             console.error(error);
             return reject(error);
         }

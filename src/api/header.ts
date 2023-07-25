@@ -1,8 +1,8 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
-import type { HeaderModel } from '../models/HeaderModel';
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
+import type { HeaderModel } from '../models/HeaderModel';
 
 export const HeaderApi = async (locale = i18n.defaultLocale): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
@@ -23,7 +23,7 @@ export const HeaderApi = async (locale = i18n.defaultLocale): Promise<HeaderMode
                 return reject(new Error('404: The requested document cannot be found'));
             }
 
-            Sentry.captureException(error);
+            captureException(error);
             return reject(error);
         }
     });

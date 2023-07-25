@@ -1,27 +1,27 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { FunctionComponent, useState } from 'react';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CollectionBlock from '@/components/CollectionBlock';
-import { Config } from '../../src/util/Config';
-import { CustomPageDocument } from '../../prismicio-types';
-import ErrorPage from 'next/error';
-import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
+import { asText } from '@prismicio/client';
+import { NextSeo } from 'next-seo';
+import ErrorPage from 'next/error';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
+import useSWR from 'swr';
+import { createClient } from '../../prismicio';
+import { CustomPageDocument } from '../../prismicio-types';
 import { ProductsPaginationApi } from '../../src/api/product';
+import { VendorsApi } from '../../src/api/vendor';
 import type { StoreModel } from '../../src/models/StoreModel';
 import type { VendorModel } from '../../src/models/VendorModel';
-import { VendorsApi } from '../../src/api/vendor';
-import { asText } from '@prismicio/client';
-import { createClient } from '../../prismicio';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { Config } from '../../src/util/Config';
 
 const Container = styled.div`
     display: grid;
@@ -400,14 +400,14 @@ export async function getStaticProps({ locale, previewData }) {
             before: undefined
         })) as any;
     } catch (error) {
-        Sentry.captureException(error);
+        captureException(error);
         if (error) errors.push(error);
     }
 
     try {
         vendors = (await VendorsApi()) as any;
     } catch (error) {
-        Sentry.captureException(error);
+        captureException(error);
         if (error) errors.push(error);
     }
 
@@ -420,7 +420,7 @@ export async function getStaticProps({ locale, previewData }) {
             page = await client.getByUID('custom_page', 'shop');
         }
     } catch (error) {
-        Sentry.captureException(error);
+        captureException(error);
         if (error) errors.push(error);
     }
 

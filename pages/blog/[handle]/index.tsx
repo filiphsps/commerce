@@ -1,21 +1,21 @@
-import * as Sentry from '@sentry/nextjs';
+import { captureException } from '@sentry/nextjs';
 
-import { ArticleApi, BlogApi } from '../../../src/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
+import { ArticleApi, BlogApi } from '../../../src/api/blog';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../../../src/util/Config';
 import ContentComponent from '@/components/Content';
-import Error from 'next/error';
-import { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
-import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import type { StoreModel } from '../../../src/models/StoreModel';
-import styled from 'styled-components';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Error from 'next/error';
+import Image from 'next/legacy/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { FunctionComponent } from 'react';
+import styled from 'styled-components';
+import type { StoreModel } from '../../../src/models/StoreModel';
+import { Config } from '../../../src/util/Config';
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -308,7 +308,7 @@ export async function getStaticProps({ params, locale }) {
             };
         }
 
-        Sentry.captureException(error);
+        captureException(error);
         return {
             props: {
                 error: error.message
@@ -323,7 +323,7 @@ export async function getStaticProps({ params, locale }) {
             locale
         })) as any;
     } catch (error) {
-        Sentry.captureException(error);
+        captureException(error);
     }
 
     return {
