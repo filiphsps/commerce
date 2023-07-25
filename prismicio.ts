@@ -1,6 +1,7 @@
-import * as prismic from '@prismicio/client';
-import * as prismicNext from '@prismicio/next';
-
+import type { ClientConfig } from '@prismicio/client';
+import { createClient as prismicCreateClient } from '@prismicio/client';
+import type { CreateClientConfig } from '@prismicio/next';
+import { enableAutoPreviews } from '@prismicio/next';
 import { Config } from 'src/util/Config';
 
 /**
@@ -15,7 +16,7 @@ export const accessToken = process.env.PRISMIC_TOKEN;
  *
  * {@link https://prismic.io/docs/route-resolver#route-resolver}
  */
-const routes: prismic.ClientConfig['routes'] = [
+const routes: ClientConfig['routes'] = [
     {
         type: 'custom_page',
         uid: 'homepage',
@@ -45,8 +46,8 @@ const routes: prismic.ClientConfig['routes'] = [
  *
  * @param config - Configuration for the Prismic client.
  */
-export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
-    const client = prismic.createClient(repositoryName, {
+export const createClient = (config: CreateClientConfig = {}) => {
+    const client = prismicCreateClient(repositoryName, {
         routes,
         accessToken: accessToken,
         fetchOptions:
@@ -56,7 +57,7 @@ export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
         ...config
     });
 
-    prismicNext.enableAutoPreviews({
+    enableAutoPreviews({
         client,
         previewData: config.previewData,
         req: config.req
