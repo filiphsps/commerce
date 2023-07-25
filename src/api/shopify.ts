@@ -33,3 +33,34 @@ export const storefrontClient = new ApolloClient({
         }
     }
 });
+
+export const newShopifyClient = createStorefrontClient({
+    publicStorefrontToken: '2023-07',
+    storeDomain: `https://${Config.domain.replace('www', 'checkout')}`,
+    storefrontApiVersion: Config.shopify.api
+});
+
+export const newStorefrontClient = new ApolloClient({
+    ssrMode: true,
+    link: new HttpLink({
+        uri: shopifyClient.getStorefrontApiUrl(),
+        headers: shopifyClient.getPublicTokenHeaders()
+    }),
+    cache: new InMemoryCache({
+        canonizeResults: true,
+        addTypename: false
+    }),
+    defaultOptions: {
+        watchQuery: {
+            fetchPolicy: 'no-cache',
+            errorPolicy: 'ignore'
+        },
+        query: {
+            fetchPolicy: 'no-cache',
+            errorPolicy: 'all'
+        },
+        mutate: {
+            errorPolicy: 'all'
+        }
+    }
+});

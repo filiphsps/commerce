@@ -32,7 +32,6 @@ import { Input } from '@/components/Input';
 import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import { ProductOptions } from '@/components/ProductOptions';
 import type { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
@@ -40,11 +39,11 @@ import { RedirectProductApi } from '../../src/api/redirects';
 import type { ReviewsModel } from '../../src/models/ReviewsModel';
 import { ReviewsProductApi } from '../../src/api/reviews';
 import type { StoreModel } from '../../src/models/StoreModel';
-import TitleToHandle from '../../src/util/TitleToHandle';
 import { asText } from '@prismicio/client';
 import { components } from '../../slices';
 import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
+import { titleToHandle } from '../../src/util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -58,6 +57,10 @@ const InfoLines = dynamic(
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const ProductOptions = dynamic(
+    () => import('@/components/ProductOptions').then((c) => c.ProductOptions),
+    { ssr: false }
+);
 const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 const Subtitle = dynamic(() =>
     import('@/components/PageHeader/PageHeader').then((c) => c.Subtitle)
@@ -656,7 +659,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 <PageHeader
                     title={product.title!}
                     subtitle={
-                        <Link href={`/collections/${TitleToHandle(product.vendor!)}/`}>
+                        <Link href={`/collections/${titleToHandle(product.vendor!)}/`}>
                             {product.vendor}
                         </Link>
                     }
@@ -989,7 +992,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                             content = (
                                                 <Link
                                                     title={tag}
-                                                    href={`/collections/${TitleToHandle(tag)}`}
+                                                    href={`/collections/${titleToHandle(tag)}`}
                                                 >
                                                     {tag}
                                                 </Link>
@@ -1080,7 +1083,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     pages={[
                         {
                             title: product.vendor,
-                            url: `/collections/${TitleToHandle(product.vendor!)}`
+                            url: `/collections/${titleToHandle(product.vendor!)}`
                         },
                         {
                             title: product.title,

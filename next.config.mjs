@@ -17,7 +17,7 @@ let config = {
     swcMinify: true,
     i18n,
     productionBrowserSourceMaps: true,
-    compress: false,
+    compress: true,
     experimental: {
         esmExternals: true
     },
@@ -28,14 +28,9 @@ let config = {
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
     },
     compiler: {
-        removeConsole:
-            (process.env.NODE_ENV === 'production' && {
-                exclude: ['error', 'warn']
-            }) ||
-            false,
         styledComponents: {
             ssr: true,
-            minify: false,
+            minify: true,
             transpileTemplateLiterals: true,
             pure: true
         }

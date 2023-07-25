@@ -21,7 +21,7 @@ import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
 import type { StoreModel } from '../../models/StoreModel';
-import TitleToHandle from '../../util/TitleToHandle';
+import { titleToHandle } from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -634,7 +634,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${TitleToHandle(product.vendor)}/`}>
+                        <Link href={`/collections/${titleToHandle(product.vendor)}/`}>
                             {product.vendor}
                         </Link>
                     </Brand>

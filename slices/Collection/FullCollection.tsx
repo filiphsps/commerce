@@ -1,5 +1,5 @@
-import { CollectionSliceFull } from 'prismicio-types';
-import { FunctionComponent } from 'react';
+import type { CollectionSliceFull } from 'prismicio-types';
+import type { FunctionComponent } from 'react';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from 'src/models/StoreModel';
 import { VerticalCollection } from '@/components/products/VerticalCollection';

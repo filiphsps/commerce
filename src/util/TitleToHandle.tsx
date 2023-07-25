@@ -1,4 +1,4 @@
-const TitleToHandle = (title: string) => {
+export const titleToHandle = (title: string) => {
     title = title || '';
     return title
         .toLowerCase()
@@ -14,5 +14,3 @@ const TitleToHandle = (title: string) => {
         .replace(new RegExp("[']", 'g'), '')
         .replace(new RegExp('--', 'g'), '-');
 };
-
-export default TitleToHandle;

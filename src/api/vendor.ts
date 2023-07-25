@@ -1,10 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { gql } from '@apollo/client';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '../models/VendorModel';
-import TitleToHandle from '../util/TitleToHandle';
+import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
+import { titleToHandle } from '../util/TitleToHandle';
 
 export const Convertor = (
     products: Array<{
@@ -24,7 +24,7 @@ export const Convertor = (
     // Remove duplicates and create a proper object
     return Array.from(new Set(vendors)).map((vendor) => ({
         title: vendor,
-        handle: TitleToHandle(vendor)
+        handle: titleToHandle(vendor)
     }));
 };
 

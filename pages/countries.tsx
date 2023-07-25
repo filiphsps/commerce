@@ -4,14 +4,13 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { Config } from '../src/util/Config';
 import { CountriesApi } from '../src/api/store';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import { CustomPageDocument } from 'prismicio-types';
+import type { CustomPageDocument } from 'prismicio-types';
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
@@ -22,6 +21,7 @@ import useSWR from 'swr';
 
 const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const SliceZone = dynamic(() => import('@prismicio/react').then((c) => c.SliceZone));
 
 const LocalesList = styled.article`
     display: grid;

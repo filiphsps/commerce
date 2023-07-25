@@ -1,4 +1,4 @@
-import TitleToHandle from './TitleToHandle';
+import { titleToHandle } from './TitleToHandle';
 
 const example_titles = [
     ['Siberia', 'siberia'],
@@ -10,12 +10,12 @@ const example_titles = [
 ];
 
 describe('Util', () => {
-    describe('TitleToHandle', () => {
+    describe('titleToHandle', () => {
         it('Should convert vendors to handles', () => {
             for (let i = 0; i < example_titles.length; i++) {
                 const item = example_titles[i];
 
-                let res = TitleToHandle(item[0]);
+                let res = titleToHandle(item[0]);
                 expect(res == item[1]).toBeTruthy();
             }
         });

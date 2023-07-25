@@ -16,8 +16,8 @@ import Loader from '../Loader';
 import { ProductApi } from '../../api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '../../models/StoreModel';
-import TitleToHandle from '../../util/TitleToHandle';
 import { i18n } from '../../../next-i18next.config.cjs';
+import { titleToHandle } from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -347,7 +347,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${TitleToHandle(product?.vendor)}/`}>
+                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`}>
                             {product?.vendor}
                         </Link>
                     </DetailsBrand>
