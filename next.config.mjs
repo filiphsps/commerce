@@ -1,5 +1,5 @@
 import { withSentryConfig } from '@sentry/nextjs';
-import createNextPluginPreval from 'next-plugin-preval/config.js';
+import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 import dns from 'node:dns';
 import { i18n } from './next-i18next.config.cjs';
 import manifest from './package.json' assert { type: 'json' };

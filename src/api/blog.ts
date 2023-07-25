@@ -152,14 +152,14 @@ export const ArticleApi = async ({
                     bio: result.authorV2.bio
                 },
 
-                image: result.image
-                    ? {
-                          url: result.image.url,
-                          width: result.image.width,
-                          height: result.image.height,
-                          alt: result.image.altText
-                      }
-                    : null,
+                image:
+                    (result.image && {
+                        url: result.image.url,
+                        width: result.image.width,
+                        height: result.image.height,
+                        alt: result.image.altText
+                    }) ||
+                    null,
                 seo: {
                     title: result.seo.title,
                     description: result.seo.description

@@ -3,18 +3,15 @@ import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
 
-export const NavigationApi = async (
-    locale = i18n.defaultLocale
-): Promise<
-    Array<{
+export type NavigationItem = {
+    title: string;
+    handle?: string;
+    children: Array<{
         title: string;
         handle?: string;
-        children: Array<{
-            title: string;
-            handle?: string;
-        }>;
-    }>
-> => {
+    }>;
+};
+export const NavigationApi = async (locale = i18n.defaultLocale): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = i18n.locales[1];
 
