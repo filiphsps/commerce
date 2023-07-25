@@ -31,6 +31,7 @@ import Content from '@/components/Content';
 import { Currency } from 'react-tender';
 import Error from 'next/error';
 import Gallery from '@/components/Gallery';
+import { InfoLines } from '@/components/products/InfoLines';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import Page from '@/components/Page';
@@ -940,6 +941,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             </Options>
 
                             {addToCartAction}
+                            <InfoLines product={product} />
 
                             <SliceZone
                                 slices={page?.data.slices}

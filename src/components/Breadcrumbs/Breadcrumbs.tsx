@@ -1,10 +1,7 @@
 import { FiChevronRight } from 'react-icons/fi';
 import { FunctionComponent } from 'react';
 import NextLink from 'next/link';
-import dynamic from 'next/dynamic';
 import styled from 'styled-components';
-
-const SocialShare = dynamic(() => import('../SocialShare'), { ssr: false });
 
 const Container = styled.nav`
     z-index: 999;
@@ -85,10 +82,9 @@ interface BreadcrumbsProps {
     }[];
     store?: any;
     country?: string;
-    hideSocial?: boolean;
 }
 const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
-    const { store, hideSocial = true } = props;
+    const { store } = props;
 
     return (
         <Container className="Breadcrumbs">
@@ -104,7 +100,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                 </Item>
                 {props?.pages?.map((item: any, index: any) => {
                     // FIXME: Hotfix.
-                    if (item.url.includes('undefined')) return null;
+                    if (item.url.includes('undefined') || item.url.includes('handle')) return null;
 
                     return (
                         <Item
@@ -131,7 +127,6 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     );
                 })}
             </Content>
-            {!hideSocial && <SocialShare />}
         </Container>
     );
 };

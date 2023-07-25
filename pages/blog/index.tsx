@@ -123,7 +123,6 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                         }
                     ]}
                     store={store}
-                    hideSocial={true}
                 />
             </PageContent>
         </Page>
@@ -143,7 +142,8 @@ export async function getStaticProps({ locale }) {
             props: {
                 blog,
                 analytics: {
-                    pageType: AnalyticsPageType.blog
+                    pageType: AnalyticsPageType.blog,
+                    resourceId: blog?.id || ''
                 }
             },
             revalidate: 60

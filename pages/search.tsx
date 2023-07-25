@@ -267,7 +267,6 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
                         }
                     ]}
                     store={store}
-                    hideSocial={true}
                 />
             </PageContent>
         </Page>
