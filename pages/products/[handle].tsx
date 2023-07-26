@@ -136,7 +136,7 @@ const Options = styled.div`
 const Description = styled(Content)`
     overflow-x: hidden;
 `;
-const AddToCart = styled(Button)<{ added: boolean }>`
+const AddToCart = styled(Button)<{ $added?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,8 +152,8 @@ const AddToCart = styled(Button)<{ added: boolean }>`
     line-height: 2.25rem;
     font-weight: 600;
 
-    ${({ added }) =>
-        added &&
+    ${({ $added }) =>
+        $added &&
         css`
             &&,
             &:hover,
@@ -290,15 +290,15 @@ const HeaderContent = styled.div`
     }
 `;
 
-const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
+const Price = styled.div<{ $sale?: boolean; $highlight?: boolean }>`
     position: relative;
     display: block;
     font-size: 3rem;
     line-height: 100%;
     font-weight: 600;
 
-    ${(props) =>
-        props.sale &&
+    ${({ $sale }) =>
+        $sale &&
         css`
             font-size: 2rem;
 
@@ -317,8 +317,8 @@ const Price = styled.div<{ sale?: boolean; highlight?: boolean }>`
                 transform: rotate(-5deg);
             }
         `}
-    ${(props) =>
-        props.highlight &&
+    ${({ $highlight }) =>
+        $highlight &&
         css`
             color: var(--color-sale);
         `}
@@ -614,7 +614,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const pricing = (
         <PriceContainer>
             {selectedVariant?.compareAtPrice && (
-                <Price sale>
+                <Price $sale>
                     <Currency
                         value={Number.parseFloat(selectedVariant?.compareAtPrice?.amount!)}
                         currency={
@@ -623,7 +623,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     />
                 </Price>
             )}
-            <Price highlight={selectedVariant?.compareAtPrice != null}>
+            <Price $highlight={selectedVariant?.compareAtPrice != null}>
                 <Currency
                     value={Number.parseFloat(selectedVariant?.price?.amount!)}
                     currency={selectedVariant?.price?.currencyCode! || Config.i18n.currencies[0]}
@@ -662,7 +662,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         <AddToCart
             type="button"
             title="Add to Cart"
-            added={added}
+            $added={added}
             disabled={!cartReady || quantity <= 0 || !selectedVariant?.availableForSale}
             onClick={() =>
                 cartReady && addOrUpdateCartLine({ quantity, variantId: selectedVariant?.id! })

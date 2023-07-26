@@ -1,12 +1,12 @@
-import React, { FunctionComponent, memo } from 'react';
+import { FunctionComponent, memo } from 'react';
 
 import styled from 'styled-components';
 
-const Metronome = styled.div<{ dark?: boolean; speed?: number }>`
+const Metronome = styled.div<{ $dark?: boolean; $speed?: number }>`
     --size: 6rem;
-    --speed: ${({ speed }) => speed || 1.5}s;
-    --accent: ${({ dark }) =>
-        (dark && 'var(--accent-secondary-dark)') || 'var(--accent-secondary-light)'};
+    --speed: ${({ $speed }) => $speed || 1.5}s;
+    --accent: ${({ $dark }) =>
+        ($dark && 'var(--accent-secondary-dark)') || 'var(--accent-secondary-light)'};
 
     position: relative;
     display: flex;
@@ -92,7 +92,7 @@ interface LoaderProps {
 }
 const Loader: FunctionComponent<LoaderProps> = ({ light }) => {
     return (
-        <Metronome speed={1.75} dark={!light}>
+        <Metronome $speed={1.75} $dark={!light}>
             <Dot />
             <Dot />
             <Dot />

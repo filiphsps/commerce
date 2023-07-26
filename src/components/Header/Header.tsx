@@ -275,15 +275,15 @@ const HamburgerMenu = styled.div`
     }
 `;
 
-const Header = styled.header<{ scrolled?: boolean }>`
+const Header = styled.header<{ $scrolled?: boolean }>`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
     transition: 250ms ease-in-out background-color;
     border-bottom: calc(var(--block-border-width) / 2) solid transparent;
 
-    ${({ scrolled }) =>
-        scrolled &&
+    ${({ $scrolled }) =>
+        $scrolled &&
         css`
             border-bottom-color: var(--accent-secondary);
             box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
@@ -328,7 +328,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
     }, [scrollTop]);
 
     return (
-        <Header className="Modern" scrolled={scrollTop >= 40}>
+        <Header $scrolled={scrollTop >= 40}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}

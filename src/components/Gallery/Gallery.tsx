@@ -88,7 +88,7 @@ const ImageWrapper = styled.div`
     height: 100%;
 `;
 
-const Container = styled.div<{ noBlend?: boolean }>`
+const Container = styled.div<{ $noBlend?: boolean }>`
     position: relative;
     display: grid;
     grid-template-areas: 'primary' 'previews';
@@ -105,8 +105,8 @@ const Container = styled.div<{ noBlend?: boolean }>`
     img {
         flex-shrink: 1;
         width: 100%;
-        ${({ noBlend }) =>
-            !noBlend &&
+        ${({ $noBlend }) =>
+            !$noBlend &&
             css`
                 mix-blend-mode: multiply;
             `}
@@ -194,7 +194,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
     return (
         <Container
             className={(pastel && 'Pastel') || ''}
-            noBlend={!!background || undefined}
+            $noBlend={!!background || undefined}
             style={
                 {
                     ...((images?.edges?.length <= 1 && {
@@ -234,6 +234,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
                                     title={image.altText || undefined}
                                     width={125}
                                     height={125}
+                                    sizes="(max-width: 950px) 75px, 250px"
                                     loader={ImageLoader}
                                 />
                             </ImageWrapper>

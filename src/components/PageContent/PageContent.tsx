@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { FunctionComponent } from 'react';
 
-const Container = styled.div<{ primary?: boolean }>`
+const Container = styled.div<{ $primary?: boolean }>`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
@@ -10,8 +10,8 @@ const Container = styled.div<{ primary?: boolean }>`
     width: 100%;
     margin: 0px auto;
 
-    ${({ primary }) =>
-        primary &&
+    ${({ $primary }) =>
+        $primary &&
         css`
             padding: var(--block-spacer-large);
             gap: var(--block-spacer-large);
@@ -25,8 +25,14 @@ interface PageContentProps {
     children?: any;
     id?: string;
 }
-const PageContent: FunctionComponent<PageContentProps> = (props) => {
-    return <Container {...props} />;
+const PageContent: FunctionComponent<PageContentProps> = ({
+    style,
+    primary,
+    className,
+    children,
+    id
+}) => {
+    return <Container {...{ style, className, children, id }} $primary={primary} />;
 };
 
 export default PageContent;

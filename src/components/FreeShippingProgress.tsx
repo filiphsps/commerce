@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { FunctionComponent } from 'react';
 
-const Container = styled.section<{ active?: boolean }>`
+const Container = styled.section<{ $active?: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -11,8 +11,8 @@ const Container = styled.section<{ active?: boolean }>`
     color: var(--color-dark);
     transition: 250ms ease-in-out;
 
-    ${({ active }) =>
-        active &&
+    ${({ $active }) =>
+        $active &&
         css`
             border-radius: var(--block-border-radius);
             color: var(--color-green);
@@ -32,15 +32,15 @@ const ProgressBarLine = styled.div`
     height: 100%;
     background: var(--accent-secondary-dark);
 `;
-const ProgressBar = styled.div<{ full?: boolean }>`
+const ProgressBar = styled.div<{ $full?: boolean }>`
     overflow: hidden;
     width: 100%;
     height: var(--block-padding);
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
 
-    ${({ full }) =>
-        full &&
+    ${({ $full }) =>
+        $full &&
         css`
             ${ProgressBarLine} {
                 background: var(--color-green);
@@ -86,13 +86,13 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         null;
 
     return (
-        <Container {...props} active={freeShipping}>
+        <Container {...props} $active={freeShipping}>
             {
                 <Label>
                     {amountLeftComponent} away from getting <Target>FREE Shipping</Target>.
                 </Label>
             }
-            <ProgressBar full={freeShipping}>
+            <ProgressBar $full={freeShipping}>
                 <ProgressBarLine
                     style={{
                         width: `${

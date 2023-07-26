@@ -1,15 +1,15 @@
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import { CollectionApi } from '../../api/collection';
 import Link from 'next/link';
+import ProductCard from '../ProductCard';
+import { ProductProvider } from '@shopify/hydrogen-react';
+import type { StoreModel } from '../../models/StoreModel';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { CollectionApi } from '../../api/collection';
-import type { StoreModel } from '../../models/StoreModel';
-import ProductCard from '../ProductCard';
 
 const Title = styled.div``;
 const Subtitle = styled.div``;
@@ -33,9 +33,9 @@ const Actions = styled.div`
         display: none;
     }
 `;
-const Action = styled.div<{ hide?: boolean; position: 'left' | 'right' }>`
+const Action = styled.div<{ $hide?: boolean; $position: 'left' | 'right' }>`
     z-index: 99999;
-    grid-area: ${({ position }) => position};
+    grid-area: ${({ $position }) => $position};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,8 +57,8 @@ const Action = styled.div<{ hide?: boolean; position: 'left' | 'right' }>`
         background: var(--accent-secondary-dark);
     }
 
-    ${({ hide }) =>
-        hide &&
+    ${({ $hide }) =>
+        $hide &&
         css`
             opacity: 0;
             pointer-events: none;
@@ -68,9 +68,9 @@ const Action = styled.div<{ hide?: boolean; position: 'left' | 'right' }>`
 const Meta = styled.div``;
 
 const Content = styled.div<{
-    horizontal?: boolean;
-    showLeftShadow?: boolean;
-    showRightShadow?: boolean;
+    $horizontal?: boolean;
+    $showLeftShadow?: boolean;
+    $showRightShadow?: boolean;
 }>`
     column-count: 2;
     column-gap: var(--block-spacer);
@@ -78,8 +78,8 @@ const Content = styled.div<{
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
 
-    ${({ horizontal }) =>
-        horizontal &&
+    ${({ $horizontal }) =>
+        $horizontal &&
         css`
             padding: var(--block-padding-large) 0px;
             padding-right: var(--block-spacer-large);
@@ -118,12 +118,12 @@ const Content = styled.div<{
                 --shadow: rgba(0, 0, 0, 0.5);
                 background-image: linear-gradient(to right, transparent, transparent),
                     linear-gradient(to right, transparent, transparent),
-                    ${({ showLeftShadow }: any) =>
-                        (showLeftShadow &&
+                    ${({ $showLeftShadow }: any) =>
+                        ($showLeftShadow &&
                             'linear-gradient(to right, var(--shadow), transparent)') ||
                         'linear-gradient(to right, transparent, transparent)'},
-                    ${({ showRightShadow }: any) =>
-                        (showRightShadow &&
+                    ${({ $showRightShadow }: any) =>
+                        ($showRightShadow &&
                             'linear-gradient(to left, var(--shadow), transparent)') ||
                         'linear-gradient(to left, transparent, transparent)'};
                 background-position:
@@ -142,8 +142,8 @@ const Content = styled.div<{
             }
         `}
 
-    ${({ horizontal }) =>
-        !horizontal &&
+    ${({ $horizontal }) =>
+        !$horizontal &&
         css`
             display: grid;
             grid-template-columns: repeat(
@@ -163,13 +163,13 @@ const Content = styled.div<{
 `;
 
 const Container = styled.div<{
-    horizontal?: boolean;
+    $horizontal?: boolean;
 }>`
     position: relative;
     width: 100%;
 
-    ${({ horizontal }) =>
-        horizontal &&
+    ${({ $horizontal }) =>
+        $horizontal &&
         css`
             width: calc(100% + var(--block-padding-large) * 2);
             margin-left: calc(var(--block-padding-large) * -1);
@@ -177,7 +177,7 @@ const Container = styled.div<{
 `;
 
 const ViewMore = styled.section<{
-    horizontal?: boolean;
+    $horizontal?: boolean;
 }>`
     overflow: hidden;
     display: flex;
@@ -208,8 +208,8 @@ const ViewMore = styled.section<{
         padding: var(--block-padding-large);
     }
 
-    ${({ horizontal }) =>
-        horizontal &&
+    ${({ $horizontal }) =>
+        $horizontal &&
         css`
             margin-right: calc(
                 50vw -
@@ -301,7 +301,6 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
             <ProductProvider key={`minimal_${product?.id}`} data={product}>
                 <ProductCard
                     handle={product?.handle}
-                    isHorizontal={isHorizontal}
                     store={store}
                     className={(index === 0 && 'First') || ''}
                 />
@@ -312,7 +311,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     const view_more = limit &&
         collection?.products?.edges &&
         collection.products.edges.length > limit && (
-            <ViewMore horizontal={isHorizontal}>
+            <ViewMore $horizontal={isHorizontal}>
                 <Link
                     title={`Browse all products in "${collection.title}"`}
                     className="ProductCard CollectionBlock-Content-ShowMore"
@@ -327,7 +326,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         );
 
     return (
-        <Container horizontal={isHorizontal}>
+        <Container $horizontal={isHorizontal}>
             {!hideTitle && (
                 <Meta>
                     <Link href={`/collections/${handle}/`}>
@@ -344,8 +343,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
             {isHorizontal && (
                 <Actions>
                     <Action
-                        position={'left'}
-                        hide={!contentRef?.current || !shadowLeft}
+                        $position={'left'}
+                        $hide={!contentRef?.current || !shadowLeft}
                         onClick={() => {
                             if (!contentRef?.current) return;
                             contentRef.current.scroll?.({
@@ -356,8 +355,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                         <FiChevronLeft />
                     </Action>
                     <Action
-                        position={'right'}
-                        hide={!contentRef?.current || !shadowRight}
+                        $position={'right'}
+                        $hide={!contentRef?.current || !shadowRight}
                         onClick={() => {
                             if (!contentRef?.current) return;
                             contentRef.current.scroll?.({
@@ -372,9 +371,9 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
 
             <Content
                 ref={contentRef as any}
-                horizontal={isHorizontal}
-                showLeftShadow={shadowLeft}
-                showRightShadow={shadowRight}
+                $horizontal={isHorizontal}
+                $showLeftShadow={shadowLeft}
+                $showRightShadow={shadowRight}
             >
                 {products.length > 0 && products}
                 {view_more}

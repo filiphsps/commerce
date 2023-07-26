@@ -26,15 +26,15 @@ const Content = styled.div`
     color: var(--foreground);
 `;
 
-const Header = styled.div<{ alignment: 'left' | 'center' | 'right' }>`
+const Header = styled.div<{ $alignment: 'left' | 'center' | 'right' }>`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: start;
     gap: var(--block-spacer-small);
 
-    ${({ alignment }) =>
-        alignment == 'center' &&
+    ${({ $alignment }) =>
+        $alignment == 'center' &&
         css`
             align-items: center;
             text-align: center;
@@ -96,7 +96,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                     <PageContent>
                         <Content>
                             {asText(slice.primary.title)?.length > 0 && (
-                                <Header alignment={slice.primary.alignment}>
+                                <Header $alignment={slice.primary.alignment}>
                                     <Link
                                         href={`/collections/${slice.primary.handle!}`}
                                         title={`View all products in "${asText(

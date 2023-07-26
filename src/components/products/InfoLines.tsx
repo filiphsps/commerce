@@ -19,7 +19,7 @@ const Container = styled.section`
     }
 `;
 
-const Entry = styled.div<{ status: Status }>`
+const Entry = styled.div<{ $status: Status }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,8 +31,8 @@ const Entry = styled.div<{ status: Status }>`
     border-radius: 6rem;
     user-select: none;
 
-    ${({ status }) => {
-        switch (status) {
+    ${({ $status }) => {
+        switch ($status) {
             case 'good':
                 return css`
                     color: var(--color-success-light);
@@ -70,7 +70,7 @@ export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) =>
     //const fewAvailable = `Limited amount in stock`;
 
     return (
-        <Entry status="good" title={available}>
+        <Entry $status="good" title={available}>
             <Icon>
                 <FiPackage />
             </Icon>

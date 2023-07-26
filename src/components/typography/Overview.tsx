@@ -5,7 +5,7 @@ import ContentComponent from '../Content';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 
-const Container = styled.div<{ layout?: 'left' | 'right' }>`
+const Container = styled.div<{ $layout?: 'left' | 'right' }>`
     display: grid;
     grid-template-areas: 'overview-banner' 'overview-content';
     height: 100%;
@@ -18,8 +18,8 @@ const Container = styled.div<{ layout?: 'left' | 'right' }>`
         grid-template-areas: 'overview-banner overview-content';
         grid-template-columns: minmax(32rem, 1fr) auto;
 
-        ${({ layout }) =>
-            layout === 'right' &&
+        ${({ $layout }) =>
+            $layout === 'right' &&
             css`
                 grid-template-areas: 'overview-content overview-banner';
                 grid-template-columns: auto minmax(32rem, 1fr);
@@ -38,7 +38,7 @@ const ImageWrapper = styled.div`
         object-fit: contain;
     }
 `;
-const ImageContainer = styled.div<{ expand?: boolean }>`
+const ImageContainer = styled.div<{ $expand?: boolean }>`
     grid-area: overview-banner;
     overflow: hidden;
     flex-basis: 40%;
@@ -49,8 +49,8 @@ const ImageContainer = styled.div<{ expand?: boolean }>`
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
 
-    ${({ expand }) =>
-        expand &&
+    ${({ $expand }) =>
+        $expand &&
         css`
             padding: 0px;
 
@@ -122,8 +122,8 @@ export const Overview: FunctionComponent<OverviewProps> = ({
     if (!image) return <Content className="Plain">{body}</Content>;
 
     return (
-        <Container style={style} className="TextBlock Block" layout={layout}>
-            <ImageContainer expand={imageStyle === 'cover' || undefined}>
+        <Container style={style} className="TextBlock Block" $layout={layout}>
+            <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
                     <Image
                         src={image?.url}

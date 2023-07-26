@@ -67,7 +67,7 @@ const Header = styled.div`
     }
 `;
 
-const Action = styled(Link)<{ primary?: string }>`
+const Action = styled(Link)<{ $primary?: boolean }>`
     padding: var(--block-padding) calc(var(--block-padding-large) * 1.75);
     border-radius: calc(var(--block-border-radius-large) * 2);
     border: var(--block-border-width) solid var(--heading-selected-color);
@@ -85,8 +85,8 @@ const Action = styled(Link)<{ primary?: string }>`
         line-height: 2rem;
     }
 
-    ${({ primary }) =>
-        primary === 'true' &&
+    ${({ $primary }) =>
+        $primary &&
         css`
             background: var(--heading-selected-color);
             color: var(--accent-primary-text);
@@ -117,7 +117,7 @@ const ActionBar = styled.div`
     }
 `;
 
-const Container = styled.section<{ background: string; fullWidth?: boolean; slim?: boolean }>`
+const Container = styled.section<{ $background: string; $fullWidth?: boolean; $slim?: boolean }>`
     display: grid;
     justify-content: center;
     align-items: center;
@@ -125,8 +125,8 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
     background: var(--background);
     color: var(--content-color);
 
-    ${({ fullWidth }) =>
-        fullWidth &&
+    ${({ $fullWidth }) =>
+        $fullWidth &&
         css`
             position: relative;
             width: calc(100vw - var(--block-padding-large) / 2);
@@ -134,8 +134,8 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
             left: 50%;
         `};
 
-    ${({ slim }) =>
-        slim &&
+    ${({ $slim }) =>
+        $slim &&
         css`
             ${Contents} {
                 min-height: unset;
@@ -192,10 +192,10 @@ const Container = styled.section<{ background: string; fullWidth?: boolean; slim
             }
         `};
 
-    --background: ${({ background }) => background};
+    --background: ${({ $background }) => $background};
 
-    --mixer-color: ${({ background }) =>
-        (color(background).luminosity() > 0.35 && 'var(--color-dark)') || 'var(--color-bright)'};
+    --mixer-color: ${({ $background }) =>
+        (color($background).luminosity() > 0.35 && 'var(--color-dark)') || 'var(--color-bright)'};
     --heading-color: color-mix(in srgb, var(--background) 10%, var(--mixer-color));
     --heading-selected-color: color-mix(in srgb, var(--accent-primary) 85%, var(--mixer-color));
     --content-color: color-mix(in srgb, var(--background) 30%, var(--mixer-color));
@@ -216,8 +216,8 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
             className={slice.variation}
-            slim={slice.variation.toLowerCase().includes('slim')}
-            background={slice.primary.background || '#cce2cb'}
+            $slim={slice.variation.toLowerCase().includes('slim')}
+            $background={slice.primary.background || '#cce2cb'}
         >
             <Contents>
                 <Header>
@@ -227,7 +227,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                     {slice.items.map((cta, index) => (
                         <Action
                             key={index}
-                            primary={(cta.type || false).toString()}
+                            $primary={cta.type}
                             href={((cta.target && asLink(cta.target)?.toString()!) || {})!}
                         >
                             <PrismicRichText field={cta.title} />

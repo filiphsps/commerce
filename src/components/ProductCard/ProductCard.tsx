@@ -25,7 +25,7 @@ import { titleToHandle } from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
+export const ProductImage = styled.div`
     grid-area: product-image;
     overflow: hidden;
     position: relative;
@@ -37,21 +37,7 @@ export const ProductImage = styled.div<{ isHorizontal?: boolean }>`
     user-select: none;
     background: var(--color-bright);
     box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
-
-    ${({ isHorizontal }) =>
-        (isHorizontal &&
-            css`
-                height: 14rem;
-            `) ||
-        css`
-            @media (min-width: 950px) {
-                height: 14rem;
-                display: grid;
-                justify-content: center;
-                align-items: center;
-                grid-template-columns: 1fr;
-            }
-        `}
+    height: 14rem;
 
     &:hover {
         padding: var(--block-padding-small);
@@ -189,7 +175,7 @@ const Actions = styled.div`
     justify-content: space-between;
     gap: var(--block-spacer-small);
 `;
-const AddButton = styled(Button)<{ added: boolean }>`
+const AddButton = styled(Button)<{ $added?: boolean }>`
     && {
         overflow: hidden;
         display: flex;
@@ -361,7 +347,7 @@ const Badge = styled.div`
     }
 `;
 
-const Container = styled.section<{ available?: boolean; list?: boolean }>`
+const Container = styled.section<{ $available?: boolean }>`
     position: relative;
     flex: 1 auto;
     overflow: hidden;
@@ -376,74 +362,14 @@ const Container = styled.section<{ available?: boolean; list?: boolean }>`
     background: var(--accent-primary);
     color: var(--accent-primary-text);
 
-    ${({ available }) =>
-        !available &&
+    ${({ $available }) =>
+        !$available &&
         css`
             opacity: 0.75;
             filter: brightness(0.85);
             background: var(--color-block);
             color: var(--color-dark);
         `}
-
-    @media (max-width: 950px) {
-        ${({ list }) =>
-            list &&
-            css`
-                min-height: 10rem;
-                width: 100%;
-                margin: 0px;
-                padding: var(--block-padding-small);
-                gap: 0px var(--block-spacer);
-                grid-template-columns: auto 1fr calc(4rem + var(--block-spacer-small));
-                grid-template-areas:
-                    'product-image product-details product-actions'
-                    'product-image product-details product-actions';
-
-                ${Description}, ${Quantity}, ${Variants} {
-                    display: none;
-                }
-
-                ${ProductImage} {
-                    padding: var(--block-spacer);
-                    height: 100%;
-                    width: 8rem;
-                }
-
-                ${Details} {
-                    min-height: unset;
-                    padding: 0px;
-                    margin: var(--block-padding-small) 0px;
-
-                    ${VariantsContainer} {
-                        margin-top: 0px;
-                    }
-                }
-
-                ${Actions} {
-                    position: relative;
-                    grid-template-columns: 1fr;
-                    grid-template-rows: 1fr;
-                    grid-auto-flow: dense;
-                    justify-content: end;
-                    align-items: end;
-
-                    ${AddButton} {
-                        position: absolute;
-                        right: 0px;
-                        width: 12rem;
-
-                        min-width: unset;
-                        height: 3rem;
-                        padding: 0px;
-                        margin-bottom: 0px;
-                        border-radius: var(--block-border-radius-small);
-                        border-width: 0px;
-                        background: var(--accent-primary-light);
-                        color: var(--accent-primary-text);
-                    }
-                }
-            `}
-    }
 `;
 
 interface VariantImageProps {
@@ -480,16 +406,13 @@ export const AppendShopifyParameters = ({
 interface ProductCardProps {
     visuals?: ProductVisuals | null;
     handle?: string;
-    isHorizontal?: boolean;
     store: StoreModel;
     className?: string;
-    listView?: boolean;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = ({
     store,
     className,
-    visuals: visualsData,
-    listView
+    visuals: visualsData
 }) => {
     const router = useRouter();
     const [quantity, setQuantity] = useState(1);
@@ -565,8 +488,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
     return (
         <Container
             className={`ProductCard ${className || ''}`}
-            list={listView}
-            available={selectedVariant.availableForSale}
+            $available={selectedVariant.availableForSale}
             style={
                 {
                     '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
@@ -590,30 +512,34 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
             }
         >
             <Badges>
-                {!is_sale && product.variants?.edges && product.variants.edges.length > 1 ? (
+                {(!is_sale && product.variants?.edges && product.variants.edges.length > 1 && (
                     <Badge className="From">
                         <BadgeText>From</BadgeText>
                         <Money data={product.priceRange?.minVariantPrice!} />
                     </Badge>
-                ) : null}
-                {is_sale ? (
+                )) ||
+                    null}
+                {(is_sale && (
                     <Badge className="Sale">
                         <BadgeText>Sale</BadgeText>
                         <Money data={selectedVariant.price!} />
                     </Badge>
-                ) : null}
-                {is_new_product ? (
+                )) ||
+                    null}
+                {(is_new_product && (
                     <Badge className="New">
                         <BadgeText>New!</BadgeText>
                     </Badge>
-                ) : null}
-                {is_vegan_product ? (
+                )) ||
+                    null}
+                {(is_vegan_product && (
                     <Badge className="Vegan">
                         <BadgeText>Vegan</BadgeText>
                     </Badge>
-                ) : null}
+                )) ||
+                    null}
             </Badges>
-            <ProductImage isHorizontal>
+            <ProductImage>
                 <Link href={href}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
@@ -709,7 +635,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                     type="button"
                     title="Add to Cart"
                     className={(addedToCart && 'Added') || ''}
-                    added={addedToCart}
+                    $added={addedToCart}
                     onClick={() => {
                         if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
                         else if (!product || !selectedVariant) return;
