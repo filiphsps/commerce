@@ -172,7 +172,7 @@ const MetaSection = styled(Section)`
     min-width: 0px;
 `;
 
-const RemoveButton = styled(CartLineQuantityAdjustButton)`
+const RemoveButton = styled.button`
     &:hover {
         background: var(--color-danger);
         color: var(--color-bright);
@@ -422,7 +422,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
                     </CartLineQuantityAdjustButton>
                 </Quantity>
 
-                <RemoveButton adjust="remove">
+                <RemoveButton onClick={() => cart.linesRemove([line.id!])}>
                     <FiTrash />
                 </RemoveButton>
             </QuantitySection>

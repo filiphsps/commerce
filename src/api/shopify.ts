@@ -1,7 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
-import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { Config } from '../util/Config';
+import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 export const shopifyClient = createStorefrontClient({
     publicStorefrontToken: Config.shopify.token,
@@ -21,13 +21,14 @@ export const storefrontClient = new ApolloClient({
     }),
     defaultOptions: {
         watchQuery: {
+            fetchPolicy: 'no-cache',
             errorPolicy: 'ignore'
         },
         query: {
+            fetchPolicy: 'no-cache',
             errorPolicy: 'all'
         },
         mutate: {
-            fetchPolicy: 'no-cache',
             errorPolicy: 'all'
         }
     }

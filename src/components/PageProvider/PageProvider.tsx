@@ -80,6 +80,8 @@ const HeaderContainer = styled.div`
     top: -1px;
 `;
 
+const Content = styled.div``;
+
 interface PageProviderProps {
     store: StoreModel;
     pagePropsAnalyticsData: any;
@@ -175,7 +177,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
 
-            {props.children}
+            <Content>{props.children}</Content>
             <Footer store={props?.store} />
         </Container>
     );

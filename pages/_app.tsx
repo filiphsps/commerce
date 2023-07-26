@@ -1,29 +1,28 @@
 import 'destyle.css';
 import './app.scss';
 
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 
-import PageProvider from '@/components/PageProvider';
-import isPropValid from '@emotion/is-prop-valid';
-import { PrismicPreview } from '@prismicio/next';
-import Color from 'color';
-import { i18n } from 'next-i18next.config.cjs';
-import NextAdapterPages from 'next-query-params/pages';
-import { Lexend_Deca } from 'next/font/google';
-import Head from 'next/head';
-import NProgress from 'nprogress';
 import { CartFragment } from 'src/api/cart';
-import useSWR from 'swr';
+import Color from 'color';
+import { Config } from '../src/util/Config';
+import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
+import NProgress from 'nprogress';
+import NextAdapterPages from 'next-query-params/pages';
+import PageProvider from '@/components/PageProvider';
+import { PrismicPreview } from '@prismicio/next';
 import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
+import { i18n } from 'next-i18next.config.cjs';
 import preval from '../src/data.preval';
-import { Config } from '../src/util/Config';
+import useSWR from 'swr';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -189,7 +188,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     languageIsoCode={language}
                 >
                     <CartProvider countryCode={country} cartFragment={CartFragment}>
-                        <StyleSheetManager shouldForwardProp={isPropValid}>
+                        <StyleSheetManager enableVendorPrefixes>
                             <ThemeProvider theme={{}}>
                                 <PrismicPreview repositoryName={Config.prismic.name}>
                                     <PageProvider

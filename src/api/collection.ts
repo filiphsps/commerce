@@ -1,5 +1,3 @@
-import { captureException } from '@sentry/nextjs';
-
 import type {
     Collection,
     CountryCode,
@@ -7,6 +5,7 @@ import type {
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
+import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';

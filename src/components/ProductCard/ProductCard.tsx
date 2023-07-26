@@ -6,13 +6,13 @@ import {
 } from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
+import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type {
     Product,
     ProductVariantEdge,
     Image as ShopifyImage
 } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
-import { useCart, useProduct } from '@shopify/hydrogen-react';
 
 import { Button } from '../Button';
 import { Config } from '../../util/Config';
@@ -323,9 +323,6 @@ const Badges = styled.div`
     pointer-events: none;
 `;
 const BadgeText = styled.div``;
-const BadgePrice = styled(Currency)`
-    font-weight: 700;
-`;
 const Badge = styled.div`
     flex-shrink: 1;
     display: flex;
@@ -596,21 +593,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                 {!is_sale && product.variants?.edges && product.variants.edges.length > 1 ? (
                     <Badge className="From">
                         <BadgeText>From</BadgeText>
-                        <BadgePrice
-                            price={Number.parseFloat(product.priceRange?.minVariantPrice?.amount!)}
-                            currency={product.priceRange?.minVariantPrice?.currencyCode!}
-                            store={store}
-                        />
+                        <Money data={product.priceRange?.minVariantPrice!} />
                     </Badge>
                 ) : null}
                 {is_sale ? (
                     <Badge className="Sale">
                         <BadgeText>Sale</BadgeText>
-                        <BadgePrice
-                            price={Number.parseFloat(selectedVariant.price?.amount!)}
-                            currency={selectedVariant.price?.currencyCode}
-                            store={store}
-                        />
+                        <Money data={selectedVariant.price!} />
                     </Badge>
                 ) : null}
                 {is_new_product ? (

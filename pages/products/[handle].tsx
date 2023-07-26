@@ -1,4 +1,3 @@
-import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     AnalyticsPageType,
     ProductProvider,
@@ -7,49 +6,50 @@ import {
     useCart,
     useProduct
 } from '@shopify/hydrogen-react';
+import { Badge, BadgeContainer } from '@/components/Badges';
 import type {
     Collection,
     Product,
     ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
-import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { StringParam, useQueryParam, withDefault } from 'use-query-params';
+import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import CollectionBlock from '@/components/CollectionBlock';
+import { Config } from '../../src/util/Config';
 import Content from '@/components/Content';
+import { Currency } from 'react-tender';
+import Error from 'next/error';
 import { Input } from '@/components/Input';
+import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Subtitle } from '@/components/PageHeader/PageHeader';
-import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
-import { captureException } from '@sentry/nextjs';
-import dynamic from 'next/dynamic';
-import Error from 'next/error';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { createClient } from 'prismicio';
 import type { ProductPageDocument } from 'prismicio-types';
-import { Currency } from 'react-tender';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
-import useSWR from 'swr';
-import { components } from '../../slices';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
-import { ReviewsProductApi } from '../../src/api/reviews';
 import type { ReviewsModel } from '../../src/models/ReviewsModel';
+import { ReviewsProductApi } from '../../src/api/reviews';
+import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { Config } from '../../src/util/Config';
+import { Subtitle } from '@/components/PageHeader/PageHeader';
+import { asText } from '@prismicio/client';
+import { captureException } from '@sentry/nextjs';
+import { components } from '../../slices';
+import { createClient } from 'prismicio';
+import dynamic from 'next/dynamic';
 import { titleToHandle } from '../../src/util/TitleToHandle';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() =>
