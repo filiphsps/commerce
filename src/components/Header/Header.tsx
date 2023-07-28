@@ -2,6 +2,7 @@ import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
+import { CurrentLocaleFlag } from '../layout/CurrentLocaleFlag';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import { Input } from '../Input';
@@ -221,6 +222,10 @@ const Action = styled.div<{ $active?: boolean }>`
         font-size: 2.5rem;
     }
 
+    &:empty {
+        display: none;
+    }
+
     @media (hover: hover) and (pointer: fine) {
         &:hover {
             color: var(--accent-primary);
@@ -425,6 +430,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             title="Search for products, collections and pages across the whole store"
                         >
                             <FiSearch />
+                        </Link>
+                    </Action>
+                    <Action>
+                        <Link href="/countries/">
+                            <CurrentLocaleFlag />
                         </Link>
                     </Action>
                     <Action $active={(cart?.totalQuantity || 0) > 0}>
