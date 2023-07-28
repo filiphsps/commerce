@@ -16,7 +16,6 @@
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap && npm run sitemap:pretty",
         "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
-        "analyze": "ANALYZE=true next build",
         "start": "npm run hack && next start -p $PORT",
         "lint": "npm run hack && next lint",
         "test": "npm run hack && npm-run-all test:*",

@@ -383,9 +383,8 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             src={image.url}
             alt={image.altText || ''}
             title={image.altText || undefined}
-            height={image.height || 200}
-            width={image.width || 200}
-            sizes="(max-width: 950px) 100vw, 12.5vw"
+            height={100}
+            width={100}
             loader={ImageLoader}
         />
     );

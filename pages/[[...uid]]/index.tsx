@@ -1,23 +1,24 @@
-import { captureException } from '@sentry/nextjs';
-
-import Breadcrumbs from '@/components/Breadcrumbs';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
-import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { Config } from '../../src/util/Config';
+import { CustomPageDocument } from '../../prismicio-types';
+import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
 import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import { createClient } from '../../prismicio';
-import { CustomPageDocument } from '../../prismicio-types';
-import { components } from '../../slices';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
 import { PagesApi } from '../../src/api/page';
-import type { StoreModel } from '../../src/models/StoreModel';
-import { Config } from '../../src/util/Config';
 import { Prefetch } from '../../src/util/Prefetch';
+import { SliceZone } from '@prismicio/react';
+import type { StoreModel } from '../../src/models/StoreModel';
+import { asText } from '@prismicio/client';
+import { captureException } from '@sentry/nextjs';
+import { components } from '../../slices';
+import { createClient } from '../../prismicio';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 interface CustomPageProps {
     store: StoreModel;

@@ -102,11 +102,11 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                             <Banner
                                 src={image?.url || ''}
                                 alt={image?.alt || title || ''}
-                                width={400}
-                                height={400}
+                                width={300}
+                                height={300}
                                 //width={image.dimensions?.width!}
                                 //height={image.dimensions?.height!}
-                                sizes="(max-width: 950px) 100vw, 25vw"
+                                sizes="(max-width: 950px) 85vw, 25vw"
                                 //fill
                                 loader={ImageLoader}
                             />

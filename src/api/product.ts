@@ -1,5 +1,3 @@
-import { captureException } from '@sentry/nextjs';
-
 import type {
     CountryCode,
     LanguageCode,
@@ -8,10 +6,11 @@ import type {
     WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { gql } from '@apollo/client';
 import ConvertUnits from 'convert-units';
-import { i18n } from '../../next-i18next.config.cjs';
 import { NextLocaleToCountry } from '../util/Locale';
+import { captureException } from '@sentry/nextjs';
+import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
@@ -36,19 +35,19 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
             currencyCode
         }
     }
-    options(first: 5) {
+    options(first: 3) {
         id
         name
         values
     }
-    sellingPlanGroups(first: 5) {
+    sellingPlanGroups(first: 3) {
         edges {
             node {
                 name
             }
         }
     }
-    variants(first: 5) {
+    variants(first: 3) {
         edges {
             node {
                 id
