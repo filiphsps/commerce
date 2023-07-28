@@ -9,7 +9,6 @@ import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
 import { CartFragment } from 'src/api/cart';
-import Color from 'color';
 import { Config } from '../src/util/Config';
 import Head from 'next/head';
 import { Lexend_Deca } from 'next/font/google';
@@ -65,12 +64,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                         sans-serif;
                 }
             `}</style>
-            <DefaultSeo
-                {...SEO}
-                themeColor={Color(store?.accent.primary)
-                    .hex()
-                    .toString()}
-            />
+            <DefaultSeo {...SEO} themeColor={store?.accent.primary} />
             <Head>
                 <meta
                     name="viewport"
@@ -87,9 +81,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 {/* eslint-disable indent */}
                 <style>{`
                         :root {
-                            --accent-primary: ${Color(store?.accent.primary)
-                                .hex()
-                                .toString()};
+                            --accent-primary: ${store?.accent.primary};
                             --accent-primary-dark: color-mix(
                                 in srgb,
                                 var(--accent-primary) 65%,
@@ -101,17 +93,18 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                                 var(--color-bright)
                             );
                             --accent-primary-text: #ececec;
-                            --accent-secondary: ${Color(store?.accent.secondary)
-                                .hex()
-                                .toString()};
-                            --accent-secondary-dark: ${Color(store?.accent.secondary)
-                                .darken(0.25)
-                                .hex()
-                                .toString()};
-                            --accent-secondary-light: ${Color(store?.accent.secondary)
-                                .lighten(0.25)
-                                .hex()
-                                .toString()};
+
+                            --accent-secondary: ${store?.accent.secondary};
+                            --accent-secondary-dark: color-mix(
+                                in srgb,
+                                var(--accent-secondary) 65%,
+                                var(--color-dark)
+                            );
+                            --accent-secondary-light: color-mix(
+                                in srgb,
+                                var(--accent-secondary) 35%,
+                                var(--color-bright)
+                            );
                             --accent-secondary-text: #101418;
                         }
                     `}</style>
