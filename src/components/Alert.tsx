@@ -8,7 +8,9 @@ const Container = styled.section`
     grid-template-columns: 4rem 1fr;
     grid-template-rows: 1fr;
     gap: var(--block-padding-large);
-    width: auto;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius-large);
     background: var(--color-block-pastel-lime);
@@ -17,7 +19,6 @@ const Container = styled.section`
         grid-template-columns: auto auto;
         justify-content: center;
         align-items: center;
-        width: 100%;
         width: fit-content;
     }
 `;
