@@ -1,36 +1,35 @@
-import { captureException } from '@sentry/nextjs';
-
-import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { CollectionApi, CollectionsApi } from '../../../src/api/collection';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import CollectionBlock from '@/components/CollectionBlock';
+import type { CollectionPageDocument } from 'prismicio-types';
+import { Config } from '../../../src/util/Config';
 import Content from '@/components/Content';
+import Error from 'next/error';
+import type { FunctionComponent } from 'react';
+import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import Vendors from '@/components/Vendors';
-import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
-import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
-import { NextSeo } from 'next-seo';
-import Error from 'next/error';
-import { useRouter } from 'next/router';
-import { createClient } from 'prismicio';
-import type { CollectionPageDocument } from 'prismicio-types';
-import type { FunctionComponent } from 'react';
+import { Prefetch } from 'src/util/Prefetch';
 import React from 'react';
 import { RedirectCollectionApi } from 'src/api/redirects';
-import { Prefetch } from 'src/util/Prefetch';
-import styled from 'styled-components';
-import useSWR from 'swr';
-import { components } from '../../../slices';
-import { VendorsApi } from '../../../src/api/vendor';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../../src/models/StoreModel';
-import { Config } from '../../../src/util/Config';
+import Vendors from '@/components/Vendors';
+import { VendorsApi } from '../../../src/api/vendor';
+import { asText } from '@prismicio/client';
+import { captureException } from '@sentry/nextjs';
+import { components } from '../../../slices';
+import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import { createClient } from 'prismicio';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Body = styled(Content)`
     overflow: hidden;
@@ -271,7 +270,7 @@ export const getStaticProps: GetStaticProps<{
     let vendors: any = null;
 
     try {
-        collection = await CollectionApi({ handle, locale });
+        collection = await CollectionApi({ handle, locale, limit: 16 });
     } catch (error) {
         captureException(error);
     }

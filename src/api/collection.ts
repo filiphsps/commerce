@@ -10,47 +10,14 @@ import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
-export const COLLECTION_FRAGMENT = `
-    id
-    handle
-    title
-    description
-    descriptionHtml
-    image {
-        id
-        altText
-        url
-        height
-        width
-    }
-    seo {
-        title
-        description
-    }
-    products(first: 250) {
-        edges {
-            node {
-                ${PRODUCT_FRAGMENT_MINIMAL}
-            }
-        }
-    }
-    keywords: metafield(namespace: "store", key: "keywords") {
-        value
-    }
-    isBrand: metafield(namespace: "store", key: "is_brand") {
-        value
-    }
-    shortDescription: metafield(namespace: "store", key: "short_description") {
-        value
-    }
-`;
-
 export const CollectionApi = async ({
     handle,
-    locale
+    locale,
+    limit
 }: {
     handle: string;
     locale?: string;
+    limit?: number;
 }): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
@@ -67,14 +34,46 @@ export const CollectionApi = async ({
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    query collection($handle: String!) @inContext(language: ${language}, country: ${country}) {
+                    query collection($handle: String!, $limit: Int!) @inContext(language: ${language}, country: ${country}) {
                         collectionByHandle(handle: $handle) {
-                            ${COLLECTION_FRAGMENT}
+                            id
+                            handle
+                            title
+                            description
+                            descriptionHtml
+                            image {
+                                id
+                                altText
+                                url
+                                height
+                                width
+                            }
+                            seo {
+                                title
+                                description
+                            }
+                            products(first: $limit) {
+                                edges {
+                                    node {
+                                        ${PRODUCT_FRAGMENT_MINIMAL}
+                                    }
+                                }
+                            }
+                            keywords: metafield(namespace: "store", key: "keywords") {
+                                value
+                            }
+                            isBrand: metafield(namespace: "store", key: "is_brand") {
+                                value
+                            }
+                            shortDescription: metafield(namespace: "store", key: "short_description") {
+                                value
+                            }
                         }
                     }
                 `,
                 variables: {
-                    handle: handle
+                    handle: handle,
+                    limit: limit || 250
                 }
             });
 
