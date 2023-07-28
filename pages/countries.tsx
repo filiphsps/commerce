@@ -1,25 +1,25 @@
-import { captureException } from '@sentry/nextjs';
+import styled, { css } from 'styled-components';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { Config } from '../src/util/Config';
+import { CountriesApi } from '../src/api/store';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CustomPageDocument } from 'prismicio-types';
+import { FunctionComponent } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import { NextSeo } from 'next-seo';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { createClient } from 'prismicio';
-import type { CustomPageDocument } from 'prismicio-types';
-import { FunctionComponent } from 'react';
-import styled from 'styled-components';
-import useSWR from 'swr';
-import { components } from '../slices';
-import { CountriesApi } from '../src/api/store';
 import type { StoreModel } from '../src/models/StoreModel';
-import { Config } from '../src/util/Config';
+import { captureException } from '@sentry/nextjs';
+import { components } from '../slices';
+import { createClient } from 'prismicio';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const LocalesList = styled.article`
     display: grid;
@@ -42,7 +42,7 @@ const LocaleCurrency = styled.div`
     font-weight: 700;
 `;
 
-const Locale = styled(Link)<{ selected?: boolean }>`
+const Locale = styled(Link)<{ $selected?: boolean }>`
     display: grid;
     grid-template-columns: auto 1fr auto;
     justify-content: stretch;
@@ -55,10 +55,17 @@ const Locale = styled(Link)<{ selected?: boolean }>`
     background: var(--color-block);
     transition: 250ms ease-in-out;
 
+    ${({ $selected }) =>
+        $selected &&
+        css`
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        `}
+
     &:hover {
         border-color: var(--accent-secondary);
         background: var(--accent-secondary-light);
-        color: var(--accent-primary);
+        color: var(--accent-secondary-text);
     }
 `;
 
@@ -152,10 +159,10 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                                     return (
                                         <Locale
                                             key={locale.locale}
-                                            selected={locale.locale === router.locale}
                                             href="/"
                                             locale={locale.locale}
                                             title={`${locale.country} (${locale.language})`}
+                                            $selected={locale.locale === router.locale}
                                         >
                                             <LocaleFlag>
                                                 <Image
