@@ -166,7 +166,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                                         >
                                             <LocaleFlag>
                                                 <Image
-                                                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.locale
+                                                    src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.locale
                                                         .split('-')
                                                         .at(-1)}.svg`}
                                                     alt={locale.country}

@@ -35,7 +35,7 @@ export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({})
     return (
         <Container>
             <Image
-                src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${locale
+                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale
                     .split('-')
                     .at(-1)}.svg`}
                 alt={locale}
