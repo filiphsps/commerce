@@ -188,7 +188,7 @@ const Actions = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: var(--block-spacer);
+    gap: calc(var(--block-spacer) * 2);
 
     .SearchBar {
         max-width: 24rem;
@@ -201,26 +201,17 @@ const Actions = styled.div`
     }
 `;
 
-const Action = styled.div`
+const Action = styled.div<{ $active?: boolean }>`
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 5rem;
 
     border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    color: var(--accent-secondary-light);
+    color: var(--accent-secondary-text);
     cursor: pointer;
     transition: 250ms all ease-in-out;
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            background: var(--accent-secondary);
-            color: var(--accent-secondary-text);
-        }
-    }
 
     font-weight: 600;
     line-height: 1.25rem;
@@ -229,6 +220,27 @@ const Action = styled.div`
     svg {
         font-size: 2.5rem;
     }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            color: var(--accent-primary);
+        }
+    }
+
+    ${({ $active }) =>
+        $active &&
+        css`
+            padding: 0px var(--block-padding);
+            color: var(--accent-secondary-light);
+            background: var(--accent-primary);
+
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    background: var(--accent-secondary);
+                    color: var(--accent-secondary-text);
+                }
+            }
+        `}
 `;
 
 const CartIndicator = styled.span`
@@ -415,7 +427,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             <FiSearch />
                         </Link>
                     </Action>
-                    <Action className={(cart?.totalQuantity || 0) > 0 ? 'Active' : ''}>
+                    <Action $active={(cart?.totalQuantity || 0) > 0}>
                         <Link
                             href={'/cart/'}
                             className="Wrapper"
