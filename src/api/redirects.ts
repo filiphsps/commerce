@@ -1,10 +1,9 @@
-import { captureException } from '@sentry/nextjs';
-
 import type { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
+import type { RedirectModel } from '../models/RedirectModel';
+import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { i18n } from 'next-i18next.config.cjs';
-import type { RedirectModel } from '../models/RedirectModel';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (
@@ -41,29 +40,45 @@ export const RedirectsApi = async ({
 
         try {
             // FIXME: Handle more than 250 redirects
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
-                    query urlRedirects($limit: Int!) @inContext(language: ${language}, country: ${country}) {
-                        urlRedirects(first: $limit) {
-                            edges {
-                                node {
-                                    path
-                                    target
+            const redirects: any[] = [];
+
+            let cursor = null;
+            while (true) {
+                const { data, errors } = await storefrontClient.query({
+                    query: gql`
+                        query urlRedirects($limit: Int!) @inContext(language: ${language}, country: ${country}) {
+                            urlRedirects(first: $limit ${
+                                (cursor && `, after: "${cursor}"`) || ''
+                            }) {
+                                edges {
+                                    cursor
+                                    node {
+                                        path
+                                        target
+                                    }
+                                }
+                                pageInfo {
+                                    hasNextPage
                                 }
                             }
                         }
+                    `,
+                    variables: {
+                        limit: 250
                     }
-                `,
-                variables: {
-                    limit: 250
-                }
-            });
+                });
 
-            if (errors) return reject(new Error(errors.join('\n')));
-            if (!data?.urlRedirects)
+                if (errors) return reject(new Error(errors.join('\n')));
+
+                cursor = data.urlRedirects.edges.at(-1).cursor;
+                redirects.push(...data.urlRedirects.edges);
+                if (!data.urlRedirects.pageInfo.hasNextPage) break;
+            }
+
+            if (!redirects.length)
                 return reject(new Error('404: The requested document cannot be found'));
 
-            return resolve(Convertor(data?.urlRedirects?.edges));
+            return resolve(Convertor(redirects));
         } catch (error) {
             captureException(error);
             console.error(error);
