@@ -71,6 +71,11 @@ let config = {
     async redirects() {
         return [
             {
+                source: '/x-default/:slug*',
+                destination: '/:slug',
+                permanent: true
+            },
+            {
                 source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: true
@@ -81,9 +86,9 @@ let config = {
                 permanent: true
             },
             {
-                source: '/x-default/:slug*',
-                destination: '/:slug',
-                permanent: true
+                source: '/shop/',
+                destination: '/collections/bestselling/',
+                permanent: false
             }
         ];
     },
