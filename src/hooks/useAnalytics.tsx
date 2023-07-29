@@ -77,7 +77,7 @@ export function useAnalytics({
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
     if (!shopId || !domain) {
-        console.error(`Invalid shopId`, shopId);
+        console.warn(`Invalid shopId`, shopId);
     }
 
     const { lines, id: cartId, cost, status, totalQuantity } = useCart();

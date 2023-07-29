@@ -47,7 +47,7 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
         // TODO: Notification?
         discountCodesUpdate([...(discountCodes || ([] as any)), discount]);
 
-        if (error) console.error(error);
+        if (error) console.warn(error);
 
         // TODO: Check cart errors and validate that the code was actually valid...
     }, [router.query, status]);
