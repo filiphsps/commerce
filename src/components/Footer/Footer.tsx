@@ -236,6 +236,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                     key={item.handle}
                                     href={item.handle}
                                     target={item.handle.startsWith('http') ? '_blank' : ''}
+                                    prefetch={false}
                                 >
                                     {item.title}
                                 </Link>
@@ -253,8 +254,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                 <Policy href="mailto:dennis@sweetsideofsweden.com">
                                     Contact Us
                                 </Policy>
-                                <Policy href="/about/">About</Policy>
-                                <Policy href="/privacy-policy/">Privacy Policy</Policy>
+                                <Policy href="/about/" prefetch={false}>
+                                    About
+                                </Policy>
+                                <Policy href="/privacy-policy/" prefetch={false}>
+                                    Privacy Policy
+                                </Policy>
                             </ImportantLinks>
                         </LegalAndCopyright>
                     </FooterBottomSectionBlock>
@@ -280,8 +285,10 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             <Copyright>
                                 <span>&copy; 2020-{new Date().getFullYear()} </span>
                                 <span>
-                                    <Link href={`https://${Config.domain}/`}>{store?.name}</Link> -
-                                    All rights reserved
+                                    <Link href={`https://${Config.domain}/`} prefetch={false}>
+                                        {store?.name}
+                                    </Link>{' '}
+                                    - All rights reserved
                                 </span>
                             </Copyright>
                         </LegalAndCopyright>

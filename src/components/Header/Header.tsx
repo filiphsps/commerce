@@ -352,7 +352,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </HamburgerMenu>
 
                 <Logo>
-                    <Link href={'/'}>
+                    <Link href={'/'} prefetch={false}>
                         <Image
                             src={store?.logo?.src!}
                             width={250}
@@ -377,6 +377,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                             ? 'Active'
                                             : ''
                                     }`}
+                                    prefetch={false}
                                 >
                                     {item?.title || null}
                                     {(item?.children?.length > 0 && (
@@ -403,6 +404,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                     <Link
                                                         href={`/${item?.handle || ''}`}
                                                         title={item.title}
+                                                        prefetch={false}
                                                     >
                                                         <MenuItemTitle>{item.title}</MenuItemTitle>
                                                         {item.description && (
@@ -428,12 +430,13 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             href={'/search/'}
                             className="Wrapper"
                             title="Search for products, collections and pages across the whole store"
+                            prefetch={false}
                         >
                             <FiSearch />
                         </Link>
                     </Action>
                     <Action>
-                        <Link href="/countries/">
+                        <Link href="/countries/" prefetch={false}>
                             <CurrentLocaleFlag />
                         </Link>
                     </Action>
@@ -445,6 +448,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                 count: cart?.totalQuantity || 0,
                                 noun: 'item'
                             })} in your cart`}
+                            prefetch={false}
                         >
                             {!!cart?.totalQuantity && (
                                 <CartIndicator>{cart?.totalQuantity}</CartIndicator>

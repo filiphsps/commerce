@@ -83,6 +83,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                             (router.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') ||
                             ''
                         }`}
+                        prefetch={false}
                     >
                         <Vendor>{vendor?.title}</Vendor>
                     </Link>

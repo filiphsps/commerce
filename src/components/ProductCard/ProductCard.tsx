@@ -539,7 +539,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                     null}
             </Badges>
             <ProductImage>
-                <Link href={href}>
+                <Link href={href} prefetch={false}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
                     </ProductImageWrapper>
@@ -548,13 +548,18 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${titleToHandle(product.vendor)}/`}>
+                        <Link
+                            href={`/collections/${titleToHandle(product.vendor)}/`}
+                            prefetch={false}
+                        >
                             {product.vendor}
                         </Link>
                     </Brand>
                 )}
                 <Title title={description}>
-                    <Link href={href}>{product.title}</Link>
+                    <Link href={href} prefetch={false}>
+                        {product.title}
+                    </Link>
                 </Title>
 
                 {(description && <Description>{description}</Description>) || null}

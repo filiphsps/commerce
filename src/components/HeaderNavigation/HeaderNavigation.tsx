@@ -102,6 +102,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                         : ''
                                 }
                                 onClick={() => toggle(false)}
+                                prefetch={false}
                             >
                                 {item.title}
                             </Link>
@@ -117,6 +118,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                                 : ''
                                         }
                                         onClick={() => toggle(false)}
+                                        prefetch={false}
                                     >
                                         {item.title}
                                     </Link>
