@@ -88,7 +88,7 @@ let config = {
             {
                 source: '/shop/',
                 destination: '/collections/bestselling/',
-                permanent: false
+                permanent: true
             }
         ];
     },
