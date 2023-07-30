@@ -38,7 +38,7 @@ Router.events.on('hashChangeComplete', () => NProgress.done());
 const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
 
-    const { data: store } = useSWR([`store`], () => StoreApi({ locale: router.locale }), {
+    const { data: store } = useSWR([`store_${router.locale}`], () => StoreApi({ locale: router.locale }), {
         fallbackData: preval.store!
     });
 
