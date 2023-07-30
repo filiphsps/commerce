@@ -93,10 +93,10 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
 
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { data: navigation } = useSWR([`navigation`], () => NavigationApi(router.locale), {
+    const { data: navigation } = useSWR([`navigation_${router.locale}`], () => NavigationApi(router.locale), {
         fallbackData: preval.navigation!
     });
-    const { data: header } = useSWR(['header'], () => HeaderApi(router.locale), {
+    const { data: header } = useSWR([`header_${router.locale}`], () => HeaderApi(router.locale), {
         fallbackData: preval.header!
     });
 
