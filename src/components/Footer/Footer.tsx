@@ -196,7 +196,7 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const router = useRouter();
     const { store } = props;
-    const { data: footer } = useSWR([`footer`], () => FooterApi({ locale: router.locale }), {
+    const { data: footer } = useSWR([`footer_${router.locale}`], () => FooterApi({ locale: router.locale }), {
         fallbackData: preval.footer!
     });
 
