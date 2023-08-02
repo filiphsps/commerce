@@ -66,6 +66,22 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         case 'EUR':
             threshold = 80;
             break;
+        case 'SEK':
+            threshold = 900;
+            break;
+        case 'DKK':
+            threshold = 575;
+            break;
+        case 'NOK':
+            threshold = 875;
+            break;
+        case 'CAD':
+            threshold = 115;
+            break;
+        default:
+        case 'USD':
+            threshold = 85;
+            break;
     }
     const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) > threshold;
     const amountLeft = threshold - (Number.parseFloat(cost?.totalAmount?.amount!) || 0) || 0;
