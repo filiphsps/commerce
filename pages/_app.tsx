@@ -1,6 +1,8 @@
 import 'destyle.css';
 import './app.scss';
 
+import * as nextI18NextConfig from '../next-i18next.config.cjs';
+
 import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
@@ -239,4 +241,4 @@ export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric)
     });
 }
 
-export default appWithTranslation(StoreApp);
+export default appWithTranslation(StoreApp, nextI18NextConfig);

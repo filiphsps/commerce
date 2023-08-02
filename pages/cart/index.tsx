@@ -21,7 +21,7 @@ import { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getServerTranslations } from 'src/util/getServerTranslations';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -422,7 +422,7 @@ export const getStaticProps: GetStaticProps<{
 
         let translations: SSRConfig | undefined = undefined;
         try {
-            translations = await serverSideTranslations(locale.language.toLowerCase(), [
+            translations = await getServerTranslations(locale.language.toLowerCase(), [
                 'common',
                 'cart'
             ]);

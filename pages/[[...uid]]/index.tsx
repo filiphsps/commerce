@@ -18,7 +18,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../slices';
 import { createClient } from '../../prismicio';
 import dynamic from 'next/dynamic';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getServerTranslations } from 'src/util/getServerTranslations';
 import { useRouter } from 'next/router';
 
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
@@ -146,7 +146,7 @@ export const getStaticProps: GetStaticProps<{}> = async ({
 
         let translations: SSRConfig | undefined = undefined;
         try {
-            translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+            translations = await getServerTranslations(locale.language.toLowerCase(), ['common']);
         } catch (error) {
             console.warn(error);
         }

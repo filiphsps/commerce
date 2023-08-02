@@ -49,7 +49,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../slices';
 import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getServerTranslations } from 'src/util/getServerTranslations';
 import { titleToHandle } from '../../src/util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -1205,7 +1205,7 @@ export const getStaticProps: GetStaticProps<{
     }
 
     try {
-        translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+        translations = await getServerTranslations(locale.language.toLowerCase(), ['common']);
     } catch (error) {
         console.warn(error);
     }

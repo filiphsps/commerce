@@ -29,7 +29,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { createClient } from 'prismicio';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getServerTranslations } from 'src/util/getServerTranslations';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -307,7 +307,7 @@ export const getStaticProps: GetStaticProps<{
 
     let translations: SSRConfig | undefined = undefined;
     try {
-        translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+        translations = await getServerTranslations(locale.language.toLowerCase(), ['common']);
     } catch (error) {
         console.warn(error);
     }
