@@ -24,10 +24,10 @@ export default function middleware(req: NextRequest) {
     if (req.nextUrl.locale === 'x-default') {
         const newUrl = req.nextUrl.clone();
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
-        const userLang = AcceptLanguageParser.pick(locales.slice(1), acceptLanguageHeader);
+        const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
 
         const savedLocale = req.cookies.get('NEXT_LOCALE')?.value;
-        const newLocale = savedLocale || userLang || locales.slice(1).at(0);
+        const newLocale = savedLocale || userLang || locales.at(0);
 
         if (newLocale) {
             newUrl.locale = newLocale;
