@@ -30,7 +30,7 @@ interface CurrentLocaleFlagProps {}
 export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({}) => {
     const { locale } = useRouter();
 
-    if (!locale) return null;
+    if (!locale || locale === 'x-default') return null;
 
     return (
         <Container>
