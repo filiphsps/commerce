@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import AcceptLanguageParser from 'accept-language-parser';
-import { i18n } from './next-i18next.config.cjs';
+
+const locales = [
+    ...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])
+];
 
 const PUBLIC_FILE = /\.(.*)$/;
 // FIXME: Make these dynamic
@@ -21,10 +24,10 @@ export default function middleware(req: NextRequest) {
     if (req.nextUrl.locale === 'x-default') {
         const newUrl = req.nextUrl.clone();
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
-        const userLang = AcceptLanguageParser.pick(i18n.locales.slice(1), acceptLanguageHeader);
+        const userLang = AcceptLanguageParser.pick(locales.slice(1), acceptLanguageHeader);
 
         const savedLocale = req.cookies.get('NEXT_LOCALE')?.value;
-        const newLocale = savedLocale || userLang || i18n.locales.slice(1).at(0);
+        const newLocale = savedLocale || userLang || locales.slice(1).at(0);
 
         if (newLocale) {
             newUrl.locale = newLocale;
