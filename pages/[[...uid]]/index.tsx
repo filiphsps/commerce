@@ -134,6 +134,18 @@ export const getStaticProps: GetStaticProps<{}> = async ({
     try {
         const uid = (params?.uid && params!.uid![params!.uid!.length - 1]) || 'homepage';
 
+        if (['null', 'undefined', '[handle]'].includes(uid))
+            return {
+                notFound: true,
+                revalidate: false
+            };
+        else if (localeData === 'x-default') {
+            return {
+                props: {} as any,
+                revalidate: false
+            };
+        }
+
         let page: any = null;
         try {
             page = await client.getByUID('custom_page', uid, {

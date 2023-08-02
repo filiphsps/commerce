@@ -970,7 +970,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     {product?.tags?.map((tag: string) => {
                                         let content: React.ReactNode = tag;
                                         // TODO: make this a lookup somewhere
-                                        if (['vegan'].includes(tag.toLowerCase())) {
+                                        if (['vegan', 'chocolate'].includes(tag.toLowerCase())) {
                                             content = (
                                                 <Link
                                                     title={tag}

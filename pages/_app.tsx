@@ -6,7 +6,7 @@ import * as nextI18NextConfig from '../next-i18next.config.cjs';
 import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { NextLocaleToCountry, NextLocaleToLanguage, NextLocaleToLocale } from '../src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
@@ -22,9 +22,7 @@ import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { appWithTranslation } from 'next-i18next';
-import { i18n } from 'next-i18next.config.cjs';
 import preval from '../src/data.preval';
-import { useEffect } from 'react';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({
@@ -50,18 +48,8 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
         }
     );
 
-    const country = NextLocaleToCountry(router.locale || i18n.defaultLocale);
-    const language = NextLocaleToLanguage(router.locale || i18n.defaultLocale);
-
-    useEffect(() => {
-        if (!router.locale) return;
-        if (router.locale !== 'x-default') return;
-
-        // FIXME: We shouldn't have to do this!
-        const { pathname, asPath, query } = router;
-        const locale = NextLocaleToLocale(router.locale || i18n.defaultLocale);
-        router.replace({ pathname, query }, asPath, { locale: locale.locale });
-    }, [router.locale]);
+    const country = NextLocaleToCountry(router.locale);
+    const language = NextLocaleToLanguage(router.locale);
 
     if (!store) return null;
 

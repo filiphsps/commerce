@@ -6,7 +6,8 @@ import type {
 
 import { Config } from './Config';
 import type { StoreModel } from '../models/StoreModel';
-import { i18n } from '../../next-i18next.config.cjs';
+
+const defaultLocale = Config.i18n.default;
 
 export type Locale = {
     locale: string; // xx-XX
@@ -18,12 +19,12 @@ export type Locale = {
 export const NextLocaleToCountry = (locale?: string): CountryCode =>
     (
         (locale !== 'x-default' && locale?.split('-')[1]) ||
-        i18n.locales[1].split('-')[1]
+        defaultLocale.split('-')[1]
     ).toUpperCase() as CountryCode;
 export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
     (
         (locale !== 'x-default' && locale?.split('-')[0]) ||
-        i18n.locales[1].split('-')[0]
+        defaultLocale.split('-')[0]
     ).toUpperCase() as LanguageCode;
 
 interface NextLocaleToCurrencyProps {
@@ -36,7 +37,7 @@ export const NextLocaleToCurrency = ({ country, store }: NextLocaleToCurrencyPro
         Config.i18n.currencies[0]) as CurrencyCode;
 
 export const NextLocaleToLocale = (locale?: string): Locale => {
-    const safeLocale = (locale && locale !== 'x-default' && locale) || i18n.locales[1];
+    const safeLocale = (locale && locale !== 'x-default' && locale) || defaultLocale;
 
     return {
         locale: safeLocale,
