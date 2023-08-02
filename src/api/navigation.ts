@@ -1,6 +1,6 @@
+import { Config } from 'src/util/Config';
 import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
-import { i18n } from '../../next-i18next.config.cjs';
 
 export type NavigationItem = {
     title: string;
@@ -10,9 +10,9 @@ export type NavigationItem = {
         handle?: string;
     }>;
 };
-export const NavigationApi = async (locale = i18n.defaultLocale): Promise<NavigationItem[]> => {
+export const NavigationApi = async (locale = Config.i18n.default): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
         const client = createClient({});
 
@@ -29,7 +29,7 @@ export const NavigationApi = async (locale = i18n.defaultLocale): Promise<Naviga
                 }))
             );
         } catch (error) {
-            if (error.message.includes('No documents') && locale !== i18n.locales[1]) {
+            if (error.message.includes('No documents') && locale !== Config.i18n.default) {
                 return resolve(await NavigationApi()); // Try again with default locale
             }
 

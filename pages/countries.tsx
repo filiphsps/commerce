@@ -8,7 +8,6 @@ import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CustomPageDocument } from 'prismicio-types';
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -20,6 +19,7 @@ import { components } from '../slices';
 import { createClient } from 'prismicio';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useTranslation } from 'next-i18next';
 
 const LocalesList = styled.article`
     display: grid;
@@ -42,7 +42,7 @@ const LocaleCurrency = styled.div`
     font-weight: 700;
 `;
 
-const Locale = styled(Link)<{ $selected?: boolean }>`
+const Locale = styled.div<{ $selected?: boolean }>`
     display: grid;
     grid-template-columns: auto 1fr auto;
     justify-content: stretch;
@@ -54,6 +54,7 @@ const Locale = styled(Link)<{ $selected?: boolean }>`
     border-radius: var(--block-border-radius);
     background: var(--color-block);
     transition: 250ms ease-in-out;
+    cursor: pointer;
 
     ${({ $selected }) =>
         $selected &&
@@ -104,6 +105,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
     store
 }) => {
     const router = useRouter();
+    const { i18n } = useTranslation('common');
 
     const { data: countries } = useSWR(
         [`locales`],
@@ -159,10 +161,17 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                                     return (
                                         <Locale
                                             key={locale.locale}
-                                            href="/"
-                                            locale={locale.locale}
                                             title={`${locale.country} (${locale.language})`}
                                             $selected={locale.locale === router.locale}
+                                            onClick={async () => {
+                                                // TODO: Go to previous page in history
+                                                await router.push('/', undefined, {
+                                                    locale: locale.locale
+                                                });
+                                                await i18n.changeLanguage(
+                                                    locale.locale.split('-').at(0)
+                                                );
+                                            }}
                                         >
                                             <LocaleFlag>
                                                 <Image

@@ -1,16 +1,14 @@
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../util/Locale';
 import type {
-    CountryCode,
-    LanguageCode,
     Product,
     ProductEdge,
     WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
 
+import { Config } from 'src/util/Config';
 import ConvertUnits from 'convert-units';
-import { NextLocaleToCountry } from '../util/Locale';
 import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
-import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
@@ -231,15 +229,10 @@ export const ProductApi = async ({
 }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
+        if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
-        if (!locale || locale === 'x-default') locale = i18n.locales[1];
-
-        const country = (
-            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
-        ).toUpperCase() as CountryCode;
-        const language = (
-            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
-        ).toUpperCase() as LanguageCode;
+        const country = NextLocaleToCountry(locale);
+        const language = NextLocaleToLanguage(locale);
 
         try {
             const { data, errors } = await storefrontClient.query({
@@ -457,15 +450,10 @@ export const ProductVisualsApi = async ({
 }): Promise<ProductVisuals> => {
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('400: Invalid id'));
+        if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
-        if (!locale || locale === 'x-default') locale = i18n.locales[1];
-
-        const country = (
-            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
-        ).toUpperCase() as CountryCode;
-        const language = (
-            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
-        ).toUpperCase() as LanguageCode;
+        const country = NextLocaleToCountry(locale);
+        const language = NextLocaleToLanguage(locale);
 
         try {
             const { data, errors } = await storefrontClient.query({

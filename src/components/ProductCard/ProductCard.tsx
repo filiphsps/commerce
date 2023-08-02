@@ -407,11 +407,7 @@ interface ProductCardProps {
     store: StoreModel;
     className?: string;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({
-    store,
-    className,
-    visuals: visualsData
-}) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: visualsData }) => {
     const router = useRouter();
     const { t } = useTranslation('common');
     const [quantity, setQuantity] = useState(1);

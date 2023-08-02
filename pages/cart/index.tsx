@@ -324,7 +324,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                                             {cart.lines?.map((item: CartLine) => {
                                                 return (
                                                     <CartLineProvider key={item.id} line={item}>
-                                                        <CartItem store={store} />
+                                                        <CartItem />
                                                     </CartLineProvider>
                                                 );
                                             })}

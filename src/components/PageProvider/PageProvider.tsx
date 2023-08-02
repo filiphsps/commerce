@@ -1,12 +1,7 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
 import { FunctionComponent, useState } from 'react';
-import {
-    Locale,
-    NextLocaleToCountry,
-    NextLocaleToCurrency,
-    NextLocaleToLanguage
-} from '../../util/Locale';
+import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '../../util/Locale';
 
 import { Config } from '../../util/Config';
 import Footer from '../Footer';
@@ -15,7 +10,6 @@ import { HeaderApi } from '../../api/header';
 import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import type { StoreModel } from '../../models/StoreModel';
-import { i18n } from '../../../next-i18next.config.cjs';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -104,12 +98,12 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         fallbackData: preval.header!
     });
 
-    const locale = router.locale || i18n.locales[1];
-    const country = NextLocaleToCountry(locale);
+    const locale = NextLocaleToLocale(router.locale);
+    const { country, language } = locale;
     useAnalytics({
         locale: {
-            locale: router.locale || i18n.locales[1],
-            language: NextLocaleToLanguage(locale),
+            locale: locale.locale,
+            language,
             country,
             currency: NextLocaleToCurrency({ country, store })
         } as Locale,
@@ -119,8 +113,8 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     });
     useCartUtils({
         locale: {
-            locale: router.locale || i18n.locales[1],
-            language: NextLocaleToLanguage(locale),
+            locale: locale.locale,
+            language,
             country,
             currency: NextLocaleToCurrency({ country, store })
         } as Locale

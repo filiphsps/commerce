@@ -13,9 +13,13 @@ const i18n = {
 /** @type {import('next-i18next').UserConfig} */
 module.exports = {
     i18n,
-    fallbackLng: {
-        'x-default': ['en']
+    fallbackLng: (code) => {
+        if (!code || !code.includes('-') || code === 'x-default') return 'en';
+
+        // TODO: verify that the translation actually exists
+        return code.split('-').at(0)?.toLowerCase() || 'en';
     },
     reloadOnPrerender: process.env.NODE_ENV === 'development',
-    localePath: path.resolve('./public/locales')
+    localePath: path.resolve('./public/locales'),
+    serializeConfig: false
 };

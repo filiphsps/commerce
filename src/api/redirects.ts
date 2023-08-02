@@ -1,9 +1,9 @@
-import type { CountryCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
+import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
 
+import { Config } from 'src/util/Config';
 import type { RedirectModel } from '../models/RedirectModel';
 import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
-import { i18n } from 'next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (
@@ -29,14 +29,10 @@ export const RedirectsApi = async ({
     locale?: string;
 }): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
-        const country = (
-            locale?.split('-')[1] || i18n.locales[1].split('-')[1]
-        ).toUpperCase() as CountryCode;
-        const language = (
-            locale?.split('-')[0] || i18n.locales[1].split('-')[0]
-        ).toUpperCase() as LanguageCode;
+        const country = NextLocaleToCountry(locale);
+        const language = NextLocaleToLanguage(locale);
 
         try {
             // FIXME: Handle more than 250 redirects

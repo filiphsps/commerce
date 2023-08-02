@@ -1,11 +1,11 @@
+import { Config } from 'src/util/Config';
 import { FooterModel } from 'src/models/FooterModel';
 import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
-import { i18n } from '../../next-i18next.config.cjs';
 
 export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = i18n.locales[1];
+        if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
         const client = createClient({});
         try {
@@ -21,7 +21,7 @@ export const FooterApi = async ({ locale }: { locale?: string }): Promise<Footer
                 }))
             });
         } catch (error) {
-            if (error.message.includes('No documents') && locale !== i18n.locales[1]) {
+            if (error.message.includes('No documents') && locale !== Config.i18n.default) {
                 return resolve(await FooterApi({})); // Try again with default locale
             }
 

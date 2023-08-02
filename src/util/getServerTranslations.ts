@@ -11,5 +11,11 @@ export const getServerTranslations = async (
     extraLocales?: string[] | false
 ): Promise<SSRConfig> => {
     const config = configOverride ?? nextI18nextConfig;
-    return serverSideTranslations(locale, namespacesRequired, config, extraLocales);
+
+    const res = await serverSideTranslations(locale, namespacesRequired, config, extraLocales);
+
+    // Ugly hack to not break JSON serialization
+    delete res._nextI18Next?.userConfig?.fallbackLng;
+
+    return res;
 };

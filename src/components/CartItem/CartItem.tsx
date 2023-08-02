@@ -12,10 +12,9 @@ import styled, { css } from 'styled-components';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Loader from '../Loader';
+import { NextLocaleToLocale } from 'src/util/Locale';
 import { ProductApi } from '../../api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import type { StoreModel } from '../../models/StoreModel';
-import { i18n } from '../../../next-i18next.config.cjs';
 import { titleToHandle } from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -277,19 +276,17 @@ const Content = styled.tr`
     }
 `;
 
-interface CartItemProps {
-    store: StoreModel;
-}
-const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
+interface CartItemProps {}
+const CartItem: FunctionComponent<CartItemProps> = ({}) => {
     const router = useRouter();
     const cart = useCart();
     const line = useCartLine();
     const TempImage = Image as any;
 
-    const locale = router.locale && router.locale != 'x-default' ? router.locale : i18n.locales[1];
+    const locale = NextLocaleToLocale(router.locale);
 
     const { data: product } = useSWR([line?.merchandise?.product?.handle!], ([handle]) =>
-        ProductApi({ handle: handle || '', locale })
+        ProductApi({ handle: handle || '', locale: locale.locale })
     );
     const [variant, setVariant] = useState<ProductVariant | null>(null);
 
