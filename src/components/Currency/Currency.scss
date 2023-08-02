@@ -1,8 +1,8 @@
-@import "../../scss/app";
+@import '../../scss/app';
 
 .Currency {
     position: relative;
-    
+
     .Currency-Prefix {
         padding-right: 0.25rem;
     }
@@ -13,7 +13,7 @@
     &.Currency-Sale {
         &:before {
             position: absolute;
-            content: "";
+            content: '';
             left: 0;
             top: 50%;
             right: 0;

@@ -1,5 +1,6 @@
 import {
     AnalyticsPageType,
+    Money,
     ProductProvider,
     ShopifyAnalyticsProduct,
     ShopifyPageViewPayload,
@@ -27,7 +28,6 @@ import { Button } from '@/components/Button';
 import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
 import Content from '@/components/Content';
-import { Currency } from 'react-tender';
 import Error from 'next/error';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
@@ -615,26 +615,20 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     // TODO: this wont be needed once we properly init it ourselves
     const cartReady = ['uninitialized', 'idle'].includes(cart.status);
 
-    const pricing = (
-        <PriceContainer>
-            {selectedVariant?.compareAtPrice && (
-                <Price $sale>
-                    <Currency
-                        value={Number.parseFloat(selectedVariant?.compareAtPrice?.amount!)}
-                        currency={
-                            selectedVariant?.price?.currencyCode! || Config.i18n.currencies[0]
-                        }
-                    />
-                </Price>
-            )}
-            <Price $highlight={selectedVariant?.compareAtPrice != null}>
-                <Currency
-                    value={Number.parseFloat(selectedVariant?.price?.amount!)}
-                    currency={selectedVariant?.price?.currencyCode! || Config.i18n.currencies[0]}
+    const pricing =
+        (selectedVariant?.price?.amount && (
+            <PriceContainer>
+                {selectedVariant?.compareAtPrice?.amount && (
+                    <Money data={selectedVariant.compareAtPrice} as={Price} $sale />
+                )}
+                <Money
+                    data={selectedVariant.price}
+                    as={Price}
+                    $highlight={selectedVariant?.compareAtPrice != null}
                 />
-            </Price>
-        </PriceContainer>
-    );
+            </PriceContainer>
+        )) ||
+        null;
     const information = (
         <Header>
             <HeaderContent>

@@ -15,8 +15,6 @@ import type {
 import styled, { css } from 'styled-components';
 
 import { Button } from '../Button';
-import { Config } from '../../util/Config';
-import Currency from '../Currency';
 import Image from 'next/image';
 import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
@@ -282,7 +280,6 @@ const Prices = styled.div`
     justify-content: center;
     align-items: flex-start;
     width: 100%;
-    text-transform: uppercase;
 `;
 const Price = styled.div`
     font-size: 2rem;
@@ -570,18 +567,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                 <VariantsContainer>
                     <Prices>
                         {selectedVariant.compareAtPrice?.amount && (
-                            <PreviousPrice>
-                                <Currency
-                                    price={Number.parseFloat(selectedVariant.compareAtPrice.amount)}
-                                    currency={
-                                        selectedVariant.compareAtPrice.currencyCode! ||
-                                        Config.i18n.currencies[0]
-                                    }
-                                    store={store}
-                                />
-                            </PreviousPrice>
+                            <Money data={selectedVariant.compareAtPrice} as={PreviousPrice} />
                         )}
-                        {(selectedVariant.price && (
+                        {(selectedVariant.price?.amount && (
                             <Money data={selectedVariant.price} as={Price} />
                         )) ||
                             null}

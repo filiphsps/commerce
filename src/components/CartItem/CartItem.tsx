@@ -1,6 +1,7 @@
 import {
     CartLineQuantity,
     CartLineQuantityAdjustButton,
+    Money,
     useCart,
     useCartLine
 } from '@shopify/hydrogen-react';
@@ -8,8 +9,6 @@ import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Config } from '../../util/Config';
-import Currency from '../Currency';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Loader from '../Loader';
@@ -261,7 +260,7 @@ const Content = styled.tr`
     min-height: 10rem;
     width: calc(100vw - 2rem);
     max-width: 100%;
-    grid-template-columns: 8rem 1fr 6rem 14rem;
+    grid-template-columns: 8rem 1fr 8.5rem 14rem;
     grid-template-rows: 1fr;
     grid-template-areas: 'image meta price quantity';
     gap: var(--block-spacer-small);
@@ -356,27 +355,23 @@ const CartItem: FunctionComponent<CartItemProps> = ({ store }) => {
                 </Details>
             </MetaSection>
 
-            <PriceSection>
-                <Price className={(discount > 0 && 'Sale') || ''}>
-                    {discount > 0 && variant.compareAtPrice && (
-                        <Currency
-                            price={
-                                Number.parseFloat(variant.compareAtPrice?.amount || '') *
-                                line.quantity!
-                            }
-                            currency={variant.price.currencyCode || Config.i18n.currencies[0]}
-                            className="Currency-Sale"
-                            store={store}
+            {(variant.price?.amount && (
+                <PriceSection>
+                    <Price className={`${(discount > 0 && 'Sale') || ''}`}>
+                        {discount > 0 && variant.compareAtPrice?.amount && (
+                            <Money
+                                data={variant.compareAtPrice}
+                                className="Currency Currency-Sale"
+                            />
+                        )}
+                        <Money
+                            data={variant.price}
+                            className={(discount > 0 && 'Currency Currency-Discount') || ''}
                         />
-                    )}
-                    <Currency
-                        price={Number.parseFloat(variant.price?.amount || '') * line.quantity!}
-                        currency={variant.price.currencyCode || Config.i18n.currencies[0]}
-                        className={(discount > 0 && 'Currency-Discount') || ''}
-                        store={store}
-                    />
-                </Price>
-            </PriceSection>
+                    </Price>
+                </PriceSection>
+            )) ||
+                null}
 
             <QuantitySection className="QuantitySection">
                 <Quantity disabled={cart.status !== 'idle'}>
