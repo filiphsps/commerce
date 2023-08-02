@@ -9,7 +9,6 @@ const Container = styled.div`
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 100%;
-    background: red;
     border: calc(var(--block-border-width) / 1.25) solid var(--accent-secondary-text);
 
     @media (hover: hover) and (pointer: fine) {
@@ -42,6 +41,7 @@ export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({})
                 width="25"
                 height="25"
                 aria-label={locale}
+                priority
             />
         </Container>
     );
