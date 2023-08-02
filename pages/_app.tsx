@@ -21,6 +21,7 @@ import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
 import { i18n } from 'next-i18next.config.cjs';
 import preval from '../src/data.preval';
+import { useEffect } from 'react';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({
@@ -38,12 +39,26 @@ Router.events.on('hashChangeComplete', () => NProgress.done());
 const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
 
-    const { data: store } = useSWR([`store_${router.locale}`], () => StoreApi({ locale: router.locale }), {
-        fallbackData: preval.store!
-    });
+    const { data: store } = useSWR(
+        [`store_${router.locale}`],
+        () => StoreApi({ locale: router.locale }),
+        {
+            fallbackData: preval.store!
+        }
+    );
 
     const country = NextLocaleToCountry(router.locale || i18n.defaultLocale);
     const language = NextLocaleToLanguage(router.locale || i18n.defaultLocale);
+
+    useEffect(() => {
+        if (!router.locale) return;
+        if (router.locale !== 'x-default') return;
+
+        // FIXME: We shouldn't have to do this!
+        const { pathname, asPath, query } = router;
+        const locale = NextLocaleToLocale(router.locale || i18n.defaultLocale);
+        router.replace({ pathname, query }, asPath, { locale: locale.locale });
+    }, [router.locale]);
 
     if (!store) return null;
 
