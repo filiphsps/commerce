@@ -8,20 +8,20 @@ import {
     NextLocaleToLanguage
 } from '../../util/Locale';
 
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import useSWR from 'swr';
-import { i18n } from '../../../next-i18next.config.cjs';
-import preval from '../../../src/data.preval';
-import { HeaderApi } from '../../api/header';
-import { NavigationApi } from '../../api/navigation';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useCartUtils } from '../../hooks/useCartUtils';
-import type { StoreModel } from '../../models/StoreModel';
 import { Config } from '../../util/Config';
 import Footer from '../Footer';
 import Header from '../Header';
+import { HeaderApi } from '../../api/header';
 import HeaderNavigation from '../HeaderNavigation';
+import { NavigationApi } from '../../api/navigation';
+import type { StoreModel } from '../../models/StoreModel';
+import { i18n } from '../../../next-i18next.config.cjs';
+import preval from '../../../src/data.preval';
+import styled from 'styled-components';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useCartUtils } from '../../hooks/useCartUtils';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Announcement = styled.div`
     display: flex;
@@ -93,9 +93,13 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
 
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { data: navigation } = useSWR([`navigation_${router.locale}`], () => NavigationApi(router.locale), {
-        fallbackData: preval.navigation!
-    });
+    const { data: navigation } = useSWR(
+        [`navigation_${router.locale}`],
+        () => NavigationApi(router.locale),
+        {
+            fallbackData: preval.navigation!
+        }
+    );
     const { data: header } = useSWR([`header_${router.locale}`], () => HeaderApi(router.locale), {
         fallbackData: preval.header!
     });

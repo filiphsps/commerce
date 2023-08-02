@@ -1,6 +1,6 @@
 import * as prismic from '@prismicio/client';
-import { captureException } from '@sentry/nextjs';
 
+import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
 
@@ -25,7 +25,7 @@ export const PagesApi = async ({
             // TODO: remove filter when we have migrated the shop page
             const paths = pages
                 .map((page) => prismic.asLink(page))
-                .filter((i) => i && !['/shop', '/countries', '/search'].includes(i));
+                .filter((i) => i && !['/shop', '/countries', '/search', '/cart'].includes(i));
             return resolve({
                 paths: paths as any
             });

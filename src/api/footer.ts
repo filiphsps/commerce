@@ -1,7 +1,6 @@
-import { captureException } from '@sentry/nextjs';
-
-import { createClient } from 'prismicio';
 import { FooterModel } from 'src/models/FooterModel';
+import { captureException } from '@sentry/nextjs';
+import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
 
 export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {

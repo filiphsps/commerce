@@ -12,7 +12,7 @@ export type Locale = {
     locale: string; // xx-XX
     language: LanguageCode;
     country: CountryCode;
-    currency: CurrencyCode;
+    currency?: CurrencyCode;
 };
 
 export const NextLocaleToCountry = (locale?: string): CountryCode =>
@@ -34,3 +34,13 @@ export const NextLocaleToCurrency = ({ country, store }: NextLocaleToCurrencyPro
     (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode ||
         store?.currencies?.[0] ||
         Config.i18n.currencies[0]) as CurrencyCode;
+
+export const NextLocaleToLocale = (locale?: string): Locale => {
+    const safeLocale = (locale && locale !== 'x-default' && locale) || i18n.locales[1];
+
+    return {
+        locale: safeLocale,
+        language: NextLocaleToLanguage(locale),
+        country: NextLocaleToCountry(locale)
+    };
+};

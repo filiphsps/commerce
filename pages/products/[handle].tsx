@@ -18,6 +18,7 @@ import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { SSRConfig, useTranslation } from 'next-i18next';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
@@ -30,6 +31,7 @@ import { Currency } from 'react-tender';
 import Error from 'next/error';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
+import { NextLocaleToLocale } from 'src/util/Locale';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
@@ -47,6 +49,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../slices';
 import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { titleToHandle } from '../../src/util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -498,6 +501,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     initialVariantId
 }) => {
     const router = useRouter();
+    const { t } = useTranslation('common');
     const cart = useCart();
     const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
     const { product: productData, setSelectedOption, selectedVariant } = useProduct();
@@ -661,7 +665,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const addToCartAction = (
         <AddToCart
             type="button"
-            title="Add to Cart"
+            title={t('add-to-cart')}
             $added={added}
             disabled={!cartReady || quantity <= 0 || !selectedVariant?.availableForSale}
             onClick={() =>
@@ -672,26 +676,26 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 if (!selectedVariant?.availableForSale)
                     return (
                         <>
-                            <span data-nosnippet>Out of Stock</span>
+                            <span data-nosnippet>{t('out-of-stock')}</span>
                         </>
                     );
                 else if (!cartReady)
                     return (
                         <>
-                            <span data-nosnippet>Hang on...</span>
+                            <span data-nosnippet>{t('cart-not-ready')}.</span>
                         </>
                     );
                 else if (added)
                     return (
                         <>
                             <FiCheck />
-                            <span data-nosnippet>Added</span>
+                            <span data-nosnippet>{t('added-to-cart')}</span>
                         </>
                     );
                 return (
                     <>
                         <FiShoppingCart />
-                        <span data-nosnippet> Add to Cart</span>
+                        <span data-nosnippet> {t('add-to-cart')}</span>
                     </>
                 );
             })()}
@@ -1141,7 +1145,9 @@ export const getStaticProps: GetStaticProps<{
 
     // Bogus, will actually come from the wrapper
     initialVariantId?: string | undefined;
-}> = async ({ params, locale, previewData }) => {
+}> = async ({ params, locale: localeData, previewData }) => {
+    const locale = NextLocaleToLocale(localeData);
+
     let handle = '';
     if (Array.isArray(params?.handle)) {
         handle = params?.handle?.join('') || '';
@@ -1151,19 +1157,17 @@ export const getStaticProps: GetStaticProps<{
 
     if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
-            props: {
-                product: null
-            },
+            notFound: true,
             revalidate: false
         };
-    else if (locale === 'x-default') {
+    else if (localeData === 'x-default') {
         return {
-            props: {},
+            props: {} as any,
             revalidate: false
         };
     }
 
-    const redirect = await RedirectProductApi({ handle, locale });
+    const redirect = await RedirectProductApi({ handle, locale: locale.locale });
     if (redirect) {
         return {
             redirect: {
@@ -1182,11 +1186,12 @@ export const getStaticProps: GetStaticProps<{
     let recommendations: Product[] | null = null;
     let reviews: ReviewsModel | null = null;
     let page: ProductPageDocument<string> | null = null;
+    let translations: SSRConfig | undefined = undefined;
 
     try {
         product = await ProductApi({
             handle,
-            locale
+            locale: locale.locale
         });
     } catch (error) {
         if (error?.message?.includes('404')) {
@@ -1196,12 +1201,13 @@ export const getStaticProps: GetStaticProps<{
         }
 
         if (error) captureException(error);
-        return {
-            props: {
-                errors: (error?.message && [error?.message]) || null
-            },
-            revalidate: 60
-        };
+        throw error;
+    }
+
+    try {
+        translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+    } catch (error) {
+        console.warn(error);
     }
 
     if (product) {
@@ -1223,7 +1229,7 @@ export const getStaticProps: GetStaticProps<{
             try {
                 visuals = await ProductVisualsApi({
                     id: (product as any)?.visuals?.value,
-                    locale
+                    locale: locale.locale
                 });
             } catch (error: any) {
                 if (error) captureException(error);
@@ -1231,7 +1237,7 @@ export const getStaticProps: GetStaticProps<{
 
         try {
             page = await client.getByUID('product_page', handle, {
-                lang: locale
+                lang: locale.locale
             });
         } catch (error) {
             try {
@@ -1242,7 +1248,7 @@ export const getStaticProps: GetStaticProps<{
         try {
             recommendations = await RecommendationApi({
                 id: product?.id,
-                locale
+                locale: locale.locale
             });
         } catch (error: any) {
             if (error) captureException(error);
@@ -1257,6 +1263,7 @@ export const getStaticProps: GetStaticProps<{
 
     return {
         props: {
+            ...translations,
             product,
             visuals,
             page,

@@ -24,6 +24,7 @@ import type { StoreModel } from '../../models/StoreModel';
 import { titleToHandle } from '../../util/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useTranslation } from 'next-i18next';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -102,6 +103,7 @@ const Title = styled.div`
     font-size: 1.75rem;
     line-height: 2rem;
     font-weight: 700;
+    hyphens: auto;
 
     @media (min-width: 950px) {
         font-size: 2rem;
@@ -132,7 +134,7 @@ const Description = styled.div`
 const VariantsContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: flex-end;
     justify-self: end;
     gap: var(--block-spacer);
@@ -145,7 +147,7 @@ const Variants = styled.div`
     display: flex;
     align-items: end;
     justify-content: end;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-tiny);
     width: 100%;
     height: 100%;
 `;
@@ -284,7 +286,7 @@ const Prices = styled.div`
 `;
 const Price = styled.div`
     font-size: 2rem;
-    line-height: 2.25rem;
+    line-height: 1.9rem;
     font-weight: 700;
 `;
 const PreviousPrice = styled.div`
@@ -414,6 +416,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
     visuals: visualsData
 }) => {
     const router = useRouter();
+    const { t } = useTranslation('common');
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
@@ -578,16 +581,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                                 />
                             </PreviousPrice>
                         )}
-                        <Price>
-                            <Currency
-                                price={Number.parseFloat(selectedVariant.price?.amount || '')}
-                                currency={
-                                    selectedVariant.price?.currencyCode! ||
-                                    Config.i18n.currencies[0]
-                                }
-                                store={store}
-                            />
-                        </Price>
+                        {(selectedVariant.price && (
+                            <Money data={selectedVariant.price} as={Price} />
+                        )) ||
+                            null}
                     </Prices>
 
                     {/* FIXME: Deal with options here */}
@@ -600,10 +597,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                                 let title = variant.title;
 
                                 // Handle variants that should have their weight as their actual title
-                                // FIXME: Remove `Size` when we've migrated to using Weight
+                                // FIXME: Remove `Size` when we've migrated to using Weight.
+                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
                                 if (
                                     variant.selectedOptions.length === 1 &&
-                                    ['Size', 'Weight'].includes(
+                                    ['Size', 'Weight', 'Größe', 'Storlek'].includes(
                                         variant.selectedOptions.at(0)!.name
                                     ) &&
                                     variant.weight &&
@@ -637,8 +635,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
             <Actions>
                 <AddButton
                     type="button"
-                    title="Add to Cart"
-                    className={(addedToCart && 'Added') || ''}
+                    title={t('add-to-cart')}
+                    className={(addedToCart && t('added-to-cart')) || ''}
                     $added={addedToCart}
                     onClick={() => {
                         if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
@@ -662,9 +660,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({
                     }
                 >
                     <span data-nosnippet>
-                        {(!selectedVariant.availableForSale && 'Out of Stock') ||
+                        {(!selectedVariant.availableForSale && t('out-of-stock')) ||
                             (addedToCart && 'Added!') ||
-                            'Add to Cart'}
+                            t('add-to-cart')}
                     </span>
                 </AddButton>
                 <Quantity>

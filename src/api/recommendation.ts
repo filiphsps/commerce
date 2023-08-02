@@ -4,10 +4,10 @@ import type {
     Product
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { gql } from '@apollo/client';
-import { captureException } from '@sentry/nextjs';
-import { i18n } from '../../next-i18next.config.cjs';
 import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { captureException } from '@sentry/nextjs';
+import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 // TODO: Migrate to the new recommendations api

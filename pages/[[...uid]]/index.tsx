@@ -4,11 +4,13 @@ import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
 import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
+import { NextLocaleToLocale } from 'src/util/Locale';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import { PagesApi } from '../../src/api/page';
 import { Prefetch } from '../../src/util/Prefetch';
+import { SSRConfig } from 'next-i18next';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { asText } from '@prismicio/client';
@@ -16,6 +18,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../slices';
 import { createClient } from '../../prismicio';
 import dynamic from 'next/dynamic';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
@@ -120,23 +123,37 @@ export async function getStaticPaths({ locales }) {
     return { paths: paths, fallback: 'blocking' };
 }
 
-export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previewData }) => {
+export const getStaticProps: GetStaticProps<{}> = async ({
+    params,
+    locale: localeData,
+    previewData
+}) => {
     const client = createClient({ previewData });
+    const locale = NextLocaleToLocale(localeData);
+
     try {
         const uid = (params?.uid && params!.uid![params!.uid!.length - 1]) || 'homepage';
 
         let page: any = null;
         try {
             page = await client.getByUID('custom_page', uid, {
-                lang: locale
+                lang: locale.locale
             });
         } catch (error) {
             page = await client.getByUID('custom_page', uid);
         }
-        const prefetch = (page && (await Prefetch(page, params, locale))) || null;
+        const prefetch = (page && (await Prefetch(page, params, locale.locale))) || null;
+
+        let translations: SSRConfig | undefined = undefined;
+        try {
+            translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+        } catch (error) {
+            console.warn(error);
+        }
 
         return {
             props: {
+                ...translations,
                 handle: uid,
                 page,
                 prefetch,
@@ -151,6 +168,8 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale, previ
             revalidate: 10
         };
     } catch (error) {
+        console.warn(error);
+
         if (error.message?.includes('No documents')) {
             return {
                 notFound: true

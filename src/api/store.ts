@@ -1,15 +1,14 @@
-import { captureException } from '@sentry/nextjs';
-
 import type {
     Country,
     CountryCode,
     LanguageCode
 } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { gql } from '@apollo/client';
-import { createClient } from 'prismicio';
-import { i18n } from '../../next-i18next.config.cjs';
 import type { StoreModel } from '../models/StoreModel';
+import { captureException } from '@sentry/nextjs';
+import { createClient } from 'prismicio';
+import { gql } from '@apollo/client';
+import { i18n } from '../../next-i18next.config.cjs';
 import { storefrontClient } from './shopify';
 
 export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {

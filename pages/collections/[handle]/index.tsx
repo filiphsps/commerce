@@ -10,6 +10,7 @@ import { Config } from '../../../src/util/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
 import type { FunctionComponent } from 'react';
+import { NextLocaleToLocale } from 'src/util/Locale';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -17,6 +18,7 @@ import PageHeader from '@/components/PageHeader';
 import { Prefetch } from 'src/util/Prefetch';
 import React from 'react';
 import { RedirectCollectionApi } from 'src/api/redirects';
+import { SSRConfig } from 'next-i18next';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../../src/models/StoreModel';
@@ -27,6 +29,7 @@ import { captureException } from '@sentry/nextjs';
 import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { createClient } from 'prismicio';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -232,7 +235,9 @@ export const getStaticProps: GetStaticProps<{
     vendors?: any | null;
     store?: StoreModel;
     analytics?: Partial<ShopifyPageViewPayload>;
-}> = async ({ params, locale, previewData }) => {
+}> = async ({ params, locale: localeData, previewData }) => {
+    const locale = NextLocaleToLocale(localeData);
+
     let handle = '';
     if (Array.isArray(params?.handle)) {
         handle = params?.handle?.join('') || '';
@@ -240,7 +245,19 @@ export const getStaticProps: GetStaticProps<{
         handle = params?.handle || '';
     }
 
-    const redirect = await RedirectCollectionApi({ handle, locale });
+    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
+        return {
+            notFound: true,
+            revalidate: false
+        };
+    else if (localeData === 'x-default') {
+        return {
+            props: {},
+            revalidate: false
+        };
+    }
+
+    const redirect = await RedirectCollectionApi({ handle, locale: locale.locale });
     if (redirect) {
         return {
             redirect: {
@@ -253,31 +270,26 @@ export const getStaticProps: GetStaticProps<{
 
     const client = createClient({ previewData });
 
-    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
-        return {
-            notFound: true,
-            revalidate: false
-        };
-    else if (locale === 'x-default') {
-        return {
-            props: {},
-            revalidate: false
-        };
-    }
-
     let page: CollectionPageDocument<string> | null = null;
     let collection: Collection | null = null;
     let vendors: any = null;
 
     try {
-        collection = await CollectionApi({ handle, locale, limit: 16 });
+        collection = await CollectionApi({ handle, locale: locale.locale, limit: 16 });
     } catch (error) {
+        if (error?.message?.includes('404')) {
+            return {
+                notFound: true
+            };
+        }
+
         captureException(error);
+        throw error;
     }
 
     try {
         page = await client.getByUID('collection_page', handle, {
-            lang: locale
+            lang: locale.locale
         });
     } catch {
         try {
@@ -286,12 +298,19 @@ export const getStaticProps: GetStaticProps<{
     }
     const prefetch =
         (page &&
-            (await Prefetch(page!, params, locale, {
+            (await Prefetch(page!, params, locale.locale, {
                 collections: {
                     [handle]: collection
                 }
             }))) ||
         null;
+
+    let translations: SSRConfig | undefined = undefined;
+    try {
+        translations = await serverSideTranslations(locale.language.toLowerCase(), ['common']);
+    } catch (error) {
+        console.warn(error);
+    }
 
     try {
         vendors = await VendorsApi();
@@ -301,6 +320,7 @@ export const getStaticProps: GetStaticProps<{
 
     return {
         props: {
+            ...translations,
             collection,
             page,
             vendors: vendors ?? null,

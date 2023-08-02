@@ -10,6 +10,7 @@ import Link from 'next/link';
 import PageLoader from './PageLoader';
 import { Pluralize } from '../util/Pluralize';
 import styled from 'styled-components';
+import { useTranslation } from 'next-i18next';
 
 const Container = styled.section`
     display: flex;
@@ -229,6 +230,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
     freeShipping,
     showLoader
 }) => {
+    const { t } = useTranslation('cart');
     const { totalQuantity, status, lines, cost, note } = useCart();
     const [showNote, setShowNote] = useState(false);
     const loading = showLoader || status !== 'idle';
@@ -301,7 +303,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                 <Block>
                     <Breakdown>
                         <BreakdownItem>
-                            <BreakdownItemLabel>Subtotal</BreakdownItemLabel>
+                            <BreakdownItemLabel>{t('subtotal')}</BreakdownItemLabel>
                             {(cost?.subtotalAmount && (
                                 <Money
                                     as={BreakdownItemMoney}
@@ -350,7 +352,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                             null}
 
                         <BreakdownItem>
-                            <BreakdownItemLabel>Shipping</BreakdownItemLabel>
+                            <BreakdownItemLabel>{t('shipping')}</BreakdownItemLabel>
 
                             {(freeShipping && (
                                 <Money
@@ -364,13 +366,13 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                         </BreakdownItem>
 
                         <BreakdownTotalItem>
-                            <BreakdownItemLabel>Est. Total</BreakdownItemLabel>
+                            <BreakdownItemLabel>{t('estimated-total')}</BreakdownItemLabel>
                             <CartCost as={BreakdownItemMoney} />
                         </BreakdownTotalItem>
 
                         {(!freeShipping && (
                             <BreakdownItem>
-                                <Notice>{'*Shipping calculated at checkout'}</Notice>
+                                <Notice>{`*${t('shipping-calculated-at-checkout')}`}</Notice>
                             </BreakdownItem>
                         )) ||
                             null}

@@ -1,9 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
+import { ConvertToLocalMeasurementSystem } from 'src/api/product';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
-import { ConvertToLocalMeasurementSystem } from 'src/api/product';
 
 const OptionTitle = styled.div`
     text-transform: uppercase;
@@ -104,7 +104,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
     useEffect(() => {
         if (disabled === !router.isReady) return;
         setDisabled(!router.isReady);
-    }, [,router]);
+    }, [, router]);
 
     return (
         <>
@@ -118,7 +118,10 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                             {option.values.map((value) => {
                                 let title = value;
 
-                                if (['Size', 'Weight'].includes(option.name!)) {
+                                // Handle variants that should have their weight as their actual title
+                                // FIXME: Remove `Size` when we've migrated to using Weight.
+                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
+                                if (['Size', 'Weight', 'Größe', 'Storlek'].includes(option.name!)) {
                                     title = ConvertToLocalMeasurementSystem({
                                         locale: router.locale,
                                         weight: Number.parseFloat(value!.slice(0, -1)),

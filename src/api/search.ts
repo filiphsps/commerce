@@ -1,14 +1,13 @@
-import { captureException } from '@sentry/nextjs';
-
 import type {
     CountryCode,
     LanguageCode,
     Product
 } from '@shopify/hydrogen-react/storefront-api-types';
 
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { i18n } from '../../next-i18next.config.cjs';
-import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import { storefrontClient } from './shopify';
 
 export const SearchApi = async ({

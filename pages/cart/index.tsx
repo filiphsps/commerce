@@ -1,31 +1,31 @@
-import { captureException } from '@sentry/nextjs';
-
-import {
-    AnalyticsPageType,
-    CartLineProvider,
-    CartWithActions,
-    useCart
-} from '@shopify/hydrogen-react';
+import { AnalyticsPageType, CartLineProvider, useCart } from '@shopify/hydrogen-react';
 import type { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
 import { CartSummary } from '@/components/CartSummary';
 import CollectionBlock from '@/components/CollectionBlock';
+import { Config } from '../../src/util/Config';
+import { GetStaticProps } from 'next';
+import { NextLocaleToLocale } from 'src/util/Locale';
+import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
-import { NextSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
-import styled from 'styled-components';
-import useSWR from 'swr';
 import { RecommendationApi } from '../../src/api/recommendation';
+import { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { Config } from '../../src/util/Config';
+import { captureException } from '@sentry/nextjs';
+import { createClient } from 'prismicio';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import styled from 'styled-components';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Content = styled.div`
     display: grid;
@@ -401,14 +401,58 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     );
 };
 
-export async function getStaticProps({}) {
-    return {
-        props: {
-            analytics: {
-                pageType: AnalyticsPageType.cart
-            }
+export const getStaticProps: GetStaticProps<{
+    analytics?: Partial<ShopifyPageViewPayload>;
+}> = async ({ locale: localeData, previewData }) => {
+    const locale = NextLocaleToLocale(localeData);
+    const client = createClient({ previewData });
+    try {
+        const uid = 'cart';
+
+        let page: any = null;
+        try {
+            page = await client.getByUID('custom_page', uid, {
+                lang: locale.locale
+            });
+        } catch (error) {
+            try {
+                page = await client.getByUID('custom_page', uid);
+            } catch {}
         }
-    };
-}
+
+        let translations: SSRConfig | undefined = undefined;
+        try {
+            translations = await serverSideTranslations(locale.language.toLowerCase(), [
+                'common',
+                'cart'
+            ]);
+        } catch (error) {
+            console.warn(error);
+        }
+
+        return {
+            props: {
+                ...translations,
+                page,
+                analytics: {
+                    pageType: AnalyticsPageType.cart
+                }
+            },
+            revalidate: 60
+        };
+    } catch (error) {
+        if (error.message?.includes('No documents')) {
+            return {
+                notFound: true
+            };
+        }
+
+        captureException(error);
+        return {
+            props: {},
+            revalidate: 1
+        };
+    }
+};
 
 export default CartPage;

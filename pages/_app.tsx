@@ -4,7 +4,7 @@ import './app.scss';
 import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage, NextLocaleToLocale } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
@@ -19,6 +19,7 @@ import { PrismicPreview } from '@prismicio/next';
 import { QueryParamProvider } from 'use-query-params';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
+import { appWithTranslation } from 'next-i18next';
 import { i18n } from 'next-i18next.config.cjs';
 import preval from '../src/data.preval';
 import { useEffect } from 'react';
@@ -238,4 +239,4 @@ export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric)
     });
 }
 
-export default StoreApp;
+export default appWithTranslation(StoreApp);

@@ -436,7 +436,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         </Link>
                     </Action>
                     <Action>
-                        <Link href="/countries/" prefetch={false}>
+                        <Link
+                            title="Language and Region settings"
+                            href="/countries/"
+                            prefetch={false}
+                        >
                             <CurrentLocaleFlag />
                         </Link>
                     </Action>

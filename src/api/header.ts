@@ -1,8 +1,7 @@
+import type { HeaderModel } from '../models/HeaderModel';
 import { captureException } from '@sentry/nextjs';
-
 import { createClient } from 'prismicio';
 import { i18n } from '../../next-i18next.config.cjs';
-import type { HeaderModel } from '../models/HeaderModel';
 
 export const HeaderApi = async (locale = i18n.defaultLocale): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
