@@ -241,13 +241,30 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
         ([, props]) => RecommendationApi(props)
     );
 
+    // TODO: Handle other currencies properly
     let freeShippingThreshold = 85;
-    switch (cart.cost?.totalAmount?.currencyCode) {
+    switch (cart?.cost?.totalAmount?.currencyCode) {
         case 'GBP':
             freeShippingThreshold = 70;
             break;
         case 'EUR':
             freeShippingThreshold = 80;
+            break;
+        case 'SEK':
+            freeShippingThreshold = 900;
+            break;
+        case 'DKK':
+            freeShippingThreshold = 575;
+            break;
+        case 'NOK':
+            freeShippingThreshold = 875;
+            break;
+        case 'CAD':
+            freeShippingThreshold = 115;
+            break;
+        default:
+        case 'USD':
+            freeShippingThreshold = 85;
             break;
     }
     const freeShipping =
