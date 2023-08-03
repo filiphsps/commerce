@@ -67,7 +67,7 @@ const Notice = styled(Label)`
 `;
 const Action = styled.div`
     font-size: 1.25rem;
-    line-height: 1.25rem;
+    line-height: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     opacity: 0.75;
@@ -76,6 +76,10 @@ const Action = styled.div`
     &:hover {
         color: var(--accent-primary-dark);
         opacity: 1;
+    }
+
+    svg {
+        margin-bottom: 0.15rem;
     }
 `;
 
