@@ -196,12 +196,21 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = (props) => {
     const router = useRouter();
     const { store } = props;
-    const { data: footer } = useSWR([`footer_${router.locale}`], () => FooterApi({ locale: router.locale }), {
-        fallbackData: preval.footer!
-    });
+
+    const { data: footer } = useSWR(
+        [
+            'FooterApi',
+            {
+                locale: router.locale
+            }
+        ],
+        ([, props]) => FooterApi(props),
+        {
+            fallbackData: preval.footer!
+        }
+    );
 
     // FIXME: Dynamic copyright copy.
-
     // FIXME: Togglable newsletter view.
 
     return (

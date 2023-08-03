@@ -228,21 +228,17 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
     const { data: recommendations } = useSWR(
         [
-            `recommendations_${
-                cart.totalQuantity &&
-                cart.totalQuantity > 0 &&
-                cart.lines?.[0]?.merchandise?.product?.id
-            }`
-        ],
-        () =>
-            RecommendationApi({
+            'RecommendationApi',
+            {
                 id:
                     (cart.totalQuantity &&
                         cart.totalQuantity > 0 &&
                         cart.lines?.[0]?.merchandise?.product?.id) ||
                     undefined,
                 locale: router.locale
-            })
+            }
+        ],
+        ([, props]) => RecommendationApi(props)
     );
 
     let freeShippingThreshold = 85;

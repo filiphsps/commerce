@@ -10,7 +10,7 @@ export type NavigationItem = {
         handle?: string;
     }>;
 };
-export const NavigationApi = async (locale = Config.i18n.default): Promise<NavigationItem[]> => {
+export const NavigationApi = async ({ locale }: { locale?: string }): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -30,7 +30,7 @@ export const NavigationApi = async (locale = Config.i18n.default): Promise<Navig
             );
         } catch (error) {
             if (error.message.includes('No documents') && locale !== Config.i18n.default) {
-                return resolve(await NavigationApi()); // Try again with default locale
+                return resolve(await NavigationApi({})); // Try again with default locale
             }
 
             captureException(error);

@@ -19,8 +19,8 @@ async function getStoreData() {
 
     try {
         store = await StoreApi({ locale });
-        navigation = await NavigationApi(locale);
-        header = await HeaderApi(locale);
+        navigation = await NavigationApi({ locale });
+        header = await HeaderApi({ locale });
         footer = await FooterApi({ locale });
     } catch (error) {
         console.warn(error);

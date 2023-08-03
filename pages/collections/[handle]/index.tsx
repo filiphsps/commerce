@@ -53,11 +53,14 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
     const router = useRouter();
 
     const { data: collection } = useSWR(
-        {
-            handle: collectionData?.handle!,
-            locale: router.locale
-        },
-        CollectionApi,
+        [
+            'CollectionApi',
+            {
+                handle: collectionData?.handle!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => CollectionApi(props),
         {
             fallbackData: collectionData as Collection
         }
@@ -313,7 +316,7 @@ export const getStaticProps: GetStaticProps<{
     }
 
     try {
-        vendors = await VendorsApi();
+        vendors = await VendorsApi({ locale: locale.locale });
     } catch (error) {
         captureException(error);
     }

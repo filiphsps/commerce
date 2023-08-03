@@ -527,50 +527,55 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     }, [router.isReady, selectedVariant]);
 
     const { data: product } = useSWR(
-        {
-            handle: productData?.handle!,
-            locale: router.locale
-        },
-        ProductApi,
+        [
+            'ProductApi',
+            {
+                handle: productData?.handle!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => ProductApi(props),
         {
             fallbackData: productData as Product
         }
     );
 
     const { data: visuals } = useSWR(
-        {
-            id: (product as any).visuals?.value,
-            locale: router.locale
-        },
-        ProductVisualsApi,
+        [
+            'ProductVisualsApi',
+            {
+                id: (product as any).visuals?.value,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => ProductVisualsApi(props),
         {
             fallbackData: visualsData as ProductVisuals | undefined
         }
     );
 
     const { data: recommendations } = useSWR(
-        [`recommendations_${product?.id}`],
-        () =>
-            (product?.id &&
-                RecommendationApi({
-                    id: product?.id!,
-                    locale: router.locale
-                })) ||
-            undefined,
+        [
+            'RecommendationApi',
+            {
+                id: product?.id!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => RecommendationApi(props),
         {
             fallbackData: recommendationsData || undefined
         }
     );
-
     const { data: reviews } = useSWR(
-        [`reviews_${product?.id}`],
-        () =>
-            (product?.id &&
-                ReviewsProductApi({
-                    id: product?.id!,
-                    locale: router.locale
-                })) ||
-            undefined,
+        [
+            'RecommendationApi',
+            {
+                id: product?.id!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => ReviewsProductApi(props),
         {
             fallbackData: reviewsData || undefined
         }

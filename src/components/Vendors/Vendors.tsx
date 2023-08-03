@@ -59,9 +59,19 @@ interface VendorsProps {
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
     const router = useRouter();
-    const { data: vendors } = useSWR(['vendors'], () => VendorsApi(), {
-        fallbackData: props?.data
-    }) as any;
+
+    const { data: vendors } = useSWR(
+        [
+            'VendorsApi',
+            {
+                locale: router.locale
+            }
+        ],
+        ([, props]) => VendorsApi(props),
+        {
+            fallbackData: props?.data
+        }
+    );
 
     if (!vendors)
         return (

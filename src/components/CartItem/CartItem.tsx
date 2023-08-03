@@ -285,9 +285,17 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
 
     const locale = NextLocaleToLocale(router.locale);
 
-    const { data: product } = useSWR([line?.merchandise?.product?.handle!], ([handle]) =>
-        ProductApi({ handle: handle || '', locale: locale.locale })
+    const { data: product } = useSWR(
+        [
+            'ProductApi',
+            {
+                handle: line?.merchandise?.product?.handle!,
+                locale: locale.locale
+            }
+        ],
+        ([, props]) => ProductApi(props)
     );
+
     const [variant, setVariant] = useState<ProductVariant | null>(null);
 
     useEffect(() => {

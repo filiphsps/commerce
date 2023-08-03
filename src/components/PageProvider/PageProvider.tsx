@@ -87,16 +87,32 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
 
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
     const { data: navigation } = useSWR(
-        [`navigation_${router.locale}`],
-        () => NavigationApi(router.locale),
+        [
+            'NavigationApi',
+            {
+                locale: router.locale
+            }
+        ],
+        ([, props]) => NavigationApi(props),
         {
             fallbackData: preval.navigation!
         }
     );
-    const { data: header } = useSWR([`header_${router.locale}`], () => HeaderApi(router.locale), {
-        fallbackData: preval.header!
-    });
+
+    const { data: header } = useSWR(
+        [
+            'HeaderApi',
+            {
+                locale: router.locale
+            }
+        ],
+        ([, props]) => HeaderApi(props),
+        {
+            fallbackData: preval.header!
+        }
+    );
 
     const locale = NextLocaleToLocale(router.locale);
     const { country, language } = locale;
@@ -120,8 +136,8 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         } as Locale
     });
 
-    const above = header?.announcements.filter((item) => item.location === 'above') || [];
-    const bellow = header?.announcements.filter((item) => item.location === 'bellow') || [];
+    const above = header?.announcements?.filter((item) => item.location === 'above') || [];
+    const bellow = header?.announcements?.filter((item) => item.location === 'bellow') || [];
 
     // TODO: handle this way better.
     const isSliceSimulator = router.asPath === '/slice-simulator/';

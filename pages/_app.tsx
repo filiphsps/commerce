@@ -41,8 +41,13 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
 
     const { data: store } = useSWR(
-        [`store_${router.locale}`],
-        () => StoreApi({ locale: router.locale }),
+        [
+            'StoreApi',
+            {
+                locale: router.locale
+            }
+        ],
+        ([, props]) => StoreApi(props),
         {
             fallbackData: preval.store!
         }

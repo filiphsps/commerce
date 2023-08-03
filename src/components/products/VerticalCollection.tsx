@@ -68,19 +68,22 @@ interface VerticalCollectionProps {
 }
 export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
     handle,
-    data,
+    data: collectionData,
     store
 }) => {
     const router = useRouter();
 
     const { data: collection } = useSWR(
+        [
+            'CollectionApi',
+            {
+                handle: handle || collectionData?.handle!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => CollectionApi(props),
         {
-            handle: data?.handle! || handle,
-            locale: router.locale
-        },
-        CollectionApi,
-        {
-            fallbackData: data
+            fallbackData: collectionData
         }
     );
 

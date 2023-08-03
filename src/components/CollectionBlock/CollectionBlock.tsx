@@ -257,7 +257,7 @@ interface CollectionBlockProps {
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     hideTitle,
-    data,
+    data: collectionData,
     handle,
     limit,
     isHorizontal,
@@ -268,10 +268,16 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     const [shadowRight, setShadowRight] = useState(false);
 
     const { data: collection } = useSWR(
-        handle ? [handle] : null,
-        ([url]) => CollectionApi({ handle: url, locale: router.locale }),
+        [
+            'CollectionApi',
+            {
+                handle: handle,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => CollectionApi(props),
         {
-            fallbackData: data
+            fallbackData: collectionData
         }
     );
 
@@ -330,11 +336,12 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
             {!hideTitle && (
                 <Meta>
                     <Link href={`/collections/${handle}/`}>
-                        <Title>{data?.title}</Title>
+                        <Title>{collection?.title}</Title>
                     </Link>
                     <Subtitle
                         dangerouslySetInnerHTML={{
-                            __html: data?.descriptionHtml || data?.seo?.description || ''
+                            __html:
+                                collection?.descriptionHtml || collection?.seo?.description || ''
                         }}
                     />
                 </Meta>

@@ -1,16 +1,15 @@
-import { captureException } from '@sentry/nextjs';
-
-import { gql } from '@apollo/client';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '../models/VendorModel';
-import { titleToHandle } from '../util/TitleToHandle';
+import { captureException } from '@sentry/nextjs';
+import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
+import { titleToHandle } from '../util/TitleToHandle';
 
 export const Convertor = (
     products: Array<{
         node: Product;
     }>
-): Array<VendorModel> => {
+): VendorModel[] => {
     let vendors: any[] = [];
     products.forEach((product) => {
         if (!product?.node?.vendor) return;
@@ -28,7 +27,7 @@ export const Convertor = (
     }));
 };
 
-export const VendorsApi = async () => {
+export const VendorsApi = async ({ locale }: { locale?: string }): Promise<VendorModel[]> => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await storefrontClient.query({
@@ -46,11 +45,11 @@ export const VendorsApi = async () => {
                 `
             });
 
-            resolve(Convertor(res?.data?.products?.edges));
+            return resolve(Convertor(res?.data?.products?.edges));
         } catch (error) {
             captureException(error);
             console.error(error);
-            reject(error);
+            return reject(error);
         }
     });
 };

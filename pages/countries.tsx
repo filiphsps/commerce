@@ -108,11 +108,13 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
     const { i18n } = useTranslation('common');
 
     const { data: countries } = useSWR(
-        [`locales`],
-        () =>
-            CountriesApi({
+        [
+            'CountriesApi',
+            {
                 locale: router.locale
-            }),
+            }
+        ],
+        ([, props]) => CountriesApi(props),
         {
             fallbackData: countriesData
         }

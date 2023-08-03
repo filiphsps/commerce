@@ -3,7 +3,7 @@ import type { HeaderModel } from '../models/HeaderModel';
 import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 
-export const HeaderApi = async (locale = Config.i18n.default): Promise<HeaderModel> => {
+export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -16,7 +16,7 @@ export const HeaderApi = async (locale = Config.i18n.default): Promise<HeaderMod
         } catch (error) {
             if (error.message.includes('No documents')) {
                 if (locale !== Config.i18n.default) {
-                    return resolve(await HeaderApi()); // Try again with default locale
+                    return resolve(await HeaderApi({})); // Try again with default locale
                 }
 
                 return reject(new Error('404: The requested document cannot be found'));

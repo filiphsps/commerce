@@ -416,22 +416,28 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
     const { product: productData, selectedVariant, setSelectedVariant } = useProduct();
 
     const { data: product } = useSWR(
-        {
-            id: productData?.handle!,
-            locale: router.locale
-        },
-        ProductApi,
+        [
+            'ProductApi',
+            {
+                id: productData?.handle!,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => ProductApi(props),
         {
             fallbackData: productData as Product
         }
     );
 
     const { data: visuals } = useSWR(
-        {
-            id: (product as any).visuals?.value,
-            locale: router.locale
-        },
-        ProductVisualsApi,
+        [
+            'ProductVisualsApi',
+            {
+                id: (product as any).visuals?.value,
+                locale: router.locale
+            }
+        ],
+        ([, props]) => ProductVisualsApi(props),
         {
             fallbackData: (visualsData || (product as any).visualsData) as
                 | ProductVisuals

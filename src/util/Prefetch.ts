@@ -51,7 +51,7 @@ const Prefetch = (
                         }
                         break;
                     case 'vendors':
-                        vendors = await VendorsApi();
+                        vendors = await VendorsApi({ locale });
                         break;
                 }
             } catch (error) {

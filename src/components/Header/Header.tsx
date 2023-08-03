@@ -365,7 +365,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                 </Logo>
 
                 <Navigation>
-                    {navigation?.map((item: any, index) => {
+                    {navigation?.map?.((item: any, index) => {
                         return (
                             <NavigationItem key={item.handle + `${index}`}>
                                 <Link

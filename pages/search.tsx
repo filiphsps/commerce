@@ -138,14 +138,24 @@ const SearchPage: FunctionComponent<SearchPageProps> = ({ store }) => {
         mutate,
         isValidating,
         isLoading
-    } = useSWR({ query: (router.isReady && query) || '', locale: router.locale }, SearchApi, {
-        refreshInterval: 0,
-        revalidateOnFocus: false,
-        revalidateOnMount: false,
-        revalidateOnReconnect: false,
-        refreshWhenOffline: false,
-        refreshWhenHidden: false
-    });
+    } = useSWR(
+        [
+            'SearchApi',
+            {
+                query: (router.isReady && query) || '',
+                locale: router.locale
+            }
+        ],
+        ([, props]) => SearchApi(props),
+        {
+            refreshInterval: 0,
+            revalidateOnFocus: false,
+            revalidateOnMount: false,
+            revalidateOnReconnect: false,
+            refreshWhenOffline: false,
+            refreshWhenHidden: false
+        }
+    );
 
     useEffect(() => {
         mutate(results, { revalidate: true });
