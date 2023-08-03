@@ -12,5 +12,6 @@ export const components = {
     image_grid: dynamic(() => import('./ImageGrid')),
     spacing: dynamic(() => import('./Spacing')),
     text_block: dynamic(() => import('./Overview')),
+    title: dynamic(() => import('./Title')),
     vendors: dynamic(() => import('./Vendors'))
 };

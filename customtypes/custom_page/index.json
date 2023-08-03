@@ -12,6 +12,15 @@
                 "type": "Text",
                 "config": { "label": "Description", "placeholder": "" }
             },
+            "enable_header": {
+                "type": "Boolean",
+                "config": {
+                    "label": "Show built-in header",
+                    "placeholder_false": "false",
+                    "placeholder_true": "true",
+                    "default_value": true
+                }
+            },
             "slices": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",
@@ -26,7 +35,8 @@
                         "icon_grid": { "type": "SharedSlice" },
                         "alert": { "type": "SharedSlice" },
                         "banner": { "type": "SharedSlice" },
-                        "spacing": { "type": "SharedSlice" }
+                        "spacing": { "type": "SharedSlice" },
+                        "title": { "type": "SharedSlice" }
                     }
                 }
             }

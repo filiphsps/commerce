@@ -2,6 +2,7 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '../../src/util/Config';
 import { CustomPageDocument } from '../../prismicio-types';
+import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from 'src/util/Locale';
@@ -33,11 +34,13 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
     const router = useRouter();
     const path = page?.url?.split('/').filter((i) => i);
 
+    if (!page) return <Error statusCode={404} />;
+
     return (
         <Page className={`CustomPage CustomPage-${page?.type}`}>
             <NextSeo
-                title={page?.data.meta_title || page?.data.title || ''}
-                description={asText(page?.data.meta_description) || page?.data.description || ''}
+                title={page.data.meta_title || page.data.title || ''}
+                description={asText(page.data.meta_description) || page.data.description || ''}
                 canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -48,11 +51,11 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                     })) || undefined
                 }
                 additionalMetaTags={
-                    (page?.data.keywords &&
+                    (page.data.keywords &&
                         ([
                             {
                                 property: 'keywords',
-                                content: page?.data.keywords
+                                content: page.data.keywords
                             }
                         ] as any)) ||
                     undefined
@@ -60,18 +63,18 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                 openGraph={{
                     url: `https://${Config.domain}${router.asPath}`,
                     type: 'website',
-                    title: page?.data.meta_title || '',
-                    description: asText(page?.data.meta_description) || store?.description || '',
+                    title: page.data.meta_title || '',
+                    description: asText(page.data.meta_description) || store?.description || '',
                     siteName: store?.name,
                     locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                     images:
-                        (page?.data.meta_image && [
+                        (page.data.meta_image && [
                             {
-                                url: page?.data.meta_image!.url as string,
-                                width: page?.data.meta_image!.dimensions?.width || 0,
-                                height: page?.data.meta_image!.dimensions?.height || 0,
-                                alt: page?.data.meta_image!.alt || '',
-                                secureUrl: page?.data.meta_image!.url as string
+                                url: page.data.meta_image!.url as string,
+                                width: page.data.meta_image!.dimensions?.width || 0,
+                                height: page.data.meta_image!.dimensions?.height || 0,
+                                alt: page.data.meta_image!.alt || '',
+                                secureUrl: page.data.meta_image!.url as string
                             }
                         ]) ||
                         undefined
@@ -80,23 +83,24 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
 
             <PageContent primary>
                 {/* TODO: This should really be a slice anyways */}
-                {(page?.uid !== 'homepage' && (
-                    <PageHeader title={page?.data.title} subtitle={page?.data.description} />
-                )) ||
+                {(page.uid !== 'homepage' &&
+                    (page.data.enable_header === null || page.data.enable_header) && (
+                        <PageHeader title={page.data.title} subtitle={page.data.description} />
+                    )) ||
                     null}
 
                 <SliceZone
-                    slices={page?.data.slices}
+                    slices={page.data.slices}
                     components={components}
                     context={{ prefetch, store }}
                 />
 
                 {/* TODO: Same here */}
-                {(page?.uid !== 'homepage' && (
+                {(page.uid !== 'homepage' && (
                     <Breadcrumbs
                         pages={path?.map((item, index) => {
                             return {
-                                title: (index === path.length - 1 && page?.data.title) || item,
+                                title: (index === path.length - 1 && page.data.title) || item,
                                 url: `/${item}`
                             };
                         })}

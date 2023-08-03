@@ -170,7 +170,8 @@ type CustomPageDocumentDataSlicesSlice =
     | IconGridSlice
     | AlertSlice
     | BannerSlice
-    | SpacingSlice;
+    | SpacingSlice
+    | TitleSlice;
 
 /**
  * Content for Custom Page documents
@@ -197,6 +198,18 @@ interface CustomPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     description: prismic.KeyTextField;
+
+    /**
+     * Show built-in header field in *Custom Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: custom_page.enable_header
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    enable_header: prismic.BooleanField;
 
     /**
      * Slice Zone field in *Custom Page*
@@ -333,30 +346,6 @@ interface FooterDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     address: prismic.RichTextField;
-
-    /**
-     * Show Language Selector field in *Footer*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: footer.show_language_selector
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    show_language_selector: prismic.BooleanField;
-
-    /**
-     * Show Currency Selector field in *Footer*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: footer.show_currency_selector
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    show_currency_selector: prismic.BooleanField;
 
     /**
      * Slice Zone field in *Footer*
@@ -1621,6 +1610,58 @@ type TextBlockSliceVariation = TextBlockSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type TextBlockSlice = prismic.SharedSlice<'text_block', TextBlockSliceVariation>;
+/**
+ * Primary content in *Title → Primary*
+ */
+export interface TitleSliceDefaultPrimary {
+    /**
+     * Content field in *Title → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: title.primary.content
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    content: prismic.RichTextField;
+
+    /**
+     * Alignment field in *Title → Primary*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: left
+     * - **API ID Path**: title.primary.alignment
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    alignment: prismic.SelectField<'left' | 'center' | 'right', 'filled'>;
+}
+
+/**
+ * Default variation for Title Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TitleSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<TitleSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *Title*
+ */
+type TitleSliceVariation = TitleSliceDefault;
+
+/**
+ * Title Shared Slice
+ *
+ * - **API ID**: `title`
+ * - **Description**: Title
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TitleSlice = prismic.SharedSlice<'title', TitleSliceVariation>;
 
 /**
  * Default variation for Vendors Slice
@@ -1706,6 +1747,9 @@ declare module '@prismicio/client' {
             TextBlockSlice,
             TextBlockSliceVariation,
             TextBlockSliceDefault,
+            TitleSlice,
+            TitleSliceVariation,
+            TitleSliceDefault,
             VendorsSlice,
             VendorsSliceVariation,
             VendorsSliceDefault
