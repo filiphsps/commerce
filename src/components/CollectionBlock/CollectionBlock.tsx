@@ -271,7 +271,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         [
             'CollectionApi',
             {
-                handle: handle,
+                handle: handle || collectionData?.handle!,
                 locale: router.locale
             }
         ],

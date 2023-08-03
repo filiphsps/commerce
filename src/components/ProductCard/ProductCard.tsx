@@ -419,7 +419,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
         [
             'ProductApi',
             {
-                id: productData?.handle!,
+                handle: productData?.handle!,
                 locale: router.locale
             }
         ],
