@@ -136,8 +136,8 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
     return (
         <Page className="CountriesPage">
             <NextSeo
-                title={page?.data.meta_title || 'Countries'}
-                description={page?.data.meta_title || 'Set your region and preferred language'}
+                title={page?.data.meta_title || page?.data.title!}
+                description={page?.data.meta_title || ''}
                 canonical={`https://${Config.domain}/${router.locale}/countries/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -151,10 +151,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
 
             <PageContent primary>
                 <PageContent>
-                    <PageHeader
-                        title={page?.data.title || 'Set your region and preferred language'}
-                        subtitle={page?.data.description || null}
-                    />
+                    <PageHeader title={page?.data.title} subtitle={page?.data.description} />
 
                     <LocalesList>
                         {locales.flatMap(

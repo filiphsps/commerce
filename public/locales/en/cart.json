@@ -1,7 +1,9 @@
 {
-    "add-order-note": "Add a message to your order.",
+    "add-order-note": "Add a note to your order.",
+    "away-from-getting": "away from getting",
     "continue-to-checkout": "Continue to Checkout",
     "estimated-total": "Est. Total",
+    "free-shipping": "FREE Shipping",
     "order-summary": "Order Summary",
     "promo-codes": "Promo Codes",
     "sale-discount": "Sale Discount",

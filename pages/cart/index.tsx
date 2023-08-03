@@ -8,6 +8,7 @@ import CartItem from '@/components/CartItem';
 import { CartSummary } from '@/components/CartSummary';
 import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '../../src/util/Config';
+import type { CustomPageDocument } from 'prismicio-types';
 import { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from 'src/util/Locale';
 import { NextSeo } from 'next-seo';
@@ -218,10 +219,10 @@ export const Checkout = async ({
 };
 
 interface CartPageProps {
+    page?: CustomPageDocument<string>;
     store: StoreModel;
 }
-const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
-    const { store } = props;
+const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
     const cart = useCart();
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -307,7 +308,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
     return (
         <Page className="CartPage">
             <NextSeo
-                title="Cart"
+                title={page?.data.meta_title || page?.data.title!}
+                description={page?.data.meta_title || ''}
                 canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -323,8 +325,8 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 <Content>
                     <PageHeader
                         style={{ gridArea: 'header' }}
-                        title="Shopping Cart"
-                        subtitle="Manage your shopping bag here and begin the checkout process when you're ready!"
+                        title={page?.data.title}
+                        subtitle={page?.data.description}
                         foreground="var(--color-dark)"
                     />
 
@@ -351,7 +353,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
 
                         {(recommendations?.length && (
                             <Recommendations>
-                                <RecommendationsTitle>Dont Forget</RecommendationsTitle>
+                                <RecommendationsTitle>{`Don't Forget`}</RecommendationsTitle>
                                 <RecommendationsContentWrapper>
                                     <RecommendationsContent>
                                         <CollectionBlock
@@ -403,7 +405,7 @@ const CartPage: FunctionComponent<CartPageProps> = (props: any) => {
                 <Breadcrumbs
                     pages={[
                         {
-                            title: 'Cart',
+                            title: page?.data.title || 'Shopping Cart',
                             url: '/cart/'
                         }
                     ]}
