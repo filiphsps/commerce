@@ -53,8 +53,11 @@ const FooterContainer = styled.footer`
 
     a {
         transition: 250ms ease-in-out;
-        &:hover {
-            color: var(--accent-secondary-dark);
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: var(--accent-secondary-dark);
+            }
         }
     }
 `;

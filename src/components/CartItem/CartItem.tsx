@@ -37,8 +37,10 @@ const DetailsBrand = styled.div`
     font-weight: 700;
     transition: 250ms ease-in-out;
 
-    &:hover {
-        color: var(--accent-primary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            color: var(--accent-primary);
+        }
     }
 `;
 const DetailsTitle = styled.div`
@@ -49,8 +51,10 @@ const DetailsTitle = styled.div`
     word-wrap: break-word;
     hyphens: auto;
 
-    &:hover {
-        color: var(--accent-primary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            color: var(--accent-primary);
+        }
     }
 
     @media (max-width: 950px) {
@@ -89,8 +93,10 @@ const ProductImage = styled(Section)`
     cursor: pointer;
     transition: 250ms ease-in-out;
 
-    &:hover {
-        border-color: var(--accent-primary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            border-color: var(--accent-primary);
+        }
     }
 
     ${ImageWrapper} {
@@ -171,9 +177,11 @@ const MetaSection = styled(Section)`
 `;
 
 const RemoveButton = styled.button`
-    &:hover {
-        background: var(--color-danger);
-        color: var(--color-bright);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--color-danger);
+            color: var(--color-bright);
+        }
     }
 `;
 const Quantity = styled.div<{ disabled?: boolean }>`
@@ -206,9 +214,11 @@ const Quantity = styled.div<{ disabled?: boolean }>`
         outline: none;
     }
 
-    button:hover {
-        background: var(--accent-primary);
-        color: var(--accent-primary-text);
+    @media (hover: hover) and (pointer: fine) {
+        button:hover {
+            background: var(--accent-primary);
+            color: var(--accent-primary-text);
+        }
     }
 `;
 const QuantitySection = styled(Section)`

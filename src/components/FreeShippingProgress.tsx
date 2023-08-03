@@ -61,7 +61,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
 
     // TODO: Handle other currencies properly
     let threshold = 85;
-    switch (cost?.totalAmount?.currencyCode) {
+    switch (cost?.totalAmount?.currencyCode?.toUpperCase()) {
         case 'GBP':
             threshold = 70;
             break;

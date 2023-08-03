@@ -38,9 +38,11 @@ const Link = styled(NextLink)`
         height: 100%;
     }
 
-    &:hover,
-    &:active {
-        color: var(--accent-secondary-dark);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active {
+            color: var(--accent-secondary-dark);
+        }
     }
 `;
 

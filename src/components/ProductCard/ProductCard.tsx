@@ -38,8 +38,10 @@ export const ProductImage = styled.div`
     box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
     height: 14rem;
 
-    &:hover {
-        padding: var(--block-padding-small);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            padding: var(--block-padding-small);
+        }
     }
 `;
 const ProductImageWrapper = styled.div`
@@ -84,13 +86,15 @@ const Brand = styled.div`
         line-height: 1.5rem;
     }
 
-    &:hover,
-    &:active,
-    &:focus {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
-        text-underline-offset: var(--block-border-width);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active,
+        &:focus {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: var(--block-border-width);
+        }
     }
 `;
 const Title = styled.div`
@@ -108,13 +112,15 @@ const Title = styled.div`
         line-height: 2.25rem;
     }
 
-    &:hover,
-    &:active,
-    &:focus {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
-        text-underline-offset: var(--block-border-width);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active,
+        &:focus {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: var(--block-border-width);
+        }
     }
 `;
 const Description = styled.div`
@@ -159,12 +165,17 @@ const Variant = styled.div`
     text-align: right;
     opacity: 0.5;
     cursor: pointer;
-
-    &.Active,
-    &:hover,
-    &:active,
-    &:focus {
+    &.Active {
         opacity: 1;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &.Active,
+        &:hover,
+        &:active,
+        &:focus {
+            opacity: 1;
+        }
     }
 `;
 
@@ -257,7 +268,7 @@ const QuantityAction = styled.div`
         pointer-events: none;
     }
 
-    @media (min-width: 950px) {
+    @media (hover: hover) and (pointer: fine) {
         &:hover {
             color: var(--accent-primary-dark);
         }

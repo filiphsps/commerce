@@ -225,9 +225,11 @@ const QuantityWrapper = styled.div`
         background: none;
         color: var(--color-dark);
 
-        &:enabled:hover {
-            background: var(--accent-primary);
-            color: var(--accent-primary-text);
+        @media (hover: hover) and (pointer: fine) {
+            &:enabled:hover {
+                background: var(--accent-primary);
+                color: var(--accent-primary-text);
+            }
         }
 
         svg {
@@ -404,10 +406,16 @@ const Tab = styled.div`
     cursor: pointer;
     user-select: none;
 
-    &.Active,
-    &:hover {
+    &.Active {
         color: var(--accent-primary-dark);
         font-weight: 700;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            color: var(--accent-primary-dark);
+            font-weight: 700;
+        }
     }
 `;
 const TabContent = styled.div`

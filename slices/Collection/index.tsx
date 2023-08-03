@@ -55,8 +55,10 @@ const CollectionTitle = styled(Title)`
     text-decoration-thickness: 0.2rem;
     text-underline-offset: var(--block-border-width);
 
-    &:hover {
-        color: var(--accent-primary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            color: var(--accent-primary);
+        }
     }
 `;
 const Body = styled.div`

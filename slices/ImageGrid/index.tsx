@@ -52,9 +52,11 @@ const TitleContainer = styled.div`
         align-items: center;
     }
 
-    &:hover,
-    &:active {
-        outline-color: var(--accent-primary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active {
+            outline-color: var(--accent-primary);
+        }
     }
 `;
 
@@ -75,11 +77,13 @@ const Item = styled(Link)`
     cursor: pointer;
     transition: 250ms ease-in-out;
 
-    &:hover {
-        background: var(--accent-secondary-light);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--accent-secondary-light);
 
-        img {
-            transform: scale(1.1);
+            img {
+                transform: scale(1.1);
+            }
         }
     }
 `;

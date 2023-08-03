@@ -1,21 +1,20 @@
-import { captureException } from '@sentry/nextjs';
-
-import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 import { ArticleApi, BlogApi } from '../../../src/api/blog';
+import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
-import ContentComponent from '@/components/Content';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { Config } from '../../../src/util/Config';
+import ContentComponent from '@/components/Content';
 import Error from 'next/error';
+import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import styled from 'styled-components';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
 import type { StoreModel } from '../../../src/models/StoreModel';
-import { Config } from '../../../src/util/Config';
+import { captureException } from '@sentry/nextjs';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -125,9 +124,11 @@ const SidebarLink = styled.div`
     padding: 0px 0px 0.25rem 0px;
     transition: 250ms ease-in-out;
 
-    a:hover {
-        color: var(--accent-primary);
-        text-decoration: underline;
+    @media (hover: hover) and (pointer: fine) {
+        a:hover {
+            color: var(--accent-primary);
+            text-decoration: underline;
+        }
     }
 `;
 

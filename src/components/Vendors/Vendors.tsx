@@ -43,9 +43,14 @@ const Vendor = styled.div`
         font-weight: 700;
     }
 
-    &.Selected,
-    &:hover {
+    &.Selected {
         background: var(--accent-secondary-dark);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--accent-secondary-dark);
+        }
     }
 
     @media (max-width: 950px) {

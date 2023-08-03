@@ -63,10 +63,12 @@ const Locale = styled.div<{ $selected?: boolean }>`
             border-color: var(--accent-primary);
         `}
 
-    &:hover {
-        border-color: var(--accent-secondary);
-        background: var(--accent-secondary-light);
-        color: var(--accent-secondary-text);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            border-color: var(--accent-secondary);
+            background: var(--accent-secondary-light);
+            color: var(--accent-secondary-text);
+        }
     }
 `;
 

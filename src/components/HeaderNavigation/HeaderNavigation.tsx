@@ -54,10 +54,6 @@ const NavigationItem = styled.div`
         color: var(--accent-primary);
         font-weight: 700;
     }
-
-    a:hover {
-        color: var(--accent-primary);
-    }
 `;
 const NavigationSubItem = styled.div`
     padding-left: calc(var(--block-spacer-large) * 1.5);

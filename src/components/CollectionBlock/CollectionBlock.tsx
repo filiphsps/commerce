@@ -52,9 +52,11 @@ const Action = styled.div<{ $hide?: boolean; $position: 'left' | 'right' }>`
     border-radius: var(--block-border-radius);
     box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
-    &:hover,
-    &:active {
-        background: var(--accent-secondary-dark);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active {
+            background: var(--accent-secondary-dark);
+        }
     }
 
     ${({ $hide }) =>
@@ -230,12 +232,14 @@ const ViewMore = styled.section<{
         transition: 250ms ease-in-out;
     }
 
-    &:hover {
-        background: var(--accent-primary);
-        color: var(--accent-secondary);
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background: var(--accent-primary);
+            color: var(--accent-secondary);
 
-        span {
-            color: var(--accent-secondary-light);
+            span {
+                color: var(--accent-secondary-light);
+            }
         }
     }
 `;

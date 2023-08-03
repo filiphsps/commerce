@@ -73,6 +73,7 @@ const Menu = styled.div`
     box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
     cursor: unset;
 
+    /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
     &:hover {
         max-height: 100vh;
     }
@@ -99,10 +100,17 @@ const MenuItem = styled.div`
     margin-bottom: var(--block-spacer);
     transition: 250ms ease-in-out;
 
-    &.Active,
-    &:hover {
+    &.Active {
         ${MenuItemTitle} {
             font-weight: 700;
+        }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            ${MenuItemTitle} {
+                font-weight: 700;
+            }
         }
     }
 `;
@@ -173,6 +181,7 @@ const NavigationItem = styled.div`
         }
     }
 
+    /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
     &:hover ${Menu} {
         max-height: 100vh;
         border-bottom: 0.05rem solid var(--accent-secondary);

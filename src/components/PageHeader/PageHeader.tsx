@@ -28,12 +28,14 @@ export const Subtitle = styled.h3`
         cursor: pointer;
         color: var(--foreground);
 
-        &:hover,
-        :focus {
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover,
+            :focus {
+                text-decoration: underline;
+                text-decoration-style: dotted;
+                text-decoration-thickness: 0.2rem;
+                text-underline-offset: var(--block-border-width);
+            }
         }
     }
 `;

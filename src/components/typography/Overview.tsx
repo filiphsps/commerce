@@ -90,9 +90,11 @@ const Content = styled(ContentComponent)`
             color: var(--color-primary-text);
             border-color: var(--color-primary-text);
 
-            &:hover {
-                color: var(--accent-secondary-dark);
-                border-color: var(--accent-secondary-dark);
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: var(--accent-secondary-dark);
+                    border-color: var(--accent-secondary-dark);
+                }
             }
         }
     }

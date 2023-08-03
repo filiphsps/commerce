@@ -35,7 +35,7 @@ const ContentContainer = styled.div`
 `;
 const Item = styled.div`
     display: grid;
-    grid-template-columns: var(--block-spacer-large) auto;
+    grid-template-columns: calc(var(--block-padding-large) * 2) auto;
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer-large);
@@ -44,17 +44,14 @@ const Item = styled.div`
 const ItemIcon = styled.div`
     position: relative;
     height: 2rem;
-    width: 2rem;
+    width: calc(var(--block-padding-large) * 2);
+    height: calc(var(--block-padding-large) * 2);
 `;
 const ItemContent = styled.h3`
     font-size: 1.25rem;
     font-weight: 700;
     text-transform: uppercase;
-    text-align: center;
-
-    @media (max-width: 1465px) {
-        text-align: left;
-    }
+    text-align: left;
 `;
 
 /**

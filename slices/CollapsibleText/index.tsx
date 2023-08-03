@@ -33,12 +33,14 @@ const Summary = styled.summary`
     user-select: none;
     transition: 250ms all ease-in-out;
 
-    &:hover {
-        border-color: var(--accent-primary);
-        color: var(--accent-primary);
-
-        .Icon {
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            border-color: var(--accent-primary);
             color: var(--accent-primary);
+
+            .Icon {
+                color: var(--accent-primary);
+            }
         }
     }
 

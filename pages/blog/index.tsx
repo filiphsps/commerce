@@ -1,20 +1,19 @@
-import { captureException } from '@sentry/nextjs';
-
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import { BlogApi } from '../../src/api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { Config } from '../../src/util/Config';
+import Error from 'next/error';
+import { FunctionComponent } from 'react';
+import Image from 'next/legacy/image';
+import Link from 'next/link';
+import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import { NextSeo } from 'next-seo';
-import Error from 'next/error';
-import Image from 'next/legacy/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import styled from 'styled-components';
-import { BlogApi } from '../../src/api/blog';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { Config } from '../../src/util/Config';
+import { captureException } from '@sentry/nextjs';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const Article = styled.div`
     display: grid;
@@ -38,8 +37,10 @@ const Article = styled.div`
         text-transform: uppercase;
         transition: 250ms ease-in-out;
 
-        &:hover {
-            color: var(--accent-primary);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: var(--accent-primary);
+            }
         }
     }
 `;

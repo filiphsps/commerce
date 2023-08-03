@@ -11,9 +11,11 @@ const Content = styled.div`
         color: var(--accent-primary-dark);
         font-weight: 600;
 
-        &:hover {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: var(--accent-primary);
+                border-bottom-color: var(--accent-primary);
+            }
         }
     }
 

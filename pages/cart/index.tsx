@@ -244,7 +244,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
 
     // TODO: Handle other currencies properly
     let freeShippingThreshold = 85;
-    switch (cart?.cost?.totalAmount?.currencyCode) {
+    switch (cart?.cost?.totalAmount?.currencyCode?.toUpperCase()) {
         case 'GBP':
             freeShippingThreshold = 70;
             break;
