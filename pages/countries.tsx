@@ -14,6 +14,7 @@ import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
+import { asText } from '@prismicio/client';
 import { captureException } from '@sentry/nextjs';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
@@ -139,7 +140,11 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
         <Page className="CountriesPage">
             <NextSeo
                 title={page?.data.meta_title || page?.data.title!}
-                description={page?.data.meta_title || ''}
+                description={
+                    (page?.data?.meta_description && asText(page?.data.meta_description)) ||
+                    page?.data?.description! ||
+                    ''
+                }
                 canonical={`https://${Config.domain}/${router.locale}/countries/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -149,6 +154,28 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                         }locales/`
                     })) || []
                 }
+                openGraph={{
+                    url: `https://${Config.domain}${router.locale}/countries/`,
+                    type: 'website',
+                    title: page?.data.meta_title || page?.data.title!,
+                    description:
+                        (page?.data.meta_description && asText(page.data.meta_description)) ||
+                        page?.data.description ||
+                        '',
+                    siteName: store?.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || Config.i18n.default,
+                    images:
+                        (page?.data?.meta_image && [
+                            {
+                                url: page?.data?.meta_image!.url as string,
+                                width: page?.data?.meta_image!.dimensions?.width || 0,
+                                height: page?.data?.meta_image!.dimensions?.height || 0,
+                                alt: page?.data?.meta_image!.alt || '',
+                                secureUrl: page?.data?.meta_image!.url as string
+                            }
+                        ]) ||
+                        undefined
+                }}
             />
 
             <PageContent primary>
@@ -200,7 +227,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                 <Breadcrumbs
                     pages={[
                         {
-                            title: page?.data.title || 'Countries',
+                            title: page?.data.title,
                             url: '/countries/'
                         }
                     ]}

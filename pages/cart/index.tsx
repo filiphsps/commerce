@@ -20,6 +20,7 @@ import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '../../src/models/StoreModel';
+import { asText } from '@prismicio/client';
 import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 import { getServerTranslations } from 'src/util/getServerTranslations';
@@ -309,7 +310,11 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
         <Page className="CartPage">
             <NextSeo
                 title={page?.data.meta_title || page?.data.title!}
-                description={page?.data.meta_title || ''}
+                description={
+                    (page?.data?.meta_description && asText(page?.data.meta_description)) ||
+                    page?.data?.description! ||
+                    ''
+                }
                 canonical={`https://${Config.domain}/${router.locale}/cart/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -319,6 +324,28 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                         }cart/`
                     })) || []
                 }
+                openGraph={{
+                    url: `https://${Config.domain}${router.locale}/cart/`,
+                    type: 'website',
+                    title: page?.data.meta_title || page?.data.title!,
+                    description:
+                        (page?.data.meta_description && asText(page.data.meta_description)) ||
+                        page?.data.description ||
+                        '',
+                    siteName: store?.name,
+                    locale: (router.locale !== 'x-default' && router.locale) || Config.i18n.default,
+                    images:
+                        (page?.data?.meta_image && [
+                            {
+                                url: page?.data?.meta_image!.url as string,
+                                width: page?.data?.meta_image!.dimensions?.width || 0,
+                                height: page?.data?.meta_image!.dimensions?.height || 0,
+                                alt: page?.data?.meta_image!.alt || '',
+                                secureUrl: page?.data?.meta_image!.url as string
+                            }
+                        ]) ||
+                        undefined
+                }}
             />
 
             <PageContent primary>

@@ -3,27 +3,25 @@ import './app.scss';
 
 import * as nextI18NextConfig from '../next-i18next.config.cjs';
 
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 
-import { CartFragment } from 'src/api/cart';
-import { Config } from '../src/util/Config';
-import Head from 'next/head';
-import { Lexend_Deca } from 'next/font/google';
-import NProgress from 'nprogress';
-import NextAdapterPages from 'next-query-params/pages';
 import PageProvider from '@/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
-import { QueryParamProvider } from 'use-query-params';
+import { appWithTranslation } from 'next-i18next';
+import { Lexend_Deca } from 'next/font/google';
+import Head from 'next/head';
+import NProgress from 'nprogress';
+import { CartFragment } from 'src/api/cart';
+import useSWR from 'swr';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
-import { appWithTranslation } from 'next-i18next';
 import preval from '../src/data.preval';
-import useSWR from 'swr';
+import { Config } from '../src/util/Config';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -182,35 +180,29 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             />
 
             {/* Page */}
-            <QueryParamProvider adapter={NextAdapterPages}>
-                <ShopifyProvider
-                    storefrontId={`${store?.id}`}
-                    storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
-                    storefrontApiVersion={Config.shopify.api}
-                    storefrontToken={Config.shopify.token}
-                    countryIsoCode={country}
-                    languageIsoCode={language}
-                >
-                    <CartProvider countryCode={country} cartFragment={CartFragment}>
-                        <StyleSheetManager enableVendorPrefixes>
-                            <ThemeProvider theme={{}}>
-                                <PrismicPreview repositoryName={Config.prismic.name}>
-                                    <PageProvider
-                                        store={store}
-                                        pagePropsAnalyticsData={pageProps.analytics || {}}
-                                    >
-                                        <Component
-                                            key={router.asPath}
-                                            {...pageProps}
-                                            store={store}
-                                        />
-                                    </PageProvider>
-                                </PrismicPreview>
-                            </ThemeProvider>
-                        </StyleSheetManager>
-                    </CartProvider>
-                </ShopifyProvider>
-            </QueryParamProvider>
+            <ShopifyProvider
+                storefrontId={`${store?.id}`}
+                storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
+                storefrontApiVersion={Config.shopify.api}
+                storefrontToken={Config.shopify.token}
+                countryIsoCode={country}
+                languageIsoCode={language}
+            >
+                <CartProvider countryCode={country} cartFragment={CartFragment}>
+                    <StyleSheetManager enableVendorPrefixes>
+                        <ThemeProvider theme={{}}>
+                            <PrismicPreview repositoryName={Config.prismic.name}>
+                                <PageProvider
+                                    store={store}
+                                    pagePropsAnalyticsData={pageProps.analytics || {}}
+                                >
+                                    <Component key={router.asPath} {...pageProps} store={store} />
+                                </PageProvider>
+                            </PrismicPreview>
+                        </ThemeProvider>
+                    </StyleSheetManager>
+                </CartProvider>
+            </ShopifyProvider>
         </>
     );
 };

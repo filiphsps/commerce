@@ -86,11 +86,9 @@ export const SearchPredictionApi = async ({
     query: string;
     locale?: string;
 }): Promise<{
-    products?: Product[];
     queries?: {
         styledText: string;
         text: string;
-        trackingParameters?: string | null;
     }[];
 }> => {
     return new Promise(async (resolve, reject) => {
@@ -103,15 +101,10 @@ export const SearchPredictionApi = async ({
         const { data } = await storefrontClient.query({
             query: gql`
                 query predictiveSearch($query: String!) @inContext(language: ${language}, country: ${country}) {
-                    predictiveSearch(query: $query, type: [PRODUCT, QUERY]s) {
-                        products {
-                            ${PRODUCT_FRAGMENT_MINIMAL}
-                            trackingParameters
-                        }
+                    predictiveSearch(query: $query, types: [QUERY], limit: 5) {
                         queries {
                             styledText
                             text
-                            trackingParameters
                         }
                     }
                 }
@@ -121,10 +114,9 @@ export const SearchPredictionApi = async ({
             }
         });
 
-        const { queries, products } = data?.predictiveSearch;
+        const { queries } = data?.predictiveSearch;
 
         return resolve({
-            products,
             queries
         });
     });

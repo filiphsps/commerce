@@ -40,7 +40,11 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
         <Page className={`CustomPage CustomPage-${page?.type}`}>
             <NextSeo
                 title={page.data.meta_title || page.data.title || ''}
-                description={asText(page.data.meta_description) || page.data.description || ''}
+                description={
+                    (page.data.meta_description && asText(page.data.meta_description)) ||
+                    page.data.description ||
+                    ''
+                }
                 canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
                 languageAlternates={
                     router.locales?.map((locale) => ({

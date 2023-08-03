@@ -20,7 +20,6 @@ import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../src/api/product';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { SSRConfig, useTranslation } from 'next-i18next';
-import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import styled, { css } from 'styled-components';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -504,14 +503,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     visuals: visualsData,
     recommendations: recommendationsData,
     reviews: reviewsData,
-    store,
-
-    initialVariantId
+    store
 }) => {
     const router = useRouter();
     const { t } = useTranslation('common');
     const cart = useCart();
-    const [variantQuery, setVariantQuery] = useQueryParam('variant', withDefault(StringParam, ''));
     const { product: productData, setSelectedOption, selectedVariant } = useProduct();
     const [pastel, setPastel] = useState(false);
 
@@ -520,19 +516,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const [added, setAdded] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [tab, setTab] = useState('details');
-
-    useEffect(() => {
-        if (
-            !router.isReady ||
-            !initialVariantId ||
-            variantQuery !== initialVariantId ||
-            !selectedVariant?.id
-        )
-            return;
-
-        const id = selectedVariant?.id?.split('/').at(-1);
-        setVariantQuery(id, 'replaceIn');
-    }, [router.isReady, selectedVariant]);
 
     const { data: product } = useSWR(
         [
@@ -577,7 +560,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
     const { data: reviews } = useSWR(
         [
-            'RecommendationApi',
+            'ReviewsProductApi',
             {
                 id: product?.id!,
                 locale: router.locale
@@ -1089,34 +1072,14 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (
     props
 ) => {
-    const router = useRouter();
-    const [variantQuery] = useQueryParam('variant', withDefault(StringParam, null));
-    const [initialVariantId, setInitialVariantId] = useState<string | undefined>(undefined);
-
-    useEffect(() => {
-        if (
-            !router.isReady ||
-            variantQuery === null ||
-            initialVariantId !== undefined ||
-            variantQuery === initialVariantId
-        )
-            return;
-
-        setInitialVariantId(variantQuery);
-    }, [router.isReady, variantQuery]);
-
-    // TODO: Proper error page
     if (!props.product) return <Error statusCode={404} />;
+
     return (
         <ProductProvider
             data={props.product}
-            initialVariantId={
-                (initialVariantId &&
-                    `gid://shopify/ProductVariant/${initialVariantId?.toString()}`) ||
-                undefined
-            }
+            initialVariantId={props.product.variants.edges.at(-1)?.node.id || undefined}
         >
-            <ProductPage {...props} initialVariantId={initialVariantId || undefined} />
+            <ProductPage {...props} />
         </ProductProvider>
     );
 };
@@ -1141,11 +1104,8 @@ export const getStaticProps: GetStaticProps<{
     visuals?: ProductVisuals | null;
     recommendations?: Product[] | null;
     reviews?: ReviewsModel | null;
-    store?: StoreModel;
     analytics?: Partial<ShopifyPageViewPayload>;
-
-    // Bogus, will actually come from the wrapper
-    initialVariantId?: string | undefined;
+    store?: StoreModel;
 }> = async ({ params, locale: localeData, previewData }) => {
     const locale = NextLocaleToLocale(localeData);
 
