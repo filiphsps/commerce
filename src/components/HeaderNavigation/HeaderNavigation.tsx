@@ -10,8 +10,8 @@ const Container = styled.div`
     z-index: 99999;
     width: 80vw;
     width: 80dvw;
-    height: calc(100vh - 10.5rem);
-    height: calc(100dvh - 10.5rem);
+    height: calc(100vh - 12.5rem);
+    height: calc(100dvh - 12.5rem);
     background: var(--accent-secondary-light);
     color: var(--color-dark);
     transition: 250ms ease-in-out;
@@ -31,7 +31,7 @@ const Navigation = styled.div`
     overscroll-behavior-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: calc(var(--block-spacer-large) * 2);
     height: 100%;
     width: 100%;
     padding: 2rem;
@@ -40,7 +40,7 @@ const NavigationItem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 0.75rem;
+    gap: calc(var(--block-spacer-large) * 1.5);
     width: 100%;
     font-size: 2.5rem;
     line-height: 2.75rem;
@@ -60,13 +60,24 @@ const NavigationItem = styled.div`
     }
 `;
 const NavigationSubItem = styled.div`
+    padding-left: calc(var(--block-spacer-large) * 1.5);
     font-size: 2.25rem;
     line-height: 2.5rem;
-    font-weight: 500;
 
     &:last-child {
         padding-bottom: 0.5rem;
     }
+`;
+const NavigationSubItemTitle = styled.div`
+    font-weight: 500;
+`;
+const NavigationSubItemDescription = styled.div`
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    opacity: 0.75;
+    margin-top: 0.25rem;
+    max-width: 60vw;
 `;
 
 interface HeaderNavigationProps {
@@ -120,7 +131,15 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                         onClick={() => toggle(false)}
                                         prefetch={false}
                                     >
-                                        {item.title}
+                                        <NavigationSubItemTitle>
+                                            {item.title}
+                                        </NavigationSubItemTitle>
+
+                                        {item.description && (
+                                            <NavigationSubItemDescription>
+                                                {item.description}
+                                            </NavigationSubItemDescription>
+                                        )}
                                     </Link>
                                 </NavigationSubItem>
                             ))}
