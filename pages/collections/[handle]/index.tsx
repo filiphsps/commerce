@@ -87,8 +87,13 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
     return (
         <Page className="CollectionPage">
             <NextSeo
-                title={collection?.seo?.title || collection?.title}
-                description={collection?.seo?.description || collection?.description || undefined}
+                title={page?.data?.meta_title || collection?.seo?.title || collection?.title}
+                description={
+                    (page?.data?.meta_description && asText(page?.data?.meta_description)) ||
+                    collection?.seo?.description ||
+                    collection?.description ||
+                    undefined
+                }
                 canonical={`https://${Config.domain}/${router.locale}/collections/${collection.handle}/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
@@ -110,9 +115,9 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                 openGraph={{
                     url: `https://${Config.domain}/collections/${collection.handle}/`,
                     type: 'website',
-                    title: page?.data.meta_title || collection.seo?.title || collection.title,
+                    title: page?.data?.meta_title || collection.seo?.title || collection.title,
                     description:
-                        (page?.data.meta_description && asText(page?.data.meta_description)) ||
+                        (page?.data?.meta_description && asText(page?.data?.meta_description)) ||
                         collection?.seo?.description ||
                         collection?.description ||
                         '',
