@@ -1,6 +1,10 @@
 {
+    "add-order-note": "Schreiben Sie eine Nachricht zu Ihrer Bestellung.",
+    "continue-to-checkout": "Zur Kasse gehen",
     "estimated-total": "Geschätzte Gesamtsumme",
     "order-summary": "Bestellübersicht",
+    "promo-codes": "Aktionscodes",
+    "sale-discount": "Sale-Rabatt",
     "shipping": "Versand",
     "shipping-calculated-at-checkout": "Versand wird an der Kasse berechnet",
     "subtotal": "Zwischensumme"

@@ -1,16 +1,16 @@
 import { CartCost, Money, useCart } from '@shopify/hydrogen-react';
-import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
+import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import styled from 'styled-components';
+import { Pluralize } from '../util/Pluralize';
 import { Button } from './Button';
 import { CartCoupons } from './CartCoupons';
 import { CartNote } from './CartNote';
 import { FreeShippingProgress } from './FreeShippingProgress';
-import Link from 'next/link';
 import PageLoader from './PageLoader';
-import { Pluralize } from '../util/Pluralize';
-import styled from 'styled-components';
-import { useTranslation } from 'next-i18next';
 
 const Container = styled.section`
     display: flex;
@@ -274,7 +274,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
         <Container>
             <Block>
                 <Header>
-                    <Label>Order Summary</Label>
+                    <Label>{t('order-summary')}</Label>
                     <BreakdownItemLabel>
                         {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
                     </BreakdownItemLabel>
@@ -286,7 +286,8 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
 
                 {(totalQuantity && !showNote && (
                     <Action onClick={() => setShowNote(true)}>
-                        <FiEdit /> Add a message to your order.
+                        <FiEdit />
+                        {` ${t('add-order-note')}`}
                     </Action>
                 )) ||
                     null}
@@ -325,7 +326,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
 
                         {(sale && (
                             <BreakdownDiscountItem title={`${salePercentage}% OFF`}>
-                                <BreakdownItemLabel>Sale Discount</BreakdownItemLabel>
+                                <BreakdownItemLabel>{t('sale-discount')}</BreakdownItemLabel>
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -339,7 +340,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
 
                         {(promos && (
                             <BreakdownDiscountItem>
-                                <BreakdownItemLabel>Promo Codes</BreakdownItemLabel>
+                                <BreakdownItemLabel>{t('promo-codes')}</BreakdownItemLabel>
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -383,7 +384,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                             disabled={(totalQuantity || 0) <= 0 || !lines}
                             onClick={onCheckout}
                         >
-                            <Label>Continue to Checkout</Label>
+                            <Label>{t('continue-to-checkout')}</Label>
                             <CheckoutButtonIcon>
                                 <FiChevronRight />
                             </CheckoutButtonIcon>

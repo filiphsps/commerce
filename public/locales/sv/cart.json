@@ -1,6 +1,10 @@
 {
+    "add-order-note": "Skriv ett meddelande till oss om din beställning.",
+    "continue-to-checkout": "Gå till kassan",
     "estimated-total": "Est. Total",
     "order-summary": "Ordersammanfattning",
+    "promo-codes": "Rabattkoder",
+    "sale-discount": "Kampanjrabatt",
     "shipping": "Frakt",
     "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
     "subtotal": "Subtotal"

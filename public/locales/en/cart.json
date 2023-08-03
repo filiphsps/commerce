@@ -1,6 +1,10 @@
 {
+    "add-order-note": "Add a message to your order.",
+    "continue-to-checkout": "Continue to Checkout",
     "estimated-total": "Est. Total",
     "order-summary": "Order Summary",
+    "promo-codes": "Promo Codes",
+    "sale-discount": "Sale Discount",
     "shipping": "Shipping",
     "shipping-calculated-at-checkout": "Shipping calculated at checkout",
     "subtotal": "Subtotal"
