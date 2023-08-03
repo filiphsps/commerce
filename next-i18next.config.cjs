@@ -17,7 +17,11 @@ module.exports = {
         if (!code || !code.includes('-') || code === 'x-default') return 'en';
 
         // TODO: verify that the translation actually exists
-        return code.split('-').at(0)?.toLowerCase() || 'en';
+        try {
+            return code.split('-').at(0)?.toLowerCase() || 'en';
+        } catch {
+            return 'en';
+        }
     },
     reloadOnPrerender: process.env.NODE_ENV === 'development',
     localePath: path.resolve('./public/locales'),
