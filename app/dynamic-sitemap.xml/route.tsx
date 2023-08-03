@@ -22,7 +22,7 @@ export async function GET() {
                 (page) =>
                     ({
                         location: `${page.slice(1)}/`,
-                        priority: 0.7
+                        priority: 0.8
                     }) as SitemapEntry
             );
     } catch (error) {
@@ -33,14 +33,14 @@ export async function GET() {
         (collection) =>
             ({
                 location: `collections/${collection.handle}/`,
-                priority: 0.8
+                priority: 1.0
             }) as SitemapEntry
     );
     const products = (await ProductsApi()).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
-                priority: 1.0
+                priority: 0.8
             }) as SitemapEntry
     );
     const blog = ((await BlogApi({ handle: 'news' })) as any).articles.map(
