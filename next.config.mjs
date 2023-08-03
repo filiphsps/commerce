@@ -52,12 +52,8 @@ let config = {
 
         VERSION: manifest.version
     },
+
     sentry: {
-        // For all available options, see:
-        // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-        // Decrease bundle size
-        disableServerWebpackPlugin: true,
-        disableClientWebpackPlugin: true,
         // Upload a larger set of source maps for prettier stack traces (increases build time)
         widenClientFileUpload: true,
         // Transpiles SDK to be compatible with IE11 (increases bundle size)
@@ -106,6 +102,18 @@ let config = {
                 ]
             }
         ];
+    },
+
+    webpack: (config, { webpack }) => {
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                __SENTRY_DEBUG__: false,
+                __SENTRY_TRACING__: false
+            })
+        );
+
+        // return the modified config
+        return config;
     }
 };
 
