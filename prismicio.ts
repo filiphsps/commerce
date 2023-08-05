@@ -1,8 +1,8 @@
 import type { ClientConfig } from '@prismicio/client';
-import { createClient as prismicCreateClient } from '@prismicio/client';
+import { Config } from 'src/util/Config';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
-import { Config } from 'src/util/Config';
+import { createClient as prismicCreateClient } from '@prismicio/client';
 
 /**
  * The project's Prismic repository name.
@@ -24,7 +24,11 @@ const routes: ClientConfig['routes'] = [
     },
     {
         type: 'custom_page',
-        path: '/:lang?/locales'
+        path: '/:lang?/countries'
+    },
+    {
+        type: 'custom_page',
+        path: '/:lang?/search'
     },
     {
         type: 'product_page',
