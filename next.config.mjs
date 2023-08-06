@@ -72,6 +72,11 @@ let config = {
                 permanent: true
             },
             {
+                source: '/blogs/news/:slug*',
+                destination: '/blog/:slug',
+                permanent: true
+            },
+            {
                 source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: true
