@@ -68,7 +68,7 @@
         "typescript": "5.1.6"
     },
     "devDependencies": {
-        "@slicemachine/adapter-next": "0.3.9",
+        "@slicemachine/adapter-next": "0.3.10",
         "@testing-library/react": "14.0.0",
         "@types/accept-language-parser": "1.5.3",
         "@types/color": "3.0.3",
