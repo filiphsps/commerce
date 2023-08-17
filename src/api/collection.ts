@@ -71,8 +71,7 @@ export const CollectionApi = async ({
             });
 
             if (errors) return reject(new Error(errors.join('\n')));
-            if (!data?.collectionByHandle)
-                return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             data.collectionByHandle.products.edges = await Promise.all(
                 data.collectionByHandle.products.edges.map(async (edge) => {

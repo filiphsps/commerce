@@ -62,9 +62,7 @@ const ImageWrapper = styled.div`
 interface ProductSearchResultItemProps {
     product: Product;
 }
-export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemProps> = ({
-    product
-}) => {
+export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemProps> = ({ product }) => {
     const href = AppendShopifyParameters({
         url: `/products/${product.handle}/`,
         params: (product as any).trackingParameters

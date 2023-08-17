@@ -86,9 +86,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }blog/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/`
                     })) || []
                 }
             />
@@ -105,9 +103,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                                 </ArticleImage>
                                 <div>
                                     <h2>{article.title}</h2>
-                                    <ArticleDate>
-                                        {new Date(article.published_at).toDateString()}
-                                    </ArticleDate>
+                                    <ArticleDate>{new Date(article.published_at).toDateString()}</ArticleDate>
                                     <ArticleContent>{article.excerpt}</ArticleContent>
                                 </div>
                             </Article>

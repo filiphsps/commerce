@@ -18,9 +18,7 @@ const Method = styled.div`
 interface AcceptedPaymentMethodsProps {
     store: StoreModel;
 }
-export const AcceptedPaymentMethods: FunctionComponent<AcceptedPaymentMethodsProps> = ({
-    store
-}) => {
+export const AcceptedPaymentMethods: FunctionComponent<AcceptedPaymentMethodsProps> = ({ store }) => {
     const methods = store?.payment?.methods?.map((i) => i.toLowerCase());
     const wallets = store?.payment?.wallets?.map((i) => i.toLowerCase());
 

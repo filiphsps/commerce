@@ -81,11 +81,7 @@ interface FilterOptionsProps {
     options: any;
     setOptions: any;
 }
-export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({
-    filter,
-    options,
-    setOptions
-}) => {
+export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, options, setOptions }) => {
     switch (filter.type) {
         case 'LIST': {
             return (
@@ -136,10 +132,7 @@ interface ProductSearchFiltersProps {
     filters: any[];
     open?: boolean;
 }
-export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> = ({
-    filters,
-    open
-}) => {
+export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> = ({ filters, open }) => {
     const [options, setOptions] = useState<any>({});
 
     // TODO

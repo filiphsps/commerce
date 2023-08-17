@@ -53,8 +53,7 @@ export const LocalesApi = async (): Promise<string[]> => {
             const countries = await CountriesApi({});
             const locales = countries.flatMap((country) =>
                 country.availableLanguages.map(
-                    (language) =>
-                        `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
+                    (language) => `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
                 )
             );
 
@@ -141,19 +140,13 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 },
                 accent: {
                     primary: shopData?.shop?.brand?.colors.primary?.[0]?.background || res.primary,
-                    secondary:
-                        shopData?.shop?.brand?.colors.secondary?.[0]?.background || res.secondary
+                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.background || res.secondary
                 },
                 color: {
-                    primary:
-                        shopData?.shop?.brand?.colors.primary?.[0]?.foreground ||
-                        res.primary_text_color,
-                    secondary:
-                        shopData?.shop?.brand?.colors.secondary?.[0]?.foreground ||
-                        res.primary_text_color
+                    primary: shopData?.shop?.brand?.colors.primary?.[0]?.foreground || res.primary_text_color,
+                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.foreground || res.primary_text_color
                 },
-                currencies:
-                    shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
+                currencies: shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
                 social: res.social,
                 payment: {
                     methods: shopData?.shop?.paymentSettings?.acceptedCardBrands || [],

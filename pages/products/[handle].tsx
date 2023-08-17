@@ -54,13 +54,8 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
-const ProductOptions = dynamic(() =>
-    import('@/components/ProductOptions').then((c) => c.ProductOptions)
-);
-const InfoLines = dynamic(
-    () => import('@/components/products/InfoLines').then((c) => c.InfoLines),
-    { ssr: false }
-);
+const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));
+const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines), { ssr: false });
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
 
@@ -617,11 +612,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 {selectedVariant?.compareAtPrice?.amount && (
                     <Money data={selectedVariant.compareAtPrice} as={Price} $sale />
                 )}
-                <Money
-                    data={selectedVariant.price}
-                    as={Price}
-                    $highlight={selectedVariant?.compareAtPrice != null}
-                />
+                <Money data={selectedVariant.price} as={Price} $highlight={selectedVariant?.compareAtPrice != null} />
             </PriceContainer>
         )) ||
         null;
@@ -630,11 +621,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             <HeaderContent>
                 <PageHeader
                     title={product.title!}
-                    subtitle={
-                        <Link href={`/collections/${titleToHandle(product.vendor!)}/`}>
-                            {product.vendor}
-                        </Link>
-                    }
+                    subtitle={<Link href={`/collections/${titleToHandle(product.vendor!)}/`}>{product.vendor}</Link>}
                     reverse
                 />
 
@@ -642,10 +629,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
                 {(reviews?.count && reviews.count > 0 && (
                     <ReviewsContainer>
-                        <ReviewStars
-                            score={reviews?.rating || 0}
-                            totalReviews={reviews?.count || 0}
-                        />
+                        <ReviewStars score={reviews?.rating || 0} totalReviews={reviews?.count || 0} />
                     </ReviewsContainer>
                 )) ||
                     null}
@@ -658,9 +642,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             title={t('add-to-cart')}
             $added={added}
             disabled={!cartReady || quantity <= 0 || !selectedVariant?.availableForSale}
-            onClick={() =>
-                cartReady && addOrUpdateCartLine({ quantity, variantId: selectedVariant?.id! })
-            }
+            onClick={() => cartReady && addOrUpdateCartLine({ quantity, variantId: selectedVariant?.id! })}
         >
             {(() => {
                 if (!selectedVariant?.availableForSale)
@@ -721,21 +703,16 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     ({
                         '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
                         '--accent-primary-text':
-                            (visuals.primaryAccentDark && 'var(--color-bright)') ||
-                            'var(--color-dark)',
+                            (visuals.primaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
 
                         '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
                         '--accent-secondary-text':
-                            (visuals.secondaryAccentDark && 'var(--color-bright)') ||
-                            'var(--color-dark)',
-                        '--accent-primary-light':
-                            'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                        '--accent-primary-dark':
-                            'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                            (visuals.secondaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
+                        '--accent-primary-light': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                        '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
                         '--accent-secondary-light':
                             'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                        '--accent-secondary-dark':
-                            'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
+                        '--accent-secondary-dark': 'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
                     } as React.CSSProperties)) ||
                 {}
             }
@@ -747,9 +724,9 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }products/${product.handle}/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}products/${
+                            product.handle
+                        }/`
                     })) || []
                 }
                 additionalMetaTags={
@@ -807,16 +784,13 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     productName={`${product.vendor} ${product.title} ${variant.title}`}
                     brand={product.vendor}
                     sku={ProductToMerchantsCenterId({
-                        locale:
-                            (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                        locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                         productId: product.id,
                         variantId: variant.id
                     })}
                     mpn={variant.barcode || variant.sku || undefined}
                     images={
-                        (product.images?.edges
-                            ?.map?.((edge) => edge?.node?.url)
-                            .filter((i) => i) as string[]) || []
+                        (product.images?.edges?.map?.((edge) => edge?.node?.url).filter((i) => i) as string[]) || []
                     }
                     description={product.description || ''}
                     aggregateRating={
@@ -840,8 +814,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
                             hasMerchantReturnPolicy: {
                                 '@type': 'MerchantReturnPolicy',
-                                returnPolicyCategory:
-                                    'https://schema.org/MerchantReturnNotPermitted'
+                                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
                             },
 
                             shippingDetails: {
@@ -852,17 +825,14 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     minValue: 0,
                                     currency: 'USD' //variant.price.currencyCode
                                 },
-                                shippingDestination: store?.payment?.countries?.map(
-                                    ({ isoCode }) => ({
-                                        '@type': 'DefinedRegion',
-                                        addressCountry: isoCode
-                                    })
-                                ) || [
+                                shippingDestination: store?.payment?.countries?.map(({ isoCode }) => ({
+                                    '@type': 'DefinedRegion',
+                                    addressCountry: isoCode
+                                })) || [
                                     {
                                         '@type': 'DefinedRegion',
                                         addressCountry:
-                                            (router.locale !== 'x-default' &&
-                                                router.locale?.split('-')[1]) ||
+                                            (router.locale !== 'x-default' && router.locale?.split('-')[1]) ||
                                             router.locales?.[0].split('-')[1]
                                     }
                                 ],
@@ -890,22 +860,16 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
             <ProductPageContent
                 primary
-                background={
-                    (visuals?.transparentBackgrounds && 'var(--accent-primary-light)') || undefined
-                }
+                background={(visuals?.transparentBackgrounds && 'var(--accent-primary-light)') || undefined}
             >
                 <ProductContainerWrapper>
                     <ProductContainer>
                         <Assets>
                             <Gallery
                                 pastel={visuals?.transparentBackgrounds}
-                                background={
-                                    (visuals?.transparentBackgrounds && 'transparent') || undefined
-                                }
+                                background={(visuals?.transparentBackgrounds && 'transparent') || undefined}
                                 previewBackground={
-                                    (visuals?.transparentBackgrounds &&
-                                        'var(--accent-secondary-light)') ||
-                                    undefined
+                                    (visuals?.transparentBackgrounds && 'var(--accent-secondary-light)') || undefined
                                 }
                                 selected={selectedVariant?.image?.id || null}
                                 images={(product as any).images || null}
@@ -923,17 +887,10 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             {addToCartAction}
                             <InfoLines product={product} />
 
-                            <SliceZone
-                                slices={page?.data.slices}
-                                components={components}
-                                context={{ store }}
-                            />
+                            <SliceZone slices={page?.data.slices} components={components} context={{ store }} />
 
                             <Tabs>
-                                <Tab
-                                    className={tab == 'details' ? 'Active' : ''}
-                                    onClick={() => setTab('details')}
-                                >
+                                <Tab className={tab == 'details' ? 'Active' : ''} onClick={() => setTab('details')}>
                                     Details
                                 </Tab>
                                 <Tab
@@ -942,10 +899,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                 >
                                     Information
                                 </Tab>
-                                <Tab
-                                    className={tab == 'reviews' ? 'Active' : ''}
-                                    onClick={() => setTab('reviews')}
-                                >
+                                <Tab className={tab == 'reviews' ? 'Active' : ''} onClick={() => setTab('reviews')}>
                                     Reviews
                                 </Tab>
                             </Tabs>
@@ -962,10 +916,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                         // TODO: make this a lookup somewhere
                                         if (['vegan', 'chocolate'].includes(tag.toLowerCase())) {
                                             content = (
-                                                <Link
-                                                    title={tag}
-                                                    href={`/collections/${titleToHandle(tag)}`}
-                                                >
+                                                <Link title={tag} href={`/collections/${titleToHandle(tag)}`}>
                                                     {tag}
                                                 </Link>
                                             );
@@ -983,10 +934,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             <InformationContent className={tab == 'information' ? 'Active' : ''}>
                                 <Description>
                                     <Subtitle>Ingredients</Subtitle>
-                                    <p>
-                                        {(product as any)?.ingredients?.value ||
-                                            `No ingredients found.`}
-                                    </p>
+                                    <p>{(product as any)?.ingredients?.value || `No ingredients found.`}</p>
                                 </Description>
 
                                 {(product as any)?.originalName?.value && (
@@ -1015,11 +963,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     </ProductContainer>
                 </ProductContainerWrapper>
 
-                <SliceZone
-                    slices={page?.data.slices2}
-                    components={components}
-                    context={{ store }}
-                />
+                <SliceZone slices={page?.data.slices2} components={components} context={{ store }} />
 
                 {recommendations?.length && recommendations.length >= 1 && (
                     <PageContent
@@ -1029,9 +973,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         }
                     >
                         <Recommendations>
-                            <RecommendationsTitle>
-                                Frequently enjoyed together with these
-                            </RecommendationsTitle>
+                            <RecommendationsTitle>Frequently enjoyed together with these</RecommendationsTitle>
                             <RecommendationsContent>
                                 <CollectionBlock
                                     data={
@@ -1069,9 +1011,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 };
 
-const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (
-    props
-) => {
+const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = (props) => {
     if (!props.product) return <Error statusCode={404} />;
 
     return (

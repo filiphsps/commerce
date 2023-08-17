@@ -5,13 +5,8 @@ export const Config = {
     GTM: process.env.GTM,
 
     shopify: {
-        shop_id:
-            (process.env.SHOPIFY_SHOP_ID && Number.parseInt(process.env.SHOPIFY_SHOP_ID)) ||
-            76188483889,
-        domain: (process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com').replace(
-            'https://',
-            ''
-        ),
+        shop_id: (process.env.SHOPIFY_SHOP_ID && Number.parseInt(process.env.SHOPIFY_SHOP_ID)) || 76188483889,
+        domain: (process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com').replace('https://', ''),
         token: process.env.SHOPIFY_TOKEN || '319eb651b3464ea882a016ca2085ebc1',
         api: '2023-07',
         checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com'

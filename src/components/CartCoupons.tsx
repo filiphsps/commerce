@@ -76,9 +76,7 @@ export const CartCoupons: FunctionComponent<CartCouponsProps> = ({}) => {
                                 <DiscountCodeItemRemove
                                     onClick={() =>
                                         discountCodesUpdate(
-                                            (discountCodes.filter(
-                                                (i) => i?.code !== discount?.code
-                                            ) as any) || []
+                                            (discountCodes.filter((i) => i?.code !== discount?.code) as any) || []
                                         )
                                     }
                                 />

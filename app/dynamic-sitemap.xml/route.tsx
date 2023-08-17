@@ -62,9 +62,7 @@ export async function GET() {
                 const modified = new Date().toISOString();
 
                 return locales?.map((locale) => ({
-                    loc: `https://${Config.domain}/${
-                        (locale !== 'x-default' && `${locale}/`) || ''
-                    }${item.location}`,
+                    loc: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}${item.location}`,
                     lastmod: modified,
                     priority: item.priority || 0.7,
                     alternateRefs: locales?.map((locale) => ({
