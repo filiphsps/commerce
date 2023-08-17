@@ -50,7 +50,7 @@
         "next": "13.4.17",
         "next-i18next": "14.0.0",
         "next-seo": "6.1.0",
-        "node-html-parser": "6.1.5",
+        "node-html-parser": "6.1.6",
         "nprogress": "0.2.0",
         "react": "18.2.0",
         "react-context-hook": "github:sweet-side-of-sweden/react-context-hook",
