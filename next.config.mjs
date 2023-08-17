@@ -130,5 +130,5 @@ export default withSentryConfig(withNextPluginPreval(config), {
     silent: true,
 
     org: process.env.SENTRY_ORG || 'nordcom',
-    project: process.env.SENTRY_ORG || 'sweetsideofsweden-frontend'
+    project: process.env.SENTRY_PROJECT || 'sweetsideofsweden-frontend'
 });
