@@ -68,12 +68,7 @@ interface useAnalyticsProps {
     domain: string;
     pagePropsAnalyticsData: any;
 }
-export function useAnalytics({
-    locale,
-    domain,
-    shopId,
-    pagePropsAnalyticsData
-}: useAnalyticsProps) {
+export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }: useAnalyticsProps) {
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
     if (!shopId || !domain) {
@@ -127,8 +122,7 @@ export function useAnalytics({
                                 item_name: product.name,
                                 item_variant: product.variantName,
                                 item_brand: product.brand,
-                                currency:
-                                    pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                                currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
                                 price: ShopifyPriceToNumber(undefined, product.price!),
                                 quantity: product.quantity
                             }

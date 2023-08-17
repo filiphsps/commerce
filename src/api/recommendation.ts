@@ -8,13 +8,7 @@ import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
 // TODO: Migrate to the new recommendations api
-export const RecommendationApi = async ({
-    id,
-    locale
-}: {
-    id?: string;
-    locale?: string;
-}): Promise<Product[]> => {
+export const RecommendationApi = async ({ id, locale }: { id?: string; locale?: string }): Promise<Product[]> => {
     return new Promise(async (resolve, reject) => {
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
@@ -37,8 +31,7 @@ export const RecommendationApi = async ({
             });
 
             if (errors) return reject(new Error(errors.map((i) => i.message).join('\n')));
-            if (!data?.productRecommendations)
-                return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.productRecommendations) return reject(new Error('404: The requested document cannot be found'));
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);
         } catch (error) {

@@ -41,17 +41,15 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
             <NextSeo
                 title={page.data.meta_title || page.data.title || ''}
                 description={
-                    (page.data.meta_description && asText(page.data.meta_description)) ||
-                    page.data.description ||
-                    ''
+                    (page.data.meta_description && asText(page.data.meta_description)) || page.data.description || ''
                 }
                 canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}${
-                            (locale !== 'x-default' && `/${locale}`) || ''
-                        }${router.asPath}`
+                        href: `https://${Config.domain}${(locale !== 'x-default' && `/${locale}`) || ''}${
+                            router.asPath
+                        }`
                     })) || undefined
                 }
                 additionalMetaTags={
@@ -87,17 +85,12 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
 
             <PageContent primary>
                 {/* TODO: This should really be a slice anyways */}
-                {(page.uid !== 'homepage' &&
-                    (page.data.enable_header === null || page.data.enable_header) && (
-                        <PageHeader title={page.data.title} subtitle={page.data.description} />
-                    )) ||
+                {(page.uid !== 'homepage' && (page.data.enable_header === null || page.data.enable_header) && (
+                    <PageHeader title={page.data.title} subtitle={page.data.description} />
+                )) ||
                     null}
 
-                <SliceZone
-                    slices={page.data.slices}
-                    components={components}
-                    context={{ prefetch, store }}
-                />
+                <SliceZone slices={page.data.slices} components={components} context={{ prefetch, store }} />
 
                 {/* TODO: Same here */}
                 {(page.uid !== 'homepage' && (
@@ -131,11 +124,7 @@ export async function getStaticPaths({ locales }) {
     return { paths: paths, fallback: 'blocking' };
 }
 
-export const getStaticProps: GetStaticProps<{}> = async ({
-    params,
-    locale: localeData,
-    previewData
-}) => {
+export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: localeData, previewData }) => {
     const client = createClient({ previewData });
     const locale = NextLocaleToLocale(localeData);
 

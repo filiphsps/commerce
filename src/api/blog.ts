@@ -72,14 +72,7 @@ export const BlogApi = async ({ handle }: { handle: string; locale?: string }) =
     });
 };
 
-export const ArticleApi = async ({
-    handle,
-    blog
-}: {
-    handle: string;
-    blog: string;
-    locale?: string;
-}) => {
+export const ArticleApi = async ({ handle, blog }: { handle: string; blog: string; locale?: string }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data, errors } = await storefrontClient.query({

@@ -23,11 +23,7 @@ export const Convertor = (
     }));
 };
 
-export const RedirectsApi = async ({
-    locale
-}: {
-    locale?: string;
-}): Promise<Array<RedirectModel>> => {
+export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -43,9 +39,7 @@ export const RedirectsApi = async ({
                 const { data, errors } = await storefrontClient.query({
                     query: gql`
                         query urlRedirects($limit: Int!) @inContext(language: ${language}, country: ${country}) {
-                            urlRedirects(first: $limit ${
-                                (cursor && `, after: "${cursor}"`) || ''
-                            }) {
+                            urlRedirects(first: $limit ${(cursor && `, after: "${cursor}"`) || ''}) {
                                 edges {
                                     cursor
                                     node {
@@ -71,8 +65,7 @@ export const RedirectsApi = async ({
                 if (!data.urlRedirects.pageInfo.hasNextPage) break;
             }
 
-            if (!redirects.length)
-                return reject(new Error('404: The requested document cannot be found'));
+            if (!redirects.length) return reject(new Error('404: The requested document cannot be found'));
 
             return resolve(Convertor(redirects));
         } catch (error) {
@@ -83,13 +76,7 @@ export const RedirectsApi = async ({
     });
 };
 
-export const RedirectApi = async ({
-    path,
-    locale
-}: {
-    path: string;
-    locale?: string;
-}): Promise<string | null> => {
+export const RedirectApi = async ({ path, locale }: { path: string; locale?: string }): Promise<string | null> => {
     return new Promise(async (resolve, reject) => {
         try {
             const redirects = await RedirectsApi({ locale });
@@ -109,10 +96,5 @@ export const RedirectApi = async ({
 
 export const RedirectProductApi = async ({ handle, locale }: { handle: string; locale?: string }) =>
     RedirectApi({ path: `/products/${handle}`, locale });
-export const RedirectCollectionApi = async ({
-    handle,
-    locale
-}: {
-    handle: string;
-    locale?: string;
-}) => RedirectApi({ path: `/collections/${handle}`, locale });
+export const RedirectCollectionApi = async ({ handle, locale }: { handle: string; locale?: string }) =>
+    RedirectApi({ path: `/collections/${handle}`, locale });

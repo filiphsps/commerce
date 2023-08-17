@@ -134,9 +134,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                                     <OptionValue
                                         key={value}
                                         //disabled={!inStock}
-                                        selected={
-                                            !disabled && selectedOptions?.[option.name!] === value
-                                        }
+                                        selected={!disabled && selectedOptions?.[option.name!] === value}
                                         onClick={() =>
                                             onOptionChange({
                                                 name: option.name!,

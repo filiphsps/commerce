@@ -47,13 +47,9 @@ export const ReviewsProductApi = async ({
             .map((item) => ({
                 id: (item as any).id,
                 rating: parseInt(
-                    (item.childNodes[0].childNodes[0] as any).rawAttrs
-                        .split('aria-label="')[1]
-                        .split(' ')[0]
+                    (item.childNodes[0].childNodes[0] as any).rawAttrs.split('aria-label="')[1].split(' ')[0]
                 ),
-                title: item.childNodes[0].childNodes[1].innerText
-                    .replaceAll('&#39;', "'")
-                    .replaceAll('&amp;', '&'),
+                title: item.childNodes[0].childNodes[1].innerText.replaceAll('&#39;', "'").replaceAll('&amp;', '&'),
                 author: item.childNodes[0].childNodes[2].innerText
                     .split(' on')[0]
                     .replaceAll('&#39;', "'")

@@ -231,11 +231,7 @@ interface CartSummaryProps {
     freeShipping?: boolean;
     showLoader?: boolean;
 }
-export const CartSummary: FunctionComponent<CartSummaryProps> = ({
-    onCheckout,
-    freeShipping,
-    showLoader
-}) => {
+export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, freeShipping, showLoader }) => {
     const { t } = useTranslation('cart');
     const { totalQuantity, status, lines, cost, note } = useCart();
     const [showNote, setShowNote] = useState(false);
@@ -268,13 +264,10 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                 sum,
             0
         ) || 0;
-    const salePercentage =
-        Math.round(((100 * sale) / Number.parseFloat(cost?.totalAmount?.amount || '0')) * 100) /
-        100;
+    const salePercentage = Math.round(((100 * sale) / Number.parseFloat(cost?.totalAmount?.amount || '0')) * 100) / 100;
 
     const promos =
-        Number.parseFloat(cost?.subtotalAmount?.amount!) -
-            Number.parseFloat(cost?.totalAmount?.amount!) || 0;
+        Number.parseFloat(cost?.subtotalAmount?.amount!) - Number.parseFloat(cost?.totalAmount?.amount!) || 0;
 
     return (
         <Container>
@@ -318,11 +311,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                                         currencyCode: cost?.subtotalAmount?.currencyCode,
                                         amount:
                                             (sale &&
-                                                (
-                                                    Number.parseFloat(
-                                                        cost?.subtotalAmount?.amount!
-                                                    ) + sale
-                                                ).toString()) ||
+                                                (Number.parseFloat(cost?.subtotalAmount?.amount!) + sale).toString()) ||
                                             cost?.subtotalAmount?.amount
                                     }}
                                 />
@@ -386,10 +375,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                     </Breakdown>
 
                     {(!loading && (
-                        <CheckoutButton
-                            disabled={(totalQuantity || 0) <= 0 || !lines}
-                            onClick={onCheckout}
-                        >
+                        <CheckoutButton disabled={(totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
                             <Label>{t('continue-to-checkout')}</Label>
                             <CheckoutButtonIcon>
                                 <FiChevronRight />
@@ -405,11 +391,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({
                         <Notice>
                             <FiLock className="Lock" />
                             Safely complete your purchase through our secure and{' '}
-                            <Link
-                                href="https://www.shopify.com/security/pci-compliant"
-                                rel="nofollow"
-                                target="_blank"
-                            >
+                            <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
                                 PCI DSS compliant
                             </Link>{' '}
                             checkout powered by Stripe & Shopify.

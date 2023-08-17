@@ -163,8 +163,7 @@ export const Checkout = async ({
     locale?: string;
     locales?: string[];
 }) => {
-    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines)
-        throw new Error('Cart is empty!');
+    if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
     const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
@@ -233,9 +232,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
             'RecommendationApi',
             {
                 id:
-                    (cart.totalQuantity &&
-                        cart.totalQuantity > 0 &&
-                        cart.lines?.[0]?.merchandise?.product?.id) ||
+                    (cart.totalQuantity && cart.totalQuantity > 0 && cart.lines?.[0]?.merchandise?.product?.id) ||
                     undefined,
                 locale: router.locale
             }
@@ -269,8 +266,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
             freeShippingThreshold = 85;
             break;
     }
-    const freeShipping =
-        Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > freeShippingThreshold;
+    const freeShipping = Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > freeShippingThreshold;
 
     useEffect(() => {
         if (!cart?.lines) return;
@@ -288,9 +284,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                     items: cart.lines.map((line: CartLine) => ({
                         item_id: ProductToMerchantsCenterId({
-                            locale:
-                                (router.locale !== 'x-default' && router.locale) ||
-                                router.locales?.[1],
+                            locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
                             productId: line.merchandise.product.id,
                             variantId: line.merchandise.id
                         }),
@@ -319,9 +313,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }cart/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}cart/`
                     })) || []
                 }
                 openGraph={{
@@ -409,8 +401,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                             showLoader={loading}
                             freeShipping={freeShipping}
                             onCheckout={async () => {
-                                if (cart.status !== 'idle' && cart.status !== 'uninitialized')
-                                    return;
+                                if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
                                 setLoading(true);
 
                                 try {
@@ -464,10 +455,7 @@ export const getStaticProps: GetStaticProps<{
 
         let translations: SSRConfig | undefined = undefined;
         try {
-            translations = await getServerTranslations(locale.language.toLowerCase(), [
-                'common',
-                'cart'
-            ]);
+            translations = await getServerTranslations(locale.language.toLowerCase(), ['common', 'cart']);
         } catch (error) {
             console.warn(error);
         }

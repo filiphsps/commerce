@@ -1,9 +1,5 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from '../util/Locale';
-import type {
-    Product,
-    ProductEdge,
-    WeightUnit
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { Config } from 'src/util/Config';
 import ConvertUnits from 'convert-units';
@@ -220,13 +216,7 @@ export const ConvertToLocalMeasurementSystem = ({
     return `${Math.ceil(res)}${targetUnit}`;
 };
 
-export const ProductApi = async ({
-    handle,
-    locale
-}: {
-    handle: string;
-    locale?: string;
-}): Promise<Product> => {
+export const ProductApi = async ({ handle, locale }: { handle: string; locale?: string }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
@@ -249,8 +239,7 @@ export const ProductApi = async ({
             });
 
             if (errors) return reject(new Error(errors.join('\n')));
-            if (!data?.productByHandle)
-                return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.productByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             try {
                 data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
@@ -291,8 +280,7 @@ export const ProductsCountApi = async (): Promise<number> => {
             `
         });
 
-        if (data.products.pageInfo.hasNextPage)
-            count += await count_products(count, data.products.edges.at(-1).cursor);
+        if (data.products.pageInfo.hasNextPage) count += await count_products(count, data.products.edges.at(-1).cursor);
 
         return count + data.products.edges.length;
     };
@@ -341,8 +329,7 @@ export const ProductsApi = async (
             });
 
             if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
-            if (!data.products)
-                return reject(new Error('404: The requested document cannot be found'));
+            if (!data.products) return reject(new Error('404: The requested document cannot be found'));
 
             return resolve({
                 products: data.products.edges,
@@ -441,13 +428,7 @@ export type ProductVisuals = {
     secondaryAccentDark: boolean;
     transparentBackgrounds: boolean;
 };
-export const ProductVisualsApi = async ({
-    id,
-    locale
-}: {
-    id: string;
-    locale?: string;
-}): Promise<ProductVisuals> => {
+export const ProductVisualsApi = async ({ id, locale }: { id: string; locale?: string }): Promise<ProductVisuals> => {
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('400: Invalid id'));
         if (!locale || locale === 'x-default') locale = Config.i18n.default;

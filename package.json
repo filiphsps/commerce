@@ -2,6 +2,7 @@
     "name": "sweetsideofsweden-frontend",
     "version": "1.3.0",
     "private": true,
+    "prettier": "@nordcom/prettier",
     "type": "module",
     "engines": {
         "npm": ">=8",
@@ -22,10 +23,10 @@
         "test:jest": "jest --coverage",
         "watch:test": "jest --watch",
         "format": "npm-run-all prettier:format:*",
-        "prettier": "prettier --config .prettierrc src/**/*.* --check",
-        "prettier:format:src": "prettier --config .prettierrc src/**/*.* --write",
-        "prettier:format:pages": "prettier --config .prettierrc pages/**/*.* --write",
-        "prettier:format:app": "prettier --config .prettierrc app/**/*.* --write",
+        "prettier": "prettier src/**/*.* --check",
+        "prettier:format:src": "prettier src/**/*.* --write",
+        "prettier:format:pages": "prettier pages/**/*.* --write",
+        "prettier:format:app": "prettier app/**/*.* --write",
         "slicemachine": "npm run hack && start-slicemachine",
         "hack": "npm-run-all --sequential hack:*",
         "hack:useclient-directive": "node scripts/useclient-directive-hack.mjs"
@@ -68,6 +69,7 @@
         "typescript": "5.1.6"
     },
     "devDependencies": {
+        "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.10",
         "@testing-library/react": "14.0.0",
         "@types/accept-language-parser": "1.5.3",

@@ -1,8 +1,4 @@
-import {
-    CollectionPageDocument,
-    CustomPageDocument,
-    ProductPageDocument
-} from '../../prismicio-types';
+import { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '../../prismicio-types';
 
 import { CollectionApi } from '../api/collection';
 import { Config } from './Config';
@@ -45,9 +41,10 @@ const Prefetch = (
                                 limit: slice?.primary?.limit || 16
                             });
                             if (slice?.primary?.limit && slice?.primary?.limit > 0)
-                                collections[handle].products.edges = collections[
-                                    handle
-                                ].products.edges.slice(0, slice?.primary?.limit);
+                                collections[handle].products.edges = collections[handle].products.edges.slice(
+                                    0,
+                                    slice?.primary?.limit
+                                );
                         }
                         break;
                     case 'vendors':

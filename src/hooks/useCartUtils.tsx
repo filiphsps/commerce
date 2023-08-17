@@ -8,14 +8,7 @@ interface useCartUtilsProps {
 }
 export function useCartUtils({ locale }: useCartUtilsProps) {
     const router = useRouter();
-    const {
-        buyerIdentity,
-        buyerIdentityUpdate,
-        discountCodes,
-        discountCodesUpdate,
-        status,
-        error
-    } = useCart();
+    const { buyerIdentity, buyerIdentityUpdate, discountCodes, discountCodesUpdate, status, error } = useCart();
 
     // Handle country code change
     useEffect(() => {

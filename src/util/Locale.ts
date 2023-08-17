@@ -1,8 +1,4 @@
-import type {
-    CountryCode,
-    CurrencyCode,
-    LanguageCode
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { Config } from './Config';
 import type { StoreModel } from '../models/StoreModel';
@@ -17,15 +13,9 @@ export type Locale = {
 };
 
 export const NextLocaleToCountry = (locale?: string): CountryCode =>
-    (
-        (locale !== 'x-default' && locale?.split('-')[1]) ||
-        defaultLocale.split('-')[1]
-    ).toUpperCase() as CountryCode;
+    ((locale !== 'x-default' && locale?.split('-')[1]) || defaultLocale.split('-')[1]).toUpperCase() as CountryCode;
 export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
-    (
-        (locale !== 'x-default' && locale?.split('-')[0]) ||
-        defaultLocale.split('-')[0]
-    ).toUpperCase() as LanguageCode;
+    ((locale !== 'x-default' && locale?.split('-')[0]) || defaultLocale.split('-')[0]).toUpperCase() as LanguageCode;
 
 interface NextLocaleToCurrencyProps {
     country: CountryCode;
