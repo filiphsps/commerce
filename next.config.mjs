@@ -129,6 +129,6 @@ export default withSentryConfig(withNextPluginPreval(config), {
     // Suppresses source map uploading logs during build
     silent: true,
 
-    org: 'sweet-side-of-sweden',
-    project: 'frontend'
+    org: process.env.SENTRY_ORG || 'nordcom',
+    project: process.env.SENTRY_ORG || 'sweetsideofsweden-frontend'
 });
