@@ -1,0 +1,12 @@
+gha_enabled: True
+branch: master
+blocked_dirs: [".github/"]
+draft: False
+description: "NordcomInc/sweetsideofsweden-frontend is a Next.js 13 headless Shopify e-commerce site using the shopify GraphQL Storefront api."
+docs: {"React.js": "https://react.dev/", "Next.js": "https://nextjs.org/docs", "hydrogen-react": "https://shopify.dev/docs/api/hydrogen-react", "Storefront API": "https://shopify.dev/docs/api/storefront"}
+
+sandbox:
+    enabled: true
+    image: "Nodejs"
+    install: "npm install --save-dev prettier"
+    formatter: "npx prettier --write {files}"
