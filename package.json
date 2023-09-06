@@ -38,7 +38,7 @@
         "@prismicio/next": "1.3.4",
         "@prismicio/react": "2.7.2",
         "@sentry/nextjs": "7.67.0",
-        "@shopify/hydrogen-react": "2023.7.3",
+        "@shopify/hydrogen-react": "2023.7.4",
         "@sweetsideofsweden/next-plugin-preval": "2.0.0",
         "@thebeyondgroup/shopify-rich-text-renderer": "1.0.0",
         "accept-language-parser": "1.5.0",
