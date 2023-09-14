@@ -1,6 +1,8 @@
 # sweetsideofsweden-frontend
 
-[![Unit & Integration Testing](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8f6382d655ec4ec7a240a89dcb16adfc)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Unit & Integration Testing](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8f6382d655ec4ec7a240a89dcb16adfc)](https://app.codacy.com?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![WakaTime](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend.svg)](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend)
 
 A modern e-commerce platform that uses various integrations to handle everything from content management to payment to product/customer/etc data.
 
