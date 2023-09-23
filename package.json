@@ -75,7 +75,7 @@
         "@types/accept-language-parser": "1.5.4",
         "@types/color": "3.0.4",
         "@types/convert-units": "2.3.7",
-        "@types/enzyme": "3.10.13",
+        "@types/enzyme": "3.10.14",
         "@types/node": "18.17.18",
         "@types/react": "18.2.22",
         "babel-plugin-module-resolver": "5.0.0",
