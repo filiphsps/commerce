@@ -70,7 +70,7 @@
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@slicemachine/adapter-next": "0.3.16",
+        "@slicemachine/adapter-next": "0.3.17",
         "@testing-library/react": "14.0.0",
         "@types/accept-language-parser": "1.5.4",
         "@types/color": "3.0.4",
