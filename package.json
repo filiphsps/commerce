@@ -65,7 +65,7 @@
         "slick-carousel": "1.8.1",
         "styled-components": "6.0.8",
         "stylis": "4.3.0",
-        "swr": "2.2.2",
+        "swr": "2.2.4",
         "typescript": "5.2.2"
     },
     "devDependencies": {
