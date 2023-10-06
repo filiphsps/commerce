@@ -12,14 +12,14 @@
         ".next/cache"
     ],
     "scripts": {
-        "dev": "npm run hack && next dev",
-        "build": "npm run hack && next build",
+        "dev": "next dev",
+        "build": "next build",
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap && npm run sitemap:pretty",
         "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
-        "start": "npm run hack && next start -p $PORT",
-        "lint": "npm run hack && next lint",
-        "test": "npm run hack && npm-run-all test:*",
+        "start": "next start -p $PORT",
+        "lint": "next lint",
+        "test": "npm-run-all test:*",
         "test:jest": "jest --coverage",
         "watch:test": "jest --watch",
         "format": "npm-run-all prettier:format:*",
@@ -27,9 +27,7 @@
         "prettier:format:src": "prettier src/**/*.* --write",
         "prettier:format:pages": "prettier pages/**/*.* --write",
         "prettier:format:app": "prettier app/**/*.* --write",
-        "slicemachine": "npm run hack && start-slicemachine",
-        "hack": "npm-run-all --sequential hack:*",
-        "hack:useclient-directive": "node scripts/useclient-directive-hack.mjs"
+        "slicemachine": "start-slicemachine"
     },
     "dependencies": {
         "@apollo/client": "3.8.5",
