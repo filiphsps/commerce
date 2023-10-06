@@ -15,7 +15,7 @@ export default function middleware(req: NextRequest) {
     if (
         req.nextUrl.pathname.startsWith('/_next/') ||
         req.nextUrl.pathname.startsWith('/monitoring/') ||
-        req.nextUrl.pathname.includes('/api/') ||
+        req.nextUrl.pathname.startsWith('/api/') ||
         PUBLIC_FILE.test(req.nextUrl.pathname)
     ) {
         return null;
@@ -40,5 +40,6 @@ export default function middleware(req: NextRequest) {
     return undefined;
 }
 export const config = {
-    matcher: '/((?!api|static|.*\\..*|_next).*)'
+    matcher: ['/:path*'],
+    //matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)'
 };
