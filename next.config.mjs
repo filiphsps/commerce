@@ -19,13 +19,13 @@ let config = {
     productionBrowserSourceMaps: true,
     compress: true,
     experimental: {
+        scrollRestoration: true,
         esmExternals: true
     },
     images: {
-        minimumCacheTTL: 60,
+        minimumCacheTTL: 60 * 6,
         domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com', '*.github.io'],
-        deviceSizes: [640, 750, 828, 950, 1200, 1450, 2048, 3840],
-        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384]
+        formats: ['image/avif', 'image/webp']
     },
     compiler: {
         styledComponents: {
