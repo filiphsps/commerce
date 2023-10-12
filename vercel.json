@@ -1,7 +1,13 @@
 {
     "version": 2,
     "trailingSlash": true,
+    "framework": "nextjs",
     "github": {
         "enabled": true
+    },
+    "images": {
+        "minimumCacheTTL": 360,
+        "domains": ["cdn.shopify.com", "images.prismic.io", "images.unsplash.com", "*.github.io"],
+        "formats": ["image/avif", "image/webp"]
     }
 }
