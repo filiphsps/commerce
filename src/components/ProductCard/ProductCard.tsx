@@ -1,17 +1,8 @@
-import {
-    ConvertToLocalMeasurementSystem,
-    ProductApi,
-    ProductVisuals,
-    ProductVisualsApi
-} from '../../api/product';
+import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisuals, ProductVisualsApi } from '../../api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
-import type {
-    Product,
-    ProductVariantEdge,
-    Image as ShopifyImage
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
 
 import { Button } from '../Button';
@@ -314,7 +305,7 @@ const Badges = styled.div`
     display: flex;
     align-items: start;
     justify-content: start;
-    gap: calc(var(--block-spacer-small) / 2);
+    gap: var(--block-spacer-small);
     z-index: 1;
     pointer-events: none;
 `;
@@ -338,6 +329,7 @@ const Badge = styled.div`
 
     &.Sale {
         background: var(--color-sale);
+        color: var(--color-bright);
     }
     &.From {
         background: var(--color-block);
@@ -400,13 +392,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
     );
 };
 
-export const AppendShopifyParameters = ({
-    params,
-    url
-}: {
-    params?: string | null;
-    url: string;
-}): string => {
+export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
     if (!params) return url;
 
     return `${url}${(url.includes('?') && '&') || '?'}${params}`;
@@ -450,9 +436,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
         ],
         ([, props]) => ProductVisualsApi(props),
         {
-            fallbackData: (visualsData || (product as any).visualsData) as
-                | ProductVisuals
-                | undefined
+            fallbackData: (visualsData || (product as any).visualsData) as ProductVisuals | undefined
         }
     );
 
@@ -472,20 +456,16 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
     const is_new_product =
         product?.createdAt &&
-        Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) /
-            (24 * 60 * 60 * 1000) <
-            15; // FIXME: Change this
+        Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // FIXME: Change this
     const is_vegan_product = product?.tags?.includes('Vegan');
     const is_sale = !!selectedVariant?.compareAtPrice?.amount;
 
     let short_desc = (product.seo?.description || product.description || '').substring(0, 100);
     // Remove whitespace if it's the last character
-    if (short_desc[short_desc.length - 1] === ' ')
-        short_desc = short_desc.substring(0, short_desc.length - 1);
+    if (short_desc[short_desc.length - 1] === ' ') short_desc = short_desc.substring(0, short_desc.length - 1);
 
-    const image = product?.images?.edges?.find(
-        (edge) => edge?.node?.id === selectedVariant?.image?.id
-    )?.node as ShopifyImage;
+    const image = product?.images?.edges?.find((edge) => edge?.node?.id === selectedVariant?.image?.id)
+        ?.node as ShopifyImage;
 
     const description =
         (product.seo?.description || product.description) &&
@@ -505,36 +485,32 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                 {
                     '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
                     '--accent-primary-text':
-                        (visuals?.primaryAccentDark && 'var(--color-bright)') ||
-                        'var(--color-dark)',
+                        (visuals?.primaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
                     '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
                     '--accent-secondary-text':
-                        (visuals?.secondaryAccentDark && 'var(--color-bright)') ||
-                        'var(--color-dark)',
+                        (visuals?.secondaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
 
-                    '--accent-primary-light':
-                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                    '--accent-primary-dark':
-                        'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
-                    '--accent-secondary-light':
-                        'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                    '--accent-secondary-dark':
-                        'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
+                    '--accent-primary-light': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
+                    '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                    '--accent-secondary-light': 'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
+                    '--accent-secondary-dark': 'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
                 } as React.CSSProperties
             }
         >
             <Badges>
-                {(!is_sale && product.variants?.edges && product.variants.edges.length > 1 && (
-                    <Badge className="From">
-                        <BadgeText>From</BadgeText>
-                        <Money data={product.priceRange?.minVariantPrice!} />
-                    </Badge>
-                )) ||
+                {(!is_sale &&
+                    (product?.variants?.edges?.length || 0) > 1 &&
+                    product.priceRange?.minVariantPrice?.amount && (
+                        <Badge className="From">
+                            <BadgeText>From</BadgeText>
+                            <Money data={product.priceRange?.minVariantPrice!} />
+                        </Badge>
+                    )) ||
                     null}
-                {(is_sale && (
+                {(is_sale && selectedVariant?.price?.amount && (
                     <Badge className="Sale">
                         <BadgeText>Sale</BadgeText>
-                        <Money data={selectedVariant.price!} />
+                        <Money data={selectedVariant?.price!} />
                     </Badge>
                 )) ||
                     null}
@@ -561,10 +537,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link
-                            href={`/collections/${titleToHandle(product.vendor)}/`}
-                            prefetch={false}
-                        >
+                        <Link href={`/collections/${titleToHandle(product.vendor)}/`} prefetch={false}>
                             {product.vendor}
                         </Link>
                     </Brand>
@@ -579,13 +552,16 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
                 <VariantsContainer>
                     <Prices>
-                        {selectedVariant.compareAtPrice?.amount && (
-                            <Money data={selectedVariant.compareAtPrice} as={PreviousPrice} />
+                        {selectedVariant?.compareAtPrice && (
+                            <Money
+                                data={{
+                                    currencyCode: selectedVariant.price?.currencyCode!,
+                                    ...selectedVariant.compareAtPrice
+                                }}
+                                as={PreviousPrice}
+                            />
                         )}
-                        {(selectedVariant.price?.amount && (
-                            <Money data={selectedVariant.price} as={Price} />
-                        )) ||
-                            null}
+                        {(selectedVariant?.price?.amount && <Money data={selectedVariant.price} as={Price} />) || null}
                     </Prices>
 
                     {/* FIXME: Deal with options here */}
@@ -618,13 +594,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                                 return (
                                     <Variant
                                         key={variant.id}
-                                        title={variant.selectedOptions
-                                            .map((i) => `${i.name}: ${i.value}`)
-                                            .join(', ')}
+                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
-                                        className={
-                                            selectedVariant.id === variant.id ? 'Active' : ''
-                                        }
+                                        className={selectedVariant.id === variant.id ? 'Active' : ''}
                                     >
                                         {title}
                                     </Variant>
@@ -657,8 +629,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                         }, 3000);
                     }}
                     disabled={
-                        !selectedVariant.availableForSale ||
-                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
+                        !selectedVariant.availableForSale || (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
                 >
                     <span data-nosnippet>

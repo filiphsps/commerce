@@ -50,7 +50,7 @@ body {
     --color-bright: #fefefe;
     --color-dark: #101418;
 
-    --color-sale: #d91e18;
+    --color-sale: #a53d3a;
 
     --color-success: #1b6e1b;
     --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
@@ -66,16 +66,8 @@ body {
     --color-green-light: #e1faea;
 
     --color-block-pastel-lime: #cce2cb;
-    --color-block-pastel-lime-light: color-mix(
-        in srgb,
-        var(--color-block-pastel-lime) 65%,
-        var(--color-bright)
-    );
-    --color-block-pastel-lime-dark: color-mix(
-        in srgb,
-        var(--color-block-pastel-lime) 8%,
-        var(--color-dark)
-    );
+    --color-block-pastel-lime-light: color-mix(in srgb, var(--color-block-pastel-lime) 65%, var(--color-bright));
+    --color-block-pastel-lime-dark: color-mix(in srgb, var(--color-block-pastel-lime) 8%, var(--color-dark));
 
     --component-product-card-width: 20rem;
 

@@ -30,8 +30,6 @@ const Vendor = styled.div`
     background: var(--accent-secondary);
     color: var(--accent-secondary-text);
 
-    box-shadow: 0px 0px 1rem -0.25rem var(--color-block-shadow);
-
     border-radius: var(--block-border-radius);
     text-align: center;
     text-decoration: none;
@@ -95,8 +93,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                         key={vendor?.handle}
                         href={`/collections/${vendor?.handle}/`}
                         className={`Vendors-Vendor ${
-                            (router.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') ||
-                            ''
+                            (router.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') || ''
                         }`}
                         prefetch={false}
                     >
