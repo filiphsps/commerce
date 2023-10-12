@@ -609,7 +609,16 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const pricing =
         (selectedVariant?.price?.amount && (
             <PriceContainer>
-                {selectedVariant?.compareAtPrice && <Money data={selectedVariant.compareAtPrice} as={Price} $sale />}
+                {selectedVariant?.compareAtPrice && (
+                    <Money
+                        data={{
+                            currencyCode: selectedVariant.price?.currencyCode!,
+                            ...selectedVariant.compareAtPrice
+                        }}
+                        as={Price}
+                        $sale
+                    />
+                )}
                 {selectedVariant.price && (
                     <Money
                         data={selectedVariant.price}
