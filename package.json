@@ -89,5 +89,11 @@
         "prettier": "3.0.3",
         "pretty-xml": "1.2.1",
         "slice-machine-ui": "1.17.0"
+    },
+    "nextBundleAnalysis": {
+        "budget": null,
+        "budgetPercentIncreaseRed": 20,
+        "minimumChangeThreshold": 0,
+        "showDetails": true
     }
 }
