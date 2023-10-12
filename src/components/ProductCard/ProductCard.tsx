@@ -543,7 +543,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                     </Brand>
                 )}
                 <Title title={description}>
-                    <Link href={href} prefetch={false}>
+                    <Link href={href || ''} prefetch={false}>
                         {product.title}
                     </Link>
                 </Title>

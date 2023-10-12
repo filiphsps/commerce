@@ -1,17 +1,17 @@
 import * as PrismicDOM from '@prismicio/helpers';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import styled from 'styled-components';
-import useSWR from 'swr';
-import preval from '../../../src/data.preval';
-import { FooterApi } from '../../api/footer';
-import type { StoreModel } from '../../models/StoreModel';
-import { Config } from '../../util/Config';
-import { ImageLoader } from '../../util/ImageLoader';
 import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
+import { Config } from '../../util/Config';
+import { FooterApi } from '../../api/footer';
+import { FunctionComponent } from 'react';
+import Image from 'next/image';
+import { ImageLoader } from '../../util/ImageLoader';
+import Link from 'next/link';
+import type { StoreModel } from '../../models/StoreModel';
+import preval from '../../../src/data.preval';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const Logo = styled.div`
     position: relative;
@@ -246,7 +246,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                             {block?.items.map((item) => (
                                 <Link
                                     key={item.handle}
-                                    href={item.handle}
+                                    href={item.handle || ''}
                                     target={item.handle.startsWith('http') ? '_blank' : ''}
                                     prefetch={false}
                                 >
@@ -263,9 +263,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         <AcceptedPaymentMethods store={store!} />
                         <LegalAndCopyright>
                             <ImportantLinks>
-                                <Policy href="mailto:dennis@sweetsideofsweden.com">
-                                    Contact Us
-                                </Policy>
+                                <Policy href="mailto:dennis@sweetsideofsweden.com">Contact Us</Policy>
                                 <Policy href="/about/" prefetch={false}>
                                     About
                                 </Policy>
@@ -280,9 +278,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         <Socials>
                             {store?.social
                                 ?.filter((social) =>
-                                    ['instagram', 'facebook', 'twitter'].includes(
-                                        social.name.toLowerCase()
-                                    )
+                                    ['instagram', 'facebook', 'twitter'].includes(social.name.toLowerCase())
                                 )
                                 .map((social) => (
                                     <Social key={social.url} href={social.url}>

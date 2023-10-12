@@ -69,7 +69,7 @@ export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemP
     });
 
     return (
-        <Link href={href}>
+        <Link href={href || ''}>
             <Container>
                 <ImageWrapper>
                     <Image data={product.images?.edges?.at(0)?.node || undefined} width={125} />

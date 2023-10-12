@@ -20,7 +20,8 @@ let config = {
     compress: true,
     experimental: {
         scrollRestoration: true,
-        esmExternals: true
+        esmExternals: true,
+        optimizePackageImports: ['@shopify/hydrogen-react', 'react-icons']
     },
     images: {
         minimumCacheTTL: 60 * 6,

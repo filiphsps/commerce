@@ -102,7 +102,7 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
             <PageContent>
                 <Grid>
                     {slice.items.map(({ href, title, image }) => (
-                        <Item key={href!} href={href!} title={title!}>
+                        <Item key={href!} href={href! || ''} title={title!}>
                             <Banner
                                 src={image?.url || ''}
                                 alt={image?.alt || title || ''}
