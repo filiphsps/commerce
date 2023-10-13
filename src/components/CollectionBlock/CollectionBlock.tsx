@@ -5,11 +5,13 @@ import styled, { css } from 'styled-components';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '../../api/collection';
 import Link from 'next/link';
-import ProductCard from '../ProductCard';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '../../models/StoreModel';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const ProductCard = dynamic(() => import('@/components/ProductCard'), {});
 
 const Title = styled.div``;
 const Subtitle = styled.div``;
@@ -121,12 +123,10 @@ const Content = styled.div<{
                 background-image: linear-gradient(to right, transparent, transparent),
                     linear-gradient(to right, transparent, transparent),
                     ${({ $showLeftShadow }: any) =>
-                        ($showLeftShadow &&
-                            'linear-gradient(to right, var(--shadow), transparent)') ||
+                        ($showLeftShadow && 'linear-gradient(to right, var(--shadow), transparent)') ||
                         'linear-gradient(to right, transparent, transparent)'},
                     ${({ $showRightShadow }: any) =>
-                        ($showRightShadow &&
-                            'linear-gradient(to left, var(--shadow), transparent)') ||
+                        ($showRightShadow && 'linear-gradient(to left, var(--shadow), transparent)') ||
                         'linear-gradient(to left, transparent, transparent)'};
                 background-position:
                     left center,
@@ -214,11 +214,7 @@ const ViewMore = styled.section<{
         $horizontal &&
         css`
             margin-right: calc(
-                50vw -
-                    calc(
-                        var(--component-product-card-width) / 2 +
-                            calc(var(--block-spacer-small) * 2)
-                    )
+                50vw - calc(var(--component-product-card-width) / 2 + calc(var(--block-spacer-small) * 2))
             );
 
             @media (min-width: 950px) {
@@ -309,31 +305,24 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         const product = edge.node;
         return (
             <ProductProvider key={`minimal_${product?.id}`} data={product}>
-                <ProductCard
-                    handle={product?.handle}
-                    store={store}
-                    className={(index === 0 && 'First') || ''}
-                />
+                <ProductCard handle={product?.handle} store={store} className={(index === 0 && 'First') || ''} />
             </ProductProvider>
         );
     });
 
-    const view_more = limit &&
-        collection?.products?.edges &&
-        collection.products.edges.length > limit && (
-            <ViewMore $horizontal={isHorizontal}>
-                <Link
-                    title={`Browse all products in "${collection.title}"`}
-                    className="ProductCard CollectionBlock-Content-ShowMore"
-                    href={`/collections/${handle}/`}
-                >
-                    <p>
-                        View all <span>{collection.products.edges.length}</span> products in this
-                        collection
-                    </p>
-                </Link>
-            </ViewMore>
-        );
+    const view_more = limit && collection?.products?.edges && collection.products.edges.length > limit && (
+        <ViewMore $horizontal={isHorizontal}>
+            <Link
+                title={`Browse all products in "${collection.title}"`}
+                className="ProductCard CollectionBlock-Content-ShowMore"
+                href={`/collections/${handle}/`}
+            >
+                <p>
+                    View all <span>{collection.products.edges.length}</span> products in this collection
+                </p>
+            </Link>
+        </ViewMore>
+    );
 
     return (
         <Container $horizontal={isHorizontal}>
@@ -344,8 +333,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                     </Link>
                     <Subtitle
                         dangerouslySetInnerHTML={{
-                            __html:
-                                collection?.descriptionHtml || collection?.seo?.description || ''
+                            __html: collection?.descriptionHtml || collection?.seo?.description || ''
                         }}
                     />
                 </Meta>

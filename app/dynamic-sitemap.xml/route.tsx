@@ -17,9 +17,9 @@ export async function GET() {
     let pages: SitemapEntry[] = [];
     try {
         pages = ((await PagesApi({})) as any).paths
-            .filter((i) => i !== '/')
+            .filter((i: any) => i !== '/')
             .map(
-                (page) =>
+                (page: any) =>
                     ({
                         location: `${page.slice(1)}/`,
                         priority: 0.8
@@ -44,7 +44,7 @@ export async function GET() {
             }) as SitemapEntry
     );
     const blog = ((await BlogApi({ handle: 'news' })) as any).articles.map(
-        (blog) =>
+        (blog: any) =>
             ({
                 location: `blog/${blog.handle}/`,
                 priority: 0.9

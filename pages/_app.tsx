@@ -3,25 +3,25 @@ import './app.scss';
 
 import * as nextI18NextConfig from '../next-i18next.config.cjs';
 
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../src/util/Locale';
 
+import { CartFragment } from 'src/api/cart';
+import { Config } from '../src/util/Config';
+import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
+import NProgress from 'nprogress';
 import PageProvider from '@/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
-import { appWithTranslation } from 'next-i18next';
-import { Lexend_Deca } from 'next/font/google';
-import Head from 'next/head';
-import NProgress from 'nprogress';
-import { CartFragment } from 'src/api/cart';
-import useSWR from 'swr';
 import SEO from '../nextseo.config';
 import { StoreApi } from '../src/api/store';
+import { appWithTranslation } from 'next-i18next';
 import preval from '../src/data.preval';
-import { Config } from '../src/util/Config';
+import useSWR from 'swr';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -75,10 +75,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             `}</style>
             <DefaultSeo {...SEO} themeColor={store?.accent.primary} />
             <Head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, shrink-to-fit=no"
-                />
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
                 <meta name="apple-mobile-web-app-title" content={store?.name} />
@@ -159,9 +156,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     availableLanguage: ['English', 'Swedish'],
                     areaServed:
                         store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
-                        router.locales
-                            ?.filter((i) => i !== 'x-default')
-                            .map((i) => i.split('-')[1]) ||
+                        router.locales?.filter((i) => i !== 'x-default').map((i) => i.split('-')[1]) ||
                         (router.locale && []) ||
                         undefined
                 }}
@@ -189,13 +184,10 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 languageIsoCode={language}
             >
                 <CartProvider countryCode={country} cartFragment={CartFragment}>
-                    <StyleSheetManager enableVendorPrefixes>
+                    <StyleSheetManager>
                         <ThemeProvider theme={{}}>
                             <PrismicPreview repositoryName={Config.prismic.name}>
-                                <PageProvider
-                                    store={store}
-                                    pagePropsAnalyticsData={pageProps.analytics || {}}
-                                >
+                                <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics || {}}>
                                     <Component key={router.asPath} {...pageProps} store={store} />
                                 </PageProvider>
                             </PrismicPreview>

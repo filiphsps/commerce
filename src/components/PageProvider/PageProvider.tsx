@@ -4,18 +4,20 @@ import { FunctionComponent, useState } from 'react';
 import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '../../util/Locale';
 
 import { Config } from '../../util/Config';
-import Footer from '../Footer';
-import Header from '../Header';
 import { HeaderApi } from '../../api/header';
-import HeaderNavigation from '../HeaderNavigation';
 import { NavigationApi } from '../../api/navigation';
 import type { StoreModel } from '../../models/StoreModel';
+import dynamic from 'next/dynamic';
 import preval from '../../../src/data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useCartUtils } from '../../hooks/useCartUtils';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Header = dynamic(() => import('@/components/Header'), {});
+const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'), {});
+const Footer = dynamic(() => import('@/components/Footer'), {});
 
 const Announcement = styled.div`
     display: flex;
@@ -144,11 +146,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     if (isSliceSimulator) return <>{props.children}</>;
 
     return (
-        <Container
-            className={`PageProvider ${props.className || ''} ${
-                (sidebarOpen && 'SideBar-Open') || ''
-            }`}
-        >
+        <Container className={`PageProvider ${props.className || ''} ${(sidebarOpen && 'SideBar-Open') || ''}`}>
             {above.length > 0 && (
                 <Announcements>
                     {above.map((item, index) => (

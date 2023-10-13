@@ -22,11 +22,13 @@
             }
         ],
         "strictNullChecks": true,
-        // Using "baseUrl" allows you to use absolute paths
         "baseUrl": ".",
-        // Using "paths" allows you to configure module path aliases
         "paths": {
-            "@/components/*": ["src/components/*"]
+            "@/components/*": ["src/components/*"],
+            "@/hooks/*": ["src/hooks/*"],
+            "@/api/*": ["src/api/*"],
+            "@/utils/*": ["src/utils/*"],
+            "@/style/*": ["src/style/*"]
         }
     },
     "exclude": ["dist", "node_modules", "out", "public", ".next", "next.config.mjs"],
