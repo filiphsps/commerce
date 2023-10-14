@@ -21,7 +21,7 @@ let config = {
     experimental: {
         scrollRestoration: true,
         esmExternals: true,
-        optimizePackageImports: ['@shopify/hydrogen-react', 'react-icons']
+        optimizePackageImports: ['@shopify/hydrogen-react', 'react-icons', '@prismicio/client', '@prismicio/next', '@apollo/client']
     },
     images: {
         minimumCacheTTL: 60 * 6,

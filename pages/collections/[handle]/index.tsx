@@ -12,9 +12,6 @@ import Error from 'next/error';
 import type { FunctionComponent } from 'react';
 import { NextLocaleToLocale } from 'src/util/Locale';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { Prefetch } from 'src/util/Prefetch';
 import React from 'react';
 import { RedirectCollectionApi } from 'src/api/redirects';
@@ -22,17 +19,22 @@ import { SSRConfig } from 'next-i18next';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../../src/models/StoreModel';
-import Vendors from '@/components/Vendors';
 import { VendorsApi } from '../../../src/api/vendor';
 import { asText } from '@prismicio/client';
 import { captureException } from '@sentry/nextjs';
 import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { createClient } from 'prismicio';
+import dynamic from 'next/dynamic';
 import { getServerTranslations } from 'src/util/getServerTranslations';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Vendors = dynamic(() => import('@/components/Vendors'), {});
+const PageContent = dynamic(() => import('@/components/PageContent'), {});
+const PageHeader = dynamic(() => import('@/components/PageHeader'), {});
+const Page = dynamic(() => import('@/components/Page'), {});
 
 const Body = styled(Content)`
     overflow: hidden;
@@ -73,12 +75,10 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
             <ShortDescription
                 dangerouslySetInnerHTML={{
                     __html:
-                        (
-                            convertSchemaToHtml(
-                                (collection as any).shortDescription.value,
-                                false
-                            ) as string
-                        )?.replaceAll(`="null"`, '') || ''
+                        (convertSchemaToHtml((collection as any).shortDescription.value, false) as string)?.replaceAll(
+                            `="null"`,
+                            ''
+                        ) || ''
                 }}
             />
         )) ||
@@ -98,9 +98,9 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }collections/${collection.handle}/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}collections/${
+                            collection.handle
+                        }/`
                     })) || []
                 }
                 additionalMetaTags={
@@ -145,11 +145,9 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                             '--accent-primary': page.data.accent_primary,
                             '--accent-primary-light':
                                 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                            '--accent-primary-dark':
-                                'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
+                            '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
                             '--accent-primary-text':
-                                (page.data.accent_primary_dark && 'var(--color-bright)') ||
-                                'var(--color-dark)',
+                                (page.data.accent_primary_dark && 'var(--color-bright)') || 'var(--color-dark)',
 
                             '--accent-secondary': page.data.accent_secondary,
                             '--accent-secondary-light':
@@ -157,8 +155,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                             '--accent-secondary-dark':
                                 'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))',
                             '--accent-secondary-text':
-                                (page.data.accent_secondary_dark && 'var(--color-bright)') ||
-                                'var(--color-dark)'
+                                (page.data.accent_secondary_dark && 'var(--color-bright)') || 'var(--color-dark)'
                         } as React.CSSProperties)) ||
                     undefined
                 }
@@ -179,11 +176,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                 )) ||
                     null}
 
-                <SliceZone
-                    slices={page?.data.slices}
-                    components={components}
-                    context={{ store, prefetch }}
-                />
+                <SliceZone slices={page?.data.slices} components={components} context={{ store, prefetch }} />
 
                 {((!page?.data || page.data.enable_body) && (
                     <>

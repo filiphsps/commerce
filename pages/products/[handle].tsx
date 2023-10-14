@@ -31,9 +31,6 @@ import Error from 'next/error';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import { NextLocaleToLocale } from 'src/util/Locale';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import type { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
@@ -58,6 +55,9 @@ const ProductOptions = dynamic(() => import('@/components/ProductOptions').then(
 const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines), { ssr: false });
 const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
 const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
+const PageHeader = dynamic(() => import('@/components/PageHeader'), {});
+const PageContent = dynamic(() => import('@/components/PageContent'), {});
+const Page = dynamic(() => import('@/components/Page'), {});
 
 // TODO: replace this with generic label.
 const Label = styled.label`
