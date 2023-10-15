@@ -1037,14 +1037,21 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
     );
 };
 
-export async function getStaticPaths({}) {
+export async function getStaticPaths({ locales }) {
     const data = await ProductsApi();
+
     let paths = [
         ...data.products
-            ?.map(({ node: product }: ProductEdge) => ({
-                params: { handle: product?.handle },
-                locale: Config.i18n.default
-            }))
+            ?.map(({ node: product }: ProductEdge) => [
+                {
+                    params: { handle: product?.handle }
+                },
+                ...(locales?.map((locale) => ({
+                    params: { handle: product?.handle },
+                    locale: locale
+                })) || [])
+            ])
+            .flat()
             .filter((a) => a?.params?.handle)
     ];
 
