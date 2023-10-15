@@ -23,7 +23,6 @@ interface NextLocaleToCurrencyProps {
 }
 export const NextLocaleToCurrency = ({ country, store }: NextLocaleToCurrencyProps): CurrencyCode =>
     (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode ||
-        store?.currencies?.[0] ||
         Config.i18n.currencies[0]) as CurrencyCode;
 
 export const NextLocaleToLocale = (locale?: string): Locale => {
