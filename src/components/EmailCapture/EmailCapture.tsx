@@ -1,11 +1,10 @@
-import { captureException } from '@sentry/nextjs';
+import { FunctionComponent, useEffect, useState } from 'react';
 
-import { FunctionComponent, memo, useEffect, useState } from 'react';
-
-import styled from 'styled-components';
-import { NewsletterApi } from '../../api/newsletter';
 import { Button } from '../Button';
 import { Input } from '../Input';
+import { NewsletterApi } from '../../api/newsletter';
+import { captureException } from '@sentry/nextjs';
+import styled from 'styled-components';
 
 const Container = styled.div`
     position: relative;
@@ -192,4 +191,4 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
     );
 };
 
-export default memo(EmailCapture);
+export default EmailCapture;

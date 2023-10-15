@@ -611,7 +611,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                     title={t('add-to-cart')}
                     className={(addedToCart && 'Added') || ''}
                     $added={addedToCart}
-                    data-nosnippet
                     onClick={() => {
                         if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
                         else if (!product || !selectedVariant) return;
@@ -632,7 +631,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                         !selectedVariant.availableForSale || (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
                 >
-                    <span data-nosnippet>
+                    <span>
                         {(!selectedVariant.availableForSale && t('out-of-stock')) ||
                             (addedToCart && t('added-to-cart')) ||
                             t('add-to-cart')}

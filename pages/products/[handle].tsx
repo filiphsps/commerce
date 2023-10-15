@@ -661,26 +661,26 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 if (!selectedVariant?.availableForSale)
                     return (
                         <>
-                            <span data-nosnippet>{t('out-of-stock')}</span>
+                            <span>{t('out-of-stock')}</span>
                         </>
                     );
                 else if (!cartReady)
                     return (
                         <>
-                            <span data-nosnippet>{t('cart-not-ready')}.</span>
+                            <span>{t('cart-not-ready')}.</span>
                         </>
                     );
                 else if (added)
                     return (
                         <>
                             <FiCheck />
-                            <span data-nosnippet>{t('added-to-cart')}</span>
+                            <span>{t('added-to-cart')}</span>
                         </>
                     );
                 return (
                     <>
                         <FiShoppingCart />
-                        <span data-nosnippet> {t('add-to-cart')}</span>
+                        <span> {t('add-to-cart')}</span>
                     </>
                 );
             })()}
