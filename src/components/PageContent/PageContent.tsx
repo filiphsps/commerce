@@ -14,7 +14,7 @@ const Container = styled.div<{ $primary?: boolean }>`
         $primary &&
         css`
             padding: var(--block-spacer-large);
-            gap: var(--block-spacer-large);
+            gap: calc(var(--block-spacer-large) * 2);
         `}
 `;
 
@@ -25,13 +25,7 @@ interface PageContentProps {
     children?: any;
     id?: string;
 }
-const PageContent: FunctionComponent<PageContentProps> = ({
-    style,
-    primary,
-    className,
-    children,
-    id
-}) => {
+const PageContent: FunctionComponent<PageContentProps> = ({ style, primary, className, children, id }) => {
     return <Container {...{ style, className, children, id }} $primary={primary} />;
 };
 
