@@ -86,7 +86,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
-        shopifySalesChannel: ShopifySalesChannel.hydrogen,
+        shopifySalesChannel: ShopifySalesChannel.headless, // Does this actually work?
         currency: locale.currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true,
@@ -192,7 +192,8 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             products,
             url: `https://${domain}${path}`,
             path: path,
-            canonicalUrl: `https://${domain}${path}`
+            canonicalUrl: `https://${domain}${path}`,
+            source: ShopifySalesChannel.headless
         };
 
         sendShopifyAnalytics({
