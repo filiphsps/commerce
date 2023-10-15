@@ -1,5 +1,3 @@
-import { captureException } from '@sentry/nextjs';
-
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
@@ -66,7 +64,7 @@ export const BlogApi = async ({ handle }: { handle: string; locale?: string }) =
 
             return resolve(result);
         } catch (error) {
-            captureException(error);
+            console.error(error);
             return reject(error);
         }
     });
@@ -159,7 +157,6 @@ export const ArticleApi = async ({ handle, blog }: { handle: string; blog: strin
                 }
             });
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

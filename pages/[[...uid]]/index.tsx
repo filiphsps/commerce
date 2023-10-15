@@ -1,26 +1,25 @@
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { Config } from '../../src/util/Config';
+import { CustomPageDocument } from '../../prismicio-types';
+import Error from 'next/error';
+import { FunctionComponent } from 'react';
+import { GetStaticProps } from 'next';
+import { NextLocaleToLocale } from 'src/util/Locale';
+import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
-import { captureException } from '@sentry/nextjs';
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import { GetStaticProps } from 'next';
-import { SSRConfig } from 'next-i18next';
-import { NextSeo } from 'next-seo';
-import dynamic from 'next/dynamic';
-import Error from 'next/error';
-import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import { NextLocaleToLocale } from 'src/util/Locale';
-import { getServerTranslations } from 'src/util/getServerTranslations';
-import { createClient } from '../../prismicio';
-import { CustomPageDocument } from '../../prismicio-types';
-import { components } from '../../slices';
 import { PagesApi } from '../../src/api/page';
-import type { StoreModel } from '../../src/models/StoreModel';
-import { Config } from '../../src/util/Config';
 import { Prefetch } from '../../src/util/Prefetch';
+import { SSRConfig } from 'next-i18next';
+import { SliceZone } from '@prismicio/react';
+import type { StoreModel } from '../../src/models/StoreModel';
+import { asText } from '@prismicio/client';
+import { components } from '../../slices';
+import { createClient } from '../../prismicio';
+import dynamic from 'next/dynamic';
+import { getServerTranslations } from 'src/util/getServerTranslations';
+import { useRouter } from 'next/router';
 
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
@@ -115,7 +114,7 @@ export async function getStaticPaths({ locales }) {
     const paths = pages.paths.flatMap((path) => [
         ...(locales?.map((locale) => ({
             params: {
-                uid: path !== '/' && path.split('/').filter((i) => i) || undefined
+                uid: (path !== '/' && path.split('/').filter((i) => i)) || undefined
             },
             locale
         })) || [])
@@ -185,7 +184,7 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
             };
         }
 
-        captureException(error);
+        console.error(error);
         return {
             props: {},
             revalidate: 1

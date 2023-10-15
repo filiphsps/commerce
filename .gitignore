@@ -27,6 +27,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Sentry Auth Token
-.sentryclirc
-.vercel

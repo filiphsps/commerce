@@ -1,5 +1,3 @@
-import { captureException } from '@sentry/nextjs';
-
 export const NewsletterApi = async ({ email }: { email: string }): Promise<any> => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -18,7 +16,6 @@ export const NewsletterApi = async ({ email }: { email: string }): Promise<any> 
 
             resolve(response);
         } catch (error) {
-            captureException(error);
             console.error(error);
             reject(error);
         }

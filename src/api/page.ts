@@ -1,7 +1,6 @@
 import * as prismic from '@prismicio/client';
 
 import { Config } from 'src/util/Config';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 
 export const PagesApi = async ({
@@ -34,7 +33,6 @@ export const PagesApi = async ({
                 return resolve(await PagesApi({})); // Try again with default locale
             }
 
-            captureException(error);
             console.error(error);
             return reject(error);
         }

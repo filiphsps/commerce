@@ -1,5 +1,4 @@
 import { Config } from 'src/util/Config';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 
 export type NavigationItem = {
@@ -33,7 +32,6 @@ export const NavigationApi = async ({ locale }: { locale?: string }): Promise<Na
                 return resolve(await NavigationApi({})); // Try again with default locale
             }
 
-            captureException(error);
             console.error(error);
             return reject(error);
         }

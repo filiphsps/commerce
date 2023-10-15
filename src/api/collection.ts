@@ -3,7 +3,6 @@ import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { Config } from 'src/util/Config';
-import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
@@ -92,7 +91,6 @@ export const CollectionApi = async ({
                 .replaceAll('\u00A0', ' ');
             return resolve(/*flattenConnection(*/ data.collectionByHandle /*)*/);
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

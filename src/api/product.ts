@@ -3,7 +3,6 @@ import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/s
 
 import { Config } from 'src/util/Config';
 import ConvertUnits from 'convert-units';
-import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
@@ -249,7 +248,6 @@ export const ProductApi = async ({ handle, locale }: { handle: string; locale?: 
 
             return resolve(data.productByHandle);
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -340,7 +338,6 @@ export const ProductsApi = async (
                 }
             });
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -477,7 +474,6 @@ export const ProductVisualsApi = async ({ id, locale }: { id: string; locale?: s
                 return reject(new Error(`404: The requested document cannot be found`));
             }
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

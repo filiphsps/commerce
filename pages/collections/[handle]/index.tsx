@@ -21,7 +21,6 @@ import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../../src/models/StoreModel';
 import { VendorsApi } from '../../../src/api/vendor';
 import { asText } from '@prismicio/client';
-import { captureException } from '@sentry/nextjs';
 import { components } from '../../../slices';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { createClient } from 'prismicio';
@@ -284,7 +283,7 @@ export const getStaticProps: GetStaticProps<{
             };
         }
 
-        captureException(error);
+        console.error(error);
         throw error;
     }
 
@@ -316,7 +315,7 @@ export const getStaticProps: GetStaticProps<{
     try {
         vendors = await VendorsApi({ locale: locale.locale });
     } catch (error) {
-        captureException(error);
+        console.error(error);
     }
 
     return {

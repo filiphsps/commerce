@@ -41,7 +41,6 @@ import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import { asText } from '@prismicio/client';
-import { captureException } from '@sentry/nextjs';
 import { components } from '../../slices';
 import { createClient } from 'prismicio';
 import dynamic from 'next/dynamic';
@@ -1121,7 +1120,7 @@ export const getStaticProps: GetStaticProps<{
             };
         }
 
-        if (error) captureException(error);
+        console.error(error);
         throw error;
     }
 
@@ -1153,7 +1152,7 @@ export const getStaticProps: GetStaticProps<{
                     locale: locale.locale
                 });
             } catch (error: any) {
-                if (error) captureException(error);
+                console.error(error);
             }
 
         try {
@@ -1172,13 +1171,13 @@ export const getStaticProps: GetStaticProps<{
                 locale: locale.locale
             });
         } catch (error: any) {
-            if (error) captureException(error);
+            console.error(error);
         }
 
         try {
             reviews = await ReviewsProductApi({ id: product?.id });
         } catch (error: any) {
-            if (error) captureException(error);
+            console.error(error);
         }
     }
 

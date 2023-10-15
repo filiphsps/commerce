@@ -21,7 +21,6 @@ import { RecommendationApi } from '../../src/api/recommendation';
 import { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { asText } from '@prismicio/client';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 import { getServerTranslations } from 'src/util/getServerTranslations';
 import styled from 'styled-components';
@@ -411,7 +410,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                                         locales: router.locales
                                     });
                                 } catch (error) {
-                                    captureException(error);
+                                    console.error(error);
                                     alert(error.message);
                                     setLoading(false);
                                 }
@@ -477,7 +476,7 @@ export const getStaticProps: GetStaticProps<{
             };
         }
 
-        captureException(error);
+        console.error(error);
         return {
             props: {},
             revalidate: 1
