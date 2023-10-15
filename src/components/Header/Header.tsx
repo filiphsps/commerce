@@ -326,12 +326,7 @@ interface HeaderProps {
     sidebarToggle?: any;
     sidebarOpen?: boolean;
 }
-const HeaderComponent: FunctionComponent<HeaderProps> = ({
-    store,
-    navigation,
-    sidebarToggle,
-    sidebarOpen
-}) => {
+const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, sidebarToggle, sidebarOpen }) => {
     const cart = useCart();
     const router = useRouter();
     const [searchOpen, setSearchOpen] = useState(false);
@@ -343,7 +338,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
 
     useEffect(() => {
         const onScroll = (event: any) => {
-            // https://sweet-side-of-sweden.sentry.io/share/issue/63f138af22f04dbfa157185337d5261b/
             if (!event?.target?.documentElement?.scrollTo) return;
 
             setScrollTop(event?.target?.documentElement?.scrollTop);
@@ -403,8 +397,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                                                 <MenuItem
                                                     key={item.handle + `${index}`}
                                                     className={
-                                                        (router.asPath === '/' &&
-                                                            item?.handle === null) ||
+                                                        (router.asPath === '/' && item?.handle === null) ||
                                                         `/${item?.handle}` === router.asPath
                                                             ? 'Active'
                                                             : ''
@@ -445,11 +438,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         </Link>
                     </Action>
                     <Action>
-                        <Link
-                            title="Language and Region settings"
-                            href="/countries/"
-                            prefetch={false}
-                        >
+                        <Link title="Language and Region settings" href="/countries/" prefetch={false}>
                             <CurrentLocaleFlag />
                         </Link>
                     </Action>
@@ -463,9 +452,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                             })} in your cart`}
                             prefetch={false}
                         >
-                            {!!cart?.totalQuantity && (
-                                <CartIndicator>{cart?.totalQuantity}</CartIndicator>
-                            )}
+                            {!!cart?.totalQuantity && <CartIndicator>{cart?.totalQuantity}</CartIndicator>}
                             <FiShoppingBag />
                         </Link>
                     </Action>

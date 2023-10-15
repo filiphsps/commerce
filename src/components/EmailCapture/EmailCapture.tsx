@@ -3,7 +3,6 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { NewsletterApi } from '../../api/newsletter';
-import { captureException } from '@sentry/nextjs';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -176,7 +175,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                                         return;
                                     }
 
-                                    captureException(error);
+                                    console.error(error);
                                     alert('Something went wrong please try again!');
                                 }
                             }}

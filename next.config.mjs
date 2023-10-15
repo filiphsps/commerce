@@ -1,4 +1,3 @@
-import { withSentryConfig } from '@sentry/nextjs';
 import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 import dns from 'node:dns';
 import { i18n } from './next-i18next.config.cjs';
@@ -54,17 +53,6 @@ let config = {
         VERSION: manifest.version
     },
 
-    sentry: {
-        // Upload a larger set of source maps for prettier stack traces (increases build time)
-        widenClientFileUpload: true,
-        // Transpiles SDK to be compatible with IE11 (increases bundle size)
-        transpileClientSDK: true,
-        // Hides source maps from generated client bundles
-        hideSourceMaps: false,
-        // Automatically tree-shake Sentry logger statements to reduce bundle size
-        disableLogger: true
-    },
-
     async redirects() {
         return [
             {
@@ -108,28 +96,7 @@ let config = {
                 ]
             }
         ];
-    },
-
-    webpack: (config, { webpack }) => {
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                __SENTRY_DEBUG__: false,
-                __SENTRY_TRACING__: false
-            })
-        );
-
-        // return the modified config
-        return config;
     }
 };
 
-export default withSentryConfig(withNextPluginPreval(config), {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
-
-    // Suppresses source map uploading logs during build
-    silent: true,
-
-    org: process.env.SENTRY_ORG || 'nordcom',
-    project: process.env.SENTRY_PROJECT || 'sweetsideofsweden-frontend'
-});
+export default withNextPluginPreval(config);

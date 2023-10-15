@@ -1,6 +1,5 @@
 import { Config } from 'src/util/Config';
 import type { HeaderModel } from '../models/HeaderModel';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 
 export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
@@ -22,7 +21,7 @@ export const HeaderApi = async ({ locale }: { locale?: string }): Promise<Header
                 return reject(new Error('404: The requested document cannot be found'));
             }
 
-            captureException(error);
+            console.error(error);
             return reject(error);
         }
     });

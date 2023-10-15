@@ -1,6 +1,5 @@
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '../models/VendorModel';
-import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 import { titleToHandle } from '../util/TitleToHandle';
@@ -48,7 +47,6 @@ export const VendorsApi = async ({ locale }: { locale?: string }): Promise<Vendo
 
             return resolve(Convertor(res?.data?.products?.edges));
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

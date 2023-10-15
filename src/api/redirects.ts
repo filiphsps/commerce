@@ -1,9 +1,8 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
 
+import { gql } from '@apollo/client';
 import { Config } from 'src/util/Config';
 import type { RedirectModel } from '../models/RedirectModel';
-import { captureException } from '@sentry/nextjs';
-import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (
@@ -69,7 +68,6 @@ export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Arr
 
             return resolve(Convertor(redirects));
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

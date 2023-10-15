@@ -3,7 +3,6 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
 import { Config } from 'src/util/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '../models/StoreModel';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
@@ -40,7 +39,6 @@ export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Cou
 
             return resolve(localData?.localization?.availableCountries);
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -59,7 +57,6 @@ export const LocalesApi = async (): Promise<string[]> => {
 
             return resolve(locales);
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }
@@ -159,7 +156,6 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }
 
-            captureException(error);
             console.error(error);
             return reject(error);
         }

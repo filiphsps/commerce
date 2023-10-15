@@ -15,7 +15,6 @@ import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../src/models/StoreModel';
 import { asText } from '@prismicio/client';
-import { captureException } from '@sentry/nextjs';
 import { components } from '../slices';
 import { createClient } from 'prismicio';
 import { useRouter } from 'next/router';
@@ -102,11 +101,7 @@ interface CountriesPageProps {
     countries: Country[];
     store: StoreModel;
 }
-const CountriesPage: FunctionComponent<CountriesPageProps> = ({
-    page,
-    countries: countriesData,
-    store
-}) => {
+const CountriesPage: FunctionComponent<CountriesPageProps> = ({ page, countries: countriesData, store }) => {
     const router = useRouter();
     const { i18n } = useTranslation('common');
 
@@ -149,9 +144,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }locales/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}locales/`
                     })) || []
                 }
                 openGraph={{
@@ -196,9 +189,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({
                                                 await router.push('/', undefined, {
                                                     locale: locale.locale
                                                 });
-                                                await i18n.changeLanguage(
-                                                    locale.locale.split('-').at(0)
-                                                );
+                                                await i18n.changeLanguage(locale.locale.split('-').at(0));
                                             }}
                                         >
                                             <LocaleFlag>
@@ -273,7 +264,7 @@ export async function getStaticProps({ locale, previewData }) {
             };
         }
 
-        captureException(error);
+        console.error(error);
         return {
             props: {},
             revalidate: 1

@@ -3,7 +3,6 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
 import { Config } from 'src/util/Config';
 import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import { captureException } from '@sentry/nextjs';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
@@ -72,7 +71,6 @@ export const SearchApi = async ({
                 productFilters
             });
         } catch (error) {
-            captureException(error);
             console.error(error);
             return reject(error);
         }

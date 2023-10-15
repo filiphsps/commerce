@@ -11,7 +11,6 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import type { StoreModel } from '../../src/models/StoreModel';
-import { captureException } from '@sentry/nextjs';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -152,7 +151,7 @@ export async function getStaticProps({ locale }) {
             };
         }
 
-        captureException(error);
+        console.error(error);
         return {
             props: {
                 error: error.message

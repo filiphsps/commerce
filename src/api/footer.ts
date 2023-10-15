@@ -1,6 +1,5 @@
 import { Config } from 'src/util/Config';
 import { FooterModel } from 'src/models/FooterModel';
-import { captureException } from '@sentry/nextjs';
 import { createClient } from 'prismicio';
 
 export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {
@@ -25,7 +24,6 @@ export const FooterApi = async ({ locale }: { locale?: string }): Promise<Footer
                 return resolve(await FooterApi({})); // Try again with default locale
             }
 
-            captureException(error);
             console.error(error);
             return reject(error);
         }

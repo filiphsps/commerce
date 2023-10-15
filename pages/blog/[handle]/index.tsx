@@ -12,7 +12,6 @@ import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '../../../src/models/StoreModel';
-import { captureException } from '@sentry/nextjs';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -151,9 +150,9 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }blog/${article.handle}/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/${
+                            article.handle
+                        }/`
                     })) || []
                 }
                 openGraph={{
@@ -197,11 +196,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                         <ArticleHeader>
                             {(article.image && (
                                 <Banner>
-                                    <Image
-                                        src={article.image.url}
-                                        alt={article.image.alt || ''}
-                                        layout="fill"
-                                    />
+                                    <Image src={article.image.url} alt={article.image.alt || ''} layout="fill" />
                                 </Banner>
                             )) ||
                                 null}
@@ -210,9 +205,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
 
                             <ArticleMeta>
                                 <ArticleAuthor>by {article.author.name}</ArticleAuthor>
-                                <ArticleDate>
-                                    {new Date(article.published_at).toDateString()}
-                                </ArticleDate>
+                                <ArticleDate>{new Date(article.published_at).toDateString()}</ArticleDate>
                             </ArticleMeta>
                         </ArticleHeader>
 
@@ -233,9 +226,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
 
                             <SidebarTitle>Tags</SidebarTitle>
                             <ArticleTags>
-                                {article?.tags?.map((tag) => (
-                                    <ArticleTag key={tag}>{tag}</ArticleTag>
-                                ))}
+                                {article?.tags?.map((tag) => <ArticleTag key={tag}>{tag}</ArticleTag>)}
                             </ArticleTags>
                         </SidebarContent>
                     </Sidebar>
@@ -309,7 +300,7 @@ export async function getStaticProps({ params, locale }) {
             };
         }
 
-        captureException(error);
+        console.error(error);
         return {
             props: {
                 error: error.message
@@ -324,7 +315,7 @@ export async function getStaticProps({ params, locale }) {
             locale
         })) as any;
     } catch (error) {
-        captureException(error);
+        console.error(error);
     }
 
     return {
