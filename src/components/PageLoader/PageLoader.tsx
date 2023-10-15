@@ -1,5 +1,4 @@
-import React, { FunctionComponent, memo } from 'react';
-
+import { FunctionComponent } from 'react';
 import Loader from '../Loader';
 import styled from 'styled-components';
 
@@ -21,4 +20,4 @@ const PageLoader: FunctionComponent<PageLoaderProps> = ({ light }) => {
     );
 };
 
-export default memo(PageLoader);
+export default PageLoader;

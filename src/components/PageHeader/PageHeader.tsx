@@ -1,4 +1,4 @@
-import React, { CSSProperties, FunctionComponent, memo } from 'react';
+import React, { CSSProperties, FunctionComponent } from 'react';
 
 import Content from '../Content';
 import styled from 'styled-components';
@@ -88,4 +88,4 @@ const PageHeader: FunctionComponent<PageHeaderProps> = ({
     );
 };
 
-export default memo(PageHeader);
+export default PageHeader;

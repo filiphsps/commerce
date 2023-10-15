@@ -1,8 +1,8 @@
-import { FunctionComponent, memo } from 'react';
+import { FunctionComponent } from 'react';
 
 import Link from 'next/link';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
 const Container = styled.div`
     position: absolute;
@@ -81,11 +81,7 @@ interface HeaderNavigationProps {
     open: boolean;
     toggle: any;
 }
-const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
-    navigation,
-    open,
-    toggle
-}) => {
+const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation, open, toggle }) => {
     const router = useRouter();
 
     return (
@@ -127,9 +123,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
                                         onClick={() => toggle(false)}
                                         prefetch={false}
                                     >
-                                        <NavigationSubItemTitle>
-                                            {item.title}
-                                        </NavigationSubItemTitle>
+                                        <NavigationSubItemTitle>{item.title}</NavigationSubItemTitle>
 
                                         {item.description && (
                                             <NavigationSubItemDescription>
@@ -147,4 +141,4 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({
     );
 };
 
-export default memo(HeaderNavigation);
+export default HeaderNavigation;

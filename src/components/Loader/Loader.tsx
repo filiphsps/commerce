@@ -1,12 +1,10 @@
-import { FunctionComponent, memo } from 'react';
-
+import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Metronome = styled.div<{ $dark?: boolean; $speed?: number }>`
     --size: 6rem;
     --speed: ${({ $speed }) => $speed || 1.5}s;
-    --accent: ${({ $dark }) =>
-        ($dark && 'var(--accent-secondary-dark)') || 'var(--accent-secondary-light)'};
+    --accent: ${({ $dark }) => ($dark && 'var(--accent-secondary-dark)') || 'var(--accent-secondary-light)'};
 
     position: relative;
     display: flex;
@@ -101,4 +99,4 @@ const Loader: FunctionComponent<LoaderProps> = ({ light }) => {
     );
 };
 
-export default memo(Loader);
+export default Loader;
