@@ -1,12 +1,12 @@
 {
     "name": "sweetsideofsweden-frontend",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "private": true,
     "prettier": "@nordcom/prettier",
     "type": "module",
     "engines": {
         "npm": ">=8",
-        "node": ">=18.12"
+        "node": "18"
     },
     "cacheDirectories": [
         ".next/cache"
@@ -91,6 +91,6 @@
         "budget": null,
         "budgetPercentIncreaseRed": 20,
         "minimumChangeThreshold": 0,
-        "showDetails": true
+        "showDetails": false
     }
 }
