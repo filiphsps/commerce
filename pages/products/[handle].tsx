@@ -35,8 +35,6 @@ import type { ProductPageDocument } from 'prismicio-types';
 import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
 import { RecommendationApi } from '../../src/api/recommendation';
 import { RedirectProductApi } from '../../src/api/redirects';
-import type { ReviewsModel } from '../../src/models/ReviewsModel';
-import { ReviewsProductApi } from '../../src/api/reviews';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '../../src/models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
@@ -52,8 +50,6 @@ import useSWR from 'swr';
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));
 const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines), { ssr: false });
-const Reviews = dynamic(() => import('@/components/Reviews'), { ssr: false });
-const ReviewStars = dynamic(() => import('@/components/ReviewStars'), { ssr: false });
 const PageHeader = dynamic(() => import('@/components/PageHeader'), {});
 const PageContent = dynamic(() => import('@/components/PageContent'), {});
 const Page = dynamic(() => import('@/components/Page'), {});
@@ -249,9 +245,7 @@ const Header = styled.div`
 const HeaderContent = styled.div`
     grid-area: header;
     display: grid;
-    grid-template-areas:
-        'page-header pricing'
-        'reviews reviews';
+    grid-template-areas: 'page-header pricing';
     grid-template-columns: auto 1fr;
     gap: var(--block-spacer);
     justify-content: space-between;
@@ -448,10 +442,6 @@ const InformationContent = styled(TabContent)`
     }
 `;
 
-const ReviewsContainer = styled.div`
-    grid-area: reviews;
-`;
-
 const ProductPageContent = styled(PageContent)<{ background?: string }>`
     position: relative;
 
@@ -496,7 +486,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     page,
     visuals: visualsData,
     recommendations: recommendationsData,
-    reviews: reviewsData,
     store
 }) => {
     const router = useRouter();
@@ -550,19 +539,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         ([, props]) => RecommendationApi(props),
         {
             fallbackData: recommendationsData || undefined
-        }
-    );
-    const { data: reviews } = useSWR(
-        [
-            'ReviewsProductApi',
-            {
-                id: product?.id!,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ReviewsProductApi(props),
-        {
-            fallbackData: reviewsData || undefined
         }
     );
 
@@ -638,13 +614,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 />
 
                 {pricing}
-
-                {(reviews?.count && reviews.count > 0 && (
-                    <ReviewsContainer>
-                        <ReviewStars score={reviews?.rating || 0} totalReviews={reviews?.count || 0} />
-                    </ReviewsContainer>
-                )) ||
-                    null}
             </HeaderContent>
         </Header>
     );
@@ -805,12 +774,10 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         (product.images?.edges?.map?.((edge) => edge?.node?.url).filter((i) => i) as string[]) || []
                     }
                     description={product.description || ''}
-                    aggregateRating={
-                        (reviews?.count || 0) > 0 && {
-                            ratingValue: `${reviews?.rating || 5}`,
-                            reviewCount: `${reviews?.count || 1}`
-                        }
-                    }
+                    aggregateRating={{
+                        ratingValue: '5',
+                        reviewCount: '1'
+                    }}
                     offers={[
                         {
                             price: Number.parseFloat(variant.price.amount!),
@@ -911,9 +878,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                 >
                                     Information
                                 </Tab>
-                                <Tab className={tab == 'reviews' ? 'Active' : ''} onClick={() => setTab('reviews')}>
-                                    Reviews
-                                </Tab>
                             </Tabs>
                             <TabContent className={tab == 'details' ? 'Active' : ''}>
                                 <Description
@@ -967,10 +931,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     </ul>
                                 </Description>
                             </InformationContent>
-
-                            <TabContent className={tab == 'reviews' ? 'Active' : ''}>
-                                <Reviews product={product as any} reviews={reviews} />
-                            </TabContent>
                         </Details>
                     </ProductContainer>
                 </ProductContainerWrapper>
@@ -1062,7 +1022,6 @@ export const getStaticProps: GetStaticProps<{
     product?: Product | null;
     visuals?: ProductVisuals | null;
     recommendations?: Product[] | null;
-    reviews?: ReviewsModel | null;
     analytics?: Partial<ShopifyPageViewPayload>;
     store?: StoreModel;
 }> = async ({ params, locale: localeData, previewData }) => {
@@ -1104,7 +1063,6 @@ export const getStaticProps: GetStaticProps<{
     let visuals: ProductVisuals | null = null;
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
-    let reviews: ReviewsModel | null = null;
     let page: ProductPageDocument<string> | null = null;
     let translations: SSRConfig | undefined = undefined;
 
@@ -1173,12 +1131,6 @@ export const getStaticProps: GetStaticProps<{
         } catch (error: any) {
             console.error(error);
         }
-
-        try {
-            reviews = await ReviewsProductApi({ id: product?.id });
-        } catch (error: any) {
-            console.error(error);
-        }
     }
 
     return {
@@ -1188,7 +1140,6 @@ export const getStaticProps: GetStaticProps<{
             visuals,
             page,
             recommendations,
-            reviews,
             analytics: {
                 pageType: AnalyticsPageType.product,
                 resourceId: product?.id || '',
