@@ -1,6 +1,6 @@
 import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 
-import { Config } from '../util/Config';
+import { Config } from '@/utils/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
 

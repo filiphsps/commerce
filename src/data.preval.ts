@@ -1,4 +1,4 @@
-import { Config } from './util/Config';
+import { Config } from '@/utils/Config';
 import { FooterApi } from './api/footer';
 import type { FooterModel } from './models/FooterModel';
 import { HeaderApi } from './api/header';

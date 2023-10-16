@@ -1,4 +1,4 @@
-import { Locale } from '../util/Locale';
+import { Locale } from '@/utils/Locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';

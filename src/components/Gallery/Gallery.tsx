@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
-import { ImageLoader } from '../../util/ImageLoader';
+import { ImageLoader } from '@/utils/ImageLoader';
 
 const Previews = styled.div`
     position: relative;
@@ -188,9 +188,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
 
     if (!images) return null;
 
-    const image =
-        images.edges.find((image) => image.node && image.node.id === selected)?.node ||
-        images.edges[0].node;
+    const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
         <Container
             className={(pastel && 'Pastel') || ''}

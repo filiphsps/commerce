@@ -1,4 +1,4 @@
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import { FooterModel } from 'src/models/FooterModel';
 import { createClient } from '../../prismicio';
 

@@ -7,10 +7,10 @@ import styled, { css } from 'styled-components';
 
 import { Button } from '../Button';
 import Image from 'next/image';
-import { ImageLoader } from '../../util/ImageLoader';
+import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';
 import type { StoreModel } from '../../models/StoreModel';
-import { titleToHandle } from '../../util/TitleToHandle';
+import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useTranslation } from 'next-i18next';

@@ -1,8 +1,8 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 

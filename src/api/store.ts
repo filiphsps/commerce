@@ -1,6 +1,6 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '../models/StoreModel';
 import { createClient } from '../../prismicio';

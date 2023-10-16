@@ -1,8 +1,8 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
-import { gql } from '@apollo/client';
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import type { RedirectModel } from '../models/RedirectModel';
+import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
 export const Convertor = (

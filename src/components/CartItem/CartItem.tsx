@@ -1,10 +1,4 @@
-import {
-    CartLineQuantity,
-    CartLineQuantityAdjustButton,
-    Money,
-    useCart,
-    useCartLine
-} from '@shopify/hydrogen-react';
+import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -12,10 +6,10 @@ import styled, { css } from 'styled-components';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Loader from '../Loader';
-import { NextLocaleToLocale } from 'src/util/Locale';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductApi } from '../../api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import { titleToHandle } from '../../util/TitleToHandle';
+import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -311,10 +305,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
     useEffect(() => {
         if (!product) return;
 
-        setVariant(
-            product?.variants.edges.find?.((edge) => edge.node.id === line.merchandise?.id)?.node ||
-                null
-        );
+        setVariant(product?.variants.edges.find?.((edge) => edge.node.id === line.merchandise?.id)?.node || null);
     }, [product]);
 
     if (!line || !product || !variant) {
@@ -344,9 +335,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
                     <Link href={`/products/${product?.handle}/`}>
                         <TempImage
                             src={
-                                product.images.edges.find(
-                                    (edge) => edge.node.id === variant.image?.id
-                                )?.node.url || ''
+                                product.images.edges.find((edge) => edge.node.id === variant.image?.id)?.node.url || ''
                             }
                             layout="responsive"
                             width="6rem"
@@ -360,9 +349,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`}>
-                            {product?.vendor}
-                        </Link>
+                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`}>{product?.vendor}</Link>
                     </DetailsBrand>
                     <DetailsTitle>
                         <Link href={`/products/${product?.handle}/`}>{product?.title}</Link>
@@ -374,15 +361,9 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
                 <PriceSection>
                     <Price className={`${(discount > 0 && 'Sale') || ''}`}>
                         {discount > 0 && variant.compareAtPrice?.amount && (
-                            <Money
-                                data={variant.compareAtPrice}
-                                className="Currency Currency-Sale"
-                            />
+                            <Money data={variant.compareAtPrice} className="Currency Currency-Sale" />
                         )}
-                        <Money
-                            data={variant.price}
-                            className={(discount > 0 && 'Currency Currency-Discount') || ''}
-                        />
+                        <Money data={variant.price} className={(discount > 0 && 'Currency Currency-Discount') || ''} />
                     </Price>
                 </PriceSection>
             )) ||
@@ -410,9 +391,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
                                                 return;
                                             }
 
-                                            const quantity = Number.parseInt(
-                                                event.currentTarget.value
-                                            );
+                                            const quantity = Number.parseInt(event.currentTarget.value);
                                             if (quantity === line.quantity) return;
 
                                             cart.linesUpdate([

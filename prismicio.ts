@@ -1,5 +1,5 @@
 import type { ClientConfig } from '@prismicio/client';
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
 import { createClient as prismicCreateClient } from '@prismicio/client';

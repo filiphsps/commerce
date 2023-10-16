@@ -1,16 +1,16 @@
-import { FunctionComponent, useEffect, useState } from 'react';
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
+import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useCart } from '@shopify/hydrogen-react';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Image from 'next/image';
+import { ImageLoader } from '@/utils/ImageLoader';
+import { Input } from '@/components/Input';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Pluralize } from '@/utils/Pluralize';
 import type { StoreModel } from 'src/models/StoreModel';
-import { ImageLoader } from '../../util/ImageLoader';
-import { Pluralize } from '../../util/Pluralize';
-import { Input } from '../Input';
-import { CurrentLocaleFlag } from '../layout/CurrentLocaleFlag';
+import { useCart } from '@shopify/hydrogen-react';
+import { useRouter } from 'next/router';
 
 const Content = styled.div`
     display: grid;
