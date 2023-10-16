@@ -37,7 +37,7 @@ let config = {
     },
     compiler: {
         styledComponents: true,
-        removeConsole: {
+        removeConsole: process.env.NODE_ENV === 'production' && {
             exclude: ['warn', 'error'],
         },
     },

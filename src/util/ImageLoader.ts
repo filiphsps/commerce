@@ -1,7 +1,9 @@
 import type { ImageLoader as ImageLoaderType } from 'next/image';
 
 export const ImageLoader: ImageLoaderType = ({ src, width, quality }) => {
-    let res = `${src}${(src.includes('?') && '&') || '?'}width=${width}${(quality && `&quality=${quality}`) || ''}`;
+    if (src.includes('images.prismic.io')) {
+        return `${src}${(src.includes('?') && '&') || '?'}q=${quality || 75}`;
+    }
 
-    return res;
+    return `${src}${(src.includes('?') && '&') || '?'}width=${width}${(quality && `&quality=${quality}`) || ''}`;
 };
