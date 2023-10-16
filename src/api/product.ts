@@ -3,8 +3,8 @@ import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/s
 
 import { Config } from '@/utils/Config';
 import ConvertUnits from 'convert-units';
-import { gql } from '@apollo/client';
-import { storefrontClient } from './shopify';
+import { gql } from 'graphql-tag';
+import { storefrontClient } from '@/api/shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { storefrontClient } from './shopify';
 
 export const BlogApi = async ({ handle }: { handle: string; locale?: string }) => {

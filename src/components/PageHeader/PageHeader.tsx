@@ -1,6 +1,6 @@
 import type { CSSProperties, FunctionComponent } from 'react';
 
-import Content from '../Content';
+import Content from '@/components/Content';
 import styled from 'styled-components';
 
 const Container = styled.div`

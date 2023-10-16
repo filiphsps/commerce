@@ -4,7 +4,7 @@ import { Config } from '@/utils/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
 
 export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {

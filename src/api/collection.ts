@@ -3,8 +3,8 @@ import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { Config } from '@/utils/Config';
-import { gql } from '@apollo/client';
-import { storefrontClient } from './shopify';
+import { gql } from 'graphql-tag';
+import { storefrontClient } from '@/api/shopify';
 
 export const CollectionApi = async ({
     handle,
