@@ -6,7 +6,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import ContentComponent from '@/components/Content';
 import Error from 'next/error';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Page from '@/components/Page';

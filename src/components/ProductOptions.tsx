@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ConvertToLocalMeasurementSystem } from 'src/api/product';
+import { ConvertToLocalMeasurementSystem } from '@/api/product';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 

@@ -1,10 +1,10 @@
 import styled, { css } from 'styled-components';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { CollectionApi } from 'src/api/collection';
-import { FunctionComponent } from 'react';
+import { CollectionApi } from '@/api/collection';
+import type { FunctionComponent } from 'react';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type { StoreModel } from 'src/models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';

@@ -2,7 +2,7 @@ import { Image, ProductPrice } from '@shopify/hydrogen-react';
 import { Subtitle, Title } from '@/components/PageHeader/PageHeader';
 
 import { AppendShopifyParameters } from './ProductCard/ProductCard';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Link from 'next/link';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';

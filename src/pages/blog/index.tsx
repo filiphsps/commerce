@@ -3,7 +3,7 @@ import { BlogApi } from '@/api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import Error from 'next/error';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';

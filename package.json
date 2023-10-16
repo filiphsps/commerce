@@ -2,7 +2,6 @@
     "name": "sweetsideofsweden-frontend",
     "version": "1.4.0",
     "private": true,
-    "prettier": "@nordcom/prettier",
     "type": "module",
     "engines": {
         "npm": ">=8",
@@ -11,22 +10,21 @@
     "cacheDirectories": [
         ".next/cache"
     ],
+    "prettier": "@nordcom/prettier",
     "scripts": {
         "prepare": "husky install",
+        "start": "next start -p $PORT",
         "dev": "next dev",
         "build": "next build",
         "postbuild": "npm run sitemap",
-        "sitemap": "next-sitemap && npm run sitemap:pretty",
-        "sitemap:pretty": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
-        "start": "next start -p $PORT",
+        "sitemap": "next-sitemap",
+        "postsitemap": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
         "lint": "npm-run-all --parallel lint:**",
         "lint:next": "next lint",
         "lint:prettier": "prettier src/**/*.* --check",
         "lint:types": "tsc --project tsconfig.json -noEmit",
-        "test": "npm-run-all test:*",
-        "test:jest": "jest --coverage",
-        "watch:test": "jest --watch",
-        "format": "npm-run-all prettier:format:*",
+        "test": "npm-run-all --parallel test:*",
+        "test:jest": "jest --config jest.config.cjs",
         "slicemachine": "start-slicemachine"
     },
     "author": {
@@ -41,9 +39,20 @@
             "url": "https://github.com/filiphsps/"
         }
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+    },
+    "keywords": [
+        "nextjs",
+        "react"
+    ],
+    "bugs": {
+        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+    },
     "homepage": "https://www.sweetsideofsweden.com/",
     "browserslist": [
-        ">0.3%",
+        ">0.5%",
         "defaults",
         "supports es6-module",
         "supports css-grid"
@@ -80,18 +89,15 @@
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.20",
-        "@testing-library/react": "14.0.0",
         "@types/accept-language-parser": "1.5.4",
         "@types/color": "3.0.4",
         "@types/convert-units": "2.3.7",
-        "@types/enzyme": "3.10.14",
         "@types/jest": "29.5.5",
         "@types/node": "18.18.5",
         "@types/nprogress": "0.2.1",
         "@types/react": "18.2.28",
         "@types/styled-components": "5.1.28",
         "babel-plugin-module-resolver": "5.0.0",
-        "enzyme": "3.11.0",
         "eslint": "8.51.0",
         "eslint-config-next": "13.5.5",
         "eslint-config-prettier": "9.0.0",
@@ -107,7 +113,7 @@
         "slice-machine-ui": "1.17.0"
     },
     "nextBundleAnalysis": {
-        "budget": null,
+        "budget": 248400,
         "budgetPercentIncreaseRed": 20,
         "minimumChangeThreshold": 0,
         "showDetails": false

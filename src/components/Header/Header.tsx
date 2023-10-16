@@ -8,7 +8,7 @@ import { ImageLoader } from '@/utils/ImageLoader';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import { Pluralize } from '@/utils/Pluralize';
-import type { StoreModel } from 'src/models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 

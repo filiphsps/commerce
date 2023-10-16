@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 const Container = styled.div<{ $primary?: boolean }>`
     display: flex;

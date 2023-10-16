@@ -6,7 +6,7 @@ import { Config } from '@/utils/Config';
 import { CountriesApi } from '@/api/store';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CustomPageDocument } from '@/prismic/types';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
