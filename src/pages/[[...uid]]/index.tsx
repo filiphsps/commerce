@@ -8,8 +8,6 @@ import Error from 'next/error';
 import type { FunctionComponent } from 'react';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
 import { PagesApi } from '@/api/page';
 import { Prefetch } from '@/utils/Prefetch';
 import type { SSRConfig } from 'next-i18next';
@@ -22,6 +20,8 @@ import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import { useRouter } from 'next/router';
 
+const Page = dynamic(() => import('@/components/Page'));
+const PageContent = dynamic(() => import('@/components/PageContent'));
 const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 interface CustomPageProps {

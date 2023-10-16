@@ -45,8 +45,8 @@ import { useTranslation } from 'next-i18next';
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));
 const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines), { ssr: false });
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
 const PageContent = dynamic(() => import('@/components/PageContent'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 const Page = dynamic(() => import('@/components/Page'));
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
 

@@ -12,10 +12,6 @@ import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
-import PageLoader from '@/components/PageLoader';
 import { SearchApi } from '@/api/search';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { SliceZone } from '@prismicio/react';
@@ -27,6 +23,11 @@ import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const Page = dynamic(() => import('@/components/Page'));
+const PageContent = dynamic(() => import('@/components/PageContent'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const PageLoader = dynamic(() => import('@/components/PageLoader'));
 
 const ProductSearchFilters = dynamic(
     () => import('@/components/ProductSearchFilters').then((c) => c.ProductSearchFilters),

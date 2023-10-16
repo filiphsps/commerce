@@ -10,17 +10,19 @@ import type { FunctionComponent } from 'react';
 import type { GetStaticProps } from 'next';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import { components } from '@/slices';
 import { createClient } from '@/prismic';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useTranslation } from 'next-i18next';
+
+const Page = dynamic(() => import('@/components/Page'));
+const PageContent = dynamic(() => import('@/components/PageContent'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 const LocalesList = styled.article`
     display: grid;
