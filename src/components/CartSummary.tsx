@@ -1,13 +1,14 @@
 import { CartCost, Money, useCart } from '@shopify/hydrogen-react';
 import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button } from './Button';
-import { CartCoupons } from './CartCoupons';
-import { CartNote } from './CartNote';
-import { FreeShippingProgress } from './FreeShippingProgress';
+import { Button } from '@/components/Button';
+import { CartCoupons } from '@/components/CartCoupons';
+import { CartNote } from '@/components/CartNote';
+import { FreeShippingProgress } from '@/components/FreeShippingProgress';
+import type { FunctionComponent } from 'react';
 import Link from 'next/link';
-import PageLoader from './PageLoader';
+import PageLoader from '@/components/PageLoader';
 import { Pluralize } from '@/utils/Pluralize';
 import styled from 'styled-components';
 import { useTranslation } from 'next-i18next';

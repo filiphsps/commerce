@@ -45,19 +45,19 @@ export const BlogApi = async ({ handle }: { handle: string; locale?: string }) =
 
             if (errors) throw errors;
             let result = data.blogByHandle;
-            result.articles = result.articles.edges.map((i) => ({
-                id: i.node.id,
-                handle: i.node.handle,
-                title: i.node.title,
-                excerpt: i.node.excerpt,
-                published_at: i.node.publishedAt,
+            result.articles = result.articles.edges.map((article: any) => ({
+                id: article.node.id,
+                handle: article.node.handle,
+                title: article.node.title,
+                excerpt: article.node.excerpt,
+                published_at: article.node.publishedAt,
 
                 image:
-                    (i.node.image && {
-                        url: i.node.image.url,
-                        width: i.node.image.width,
-                        height: i.node.image.height,
-                        alt: i.node.image.altText
+                    (article.node.image && {
+                        url: article.node.image.url,
+                        width: article.node.image.width,
+                        height: article.node.image.height,
+                        alt: article.node.image.altText
                     }) ||
                     null
             }));

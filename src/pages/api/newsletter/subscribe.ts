@@ -1,4 +1,6 @@
-export default async function handler(req, res) {
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = JSON.parse(req.body);
     if (!body?.email)
         return res.status(400).json({
@@ -15,8 +17,7 @@ export default async function handler(req, res) {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            'api-key':
-                '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' // FIXME: Configurable
+            'api-key': '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' // FIXME: Configurable
         },
         body: JSON.stringify({
             updateEnabled: false,
@@ -27,4 +28,4 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     return res.status(response.status).json(data);
-}
+};

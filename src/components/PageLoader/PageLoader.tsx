@@ -1,5 +1,5 @@
 import type { FunctionComponent } from 'react';
-import Loader from '../Loader';
+import Loader from '@/components/Loader';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

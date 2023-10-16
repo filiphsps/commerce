@@ -1,8 +1,9 @@
-import { FunctionComponent, useState } from 'react';
-import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
+import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
+import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
+import type { Locale } from '@/utils/Locale';
 import { NavigationApi } from '@/api/navigation';
 import type { StoreModel } from '@/models/StoreModel';
 import { asHTML } from '@prismicio/client';
@@ -13,6 +14,7 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useState } from 'react';
 
 const Header = dynamic(() => import('@/components/Header'));
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));

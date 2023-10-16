@@ -1,4 +1,5 @@
 import { ArticleApi, BlogApi } from '@/api/blog';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -218,7 +219,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                     <Sidebar>
                         <SidebarContent>
                             <SidebarTitle>Latest Articles</SidebarTitle>
-                            {blog?.articles?.map((article) => (
+                            {blog?.articles?.map((article: any) => (
                                 <SidebarLink key={article.id}>
                                     <Link href={`/blog/${article.handle}/`}>{article.title}</Link>
                                 </SidebarLink>
@@ -226,7 +227,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
 
                             <SidebarTitle>Tags</SidebarTitle>
                             <ArticleTags>
-                                {article?.tags?.map((tag) => <ArticleTag key={tag}>{tag}</ArticleTag>)}
+                                {article?.tags?.map((tag: string) => <ArticleTag key={tag}>{tag}</ArticleTag>)}
                             </ArticleTags>
                         </SidebarContent>
                     </Sidebar>
@@ -250,12 +251,12 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
     );
 };
 
-export async function getStaticPaths({ locales }) {
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     const blog: any = await BlogApi({ handle: 'news' });
 
     let paths = [
         ...blog.articles
-            ?.map((article) => [
+            ?.map((article: any) => [
                 {
                     params: { handle: article?.handle }
                 },
@@ -265,22 +266,24 @@ export async function getStaticPaths({ locales }) {
                 })) || [])
             ])
             .flat()
-            .filter((a) => a?.params?.handle)
+            .filter((a: any) => a?.params?.handle)
     ];
 
     return { paths, fallback: 'blocking' };
-}
+};
 
-export async function getStaticProps({ params, locale }) {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     let handle = '';
-    if (Array.isArray(params.handle)) {
-        handle = params?.handle?.join('');
+    if (params && Array.isArray(params.handle)) {
+        handle = params?.handle?.join('') || '';
     } else {
-        handle = params?.handle;
+        handle = (params?.handle as string) || '';
     }
 
-    if (handle === 'undefined')
+    // TODO: Utility function
+    if (!params || !handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
+            notFound: true,
             revalidate: false
         };
 
@@ -293,7 +296,7 @@ export async function getStaticProps({ params, locale }) {
             blog: 'news',
             locale
         })) as any;
-    } catch (error) {
+    } catch (error: any) {
         if (error.message?.includes('404')) {
             return {
                 notFound: true
@@ -328,6 +331,6 @@ export async function getStaticProps({ params, locale }) {
         },
         revalidate: 60
     };
-}
+};
 
 export default ArticlePage;

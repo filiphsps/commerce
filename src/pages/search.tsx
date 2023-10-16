@@ -1,8 +1,8 @@
-import { AnalyticsPageType, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useEffect, useState } from 'react';
 
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import { Config } from '@/utils/Config';
@@ -17,6 +17,7 @@ import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
 import { SearchApi } from '@/api/search';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';

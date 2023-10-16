@@ -1,8 +1,9 @@
-import { FunctionComponent, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Input } from './Input';
-import { Label } from './Label';
+import type { FunctionComponent } from 'react';
+import { Input } from '@/components/Input';
+import { Label } from '@/components/Label';
+import { useState } from 'react';
 
 const Container = styled.div`
     display: flex;
@@ -86,7 +87,7 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
         case 'LIST': {
             return (
                 <Values>
-                    {filter.values.map((value) => (
+                    {filter.values.map((value: any) => (
                         <ListOption
                             key={value.id}
                             selected={options[filter.id] === value.id}
@@ -104,7 +105,7 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
         case 'PRICE_RANGE': {
             return (
                 <Values>
-                    {filter.values.map((value) => {
+                    {filter.values.map((value: any) => {
                         const input = JSON.parse(value.input)[value.id.split('.').at(-1)];
 
                         return (

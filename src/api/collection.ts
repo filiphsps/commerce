@@ -73,7 +73,7 @@ export const CollectionApi = async ({
             if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             data.collectionByHandle.products.edges = await Promise.all(
-                data.collectionByHandle.products.edges.map(async (edge) => {
+                data.collectionByHandle.products.edges.map(async (edge: any) => {
                     if (edge.node.visuals?.value) {
                         edge.node.visualsData = await ProductVisualsApi({
                             id: edge.node.visuals.value,
@@ -121,6 +121,6 @@ export const CollectionsApi = async (): Promise<
 
         if (errors) return reject(new Error(errors.join('\n')));
 
-        return resolve(data.collections.edges.map((item) => item.node));
+        return resolve(data.collections.edges.map((item: any) => item.node));
     });
 };

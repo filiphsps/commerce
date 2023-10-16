@@ -1,12 +1,4 @@
-import {
-    AnalyticsPageType,
-    Money,
-    ProductProvider,
-    ShopifyAnalyticsProduct,
-    ShopifyPageViewPayload,
-    useCart,
-    useProduct
-} from '@shopify/hydrogen-react';
+import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
 import { Badge, BadgeContainer } from '@/components/Badges';
 import type {
     Collection,
@@ -15,22 +7,25 @@ import type {
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import type { GetStaticProps, InferGetStaticPropsType } from 'next';
+import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '@/api/product';
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { ProductApi, ProductVisualsApi, ProductsApi } from '@/api/product';
+import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import { Config } from '@/utils/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
+import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import type { ProductPageDocument } from '@/prismic/types';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import type { ProductVisuals } from '@/api/product';
 import { RecommendationApi } from '@/api/recommendation';
 import { RedirectProductApi } from '@/api/redirects';
 import type { SSRConfig } from 'next-i18next';
@@ -997,7 +992,7 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
     );
 };
 
-export async function getStaticPaths({ locales }) {
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     const data = await ProductsApi();
 
     let paths = [
@@ -1016,7 +1011,7 @@ export async function getStaticPaths({ locales }) {
     ];
 
     return { paths, fallback: 'blocking' };
-}
+};
 
 export const getStaticProps: GetStaticProps<{
     page?: ProductPageDocument<string> | null;
@@ -1072,7 +1067,7 @@ export const getStaticProps: GetStaticProps<{
             handle,
             locale: locale.locale
         });
-    } catch (error) {
+    } catch (error: any) {
         if (error?.message?.includes('404')) {
             return {
                 notFound: true

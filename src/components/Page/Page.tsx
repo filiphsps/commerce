@@ -1,5 +1,4 @@
-import React, { FunctionComponent } from 'react';
-
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.main`

@@ -1,7 +1,8 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button } from '../Button';
-import { Input } from '../Input';
+import { Button } from '@/components/Button';
+import type { FunctionComponent } from 'react';
+import { Input } from '@/components/Input';
 import { NewsletterApi } from '@/api/newsletter';
 import styled from 'styled-components';
 
@@ -167,7 +168,7 @@ const EmailCapture: FunctionComponent<EmailCaptureProps> = ({}) => {
                                     });
                                     localStorage.setItem('SUBSCRIBED', 'true');
                                     setSubscribed(true);
-                                } catch (error) {
+                                } catch (error: any) {
                                     if (error.code == 'duplicate_parameter') {
                                         alert(`You're already subscribed to our newsletter!`);
                                         localStorage.setItem('SUBSCRIBED', 'true');

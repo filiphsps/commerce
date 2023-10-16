@@ -9,6 +9,7 @@ import { Config } from '@/utils/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
 import type { FunctionComponent } from 'react';
+import type { GetStaticPaths } from 'next';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
 import { Prefetch } from '@/utils/Prefetch';
@@ -206,7 +207,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
     );
 };
 
-export async function getStaticPaths({ locales }) {
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     const collections = await CollectionsApi();
 
     let paths = [
@@ -225,7 +226,7 @@ export async function getStaticPaths({ locales }) {
     ];
 
     return { paths, fallback: 'blocking' };
-}
+};
 
 export const getStaticProps: GetStaticProps<{
     collection?: Collection | null;
@@ -238,13 +239,14 @@ export const getStaticProps: GetStaticProps<{
     const locale = NextLocaleToLocale(localeData);
 
     let handle = '';
-    if (Array.isArray(params?.handle)) {
+    if (params && Array.isArray(params?.handle)) {
         handle = params?.handle?.join('') || '';
     } else {
-        handle = params?.handle || '';
+        handle = (params?.handle as string) || '';
     }
 
-    if (!handle || ['null', 'undefined', '[handle]'].includes(handle))
+    // TODO: Utility function
+    if (!params || !handle || ['null', 'undefined', '[handle]'].includes(handle))
         return {
             notFound: true,
             revalidate: false
@@ -275,7 +277,7 @@ export const getStaticProps: GetStaticProps<{
 
     try {
         collection = await CollectionApi({ handle, locale: locale.locale, limit: 16 });
-    } catch (error) {
+    } catch (error: any) {
         if (error?.message?.includes('404')) {
             return {
                 notFound: true

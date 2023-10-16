@@ -1,12 +1,12 @@
 import { AnalyticsPageType, CartLineProvider, useCart } from '@shopify/hydrogen-react';
-import type { CartLine, Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { Config } from '@/utils/Config';
 import type { CustomPageDocument } from '@/prismic/types';
+import type { FunctionComponent } from 'react';
 import type { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import { useState } from 'react';
 
 const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
@@ -133,7 +134,7 @@ const getCrossDomainLinkerParameter = () => {
     const formNode = document.createElement('form') as any;
     formNode.action = 'https://opensource.sweetsideofsweden.com';
     formNode.style.opacity = '0';
-    formNode.addEventListener('submit', (event) => {
+    formNode.addEventListener('submit', (event: any) => {
         event.preventDefault();
     });
 
@@ -180,19 +181,22 @@ export const Checkout = async ({
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-                    items: cart.lines.map((line: CartLine) => ({
-                        item_id: ProductToMerchantsCenterId({
-                            locale: (locale !== 'x-default' && locale) || locales?.[1],
-                            productId: line.merchandise.product.id,
-                            variantId: line.merchandise.id
-                        }),
-                        item_name: line.merchandise.product.title,
-                        item_variant: line.merchandise.title,
-                        item_brand: line.merchandise.product.vendor,
-                        currency: line.merchandise.price.currencyCode!,
-                        price: Number.parseFloat(line.merchandise.price?.amount!) || undefined,
-                        quantity: line.quantity
-                    }))
+                    items: cart.lines.map(
+                        (line) =>
+                            line && {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale: (locale !== 'x-default' && locale) || locales?.[1],
+                                    productId: line.merchandise?.product?.id!,
+                                    variantId: line.merchandise?.id!
+                                }),
+                                item_name: line.merchandise?.product?.title,
+                                item_variant: line.merchandise?.title,
+                                item_brand: line.merchandise?.product?.vendor,
+                                currency: line.merchandise?.price?.currencyCode!,
+                                price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                                quantity: line.quantity
+                            }
+                    )
                 }
             }
         );
@@ -200,16 +204,19 @@ export const Checkout = async ({
         // Microsoft Ads tracking
         if ((window as any).uetq) {
             (window as any).uetq.push('event', 'begin_checkout', {
-                ecomm_prodid: cart.lines.map((line: CartLine) => line.merchandise.id),
+                ecomm_prodid: cart.lines.map((line) => line && line.merchandise?.id),
                 ecomm_pagetype: 'cart',
                 ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
                 revenue_value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
                 currency: cart.cost?.totalAmount?.currencyCode!,
-                items: cart.lines.map((line: CartLine) => ({
-                    id: line.merchandise.id,
-                    quantity: line.quantity,
-                    price: Number.parseFloat(line.merchandise.price.amount! || '0')
-                }))
+                items: cart.lines.map(
+                    (line) =>
+                        line && {
+                            id: line.merchandise?.id,
+                            quantity: line.quantity,
+                            price: Number.parseFloat(line.merchandise?.price?.amount! || '0')
+                        }
+                )
             });
         }
     } catch {}
@@ -283,19 +290,22 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-                    items: cart.lines.map((line: CartLine) => ({
-                        item_id: ProductToMerchantsCenterId({
-                            locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
-                            productId: line.merchandise.product.id,
-                            variantId: line.merchandise.id
-                        }),
-                        item_name: line.merchandise.product.title,
-                        item_variant: line.merchandise.title,
-                        item_brand: line.merchandise.product.vendor,
-                        currency: line.merchandise.price.currencyCode,
-                        price: Number.parseFloat(line.merchandise.price?.amount!) || undefined,
-                        quantity: line.quantity
-                    }))
+                    items: cart.lines.map(
+                        (line) =>
+                            line && {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale: (router.locale !== 'x-default' && router.locale) || router.locales?.[1],
+                                    productId: line.merchandise?.product?.id!,
+                                    variantId: line.merchandise?.id!
+                                }),
+                                item_name: line.merchandise?.product?.title,
+                                item_variant: line.merchandise?.title,
+                                item_brand: line.merchandise?.product?.vendor,
+                                currency: line.merchandise?.price?.currencyCode,
+                                price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                                quantity: line.quantity
+                            }
+                    )
                 }
             }
         );
@@ -356,7 +366,9 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                                 {cart.lines && cart.lines.length >= 1 ? (
                                     <>
                                         <tbody>
-                                            {cart.lines?.map((item: CartLine) => {
+                                            {cart.lines?.map((item) => {
+                                                if (!item) return null;
+
                                                 return (
                                                     <CartLineProvider key={item.id} line={item}>
                                                         <CartItem />
@@ -411,7 +423,7 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                                         locale: router.locale,
                                         locales: router.locales
                                     });
-                                } catch (error) {
+                                } catch (error: any) {
                                     console.error(error);
                                     alert(error.message);
                                     setLoading(false);
@@ -471,7 +483,7 @@ export const getStaticProps: GetStaticProps<{
             },
             revalidate: 60
         };
-    } catch (error) {
+    } catch (error: any) {
         if (error.message?.includes('No documents')) {
             return {
                 notFound: true

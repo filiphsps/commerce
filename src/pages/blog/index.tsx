@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import Error from 'next/error';
 import type { FunctionComponent } from 'react';
+import type { GetStaticProps } from 'next';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -94,7 +95,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
                 <PageHeader title={blog.title} />
 
                 <div>
-                    {blog.articles.map((article) => (
+                    {blog.articles.map((article: any) => (
                         <Link key={article.id} href={`/blog/${article.handle}/`}>
                             <Article>
                                 <ArticleImage>
@@ -124,7 +125,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
     );
 };
 
-export async function getStaticProps({ locale }) {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
     let blog: any = null;
 
     try {
@@ -143,10 +144,10 @@ export async function getStaticProps({ locale }) {
             },
             revalidate: 60
         };
-    } catch (error) {
+    } catch (error: any) {
         if (error.message?.includes('404')) {
             return {
-                props: null,
+                props: {},
                 revalidate: 60
             };
         }
@@ -159,6 +160,6 @@ export async function getStaticProps({ locale }) {
             revalidate: 10
         };
     }
-}
+};
 
 export default BlogPage;

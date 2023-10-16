@@ -1,10 +1,11 @@
+import type { GetStaticPaths, GetStaticProps } from 'next';
+
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import type { CustomPageDocument } from '@/prismic/types';
 import Error from 'next/error';
 import type { FunctionComponent } from 'react';
-import { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
@@ -109,8 +110,9 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
     );
 };
 
-export async function getStaticPaths({ locales }) {
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     const pages = await PagesApi({});
+
     const paths = pages.paths.flatMap((path) => [
         ...(locales?.map((locale) => ({
             params: {
@@ -121,7 +123,7 @@ export async function getStaticPaths({ locales }) {
     ]);
 
     return { paths: paths, fallback: 'blocking' };
-}
+};
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: localeData, previewData }) => {
     const client = createClient({ previewData });
@@ -175,10 +177,9 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
             },
             revalidate: 10
         };
-    } catch (error) {
-        console.warn(error);
-
+    } catch (error: any) {
         if (error.message?.includes('No documents')) {
+            console.warn(error);
             return {
                 notFound: true
             };

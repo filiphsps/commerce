@@ -1,5 +1,6 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import type { FunctionComponent } from 'react';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 
@@ -127,10 +128,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
 
     return (
         <FilterWrapper>
-            <Toggle
-                onClick={() => setShowFilters(!showFilters)}
-                className={(showFilters && 'Open') || ''}
-            >
+            <Toggle onClick={() => setShowFilters(!showFilters)} className={(showFilters && 'Open') || ''}>
                 Filter products
             </Toggle>
             <Filters>
@@ -161,7 +159,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
                                     let new_filter = filters.tags;
 
                                     if (filters.tags.includes(item))
-                                        new_filter = filters.tags.filter((tag) => tag !== item);
+                                        new_filter = filters.tags.filter((tag: any) => tag !== item);
                                     else new_filter = [...(filters.tags || []), item];
 
                                     setFilters({
@@ -185,7 +183,7 @@ const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChan
                                     let new_filter = filters.vendors;
 
                                     if (filters.vendors.includes(item))
-                                        new_filter = filters.vendors.filter((tag) => tag !== item);
+                                        new_filter = filters.vendors.filter((tag: any) => tag !== item);
                                     else new_filter = [...filters.vendors, item];
 
                                     setFilters({

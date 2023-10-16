@@ -63,7 +63,7 @@ export const LocalesApi = async (): Promise<string[]> => {
     });
 };
 
-export const StoreApi = async ({ locale }): Promise<StoreModel> => {
+export const StoreApi = async ({ locale }: { locale?: string }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const client = createClient({});
 
@@ -125,7 +125,7 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                 res = (await client.getSingle('store')).data;
             }
 
-            const currencies = res.currencies.map((item) => item.currency);
+            const currencies: string[] = res.currencies.map((item: any) => item.currency);
             return resolve({
                 id: shopData?.shop?.id || '',
                 name: res.store_name,
@@ -150,9 +150,9 @@ export const StoreApi = async ({ locale }): Promise<StoreModel> => {
                     wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || []
                 }
             });
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
             if (error.message.includes('No documents') && locale !== Config.i18n.default) {
+                console.warn(error);
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }
 
