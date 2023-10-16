@@ -63,6 +63,8 @@ const Item = styled.li`
     }
 `;
 
+// Optically balance margin-bottom,
+// See https://medium.com/design-bridges/optical-effects-9fca82b4cd9a
 const Icon = styled.div`
     display: flex;
     justify-content: center;
@@ -71,8 +73,6 @@ const Icon = styled.div`
     svg {
         display: block;
         font-size: 1.5rem;
-        // Optically balance it,
-        // See https://medium.com/design-bridges/optical-effects-9fca82b4cd9a
         margin-bottom: -0.05rem;
     }
 `;
