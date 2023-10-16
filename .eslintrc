@@ -1,9 +1,20 @@
 {
     "extends": ["next/core-web-vitals", "prettier"],
+    "plugins": ["unused-imports"],
     "rules": {
         "consistent-return": 2,
         "no-mixed-operators": 0,
         "no-useless-constructor": 0,
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "indent": "off",
+        "semi": ["error", "always"],
+        "brace-style": [
+            "error",
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
+        ],
         "standard/computed-property-even-spacing": 0,
         "import/first": 0,
         "react/no-find-dom-node": 0,
@@ -14,16 +25,11 @@
         "react-hooks/exhaustive-deps": 0,
         "jsx-a11y/anchor-is-valid": 0,
         "jsx-a11y/alt-text": 0,
-        "no-unused-vars": 1,
-        "no-console": ["error", { "allow": ["warn", "error"] }],
-        "indent": "off",
-        "semi": ["error", "always"],
-        "brace-style": [
-            "error",
-            "1tbs",
-            {
-                "allowSingleLine": true
-            }
+        "no-unused-vars": "off",
+        "unused-imports/no-unused-imports": "error",
+        "unused-imports/no-unused-vars": [
+            "warn",
+            { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
         ]
     }
 }
