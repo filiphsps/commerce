@@ -26,7 +26,7 @@ let config = {
             '@prismicio/react',
             '@apollo/client'
         ],
-        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        //webVitalsAttribution: ['CLS', 'LCP', 'INP'],
     },
     images: {
         minimumCacheTTL: 60 * 6,
