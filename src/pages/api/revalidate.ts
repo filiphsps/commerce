@@ -1,6 +1,4 @@
-// pages/api/revalidate.js
-
-import * as prismicH from '@prismicio/helpers';
+import { asLink } from '@prismicio/client';
 
 // Import your app's Link Resolver (if your app uses one)
 import { createClient } from '../../../prismicio';
@@ -25,7 +23,7 @@ export default async function handler(req, res) {
 
         // Get a list of URLs for any new, updated, or deleted documents
         const documents = await client.getAllByIDs(req.body.documents);
-        const urls = documents.map((doc) => prismicH.asLink(doc));
+        const urls = documents.map((doc) => asLink(doc));
 
         try {
             // Revalidate the URLs for those documents

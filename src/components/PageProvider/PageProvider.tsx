@@ -1,19 +1,19 @@
-import * as PrismicDOM from '@prismicio/helpers';
+import { asHTML } from '@prismicio/client';
 
 import { FunctionComponent, useState } from 'react';
 import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '../../util/Locale';
 
-import { Config } from '../../util/Config';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
+import useSWR from 'swr';
+import preval from '../../../src/data.preval';
 import { HeaderApi } from '../../api/header';
 import { NavigationApi } from '../../api/navigation';
-import type { StoreModel } from '../../models/StoreModel';
-import dynamic from 'next/dynamic';
-import preval from '../../../src/data.preval';
-import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useCartUtils } from '../../hooks/useCartUtils';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import type { StoreModel } from '../../models/StoreModel';
+import { Config } from '../../util/Config';
 
 const Header = dynamic(() => import('@/components/Header'), {});
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'), {});
@@ -154,7 +154,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                             key={index}
                             className={item.background_color}
                             dangerouslySetInnerHTML={{
-                                __html: PrismicDOM.asHTML(item.content) || ''
+                                __html: asHTML(item.content) || ''
                             }}
                         />
                     ))}
@@ -181,7 +181,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                                 key={index}
                                 className={item.background_color}
                                 dangerouslySetInnerHTML={{
-                                    __html: PrismicDOM.asHTML(item.content) || ''
+                                    __html: asHTML(item.content) || ''
                                 }}
                             />
                         </Announcement>

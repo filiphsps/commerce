@@ -20,7 +20,15 @@ let config = {
     experimental: {
         scrollRestoration: true,
         esmExternals: true,
-        optimizePackageImports: ['@shopify/hydrogen-react', 'react-icons', '@prismicio/client', '@prismicio/next', '@apollo/client']
+        optimizePackageImports: [
+            '@shopify/hydrogen-react',
+            'react-icons',
+            '@prismicio/client',
+            '@prismicio/next',
+            '@prismicio/react',
+            '@apollo/client'
+        ],
+        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
     },
     images: {
         minimumCacheTTL: 60 * 6,
@@ -28,7 +36,16 @@ let config = {
         formats: ['image/avif', 'image/webp']
     },
     compiler: {
-        styledComponents: true
+        styledComponents: true,
+        removeConsole: {
+            exclude: ['warn', 'error'],
+        },
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    devIndicators: {
+        buildActivityPosition: 'bottom-right',
     },
     env: {
         // Settings

@@ -1,17 +1,17 @@
-import * as PrismicDOM from '@prismicio/helpers';
+import { asText } from '@prismicio/client';
 
-import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
-import { Config } from '../../util/Config';
-import { FooterApi } from '../../api/footer';
-import { FunctionComponent } from 'react';
 import Image from 'next/image';
-import { ImageLoader } from '../../util/ImageLoader';
 import Link from 'next/link';
-import type { StoreModel } from '../../models/StoreModel';
-import preval from '../../../src/data.preval';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
+import preval from '../../../src/data.preval';
+import { FooterApi } from '../../api/footer';
+import type { StoreModel } from '../../models/StoreModel';
+import { Config } from '../../util/Config';
+import { ImageLoader } from '../../util/ImageLoader';
+import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 
 const Logo = styled.div`
     position: relative;
@@ -235,7 +235,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
 
                         <Address
                             dangerouslySetInnerHTML={{
-                                __html: PrismicDOM.asText(footer?.address, '<br />') || ''
+                                __html: asText(footer?.address, '<br />') || ''
                             }}
                         />
                     </FooterBlock>
