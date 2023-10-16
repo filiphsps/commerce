@@ -89,11 +89,15 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         className="Image Mobile"
                                                         width={300}
                                                         sizes="(max-width: 500px) 250px, 300px"
+                                                        loading={slide.defer ? 'lazy' : 'eager'}
+                                                        priority={slide.defer ? false : true}
                                                         loader={ImageLoader}
                                                     />
                                                     <PrismicNextImage
                                                         field={slide.image}
                                                         className="Image Desktop"
+                                                        loading={slide.defer ? 'lazy' : 'eager'}
+                                                        priority={slide.defer ? false : true}
                                                         loader={ImageLoader}
                                                     />
                                                 </>
