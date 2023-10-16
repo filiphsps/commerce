@@ -1,25 +1,25 @@
 import styled, { css } from 'styled-components';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../util/Config';
-import { CountriesApi } from '../api/store';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import type { CustomPageDocument } from 'prismicio-types';
-import { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '../models/StoreModel';
 import { asText } from '@prismicio/client';
-import { components } from '../../slices';
-import { createClient } from '../../prismicio';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { SliceZone } from '@prismicio/react';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import { useTranslation } from 'next-i18next';
+import { NextSeo } from 'next-seo';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import type { CustomPageDocument } from 'prismicio-types';
+import { FunctionComponent } from 'react';
+import useSWR from 'swr';
+import { createClient } from '../../prismicio';
+import { CountriesApi } from '../api/store';
+import type { StoreModel } from '../models/StoreModel';
+import { components } from '../slices';
+import { Config } from '../util/Config';
 
 const LocalesList = styled.article`
     display: grid;

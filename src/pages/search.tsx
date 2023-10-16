@@ -1,31 +1,31 @@
 import { AnalyticsPageType, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useEffect, useState } from 'react';
+import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import { Config } from '../util/Config';
-import type { CustomPageDocument } from 'prismicio-types';
-import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import { NextLocaleToLocale } from 'src/util/Locale';
-import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
-import { SearchApi } from '../api/search';
-import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '../models/StoreModel';
 import { asText } from '@prismicio/client';
-import { components } from '../../slices';
-import { createClient } from '../../prismicio';
+import { SliceZone } from '@prismicio/react';
+import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import type { CustomPageDocument } from 'prismicio-types';
+import type { FunctionComponent } from 'react';
+import { NextLocaleToLocale } from 'src/util/Locale';
+import styled from 'styled-components';
 import useSWR from 'swr';
+import { createClient } from '../../prismicio';
+import { SearchApi } from '../api/search';
+import type { StoreModel } from '../models/StoreModel';
+import { components } from '../slices';
+import { Config } from '../util/Config';
 
 const ProductSearchFilters = dynamic(
     () => import('@/components/ProductSearchFilters').then((c) => c.ProductSearchFilters),

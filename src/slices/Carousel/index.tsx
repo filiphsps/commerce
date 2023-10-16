@@ -3,12 +3,12 @@ import 'slick-carousel/slick/slick.css';
 
 import PageContent from '@/components/PageContent';
 import { Content } from '@prismicio/client';
+import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
-import Image from 'next/image';
 import Link from 'next/link';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import { ImageLoader } from '../../src/util/ImageLoader';
+import { ImageLoader } from '../../util/ImageLoader';
 
 const Container = styled.section`
     width: 100%;
@@ -84,24 +84,16 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                         <ImageContainer>
                                             {slide.image?.url && slide.mobile_image?.url && (
                                                 <>
-                                                    <Image
+                                                    <PrismicNextImage
+                                                        field={slide.mobile_image}
                                                         className="Image Mobile"
-                                                        src={slide.mobile_image.url || ''}
-                                                        alt={slide.mobile_image.alt || ''}
-                                                        title={slide.mobile_image?.alt || undefined}
-                                                        width={slide.mobile_image.dimensions?.width}
-                                                        height={slide.mobile_image.dimensions?.height}
-                                                        priority={true}
+                                                        width={300}
+                                                        sizes="(max-width: 500px) 250px, 300px"
                                                         loader={ImageLoader}
                                                     />
-                                                    <Image
+                                                    <PrismicNextImage
+                                                        field={slide.image}
                                                         className="Image Desktop"
-                                                        src={slide.image.url || ''}
-                                                        alt={slide.image.alt || ''}
-                                                        title={slide.image?.alt || undefined}
-                                                        width={slide.image.dimensions?.width}
-                                                        height={slide.image.dimensions?.height}
-                                                        priority={true}
                                                         loader={ImageLoader}
                                                     />
                                                 </>

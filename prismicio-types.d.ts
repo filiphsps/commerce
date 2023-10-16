@@ -849,11 +849,7 @@ export interface AlertSliceDefaultPrimary {
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type AlertSliceDefault = prismic.SharedSliceVariation<
-    'default',
-    Simplify<AlertSliceDefaultPrimary>,
-    never
->;
+export type AlertSliceDefault = prismic.SharedSliceVariation<'default', Simplify<AlertSliceDefaultPrimary>, never>;
 
 /**
  * Slice variation for *Alert*
@@ -1079,6 +1075,17 @@ export interface CarouselSliceDefaultItem {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     href: prismic.KeyTextField;
+
+    /**
+     * Defer field in *Carousel → Items*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: carousel.items[].defer
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    defer: prismic.BooleanField;
 }
 
 /**
@@ -1178,10 +1185,7 @@ type CollapsibleTextSliceVariation = CollapsibleTextSliceDefault;
  * - **Description**: CollapsibleText
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CollapsibleTextSlice = prismic.SharedSlice<
-    'collapsible_text',
-    CollapsibleTextSliceVariation
->;
+export type CollapsibleTextSlice = prismic.SharedSlice<'collapsible_text', CollapsibleTextSliceVariation>;
 
 /**
  * Primary content in *Collection → Primary*
@@ -1316,11 +1320,7 @@ export interface CollectionSliceFullPrimary {
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type CollectionSliceFull = prismic.SharedSliceVariation<
-    'full',
-    Simplify<CollectionSliceFullPrimary>,
-    never
->;
+export type CollectionSliceFull = prismic.SharedSliceVariation<'full', Simplify<CollectionSliceFullPrimary>, never>;
 
 /**
  * Slice variation for *Collection*
@@ -1457,11 +1457,7 @@ export type ImageGridSlice = prismic.SharedSlice<'image_grid', ImageGridSliceVar
  * - **Description**: Normal
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type SpacingSliceNormal = prismic.SharedSliceVariation<
-    'normal',
-    Record<string, never>,
-    never
->;
+export type SpacingSliceNormal = prismic.SharedSliceVariation<'normal', Record<string, never>, never>;
 
 /**
  * Large variation for Spacing Slice
@@ -1503,20 +1499,12 @@ export interface SpacingSliceCustomPrimary {
  * - **Description**: Normal
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type SpacingSliceCustom = prismic.SharedSliceVariation<
-    'custom',
-    Simplify<SpacingSliceCustomPrimary>,
-    never
->;
+export type SpacingSliceCustom = prismic.SharedSliceVariation<'custom', Simplify<SpacingSliceCustomPrimary>, never>;
 
 /**
  * Slice variation for *Spacing*
  */
-type SpacingSliceVariation =
-    | SpacingSliceNormal
-    | SpacingSliceLarge
-    | SpacingSliceSmall
-    | SpacingSliceCustom;
+type SpacingSliceVariation = SpacingSliceNormal | SpacingSliceLarge | SpacingSliceSmall | SpacingSliceCustom;
 
 /**
  * Spacing Shared Slice
@@ -1610,6 +1598,7 @@ type TextBlockSliceVariation = TextBlockSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type TextBlockSlice = prismic.SharedSlice<'text_block', TextBlockSliceVariation>;
+
 /**
  * Primary content in *Title → Primary*
  */
@@ -1643,11 +1632,7 @@ export interface TitleSliceDefaultPrimary {
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TitleSliceDefault = prismic.SharedSliceVariation<
-    'default',
-    Simplify<TitleSliceDefaultPrimary>,
-    never
->;
+export type TitleSliceDefault = prismic.SharedSliceVariation<'default', Simplify<TitleSliceDefaultPrimary>, never>;
 
 /**
  * Slice variation for *Title*
@@ -1670,11 +1655,7 @@ export type TitleSlice = prismic.SharedSlice<'title', TitleSliceVariation>;
  * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type VendorsSliceDefault = prismic.SharedSliceVariation<
-    'default',
-    Record<string, never>,
-    never
->;
+export type VendorsSliceDefault = prismic.SharedSliceVariation<'default', Record<string, never>, never>;
 
 /**
  * Slice variation for *Vendors*
@@ -1692,62 +1673,84 @@ export type VendorsSlice = prismic.SharedSlice<'vendors', VendorsSliceVariation>
 
 declare module '@prismicio/client' {
     interface CreateClient {
-        (
-            repositoryNameOrEndpoint: string,
-            options?: prismic.ClientConfig
-        ): prismic.Client<AllDocumentTypes>;
+        (repositoryNameOrEndpoint: string, options?: prismic.ClientConfig): prismic.Client<AllDocumentTypes>;
     }
 
     namespace Content {
         export type {
             CollectionPageDocument,
             CollectionPageDocumentData,
+            CollectionPageDocumentDataSlicesSlice,
             CustomPageDocument,
             CustomPageDocumentData,
+            CustomPageDocumentDataSlicesSlice,
             FooterDocument,
             FooterDocumentData,
+            FooterDocumentDataBodyBlockSlicePrimary,
+            FooterDocumentDataBodyBlockSliceItem,
+            FooterDocumentDataBodySlice,
             HeadDocument,
             HeadDocumentData,
             NavigationDocument,
             NavigationDocumentData,
+            NavigationDocumentDataBodyLinkSlicePrimary,
+            NavigationDocumentDataBodyLinkSliceItem,
+            NavigationDocumentDataBodySlice,
             ProductPageDocument,
             ProductPageDocumentData,
+            ProductPageDocumentDataSlicesSlice,
+            ProductPageDocumentDataSlices2Slice,
             StoreDocument,
             StoreDocumentData,
             AllDocumentTypes,
             AlertSlice,
+            AlertSliceDefaultPrimary,
             AlertSliceVariation,
             AlertSliceDefault,
             BannerSlice,
+            BannerSliceDefaultPrimary,
+            BannerSliceDefaultItem,
+            BannerSliceSimpleSlimPrimary,
+            BannerSliceSimpleSlimItem,
             BannerSliceVariation,
             BannerSliceDefault,
             BannerSliceSimpleSlim,
             CarouselSlice,
+            CarouselSliceDefaultPrimary,
+            CarouselSliceDefaultItem,
             CarouselSliceVariation,
             CarouselSliceDefault,
             CollapsibleTextSlice,
+            CollapsibleTextSliceDefaultPrimary,
             CollapsibleTextSliceVariation,
             CollapsibleTextSliceDefault,
             CollectionSlice,
+            CollectionSliceDefaultPrimary,
+            CollectionSliceFullPrimary,
             CollectionSliceVariation,
             CollectionSliceDefault,
             CollectionSliceFull,
             IconGridSlice,
+            IconGridSliceDefaultItem,
             IconGridSliceVariation,
             IconGridSliceDefault,
             ImageGridSlice,
+            ImageGridSliceDefaultItem,
             ImageGridSliceVariation,
             ImageGridSliceDefault,
             SpacingSlice,
+            SpacingSliceCustomPrimary,
             SpacingSliceVariation,
             SpacingSliceNormal,
             SpacingSliceLarge,
             SpacingSliceSmall,
             SpacingSliceCustom,
             TextBlockSlice,
+            TextBlockSliceDefaultItem,
             TextBlockSliceVariation,
             TextBlockSliceDefault,
             TitleSlice,
+            TitleSliceDefaultPrimary,
             TitleSliceVariation,
             TitleSliceDefault,
             VendorsSlice,
