@@ -72,10 +72,6 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
     return (
         <>
             <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-                <style jsx global>{`
-                    @import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.css');
-                    @import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.css');
-                `}</style>
                 <PageContent>
                     <Content>
                         <Slider {...settings}>
