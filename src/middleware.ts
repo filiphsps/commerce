@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import AcceptLanguageParser from 'accept-language-parser';
 
-const locales = [
-    ...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])
-];
+const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
 
 const PUBLIC_FILE = /\.(.*)$/;
-// FIXME: Make these dynamic
 
 // Based on https://github.com/vercel/next.js/discussions/18419#discussioncomment-3838336
 // then later also on https://stackoverflow.com/a/75845778/3142553
@@ -40,6 +37,6 @@ export default function middleware(req: NextRequest) {
     return undefined;
 }
 export const config = {
-    matcher: ['/:path*'],
+    matcher: ['/:path*']
     //matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)'
 };
