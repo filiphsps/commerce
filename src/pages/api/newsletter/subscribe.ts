@@ -29,3 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const data = await response.json();
     return res.status(response.status).json(data);
 };
+
+export const config = {
+    runtime: 'edge'
+};

@@ -10,3 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     await redirectToPreviewURL({ req, res, client });
 };
+
+export const config = {
+    runtime: 'edge'
+};
