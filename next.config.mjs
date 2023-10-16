@@ -49,13 +49,22 @@ let config = {
     env: {
         // Settings
         DOMAIN: process.env.DOMAIN,
-        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
-        PRISMIC_REPO: process.env.PRISMIC_REPO,
-        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
         STORE_LOCALES: process.env.STORE_LOCALES,
+        STORE_DEFAULT_LOCALE: process.env.STORE_DEFAULT_LOCALE,
         STORE_CURRENCIES: process.env.STORE_CURRENCIES,
         GTM: process.env.GTM,
+
+        // Shopify
+        SHOPIFY_SHOP_ID: process.env.SHOPIFY_SHOP_ID,
+        SHOPIFY_STOREFRONT_ID: process.env.SHOPIFY_STOREFRONT_ID,
+        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
+        SHOPIFY_CHECKOUT_DOMAIN: process.env.SHOPIFY_CHECKOUT_DOMAIN,
+        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
+        SHOPIFY_HYDROGEN_TOKEN: process.env.SHOPIFY_HYDROGEN_TOKEN,
+
+        // Prismic
+        PRISMIC_REPO: process.env.PRISMIC_REPO,
+        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
 
         // Colors
         ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,

@@ -19,6 +19,7 @@ import SEO from '../../nextseo.config';
 import { StoreApi } from '@/api/store';
 import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
+import { useEffect } from 'react';
 import useSWR from 'swr';
 
 //import { ThemeProvider } from 'styled-components';
@@ -37,6 +38,11 @@ Router.events.on('hashChangeComplete', () => NProgress.done());
 
 const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
+
+    // Hacky workaround to fix initial pageview in `useAnalytics`
+    useEffect(() => {
+        router.replace(router.route);
+    }, []);
 
     const { data: store } = useSWR(
         [
@@ -176,17 +182,17 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
 
             {/* Page */}
             <ShopifyProvider
-                storefrontId={`${store?.id}`}
-                storeDomain={`https://${Config.domain.replace('www', 'checkout')}`}
+                storefrontId={Config.shopify.storefront_id}
+                storeDomain={`https://${Config.shopify.checkout_domain}`}
                 storefrontApiVersion={Config.shopify.api}
                 storefrontToken={Config.shopify.token}
                 countryIsoCode={country}
                 languageIsoCode={language}
             >
-                <CartProvider countryCode={country} cartFragment={CartFragment}>
+                <CartProvider cartFragment={CartFragment}>
                     {/*<StyleSheetManager>
                     <ThemeProvider theme={{}}>*/}
-                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics || {}}>
+                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
                     {/*</ThemeProvider>

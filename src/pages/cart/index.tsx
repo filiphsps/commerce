@@ -1,5 +1,6 @@
 import { AnalyticsPageType, CartLineProvider, useCart } from '@shopify/hydrogen-react';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { useEffect, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
@@ -19,10 +20,8 @@ import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { useState } from 'react';
 
 const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));

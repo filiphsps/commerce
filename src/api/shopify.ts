@@ -5,7 +5,7 @@ import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 export const shopifyClient = createStorefrontClient({
     publicStorefrontToken: Config.shopify.token,
-    storeDomain: `https://${Config.domain.replace('www', 'checkout')}`,
+    storeDomain: `https://${Config.shopify.checkout_domain}`,
     storefrontApiVersion: Config.shopify.api
 });
 
