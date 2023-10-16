@@ -8,7 +8,7 @@ import Link from 'next/link';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import preval from '../../data.preval';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

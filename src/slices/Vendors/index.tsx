@@ -2,7 +2,7 @@ import { Content } from '@prismicio/client';
 import PageContent from '@/components/PageContent';
 import type { SliceComponentProps } from '@prismicio/react';
 import VendorsComponent from '@/components/Vendors';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     display: grid;

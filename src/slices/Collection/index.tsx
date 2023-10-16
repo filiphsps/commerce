@@ -1,13 +1,13 @@
 import { Content, asHTML, asText } from '@prismicio/client';
-import styled, { css } from 'styled-components';
 
 import CollectionBlock from '@/components/CollectionBlock';
-import PageContent from '@/components/PageContent';
-import { Title } from '@/components/PageHeader/PageHeader';
-import type { SliceComponentProps } from '@prismicio/react';
 import Color from 'color';
-import Link from 'next/link';
 import { FullCollection } from './FullCollection';
+import Link from 'next/link';
+import PageContent from '@/components/PageContent';
+import type { SliceComponentProps } from '@prismicio/react';
+import { Title } from '@/components/PageHeader/PageHeader';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     width: 100%;
@@ -15,7 +15,7 @@ const Container = styled.section`
     margin: 0px;
 `;
 
-const Content = styled.div`
+const SliceContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-large);
@@ -26,24 +26,22 @@ const Content = styled.div`
     color: var(--foreground);
 `;
 
-const Header = styled.div<{ $alignment: 'left' | 'center' | 'right' }>`
+const Header = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
     gap: var(--block-spacer-small);
 
-    ${({ $alignment }) =>
-        $alignment == 'center' &&
-        css`
-            align-items: center;
-            text-align: center;
+    &.center {
+        align-items: center;
+        text-align: center;
 
-            @media (max-width: 950px) {
-                align-items: start;
-                text-align: left;
-            }
-        `};
+        @media (max-width: 950px) {
+            align-items: flex-start;
+            text-align: left;
+        }
+    }
 `;
 const CollectionTitle = styled(Title)`
     font-size: 2.25rem;
@@ -96,14 +94,12 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                     }
                 >
                     <PageContent>
-                        <Content>
+                        <SliceContent>
                             {asText(slice.primary.title)?.length > 0 && (
-                                <Header $alignment={slice.primary.alignment}>
+                                <Header className={slice.primary.alignment}>
                                     <Link
                                         href={`/collections/${slice.primary.handle!}`}
-                                        title={`View all products in "${asText(
-                                            slice.primary.title
-                                        )}"`}
+                                        title={`View all products in "${asText(slice.primary.title)}"`}
                                     >
                                         <CollectionTitle
                                             dangerouslySetInnerHTML={{
@@ -122,23 +118,18 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 handle={slice.primary.handle!}
                                 isHorizontal={slice.primary.direction === 'horizontal'}
                                 limit={slice.primary.limit || 16}
-                                hideTitle={
-                                    asText(slice.primary.title).length > 0 ||
-                                    slice.primary.hide_title
-                                }
+                                hideTitle={asText(slice.primary.title).length > 0 || slice.primary.hide_title}
                                 plainTitle
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
                             />
-                        </Content>
+                        </SliceContent>
                     </PageContent>
                 </Container>
             );
 
         case 'full':
-            return (
-                <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} />
-            );
+            return <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} />;
         default:
             throw new Error('500: Invalid variant');
     }

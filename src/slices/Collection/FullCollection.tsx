@@ -2,7 +2,7 @@ import type { CollectionSliceFull } from '@/prismic/types';
 import type { FunctionComponent } from 'react';
 import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const PageContent = dynamic(() => import('@/components/PageContent'));
 const VerticalCollection = dynamic(() =>

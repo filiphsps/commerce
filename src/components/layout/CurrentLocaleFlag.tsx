@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`

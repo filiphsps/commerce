@@ -3,7 +3,7 @@ import Link from 'next/link';
 import PageLoader from '@/components/PageLoader';
 import type { VendorModel } from '@/models/VendorModel';
 import { VendorsApi } from '@/api/vendor';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

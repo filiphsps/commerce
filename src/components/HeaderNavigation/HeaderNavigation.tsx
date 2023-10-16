@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 
 const Container = styled.div`
@@ -38,7 +38,7 @@ const Navigation = styled.div`
 const NavigationItem = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     gap: calc(var(--block-spacer-large) * 1.5);
     width: 100%;
     font-size: 2.5rem;

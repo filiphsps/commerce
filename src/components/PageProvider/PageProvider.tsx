@@ -9,7 +9,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { asHTML } from '@prismicio/client';
 import dynamic from 'next/dynamic';
 import preval from '../../data.preval';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { useRouter } from 'next/router';

@@ -15,7 +15,7 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '@/models/StoreModel';
 import { isValidHandle } from '@/utils/handle';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 
 const ContentWrapper = styled.div`

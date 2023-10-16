@@ -1,8 +1,7 @@
-import styled, { css } from 'styled-components';
-
 import { FiPackage } from 'react-icons/fi';
 import type { FunctionComponent } from 'react';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { styled } from '@linaria/react';
 
 type Status = 'good' | 'warning' | 'error';
 
@@ -19,7 +18,7 @@ const Container = styled.section`
     }
 `;
 
-const Entry = styled.div<{ $status: Status }>`
+const Entry = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,21 +30,14 @@ const Entry = styled.div<{ $status: Status }>`
     border-radius: 6rem;
     user-select: none;
 
-    ${({ $status }) => {
-        switch ($status) {
-            case 'good':
-                return css`
-                    color: var(--color-success-light);
-                    //background: var(--color-block-pastel-lime-light);
-                `;
-            case 'warning':
-                return '';
-            case 'error':
-                return '';
-            default:
-                return '';
-        }
-    }}
+    &.good {
+        color: var(--color-success-light);
+        //background: var(--color-block-pastel-lime-light);
+    }
+    &.warning {
+    }
+    &.error {
+    }
 `;
 
 const Icon = styled.div`
@@ -69,8 +61,10 @@ export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) =>
     const available = `In stock and available`;
     //const fewAvailable = `Limited amount in stock`;
 
+    const status = 'good';
+
     return (
-        <Entry $status="good" title={available}>
+        <Entry className={status} title={available}>
             <Icon>
                 <FiPackage />
             </Icon>

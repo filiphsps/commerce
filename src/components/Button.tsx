@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import type { FunctionComponent } from 'react';
+import { styled } from '@linaria/react';
 
-export const Button = styled.button`
+const Default = styled.button`
     appearance: none;
     display: block;
     width: 100%;
@@ -59,3 +60,12 @@ export const Button = styled.button`
         opacity: 0.75;
     }
 `;
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    className?: string;
+    children?: any;
+};
+
+export const Button: FunctionComponent<ButtonProps> = (props) => {
+    return <Default {...props} />;
+};

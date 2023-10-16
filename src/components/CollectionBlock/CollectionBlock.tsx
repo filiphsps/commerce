@@ -1,5 +1,4 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -9,6 +8,7 @@ import Link from 'next/link';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -36,7 +36,7 @@ const Actions = styled.div`
         display: none;
     }
 `;
-const Action = styled.div<{ $hide?: boolean; $position: 'left' | 'right' }>`
+const Action = styled.div<{ $position: 'left' | 'right' }>`
     z-index: 99999;
     grid-area: ${({ $position }) => $position};
     display: flex;
@@ -62,18 +62,15 @@ const Action = styled.div<{ $hide?: boolean; $position: 'left' | 'right' }>`
         }
     }
 
-    ${({ $hide }) =>
-        $hide &&
-        css`
-            opacity: 0;
-            pointer-events: none;
-        `}
+    &.hide {
+        opacity: 0;
+        pointer-events: none;
+    }
 `;
 
 const Meta = styled.div``;
 
 const Content = styled.div<{
-    $horizontal?: boolean;
     $showLeftShadow?: boolean;
     $showRightShadow?: boolean;
 }>`
@@ -88,105 +85,95 @@ const Content = styled.div<{
         gap: var(--block-spacer);
     }
 
-    ${({ $horizontal }) =>
-        $horizontal &&
-        css`
-            padding: var(--block-padding-large) 0;
-            padding-right: var(--block-spacer-large);
-            margin: calc(var(--block-padding-large) * -1) 0;
-            column: none;
-            display: grid;
-            overflow-x: auto;
-            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
-            grid-template-rows: 1fr;
-            grid-auto-flow: column;
-            overscroll-behavior-x: contain;
-            scroll-padding-left: var(--block-padding-large);
+    &.horizontal {
+        padding: var(--block-padding-large) 0;
+        padding-right: var(--block-spacer-large);
+        margin: calc(var(--block-padding-large) * -1) 0;
+        column: none;
+        display: grid;
+        overflow-x: auto;
+        grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+        grid-template-rows: 1fr;
+        grid-auto-flow: column;
+        overscroll-behavior-x: contain;
+        scroll-padding-left: var(--block-padding-large);
 
-            &::-webkit-scrollbar {
-                display: none;
-            }
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        scrollbar-width: none;
+        -ms-overflow-style: none;
 
-            .First {
-                margin-left: calc(var(--block-spacer-large));
-            }
+        .First {
+            margin-left: calc(var(--block-spacer-large));
+        }
 
-            &::after {
-                content: '';
-                position: absolute;
-                top: 0px;
-                right: 0px;
-                bottom: 0px;
-                left: 0px;
-                height: 100%;
-                transition: 250ms ease-in-out;
-                pointer-events: none;
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+            height: 100%;
+            transition: 250ms ease-in-out;
+            pointer-events: none;
 
-                --shadow-width: calc(var(--block-padding) * 2);
-                --shadow: rgba(0, 0, 0, 0.5);
-                background-image: linear-gradient(to right, transparent, transparent),
-                    linear-gradient(to right, transparent, transparent),
-                    ${({ $showLeftShadow }: any) =>
-                        ($showLeftShadow && 'linear-gradient(to right, var(--shadow), transparent)') ||
-                        'linear-gradient(to right, transparent, transparent)'},
-                    ${({ $showRightShadow }: any) =>
-                        ($showRightShadow && 'linear-gradient(to left, var(--shadow), transparent)') ||
-                        'linear-gradient(to left, transparent, transparent)'};
-                background-position:
-                    left center,
-                    right center,
-                    left center,
-                    right center;
-                background-repeat: no-repeat;
-                background-color: transparent;
-                background-size:
-                    var(--shadow-width) 100%,
-                    var(--shadow-width) 100%,
-                    var(--shadow-width) 100%,
-                    var(--shadow-width) 100%;
-                background-attachment: local, local, scroll, scroll;
-            }
-        `}
+            --shadow-width: calc(var(--block-padding) * 2);
+            --shadow: rgba(0, 0, 0, 0.5);
+            background-image: linear-gradient(to right, transparent, transparent),
+                linear-gradient(to right, transparent, transparent),
+                ${({ $showLeftShadow }: any) =>
+                    ($showLeftShadow && 'linear-gradient(to right, var(--shadow), transparent)') ||
+                    'linear-gradient(to right, transparent, transparent)'},
+                ${({ $showRightShadow }: any) =>
+                    ($showRightShadow && 'linear-gradient(to left, var(--shadow), transparent)') ||
+                    'linear-gradient(to left, transparent, transparent)'};
+            background-position:
+                left center,
+                right center,
+                left center,
+                right center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            background-size:
+                var(--shadow-width) 100%,
+                var(--shadow-width) 100%,
+                var(--shadow-width) 100%,
+                var(--shadow-width) 100%;
+            background-attachment: local, local, scroll, scroll;
+        }
+    }
 
-    ${({ $horizontal }) =>
-        !$horizontal &&
-        css`
-            display: grid;
-            grid-template-columns: repeat(
-                auto-fit,
-                minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
-            );
+    &.vertical {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
+        );
 
-            @media (min-width: 950px) {
-                justify-content: start;
-            }
+        @media (min-width: 950px) {
+            justify-content: start;
+        }
 
-            section {
-                width: 100%;
-                min-width: unset;
-            }
-        `}
+        section {
+            width: 100%;
+            min-width: unset;
+        }
+    }
 `;
 
-const Container = styled.div<{
-    $horizontal?: boolean;
-}>`
+const Container = styled.div`
     position: relative;
     width: 100%;
 
-    ${({ $horizontal }) =>
-        $horizontal &&
-        css`
-            width: calc(100% + var(--block-padding-large) * 2);
-            margin-left: calc(var(--block-padding-large) * -1);
-        `}
+    &.horizontal {
+        width: calc(100% + var(--block-padding-large) * 2);
+        margin-left: calc(var(--block-padding-large) * -1);
+    }
 `;
 
-const ViewMore = styled.section<{
-    $horizontal?: boolean;
-}>`
+const ViewMore = styled.section`
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -216,17 +203,13 @@ const ViewMore = styled.section<{
         padding: var(--block-padding-large);
     }
 
-    ${({ $horizontal }) =>
-        $horizontal &&
-        css`
-            margin-right: calc(
-                50vw - calc(var(--component-product-card-width) / 2 + calc(var(--block-spacer-small) * 2))
-            );
+    &.horizontal {
+        margin-right: calc(50vw - calc(var(--component-product-card-width) / 2 + calc(var(--block-spacer-small) * 2)));
 
-            @media (min-width: 950px) {
-                margin-right: var(--block-padding-large);
-            }
-        `}
+        @media (min-width: 950px) {
+            margin-right: var(--block-padding-large);
+        }
+    }
 
     span {
         font-weight: 700;
@@ -317,7 +300,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     });
 
     const view_more = limit && collection?.products?.edges && collection.products.edges.length > limit && (
-        <ViewMore $horizontal={isHorizontal}>
+        <ViewMore className={(isHorizontal && 'horizontal') || 'vertical'}>
             <Link
                 title={`Browse all products in "${collection.title}"`}
                 className="ProductCard CollectionBlock-Content-ShowMore"
@@ -331,7 +314,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     );
 
     return (
-        <Container $horizontal={isHorizontal}>
+        <Container className={(isHorizontal && 'horizontal') || 'vertical'}>
             {!hideTitle && (
                 <Meta>
                     <Link href={`/collections/${handle}/`}>
@@ -349,7 +332,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                 <Actions>
                     <Action
                         $position={'left'}
-                        $hide={!contentRef?.current || !shadowLeft}
+                        className={((!contentRef?.current || !shadowLeft) && 'hide') || ''}
                         onClick={() => {
                             if (!contentRef?.current) return;
                             contentRef.current.scroll?.({
@@ -361,7 +344,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                     </Action>
                     <Action
                         $position={'right'}
-                        $hide={!contentRef?.current || !shadowRight}
+                        className={((!contentRef?.current || !shadowLeft) && 'hide') || ''}
                         onClick={() => {
                             if (!contentRef?.current) return;
                             contentRef.current.scroll?.({
@@ -376,7 +359,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
 
             <Content
                 ref={contentRef as any}
-                $horizontal={isHorizontal}
+                className={(isHorizontal && 'horizontal') || 'vertical'}
                 $showLeftShadow={shadowLeft}
                 $showRightShadow={shadowRight}
             >

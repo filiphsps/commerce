@@ -3,7 +3,7 @@ import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 import { Content } from '@prismicio/client';
 import { Overview } from '@/components/typography/Overview';
 import PageContent from '@/components/PageContent';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     width: 100%;

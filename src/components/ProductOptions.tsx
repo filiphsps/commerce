@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/product';
 import type { FunctionComponent } from 'react';
+import { styled } from '@linaria/react';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 
@@ -42,54 +42,48 @@ const OptionValue = styled.div<{
         height: 4.25rem;
     }
 
-    ${({ selected }) =>
-        selected &&
-        css`
-            border-color: var(--accent-primary-dark);
-            color: var(--accent-primary-dark);
-        `}
+    &.selected {
+        border-color: var(--accent-primary-dark);
+        color: var(--accent-primary-dark);
+    }
 
-    ${({ disabled }) =>
-        disabled &&
-        css`
-            opacity: 0.5;
-            pointer-events: none;
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
 
-            background: var(--color-block);
-            color: var(--color-dark);
+        background: var(--color-block);
+        color: var(--color-dark);
 
-            @media (hover: hover) and (pointer: fine) {
-                &:hover {
-                    color: inherit;
-                    background: inherit;
-                }
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: inherit;
+                background: inherit;
             }
-        `}
+        }
+    }
 `;
-const Option = styled.div<{ disabled: boolean }>`
+const Option = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
     opacity: 0.5;
     pointer-events: none;
 
-    ${({ disabled }) =>
-        !disabled &&
-        css`
-            opacity: unset;
-            pointer-events: unset;
+    &.enabled {
+        opacity: unset;
+        pointer-events: unset;
 
-            ${OptionValue} {
-                cursor: pointer;
+        ${OptionValue} {
+            cursor: pointer;
 
-                @media (hover: hover) and (pointer: fine) {
-                    &:hover {
-                        color: var(--accent-primary);
-                        border-color: var(--accent-primary-dark);
-                    }
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: var(--accent-primary);
+                    border-color: var(--accent-primary-dark);
                 }
             }
-        `}
+        }
+    }
 `;
 
 interface ProductOptionProps {
@@ -113,7 +107,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                 if (!option || !option.values || !option.name) return null;
 
                 return (
-                    <Option key={option.name} disabled={disabled}>
+                    <Option key={option.name} className={(disabled && 'disabled') || 'enabled'}>
                         <OptionTitle>{option.name}</OptionTitle>
                         <OptionValues>
                             {option.values.map((value) => {
@@ -134,7 +128,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                                 return (
                                     <OptionValue
                                         key={value}
-                                        //disabled={!inStock}
+                                        //className={!inStock && 'disabled' || 'enabled'}
                                         selected={!disabled && selectedOptions?.[option.name!] === value}
                                         onClick={() =>
                                             onOptionChange({

@@ -1,5 +1,3 @@
-import styled, { css } from 'styled-components';
-
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
@@ -16,6 +14,7 @@ import { asText } from '@prismicio/client';
 import { components } from '@/slices';
 import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useTranslation } from 'next-i18next';
@@ -45,7 +44,7 @@ const LocaleCurrency = styled.div`
     font-weight: 700;
 `;
 
-const Locale = styled.div<{ $selected?: boolean }>`
+const Locale = styled.div`
     display: grid;
     grid-template-columns: auto 1fr auto;
     justify-content: stretch;
@@ -59,12 +58,10 @@ const Locale = styled.div<{ $selected?: boolean }>`
     transition: 250ms ease-in-out;
     cursor: pointer;
 
-    ${({ $selected }) =>
-        $selected &&
-        css`
-            color: var(--accent-primary);
-            border-color: var(--accent-primary);
-        `}
+    &.selected {
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
+    }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -92,7 +89,7 @@ const LocaleLabel = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
     height: 100%;
     font-weight: 500;
     font-size: 1.75rem;
@@ -186,7 +183,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({ page, countries:
                                         <Locale
                                             key={locale.locale}
                                             title={`${locale.country} (${locale.language})`}
-                                            $selected={locale.locale === router.locale}
+                                            className={`${(locale.locale === router.locale && 'selected') || ''}`}
                                             onClick={async () => {
                                                 // TODO: Go to previous page in history
                                                 await router.push('/', undefined, {

@@ -1,6 +1,7 @@
 import { Content } from '@prismicio/client';
-import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
+import { PrismicRichText } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     display: grid;
@@ -8,17 +9,25 @@ const Container = styled.section`
     gap: var(--block-spacer);
 `;
 
-const Content = styled.div<{ $alignment: 'left' | 'center' | 'right' }>`
+const SliceContent = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: ${({ $alignment }) =>
-        ($alignment === 'left' && 'start') ||
-        ($alignment === 'center' && 'center') ||
-        ($alignment === 'right' && 'end')};
+
+    &.left {
+        align-items: start;
+        text-align: left;
+    }
+    &.center {
+        align-items: center;
+        text-align: center;
+    }
+    &.right {
+        align-items: end;
+        text-align: right;
+    }
 
     font-size: 3.25rem;
     line-height: 3.5rem;
-    text-align: ${({ $alignment }) => $alignment};
 
     @media (min-width: 950px) {
         font-size: 3.75rem;
@@ -37,9 +46,9 @@ export type TitleProps = SliceComponentProps<Content.TitleSlice>;
 const Title = ({ slice }: TitleProps): JSX.Element => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-            <Content $alignment={slice.primary.alignment}>
+            <SliceContent className={slice.primary.alignment}>
                 <PrismicRichText field={slice.primary.content} />
-            </Content>
+            </SliceContent>
         </Container>
     );
 };

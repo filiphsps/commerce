@@ -1,9 +1,11 @@
 import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 import { i18n } from './next-i18next.config.cjs';
+import withLinaria from 'next-with-linaria';
+import withPlugins from 'next-compose-plugins';
 
 const withNextPluginPreval = createNextPluginPreval();
 
-/** @type {import('next').NextConfig} */
+/** @type {import('next-with-linaria').LinariaConfig} */
 let config = {
     poweredByHeader: false,
     reactStrictMode: true,
@@ -119,4 +121,4 @@ let config = {
     }
 };
 
-export default withNextPluginPreval(config);
+export default withPlugins([withNextPluginPreval, withLinaria], config);

@@ -1,6 +1,6 @@
 import { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     display: grid;

@@ -16,12 +16,11 @@ import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
 import PageProvider from '@/components/PageProvider';
 import SEO from '../../nextseo.config';
+import Script from 'next/script';
 import { StoreApi } from '@/api/store';
 import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
 import useSWR from 'swr';
-
-//import { ThemeProvider } from 'styled-components';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -79,6 +78,9 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
                 <meta name="apple-mobile-web-app-title" content={store?.name} />
+                <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+                <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
+                <link rel="preconnect" href="https://images.prismic.io" crossOrigin="" />
                 <link rel="icon" type="image/png" href={store?.favicon.src} />
                 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                 <link rel="apple-touch-icon" href={store?.favicon.src} />
@@ -184,15 +186,21 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 languageIsoCode={language}
             >
                 <CartProvider cartFragment={CartFragment}>
-                    {/*<StyleSheetManager>
-                    <ThemeProvider theme={{}}>*/}
                     <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
-                    {/*</ThemeProvider>
-                    </StyleSheetManager>*/}
                 </CartProvider>
             </ShopifyProvider>
+
+            {Config.GTM && process.env.NODE_ENV !== 'development' && (
+                <Script id="gtm" strategy="afterInteractive">
+                    {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                        })(window,document,'script','dataLayer','${Config.GTM}');`}
+                </Script>
+            )}
         </>
     );
 };

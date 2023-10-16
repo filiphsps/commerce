@@ -1,7 +1,7 @@
 import { FiChevronRight } from 'react-icons/fi';
 import type { FunctionComponent } from 'react';
 import NextLink from 'next/link';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.nav`
     z-index: 999;
@@ -49,7 +49,7 @@ const Link = styled(NextLink)`
 const Item = styled.li`
     display: flex;
     flex-wrap: nowrap;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     white-space: nowrap;

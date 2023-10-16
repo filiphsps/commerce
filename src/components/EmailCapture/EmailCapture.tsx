@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import { NewsletterApi } from '@/api/newsletter';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.div`
     position: relative;

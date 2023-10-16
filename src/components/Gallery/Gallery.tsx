@@ -1,10 +1,10 @@
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { ImageLoader } from '@/utils/ImageLoader';
+import { styled } from '@linaria/react';
 
 const Previews = styled.div`
     position: relative;
@@ -89,7 +89,7 @@ const ImageWrapper = styled.div`
     height: 100%;
 `;
 
-const Container = styled.div<{ $noBlend?: boolean }>`
+const Container = styled.div`
     position: relative;
     display: grid;
     grid-template-areas: 'primary' 'previews';
@@ -103,15 +103,13 @@ const Container = styled.div<{ $noBlend?: boolean }>`
         border-radius: none;
     }
 
+    &.blend img {
+        mix-blend-mode: multiply;
+    }
+
     img {
         flex-shrink: 1;
         width: 100%;
-        ${({ $noBlend }) =>
-            !$noBlend &&
-            css`
-                mix-blend-mode: multiply;
-            `}
-
         object-fit: contain;
         object-position: center;
         max-height: 35vh;
@@ -192,8 +190,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
     const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
         <Container
-            className={(pastel && 'Pastel') || ''}
-            $noBlend={!!background || undefined}
+            className={`${(pastel && 'Pastel') || ''} ${(!background && 'blend') || ''}`}
             style={
                 {
                     ...((images?.edges?.length <= 1 && {

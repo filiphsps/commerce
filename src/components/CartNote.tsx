@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { FunctionComponent } from 'react';
 import { MultilineInput } from '@/components/Input';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useCart } from '@shopify/hydrogen-react';
 
 const Label = styled.div`

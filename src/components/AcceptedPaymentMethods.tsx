@@ -1,7 +1,7 @@
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { StoreModel } from '@/models/StoreModel';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.div`
     display: flex;

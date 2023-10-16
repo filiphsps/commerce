@@ -3,7 +3,7 @@ import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 import { Alert as AlertComponent } from '@/components/Alert';
 import { Content } from '@prismicio/client';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const PageContent = dynamic(() => import('@/components/PageContent'));
 

@@ -1,7 +1,7 @@
 import Content from './Content';
 import type { FunctionComponent } from 'react';
 import { PiInfoBold } from 'react-icons/pi';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     display: grid;
@@ -24,7 +24,7 @@ const Container = styled.section`
 `;
 const Body = styled(Content)`
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     font-size: 1.5rem;
     line-height: 1.75rem;

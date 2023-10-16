@@ -1,10 +1,10 @@
 import { Money, useCart } from '@shopify/hydrogen-react';
-import styled, { css } from 'styled-components';
 
 import type { FunctionComponent } from 'react';
+import { styled } from '@linaria/react';
 import { useTranslation } from 'next-i18next';
 
-const Container = styled.section<{ $active?: boolean }>`
+const Container = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -12,12 +12,10 @@ const Container = styled.section<{ $active?: boolean }>`
     color: var(--color-dark);
     transition: 250ms ease-in-out;
 
-    ${({ $active }) =>
-        $active &&
-        css`
-            border-radius: var(--block-border-radius);
-            color: var(--color-green);
-        `}
+    &.active {
+        border-radius: var(--block-border-radius);
+        color: var(--color-green);
+    }
 `;
 const Label = styled.div`
     gap: var(--block-spacer-small);
@@ -33,20 +31,18 @@ const ProgressBarLine = styled.div`
     height: 100%;
     background: var(--accent-secondary-dark);
 `;
-const ProgressBar = styled.div<{ $full?: boolean }>`
+const ProgressBar = styled.div`
     overflow: hidden;
     width: 100%;
     height: var(--block-padding);
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
 
-    ${({ $full }) =>
-        $full &&
-        css`
-            ${ProgressBarLine} {
-                background: var(--color-green);
-            }
-        `}
+    &.full {
+        ${ProgressBarLine} {
+            background: var(--color-green);
+        }
+    }
 `;
 
 interface FreeShippingProgressProps {
@@ -104,7 +100,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         null;
 
     return (
-        <Container {...props} $active={freeShipping}>
+        <Container {...props} className={`${props.className || ''} ${(freeShipping && 'active') || ''}`}>
             {
                 <Label>
                     {amountLeftComponent}
@@ -112,7 +108,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
                     <Target>{t('free-shipping')}</Target>.
                 </Label>
             }
-            <ProgressBar $full={freeShipping}>
+            <ProgressBar className={`${(freeShipping && 'full') || ''}`}>
                 <ProgressBarLine
                     style={{
                         width: `${

@@ -1,17 +1,17 @@
-import PageContent from '@/components/PageContent';
-import { ImageLoader } from '@/utils/ImageLoader';
 import { Content } from '@prismicio/client';
+import { ImageLoader } from '@/utils/ImageLoader';
+import Link from 'next/link';
+import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
-import Link from 'next/link';
 import Slider from 'react-slick';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     width: 100%;
 `;
 
-const Content = styled.div`
+const SliceContent = styled.div`
     overflow: hidden visible;
 
     @media (max-width: 950px) {
@@ -86,7 +86,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
         <>
             <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
                 <PageContent>
-                    <Content>
+                    <SliceContent>
                         <Slider {...settings}>
                             {slice.items.map((slide, index) => {
                                 return (
@@ -119,7 +119,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                 );
                             })}
                         </Slider>
-                    </Content>
+                    </SliceContent>
                 </PageContent>
             </Container>
         </>

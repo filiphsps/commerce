@@ -10,7 +10,7 @@ import type { FunctionComponent } from 'react';
 import Link from 'next/link';
 import PageLoader from '@/components/PageLoader';
 import { Pluralize } from '@/utils/Pluralize';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useTranslation } from 'next-i18next';
 
 const Container = styled.section`
@@ -149,7 +149,7 @@ const Breakdown = styled.section`
 const BreakdownItemLabel = styled.div`
     display: flex;
     align-items: stretch;
-    justify-content: start;
+    justify-content: flex-start;
     gap: var(--block-spacer-small);
     font-weight: 500;
     font-size: 1.5rem;
@@ -159,13 +159,13 @@ const BreakdownItemMoney = styled.div`
     font-weight: 500;
     font-size: 1.5rem;
     line-height: 1.5rem;
-    align-self: start;
+    align-self: flex-start;
 `;
 const BreakdownItem = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     gap: var(--block-spacer);
-    align-items: end;
+    align-items: flex-end;
     justify-content: stretch;
     color: var(--color-dark);
 `;

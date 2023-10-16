@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'react';
 import Loader from '@/components/Loader';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Wrapper = styled.div`
     display: flex;

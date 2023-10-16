@@ -1,8 +1,7 @@
-import styled, { css } from 'styled-components';
-
 import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
+import { styled } from '@linaria/react';
 import { useState } from 'react';
 
 const Container = styled.div`
@@ -29,7 +28,7 @@ const Values = styled.div`
         margin: 1rem 0px 0.5rem 0px;
     }
 `;
-const ListOption = styled.div<{ selected?: boolean }>`
+const ListOption = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,12 +41,10 @@ const ListOption = styled.div<{ selected?: boolean }>`
     line-height: 1.25rem;
     border-radius: var(--block-border-radius);
 
-    ${({ selected }) =>
-        selected &&
-        css`
-            background: var(--accent-primary);
-            color: var(--accent-primary-text);
-        `}
+    &.selected {
+        background: var(--accent-primary);
+        color: var(--accent-primary-text);
+    }
 `;
 
 const RangeOption = styled.div`
@@ -88,7 +85,7 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
                     {filter.values.map((value: any) => (
                         <ListOption
                             key={value.id}
-                            selected={options[filter.id] === value.id}
+                            className={`${(options[filter.id] === value.id && 'selected') || ''}`}
                             onClick={setOptions({
                                 ...options,
                                 [filter.id]: value.id

@@ -20,7 +20,7 @@ import { asText } from '@prismicio/client';
 import { components } from '@/slices';
 import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

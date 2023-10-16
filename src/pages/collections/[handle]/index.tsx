@@ -26,7 +26,7 @@ import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import { isValidHandle } from '@/utils/handle';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 

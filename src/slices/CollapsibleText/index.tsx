@@ -1,11 +1,11 @@
-import { Content } from '@prismicio/client';
-
-import PageContent from '@/components/PageContent';
-import { Overview } from '@/components/typography/Overview';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
+
 import Color from 'color';
+import { Content } from '@prismicio/client';
 import { FiChevronUp } from 'react-icons/fi';
-import styled from 'styled-components';
+import { Overview } from '@/components/typography/Overview';
+import PageContent from '@/components/PageContent';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     width: 100%;
@@ -13,7 +13,7 @@ const Container = styled.section`
     margin: 0px;
 `;
 
-const Content = styled.div`
+const SliceContent = styled.div`
     color: var(--foreground);
     padding: var(--block-padding-large);
     background: var(--color-block);
@@ -84,15 +84,13 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                     '--background': slice.primary.accent || 'var(--color-block)',
                     '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
                     '--foreground':
-                        (slice.primary.accent &&
-                            Color(slice.primary.accent).isDark() &&
-                            'var(--color-text-primary)') ||
+                        (slice.primary.accent && Color(slice.primary.accent).isDark() && 'var(--color-text-primary)') ||
                         'var(--color-dark)'
                 } as React.CSSProperties
             }
         >
             <PageContent>
-                <Content>
+                <SliceContent>
                     <Details className={`Slice-Collapse-Body`}>
                         <Summary>
                             <FiChevronUp className="Icon" /> {slice?.primary?.title}
@@ -100,7 +98,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
 
                         <Overview body={<PrismicRichText field={slice?.primary?.text} />} />
                     </Details>
-                </Content>
+                </SliceContent>
             </PageContent>
         </Container>
     );

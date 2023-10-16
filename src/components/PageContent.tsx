@@ -1,8 +1,7 @@
-import styled, { css } from 'styled-components';
-
 import type { FunctionComponent } from 'react';
+import { styled } from '@linaria/react';
 
-const Container = styled.div<{ $primary?: boolean }>`
+const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
@@ -10,12 +9,10 @@ const Container = styled.div<{ $primary?: boolean }>`
     width: 100%;
     margin: 0px auto;
 
-    ${({ $primary }) =>
-        $primary &&
-        css`
-            padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
-            gap: calc(var(--block-spacer-large) * 2);
-        `}
+    &.primary {
+        padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
+        gap: calc(var(--block-spacer-large) * 2);
+    }
 `;
 
 interface PageContentProps {
@@ -26,7 +23,12 @@ interface PageContentProps {
     id?: string;
 }
 const PageContent: FunctionComponent<PageContentProps> = ({ style, primary, className, children, id }) => {
-    return <Container {...{ style, className, children, id }} $primary={primary} />;
+    return (
+        <Container
+            {...{ style, className, children, id }}
+            className={`${className || ''} ${(primary && 'primary') || ''}`}
+        />
+    );
 };
 
 export default PageContent;

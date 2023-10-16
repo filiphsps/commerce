@@ -11,11 +11,11 @@ import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'ne
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { ProductApi, ProductVisualsApi, ProductsApi } from '@/api/product';
 import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import styled, { css } from 'styled-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
+import CollectionBlock from '@/components/CollectionBlock';
 import { Config } from '@/utils/Config';
 import Content from '@/components/Content';
 import Error from 'next/error';
@@ -23,6 +23,9 @@ import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import Link from 'next/link';
 import { NextLocaleToLocale } from '@/utils/Locale';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import type { ProductPageDocument } from '@/prismic/types';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import type { ProductVisuals } from '@/api/product';
@@ -38,6 +41,7 @@ import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import { isValidHandle } from '@/utils/handle';
+import { styled } from '@linaria/react';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -46,10 +50,6 @@ import { useTranslation } from 'next-i18next';
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));
 const InfoLines = dynamic(() => import('@/components/products/InfoLines').then((c) => c.InfoLines), { ssr: false });
-const PageContent = dynamic(() => import('@/components/PageContent'));
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
-const Page = dynamic(() => import('@/components/Page'));
-const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
 
 // TODO: replace this with generic label.
 const Label = styled.label`
@@ -90,7 +90,7 @@ const Assets = styled.div`
     grid-area: assets;
     display: flex;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
     width: 100%;
     height: fit-content;
 
@@ -115,8 +115,8 @@ const Options = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: var(--block-spacer);
 `;
 
@@ -125,7 +125,7 @@ const Options = styled.div`
 const Description = styled(Content)`
     overflow-x: hidden;
 `;
-const AddToCart = styled(Button)<{ $added?: boolean }>`
+const AddToCart = styled(Button)`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -141,18 +141,16 @@ const AddToCart = styled(Button)<{ $added?: boolean }>`
     line-height: 2.25rem;
     font-weight: 600;
 
-    ${({ $added }) =>
-        $added &&
-        css`
-            &&,
-            &:hover,
-            &:active {
-                outline: var(--color-green) solid var(--block-border-width);
-                outline-offset: calc(var(--block-border-width) * -1);
-                background: var(--color-green-light);
-                color: var(--color-green);
-            }
-        `}
+    &.added {
+        &&,
+        &:hover,
+        &:active {
+            outline: var(--color-green) solid var(--block-border-width);
+            outline-offset: calc(var(--block-border-width) * -1);
+            background: var(--color-green-light);
+            color: var(--color-green);
+        }
+    }
 
     svg {
         stroke-width: 0.3ex;
@@ -200,7 +198,7 @@ const QuantityWrapper = styled.div`
         width: min-content;
     }
 
-    ${Button} {
+    button {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -279,45 +277,41 @@ const HeaderContent = styled.div`
     }
 `;
 
-const Price = styled.div<{ $sale?: boolean; $highlight?: boolean }>`
+const Price = styled.div`
     position: relative;
     display: block;
     font-size: 3rem;
     line-height: 100%;
     font-weight: 600;
 
-    ${({ $sale }) =>
-        $sale &&
-        css`
-            font-size: 2rem;
+    &.sale {
+        font-size: 2rem;
 
-            @media (max-width: 950px) {
-                font-size: 1.75rem;
-            }
+        @media (max-width: 950px) {
+            font-size: 1.75rem;
+        }
 
-            &:before {
-                position: absolute;
-                content: '';
-                left: 0;
-                top: 50%;
-                right: 0;
-                border-top: 0.2rem solid;
-                border-color: inherit;
-                transform: rotate(-5deg);
-            }
-        `}
-    ${({ $highlight }) =>
-        $highlight &&
-        css`
-            color: var(--color-sale);
-        `}
+        &:before {
+            position: absolute;
+            content: '';
+            left: 0;
+            top: 50%;
+            right: 0;
+            border-top: 0.2rem solid;
+            border-color: inherit;
+            transform: rotate(-5deg);
+        }
+    }
+    &.highlight {
+        color: var(--color-sale);
+    }
 `;
 
 const PriceContainer = styled.div`
     grid-area: pricing;
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     flex-direction: column;
     height: 100%;
     color: var(--accent-primary-dark);
@@ -439,7 +433,7 @@ const InformationContent = styled(TabContent)`
     }
 `;
 
-const ProductPageContent = styled(PageContent)<{ background?: string }>`
+const ProductPageContent = styled(PageContent)`
     position: relative;
 
     &::before {
@@ -447,8 +441,8 @@ const ProductPageContent = styled(PageContent)<{ background?: string }>`
         position: absolute;
         inset: 0;
         height: 0;
+        background: var(--background);
         pointer-events: none;
-        background: ${({ background }) => background || 'var(--accent-secondary-light)'};
         transition:
             400ms ease-in-out height,
             250ms ease-in-out right;
@@ -463,18 +457,14 @@ const ProductPageContent = styled(PageContent)<{ background?: string }>`
 `;
 
 const Container = styled(Page)`
-    &.Pastel {
-        ${ProductPageContent} {
-            &::before {
-                inset: 0;
-                height: 40vh;
+    &.Pastel ${ProductPageContent}:before {
+        inset: 0;
+        height: 40vh;
 
-                @media (min-width: 1260px) {
-                    left: -50vw;
-                    right: calc(52rem + var(--block-padding-large) * 2);
-                    height: 100%;
-                }
-            }
+        @media (min-width: 1260px) {
+            left: -50vw;
+            right: calc(52rem + var(--block-padding-large) * 2);
+            height: 100%;
         }
     }
 `;
@@ -588,14 +578,14 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             ...selectedVariant.compareAtPrice
                         }}
                         as={Price}
-                        $sale
+                        className="sale"
                     />
                 )}
                 {selectedVariant.price && (
                     <Money
                         data={selectedVariant.price}
                         as={Price}
-                        $highlight={selectedVariant?.compareAtPrice != null}
+                        className={(selectedVariant?.compareAtPrice != null && 'highlight') || ''}
                     />
                 )}
             </PriceContainer>
@@ -618,7 +608,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         <AddToCart
             type="button"
             title={t('add-to-cart')}
-            $added={added}
+            className={`${(added && 'added') || ''}`}
             disabled={!cartReady || quantity <= 0 || !selectedVariant?.availableForSale}
             onClick={() => cartReady && addOrUpdateCartLine({ quantity, variantId: selectedVariant?.id! })}
         >
@@ -836,7 +826,12 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
             <ProductPageContent
                 primary
-                background={(visuals?.transparentBackgrounds && 'var(--accent-primary-light)') || undefined}
+                style={{
+                    '--background': `${
+                        (visuals?.transparentBackgrounds && 'var(--accent-primary-light)') ||
+                        'var(--accent-secondary-light)'
+                    }`
+                }}
             >
                 <ProductContainerWrapper>
                     <ProductContainer>

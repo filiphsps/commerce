@@ -2,7 +2,6 @@ import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisualsApi } from '
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/Button';
@@ -12,6 +11,7 @@ import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';
 import type { ProductVisuals } from '@/api/product';
 import type { StoreModel } from '@/models/StoreModel';
+import { styled } from '@linaria/react';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -133,7 +133,7 @@ const VariantsContainer = styled.div`
     grid-template-columns: 1fr auto;
     justify-content: flex-end;
     align-items: flex-end;
-    justify-self: end;
+    justify-self: flex-end;
     gap: var(--block-spacer);
     width: 100%;
     height: 100%;
@@ -142,8 +142,8 @@ const VariantsContainer = styled.div`
 `;
 const Variants = styled.div`
     display: flex;
-    align-items: end;
-    justify-content: end;
+    align-items: flex-end;
+    justify-content: flex-end;
     gap: var(--block-spacer-tiny);
     width: 100%;
     height: 100%;
@@ -179,7 +179,7 @@ const Actions = styled.div`
     justify-content: space-between;
     gap: var(--block-spacer-small);
 `;
-const AddButton = styled(Button)<{ $added?: boolean }>`
+const AddButton = styled(Button)`
     && {
         overflow: hidden;
         display: flex;
@@ -214,7 +214,7 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
             box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         }
 
-        &.Added {
+        &.added {
             background: var(--accent-secondary-dark) !important;
             border-color: var(--accent-secondary) !important;
             color: var(--accent-secondary-text) !important;
@@ -226,7 +226,7 @@ const Quantity = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    justify-self: end;
+    justify-self: flex-end;
     gap: calc(var(--block-spacer-small));
     height: 100%;
     font-size: 1.5rem;
@@ -244,7 +244,7 @@ const QuantityAction = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
     width: var(--block-padding-large);
     height: 100%;
     border-radius: var(--block-border-radius);
@@ -252,7 +252,7 @@ const QuantityAction = styled.div`
     transition: 250ms ease-in-out;
 
     &:first-child {
-        justify-content: start;
+        justify-content: flex-start;
     }
 
     &.Inactive {
@@ -305,8 +305,8 @@ const Badges = styled.div`
     right: var(--block-spacer-small);
     bottom: var(--block-spacer-small);
     display: flex;
-    align-items: start;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: var(--block-spacer-small);
     z-index: 1;
     pointer-events: none;
@@ -351,7 +351,7 @@ const Badge = styled.div`
     }
 `;
 
-const Container = styled.section<{ $available?: boolean }>`
+const Container = styled.section`
     position: relative;
     flex: 1 auto;
     overflow: hidden;
@@ -366,14 +366,12 @@ const Container = styled.section<{ $available?: boolean }>`
     background: var(--accent-primary);
     color: var(--accent-primary-text);
 
-    ${({ $available }) =>
-        !$available &&
-        css`
-            opacity: 0.75;
-            filter: brightness(0.85);
-            background: var(--color-block);
-            color: var(--color-dark);
-        `}
+    &.unavailable {
+        opacity: 0.75;
+        filter: brightness(0.85);
+        background: var(--color-block);
+        color: var(--color-dark);
+    }
 `;
 
 interface VariantImageProps {
@@ -481,8 +479,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
     return (
         <Container
-            className={`ProductCard ${className || ''}`}
-            $available={selectedVariant.availableForSale}
+            className={`ProductCard ${className || ''} ${(!selectedVariant.availableForSale && 'unavailable') || ''}`}
             style={
                 {
                     '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
@@ -611,8 +608,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                 <AddButton
                     type="button"
                     title={t('add-to-cart')}
-                    className={(addedToCart && 'Added') || ''}
-                    $added={addedToCart}
+                    className={(addedToCart && 'added') || ''}
                     onClick={() => {
                         if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
                         else if (!product || !selectedVariant) return;

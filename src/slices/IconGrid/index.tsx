@@ -2,7 +2,7 @@ import { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
 import PageContent from '@/components/PageContent';
 import type { SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.section`
     display: grid;
@@ -71,11 +71,7 @@ const IconGrid = ({ slice }: IconGridProps): JSX.Element => {
                         <Item key={index}>
                             <ItemIcon>
                                 {item.icon?.url && (
-                                    <Image
-                                        src={item.icon.url}
-                                        alt={item.icon.alt || ''}
-                                        layout="fill"
-                                    />
+                                    <Image src={item.icon.url} alt={item.icon.alt || ''} layout="fill" />
                                 )}
                             </ItemIcon>
                             <ItemContent>{item.title}</ItemContent>

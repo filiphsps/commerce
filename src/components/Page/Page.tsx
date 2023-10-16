@@ -1,5 +1,5 @@
 import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.main`
     min-height: calc(100vh - 20rem);

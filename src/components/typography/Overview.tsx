@@ -1,11 +1,10 @@
-import styled, { css } from 'styled-components';
-
 import ContentComponent from '@/components/Content';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
+import { styled } from '@linaria/react';
 
-const Container = styled.div<{ $layout?: 'left' | 'right' }>`
+const Container = styled.div`
     display: grid;
     grid-template-areas: 'overview-banner' 'overview-content';
     height: 100%;
@@ -18,12 +17,10 @@ const Container = styled.div<{ $layout?: 'left' | 'right' }>`
         grid-template-areas: 'overview-banner overview-content';
         grid-template-columns: minmax(32rem, 1fr) auto;
 
-        ${({ $layout }) =>
-            $layout === 'right' &&
-            css`
-                grid-template-areas: 'overview-content overview-banner';
-                grid-template-columns: auto minmax(32rem, 1fr);
-            `}
+        &.right {
+            grid-template-areas: 'overview-content overview-banner';
+            grid-template-columns: auto minmax(32rem, 1fr);
+        }
     }
 `;
 
@@ -49,19 +46,17 @@ const ImageContainer = styled.div<{ $expand?: boolean }>`
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
 
-    ${({ $expand }) =>
-        $expand &&
-        css`
-            padding: 0px;
+    &.expand {
+        padding: 0px;
 
-            ${ImageWrapper} {
-                padding: var(--block-padding-large);
+        ${ImageWrapper} {
+            padding: var(--block-padding-large);
 
-                img {
-                    object-fit: cover;
-                }
+            img {
+                object-fit: cover;
             }
-        `}
+        }
+    }
 `;
 
 const Content = styled(ContentComponent)`
@@ -118,7 +113,7 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
     if (!image) return <Content className="Plain">{body}</Content>;
 
     return (
-        <Container style={style} className="TextBlock Block" $layout={layout}>
+        <Container style={style} className={`TextBlock Block ${layout}`}>
             <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
                     <Image

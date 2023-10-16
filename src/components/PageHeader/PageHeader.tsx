@@ -1,7 +1,7 @@
 import type { CSSProperties, FunctionComponent } from 'react';
 
 import Content from '@/components/Content';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 
 const Container = styled.div`
     grid-area: page-header;

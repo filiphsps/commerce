@@ -1,6 +1,5 @@
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import type { FunctionComponent } from 'react';
@@ -10,6 +9,7 @@ import Loader from '@/components/Loader';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductApi } from '@/api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import { styled } from '@linaria/react';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -140,13 +140,13 @@ const Price = styled(SectionContent)`
 
     @media (max-width: 950px) {
         text-align: start;
-        align-items: start;
+        align-items: flex-start;
         justify-content: center;
 
         &.Sale {
             display: flex;
             justify-content: center;
-            align-items: start;
+            align-items: flex-start;
             gap: 0px;
 
             .Currency-Sale {
@@ -158,7 +158,7 @@ const Price = styled(SectionContent)`
         }
 
         .Currency {
-            justify-content: start;
+            justify-content: flex-start;
             line-height: 100%;
         }
     }
@@ -179,24 +179,22 @@ const RemoveButton = styled.button`
         }
     }
 `;
-const Quantity = styled.div<{ disabled?: boolean }>`
+const Quantity = styled.div`
     height: 3rem;
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
     color: var(--color-dark);
     transition: 250ms ease-in-out;
 
-    ${(props) =>
-        props.disabled &&
-        css`
-            opacity: 0.5;
-            cursor: wait;
+    &.disabled {
+        opacity: 0.5;
+        cursor: wait;
 
-            input,
-            button {
-                cursor: inherit;
-            }
-        `}
+        input,
+        button {
+            cursor: inherit;
+        }
+    }
 
     input {
         overflow: hidden;
@@ -371,7 +369,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
                 null}
 
             <QuantitySection className="QuantitySection">
-                <Quantity disabled={cart.status !== 'idle'}>
+                <Quantity className={`${(cart.status !== 'idle' && 'disabled') || ''}`}>
                     <CartLineQuantityAdjustButton adjust="decrease">
                         <FiMinus />
                     </CartLineQuantityAdjustButton>

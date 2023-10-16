@@ -1,5 +1,4 @@
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
@@ -10,6 +9,7 @@ import { Input } from '@/components/Input';
 import Link from 'next/link';
 import { Pluralize } from '@/utils/Pluralize';
 import type { StoreModel } from '@/models/StoreModel';
+import { styled } from '@linaria/react';
 import { useCart } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
 
@@ -174,7 +174,7 @@ const NavigationItem = styled.div`
 
         &.Top {
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             text-transform: uppercase;
             gap: 0.25rem;
@@ -212,7 +212,7 @@ const Actions = styled.div`
     }
 `;
 
-const Action = styled.div<{ $active?: boolean }>`
+const Action = styled.div`
     position: relative;
     display: flex;
     justify-content: center;
@@ -242,20 +242,18 @@ const Action = styled.div<{ $active?: boolean }>`
         }
     }
 
-    ${({ $active }) =>
-        $active &&
-        css`
-            padding: 0px var(--block-padding);
-            color: var(--accent-secondary-light);
-            background: var(--accent-primary);
+    &.active {
+        padding: 0px var(--block-padding);
+        color: var(--accent-secondary-light);
+        background: var(--accent-primary);
 
-            @media (hover: hover) and (pointer: fine) {
-                &:hover {
-                    background: var(--accent-secondary);
-                    color: var(--accent-secondary-text);
-                }
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--accent-secondary);
+                color: var(--accent-secondary-text);
             }
-        `}
+        }
+    }
 `;
 
 const CartIndicator = styled.span`
@@ -302,19 +300,17 @@ const HamburgerMenu = styled.div`
     }
 `;
 
-const Header = styled.header<{ $scrolled?: boolean }>`
+const Header = styled.header`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
     transition: 250ms ease-in-out background-color;
     border-bottom: calc(var(--block-border-width) / 2) solid transparent;
 
-    ${({ $scrolled }) =>
-        $scrolled &&
-        css`
-            border-bottom-color: var(--accent-secondary);
-            box-shadow: 0px 1rem 1rem -0.75rem var(--color-block-shadow);
-        `}
+    &.scrolled {
+        border-bottom-color: var(--accent-secondary);
+        box-shadow: 0px 1rem 1rem -0.75rem var(--color-block-shadow);
+    }
 
     @media (min-width: 950px) {
         height: calc(4.5rem + calc(var(--block-padding) * 2));
@@ -349,7 +345,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
     }, [scrollTop]);
 
     return (
-        <Header $scrolled={scrollTop >= 40}>
+        <Header className={(scrollTop >= 40 && 'scrolled') || ''}>
             <Content>
                 <HamburgerMenu onClick={() => sidebarToggle?.()}>
                     {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
@@ -443,7 +439,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                             <CurrentLocaleFlag />
                         </Link>
                     </Action>
-                    <Action $active={(cart?.totalQuantity || 0) > 0}>
+                    <Action className={((cart?.totalQuantity || 0) > 0 && 'active') || ''}>
                         <Link
                             href={'/cart/'}
                             className="Wrapper"

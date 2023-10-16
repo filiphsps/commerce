@@ -1,7 +1,7 @@
 import { FiTag, FiX } from 'react-icons/fi';
 
 import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useCart } from '@shopify/hydrogen-react';
 
 const Container = styled.section`
@@ -32,7 +32,7 @@ const DiscountCodes = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: end;
+    justify-content: flex-end;
     flex-grow: 1;
     gap: var(--block-spacer-small);
 `;

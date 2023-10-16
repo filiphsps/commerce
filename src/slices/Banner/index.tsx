@@ -1,11 +1,11 @@
 import { Content, asLink } from '@prismicio/client';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
-import styled, { css } from 'styled-components';
 
 import Link from 'next/link';
 import color from 'color';
+import { styled } from '@linaria/react';
 
-const Contents = styled.div`
+const SliceContent = styled.div`
     display: grid;
     justify-content: center;
     align-items: center;
@@ -67,7 +67,7 @@ const Header = styled.div`
     }
 `;
 
-const Action = styled(Link)<{ $primary?: boolean }>`
+const Action = styled(Link)`
     padding: var(--block-padding) calc(var(--block-padding-large) * 1.75);
     border-radius: calc(var(--block-border-radius-large) * 2);
     border: var(--block-border-width) solid var(--heading-selected-color);
@@ -85,13 +85,11 @@ const Action = styled(Link)<{ $primary?: boolean }>`
         line-height: 2rem;
     }
 
-    ${({ $primary }) =>
-        $primary &&
-        css`
-            background: var(--heading-selected-color);
-            color: var(--accent-primary-text);
-            font-weight: 700;
-        `}
+    &.primary {
+        background: var(--heading-selected-color);
+        color: var(--accent-primary-text);
+        font-weight: 700;
+    }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -117,7 +115,7 @@ const ActionBar = styled.div`
     }
 `;
 
-const Container = styled.section<{ $background: string; $fullWidth?: boolean; $slim?: boolean }>`
+const Container = styled.section<{ $background: string }>`
     display: grid;
     justify-content: center;
     align-items: center;
@@ -125,72 +123,67 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
     background: var(--background);
     color: var(--content-color);
 
-    ${({ $fullWidth }) =>
-        $fullWidth &&
-        css`
-            position: relative;
-            width: calc(100vw - var(--block-padding-large) / 2);
-            margin-left: -50vw;
-            left: 50%;
-        `};
+    &.fullWidth {
+        position: relative;
+        width: calc(100vw - var(--block-padding-large) / 2);
+        margin-left: -50vw;
+        left: 50%;
+    }
 
-    ${({ $slim }) =>
-        $slim &&
-        css`
-            ${Contents} {
-                min-height: unset;
+    &.slim {
+        ${SliceContent} {
+            min-height: unset;
 
-                ${Header} {
-                    p {
-                        padding-top: 0px;
-                        font-size: 1.75rem;
-                        line-height: 2.25rem;
-
-                        @media (min-width: 950px) {
-                            font-size: 2rem;
-                            line-height: 2.5rem;
-                        }
-                    }
-
-                    h1,
-                    h2,
-                    h3,
-                    h4,
-                    h5,
-                    h6 {
-                        font-size: 2.5rem;
-                        line-height: 3rem;
-
-                        @media (min-width: 950px) {
-                            font-size: 3rem;
-                            line-height: 3.5rem;
-                        }
-                    }
-                }
-
-                ${Action} {
-                    font-size: 1.25rem;
-                    line-height: 1.25rem;
-                    padding: var(--block-padding) var(--block-padding-large);
+            ${Header} {
+                p {
+                    padding-top: 0px;
+                    font-size: 1.75rem;
+                    line-height: 2.25rem;
 
                     @media (min-width: 950px) {
-                        padding: calc(var(--block-padding) * 1.25)
-                            calc(var(--block-padding-large) * 2);
-                        font-size: 1.5rem;
-                        line-height: 1.5rem;
+                        font-size: 2rem;
+                        line-height: 2.5rem;
                     }
                 }
 
-                gap: calc(var(--block-padding-large) * 1.5);
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6 {
+                    font-size: 2.5rem;
+                    line-height: 3rem;
 
-                @media (min-width: 950px) {
-                    gap: var(--block-padding-large);
-                }
-                @media (min-width: 1465px) {
-                    padding: calc(var(--block-padding-large) * 1.5) var(--block-padding-large);
+                    @media (min-width: 950px) {
+                        font-size: 3rem;
+                        line-height: 3.5rem;
+                    }
                 }
             }
-        `};
+
+            ${Action} {
+                font-size: 1.25rem;
+                line-height: 1.25rem;
+                padding: var(--block-padding) var(--block-padding-large);
+
+                @media (min-width: 950px) {
+                    padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 2);
+                    font-size: 1.5rem;
+                    line-height: 1.5rem;
+                }
+            }
+
+            gap: calc(var(--block-padding-large) * 1.5);
+
+            @media (min-width: 950px) {
+                gap: var(--block-padding-large);
+            }
+            @media (min-width: 1465px) {
+                padding: calc(var(--block-padding-large) * 1.5) var(--block-padding-large);
+            }
+        }
+    }
 
     --background: ${({ $background }) => $background};
 
@@ -215,11 +208,10 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
         <Container
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            className={slice.variation}
-            $slim={slice.variation.toLowerCase().includes('slim')}
+            className={`${slice.variation} ${(slice.variation.toLowerCase().includes('slim') && 'slim') || ''}`}
             $background={slice.primary.background || '#cce2cb'}
         >
-            <Contents>
+            <SliceContent>
                 <Header>
                     <PrismicRichText field={slice.primary.content} />
                 </Header>
@@ -227,14 +219,14 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                     {slice.items.map((cta, index) => (
                         <Action
                             key={index}
-                            $primary={cta.type}
+                            className={`${(cta.type && 'primary') || ''}`}
                             href={((cta.target && asLink(cta.target)?.toString()!) || {})!}
                         >
                             <PrismicRichText field={cta.title} />
                         </Action>
                     ))}
                 </ActionBar>
-            </Contents>
+            </SliceContent>
         </Container>
     );
 };

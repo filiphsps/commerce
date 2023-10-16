@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
+import { styled } from '@linaria/react';
 import { useRouter } from 'next/router';
 
 const Page = dynamic(() => import('@/components/Page'));
