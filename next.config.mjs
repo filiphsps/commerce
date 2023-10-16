@@ -15,7 +15,7 @@ let config = {
     trailingSlash: true,
     swcMinify: true,
     i18n,
-    productionBrowserSourceMaps: true,
+    productionBrowserSourceMaps: false,
     compress: true,
     experimental: {
         scrollRestoration: true,
@@ -28,12 +28,7 @@ let config = {
         formats: ['image/avif', 'image/webp']
     },
     compiler: {
-        styledComponents: {
-            ssr: true,
-            minify: true,
-            transpileTemplateLiterals: true,
-            pure: true
-        }
+        styledComponents: true
     },
     env: {
         // Settings

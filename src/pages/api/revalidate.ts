@@ -3,7 +3,7 @@
 import * as prismicH from '@prismicio/helpers';
 
 // Import your app's Link Resolver (if your app uses one)
-import { createClient } from 'prismicio';
+import { createClient } from '../../../prismicio';
 
 /**
  * This API endpoint will be called by a Prismic webhook. The webhook

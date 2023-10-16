@@ -1,8 +1,8 @@
 import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
 
+import { Config } from '../util/Config';
 import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
-import { Config } from '../src/util/Config';
 
 class Document extends NextDocument {
     static async getInitialProps(ctx) {
@@ -32,20 +32,12 @@ class Document extends NextDocument {
 
     render() {
         return (
-            <Html
-                lang={
-                    (this.props.locale && this.props.locale !== 'x-default' && this.props.locale) ||
-                    undefined
-                }
-            >
+            <Html lang={(this.props.locale && this.props.locale !== 'x-default' && this.props.locale) || undefined}>
                 <Head>
                     <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="" />
                     <link rel="preconnect" href="https://images.prismic.io" crossOrigin="" />
                     <link rel="preconnect" href={`https://${Config.shopify.checkout_domain}`} />
-                    <meta
-                        name="format-detection"
-                        content="telephone=no, date=no, email=no, address=no"
-                    />
+                    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
                 </Head>
                 <body>
                     <Main />

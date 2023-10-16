@@ -28,7 +28,7 @@
             "@/hooks/*": ["src/hooks/*"],
             "@/api/*": ["src/api/*"],
             "@/utils/*": ["src/utils/*"],
-            "@/style/*": ["src/style/*"]
+            "@/style/*": ["src/scss/*"]
         }
     },
     "exclude": ["dist", "node_modules", "out", "public", ".next", "next.config.mjs"],

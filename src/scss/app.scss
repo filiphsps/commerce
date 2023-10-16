@@ -1,7 +1,7 @@
-@import '../src/scss/_app.scss';
+@import 'global.scss';
 
 // Components
-@import '../src/components/Currency/Currency.scss';
+@import '../components/Currency/Currency.scss';
 
 html,
 body {

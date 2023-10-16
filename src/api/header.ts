@@ -1,6 +1,6 @@
 import { Config } from 'src/util/Config';
 import type { HeaderModel } from '../models/HeaderModel';
-import { createClient } from 'prismicio';
+import { createClient } from '../../prismicio';
 
 export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
