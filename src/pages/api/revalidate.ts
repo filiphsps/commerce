@@ -40,3 +40,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // If the request's body is unknown, tell the requester
     return res.status(400).json({ message: 'Invalid body' });
 };
+
+export const config = {
+    runtime: 'edge'
+};
