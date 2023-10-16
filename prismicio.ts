@@ -53,7 +53,7 @@ const routes: ClientConfig['routes'] = [
 export const createClient = (config: CreateClientConfig = {}) => {
     const client = prismicCreateClient(repositoryName, {
         routes,
-        accessToken: accessToken,
+        accessToken: accessToken || undefined,
         fetchOptions:
             process.env.NODE_ENV === 'production'
                 ? { next: { tags: ['prismic'] }, cache: 'force-cache' }
