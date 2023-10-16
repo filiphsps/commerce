@@ -15,7 +15,7 @@
         "removeComments": false,
         "jsx": "preserve",
         "incremental": true,
-        "downlevelIteration": true,
+        "downlevelIteration": false,
         "plugins": [
             {
                 "name": "next"
