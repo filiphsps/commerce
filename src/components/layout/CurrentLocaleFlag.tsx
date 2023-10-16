@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -34,9 +34,7 @@ export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({})
     return (
         <Container>
             <Image
-                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale
-                    .split('-')
-                    .at(-1)}.svg`}
+                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.split('-').at(-1)}.svg`}
                 alt={locale}
                 width="25"
                 height="25"

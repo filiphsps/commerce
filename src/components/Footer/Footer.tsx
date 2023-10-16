@@ -1,7 +1,7 @@
 import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 import { Config } from '@/utils/Config';
 import { FooterApi } from '@/api/footer';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';

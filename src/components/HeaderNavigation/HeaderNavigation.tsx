@@ -1,8 +1,7 @@
-import { FunctionComponent } from 'react';
-
+import type { FunctionComponent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
 
 const Container = styled.div`
     position: absolute;

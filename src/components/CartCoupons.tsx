@@ -1,6 +1,6 @@
 import { FiTag, FiX } from 'react-icons/fi';
 
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { useCart } from '@shopify/hydrogen-react';
 

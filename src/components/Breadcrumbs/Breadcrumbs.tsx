@@ -1,5 +1,5 @@
 import { FiChevronRight } from 'react-icons/fi';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import NextLink from 'next/link';
 import styled from 'styled-components';
 

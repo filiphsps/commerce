@@ -10,7 +10,7 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
-import { CartFragment } from 'src/api/cart';
+import { CartFragment } from '@/api/cart';
 import { Config } from '@/utils/Config';
 import Head from 'next/head';
 import { Lexend_Deca } from 'next/font/google';

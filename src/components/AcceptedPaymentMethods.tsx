@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { StoreModel } from '@/models/StoreModel';
 import styled from 'styled-components';

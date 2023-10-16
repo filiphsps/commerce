@@ -3,7 +3,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import type { CustomPageDocument } from '@/prismic/types';
 import Error from 'next/error';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';

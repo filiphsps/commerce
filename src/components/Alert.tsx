@@ -1,5 +1,5 @@
 import Content from './Content';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { PiInfoBold } from 'react-icons/pi';
 import styled from 'styled-components';
 

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { FiPackage } from 'react-icons/fi';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 
 type Status = 'good' | 'warning' | 'error';

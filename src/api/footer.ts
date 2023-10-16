@@ -1,5 +1,5 @@
 import { Config } from '@/utils/Config';
-import { FooterModel } from 'src/models/FooterModel';
+import { FooterModel } from '@/models/FooterModel';
 import { createClient } from '@/prismic';
 
 export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {
