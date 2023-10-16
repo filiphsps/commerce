@@ -1,7 +1,6 @@
 import { asLink } from '@prismicio/client';
-
 // Import your app's Link Resolver (if your app uses one)
-import { createClient } from '../../../prismicio';
+import { createClient } from '@/prismic';
 
 /**
  * This API endpoint will be called by a Prismic webhook. The webhook

@@ -1,7 +1,7 @@
 import * as prismic from '@prismicio/client';
 
 import { Config } from '@/utils/Config';
-import { createClient } from '../../prismicio';
+import { createClient } from '@/prismic';
 
 export const PagesApi = async ({
     locale

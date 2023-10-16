@@ -5,9 +5,9 @@ import styled, { css } from 'styled-components';
 
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import Loader from '../Loader';
+import Loader from '@/components/Loader';
 import { NextLocaleToLocale } from '@/utils/Locale';
-import { ProductApi } from '../../api/product';
+import { ProductApi } from '@/api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';

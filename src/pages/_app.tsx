@@ -17,7 +17,7 @@ import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
 import PageProvider from '@/components/PageProvider';
 import SEO from '../../nextseo.config';
-import { StoreApi } from '../api/store';
+import { StoreApi } from '@/api/store';
 import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
 import useSWR from 'swr';

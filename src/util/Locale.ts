@@ -1,7 +1,7 @@
 import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { Config } from './Config';
-import type { StoreModel } from '../models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 
 const defaultLocale = Config.i18n.default;
 

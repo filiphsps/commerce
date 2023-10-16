@@ -1,9 +1,13 @@
-import type { CollectionSliceFull } from 'prismicio-types';
+import type { CollectionSliceFull } from '@/prismic/types';
 import type { FunctionComponent } from 'react';
-import PageContent from '@/components/PageContent';
-import type { StoreModel } from 'src/models/StoreModel';
-import { VerticalCollection } from '@/components/products/VerticalCollection';
+import type { StoreModel } from '@/models/StoreModel';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
+
+const PageContent = dynamic(() => import('@/components/PageContent'));
+const VerticalCollection = dynamic(() =>
+    import('@/components/products/VerticalCollection').then((c) => c.VerticalCollection)
+);
 
 const Container = styled.section`
     width: 100%;
@@ -20,11 +24,7 @@ interface FullCollectionProps {
     store: StoreModel;
     prefetch?: any;
 }
-export const FullCollection: FunctionComponent<FullCollectionProps> = ({
-    slice,
-    store,
-    prefetch
-}) => {
+export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, store, prefetch }) => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>

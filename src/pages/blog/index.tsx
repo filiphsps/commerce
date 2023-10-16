@@ -1,5 +1,5 @@
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import { BlogApi } from '../../api/blog';
+import { BlogApi } from '@/api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Config } from '@/utils/Config';
 import Error from 'next/error';
@@ -10,7 +10,7 @@ import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import type { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 

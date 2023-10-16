@@ -1,8 +1,8 @@
 import { FunctionComponent } from 'react';
 import Link from 'next/link';
-import PageLoader from '../PageLoader';
-import type { VendorModel } from '../../models/VendorModel';
-import { VendorsApi } from '../../api/vendor';
+import PageLoader from '@/components/PageLoader';
+import type { VendorModel } from '@/models/VendorModel';
+import { VendorsApi } from '@/api/vendor';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';

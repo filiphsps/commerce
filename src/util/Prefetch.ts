@@ -1,8 +1,8 @@
-import { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '../../prismicio-types';
+import { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
 
-import { CollectionApi } from '../api/collection';
-import { Config } from './Config';
-import { VendorsApi } from 'src/api/vendor';
+import { CollectionApi } from '@/api/collection';
+import { Config } from '@/utils/Config';
+import { VendorsApi } from '@/api/vendor';
 
 const Prefetch = (
     page: CustomPageDocument<string> | ProductPageDocument<string> | CollectionPageDocument<string>,

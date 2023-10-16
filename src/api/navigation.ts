@@ -1,5 +1,5 @@
 import { Config } from '@/utils/Config';
-import { createClient } from '../../prismicio';
+import { createClient } from '@/prismic';
 
 export type NavigationItem = {
     title: string;
