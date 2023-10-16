@@ -3,7 +3,7 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import { Config } from '@/utils/Config';
 import type { RedirectModel } from '@/models/RedirectModel';
 import { gql } from '@apollo/client';
-import { storefrontClient } from './shopify';
+import { storefrontClient } from '@/api/shopify';
 
 export const Convertor = (
     redirects: Array<{
@@ -35,7 +35,7 @@ export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Arr
 
             let cursor = null;
             while (true) {
-                const { data, errors } = await storefrontClient.query({
+                const { data, errors }: any = await storefrontClient.query({
                     query: gql`
                         query urlRedirects($limit: Int!) @inContext(language: ${language}, country: ${country}) {
                             urlRedirects(first: $limit ${(cursor && `, after: "${cursor}"`) || ''}) {

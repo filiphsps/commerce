@@ -1,14 +1,16 @@
-import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisuals, ProductVisualsApi } from '@/api/product';
+import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisualsApi } from '@/api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useState } from 'react';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/Button';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';
+import type { ProductVisuals } from '@/api/product';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { useRouter } from 'next/router';

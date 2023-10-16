@@ -1,9 +1,10 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '@/api/collection';
+import type { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';

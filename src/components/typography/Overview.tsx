@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
-import ContentComponent from '../Content';
+import ContentComponent from '@/components/Content';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 

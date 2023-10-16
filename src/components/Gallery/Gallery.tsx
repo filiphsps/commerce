@@ -1,6 +1,7 @@
-import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
 
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { ImageLoader } from '@/utils/ImageLoader';

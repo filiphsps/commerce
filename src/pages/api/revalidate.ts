@@ -1,5 +1,6 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { asLink } from '@prismicio/client';
-// Import your app's Link Resolver (if your app uses one)
 import { createClient } from '@/prismic';
 
 /**
@@ -9,7 +10,7 @@ import { createClient } from '@/prismic';
  *
  * The Prismic webhook must send the correct secret.
  */
-export default async function handler(req, res) {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.body.type === 'api-update' && req.body.documents.length > 0) {
         // Check for secret to confirm this is a valid request
         if (req.body.secret !== process.env.WEBHOOK_REVALIDATE) {
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
 
         try {
             // Revalidate the URLs for those documents
-            await Promise.all(urls.map(async (url) => await res.revalidate(url)));
+            await Promise.all(urls.map(async (url) => url && (await res.revalidate(url))));
 
             return res.json({ revalidated: true });
         } catch (err) {
@@ -38,4 +39,4 @@ export default async function handler(req, res) {
 
     // If the request's body is unknown, tell the requester
     return res.status(400).json({ message: 'Invalid body' });
-}
+};

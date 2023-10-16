@@ -21,13 +21,13 @@ export const NavigationApi = async ({ locale }: { locale?: string }): Promise<Na
             });
 
             return resolve(
-                (navigation?.data?.body as any)?.map((item) => ({
+                (navigation?.data?.body as any)?.map((item: any) => ({
                     title: item.primary.title,
                     handle: item.primary.handle,
                     children: item.items
                 }))
             );
-        } catch (error) {
+        } catch (error: any) {
             if (error.message.includes('No documents') && locale !== Config.i18n.default) {
                 return resolve(await NavigationApi({})); // Try again with default locale
             }

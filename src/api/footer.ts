@@ -19,7 +19,7 @@ export const FooterApi = async ({ locale }: { locale?: string }): Promise<Footer
                     items: item.items
                 }))
             });
-        } catch (error) {
+        } catch (error: any) {
             if (error.message.includes('No documents') && locale !== Config.i18n.default) {
                 return resolve(await FooterApi({})); // Try again with default locale
             }

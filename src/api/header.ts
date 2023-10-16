@@ -12,7 +12,7 @@ export const HeaderApi = async ({ locale }: { locale?: string }): Promise<Header
                 lang: locale
             });
             return resolve(res.data as any as HeaderModel);
-        } catch (error) {
+        } catch (error: any) {
             if (error.message.includes('No documents')) {
                 if (locale !== Config.i18n.default) {
                     return resolve(await HeaderApi({})); // Try again with default locale

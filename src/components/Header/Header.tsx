@@ -1,8 +1,9 @@
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
 
 import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
+import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import { Input } from '@/components/Input';
@@ -368,7 +369,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                 </Logo>
 
                 <Navigation>
-                    {navigation?.map?.((item: any, index) => {
+                    {navigation?.map?.((item: any, index: number) => {
                         return (
                             <NavigationItem key={item.handle + `${index}`}>
                                 <Link
@@ -393,7 +394,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                                 {(item.children.length && (
                                     <Menu>
                                         <MenuContent>
-                                            {item.children.map((item, index) => (
+                                            {item.children.map((item: any, index: number) => (
                                                 <MenuItem
                                                     key={item.handle + `${index}`}
                                                     className={

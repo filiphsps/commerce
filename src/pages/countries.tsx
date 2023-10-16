@@ -7,6 +7,7 @@ import { CountriesApi } from '@/api/store';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CustomPageDocument } from '@/prismic/types';
 import type { FunctionComponent } from 'react';
+import type { GetStaticProps } from 'next';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
@@ -229,7 +230,7 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({ page, countries:
     );
 };
 
-export async function getStaticProps({ locale, previewData }) {
+export const getStaticProps: GetStaticProps = async ({ locale, previewData }) => {
     const client = createClient({ previewData });
     try {
         const uid = 'countries';
@@ -257,7 +258,7 @@ export async function getStaticProps({ locale, previewData }) {
             },
             revalidate: 60
         };
-    } catch (error) {
+    } catch (error: any) {
         if (error.message?.includes('No documents')) {
             return {
                 notFound: true
@@ -270,6 +271,6 @@ export async function getStaticProps({ locale, previewData }) {
             revalidate: 1
         };
     }
-}
+};
 
 export default CountriesPage;

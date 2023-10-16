@@ -59,7 +59,7 @@ export const SearchApi = async ({
             });
 
             return {
-                result: data?.search?.edges?.map((item) => item?.node) || [],
+                result: data?.search?.edges?.map((item: any) => item?.node) || [],
                 productFilters: data?.search?.productFilters || []
             };
         };

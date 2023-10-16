@@ -1,14 +1,13 @@
 import {
     AnalyticsEventName,
     AnalyticsPageType,
-    ShopifyAnalyticsProduct,
     getClientBrowserParameters,
     sendShopifyAnalytics,
     useCart,
     useShopifyCookies
 } from '@shopify/hydrogen-react';
 import type { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
 import { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';

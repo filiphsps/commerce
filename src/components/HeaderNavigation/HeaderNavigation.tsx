@@ -91,7 +91,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
             }}
         >
             <Navigation>
-                {navigation?.map((item: any, index) => {
+                {navigation?.map((item: any, index: number) => {
                     return (
                         <NavigationItem key={item.handle + `_${index}`}>
                             <Link
@@ -108,7 +108,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
                             >
                                 {item.title}
                             </Link>
-                            {item.children.map((item, index) => (
+                            {item.children.map((item: any, index: number) => (
                                 <NavigationSubItem key={item.handle + `_${index}`}>
                                     <Link
                                         href={`/${item.handle || ''}`}

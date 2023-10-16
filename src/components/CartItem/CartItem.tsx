@@ -1,8 +1,9 @@
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
-import { FunctionComponent, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
 
+import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Loader from '@/components/Loader';

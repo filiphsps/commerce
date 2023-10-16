@@ -1,6 +1,7 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { MultilineInput } from './Input';
+import type { FunctionComponent } from 'react';
+import { MultilineInput } from '@/components/Input';
 import styled from 'styled-components';
 import { useCart } from '@shopify/hydrogen-react';
 

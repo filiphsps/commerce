@@ -1,4 +1,4 @@
-import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
+import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { Config } from '@/utils/Config';
 import { FooterApi } from '@/api/footer';
 import type { FunctionComponent } from 'react';
@@ -242,7 +242,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                     {footer?.blocks?.map?.((block) => (
                         <FooterBlock key={block.title}>
                             <BlockTitle>{block.title}</BlockTitle>
-                            {block?.items.map((item) => (
+                            {block?.items.map((item: any) => (
                                 <Link
                                     key={item.handle}
                                     href={item.handle || ''}

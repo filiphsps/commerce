@@ -4,15 +4,15 @@
         "lib": ["dom", "dom.iterable", "ESNext"],
         "allowJs": true,
         "skipLibCheck": true,
-        "strict": false,
+        "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "esModuleInterop": true,
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "Node10",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "removeComments": false,
+        "removeComments": true,
         "jsx": "preserve",
         "incremental": true,
         "downlevelIteration": false,
@@ -38,14 +38,13 @@
             "@/prismic": ["prismicio"]
         }
     },
-    "exclude": ["dist", "node_modules", "out", "public", ".next", "next.config.mjs"],
+    "exclude": ["node_modules", "public"],
     "include": [
         "next-env.d.ts",
-        "prismic-types.d.ts",
         ".next/types/**/*.ts",
-        "./src/",
+        "prismicio-types.d.ts",
         "./src/@types",
-        "**/*.ts",
-        "**/*.tsx"
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
     ]
 }

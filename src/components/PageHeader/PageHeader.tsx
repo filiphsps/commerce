@@ -1,4 +1,4 @@
-import React, { CSSProperties, FunctionComponent } from 'react';
+import type { CSSProperties, FunctionComponent } from 'react';
 
 import Content from '../Content';
 import styled from 'styled-components';

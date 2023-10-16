@@ -28,7 +28,7 @@ export const PagesApi = async ({
             return resolve({
                 paths: paths as any
             });
-        } catch (error) {
+        } catch (error: any) {
             if (error.message.includes('No documents') && locale !== Config.i18n.default) {
                 return resolve(await PagesApi({})); // Try again with default locale
             }
