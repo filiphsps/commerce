@@ -23,10 +23,5 @@ export const Config = {
         locales: process.env.STORE_LOCALES?.split?.(',') || ['en-US'],
         default: process.env.STORE_DEFAULT_LOCALE || 'en-US',
         currencies: process.env.STORE_CURRENCIES?.split(',') || ['USD']
-    },
-
-    colors: {
-        primary: process.env.ACCENT_PRIMARY || '#274690',
-        secondary: process.env.ACCENT_SECONDARY || '#EDD382'
     }
 };
