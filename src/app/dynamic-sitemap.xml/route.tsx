@@ -1,8 +1,8 @@
-import { BlogApi } from '../../src/api/blog';
-import { CollectionsApi } from '../../src/api/collection';
-import { Config } from '../../src/util/Config';
-import { PagesApi } from '../../src/api/page';
-import { ProductsApi } from '../../src/api/product';
+import { BlogApi } from '../../api/blog';
+import { CollectionsApi } from '../../api/collection';
+import { Config } from '../../util/Config';
+import { PagesApi } from '../../api/page';
+import { ProductsApi } from '../../api/product';
 import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {

@@ -1,7 +1,7 @@
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import { BlogApi } from '../../src/api/blog';
+import { BlogApi } from '../../api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../../src/util/Config';
+import { Config } from '../../util/Config';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
@@ -10,7 +10,7 @@ import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import type { StoreModel } from '../../src/models/StoreModel';
+import type { StoreModel } from '../../models/StoreModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 

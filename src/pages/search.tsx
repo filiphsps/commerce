@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import { Config } from '../src/util/Config';
+import { Config } from '../util/Config';
 import type { CustomPageDocument } from 'prismicio-types';
 import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
@@ -16,12 +16,12 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
-import { SearchApi } from '../src/api/search';
+import { SearchApi } from '../api/search';
 import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '../src/models/StoreModel';
+import type { StoreModel } from '../models/StoreModel';
 import { asText } from '@prismicio/client';
-import { components } from '../slices';
-import { createClient } from 'prismicio';
+import { components } from '../../slices';
+import { createClient } from '../../prismicio';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
@@ -134,10 +134,7 @@ const ContentHeader = styled(SearchHeader)`
     }
 `;
 
-const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
-    page,
-    store
-}) => {
+const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({ page, store }) => {
     const router = useRouter();
     const [query, setQuery] = useState<string>('');
     const [input, setInput] = useState<string>('');
@@ -198,9 +195,7 @@ const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProp
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${
-                            (locale !== 'x-default' && `${locale}/`) || ''
-                        }search/`
+                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}search/`
                     })) || []
                 }
                 openGraph={{
@@ -264,10 +259,7 @@ const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProp
                 {((count > 1 || productFilters) && (
                     <ContentHeader>
                         {productFilters && (
-                            <Label
-                                onClick={() => setShowFilters(!showFilters)}
-                                style={{ opacity: 0.5 }}
-                            >
+                            <Label onClick={() => setShowFilters(!showFilters)} style={{ opacity: 0.5 }}>
                                 <FiFilter /> Filter and Sort
                             </Label>
                         )}
@@ -282,9 +274,7 @@ const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProp
 
                 <Content>
                     {((isValidating || isLoading) && <PageLoader />) ||
-                        products?.map((product) => (
-                            <ProductSearchResultItem key={product.id} product={product} />
-                        ))}
+                        products?.map((product) => <ProductSearchResultItem key={product.id} product={product} />)}
                 </Content>
 
                 <Breadcrumbs

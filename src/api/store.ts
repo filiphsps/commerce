@@ -3,7 +3,7 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
 import { Config } from 'src/util/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import type { StoreModel } from '../models/StoreModel';
-import { createClient } from 'prismicio';
+import { createClient } from '../../prismicio';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
