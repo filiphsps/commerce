@@ -59,6 +59,9 @@ let config = {
 
         // Prismic
         PRISMIC_REPO: process.env.PRISMIC_REPO,
+    },
+    serverRuntimeConfig: {
+        // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
     },
     webpack(config, { webpack }) {
@@ -95,7 +98,7 @@ let config = {
             {
                 source: '/shop/',
                 destination: '/collections/bestselling/',
-                permanent: true
+                permanent: false
             }
         ];
     },
