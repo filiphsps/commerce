@@ -1,13 +1,13 @@
 import { AcceptedPaymentMethods } from '../AcceptedPaymentMethods';
 import { Config } from '@/utils/Config';
-import { FooterApi } from '../../api/footer';
+import { FooterApi } from '@/api/footer';
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';
-import type { StoreModel } from '../../models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
-import preval from '../../../src/data.preval';
+import preval from '../../data.preval';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';

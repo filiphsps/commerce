@@ -1,5 +1,5 @@
 import { Image, ProductPrice } from '@shopify/hydrogen-react';
-import { Subtitle, Title } from './PageHeader/PageHeader';
+import { Subtitle, Title } from '@/components/PageHeader/PageHeader';
 
 import { AppendShopifyParameters } from './ProductCard/ProductCard';
 import { FunctionComponent } from 'react';

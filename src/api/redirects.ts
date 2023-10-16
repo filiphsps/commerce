@@ -1,7 +1,7 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
-import type { RedirectModel } from '../models/RedirectModel';
+import type { RedirectModel } from '@/models/RedirectModel';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 

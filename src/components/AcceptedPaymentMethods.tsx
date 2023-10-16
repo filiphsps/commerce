@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
-import type { StoreModel } from '../models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import styled from 'styled-components';
 
 const Container = styled.div`

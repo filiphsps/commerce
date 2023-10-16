@@ -6,20 +6,16 @@ import { FunctionComponent, useState } from 'react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
 import { Config } from '@/utils/Config';
-import type { CustomPageDocument } from 'prismicio-types';
-import { GetStaticProps } from 'next';
+import type { CustomPageDocument } from '@/prismic/types';
+import type { GetStaticProps } from 'next';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
-import PageLoader from '@/components/PageLoader';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { RecommendationApi } from '@/api/recommendation';
-import { SSRConfig } from 'next-i18next';
-import type { StoreModel } from '../../models/StoreModel';
+import type { SSRConfig } from 'next-i18next';
+import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
-import { createClient } from '../../../prismicio';
+import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import styled from 'styled-components';
@@ -29,6 +25,10 @@ import useSWR from 'swr';
 
 const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
+const Page = dynamic(() => import('@/components/Page'));
+const PageContent = dynamic(() => import('@/components/PageContent'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
+const PageLoader = dynamic(() => import('@/components/PageLoader'));
 
 const Content = styled.div`
     display: grid;

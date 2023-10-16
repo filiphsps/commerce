@@ -2,7 +2,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 
 import { Button } from '../Button';
 import { Input } from '../Input';
-import { NewsletterApi } from '../../api/newsletter';
+import { NewsletterApi } from '@/api/newsletter';
 import styled from 'styled-components';
 
 const Container = styled.div`

@@ -27,8 +27,15 @@
             "@/components/*": ["src/components/*"],
             "@/hooks/*": ["src/hooks/*"],
             "@/api/*": ["src/api/*"],
+            "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/util/*"],
-            "@/style/*": ["src/scss/*"]
+            "@/style/*": ["src/scss/*"],
+
+            // Prismic
+            "@/slices/*": ["src/slices/*"],
+            "@/slices": ["src/slices/index"],
+            "@/prismic/types": ["prismicio-types"],
+            "@/prismic": ["prismicio"]
         }
     },
     "exclude": ["dist", "node_modules", "out", "public", ".next", "next.config.mjs"],

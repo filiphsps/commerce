@@ -1,4 +1,4 @@
-import { ArticleApi, BlogApi } from '../../../api/blog';
+import { ArticleApi, BlogApi } from '@/api/blog';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -11,7 +11,7 @@ import Image from 'next/legacy/image';
 import Link from 'next/link';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import type { StoreModel } from '../../../models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
