@@ -41,14 +41,12 @@ const ListOption = styled.div<{ selected?: boolean }>`
     font-size: 1.25rem;
     line-height: 1.25rem;
     border-radius: var(--block-border-radius);
-    //box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     ${({ selected }) =>
         selected &&
         css`
             background: var(--accent-primary);
             color: var(--accent-primary-text);
-            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         `}
 `;
 

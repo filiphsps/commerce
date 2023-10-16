@@ -49,7 +49,6 @@ const ImageWrapper = styled.div`
     height: 100%;
     width: 100%;
     padding: 1rem;
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
 
     img {
         height: 100%;
