@@ -60,10 +60,6 @@ let config = {
         // Prismic
         PRISMIC_REPO: process.env.PRISMIC_REPO,
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
-
-        // Colors
-        ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,
-        ACCENT_SECONDARY: process.env.ACCENT_SECONDARY,
     },
     webpack(config, { webpack }) {
         config.plugins.push(
