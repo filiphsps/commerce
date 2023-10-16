@@ -2,8 +2,10 @@ import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
 import { Alert as AlertComponent } from '@/components/Alert';
 import { Content } from '@prismicio/client';
-import PageContent from '@/components/PageContent';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
+
+const PageContent = dynamic(() => import('@/components/PageContent'));
 
 const Container = styled.section`
     display: grid;

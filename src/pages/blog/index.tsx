@@ -8,12 +8,14 @@ import type { GetStaticProps } from 'next';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import type { StoreModel } from '@/models/StoreModel';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+
+const Page = dynamic(() => import('@/components/Page'));
+const PageContent = dynamic(() => import('@/components/PageContent'));
+const PageHeader = dynamic(() => import('@/components/PageHeader'));
 
 const Article = styled.div`
     display: grid;
