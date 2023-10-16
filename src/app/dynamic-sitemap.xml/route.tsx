@@ -1,6 +1,6 @@
 import { BlogApi } from '../../api/blog';
 import { CollectionsApi } from '../../api/collection';
-import { Config } from '../../util/Config';
+import { Config } from '@/utils/Config';
 import { PagesApi } from '../../api/page';
 import { ProductsApi } from '../../api/product';
 import { getServerSideSitemap } from 'next-sitemap';

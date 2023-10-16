@@ -3,7 +3,7 @@ import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../../../util/Config';
+import { Config } from '@/utils/Config';
 import ContentComponent from '@/components/Content';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';

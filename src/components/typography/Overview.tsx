@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import ContentComponent from '../Content';
 import Image from 'next/image';
-import { ImageLoader } from '../../util/ImageLoader';
+import { ImageLoader } from '@/utils/ImageLoader';
 
 const Container = styled.div<{ $layout?: 'left' | 'right' }>`
     display: grid;
@@ -114,13 +114,7 @@ interface OverviewProps {
     layout?: 'left' | 'right';
     style?: React.CSSProperties;
 }
-export const Overview: FunctionComponent<OverviewProps> = ({
-    body,
-    image,
-    imageStyle,
-    layout,
-    style
-}) => {
+export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, style }) => {
     if (!image) return <Content className="Plain">{body}</Content>;
 
     return (

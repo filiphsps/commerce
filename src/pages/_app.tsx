@@ -3,24 +3,24 @@ import 'destyle.css';
 
 import * as nextI18NextConfig from '../../next-i18next.config.cjs';
 
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import Router, { useRouter } from 'next/router';
 import { StyleSheetManager, ThemeProvider } from 'styled-components';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../util/Locale';
 
-import PageProvider from '@/components/PageProvider';
-import { appWithTranslation } from 'next-i18next';
-import { Lexend_Deca } from 'next/font/google';
-import Head from 'next/head';
-import NProgress from 'nprogress';
 import { CartFragment } from 'src/api/cart';
-import useSWR from 'swr';
+import { Config } from '@/utils/Config';
+import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
+import NProgress from 'nprogress';
+import PageProvider from '@/components/PageProvider';
 import SEO from '../../nextseo.config';
 import { StoreApi } from '../api/store';
+import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
-import { Config } from '../util/Config';
+import useSWR from 'swr';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],

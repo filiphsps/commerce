@@ -1,7 +1,7 @@
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '../../api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '../../util/Config';
+import { Config } from '@/utils/Config';
 import Error from 'next/error';
 import { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';

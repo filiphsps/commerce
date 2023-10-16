@@ -5,28 +5,30 @@ import { FunctionComponent, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
-import { CartSummary } from '@/components/CartSummary';
-import CollectionBlock from '@/components/CollectionBlock';
-import { Config } from '../../util/Config';
+import { Config } from '@/utils/Config';
 import type { CustomPageDocument } from 'prismicio-types';
 import { GetStaticProps } from 'next';
-import { NextLocaleToLocale } from 'src/util/Locale';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import { NextSeo } from 'next-seo';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import PageLoader from '@/components/PageLoader';
-import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
-import { RecommendationApi } from '../../api/recommendation';
+import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import { RecommendationApi } from '@/api/recommendation';
 import { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '../../models/StoreModel';
 import { asText } from '@prismicio/client';
 import { createClient } from '../../../prismicio';
-import { getServerTranslations } from 'src/util/getServerTranslations';
+import dynamic from 'next/dynamic';
+import { getServerTranslations } from '@/utils/getServerTranslations';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+
+const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
+const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
 
 const Content = styled.div`
     display: grid;

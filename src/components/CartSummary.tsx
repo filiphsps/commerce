@@ -8,7 +8,7 @@ import { CartNote } from './CartNote';
 import { FreeShippingProgress } from './FreeShippingProgress';
 import Link from 'next/link';
 import PageLoader from './PageLoader';
-import { Pluralize } from '../util/Pluralize';
+import { Pluralize } from '@/utils/Pluralize';
 import styled from 'styled-components';
 import { useTranslation } from 'next-i18next';
 

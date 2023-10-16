@@ -1,6 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
-import { Config } from '../util/Config';
+import { Config } from '@/utils/Config';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 export const shopifyClient = createStorefrontClient({

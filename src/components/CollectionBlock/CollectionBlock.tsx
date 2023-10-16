@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-const ProductCard = dynamic(() => import('@/components/ProductCard'), {});
+const ProductCard = dynamic(() => import('@/components/ProductCard'));
 
 const Title = styled.div``;
 const Subtitle = styled.div``;

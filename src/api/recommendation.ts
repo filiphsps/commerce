@@ -1,9 +1,9 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from 'src/util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
-import { gql } from '@apollo/client';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
 
 // TODO: Migrate to the new recommendations api

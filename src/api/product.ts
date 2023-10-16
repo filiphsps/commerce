@@ -1,7 +1,7 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '../util/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { Config } from 'src/util/Config';
+import { Config } from '@/utils/Config';
 import ConvertUnits from 'convert-units';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';

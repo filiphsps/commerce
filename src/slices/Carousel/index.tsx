@@ -1,11 +1,11 @@
 import PageContent from '@/components/PageContent';
+import { ImageLoader } from '@/utils/ImageLoader';
 import { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
 import Link from 'next/link';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import { ImageLoader } from '../../util/ImageLoader';
 
 const Container = styled.section`
     width: 100%;

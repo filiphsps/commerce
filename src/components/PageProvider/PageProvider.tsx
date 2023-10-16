@@ -1,23 +1,22 @@
-import { asHTML } from '@prismicio/client';
-
 import { FunctionComponent, useState } from 'react';
-import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '../../util/Locale';
+import { Locale, NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
 
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import useSWR from 'swr';
-import preval from '../../../src/data.preval';
+import { Config } from '@/utils/Config';
 import { HeaderApi } from '../../api/header';
 import { NavigationApi } from '../../api/navigation';
+import type { StoreModel } from '../../models/StoreModel';
+import { asHTML } from '@prismicio/client';
+import dynamic from 'next/dynamic';
+import preval from '../../../src/data.preval';
+import styled from 'styled-components';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useCartUtils } from '../../hooks/useCartUtils';
-import type { StoreModel } from '../../models/StoreModel';
-import { Config } from '../../util/Config';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
-const Header = dynamic(() => import('@/components/Header'), {});
-const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'), {});
-const Footer = dynamic(() => import('@/components/Footer'), {});
+const Header = dynamic(() => import('@/components/Header'));
+const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
+const Footer = dynamic(() => import('@/components/Footer'));
 
 const Announcement = styled.div`
     display: flex;

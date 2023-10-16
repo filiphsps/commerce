@@ -10,12 +10,12 @@ import {
 import type { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
-import { Locale } from '../util/Locale';
-import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
-import { ShopifyPriceToNumber } from 'src/util/Pricing';
+import { Locale } from '@/utils/Locale';
+import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
 import { useEffect } from 'react';
-import { usePrevious } from './usePrevious';
+import { usePrevious } from '@/hooks/usePrevious';
 import { useRouter } from 'next/router';
 
 const trimDomain = (domain?: string): string | undefined => {

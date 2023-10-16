@@ -2,7 +2,7 @@ import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '../models/VendorModel';
 import { gql } from '@apollo/client';
 import { storefrontClient } from './shopify';
-import { titleToHandle } from '../util/TitleToHandle';
+import { titleToHandle } from '@/utils/TitleToHandle';
 
 export const Convertor = (
     products: Array<{

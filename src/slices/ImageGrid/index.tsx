@@ -1,10 +1,10 @@
-import PageContent from '@/components/PageContent';
 import { Content } from '@prismicio/client';
+import { ImageLoader } from '@/utils/ImageLoader';
+import Link from 'next/link';
+import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
-import Link from 'next/link';
 import styled from 'styled-components';
-import { ImageLoader } from '../../util/ImageLoader';
 
 const Container = styled.section`
     //grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
