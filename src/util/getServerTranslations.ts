@@ -10,7 +10,7 @@ export const getServerTranslations = async (
     configOverride?: UserConfig,
     extraLocales?: string[] | false
 ): Promise<SSRConfig> => {
-    const config = configOverride ?? nextI18nextConfig;
+    const config = configOverride || nextI18nextConfig;
 
     const res = await serverSideTranslations(locale, namespacesRequired, config, extraLocales);
 

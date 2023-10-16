@@ -1,5 +1,10 @@
 {
     "compilerOptions": {
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "target": "ESNext",
         "lib": ["dom", "dom.iterable", "ESNext"],
         "allowJs": true,
@@ -16,13 +21,9 @@
         "jsx": "preserve",
         "incremental": true,
         "downlevelIteration": false,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
         "strictNullChecks": true,
         "baseUrl": ".",
+        "rootDir": "./",
         "paths": {
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],
