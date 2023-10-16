@@ -1,3 +1,4 @@
+import { Badge, BadgeContainer } from '@/components/Badges';
 import {
     AnalyticsPageType,
     Money,
@@ -7,45 +8,44 @@ import {
     useCart,
     useProduct
 } from '@shopify/hydrogen-react';
-import { Badge, BadgeContainer } from '@/components/Badges';
 import type {
     Collection,
     Product,
     ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../api/product';
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { SSRConfig, useTranslation } from 'next-i18next';
+import { NextSeo, ProductJsonLd } from 'next-seo';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
+import { ProductApi, ProductVisuals, ProductVisualsApi, ProductsApi } from '../../api/product';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import CollectionBlock from '@/components/CollectionBlock';
-import { Config } from '../../util/Config';
 import Content from '@/components/Content';
-import Error from 'next/error';
 import { Input } from '@/components/Input';
-import Link from 'next/link';
-import { NextLocaleToLocale } from 'src/util/Locale';
-import type { ProductPageDocument } from 'prismicio-types';
-import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
-import { RecommendationApi } from '../../api/recommendation';
-import { RedirectProductApi } from '../../api/redirects';
-import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '../../models/StoreModel';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
 import { asText } from '@prismicio/client';
-import { components } from '../../../slices';
-import { createClient } from '../../../prismicio';
+import { SliceZone } from '@prismicio/react';
 import dynamic from 'next/dynamic';
-import { getServerTranslations } from 'src/util/getServerTranslations';
-import { titleToHandle } from '../../util/TitleToHandle';
+import Error from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { ProductPageDocument } from 'prismicio-types';
+import { NextLocaleToLocale } from 'src/util/Locale';
+import { ProductToMerchantsCenterId } from 'src/util/MerchantsCenterId';
+import { getServerTranslations } from 'src/util/getServerTranslations';
 import useSWR from 'swr';
+import { createClient } from '../../../prismicio';
+import { RecommendationApi } from '../../api/recommendation';
+import { RedirectProductApi } from '../../api/redirects';
+import type { StoreModel } from '../../models/StoreModel';
+import { components } from '../../slices';
+import { Config } from '../../util/Config';
+import { titleToHandle } from '../../util/TitleToHandle';
 
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));

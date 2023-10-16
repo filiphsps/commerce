@@ -72,6 +72,13 @@
 							"value": "listen",
 							"type": "Text"
 						}
+					],
+					[
+						"defer",
+						{
+							"__TYPE__": "BooleanContent",
+							"value": false
+						}
 					]
 				]
 			},
@@ -136,6 +143,13 @@
 							"__TYPE__": "FieldContent",
 							"value": "wet",
 							"type": "Text"
+						}
+					],
+					[
+						"defer",
+						{
+							"__TYPE__": "BooleanContent",
+							"value": true
 						}
 					]
 				]

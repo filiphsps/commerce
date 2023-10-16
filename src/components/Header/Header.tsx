@@ -1,16 +1,16 @@
-import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import { FunctionComponent, useEffect, useState } from 'react';
+import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import { CurrentLocaleFlag } from '../layout/CurrentLocaleFlag';
-import Image from 'next/image';
-import { ImageLoader } from '../../util/ImageLoader';
-import { Input } from '../Input';
-import Link from 'next/link';
-import { Pluralize } from '../../util/Pluralize';
-import type { StoreModel } from 'src/models/StoreModel';
 import { useCart } from '@shopify/hydrogen-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { StoreModel } from 'src/models/StoreModel';
+import { ImageLoader } from '../../util/ImageLoader';
+import { Pluralize } from '../../util/Pluralize';
+import { Input } from '../Input';
+import { CurrentLocaleFlag } from '../layout/CurrentLocaleFlag';
 
 const Content = styled.div`
     display: grid;
@@ -361,7 +361,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                             width={250}
                             height={150}
                             alt={`Store logo`}
-                            sizes="(max-width: 950px) 75px, 250px"
+                            sizes="(max-width: 950px) 75px, 200px"
                             loader={ImageLoader}
                         />
                     </Link>

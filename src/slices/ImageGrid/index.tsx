@@ -1,10 +1,10 @@
-import { Content } from '@prismicio/client';
-import Image from 'next/image';
-import { ImageLoader } from '../../src/util/ImageLoader';
-import Link from 'next/link';
 import PageContent from '@/components/PageContent';
+import { Content } from '@prismicio/client';
+import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
+import Link from 'next/link';
 import styled from 'styled-components';
+import { ImageLoader } from '../../util/ImageLoader';
 
 const Container = styled.section`
     //grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
@@ -60,7 +60,7 @@ const TitleContainer = styled.div`
     }
 `;
 
-const Banner = styled(Image)`
+const Banner = styled(PrismicNextImage)`
     width: 100%;
     height: auto;
     aspect-ratio: 21 / 6;
@@ -104,14 +104,10 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                     {slice.items.map(({ href, title, image }) => (
                         <Item key={href!} href={href! || ''} title={title!}>
                             <Banner
-                                src={image?.url || ''}
-                                alt={image?.alt || title || ''}
+                                field={image}
                                 width={300}
                                 height={300}
-                                //width={image.dimensions?.width!}
-                                //height={image.dimensions?.height!}
-                                sizes="(max-width: 950px) 85vw, 25vw"
-                                //fill
+                                sizes="(max-width: 950px) 80vw, 25vw"
                                 loader={ImageLoader}
                             />
                             <TitleContainer>
