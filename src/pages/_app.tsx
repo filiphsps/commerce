@@ -8,7 +8,6 @@ import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import Router, { useRouter } from 'next/router';
-import { StyleSheetManager, ThemeProvider } from 'styled-components';
 
 import { CartFragment } from '@/api/cart';
 import { Config } from '@/utils/Config';
@@ -21,6 +20,8 @@ import { StoreApi } from '@/api/store';
 import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
 import useSWR from 'swr';
+
+//import { ThemeProvider } from 'styled-components';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -183,13 +184,13 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 languageIsoCode={language}
             >
                 <CartProvider countryCode={country} cartFragment={CartFragment}>
-                    <StyleSheetManager>
-                        <ThemeProvider theme={{}}>
-                            <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics || {}}>
-                                <Component key={router.asPath} {...pageProps} store={store} />
-                            </PageProvider>
-                        </ThemeProvider>
-                    </StyleSheetManager>
+                    {/*<StyleSheetManager>
+                    <ThemeProvider theme={{}}>*/}
+                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics || {}}>
+                        <Component key={router.asPath} {...pageProps} store={store} />
+                    </PageProvider>
+                    {/*</ThemeProvider>
+                    </StyleSheetManager>*/}
                 </CartProvider>
             </ShopifyProvider>
         </>

@@ -1,7 +1,6 @@
 import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 import dns from 'node:dns';
 import { i18n } from './next-i18next.config.cjs';
-import manifest from './package.json' assert { type: 'json' };
 
 // See https://github.com/vercel/next.js/issues/44062#issuecomment-1445185361
 dns.setDefaultResultOrder('ipv4first');
@@ -17,6 +16,7 @@ let config = {
     i18n,
     productionBrowserSourceMaps: false,
     compress: true,
+    // transpilePackages: ['next-i18next'],
     experimental: {
         scrollRestoration: true,
         esmExternals: true,
@@ -37,15 +37,14 @@ let config = {
     },
     compiler: {
         styledComponents: true,
-        removeConsole: process.env.NODE_ENV === 'production' && {
-            exclude: ['warn', 'error'],
-        },
+        ...(process.env.NODE_ENV === 'production' && {
+            removeConsole: {
+                exclude: ['warn', 'error'],
+            }
+        } || {})
     },
     eslint: {
         ignoreDuringBuilds: true,
-    },
-    devIndicators: {
-        buildActivityPosition: 'bottom-right',
     },
     env: {
         // Settings
@@ -61,8 +60,6 @@ let config = {
         // Colors
         ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,
         ACCENT_SECONDARY: process.env.ACCENT_SECONDARY,
-
-        VERSION: manifest.version
     },
 
     async redirects() {

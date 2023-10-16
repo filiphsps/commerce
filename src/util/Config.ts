@@ -1,6 +1,5 @@
 export const Config = {
     environment: process.env.NODE_ENV || 'production',
-    version: process.env.VERSION,
     domain: process.env.DOMAIN || 'www.sweetsideofsweden.com',
     GTM: process.env.GTM,
 

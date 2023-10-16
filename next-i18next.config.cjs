@@ -4,6 +4,7 @@ const locales = [
     ...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])
 ];
 
+/** @type {Extract<import('next-i18next').UserConfig, 'i18n'>} */
 const i18n = {
     locales: ['x-default', ...locales],
     defaultLocale: 'x-default',
