@@ -1,3 +1,10 @@
-.vercel
+# Ignore artifacts:
+build
+coverage
+node_modules
 .next
-pnpm-lock.yaml
+
+# Ignore mdoc till we PR a fix upstream.
+**/*.mdoc
+**/*.woff2
+**/*.ttf

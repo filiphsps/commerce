@@ -33,6 +33,9 @@ jobs:
             - name: 📦 Download dependencies
               run: npm ci
 
+            - name: 🧪 Lint
+              run: npm run test
+
             - name: 🧪 Test
               run: npm run test
 
