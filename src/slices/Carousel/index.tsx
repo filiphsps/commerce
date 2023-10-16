@@ -11,10 +11,11 @@ const Container = styled.section`
     width: 100%;
 `;
 
+/*@media (min-width: 950px) {
+    overflow: hidden;
+}*/
 const Content = styled.div`
-    @media (min-width: 950px) {
-        overflow: hidden;
-    }
+    overflow: hidden;
 
     .slick-slide > div {
         margin: 0 var(--block-spacer-small);
