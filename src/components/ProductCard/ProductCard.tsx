@@ -28,7 +28,7 @@ export const ProductImage = styled.div`
     transition: 250ms ease-in-out;
     user-select: none;
     background: var(--color-bright);
-    box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+    box-shadow: 0px 0px 1rem -0.25rem var(--color-block-shadow);
     height: 14rem;
 
     @media (hover: hover) and (pointer: fine) {

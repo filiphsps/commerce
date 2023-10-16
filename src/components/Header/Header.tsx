@@ -313,7 +313,7 @@ const Header = styled.header<{ $scrolled?: boolean }>`
         $scrolled &&
         css`
             border-bottom-color: var(--accent-secondary);
-            box-shadow: 0px 1rem 1rem -0.5rem var(--color-block-shadow);
+            box-shadow: 0px 1rem 1rem -0.75rem var(--color-block-shadow);
         `}
 
     @media (min-width: 950px) {
