@@ -6,9 +6,10 @@ import {
     useCart,
     useShopifyCookies
 } from '@shopify/hydrogen-react';
-import type { CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
+import { Config } from '@/utils/Config';
 import { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { ShopifyPriceToNumber } from '@/utils/Pricing';
@@ -19,7 +20,6 @@ import { useRouter } from 'next/router';
 
 const trimDomain = (domain?: string): string | undefined => {
     if (!domain) return undefined;
-    else if (process.env.NODE_ENV === 'development') return undefined;
 
     let match,
         result = '';
@@ -31,11 +31,6 @@ const trimDomain = (domain?: string): string | undefined => {
     }
 
     return result;
-};
-
-const shouldSendEvents = () => {
-    if (process.env.NODE_ENV === 'development') return false;
-    return true;
 };
 
 interface AnalyticsEcommercePayload {
@@ -61,6 +56,68 @@ const sendEcommerceEvent = ({
     );
 };
 
+export const sendPageViewEvent = ({
+    path,
+    domain,
+    locale,
+    pageAnalytics,
+    cost
+}: {
+    path: string;
+    domain: string;
+    locale: Locale;
+    pageAnalytics: ShopifyPageViewPayload;
+    cost?: CartCost;
+}) => {
+    switch (pageAnalytics.pageType) {
+        // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
+        case AnalyticsPageType.product: {
+            if (!pageAnalytics.products || pageAnalytics.products.length <= 0) break;
+
+            const product = pageAnalytics.products.at(0)!;
+            sendEcommerceEvent({
+                event: 'view_item',
+                payload: {
+                    currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                    value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount, product.price),
+                    items: [
+                        {
+                            item_id: ProductToMerchantsCenterId({
+                                locale: locale.locale,
+                                productId: product.productGid!,
+                                variantId: product.variantGid!
+                            }),
+                            item_name: product.name,
+                            item_variant: product.variantName,
+                            item_brand: product.brand,
+                            currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                            price: ShopifyPriceToNumber(undefined, product.price!),
+                            quantity: product.quantity
+                        }
+                    ]
+                }
+            });
+            break;
+        }
+    }
+
+    const payload: ShopifyPageViewPayload = {
+        ...getClientBrowserParameters(),
+        ...pageAnalytics,
+        url: `https://${domain}${path}`,
+        canonicalUrl: `https://${domain}${path}`,
+        path: path
+    };
+
+    sendShopifyAnalytics(
+        {
+            eventName: AnalyticsEventName.PAGE_VIEW,
+            payload
+        },
+        Config.shopify.checkout_domain
+    );
+};
+
 interface useAnalyticsProps {
     shopId: string;
     locale: Locale;
@@ -70,8 +127,10 @@ interface useAnalyticsProps {
 export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }: useAnalyticsProps) {
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
-    if (!shopId || !domain) {
-        console.warn(`Invalid shopId`, shopId);
+    if (!shopId) {
+        throw new Error(`Invalid shopId: ${shopId}`);
+    } else if (!domain) {
+        throw new Error(`Invalid domain: ${domain}`);
     }
 
     const { lines, id: cartId, cost, status, totalQuantity } = useCart();
@@ -85,68 +144,35 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
-        shopifySalesChannel: ShopifySalesChannel.headless, // Does this actually work?
+        shopifySalesChannel: ShopifySalesChannel.headless,
+        storefrontId: Config.shopify.storefront_id,
         currency: locale.currency,
-        acceptedLanguage: locale.language,
+        acceptedLanguage: locale.language.toLowerCase(),
         hasUserConsent: true,
-        ...(pagePropsAnalyticsData as any)
+        isMerchantRequest: true,
+        ...((pagePropsAnalyticsData as any) || {})
     };
 
-    const { asPath: path } = useRouter();
-    const previousPath = usePrevious(path);
+    const router = useRouter();
 
     // Page view analytics
-    // FIXME: figure out why this fires twice.
     useEffect(() => {
-        if (!pageAnalytics.shopId || path == previousPath) return;
-
-        switch (pageAnalytics.pageType) {
-            // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
-            case AnalyticsPageType.product: {
-                if (!pageAnalytics.products || pageAnalytics.products.length <= 0) break;
-
-                const product = pageAnalytics.products.at(0)!;
-                sendEcommerceEvent({
-                    event: 'view_item',
-                    payload: {
-                        currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
-                        value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount, product.price),
-                        items: [
-                            {
-                                item_id: ProductToMerchantsCenterId({
-                                    locale: locale.locale,
-                                    productId: product.productGid!,
-                                    variantId: product.variantGid!
-                                }),
-                                item_name: product.name,
-                                item_variant: product.variantName,
-                                item_brand: product.brand,
-                                currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
-                                price: ShopifyPriceToNumber(undefined, product.price!),
-                                quantity: product.quantity
-                            }
-                        ]
-                    }
-                });
-                break;
-            }
-        }
-
-        if (!shouldSendEvents()) return;
-
-        const payload: ShopifyPageViewPayload = {
-            ...getClientBrowserParameters(),
-            ...pageAnalytics,
-            url: `https://${domain}${path}`,
-            path: path,
-            canonicalUrl: `https://${domain}${path}`
+        const handleRouteChange = (url: string) => {
+            const path = `/${url.split('/').slice(2, -1).join('/')}/`.replace('//', '/');
+            sendPageViewEvent({
+                path,
+                domain,
+                locale,
+                pageAnalytics,
+                cost: cost as any
+            });
         };
+        router.events.on('routeChangeComplete', handleRouteChange);
 
-        sendShopifyAnalytics({
-            eventName: AnalyticsEventName.PAGE_VIEW,
-            payload
-        });
-    }, [previousPath]);
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
+        };
+    }, []);
 
     // Add to cart analytics
     useEffect(() => {
@@ -164,8 +190,6 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         )
             return;
 
-        if (!shouldSendEvents()) return;
-
         const products: Array<ShopifyAnalyticsProduct> =
             (lines as Array<CartLine>).map(
                 ({ merchandise, quantity }) =>
@@ -177,7 +201,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
                         variantName: merchandise.title,
                         brand: merchandise.product.vendor,
                         currency: merchandise.price.currencyCode,
-                        price: Number.parseFloat(merchandise.price?.amount!) || undefined,
+                        price: merchandise.price?.amount!?.toString() || undefined,
                         quantity
                     }) as any
             ) || [];
@@ -187,18 +211,16 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             ...pageAnalytics,
             ...pagePropsAnalyticsData,
             cartId: cartId!,
-            totalValue: Number.parseFloat(cost?.totalAmount?.amount!),
-            products,
-            url: `https://${domain}${path}`,
-            path: path,
-            canonicalUrl: `https://${domain}${path}`,
-            source: ShopifySalesChannel.headless
+            totalValue: Number.parseFloat(cost?.totalAmount?.amount!)
         };
 
-        sendShopifyAnalytics({
-            eventName: AnalyticsEventName.ADD_TO_CART,
-            payload
-        });
+        sendShopifyAnalytics(
+            {
+                eventName: AnalyticsEventName.ADD_TO_CART,
+                payload
+            },
+            Config.shopify.checkout_domain
+        );
 
         sendEcommerceEvent({
             event: 'add_to_cart',

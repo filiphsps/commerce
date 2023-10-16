@@ -89,7 +89,6 @@ export const CartFragment = /* GraphQL */ `
             key
             value
         }
-
         discountCodes {
             code
             applicable

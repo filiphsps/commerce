@@ -2,6 +2,7 @@
     "name": "sweetsideofsweden-frontend",
     "version": "1.4.0",
     "private": true,
+    "sideEffects": false,
     "type": "module",
     "engines": {
         "npm": ">=8",
