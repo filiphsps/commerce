@@ -25,6 +25,7 @@ import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer'
 import { createClient } from '@/prismic';
 import dynamic from 'next/dynamic';
 import { getServerTranslations } from '@/utils/getServerTranslations';
+import { isValidHandle } from '@/utils/handle';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -239,14 +240,10 @@ export const getStaticProps: GetStaticProps<{
     const locale = NextLocaleToLocale(localeData);
 
     let handle = '';
-    if (params && Array.isArray(params?.handle)) {
-        handle = params?.handle?.join('') || '';
-    } else {
-        handle = (params?.handle as string) || '';
-    }
+    if (params && Array.isArray(params?.handle)) handle = params?.handle?.join('') || '';
+    else handle = (params?.handle as string) || '';
 
-    // TODO: Utility function
-    if (!params || !handle || ['null', 'undefined', '[handle]'].includes(handle))
+    if (!isValidHandle(handle))
         return {
             notFound: true,
             revalidate: false

@@ -10,9 +10,11 @@ import Error from 'next/error';
 import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '@/models/StoreModel';
+import { isValidHandle } from '@/utils/handle';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
@@ -272,7 +274,9 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     return { paths, fallback: 'blocking' };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale: localeData }) => {
+    const locale = NextLocaleToLocale(localeData);
+
     let handle = '';
     if (params && Array.isArray(params.handle)) {
         handle = params?.handle?.join('') || '';
@@ -280,8 +284,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
         handle = (params?.handle as string) || '';
     }
 
-    // TODO: Utility function
-    if (!params || !handle || ['null', 'undefined', '[handle]'].includes(handle))
+    if (!isValidHandle(handle))
         return {
             notFound: true,
             revalidate: false
@@ -294,7 +297,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
         article = (await ArticleApi({
             handle,
             blog: 'news',
-            locale
+            locale: locale.locale
         })) as any;
     } catch (error: any) {
         if (error.message?.includes('404')) {
@@ -315,7 +318,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     try {
         blog = (await BlogApi({
             handle: 'news',
-            locale
+            locale: locale.locale
         })) as any;
     } catch (error) {
         console.error(error);

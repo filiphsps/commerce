@@ -78,17 +78,22 @@ const Content = styled.div<{
     $showRightShadow?: boolean;
 }>`
     column-count: 2;
-    column-gap: var(--block-spacer);
-    gap: var(--block-spacer);
+    column-gap: var(--block-spacer-large);
+    gap: var(--block-spacer-large);
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
+
+    @media (min-width: 950px) {
+        column-gap: var(--block-spacer);
+        gap: var(--block-spacer);
+    }
 
     ${({ $horizontal }) =>
         $horizontal &&
         css`
-            padding: var(--block-padding-large) 0px;
+            padding: var(--block-padding-large) 0;
             padding-right: var(--block-spacer-large);
-            margin: calc(var(--block-padding-large) * -1) 0px;
+            margin: calc(var(--block-padding-large) * -1) 0;
             column: none;
             display: grid;
             overflow-x: auto;

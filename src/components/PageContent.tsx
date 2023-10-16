@@ -13,7 +13,7 @@ const Container = styled.div<{ $primary?: boolean }>`
     ${({ $primary }) =>
         $primary &&
         css`
-            padding: var(--block-spacer-large);
+            padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
             gap: calc(var(--block-spacer-large) * 2);
         `}
 `;

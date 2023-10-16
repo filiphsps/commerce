@@ -11,20 +11,21 @@ const Container = styled.section`
     width: 100%;
 `;
 
-/*@media (min-width: 950px) {
-    overflow: hidden;
-}*/
 const Content = styled.div`
-    overflow: hidden;
+    overflow: hidden visible;
+
+    @media (max-width: 950px) {
+        width: 100vw;
+        margin: 0 calc(var(--block-spacer-large) * -1);
+        padding: 0 var(--block-spacer-large);
+
+        .slick-slide > div {
+            padding: 0 var(--block-spacer-tiny);
+        }
+    }
 
     .slick-slide > div {
-        margin: 0 var(--block-spacer-small);
-
-        @media (min-width: 950px) {
-            margin: 0;
-        }
-
-        margin-bottom: -4px;
+        margin-bottom: -0px;
     }
 `;
 
