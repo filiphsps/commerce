@@ -156,6 +156,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const router = useRouter();
 
     // Page view analytics
+    // FIXME: We miss the initial PageView
     useEffect(() => {
         const handleRouteChange = (url: string) => {
             const path = `/${url.split('/').slice(2, -1).join('/')}/`.replace('//', '/');
