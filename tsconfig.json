@@ -30,7 +30,7 @@
             "@/api/*": ["./src/api/*"],
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/util/*"],
-            "@/style/*": ["./src/scss/*"],
+            "@/style/*": ["./src/style/*"],
 
             // Prismic
             "@/slices/*": ["./src/slices/*"],

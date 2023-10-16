@@ -1,6 +1,7 @@
 import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
+import ErrorBoundary from '../ErrorBoundary';
 import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
 import type { Locale } from '@/utils/Locale';
@@ -188,7 +189,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
 
-            {props.children}
+            <ErrorBoundary>{props.children}</ErrorBoundary>
             <Footer store={props?.store} />
         </Container>
     );
