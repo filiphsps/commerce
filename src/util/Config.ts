@@ -9,11 +9,7 @@ export const Config = {
         domain: (process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com').replace('https://', ''),
         token: process.env.SHOPIFY_TOKEN || '4991548da2a9d3dcc6dff9e2e4154b16',
         api: '2023-07',
-        checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com',
-
-        hydrogen: {
-            token: process.env.SHOPIFY_HYDROGEN_TOKEN || '319eb651b3464ea882a016ca2085ebc1'
-        }
+        checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com'
     },
 
     prismic: {

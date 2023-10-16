@@ -1,6 +1,6 @@
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { VendorModel } from '@/models/VendorModel';
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
 import { titleToHandle } from '@/utils/TitleToHandle';
 

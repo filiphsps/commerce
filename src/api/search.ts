@@ -1,10 +1,10 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
-import { PRODUCT_FRAGMENT_MINIMAL } from './product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/product';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from '@apollo/client';
-import { storefrontClient } from './shopify';
+import { gql } from 'graphql-tag';
+import { storefrontClient } from '@/api/shopify';
 
 export const SearchApi = async ({
     query,

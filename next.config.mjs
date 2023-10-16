@@ -56,7 +56,6 @@ let config = {
         SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
         SHOPIFY_CHECKOUT_DOMAIN: process.env.SHOPIFY_CHECKOUT_DOMAIN,
         SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
-        SHOPIFY_HYDROGEN_TOKEN: process.env.SHOPIFY_HYDROGEN_TOKEN,
 
         // Prismic
         PRISMIC_REPO: process.env.PRISMIC_REPO,
@@ -65,6 +64,14 @@ let config = {
         // Colors
         ACCENT_PRIMARY: process.env.ACCENT_PRIMARY,
         ACCENT_SECONDARY: process.env.ACCENT_SECONDARY,
+    },
+    webpack(config, { webpack }) {
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                "globalThis.__DEV__": false,
+            })
+        );
+        return config;
     },
 
     async redirects() {
