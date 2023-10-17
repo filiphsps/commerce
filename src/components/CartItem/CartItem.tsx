@@ -365,7 +365,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
                             <Money
                                 data={{
                                     currencyCode: vatiant.price?.currencyCode!,
-                                    ...variant.compareAtPrice
+                                    ...(variant.compareAtPrice as any)
                                 }}
                                 className="Currency Currency-Sale"
                             />
