@@ -51,6 +51,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                 }
                 compareAtPrice {
                     amount
+                    currencyCode
                 }
                 availableForSale
                 weight
@@ -136,6 +137,7 @@ export const PRODUCT_FRAGMENT = `
                 }
                 compareAtPrice {
                     amount
+                    currencyCode
                 }
                 availableForSale
                 weight
