@@ -7,7 +7,7 @@ export const Config = {
         shop_id: (process.env.SHOPIFY_SHOP_ID && Number.parseInt(process.env.SHOPIFY_SHOP_ID)) || 76188483889,
         storefront_id: process.env.SHOPIFY_STOREFRONT_ID || '2130225',
         domain: (process.env.SHOPIFY_DOMAIN || 'sweet-side-of-sweden.myshopify.com').replace('https://', ''),
-        token: process.env.SHOPIFY_TOKEN || '4991548da2a9d3dcc6dff9e2e4154b16',
+        token: process.env.SHOPIFY_TOKEN || '319eb651b3464ea882a016ca2085ebc1',
         api: '2023-07',
         checkout_domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com'
     },
