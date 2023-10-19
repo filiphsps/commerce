@@ -1,7 +1,7 @@
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 const Container = styled.div`
     overflow: hidden;
@@ -27,7 +27,10 @@ const Container = styled.div`
 
 interface CurrentLocaleFlagProps {}
 export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({}) => {
-    const { locale } = useRouter();
+    const route = usePathname();
+
+    if (!route) return null;
+    const locale = route.split('/').at(1); // FIXME: Handle this properly.
 
     if (!locale || locale === 'x-default') return null;
 

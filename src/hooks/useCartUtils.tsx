@@ -1,13 +1,12 @@
 import type { Locale } from '@/utils/Locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 interface useCartUtilsProps {
     locale: Locale;
 }
 export function useCartUtils({ locale }: useCartUtilsProps) {
-    const router = useRouter();
+    const query = {} as any; //useSearchParams() as any;
     const { buyerIdentity, buyerIdentityUpdate, discountCodes, discountCodesUpdate, status, error } = useCart();
 
     // Handle country code change
@@ -23,19 +22,19 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
     // Discount codes in url
     useEffect(() => {
         // TODO: Create a cart if one doesn't exist
-        if (!router.query || (!router.query.discount && status !== 'idle')) return;
-        const discount = router.query.discount?.toString();
+        if (!query || (!query.discount && status !== 'idle')) return;
+        const discount = query.discount?.toString();
         if (!discount) return;
 
-        delete router.query.discount;
-        router.replace(
+        delete query.discount;
+        /*router.replace(
             {
-                pathname: router.pathname!,
-                query: router.query
+                pathname: route!,
+                query: query
             },
             undefined,
-            { shallow: true }
-        );
+            //{ shallow: true }
+        );*/
 
         // TODO: Notification?
         discountCodesUpdate([...(discountCodes || ([] as any)), discount]);
@@ -43,5 +42,5 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
         if (error) console.warn(error);
 
         // TODO: Check cart errors and validate that the code was actually valid...
-    }, [router.query, status]);
+    }, [query, status]);
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
-import Link from 'next/link';
+import Link from '@/components/link';
 import Loader from '@/components/Loader';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductApi } from '@/api/product';
@@ -147,7 +147,7 @@ const Price = styled(SectionContent)`
             display: flex;
             justify-content: center;
             align-items: start;
-            gap: 0px;
+            gap: 0;
 
             .Currency-Sale {
                 height: 1.25rem;
@@ -167,8 +167,8 @@ const Price = styled(SectionContent)`
 const MetaSection = styled(Section)`
     overflow: hidden;
     grid-area: meta;
-    min-height: 0px;
-    min-width: 0px;
+    min-height: 0;
+    min-width: 0;
 `;
 
 const RemoveButton = styled.button`
@@ -203,7 +203,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
         height: 3rem;
         width: 3rem;
         border: none;
-        border-radius: 0px;
+        border-radius: 0;
         font-size: 1.25rem;
         text-align: center;
         outline: none;

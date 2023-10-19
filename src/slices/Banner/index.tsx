@@ -1,8 +1,11 @@
+'use client';
+
 import { Content, asLink } from '@prismicio/client';
-import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 import styled, { css } from 'styled-components';
 
-import Link from 'next/link';
+import Link from '@/components/link';
+import { PrismicRichText } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
 import color from 'color';
 
 const Contents = styled.div`
@@ -142,7 +145,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
 
                 ${Header} {
                     p {
-                        padding-top: 0px;
+                        padding-top: 0;
                         font-size: 1.75rem;
                         line-height: 2.25rem;
 
@@ -174,8 +177,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
                     padding: var(--block-padding) var(--block-padding-large);
 
                     @media (min-width: 950px) {
-                        padding: calc(var(--block-padding) * 1.25)
-                            calc(var(--block-padding-large) * 2);
+                        padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 2);
                         font-size: 1.5rem;
                         line-height: 1.5rem;
                     }

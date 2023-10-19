@@ -1,10 +1,14 @@
+'use client';
+
+import { Config } from '@/utils/Config';
 import type { FunctionComponent } from 'react';
-import Link from 'next/link';
+import Link from '@/components/link';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import PageLoader from '@/components/PageLoader';
 import type { VendorModel } from '@/models/VendorModel';
 import { VendorsApi } from '@/api/vendor';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
 
 const Container = styled.div`
@@ -17,7 +21,7 @@ const Container = styled.div`
         overflow-x: auto;
         flex-wrap: nowrap;
         white-space: nowrap;
-        gap: 0px;
+        gap: 0;
         padding: var(--block-padding);
         margin: calc(var(--block-padding) * -1);
     }
@@ -61,13 +65,14 @@ interface VendorsProps {
     data?: Array<VendorModel>;
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
-    const router = useRouter();
+    const route = usePathname();
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
     const { data: vendors } = useSWR(
         [
             'VendorsApi',
             {
-                locale: router.locale
+                locale: locale.locale
             }
         ],
         ([, props]) => VendorsApi(props),
@@ -93,7 +98,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                         key={vendor?.handle}
                         href={`/collections/${vendor?.handle}/`}
                         className={`Vendors-Vendor ${
-                            (router.asPath?.includes(`brands/${vendor?.handle}`) && 'Selected') || ''
+                            (route?.includes(`brands/${vendor?.handle}`) && 'Selected') || ''
                         }`}
                         prefetch={false}
                     >

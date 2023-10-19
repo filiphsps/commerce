@@ -26,6 +26,7 @@ export const Convertor = (
     }));
 };
 
+// TODO: Migrate to `Locale` type.
 // eslint-disable-next-line no-unused-vars
 export const VendorsApi = async ({ locale }: { locale?: string }): Promise<VendorModel[]> => {
     return new Promise(async (resolve, reject) => {

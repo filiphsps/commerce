@@ -3,8 +3,7 @@ build
 coverage
 node_modules
 .next
+.vercel
 
-# Ignore mdoc till we PR a fix upstream.
-**/*.mdoc
 **/*.woff2
 **/*.ttf

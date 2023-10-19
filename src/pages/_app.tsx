@@ -1,5 +1,6 @@
-import '@/style/app.scss';
 import 'destyle.css';
+// Global styles
+import '@/style/app.scss';
 
 import * as nextI18NextConfig from '../../next-i18next.config.cjs';
 

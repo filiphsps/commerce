@@ -1,9 +1,11 @@
+'use client';
+
 import PageContent from '@/components/PageContent';
+import Link from '@/components/link';
 import { ImageLoader } from '@/utils/ImageLoader';
 import { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
-import Link from 'next/link';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 

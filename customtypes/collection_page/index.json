@@ -7,7 +7,10 @@
     "json": {
         "Main": {
             "uid": {
-                "config": { "label": "UID", "placeholder": "collection-handle" },
+                "config": {
+                    "label": "UID",
+                    "placeholder": "collection-handle"
+                },
                 "type": "UID"
             },
             "enable_header": {
@@ -42,16 +45,36 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
-                        "alert": { "type": "SharedSlice" },
-                        "vendors": { "type": "SharedSlice" },
-                        "collection": { "type": "SharedSlice" },
-                        "text_block": { "type": "SharedSlice" },
-                        "banner": { "type": "SharedSlice" },
-                        "icon_grid": { "type": "SharedSlice" },
-                        "collapsible_text": { "type": "SharedSlice" },
-                        "image_grid": { "type": "SharedSlice" },
-                        "carousel": { "type": "SharedSlice" },
-                        "spacing": { "type": "SharedSlice" }
+                        "alert": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "carousel": {
+                            "type": "SharedSlice"
+                        },
+                        "spacing": {
+                            "type": "SharedSlice"
+                        }
                     }
                 }
             }
@@ -66,7 +89,10 @@
             },
             "meta_image": {
                 "config": {
-                    "constraint": { "height": 1260, "width": 2400 },
+                    "constraint": {
+                        "height": 1260,
+                        "width": 2400
+                    },
                     "label": "Meta Image",
                     "thumbnails": []
                 },
@@ -78,34 +104,6 @@
                     "placeholder": "A title of the page used for social media and search engines"
                 },
                 "type": "Text"
-            }
-        },
-        "Visuals": {
-            "accent_primary": {
-                "type": "Color",
-                "config": { "label": "Primary accent", "placeholder": "" }
-            },
-            "accent_primary_dark": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Primary accent luminosity",
-                    "placeholder_false": "light",
-                    "placeholder_true": "dark",
-                    "default_value": false
-                }
-            },
-            "accent_secondary": {
-                "type": "Color",
-                "config": { "label": "Secondary accent", "placeholder": "" }
-            },
-            "accent_secondary_dark": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Secondary accent luminosity",
-                    "placeholder_false": "light",
-                    "placeholder_true": "dark",
-                    "default_value": false
-                }
             }
         }
     }

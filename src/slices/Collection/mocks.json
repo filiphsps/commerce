@@ -50,16 +50,6 @@
 				"__TYPE__": "FieldContent",
 				"type": "Select",
 				"value": "center"
-			},
-			"accent": {
-				"__TYPE__": "FieldContent",
-				"type": "Color",
-				"value": "#CCE2CB"
-			},
-			"accent_dark": {
-				"__TYPE__": "FieldContent",
-				"type": "Color",
-				"value": "#CCE2CB"
 			}
 		},
 		"items": []

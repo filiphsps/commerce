@@ -42,7 +42,7 @@ export const Input = styled.input`
     }
 
     &[type='range'] {
-        padding: 0px;
+        padding: 0;
     }
 
     &:disabled,
@@ -98,7 +98,7 @@ export const MultilineInput = styled.textarea`
     }
 
     &[type='range'] {
-        padding: 0px;
+        padding: 0;
     }
 
     &:disabled,

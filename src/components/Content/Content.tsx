@@ -25,7 +25,7 @@ const Content = styled.div`
         line-height: 2.25rem;
 
         &:last-child {
-            margin-bottom: 0px;
+            margin-bottom: 0;
         }
 
         i,
@@ -55,7 +55,7 @@ const Content = styled.div`
         padding-bottom: 1.5rem;
 
         &:last-child {
-            padding-bottom: 0px;
+            padding-bottom: 0;
         }
     }
     h2 {
@@ -65,7 +65,7 @@ const Content = styled.div`
         padding-bottom: 1rem;
 
         &:last-child {
-            padding-bottom: 0px;
+            padding-bottom: 0;
         }
     }
     h3 {
@@ -75,7 +75,7 @@ const Content = styled.div`
         padding-bottom: 1rem;
 
         &:last-child {
-            padding-bottom: 0px;
+            padding-bottom: 0;
         }
     }
 
