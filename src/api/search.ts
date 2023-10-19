@@ -6,6 +6,7 @@ import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
 
+// TODO: Migrate to `Locale` type.
 export const SearchApi = async ({
     query,
     locale,

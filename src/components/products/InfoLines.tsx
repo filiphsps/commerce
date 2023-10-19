@@ -10,7 +10,7 @@ const Container = styled.section`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0px;
+    padding: 0;
     margin-top: calc(var(--block-padding-small) * -1);
     margin-bottom: var(--block-padding-large);
 
@@ -24,7 +24,7 @@ const Entry = styled.div<{ $status: Status }>`
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 0px var(--block-padding-small);
+    padding: 0 var(--block-padding-small);
     gap: 0.25rem;
     height: 2rem;
     //background: var(--color-block);

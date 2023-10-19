@@ -1,20 +1,20 @@
-import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisualsApi } from '@/api/product';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
-import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/Button';
+import { Config } from '@/utils/Config';
+import { ConvertToLocalMeasurementSystem } from '@/api/product';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
-import Link from 'next/link';
-import type { ProductVisuals } from '@/api/product';
+import Link from '@/components/link';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'next-i18next';
 
 export const ProductImage = styled.div`
@@ -28,7 +28,6 @@ export const ProductImage = styled.div`
     transition: 250ms ease-in-out;
     user-select: none;
     background: var(--color-bright);
-    box-shadow: 0px 0px 1rem -0.25rem var(--color-block-shadow);
     height: 14rem;
 
     @media (hover: hover) and (pointer: fine) {
@@ -413,52 +412,19 @@ export const AppendShopifyParameters = ({ params, url }: { params?: string | nul
 };
 
 interface ProductCardProps {
-    visuals?: ProductVisuals | null;
     handle?: string;
     store: StoreModel;
     className?: string;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: visualsData }) => {
-    const router = useRouter();
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
+    const route = usePathname();
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+
     const { t } = useTranslation('common');
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
-    const { product: productData, selectedVariant, setSelectedVariant } = useProduct();
-
-    const { data: product } = useSWR(
-        [
-            'ProductApi',
-            {
-                handle: productData?.handle!,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ProductApi(props),
-        {
-            fallbackData: productData as Product
-        }
-    );
-
-    const { data: visuals } = useSWR(
-        [
-            'ProductVisualsApi',
-            {
-                id: (product as any).visuals?.value,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ProductVisualsApi(props),
-        {
-            fallbackData: (visualsData || (product as any).visualsData) as ProductVisuals | undefined
-        }
-    );
-
-    useEffect(() => {
-        if (!product) return;
-
-        setSelectedVariant(product?.variants?.edges?.at(-1)?.node || selectedVariant || null);
-    }, []);
+    const { product, selectedVariant, setSelectedVariant } = useProduct();
 
     useEffect(() => {
         if (quantity > 0) return;
@@ -470,7 +436,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
     const is_new_product =
         product?.createdAt &&
-        Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // FIXME: Change this
+        Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
     const is_vegan_product = product?.tags?.includes('Vegan');
     const is_sale = !!selectedVariant?.compareAtPrice?.amount;
 
@@ -579,9 +545,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                     <Variants>
                         {product.variants?.edges &&
                             product.variants.edges.length > 1 &&
-                            product.variants.edges.map((edge: ProductVariantEdge) => {
-                                if (!edge.node) return null;
-                                const variant = edge.node;
+                            product.variants.edges.map((edge) => {
+                                if (!edge?.node) return null;
+                                const variant = edge.node! as ProductVariant;
                                 let title = variant.title;
 
                                 // Handle variants that should have their weight as their actual title
@@ -596,7 +562,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                                     variant.weightUnit
                                 ) {
                                     title = ConvertToLocalMeasurementSystem({
-                                        locale: router.locale,
+                                        locale: locale.locale,
                                         weight: variant.weight,
                                         weightUnit: variant.weightUnit
                                     });
@@ -623,8 +589,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                     className={(addedToCart && 'Added') || ''}
                     $added={addedToCart}
                     onClick={() => {
-                        if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
-                        else if (!product || !selectedVariant) return;
+                        if ((cart.status !== 'idle' && cart.status !== 'uninitialized') || !product || !selectedVariant)
+                            return;
 
                         setAddedToCart(true);
                         cart.linesAdd([

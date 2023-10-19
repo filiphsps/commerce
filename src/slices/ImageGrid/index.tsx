@@ -1,6 +1,8 @@
+'use client';
+
 import { Content } from '@prismicio/client';
 import { ImageLoader } from '@/utils/ImageLoader';
-import Link from 'next/link';
+import Link from '@/components/link';
 import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
@@ -9,8 +11,8 @@ import styled from 'styled-components';
 const Container = styled.section`
     //grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     width: 100%;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     flex-grow: 1;
 `;
 const Grid = styled.div`
@@ -44,8 +46,8 @@ const TitleContainer = styled.div`
     padding: var(--block-padding) var(--block-padding-large);
     transition: 250ms ease-in-out outline-color;
     border-radius: var(--block-border-radius);
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
     background: var(--accent-primary);
 
     @media (max-width: 950px) {

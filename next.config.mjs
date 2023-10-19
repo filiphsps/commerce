@@ -1,5 +1,4 @@
 import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
-import { i18n } from './next-i18next.config.cjs';
 
 const withNextPluginPreval = createNextPluginPreval();
 
@@ -9,7 +8,7 @@ let config = {
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    i18n,
+    //i18n,
     productionBrowserSourceMaps: false,
     compress: true,
     experimental: {

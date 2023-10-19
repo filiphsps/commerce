@@ -1,3 +1,5 @@
+'use client';
+
 import type { CSSProperties, FunctionComponent } from 'react';
 
 import Content from '@/components/Content';

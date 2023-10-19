@@ -7,6 +7,7 @@ import { createClient } from '@/prismic';
 import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
 
+// TODO: Migrate to `Locale` type.
 export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -63,6 +64,7 @@ export const LocalesApi = async (): Promise<string[]> => {
     });
 };
 
+// TODO: Migrate to `Locale` type.
 export const StoreApi = async ({ locale }: { locale?: string }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const client = createClient({});

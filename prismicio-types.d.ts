@@ -97,52 +97,7 @@ interface CollectionPageDocumentData {
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
-    meta_title: prismic.KeyTextField
-    /**
-     * Primary accent field in *Collection Page*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collection_page.accent_primary
-     * - **Tab**: Visuals
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */;
-    accent_primary: prismic.ColorField;
-
-    /**
-     * Primary accent luminosity field in *Collection Page*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: collection_page.accent_primary_dark
-     * - **Tab**: Visuals
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    accent_primary_dark: prismic.BooleanField;
-
-    /**
-     * Secondary accent field in *Collection Page*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collection_page.accent_secondary
-     * - **Tab**: Visuals
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    accent_secondary: prismic.ColorField;
-
-    /**
-     * Secondary accent luminosity field in *Collection Page*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: collection_page.accent_secondary_dark
-     * - **Tab**: Visuals
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    accent_secondary_dark: prismic.BooleanField;
+    meta_title: prismic.KeyTextField;
 }
 
 /**
@@ -1263,26 +1218,6 @@ export interface CollectionSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/field#boolean
      */
     hide_title: prismic.BooleanField;
-
-    /**
-     * Accent field in *Collection → Primary*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collection.primary.accent
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    accent: prismic.ColorField;
-
-    /**
-     * Accent Dark field in *Collection → Primary*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: collection.primary.accent_dark
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    accent_dark: prismic.ColorField;
 }
 
 /**

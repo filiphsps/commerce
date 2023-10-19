@@ -1,3 +1,5 @@
+'use client';
+
 import { Content } from '@prismicio/client';
 import PageContent from '@/components/PageContent';
 import type { SliceComponentProps } from '@prismicio/react';

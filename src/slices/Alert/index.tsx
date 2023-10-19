@@ -1,3 +1,5 @@
+'use client';
+
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
 import { Alert as AlertComponent } from '@/components/Alert';

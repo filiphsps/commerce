@@ -3,7 +3,7 @@ import { Subtitle, Title } from '@/components/PageHeader/PageHeader';
 
 import { AppendShopifyParameters } from '@/components/ProductCard/ProductCard';
 import type { FunctionComponent } from 'react';
-import Link from 'next/link';
+import Link from '@/components/link';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import styled from 'styled-components';
 

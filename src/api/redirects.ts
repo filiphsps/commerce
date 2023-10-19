@@ -22,6 +22,7 @@ export const Convertor = (
     }));
 };
 
+// TODO: Migrate to `Locale` type.
 export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
@@ -30,7 +31,6 @@ export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Arr
         const language = NextLocaleToLanguage(locale);
 
         try {
-            // FIXME: Handle more than 250 redirects
             const redirects: any[] = [];
 
             let cursor = null;

@@ -1,7 +1,8 @@
+import { usePathname, useRouter } from 'next/navigation';
+
 import type { FunctionComponent } from 'react';
-import Link from 'next/link';
+import Link from '@/components/link';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 const Container = styled.div`
     position: absolute;
@@ -17,7 +18,7 @@ const Container = styled.div`
 
     left: -100vw;
     &.Open {
-        left: 0px;
+        left: 0;
     }
 
     @media (min-width: 950px) {
@@ -82,6 +83,7 @@ interface HeaderNavigationProps {
 }
 const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation, open, toggle }) => {
     const router = useRouter();
+    const route = usePathname();
 
     return (
         <Container
@@ -98,8 +100,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
                                 href={`/${item.handle || ''}`}
                                 title={item.title}
                                 className={
-                                    (router.asPath === '/' && item?.handle === null) ||
-                                    `/${item?.handle}` === router.asPath
+                                    (route === '/' && item?.handle === null) || `/${item?.handle}` === route
                                         ? 'Active'
                                         : ''
                                 }
@@ -114,8 +115,7 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
                                         href={`/${item.handle || ''}`}
                                         title={item.title}
                                         className={
-                                            (router.asPath === '/' && item?.handle === null) ||
-                                            `/${item?.handle}` === router.asPath
+                                            (route === '/' && item?.handle === null) || `/${item?.handle}` === route
                                                 ? 'Active'
                                                 : ''
                                         }

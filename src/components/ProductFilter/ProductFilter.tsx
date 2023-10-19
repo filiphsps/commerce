@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const FilterWrapper = styled.div`
     position: relative;
-    margin: 0px 0px 1rem 0px;
+    margin: 0 0 1rem 0;
 `;
 const Filters = styled.div``;
 const Filter = styled.div`
@@ -22,7 +22,7 @@ const Filter = styled.div`
 
         &.Closed {
             opacity: 0;
-            height: 0px;
+            height: 0;
             pointer-events: none;
         }
     }

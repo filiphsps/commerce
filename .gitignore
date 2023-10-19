@@ -21,9 +21,15 @@ build/
 # misc
 .DS_Store
 .swc
-*.tsbuildinfo
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# deployment
+.sentryclirc
+.vercel
+
+# typescript
+*.tsbuildinfo

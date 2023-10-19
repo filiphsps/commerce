@@ -1,8 +1,13 @@
 import { Config } from '@/utils/Config';
 import type { HeaderModel } from '@/models/HeaderModel';
+import { cache } from 'react';
 import { createClient } from '@/prismic';
 
-export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
+// TODO: More sane revalidate time
+export const revalidate = 60 * 5;
+
+// TODO: Migrate to `Locale` type.
+export const HeaderApi = cache(async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -25,4 +30,4 @@ export const HeaderApi = async ({ locale }: { locale?: string }): Promise<Header
             return reject(error);
         }
     });
-};
+});

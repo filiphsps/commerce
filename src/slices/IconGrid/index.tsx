@@ -1,3 +1,5 @@
+'use client';
+
 import { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
 import PageContent from '@/components/PageContent';
@@ -71,11 +73,7 @@ const IconGrid = ({ slice }: IconGridProps): JSX.Element => {
                         <Item key={index}>
                             <ItemIcon>
                                 {item.icon?.url && (
-                                    <Image
-                                        src={item.icon.url}
-                                        alt={item.icon.alt || ''}
-                                        layout="fill"
-                                    />
+                                    <Image src={item.icon.url} alt={item.icon.alt || ''} layout="fill" />
                                 )}
                             </ItemIcon>
                             <ItemContent>{item.title}</ItemContent>

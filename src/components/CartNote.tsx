@@ -29,7 +29,7 @@ const Container = styled.section<{ open?: boolean }>`
 
     ${MultilineInput} {
         height: 8rem;
-        border-width: 0px;
+        border-width: 0;
         padding: var(--block-padding);
     }
 `;

@@ -1,18 +1,19 @@
+'use client';
+
 import { Content, asHTML, asText } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
 import CollectionBlock from '@/components/CollectionBlock';
 import PageContent from '@/components/PageContent';
 import { Title } from '@/components/PageHeader/PageHeader';
+import Link from '@/components/link';
 import type { SliceComponentProps } from '@prismicio/react';
-import Color from 'color';
-import Link from 'next/link';
 import { FullCollection } from './FullCollection';
 
 const Container = styled.section`
     width: 100%;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 `;
 
 const Content = styled.div`
@@ -80,21 +81,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
     switch (slice.variation) {
         case 'default':
             return (
-                <Container
-                    data-slice-type={slice.slice_type}
-                    data-slice-variation={slice.variation}
-                    style={
-                        {
-                            '--background': slice.primary.accent || 'var(--color-block)',
-                            '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
-                            '--foreground':
-                                (slice.primary.accent &&
-                                    Color(slice.primary.accent).isDark() &&
-                                    'var(--color-bright)') ||
-                                'var(--color-dark)'
-                        } as React.CSSProperties
-                    }
-                >
+                <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
                     <PageContent>
                         <Content>
                             {asText(slice.primary.title)?.length > 0 && (
@@ -121,8 +108,6 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 handle={slice.primary.handle!}
                                 isHorizontal={slice.primary.direction === 'horizontal'}
                                 limit={slice.primary.limit || 16}
-                                hideTitle={asText(slice.primary.title).length > 0 || slice.primary.hide_title}
-                                plainTitle
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
                             />
