@@ -1,40 +1,95 @@
 import * as prismic from '@prismicio/client';
 
-import { Config } from '@/utils/Config';
+import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
+
 import { createClient } from '@/prismic';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale, type Locale } from '@/utils/Locale';
+import { cache } from 'react';
 
-export const PagesApi = async ({
-    locale
-}: {
-    locale?: string;
-}): Promise<{
-    paths: string[];
-}> => {
-    return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
+// TODO: More sane revalidate time
+export const revalidate = 60;
 
-        try {
-            const client = createClient({});
-            const pages = await client.getAllByType('custom_page', {
-                lang: locale
-            });
+// TODO: Migrate to `Locale` type.
+export const PagesApi = cache(
+    async ({
+        locale
+    }: {
+        locale?: string;
+    }): Promise<{
+        paths: string[];
+    }> => {
+        return new Promise(async (resolve, reject) => {
+            if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
-            if (!pages) return reject();
+            try {
+                const client = createClient({});
+                const pages = await client.getAllByType('custom_page', {
+                    lang: locale
+                });
 
-            // TODO: remove filter when we have migrated the shop page
-            const paths = pages
-                .map((page) => prismic.asLink(page))
-                .filter((i) => i && !['/shop', '/countries', '/search', '/cart'].includes(i));
-            return resolve({
-                paths: paths as any
-            });
-        } catch (error: any) {
-            if (error.message.includes('No documents') && locale !== Config.i18n.default) {
-                return resolve(await PagesApi({})); // Try again with default locale
+                if (!pages) return reject();
+
+                // TODO: remove filter when we have migrated the shop page
+                const paths = pages
+                    .map((page) => prismic.asLink(page))
+                    .filter((i) => i && !['/shop', '/countries', '/search', '/cart'].includes(i));
+                return resolve({
+                    paths: paths as any
+                });
+            } catch (error: any) {
+                if (error.message.includes('No documents') && locale !== Config.i18n.default) {
+                    return resolve(await PagesApi({})); // Try again with default locale
+                }
+
+                console.error(error);
+                return reject(error);
             }
+        });
+    }
+);
 
-            console.error(error);
-            return reject(error);
-        }
-    });
-};
+type PageType<T> = T extends 'collection_page'
+    ? CollectionPageDocumentData
+    : T extends 'product_page'
+    ? ProductPageDocumentData
+    : CustomPageDocumentData;
+
+export const PageApi = cache(
+    async <T extends 'collection_page' | 'product_page' | 'custom_page'>({
+        locale,
+        type,
+        handle
+    }: {
+        locale?: Locale;
+        handle: string;
+        type: T;
+    }): Promise<{
+        page: PageType<T>;
+    }> => {
+        return new Promise(async (resolve, reject) => {
+            if (!locale) locale = NextLocaleToLocale();
+
+            try {
+                const client = createClient({});
+                const { data: page } = await client.getByUID(type, handle, {
+                    lang: locale.locale,
+                    fetchLinks: ['slices']
+                });
+
+                if (!page) return reject();
+
+                return resolve({
+                    page: page as any
+                });
+            } catch (error: any) {
+                if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+                    return resolve(await PageApi({ handle, type })); // Try again with default locale
+                }
+
+                console.error(error);
+                return reject(error);
+            }
+        });
+    }
+);

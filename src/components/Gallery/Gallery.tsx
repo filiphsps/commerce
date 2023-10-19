@@ -1,10 +1,12 @@
-import styled, { css } from 'styled-components';
+'use client';
+
 import { useEffect, useState } from 'react';
 
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { ImageLoader } from '@/utils/ImageLoader';
+import styled from 'styled-components';
 
 const Previews = styled.div`
     position: relative;
@@ -89,7 +91,7 @@ const ImageWrapper = styled.div`
     height: 100%;
 `;
 
-const Container = styled.div<{ $noBlend?: boolean }>`
+const Container = styled.div`
     position: relative;
     display: grid;
     grid-template-areas: 'primary' 'previews';
@@ -106,12 +108,6 @@ const Container = styled.div<{ $noBlend?: boolean }>`
     img {
         flex-shrink: 1;
         width: 100%;
-        ${({ $noBlend }) =>
-            !$noBlend &&
-            css`
-                mix-blend-mode: multiply;
-            `}
-
         object-fit: contain;
         object-position: center;
         max-height: 35vh;
@@ -124,60 +120,13 @@ const Container = styled.div<{ $noBlend?: boolean }>`
     & > div:only-child {
         grid-column: 1 / -1;
     }
-
-    &.Pastel {
-        ${Previews} {
-            justify-content: center;
-
-            ${Preview} {
-                //width: 100%;
-            }
-        }
-
-        ${Primary} {
-            @keyframes float {
-                0% {
-                    transform: translateY(-0.5rem) scale(1.05, 1);
-                }
-                50% {
-                    transform: translateY(0.5rem) scale(1, 1.05);
-                }
-                100% {
-                    transform: translateY(-0.5rem) scale(1.05, 1);
-                }
-            }
-            transform: translateY(0);
-            animation: float 8s ease-in-out infinite;
-
-            @media (min-width: 950px) {
-                animation: none;
-            }
-
-            img {
-                height: 35vh;
-
-                @media (min-width: 950px) {
-                    height: unset;
-                }
-            }
-        }
-    }
 `;
 
 interface GalleryProps {
-    pastel?: boolean;
-    background?: string;
-    previewBackground?: string;
     selected: string | null;
     images: ImageConnection | null;
 }
-const Gallery: FunctionComponent<GalleryProps> = ({
-    pastel,
-    background,
-    previewBackground,
-    selected: defaultImageIndex,
-    images
-}) => {
+const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex, images }) => {
     const [selected, setSelected] = useState(defaultImageIndex || images?.edges[0].node.id);
 
     useEffect(() => {
@@ -191,20 +140,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
 
     const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
-        <Container
-            className={(pastel && 'Pastel') || ''}
-            $noBlend={!!background || undefined}
-            style={
-                {
-                    ...((images?.edges?.length <= 1 && {
-                        gridTemplateAreas: '"primary"'
-                    }) ||
-                        {}),
-                    '--background': background || 'var(--color-block)',
-                    '--background-preview': previewBackground || 'var(--color-block)'
-                } as React.CSSProperties
-            }
-        >
+        <Container>
             <Primary>
                 <ImageWrapper>
                     <Image

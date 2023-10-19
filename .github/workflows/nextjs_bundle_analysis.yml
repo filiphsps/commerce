@@ -50,7 +50,7 @@ jobs:
               run: npm run build
 
             - name: Analyze bundle
-              run: npx -p nextjs-bundle-analysis report
+              run: node ./.github/scripts/bundle-analyze-report.js
 
             - name: Upload bundle
               uses: actions/upload-artifact@v3
@@ -82,5 +82,5 @@ jobs:
             - name: Comment
               uses: marocchino/sticky-pull-request-comment@v2
               with:
-                header: next-touched-pages
-                message: ${{ steps.get-comment-body.outputs.body }}
+                  header: next-touched-pages
+                  message: ${{ steps.get-comment-body.outputs.body }}

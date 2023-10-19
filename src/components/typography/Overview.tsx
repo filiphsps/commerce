@@ -52,7 +52,7 @@ const ImageContainer = styled.div<{ $expand?: boolean }>`
     ${({ $expand }) =>
         $expand &&
         css`
-            padding: 0px;
+            padding: 0;
 
             ${ImageWrapper} {
                 padding: var(--block-padding-large);
@@ -83,7 +83,7 @@ const Content = styled(ContentComponent)`
     &.Plain {
         max-width: 72rem;
         height: auto;
-        padding: 0px;
+        padding: 0;
         background: none;
 
         a {

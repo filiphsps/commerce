@@ -1,3 +1,5 @@
+'use client';
+
 import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName,
@@ -15,7 +17,7 @@ import type { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 const trimDomain = (domain?: string): string | undefined => {
@@ -109,13 +111,17 @@ export const sendPageViewEvent = ({
         path: path
     };
 
-    sendShopifyAnalytics(
-        {
-            eventName: AnalyticsEventName.PAGE_VIEW,
-            payload
-        },
-        Config.shopify.checkout_domain
-    );
+    try {
+        sendShopifyAnalytics(
+            {
+                eventName: AnalyticsEventName.PAGE_VIEW,
+                payload
+            },
+            Config.shopify.checkout_domain
+        );
+    } catch (error) {
+        console.warn(error);
+    }
 };
 
 interface useAnalyticsProps {
@@ -153,11 +159,13 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         ...((pagePropsAnalyticsData as any) || {})
     };
 
-    const router = useRouter();
+    const route = usePathname();
 
     // Page view analytics
     // FIXME: We miss the initial PageView
     useEffect(() => {
+        if (!route) return;
+
         const handleRouteChange = (url: string) => {
             const path = `/${url.split('/').slice(2, -1).join('/')}/`.replace('//', '/');
             sendPageViewEvent({
@@ -168,12 +176,14 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
                 cost: cost as any
             });
         };
-        router.events.on('routeChangeComplete', handleRouteChange);
+
+        handleRouteChange(route);
+        /*router.events.on('routeChangeComplete', handleRouteChange);
 
         return () => {
             router.events.off('routeChangeComplete', handleRouteChange);
-        };
-    }, []);
+        };*/
+    }, [route]);
 
     // Add to cart analytics
     useEffect(() => {
@@ -215,13 +225,17 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             totalValue: Number.parseFloat(cost?.totalAmount?.amount!)
         };
 
-        sendShopifyAnalytics(
-            {
-                eventName: AnalyticsEventName.ADD_TO_CART,
-                payload
-            },
-            Config.shopify.checkout_domain
-        );
+        try {
+            sendShopifyAnalytics(
+                {
+                    eventName: AnalyticsEventName.ADD_TO_CART,
+                    payload
+                },
+                Config.shopify.checkout_domain
+            );
+        } catch (error) {
+            console.warn(error);
+        }
 
         sendEcommerceEvent({
             event: 'add_to_cart',

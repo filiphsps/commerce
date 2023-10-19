@@ -1,10 +1,15 @@
+'use client';
+
+import { NavigationApi, NavigationItem } from '@/api/navigation';
 import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
+import { Suspense, useState } from 'react';
 
 import { Config } from '@/utils/Config';
+import { FooterModel } from '@/models/FooterModel';
 import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
+import { HeaderModel } from '@/models/HeaderModel';
 import type { Locale } from '@/utils/Locale';
-import { NavigationApi } from '@/api/navigation';
 import type { StoreModel } from '@/models/StoreModel';
 import { asHTML } from '@prismicio/client';
 import dynamic from 'next/dynamic';
@@ -12,9 +17,8 @@ import preval from '../../data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
-import { useState } from 'react';
 
 const Header = dynamic(() => import('@/components/Header'));
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
@@ -80,25 +84,32 @@ const HeaderContainer = styled.div`
 interface PageProviderProps {
     store: StoreModel;
     pagePropsAnalyticsData: any;
+    data?: {
+        navigation?: NavigationItem[];
+        header?: HeaderModel;
+        footer?: FooterModel;
+    };
     children: any;
     className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const { store, pagePropsAnalyticsData } = props;
+    const { store, pagePropsAnalyticsData, data } = props;
 
-    const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const route = usePathname();
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
     const { data: navigation } = useSWR(
         [
             'NavigationApi',
             {
-                locale: router.locale
+                locale: locale.locale
             }
         ],
         ([, props]) => NavigationApi(props),
         {
-            fallbackData: preval.navigation!
+            fallbackData: data?.navigation || preval.navigation!
         }
     );
 
@@ -106,16 +117,15 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         [
             'HeaderApi',
             {
-                locale: router.locale
+                locale: locale.locale
             }
         ],
         ([, props]) => HeaderApi(props),
         {
-            fallbackData: preval.header!
+            fallbackData: data?.header || preval.header!
         }
     );
 
-    const locale = NextLocaleToLocale(router.locale);
     const { country, language } = locale;
     useAnalytics({
         locale: {
@@ -141,7 +151,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const bellow = header?.announcements?.filter((item) => item.location === 'bellow') || [];
 
     // TODO: handle this way better.
-    const isSliceSimulator = router.asPath === '/slice-simulator/';
+    const isSliceSimulator = route === '/slice-simulator/';
     if (isSliceSimulator) return <>{props.children}</>;
 
     return (
@@ -160,12 +170,14 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
             <HeaderContainer>
-                <Header
-                    store={props?.store}
-                    navigation={navigation}
-                    sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
-                    sidebarOpen={sidebarOpen}
-                />
+                <Suspense>
+                    <Header
+                        store={props?.store}
+                        navigation={navigation}
+                        sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+                        sidebarOpen={sidebarOpen}
+                    />
+                </Suspense>
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}
@@ -189,7 +201,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             )}
 
             {props.children}
-            <Footer store={props?.store} />
+            <Footer store={props?.store} data={data?.footer} />
         </Container>
     );
 };

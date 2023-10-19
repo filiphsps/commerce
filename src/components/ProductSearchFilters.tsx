@@ -26,7 +26,7 @@ const Values = styled.div`
     margin-top: 1rem;
 
     @media (max-width: 950px) {
-        margin: 1rem 0px 0.5rem 0px;
+        margin: 1rem 0 0.5rem 0;
     }
 `;
 const ListOption = styled.div<{ selected?: boolean }>`
@@ -66,7 +66,7 @@ const RangeLabels = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: var(--block-spacer);
-    padding: 0px 0.5rem;
+    padding: 0 0.5rem;
     width: 100%;
 `;
 const RangeLabel = styled(FilterLabel)`

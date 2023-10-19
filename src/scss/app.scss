@@ -8,13 +8,14 @@ html,
 body {
     width: 100%;
     max-width: 100vw;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     -moz-osx-font-smoothing: always;
     -webkit-font-smoothing: always;
     font-smooth: always;
     overscroll-behavior-x: none;
     font-size: 11px;
+    font-family: var(--font-primary);
     touch-action: manipulation;
     text-size-adjust: auto;
     color: var(--color-dark);
@@ -42,8 +43,11 @@ body {
 }
 
 :root {
-    // TODO: styled-components theme, or even better
-    //       through our CMS.
+    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
+    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 75%, var(--color-bright));
+
+    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark));
+    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 55%, var(--color-bright));
 
     --accent-primary-text: #ececec;
     --accent-secondary-text: #101418;
@@ -70,7 +74,7 @@ body {
     --color-block-pastel-lime-light: color-mix(in srgb, var(--color-block-pastel-lime) 65%, var(--color-bright));
     --color-block-pastel-lime-dark: color-mix(in srgb, var(--color-block-pastel-lime) 8%, var(--color-dark));
 
-    --component-product-card-width: 20rem;
+    --component-product-card-width: 22rem;
 
     --page-width: 1465px;
 
@@ -90,7 +94,7 @@ body {
     --block-spacer-large: 1.5rem;
 
     @media (max-width: 950px) {
-        --component-product-card-width: 19.5rem;
+        --component-product-card-width: 20rem;
 
         --block-border-width: 0.35rem;
 

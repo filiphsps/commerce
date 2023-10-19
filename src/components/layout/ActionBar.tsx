@@ -6,7 +6,7 @@ export const ActionBar = styled.div`
     align-items: center;
     gap: var(--block-spacer);
     height: 3rem;
-    padding: 0px var(--block-padding);
+    padding: 0 var(--block-padding);
     border-radius: var(--block-padding-large);
     background: var(--accent-secondary);
     color: var(--accent-secondary-text);

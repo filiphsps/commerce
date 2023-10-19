@@ -1,3 +1,5 @@
+'use client';
+
 import styled, { css } from 'styled-components';
 
 import type { FunctionComponent } from 'react';
@@ -8,7 +10,11 @@ const Container = styled.div<{ $primary?: boolean }>`
     gap: var(--block-spacer-small);
     max-width: var(--page-width);
     width: 100%;
-    margin: 0px auto;
+    margin: 0 auto;
+
+    &:empty {
+        display: none;
+    }
 
     ${({ $primary }) =>
         $primary &&

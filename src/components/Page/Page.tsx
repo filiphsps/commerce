@@ -1,9 +1,11 @@
+'use client';
+
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.main`
-    min-height: calc(100vh - 20rem);
-    min-height: calc(100dvh - 20rem);
+    min-height: calc(100vh - 26rem);
+    min-height: calc(100dvh - 26rem);
 `;
 
 interface PageProps {

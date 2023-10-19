@@ -1,14 +1,16 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { FooterApi } from '@/api/footer';
+import { FooterModel } from '@/models/FooterModel';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
-import Link from 'next/link';
+import Link from '@/components/link';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import preval from '../../data.preval';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
 
 const Logo = styled.div`
@@ -16,7 +18,7 @@ const Logo = styled.div`
     display: block;
     width: 100%;
     height: 5rem;
-    margin: 0px 0px 1rem 0px;
+    margin: 0 0 1rem 0;
 
     img {
         display: block;
@@ -26,7 +28,7 @@ const Logo = styled.div`
         object-position: center;
 
         @media (min-width: 950px) {
-            object-position: 0px;
+            object-position: 0;
         }
     }
 `;
@@ -93,7 +95,7 @@ const FooterBlock = styled.div`
     font-weight: 400;
 
     @media (min-width: 950px) {
-        padding-bottom: 0px;
+        padding-bottom: 0;
         align-items: flex-start;
         justify-content: flex-start;
     }
@@ -109,7 +111,7 @@ const LegalAndCopyright = styled.div`
     height: 4rem;
 
     @media (max-width: 950px) {
-        margin: 1rem 0px;
+        margin: 1rem 0;
     }
 `;
 const FooterBottomSection = styled.section`
@@ -169,7 +171,7 @@ const Copyright = styled.div`
     }
 `;
 const Policy = styled(Link)`
-    padding: var(--block-padding-large) 0px;
+    padding: var(--block-padding-large) 0;
     font-size: 1.25rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -193,21 +195,24 @@ const Social = styled(Link)`
 interface FooterProps {
     store?: StoreModel;
     country?: string;
+    data?: FooterModel;
 }
 const Footer: FunctionComponent<FooterProps> = (props) => {
-    const router = useRouter();
-    const { store } = props;
+    const { store, data } = props;
+
+    const route = usePathname();
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
     const { data: footer } = useSWR(
         [
             'FooterApi',
             {
-                locale: router.locale
+                locale: locale.locale
             }
         ],
         ([, props]) => FooterApi(props),
         {
-            fallbackData: preval.footer!
+            fallbackData: data || preval.footer!
         }
     );
 

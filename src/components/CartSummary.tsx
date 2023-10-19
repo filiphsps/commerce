@@ -7,7 +7,7 @@ import { CartCoupons } from '@/components/CartCoupons';
 import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import type { FunctionComponent } from 'react';
-import Link from 'next/link';
+import Link from '@/components/link';
 import PageLoader from '@/components/PageLoader';
 import { Pluralize } from '@/utils/Pluralize';
 import styled from 'styled-components';
@@ -50,8 +50,8 @@ const Notice = styled(Label)`
     .Lock {
         display: inline-block;
         font-size: 1.25rem;
-        line-height: 0px;
-        margin: 0px 0.25rem 0.15rem 0px;
+        line-height: 0;
+        margin: 0 0.25rem 0.15rem 0;
     }
 
     a {
@@ -92,7 +92,7 @@ const CheckoutButtonIcon = styled.div`
     flex-shrink: 0;
     font-size: 2.25rem;
     line-height: 100%;
-    width: 0px;
+    width: 0;
     height: 100%;
     transition: 250ms ease-in-out;
     opacity: 0;
@@ -107,7 +107,7 @@ const CheckoutButton = styled(Button)`
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 0px;
+        gap: 0;
         height: 5rem;
         padding: var(--block-padding-large);
         border-radius: var(--block-border-radius);
@@ -204,7 +204,7 @@ const BreakdownDiscountItem = styled(BreakdownItem)`
             z-index: -2;
             position: absolute;
             inset: calc(var(--block-padding-small) * -0.5);
-            padding: 0px var(--block-padding-small);
+            padding: 0 var(--block-padding-small);
             background: var(--color-green-light);
             color: var(--color-green);
             border-radius: var(--block-border-radius-tiny);

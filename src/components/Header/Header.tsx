@@ -1,3 +1,5 @@
+'use client';
+
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
@@ -7,11 +9,12 @@ import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import { Input } from '@/components/Input';
-import Link from 'next/link';
+import Link from '@/components/link';
+import NProgress from 'nprogress';
 import { Pluralize } from '@/utils/Pluralize';
 import type { StoreModel } from '@/models/StoreModel';
 import { useCart } from '@shopify/hydrogen-react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 const Content = styled.div`
     display: grid;
@@ -21,7 +24,7 @@ const Content = styled.div`
     width: 100%;
     height: 100%;
     padding: var(--block-padding) var(--block-spacer-large);
-    margin: 0px auto;
+    margin: 0 auto;
     user-select: none;
 
     @media (min-width: 950px) {
@@ -64,14 +67,14 @@ const Menu = styled.div`
     overflow: hidden;
     position: absolute;
     top: 6rem;
-    left: 0px;
-    right: 0px;
-    max-height: 0px;
+    left: 0;
+    right: 0;
+    max-height: 0;
     transition: 250ms ease-in-out;
     border-color: var(--accent-secondary);
     background: var(--accent-secondary-light);
     color: var(--color-dark);
-    box-shadow: 0px 1rem 1rem -1rem var(--color-block-shadow);
+    box-shadow: 0 1rem 1rem -1rem var(--color-block-shadow);
     cursor: unset;
 
     /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
@@ -85,7 +88,7 @@ const MenuContent = styled.div`
     gap: var(--block-spacer-large);
     padding: 2rem 2rem 1rem 2rem;
     max-width: 1465px;
-    margin: 0px auto;
+    margin: 0 auto;
 `;
 const MenuItemTitle = styled.div`
     font-weight: 500;
@@ -245,7 +248,7 @@ const Action = styled.div<{ $active?: boolean }>`
     ${({ $active }) =>
         $active &&
         css`
-            padding: 0px var(--block-padding);
+            padding: 0 var(--block-padding);
             color: var(--accent-secondary-light);
             background: var(--accent-primary);
 
@@ -313,7 +316,7 @@ const Header = styled.header<{ $scrolled?: boolean }>`
         $scrolled &&
         css`
             border-bottom-color: var(--accent-secondary);
-            box-shadow: 0px 1rem 1rem -0.75rem var(--color-block-shadow);
+            box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
         `}
 
     @media (min-width: 950px) {
@@ -329,13 +332,14 @@ interface HeaderProps {
 }
 const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, sidebarToggle, sidebarOpen }) => {
     const cart = useCart();
-    const router = useRouter();
+    const route = usePathname();
     const [searchOpen, setSearchOpen] = useState(false);
     const [scrollTop, setScrollTop] = useState(0);
 
     useEffect(() => {
-        if (searchOpen && router.route === '/search') setSearchOpen(false);
-    }, [router.route]);
+        NProgress.done(true); // TODO: Move this to it's own component
+        if (searchOpen && route === '/search') setSearchOpen(false);
+    }, [route]);
 
     useEffect(() => {
         const onScroll = (event: any) => {
@@ -376,8 +380,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                                     href={`/${item?.handle || ''}`}
                                     title={item.title}
                                     className={`Top ${
-                                        (router.asPath === '/' && item?.handle === null) ||
-                                        `/${item?.handle}` === router.asPath
+                                        (route === '/' && item?.handle === null) || `/${item?.handle}` === route
                                             ? 'Active'
                                             : ''
                                     }`}
@@ -398,8 +401,8 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                                                 <MenuItem
                                                     key={item.handle + `${index}`}
                                                     className={
-                                                        (router.asPath === '/' && item?.handle === null) ||
-                                                        `/${item?.handle}` === router.asPath
+                                                        (route === '/' && item?.handle === null) ||
+                                                        `/${item?.handle}` === route
                                                             ? 'Active'
                                                             : ''
                                                     }

@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag';
 import { storefrontClient } from './shopify';
 
+// TODO: Migrate to `Locale` type.
 export const BlogApi = async ({ handle }: { handle: string; locale?: string }) => {
     return new Promise(async (resolve, reject) => {
         try {

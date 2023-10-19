@@ -1,3 +1,5 @@
+'use client';
+
 import { Content } from '@prismicio/client';
 
 import PageContent from '@/components/PageContent';
@@ -9,8 +11,8 @@ import styled from 'styled-components';
 
 const Container = styled.section`
     width: 100%;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 `;
 
 const Content = styled.div`
@@ -84,9 +86,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                     '--background': slice.primary.accent || 'var(--color-block)',
                     '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
                     '--foreground':
-                        (slice.primary.accent &&
-                            Color(slice.primary.accent).isDark() &&
-                            'var(--color-text-primary)') ||
+                        (slice.primary.accent && Color(slice.primary.accent).isDark() && 'var(--color-text-primary)') ||
                         'var(--color-dark)'
                 } as React.CSSProperties
             }

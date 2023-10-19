@@ -1,3 +1,5 @@
+'use client';
+
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
 import { Content } from '@prismicio/client';
@@ -7,8 +9,8 @@ import styled from 'styled-components';
 
 const Container = styled.section`
     width: 100%;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 `;
 const Components = styled(PageContent)`
     gap: var(--block-spacer-large);

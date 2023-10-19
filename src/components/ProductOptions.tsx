@@ -27,7 +27,7 @@ const OptionValue = styled.div<{
     justify-content: center;
     align-items: center;
     height: 3.75rem;
-    padding: 0px calc(var(--block-padding-large) - var(--block-border-width));
+    padding: 0 calc(var(--block-padding-large) - var(--block-border-width));
     border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
