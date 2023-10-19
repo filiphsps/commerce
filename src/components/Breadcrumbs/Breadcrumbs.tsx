@@ -98,7 +98,7 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                     itemType="https://schema.org/ListItem"
                     suppressHydrationWarning
                 >
-                    <Link href="/" itemType="https://schema.org/Thing" itemProp="item">
+                    <Link href="/" itemType="https://schema.org/Thing" itemProp="item" prefetch={false}>
                         <span itemProp="name">{store?.name || store?.title}</span>
                     </Link>
                     <meta itemProp="position" content="1" />
@@ -118,7 +118,12 @@ const Breadcrumbs: FunctionComponent<BreadcrumbsProps> = (props) => {
                             itemType="https://schema.org/ListItem"
                             suppressHydrationWarning
                         >
-                            <Link href={item.url || ''} itemType="https://schema.org/Thing" itemProp="item">
+                            <Link
+                                href={item.url || ''}
+                                itemType="https://schema.org/Thing"
+                                itemProp="item"
+                                prefetch={false}
+                            >
                                 <span itemProp="name">{item.title}</span>
                             </Link>
                             <meta itemProp="position" content={index + 2} />

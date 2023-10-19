@@ -101,9 +101,8 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 <Header $alignment={slice.primary.alignment}>
                                     <Link
                                         href={`/collections/${slice.primary.handle!}`}
-                                        title={`View all products in "${asText(
-                                            slice.primary.title
-                                        )}"`}
+                                        title={`View all products in "${asText(slice.primary.title)}"`}
+                                        prefetch={false}
                                     >
                                         <CollectionTitle
                                             dangerouslySetInnerHTML={{
@@ -122,10 +121,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 handle={slice.primary.handle!}
                                 isHorizontal={slice.primary.direction === 'horizontal'}
                                 limit={slice.primary.limit || 16}
-                                hideTitle={
-                                    asText(slice.primary.title).length > 0 ||
-                                    slice.primary.hide_title
-                                }
+                                hideTitle={asText(slice.primary.title).length > 0 || slice.primary.hide_title}
                                 plainTitle
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
@@ -136,9 +132,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
             );
 
         case 'full':
-            return (
-                <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} />
-            );
+            return <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} />;
         default:
             throw new Error('500: Invalid variant');
     }

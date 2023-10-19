@@ -333,7 +333,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
         <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
-                    <Link href={`/products/${product?.handle}/`}>
+                    <Link href={`/products/${product?.handle}/`} prefetch={false}>
                         <TempImage
                             src={
                                 product.images.edges.find((edge) => edge.node.id === variant.image?.id)?.node.url || ''
@@ -350,10 +350,14 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`}>{product?.vendor}</Link>
+                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`} prefetch={false}>
+                            {product?.vendor}
+                        </Link>
                     </DetailsBrand>
                     <DetailsTitle>
-                        <Link href={`/products/${product?.handle}/`}>{product?.title}</Link>
+                        <Link href={`/products/${product?.handle}/`} prefetch={false}>
+                            {product?.title}
+                        </Link>
                     </DetailsTitle>
                 </Details>
             </MetaSection>

@@ -606,7 +606,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             <HeaderContent>
                 <PageHeader
                     title={product.title!}
-                    subtitle={<Link href={`/collections/${titleToHandle(product.vendor!)}/`}>{product.vendor}</Link>}
+                    subtitle={
+                        <Link href={`/collections/${titleToHandle(product.vendor!)}/`} prefetch={false}>
+                            {product.vendor}
+                        </Link>
+                    }
                     reverse
                 />
 
@@ -889,7 +893,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                         // TODO: make this a lookup somewhere
                                         if (['vegan', 'chocolate'].includes(tag.toLowerCase())) {
                                             content = (
-                                                <Link title={tag} href={`/collections/${titleToHandle(tag)}`}>
+                                                <Link
+                                                    title={tag}
+                                                    href={`/collections/${titleToHandle(tag)}`}
+                                                    prefetch={false}
+                                                >
                                                     {tag}
                                                 </Link>
                                             );

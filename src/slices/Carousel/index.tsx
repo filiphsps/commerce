@@ -90,7 +90,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                         <Slider {...settings}>
                             {slice.items.map((slide, index) => {
                                 return (
-                                    <Link key={index} href={slide.href! || ''}>
+                                    <Link key={index} href={slide.href! || ''} prefetch={false}>
                                         <ImageContainer>
                                             {slide.image?.url && slide.mobile_image?.url && (
                                                 <>

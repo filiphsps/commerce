@@ -322,6 +322,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
                 title={`Browse all products in "${collection.title}"`}
                 className="ProductCard CollectionBlock-Content-ShowMore"
                 href={`/collections/${handle}/`}
+                prefetch={false}
             >
                 <p>
                     View all <span>{collection.products.edges.length}</span> products in this collection
@@ -334,7 +335,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         <Container $horizontal={isHorizontal}>
             {!hideTitle && (
                 <Meta>
-                    <Link href={`/collections/${handle}/`}>
+                    <Link href={`/collections/${handle}/`} prefetch={false}>
                         <Title>{collection?.title}</Title>
                     </Link>
                     <Subtitle
