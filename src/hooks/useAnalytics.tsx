@@ -144,7 +144,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
-        shopifySalesChannel: ShopifySalesChannel.headless,
+        shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics. 
         storefrontId: Config.shopify.storefront_id,
         currency: locale.currency,
         acceptedLanguage: locale.language.toLowerCase(),
