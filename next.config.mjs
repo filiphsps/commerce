@@ -1,7 +1,5 @@
-import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
-import { i18n } from './next-i18next.config.cjs';
-
-const withNextPluginPreval = createNextPluginPreval();
+import { createVanillaExtractPlugin } from '@vanilla-extract/next-plugin';
+const withVanillaExtract = createVanillaExtractPlugin();
 
 /** @type {import('next').NextConfig} */
 let config = {
@@ -9,10 +7,8 @@ let config = {
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    i18n,
     productionBrowserSourceMaps: false,
     compress: true,
-    // transpilePackages: ['next-i18next'],
     experimental: {
         scrollRestoration: true,
         esmExternals: true,
@@ -25,6 +21,7 @@ let config = {
             '@apollo/client'
         ],
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        typedRoutes: false,
     },
     images: {
         minimumCacheTTL: 60 * 6,
@@ -119,4 +116,4 @@ let config = {
     }
 };
 
-export default withNextPluginPreval(config);
+export default withVanillaExtract(config);

@@ -1,0 +1,57 @@
+:root {
+    --accent-primary: #274690;
+    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
+    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 75%, var(--color-bright));
+
+    --accent-secondary: #edd382;
+    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark));
+    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright));
+
+    --accent-primary-text: #ececec;
+    --accent-secondary-text: #101418;
+
+    --color-bright: #fefefe;
+    --color-dark: #101418;
+
+    --color-sale: #a53d3a;
+
+    --color-success: #1b6e1b;
+    --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
+    --color-danger: #a53d3a;
+
+    --color-lights-out: #051821;
+
+    --color-block: #e6e6e6;
+    --color-block-shadow: rgba(0, 0, 0, 0.35);
+
+    --color-gray: #969696;
+    --color-green: #1b6e1b;
+    --color-green-light: #e1faea;
+
+    --page-width: 1465px;
+
+    --block-border-radius: 0.75rem;
+    --block-border-width: 0.35rem;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100vw;
+    padding: 0px;
+    margin: 0px;
+    -moz-osx-font-smoothing: always;
+    -webkit-font-smoothing: always;
+    font-smooth: always;
+    overscroll-behavior-x: none;
+    font-size: 14px;
+    font-family: var(--font-primary);
+    touch-action: manipulation;
+    text-size-adjust: auto;
+    color: var(--color-dark);
+    background: var(--color-bright);
+
+    @media screen and (max-width: 950px) {
+        font-size: 16px;
+    }
+}
