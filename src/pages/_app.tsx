@@ -21,8 +21,6 @@ import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
 import useSWR from 'swr';
 
-//import { ThemeProvider } from 'styled-components';
-
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
     subsets: ['latin'],
@@ -72,8 +70,12 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                         Cantarell,
                         sans-serif;
                 }
+                :root {
+                    --accent-primary: ${store?.accent.primary};
+                    --accent-secondary: ${store?.accent.secondary};
+                }
             `}</style>
-            <DefaultSeo {...SEO} themeColor={store?.accent.primary} />
+            <DefaultSeo {...SEO} themeColor={store?.accent.secondary} />
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -82,39 +84,6 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 <link rel="icon" type="image/png" href={store?.favicon.src} />
                 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                 <link rel="apple-touch-icon" href={store?.favicon.src} />
-
-                {/* General application styling */}
-                {/* eslint-disable indent */}
-                <style>{`
-                        :root {
-                            --accent-primary: ${store?.accent.primary};
-                            --accent-primary-dark: color-mix(
-                                in srgb,
-                                var(--accent-primary) 65%,
-                                var(--color-dark)
-                            );
-                            --accent-primary-light: color-mix(
-                                in srgb,
-                                var(--accent-primary) 75%,
-                                var(--color-bright)
-                            );
-                            --accent-primary-text: #ececec;
-
-                            --accent-secondary: ${store?.accent.secondary};
-                            --accent-secondary-dark: color-mix(
-                                in srgb,
-                                var(--accent-secondary) 65%,
-                                var(--color-dark)
-                            );
-                            --accent-secondary-light: color-mix(
-                                in srgb,
-                                var(--accent-secondary) 35%,
-                                var(--color-bright)
-                            );
-                            --accent-secondary-text: #101418;
-                        }
-                    `}</style>
-                {/* eslint-enable indent */}
             </Head>
 
             {/* TODO: Get this dynamically */}
@@ -129,30 +98,36 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     {
                         '@type': 'Person',
                         name: 'Dennis Sahlin',
-                        email: 'dennis@sweetsideofsweden.com',
+                        email: 'dennis@nordcom.io',
                         jobTitle: 'CEO'
                     },
                     {
                         '@type': 'Person',
                         name: 'Filiph Siitam Sandström',
-                        email: 'filiph@sweetsideofsweden.com',
+                        email: 'filiph@nordcom.io',
+                        jobTitle: 'CTO'
+                    },
+                    {
+                        '@type': 'Person',
+                        name: 'Albin Dahlqvist',
+                        email: 'albin@nordcom.io',
                         jobTitle: 'CTO'
                     }
                 ]}
                 address={{
                     '@type': 'PostalAddress',
-                    streetAddress: 'Österrådagatan 11C',
+                    streetAddress: 'Bergsgatan 7F',
                     addressLocality: 'Mellerud',
                     addressRegion: 'Västra Götaland',
-                    postalCode: '46431',
+                    postalCode: '464 30',
                     addressCountry: 'Sweden'
                 }}
                 contactPoint={{
                     '@type': 'ContactPoint',
                     contactType: 'Customer relations and support',
-                    email: 'dennis@sweetsideofsweden.com',
-                    telephone: '+46-73-511-58-50',
-                    url: `https://${Config.domain}/${router.locale}/about/`,
+                    email: 'hello@sweetsideofsweden.com',
+                    telephone: '+1 866 502 5580',
+                    url: `https://${Config.domain}/about/`,
                     availableLanguage: ['English', 'Swedish'],
                     areaServed:
                         store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
@@ -163,7 +138,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 sameAs={store?.social?.map(({ url }) => url)}
             />
             <SiteLinksSearchBoxJsonLd
-                name={'Sweet Side of Sweden'}
+                name={store?.name}
                 alternateName={'sweetsideofsweden'}
                 url={`https://${Config.domain}/`}
                 potentialActions={[
@@ -184,13 +159,9 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 languageIsoCode={language}
             >
                 <CartProvider cartFragment={CartFragment}>
-                    {/*<StyleSheetManager>
-                    <ThemeProvider theme={{}}>*/}
                     <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
-                    {/*</ThemeProvider>
-                    </StyleSheetManager>*/}
                 </CartProvider>
             </ShopifyProvider>
         </>
