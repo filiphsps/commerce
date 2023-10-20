@@ -72,7 +72,30 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 }
                 :root {
                     --accent-primary: ${store?.accent.primary};
+                    --accent-primary-dark: color-mix(
+                        in srgb,
+                        var(--accent-primary) 65%,
+                        var(--color-dark)
+                    );
+                    --accent-primary-light: color-mix(
+                        in srgb,
+                        var(--accent-primary) 75%,
+                        var(--color-bright)
+                    );
+                    --accent-primary-text: #ececec;
+
                     --accent-secondary: ${store?.accent.secondary};
+                    --accent-secondary-dark: color-mix(
+                        in srgb,
+                        var(--accent-secondary) 65%,
+                        var(--color-dark)
+                    );
+                    --accent-secondary-light: color-mix(
+                        in srgb,
+                        var(--accent-secondary) 35%,
+                        var(--color-bright)
+                    );
+                    --accent-secondary-text: #101418;
                 }
             `}</style>
             <DefaultSeo {...SEO} themeColor={store?.accent.secondary} />
