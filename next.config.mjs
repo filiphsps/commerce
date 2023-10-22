@@ -12,7 +12,6 @@ let config = {
     i18n,
     productionBrowserSourceMaps: false,
     compress: true,
-    // transpilePackages: ['next-i18next'],
     experimental: {
         scrollRestoration: true,
         esmExternals: true,
@@ -99,21 +98,6 @@ let config = {
                 source: '/shop/',
                 destination: '/collections/bestselling/',
                 permanent: false
-            }
-        ];
-    },
-
-    async headers() {
-        return [
-            {
-                // Sets security headers for all routes
-                source: '/(.*)',
-                headers: [
-                    {
-                        key: 'Referrer-Policy',
-                        value: 'no-referrer-when-downgrade'
-                    }
-                ]
             }
         ];
     }
