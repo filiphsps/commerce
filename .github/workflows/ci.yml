@@ -34,7 +34,7 @@ jobs:
               run: npm ci
 
             - name: 🧪 Lint
-              run: npm run test
+              run: npm run lint
 
             - name: 🧪 Test
               run: npm run test
@@ -93,6 +93,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 'lts/*'
+                  cache: 'npm'
 
             - name: 💾 Cache node modules
               uses: actions/cache@v3
