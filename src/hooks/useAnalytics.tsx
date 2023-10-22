@@ -1,3 +1,4 @@
+import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName,
     AnalyticsPageType,
@@ -7,16 +8,15 @@ import {
     useShopifyCookies
 } from '@shopify/hydrogen-react';
 import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
+import { usePrevious } from '@/hooks/usePrevious';
 import { Config } from '@/utils/Config';
 import type { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
-import { useEffect } from 'react';
-import { usePrevious } from '@/hooks/usePrevious';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const trimDomain = (domain?: string): string | undefined => {
     if (!domain) return undefined;
@@ -144,7 +144,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
-        shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics. 
+        shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
         storefrontId: Config.shopify.storefront_id,
         currency: locale.currency,
         acceptedLanguage: locale.language.toLowerCase(),

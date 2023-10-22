@@ -3,23 +3,23 @@ import 'destyle.css';
 
 import * as nextI18NextConfig from '../../next-i18next.config.cjs';
 
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
 import { CartFragment } from '@/api/cart';
-import { Config } from '@/utils/Config';
-import Head from 'next/head';
-import { Lexend_Deca } from 'next/font/google';
-import NProgress from 'nprogress';
-import PageProvider from '@/components/PageProvider';
-import SEO from '../../nextseo.config';
 import { StoreApi } from '@/api/store';
+import PageProvider from '@/components/PageProvider';
+import { Config } from '@/utils/Config';
 import { appWithTranslation } from 'next-i18next';
-import preval from '../data.preval';
+import { Lexend_Deca } from 'next/font/google';
+import Head from 'next/head';
+import NProgress from 'nprogress';
 import useSWR from 'swr';
+import SEO from '../../nextseo.config';
+import preval from '../data.preval';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -72,29 +72,13 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 }
                 :root {
                     --accent-primary: ${store?.accent.primary};
-                    --accent-primary-dark: color-mix(
-                        in srgb,
-                        var(--accent-primary) 65%,
-                        var(--color-dark)
-                    );
-                    --accent-primary-light: color-mix(
-                        in srgb,
-                        var(--accent-primary) 75%,
-                        var(--color-bright)
-                    );
+                    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
+                    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 75%, var(--color-bright));
                     --accent-primary-text: #ececec;
 
                     --accent-secondary: ${store?.accent.secondary};
-                    --accent-secondary-dark: color-mix(
-                        in srgb,
-                        var(--accent-secondary) 65%,
-                        var(--color-dark)
-                    );
-                    --accent-secondary-light: color-mix(
-                        in srgb,
-                        var(--accent-secondary) 35%,
-                        var(--color-bright)
-                    );
+                    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark));
+                    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright));
                     --accent-secondary-text: #101418;
                 }
             `}</style>
