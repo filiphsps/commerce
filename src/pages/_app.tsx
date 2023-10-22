@@ -118,7 +118,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                         '@type': 'Person',
                         name: 'Albin Dahlqvist',
                         email: 'albin@nordcom.io',
-                        jobTitle: 'CTO'
+                        jobTitle: 'Founder'
                     }
                 ]}
                 address={{
