@@ -286,9 +286,16 @@ const Prices = styled.div`
     width: 100%;
 `;
 const Price = styled.div`
-    font-size: 2rem;
-    line-height: 1.9rem;
-    font-weight: 700;
+    font-size: 1.85rem;
+    line-height: 1.85rem;
+    font-weight: 600;
+
+    &.Sale {
+        font-size: 2.2rem;
+        line-height: 2rem;
+        font-weight: 800;
+        color: var(--color-sale);
+    }
 `;
 const PreviousPrice = styled.div`
     font-size: 1.5rem;
@@ -360,11 +367,16 @@ const Container = styled.section<{ $available?: boolean }>`
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: var(--block-spacer);
     min-width: var(--component-product-card-width);
-    padding: var(--block-padding);
+    padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    color: var(--accent-primary-text);
+    background: var(--accent-secondary-light);
+    color: var(--accent-secondary-text);
+    border: var(--block-border-width) solid var(--accent-secondary-light);
+
+    &.Sale {
+        border: var(--block-border-width) solid var(--color-sale);
+    }
 
     ${({ $available }) =>
         !$available &&
@@ -481,16 +493,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
     return (
         <Container
-            className={`ProductCard ${className || ''}`}
+            className={`ProductCard ${className || ''} ${(is_sale && 'Sale') || ''}`}
             $available={selectedVariant.availableForSale}
             style={
                 {
-                    '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
-                    '--accent-primary-text':
-                        (visuals?.primaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
-                    '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
-                    '--accent-secondary-text':
-                        (visuals?.secondaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
+                    '--accent-primary': '#F9EFD2',
+                    '--accent-primary-text': 'var(--color-dark)',
+                    '--accent-secondary': '#E8A0BF',
+                    '--accent-secondary-text': 'var(--color-dark)',
 
                     '--accent-primary-light': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
                     '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
@@ -563,7 +573,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                                 as={PreviousPrice}
                             />
                         )}
-                        {(selectedVariant?.price?.amount && <Money data={selectedVariant.price} as={Price} />) || null}
+                        {(selectedVariant?.price?.amount && <Money data={selectedVariant.price} as={Price} className={is_sale && 'Sale' || ''} />) || null}
                     </Prices>
 
                     {/* FIXME: Deal with options here */}
