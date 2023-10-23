@@ -25,7 +25,7 @@ const config = {
             },
             {
                 userAgent: '*',
-                disallow: ['/x-default/', '/admin/', '/cdn-cgi/']
+                disallow: ['/x-default/', '/slice-machine/', '/admin/', '/cdn-cgi/']
             }
         ]
     },
