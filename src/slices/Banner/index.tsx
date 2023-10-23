@@ -13,7 +13,6 @@ const Contents = styled.div`
     gap: var(--block-padding-large);
     padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
     min-height: 30vh;
-    //height: 100%;
     max-width: 1465px;
 
     @media (min-width: 950px) {
@@ -124,6 +123,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
 
     background: var(--background);
     color: var(--content-color);
+    border-radius: var(--block-border-radius-large);
 
     ${({ $fullWidth }) =>
         $fullWidth &&
