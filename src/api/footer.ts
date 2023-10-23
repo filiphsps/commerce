@@ -1,13 +1,9 @@
 import { Config } from '@/utils/Config';
 import { FooterModel } from '@/models/FooterModel';
-import { cache } from 'react';
 import { createClient } from '@/prismic';
 
-// TODO: More sane revalidate time
-export const revalidate = 60 * 5;
-
 // TODO: Migrate to `Locale` type.
-export const FooterApi = cache(async ({ locale }: { locale?: string }): Promise<FooterModel> => {
+export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -33,4 +29,4 @@ export const FooterApi = cache(async ({ locale }: { locale?: string }): Promise<
             return reject(error);
         }
     });
-});
+};
