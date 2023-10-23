@@ -35,16 +35,16 @@ const Prefetch = (
             try {
                 switch (type) {
                     case 'collection':
-                        if (handle && !collections[handle] && slice.variation === 'default') {
+                        if (handle && !collections[handle]) {
                             collections[handle] = await CollectionApi({
                                 handle,
                                 locale,
-                                limit: slice?.primary?.limit || 16
+                                limit: (slice?.primary as any)?.limit || 16
                             });
-                            if (slice?.primary?.limit && slice?.primary?.limit > 0)
+                            if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
                                 collections[handle].products.edges = collections[handle].products.edges.slice(
                                     0,
-                                    slice?.primary?.limit
+                                    (slice?.primary as any)?.limit
                                 );
 
                             // Only supply the used parameters
