@@ -19,7 +19,6 @@ import PageProvider from '@/components/PageProvider';
 import SEO from '../../nextseo.config';
 import { StoreApi } from '@/api/store';
 import { appWithTranslation } from 'next-i18next';
-import preval from '../data.preval';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({
@@ -46,9 +45,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             }
         ],
         ([, props]) => StoreApi(props),
-        {
-            fallbackData: preval.store!
-        }
+        {}
     );
 
     if (!store) return null;

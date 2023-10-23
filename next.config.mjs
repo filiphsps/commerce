@@ -1,6 +1,4 @@
-import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 
-const withNextPluginPreval = createNextPluginPreval();
 
 /** @type {import('next').NextConfig} */
 let config = {
@@ -102,4 +100,4 @@ let config = {
     }
 };
 
-export default withNextPluginPreval(config);
+export default config;

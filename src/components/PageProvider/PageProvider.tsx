@@ -13,7 +13,6 @@ import type { Locale } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asHTML } from '@prismicio/client';
 import dynamic from 'next/dynamic';
-import preval from '../../data.preval';
 import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
@@ -109,7 +108,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         ],
         ([, props]) => NavigationApi(props),
         {
-            fallbackData: data?.navigation || preval.navigation!
+            fallbackData: data?.navigation
         }
     );
 
@@ -122,7 +121,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         ],
         ([, props]) => HeaderApi(props),
         {
-            fallbackData: data?.header || preval.header!
+            fallbackData: data?.header
         }
     );
 
