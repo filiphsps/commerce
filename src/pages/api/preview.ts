@@ -3,13 +3,15 @@ import { redirectToPreviewURL, setPreviewData } from '@prismicio/next';
 
 import { createClient } from '@/prismic';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const previewHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const client = createClient({ req });
 
-    await setPreviewData({ req, res });
+    setPreviewData({ req, res });
 
     await redirectToPreviewURL({ req, res, client });
 };
+
+export default previewHandler;
 
 export const config = {
     runtime: 'edge'

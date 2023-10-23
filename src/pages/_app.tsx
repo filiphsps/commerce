@@ -4,23 +4,23 @@ import '@/style/app.scss';
 
 import * as nextI18NextConfig from '../../next-i18next.config.cjs';
 
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
 import { CartFragment } from '@/api/cart';
-import { StoreApi } from '@/api/store';
-import PageProvider from '@/components/PageProvider';
 import { Config } from '@/utils/Config';
-import { appWithTranslation } from 'next-i18next';
-import { Lexend_Deca } from 'next/font/google';
 import Head from 'next/head';
+import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
-import useSWR from 'swr';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import PageProvider from '@/components/PageProvider';
 import SEO from '../../nextseo.config';
+import { StoreApi } from '@/api/store';
+import { appWithTranslation } from 'next-i18next';
 import preval from '../data.preval';
+import useSWR from 'swr';
 
 const font = Lexend_Deca({
     weight: ['400', '500', '600', '700'],
@@ -36,12 +36,13 @@ Router.events.on('hashChangeComplete', () => NProgress.done());
 
 const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
+    const locale = NextLocaleToLocale(router.locale);
 
     const { data: store } = useSWR(
         [
             'StoreApi',
             {
-                locale: router.locale
+                locale
             }
         ],
         ([, props]) => StoreApi(props),
@@ -49,9 +50,6 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             fallbackData: preval.store!
         }
     );
-
-    const country = NextLocaleToCountry(router.locale);
-    const language = NextLocaleToLanguage(router.locale);
 
     if (!store) return null;
 
@@ -163,8 +161,8 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 storeDomain={`https://${Config.shopify.checkout_domain}`}
                 storefrontApiVersion={Config.shopify.api}
                 storefrontToken={Config.shopify.token}
-                countryIsoCode={country}
-                languageIsoCode={language}
+                countryIsoCode={locale.country}
+                languageIsoCode={locale.language}
             >
                 <CartProvider cartFragment={CartFragment}>
                     <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>

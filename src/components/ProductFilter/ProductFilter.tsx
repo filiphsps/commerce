@@ -88,7 +88,7 @@ const OptionsTitle = styled.div`
 
 interface ProductFilterProps {
     products: Product[];
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars, unused-imports/no-unused-vars
     onChange: (filter: any) => void;
 }
 const ProductFilter: FunctionComponent<ProductFilterProps> = ({ products, onChange }) => {

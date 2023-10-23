@@ -21,7 +21,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
     const countries = await CountriesApi({ locale: locale.locale });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });

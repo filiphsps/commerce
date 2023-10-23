@@ -1,7 +1,8 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage, NextLocaleToLocale } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Locale } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import { gql } from 'graphql-tag';
@@ -64,20 +65,15 @@ export const LocalesApi = async (): Promise<string[]> => {
     });
 };
 
-// TODO: Migrate to `Locale` type.
-export const StoreApi = async ({ locale }: { locale?: string }): Promise<StoreModel> => {
+export const StoreApi = async ({ locale }: { locale?: Locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
+        if (!locale) locale = NextLocaleToLocale();
+
         const client = createClient({});
-
         try {
-            if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-            const country = NextLocaleToCountry(locale);
-            const language = NextLocaleToLanguage(locale);
-
             const { data: shopData } = await storefrontClient.query({
                 query: gql`
-                    query shop @inContext(language: ${language}, country: ${country}) {
+                    query shop @inContext(language: ${locale.language}, country: ${locale.country}) {
                         shop {
                             id
                             brand {
@@ -120,7 +116,7 @@ export const StoreApi = async ({ locale }: { locale?: string }): Promise<StoreMo
             try {
                 res = (
                     await client.getSingle('store', {
-                        lang: locale
+                        lang: locale.locale
                     })
                 ).data;
             } catch {
@@ -153,7 +149,7 @@ export const StoreApi = async ({ locale }: { locale?: string }): Promise<StoreMo
                 }
             });
         } catch (error: any) {
-            if (error.message.includes('No documents') && locale !== Config.i18n.default) {
+            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
                 console.warn(error);
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }

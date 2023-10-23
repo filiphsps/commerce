@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const locale = NextLocaleToLocale(localeData);
     const locales = Config.i18n.locales;
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
 
     return {
         metadataBase: new URL(`https://${Config.domain}`),
@@ -76,7 +76,7 @@ export default async function RootLayout({
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
     const navigation = await NavigationApi({ locale: locale.locale });
     const header = await HeaderApi({ locale: locale.locale });
     const footer = await FooterApi({ locale: locale.locale });
