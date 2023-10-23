@@ -474,6 +474,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
     const is_vegan_product = product?.tags?.includes('Vegan');
     const is_sale = !!selectedVariant?.compareAtPrice?.amount;
 
+    let discount = 0;
+    if (is_sale && selectedVariant) {
+        const compare = Number.parseFloat(selectedVariant.compareAtPrice!.amount!);
+        const current = Number.parseFloat(selectedVariant.price!.amount!);
+        discount = Math.round((100 * (compare - current)) / compare);
+    }
+
     let short_desc = (product.seo?.description || product.description || '').substring(0, 100);
     // Remove whitespace if it's the last character
     if (short_desc[short_desc.length - 1] === ' ') short_desc = short_desc.substring(0, short_desc.length - 1);
@@ -506,13 +513,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                         </Badge>
                     )) ||
                     null}
-                {(is_sale && selectedVariant?.price?.amount && (
+                {discount > 1 ? ( // Handle rounding-errors
                     <Badge className="Sale">
-                        <BadgeText>Sale</BadgeText>
-                        <Money data={selectedVariant?.price!} />
+                        <BadgeText>{discount}% OFF</BadgeText>
                     </Badge>
-                )) ||
-                    null}
+                ) : null}
                 {(is_new_product && (
                     <Badge className="New">
                         <BadgeText>New!</BadgeText>
