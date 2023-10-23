@@ -2,6 +2,8 @@ import 'destyle.css';
 // Global style
 import '@/style/app.scss';
 
+import * as Prismic from '@/prismic';
+
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -13,6 +15,7 @@ import { NavigationApi } from '@/api/navigation';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
+import { PrismicPreview } from '@prismicio/next';
 import ProvidersRegistry from '@/components/providers-registry';
 import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
@@ -156,9 +159,12 @@ export default async function RootLayout({
                     <StyledComponentsRegistry>
                         <PageProvider store={store} pagePropsAnalyticsData={{}} data={{ navigation, header, footer }}>
                             {children}
+
                             <PageContent primary>
                                 <Breadcrumbs store={store} />
                             </PageContent>
+
+                            <PrismicPreview repositoryName={Prismic.repositoryName} />
                         </PageProvider>
                     </StyledComponentsRegistry>
                 </ProvidersRegistry>

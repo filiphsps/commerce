@@ -369,13 +369,8 @@ const Container = styled.section<{ $available?: boolean }>`
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
-    background: #f8efd3; // TODO: replace this.
-    color: #101418;  // TODO: replace this.
-    border: var(--block-border-width) solid #f8efd3;
-
-    &.Sale {
-        border: var(--block-border-width) solid var(--color-sale);
-    }
+    background: var(--accent-secondary-light);
+    color: var(--accent-secondary-text);
 
     ${({ $available }) =>
         !$available &&
@@ -432,7 +427,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     }, [quantity]);
 
     // TODO: Placeholder card?
-    if (!product || !selectedVariant) return null;
+    if (!product || !selectedVariant) return <Container className={`${className || ''} Loading`} />;
 
     const isNewProduct =
         product?.createdAt &&
@@ -465,10 +460,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     });
 
     return (
-        <Container
-            className={`${className || ''} ${(isSale && 'Sale') || ''}`}
-            $available={selectedVariant.availableForSale}
-        >
+        <Container className={className} $available={selectedVariant.availableForSale}>
             <Badges>
                 {discount > 1 && ( // Handle rounding-errors
                     <Badge className="Sale">
