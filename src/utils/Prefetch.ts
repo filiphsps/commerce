@@ -30,7 +30,7 @@ const Prefetch = (
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
             const type = slice?.slice_type;
-            const handle = (slice.primary as any).handle;
+            const handle: string | undefined = (slice?.primary as any)?.handle;
 
             try {
                 switch (type) {
@@ -74,7 +74,7 @@ const Prefetch = (
                                         handle,
                                         availableForSale,
                                         title,
-                                        description: (seo.description || description).slice(0, 75),
+                                        description: (seo?.description || description).slice(0, 75),
                                         vendor,
                                         tags,
                                         variants: {
