@@ -1,8 +1,11 @@
+'use client';
+
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
 
+import { Config } from '@/utils/Config';
 import type { FunctionComponent } from 'react';
 import Image from 'next/legacy/image';
 import Link from '@/components/link';
@@ -11,7 +14,7 @@ import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductApi } from '@/api/product';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { titleToHandle } from '@/utils/TitleToHandle';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
 
 const Section = styled.td``;
@@ -283,12 +286,11 @@ const Content = styled.tr`
 
 interface CartItemProps {}
 const CartItem: FunctionComponent<CartItemProps> = ({}) => {
-    const router = useRouter();
+    const route = usePathname();
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
     const cart = useCart();
     const line = useCartLine();
     const TempImage = Image as any;
-
-    const locale = NextLocaleToLocale(router.locale);
 
     const { data: product } = useSWR(
         [

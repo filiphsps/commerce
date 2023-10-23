@@ -133,6 +133,8 @@ interface useAnalyticsProps {
 export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }: useAnalyticsProps) {
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
+    if (process.env.NODE_ENV === 'development') return;
+
     if (!shopId) {
         throw new Error(`Invalid shopId: ${shopId}`);
     } else if (!domain) {
