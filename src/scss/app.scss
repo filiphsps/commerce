@@ -46,8 +46,8 @@ body {
     --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
     --accent-primary-light: color-mix(in srgb, var(--accent-primary) 75%, var(--color-bright));
 
-    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark));
-    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 55%, var(--color-bright));
+    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 60%, var(--color-dark));
+    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 40%, var(--color-bright));
 
     --accent-primary-text: #ececec;
     --accent-secondary-text: #101418;

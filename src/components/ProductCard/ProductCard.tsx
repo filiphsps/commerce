@@ -434,22 +434,22 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     // TODO: Placeholder card?
     if (!product || !selectedVariant) return null;
 
-    const is_new_product =
+    const isNewProduct =
         product?.createdAt &&
         Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
-    const is_vegan_product = product?.tags?.includes('Vegan');
-    const is_sale = !!selectedVariant?.compareAtPrice?.amount;
+    const isVegan = product?.tags?.includes('Vegan');
+    const isSale = !!selectedVariant?.compareAtPrice?.amount;
 
     let discount = 0;
-    if (is_sale && selectedVariant) {
+    if (isSale && selectedVariant) {
         const compare = Number.parseFloat(selectedVariant.compareAtPrice!.amount!);
         const current = Number.parseFloat(selectedVariant.price!.amount!);
         discount = Math.round((100 * (compare - current)) / compare);
     }
 
-    let short_desc = (product.seo?.description || product.description || '').substring(0, 100);
+    let shortDesc = (product.seo?.description || product.description || '').substring(0, 100);
     // Remove whitespace if it's the last character
-    if (short_desc[short_desc.length - 1] === ' ') short_desc = short_desc.substring(0, short_desc.length - 1);
+    if (shortDesc[shortDesc.length - 1] === ' ') shortDesc = shortDesc.substring(0, shortDesc.length - 1);
 
     const image = product?.images?.edges?.find((edge) => edge?.node?.id === selectedVariant?.image?.id)
         ?.node as ShopifyImage;
@@ -466,36 +466,25 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
 
     return (
         <Container
-            className={`${className || ''} ${(is_sale && 'Sale') || ''}`}
+            className={`${className || ''} ${(isSale && 'Sale') || ''}`}
             $available={selectedVariant.availableForSale}
         >
             <Badges>
-                {(!is_sale &&
-                    (product?.variants?.edges?.length || 0) > 1 &&
-                    product.priceRange?.minVariantPrice?.amount && (
-                        <Badge className="From">
-                            <BadgeText>From</BadgeText>
-                            <Money data={product.priceRange?.minVariantPrice!} />
-                        </Badge>
-                    )) ||
-                    null}
-                {discount > 1 ? ( // Handle rounding-errors
+                {discount > 1 && ( // Handle rounding-errors
                     <Badge className="Sale">
                         <BadgeText>{discount}% OFF</BadgeText>
                     </Badge>
-                ) : null}
-                {(is_new_product && (
+                )}
+                {isNewProduct && (
                     <Badge className="New">
                         <BadgeText>New!</BadgeText>
                     </Badge>
-                )) ||
-                    null}
-                {(is_vegan_product && (
+                )}
+                {isVegan && (
                     <Badge className="Vegan">
                         <BadgeText>Vegan</BadgeText>
                     </Badge>
-                )) ||
-                    null}
+                )}
             </Badges>
             <ProductImage>
                 <Link href={href} prefetch={false}>

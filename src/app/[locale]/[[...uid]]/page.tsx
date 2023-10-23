@@ -20,6 +20,8 @@ export default async function CustomPage({ params }: { params: { locale: string;
 
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+
+        if (!page) return notFound(); // TODO
         const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
 
         return (

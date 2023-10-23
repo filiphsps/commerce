@@ -65,7 +65,7 @@ export const PageApi = cache(
         handle: string;
         type: T;
     }): Promise<{
-        page: PageType<T>;
+        page: PageType<T> | null;
     }> => {
         return new Promise(async (resolve, reject) => {
             if (!locale) locale = NextLocaleToLocale();
@@ -87,8 +87,7 @@ export const PageApi = cache(
                     return resolve(await PageApi({ handle, type })); // Try again with default locale
                 }
 
-                console.error(error);
-                return reject(error);
+                return resolve({ page: null });
             }
         });
     }
