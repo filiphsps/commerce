@@ -189,9 +189,9 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
         min-width: 100%;
         padding: var(--block-padding-small) var(--block-padding);
         border-radius: var(--block-border-radius-small);
-        border: var(--block-border-width) solid var(--accent-primary-text);
+        border: var(--block-border-width) solid var(--accent-primary);
         color: var(--accent-primary-text);
-        background: transparent;
+        background: var(--accent-primary);
         box-shadow: none;
         line-height: 1.75rem;
         font-size: 1.5rem;
@@ -200,23 +200,23 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
 
         @media (hover: hover) and (pointer: fine) {
             &:enabled:hover {
-                background: var(--accent-primary-text);
-                border-color: var(--accent-primary-text);
-                color: var(--accent-primary-dark);
-                box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
+                background: var(--accent-secondary);
+                border-color: var(--accent-secondary);
+                color: var(--accent-secondary-text);
             }
         }
 
         &:enabled:active {
-            background: var(--accent-secondary-dark);
+            background: var(--accent-secondary);
             border-color: var(--accent-secondary);
             color: var(--accent-secondary-text);
-            box-shadow: 0px 0px 1rem 0px var(--color-block-shadow);
         }
 
-        &.Added {
+        &.Added,
+        &.Added:enabled:active,
+        &.Added:enabled:hover {
             background: var(--accent-secondary-dark) !important;
-            border-color: var(--accent-secondary) !important;
+            border-color: var(--accent-secondary-dark) !important;
             color: var(--accent-secondary-text) !important;
         }
     }
