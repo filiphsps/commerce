@@ -1,6 +1,7 @@
 import { CollectionApi, CollectionsApi } from '@/api/collection';
 
 import { Config } from '@/utils/Config';
+import Content from '@/components/Content';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
@@ -10,6 +11,7 @@ import { Prefetch } from '@/utils/Prefetch';
 import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
 import { asText } from '@prismicio/client';
+import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
     };
 }
 
-export default async function CollectiomPage({ params }: { params: CollectionPageParams }) {
+export default async function CollectionPage({ params }: { params: CollectionPageParams }) {
     const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
 
@@ -51,12 +53,25 @@ export default async function CollectiomPage({ params }: { params: CollectionPag
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
     const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
 
+    const subtitle =
+        ((collection as any)?.shortDescription?.value && (
+            <Content
+                dangerouslySetInnerHTML={{
+                    __html:
+                        (convertSchemaToHtml((collection as any).shortDescription.value, false) as string)?.replaceAll(
+                            `="null"`,
+                            ''
+                        ) || ''
+                }}
+            />
+        )) ||
+        null;
+
     // FIXME: Legacy: `enable_header`, `enable_collection` etc.
     return (
         <Page>
-            {page.enable_header && <PageHeader title={collection.title} subtitle={null} />}
-
             <PageContent primary>
+                {page.enable_header && <PageHeader title={collection.title} subtitle={subtitle} />}
                 <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />
             </PageContent>
         </Page>
