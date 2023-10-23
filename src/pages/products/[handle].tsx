@@ -1001,7 +1001,7 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+export const getStaticPaths: GetStaticPaths = async ({}) => {
     const data = await ProductsApi();
 
     let paths = [
@@ -1010,7 +1010,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
                 {
                     params: { handle: product?.handle }
                 },
-                ...(locales?.map((locale) => ({
+                ...(['en-US','en-GB', 'de-DE'].map((locale) => ({ // FIXME: Don't limit.
                     params: { handle: product?.handle },
                     locale: locale
                 })) || [])
