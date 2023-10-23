@@ -46,7 +46,7 @@ export default async function CollectiomPage({ params }: { params: CollectionPag
 
     if (!isValidHandle(handle)) return notFound();
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
     const collection = await CollectionApi({ handle, locale: locale.locale });
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
     const prefetch = (page && (await Prefetch(page, locale.locale))) || null;

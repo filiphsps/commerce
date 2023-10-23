@@ -1,6 +1,5 @@
 'use client';
 
-import type { ShopifyAddToCartPayload, ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName,
     AnalyticsPageType,
@@ -10,15 +9,16 @@ import {
     useShopifyCookies
 } from '@shopify/hydrogen-react';
 import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
-import { usePrevious } from '@/hooks/usePrevious';
 import { Config } from '@/utils/Config';
 import type { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
-import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { usePrevious } from '@/hooks/usePrevious';
 
 const trimDomain = (domain?: string): string | undefined => {
     if (!domain) return undefined;
@@ -178,11 +178,6 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         };
 
         handleRouteChange(route);
-        /*router.events.on('routeChangeComplete', handleRouteChange);
-
-        return () => {
-            router.events.off('routeChangeComplete', handleRouteChange);
-        };*/
     }, [route]);
 
     // Add to cart analytics
@@ -200,22 +195,6 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             totalQuantity < (previousQuantity || 0)
         )
             return;
-
-        const products: Array<ShopifyAnalyticsProduct> =
-            (lines as Array<CartLine>).map(
-                ({ merchandise, quantity }) =>
-                    ({
-                        sku: merchandise.sku,
-                        productGid: merchandise.product.id,
-                        variantGid: merchandise.id,
-                        name: merchandise.product.title,
-                        variantName: merchandise.title,
-                        brand: merchandise.product.vendor,
-                        currency: merchandise.price.currencyCode,
-                        price: merchandise.price?.amount!?.toString() || undefined,
-                        quantity
-                    }) as any
-            ) || [];
 
         const payload: ShopifyAddToCartPayload = {
             ...getClientBrowserParameters(),

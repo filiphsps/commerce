@@ -10,9 +10,9 @@ import { createClient } from '@/prismic';
  *
  * The Prismic webhook must send the correct secret.
  */
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const revalidateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== 'POST') return res.status(400).json({ message: 'Invalid method' });
-  
+
     if (req.body && req.body.type === 'api-update' && req.body.documents.length > 0) {
         // Check for secret to confirm this is a valid request
         if (req.body.secret !== process.env.WEBHOOK_REVALIDATE) {
@@ -42,3 +42,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // If the request's body is unknown, tell the requester
     return res.status(400).json({ message: 'Invalid body' });
 };
+
+export default revalidateHandler;

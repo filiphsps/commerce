@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const locale = NextLocaleToLocale(localeData);
     const locales = Config.i18n.locales;
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
     const client = createClient({});
     let page: any = null;
     try {
@@ -79,7 +79,7 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
