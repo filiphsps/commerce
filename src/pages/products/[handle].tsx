@@ -775,10 +775,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         (product.images?.edges?.map?.((edge) => edge?.node?.url).filter((i) => i) as string[]) || []
                     }
                     description={product.description || ''}
-                    aggregateRating={{
-                        ratingValue: '5',
-                        reviewCount: '1'
-                    }}
                     offers={[
                         {
                             price: Number.parseFloat(variant.price.amount!),
@@ -803,7 +799,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                                     '@type': 'MonetaryAmount',
                                     maxValue: 25,
                                     minValue: 0,
-                                    currency: 'USD' //variant.price.currencyCode
+                                    currency: variant.price.currencyCode || 'USD'
                                 },
                                 shippingDestination: store?.payment?.countries?.map(({ isoCode }) => ({
                                     '@type': 'DefinedRegion',
