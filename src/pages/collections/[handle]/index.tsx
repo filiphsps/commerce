@@ -137,29 +137,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                 }}
             />
 
-            <PageContent
-                primary
-                style={
-                    (page?.data &&
-                        ({
-                            '--accent-primary': page.data.accent_primary,
-                            '--accent-primary-light':
-                                'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                            '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
-                            '--accent-primary-text':
-                                (page.data.accent_primary_dark && 'var(--color-bright)') || 'var(--color-dark)',
-
-                            '--accent-secondary': page.data.accent_secondary,
-                            '--accent-secondary-light':
-                                'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                            '--accent-secondary-dark':
-                                'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))',
-                            '--accent-secondary-text':
-                                (page.data.accent_secondary_dark && 'var(--color-bright)') || 'var(--color-dark)'
-                        } as React.CSSProperties)) ||
-                    undefined
-                }
-            >
+            <PageContent primary>
                 {((!page?.data || page.data.enable_header) && (
                     <PageHeader title={collection.title} subtitle={subtitle} />
                 )) ||
