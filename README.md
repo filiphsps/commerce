@@ -25,14 +25,6 @@ A modern e-commerce platform that uses various integrations to handle everything
 1. Configure the enviroment variables specified in `next.config.js`.
 2. Deploy to hosting platform of choice (e.g. Vercel).
 
-### Dependencies
-
-> [!NOTE]  
-> This will not be necessary in the near future.
-
--   Required by other packages
-    -   `@sweetsideofsweden/next-plugin-preval`: `babel-plugin-module-resolver`
-
 ## Maintainers
 
 -   2019-2023: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).

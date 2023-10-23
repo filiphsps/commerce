@@ -8,7 +8,6 @@ import Link from '@/components/link';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
-import preval from '../../data.preval';
 import styled from 'styled-components';
 import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
@@ -212,7 +211,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
         ],
         ([, props]) => FooterApi(props),
         {
-            fallbackData: data || preval.footer!
+            fallbackData: data
         }
     );
 
