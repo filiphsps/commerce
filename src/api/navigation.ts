@@ -1,5 +1,4 @@
 import { Config } from '@/utils/Config';
-import { cache } from 'react';
 import { createClient } from '@/prismic';
 
 export type NavigationItem = {
@@ -11,11 +10,8 @@ export type NavigationItem = {
     }>;
 };
 
-// TODO: More sane revalidate time
-export const revalidate = 60 * 5;
-
 // TODO: Migrate to `Locale` type.
-export const NavigationApi = cache(async ({ locale }: { locale?: string }): Promise<NavigationItem[]> => {
+export const NavigationApi = async ({ locale }: { locale?: string }): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
         if (!locale || locale === 'x-default') locale = Config.i18n.default;
 
@@ -42,4 +38,4 @@ export const NavigationApi = cache(async ({ locale }: { locale?: string }): Prom
             return reject(error);
         }
     });
-});
+};
