@@ -493,21 +493,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
 
     return (
         <Container
-            className={`ProductCard ${className || ''} ${(is_sale && 'Sale') || ''}`}
+            className={`${className || ''} ${(is_sale && 'Sale') || ''}`}
             $available={selectedVariant.availableForSale}
-            style={
-                {
-                    '--accent-primary': '#F9EFD2',
-                    '--accent-primary-text': 'var(--color-dark)',
-                    '--accent-secondary': '#E8A0BF',
-                    '--accent-secondary-text': 'var(--color-dark)',
-
-                    '--accent-primary-light': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                    '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
-                    '--accent-secondary-light': 'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                    '--accent-secondary-dark': 'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
-                } as React.CSSProperties
-            }
         >
             <Badges>
                 {(!is_sale &&
@@ -573,7 +560,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
                                 as={PreviousPrice}
                             />
                         )}
-                        {(selectedVariant?.price?.amount && <Money data={selectedVariant.price} as={Price} className={is_sale && 'Sale' || ''} />) || null}
+                        {(selectedVariant?.price?.amount && (
+                            <Money
+                                data={selectedVariant.price}
+                                as={Price}
+                                className={(selectedVariant?.compareAtPrice && 'Sale') || ''}
+                            />
+                        )) ||
+                            null}
                     </Prices>
 
                     {/* FIXME: Deal with options here */}
