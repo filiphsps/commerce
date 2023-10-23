@@ -28,7 +28,7 @@ export const getCrossDomainLinkerParameter = () => {
     const _glNode = formNode.querySelector('input[name="_gl"]') as any;
 
     if (_glNode) return _glNode.value as string;
-    return null;
+    return null; // TODO: Throw error?
 };
 
 export const Checkout = async ({
