@@ -16,7 +16,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
 
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });

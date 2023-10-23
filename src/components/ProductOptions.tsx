@@ -93,7 +93,7 @@ const Option = styled.div<{ disabled: boolean }>`
 `;
 
 interface ProductOptionProps {
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars, unused-imports/no-unused-vars
     onOptionChange: (props: { name: string; value: string }) => void;
 }
 export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOptionChange }) => {

@@ -1,8 +1,7 @@
-import { usePathname, useRouter } from 'next/navigation';
-
 import type { FunctionComponent } from 'react';
 import Link from '@/components/link';
 import styled from 'styled-components';
+import { usePathname } from 'next/navigation';
 
 const Container = styled.div`
     position: absolute;
@@ -82,7 +81,6 @@ interface HeaderNavigationProps {
     toggle: any;
 }
 const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation, open, toggle }) => {
-    const router = useRouter();
     const route = usePathname();
 
     return (

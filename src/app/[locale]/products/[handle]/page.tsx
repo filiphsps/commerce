@@ -44,7 +44,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
     if (!isValidHandle(handle)) return notFound();
 
-    const store = await StoreApi({ locale: locale.locale });
+    const store = await StoreApi({ locale });
     const product = await ProductApi({ handle, locale: locale.locale });
 
     const { page } = await PageApi({ locale, handle, type: 'product_page' });
