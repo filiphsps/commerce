@@ -7,9 +7,6 @@ import { Config } from '@/utils/Config';
 import { NextLocaleToLocale, type Locale } from '@/utils/Locale';
 import { cache } from 'react';
 
-// TODO: More sane revalidate time
-export const revalidate = 60;
-
 // TODO: Migrate to `Locale` type.
 export const PagesApi = cache(
     async ({
