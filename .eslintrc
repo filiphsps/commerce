@@ -2,7 +2,7 @@
     "extends": ["next/core-web-vitals", "prettier"],
     "plugins": ["unused-imports"],
     "rules": {
-        "consistent-return": 2,
+        "consistent-return": "error",
         "no-mixed-operators": 0,
         "no-useless-constructor": 0,
         "no-console": ["error", { "allow": ["warn", "error"] }],
