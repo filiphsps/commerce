@@ -64,7 +64,6 @@
         "@prismicio/next": "1.4.0",
         "@prismicio/react": "2.7.3",
         "@shopify/hydrogen-react": "2023.10.0",
-        "@sweetsideofsweden/next-plugin-preval": "2.0.0",
         "@thebeyondgroup/shopify-rich-text-renderer": "1.0.0",
         "accept-language-parser": "1.5.0",
         "color": "4.2.3",
