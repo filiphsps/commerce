@@ -50,6 +50,7 @@ export default async function CollectionPage({ params }: { params: CollectionPag
 
     const store = await StoreApi({ locale });
     const collection = await CollectionApi({ handle, locale: locale.locale });
+
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
     const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
 
@@ -71,8 +72,8 @@ export default async function CollectionPage({ params }: { params: CollectionPag
     return (
         <Page>
             <PageContent primary>
-                {page.enable_header && <PageHeader title={collection.title} subtitle={subtitle} />}
-                <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />
+                {(!page || page.enable_header) && <PageHeader title={collection.title} subtitle={subtitle} />}
+                {page && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />}
             </PageContent>
         </Page>
     );

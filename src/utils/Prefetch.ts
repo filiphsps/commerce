@@ -77,6 +77,9 @@ const Prefetch = (
                                         description: (seo?.description || description).slice(0, 75),
                                         vendor,
                                         tags,
+                                        sellingPlanGroups: {
+                                            edges: []
+                                        },
                                         variants: {
                                             edges: variants.edges.map(
                                                 ({
