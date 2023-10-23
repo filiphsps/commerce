@@ -60,29 +60,29 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
     if (status !== 'idle' && status !== 'updating') return null;
 
     // TODO: Handle other currencies properly
-    let threshold = 85;
+    let threshold = 95;
     switch (cost?.totalAmount?.currencyCode?.toUpperCase()) {
         case 'GBP':
-            threshold = 70;
-            break;
-        case 'EUR':
             threshold = 80;
             break;
+        case 'EUR':
+            threshold = 95;
+            break;
         case 'SEK':
-            threshold = 900;
+            threshold = 1050;
             break;
         case 'DKK':
-            threshold = 575;
+            threshold = 685;
             break;
         case 'NOK':
-            threshold = 875;
+            threshold = 1075;
             break;
         case 'CAD':
-            threshold = 115;
+            threshold = 135;
             break;
         default:
         case 'USD':
-            threshold = 85;
+            threshold = 95;
             break;
     }
     const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) > threshold;
