@@ -22,7 +22,7 @@ import { appWithTranslation } from 'next-i18next';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({
-    weight: ['400', '500', '600', '700'],
+    weight: ['variable' as any],
     subsets: ['latin'],
     display: 'swap',
     preload: true

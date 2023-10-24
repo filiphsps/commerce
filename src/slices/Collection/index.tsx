@@ -22,7 +22,7 @@ const Content = styled.div`
     gap: var(--block-spacer-large);
 
     padding: var(--block-padding-large);
-    background: color-mix(in srgb, var(--background) 40%, var(--color-bright));
+    background: color-mix(in srgb, var(--accent-primary-light) 30%, var(--color-bright));
     border-radius: var(--block-border-radius);
     color: var(--foreground);
 `;
