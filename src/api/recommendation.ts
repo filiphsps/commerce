@@ -30,7 +30,7 @@ export const RecommendationApi = async ({ id, locale }: { id?: string; locale?: 
                 }
             });
 
-            if (errors) return reject(new Error(errors.map((i) => i.message).join('\n')));
+            if (errors) return reject(new Error(`500: ${errors.map((i) => i.message).join('\n')}`));
             if (!data?.productRecommendations) return reject(new Error('404: The requested document cannot be found'));
 
             return resolve(/*flattenConnection(*/ data.productRecommendations /*)*/);

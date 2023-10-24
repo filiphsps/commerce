@@ -1,8 +1,8 @@
 import { Money, useCart } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
 
+import { useTranslation, type LocaleDictionary } from '@/utils/Locale';
 import type { FunctionComponent } from 'react';
-import { useTranslation } from 'next-i18next';
 
 const Container = styled.section<{ $active?: boolean }>`
     display: flex;
@@ -52,10 +52,11 @@ const ProgressBar = styled.div<{ $full?: boolean }>`
 interface FreeShippingProgressProps {
     className?: string;
     style?: React.CSSProperties;
+    i18n: LocaleDictionary;
 }
 export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = (props) => {
     const { cost, status } = useCart();
-    const { t } = useTranslation('cart');
+    const { t } = useTranslation('cart', props.i18n);
 
     if (status !== 'idle' && status !== 'updating') return null;
 

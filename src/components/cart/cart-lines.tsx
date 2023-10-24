@@ -3,6 +3,7 @@
 import { CartLineProvider, CartWithActions } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
+import PageLoader from '@/components/PageLoader';
 import { styled } from 'styled-components';
 
 const Container = styled.table`
@@ -42,7 +43,7 @@ type CartContentProps = {
     cart: CartWithActions;
 };
 export default function CartLines({ cart }: CartContentProps) {
-    if (!cart.lines || cart.lines.length <= 0) return null;
+    if (!cart.lines || cart.lines.length <= 0) return <PageLoader />;
 
     return (
         <Container>

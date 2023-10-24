@@ -57,7 +57,7 @@ export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Arr
                     }
                 });
 
-                if (errors) return reject(new Error(errors.join('\n')));
+                if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
 
                 cursor = data.urlRedirects.edges.at(-1).cursor;
                 redirects.push(...data.urlRedirects.edges);

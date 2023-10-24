@@ -2,8 +2,6 @@ import 'destyle.css';
 // Global styles
 import '@/style/app.scss';
 
-import * as nextI18NextConfig from '../../next-i18next.config.cjs';
-
 import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
@@ -16,9 +14,7 @@ import { Lexend_Deca } from 'next/font/google';
 import NProgress from 'nprogress';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import PageProvider from '@/components/PageProvider';
-import SEO from '../../nextseo.config';
 import { StoreApi } from '@/api/store';
-import { appWithTranslation } from 'next-i18next';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({
@@ -78,7 +74,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     --accent-secondary-text: #101418;
                 }
             `}</style>
-            <DefaultSeo {...SEO} themeColor={store?.accent.secondary} />
+            <DefaultSeo themeColor={store?.accent.secondary} />
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -190,4 +186,4 @@ export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric)
     });
 }
 
-export default appWithTranslation(StoreApp, nextI18NextConfig);
+export default StoreApp;

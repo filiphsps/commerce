@@ -1,0 +1,24 @@
+{
+    "cart": {
+        "add-order-note": "Add a note to your order.",
+        "away-from-getting": "away from getting",
+        "continue-to-checkout": "Continue to Checkout",
+        "estimated-total": "Est. Total",
+        "free-shipping": "FREE Shipping",
+        "order-summary": "Order Summary",
+        "promo-codes": "Promo Codes",
+        "sale-discount": "Sale Discount",
+        "shipping": "Shipping",
+        "shipping-calculated-at-checkout": "Shipping calculated at checkout",
+        "subtotal": "Subtotal"
+    },
+    "common": {
+        "add-to-cart": "Add to Cart",
+        "added-to-cart": "Added!",
+        "cart-not-ready": "Hang on...",
+        "out-of-stock": "Out of Stock"
+    },
+    "header": {
+        "language-and-region-settings": "Language and Region settings"
+    }
+}

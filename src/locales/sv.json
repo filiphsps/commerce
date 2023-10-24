@@ -1,0 +1,24 @@
+{
+    "cart": {
+        "add-order-note": "Skriv ett meddelande till oss om din beställning.",
+        "away-from-getting": "Kvar tills du får",
+        "continue-to-checkout": "Gå till kassan",
+        "estimated-total": "Est. Total",
+        "free-shipping": "FRI FRAKT",
+        "order-summary": "Ordersammanfattning",
+        "promo-codes": "Rabattkoder",
+        "sale-discount": "Kampanjrabatt",
+        "shipping": "Frakt",
+        "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
+        "subtotal": "Subtotal"
+    },
+    "common": {
+        "add-to-cart": "Lägg till",
+        "added-to-cart": "Tillagd!",
+        "cart-not-ready": "En sekund...",
+        "out-of-stock": "Slutsåld"
+    },
+    "header": {
+        "language-and-region-settings": "Språk- och regioninställningar"
+    }
+}

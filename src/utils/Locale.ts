@@ -5,6 +5,8 @@ import type { StoreModel } from '@/models/StoreModel';
 
 const defaultLocale = Config.i18n.default;
 
+export type { CountryCode, CurrencyCode, LanguageCode };
+
 export type Locale = {
     locale: string; // xx-XX
     language: LanguageCode;
@@ -12,10 +14,17 @@ export type Locale = {
     currency?: CurrencyCode;
 };
 
+// TODO: Make this a proper type that somehow reads from the dictionary files?
+export type LocaleDictionary = {} & any;
+
 export const NextLocaleToCountry = (locale?: string): CountryCode =>
     ((locale !== 'x-default' && locale?.split('-')[1]) || defaultLocale.split('-')[1]).toUpperCase() as CountryCode;
 export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
-    ((locale !== 'x-default' && locale?.split('-')[0]) || defaultLocale.split('-')[0]).toUpperCase() as LanguageCode;
+    (
+        (locale && locale.length === 2 && locale) ||
+        (locale !== 'x-default' && locale?.split('-')[0]) ||
+        defaultLocale.split('-')[0]
+    ).toUpperCase() as LanguageCode; // FIXME: replace `toUpperCase` with `toLowerCase`
 
 interface NextLocaleToCurrencyProps {
     country: CountryCode;
@@ -26,7 +35,8 @@ export const NextLocaleToCurrency = ({ country, store }: NextLocaleToCurrencyPro
         Config.i18n.currencies[0]) as CurrencyCode;
 
 export const NextLocaleToLocale = (locale?: string): Locale => {
-    if (!locale || locale.length !== 5 || locale.split('-').length !== 2) return NextLocaleToLocale('en-US'); // FIXME: Do this properly.
+    if (!locale || locale.length !== 5 || locale.split('-').length !== 2)
+        return NextLocaleToLocale(Config.i18n.default); // FIXME: Do this properly.
 
     const safeLocale = (locale && locale !== 'x-default' && locale) || defaultLocale;
 
@@ -34,5 +44,11 @@ export const NextLocaleToLocale = (locale?: string): Locale => {
         locale: safeLocale,
         language: NextLocaleToLanguage(locale),
         country: NextLocaleToCountry(locale)
+    };
+};
+
+export const useTranslation = (scope: string, dictionary: LocaleDictionary) => {
+    return {
+        t: (key: string): string => dictionary?.[scope]?.[key] || key
     };
 };

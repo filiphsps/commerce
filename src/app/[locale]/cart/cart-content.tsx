@@ -4,6 +4,7 @@ import CartLines from '@/components/cart/cart-lines';
 import { CartSummary } from '@/components/CartSummary';
 import { Checkout } from '@/utils/checkout';
 import { Config } from '@/utils/Config';
+import type { LocaleDictionary } from '@/utils/Locale';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import type { ReactNode } from 'react';
 import type { StoreModel } from '@/models/StoreModel';
@@ -47,8 +48,9 @@ const Sidebar = styled.article`
 type CartContentProps = {
     store?: StoreModel;
     slices: ReactNode;
+    i18n: LocaleDictionary;
 };
-export default function CartContent({ slices }: CartContentProps) {
+export default function CartContent({ slices, i18n }: CartContentProps) {
     const cart = useCart();
     const route = usePathname();
     const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
@@ -79,6 +81,7 @@ export default function CartContent({ slices }: CartContentProps) {
                                 alert(error.message);
                             }
                         }}
+                        i18n={i18n}
                     />
                 </Sidebar>
             </Primary>
