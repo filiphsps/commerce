@@ -21,7 +21,7 @@ import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
 
 const font = Lexend_Deca({
-    weight: ['400', '500', '600', '700'],
+    weight: ['variable' as any],
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-primary',
@@ -163,9 +163,8 @@ export default async function RootLayout({
                             <PageContent primary>
                                 <Breadcrumbs store={store} />
                             </PageContent>
-
-                            <PrismicPreview repositoryName={Prismic.repositoryName} />
                         </PageProvider>
+                        <PrismicPreview repositoryName={Prismic.repositoryName} />
                     </StyledComponentsRegistry>
                 </ProvidersRegistry>
             </body>

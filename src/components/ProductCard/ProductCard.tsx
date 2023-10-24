@@ -2,7 +2,7 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/Button';
 import { Config } from '@/utils/Config';
@@ -23,12 +23,17 @@ export const ProductImage = styled.div`
     position: relative;
     height: auto;
     width: 100%;
-    padding: var(--block-padding-large);
+    padding: var(--block-padding-small) var(--block-padding);
     border-radius: var(--block-border-radius-small);
     transition: 250ms ease-in-out;
     user-select: none;
     background: var(--color-bright);
-    height: 14rem;
+    height: 13rem;
+
+    @media (min-width: 950px) {
+        height: 16rem;
+        padding: var(--block-padding) var(--block-padding-large);
+    }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -38,12 +43,12 @@ export const ProductImage = styled.div`
 `;
 const ProductImageWrapper = styled.div`
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     width: 100%;
-
-    span {
-        max-height: 100%;
-    }
 
     img {
         object-fit: contain;
@@ -70,12 +75,12 @@ const Details = styled.div`
 `;
 const Brand = styled.div`
     font-size: 1.5rem;
-    line-height: 1.75rem;
-    font-weight: 500;
+    line-height: 0.9;
+    font-weight: 600;
+    opacity: 0.85;
 
     @media (min-width: 950px) {
-        font-size: 1.5rem;
-        line-height: 1.5rem;
+        font-size: 1.75rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -94,14 +99,13 @@ const Title = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    font-size: 1.75rem;
-    line-height: 2rem;
-    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.1;
+    font-weight: 650;
     hyphens: auto;
 
     @media (min-width: 950px) {
-        font-size: 2rem;
-        line-height: 2.25rem;
+        font-size: 2.25rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -115,19 +119,8 @@ const Title = styled.div`
         }
     }
 `;
-const Description = styled.div`
-    display: none;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    margin-top: var(--block-spacer);
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-    font-weight: 500;
-`;
 
-const VariantsContainer = styled.div`
+const CardFooter = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
     justify-content: flex-end;
@@ -142,7 +135,7 @@ const VariantsContainer = styled.div`
 const Variants = styled.div`
     display: flex;
     align-items: end;
-    justify-content: end;
+    justify-content: start;
     gap: var(--block-spacer-tiny);
     width: 100%;
     height: 100%;
@@ -176,6 +169,7 @@ const Actions = styled.div`
     display: grid;
     grid-template-columns: minmax(auto, auto) auto;
     justify-content: space-between;
+    align-items: end;
     gap: var(--block-spacer-small);
 `;
 const AddButton = styled(Button)<{ $added?: boolean }>`
@@ -184,7 +178,8 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100%;
+        height: 3.15rem;
+        max-height: 3.45rem;
         min-width: 100%;
         padding: var(--block-padding-small) var(--block-padding);
         border-radius: var(--block-border-radius-small);
@@ -192,7 +187,7 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
         color: var(--accent-primary-text);
         background: var(--accent-primary);
         box-shadow: none;
-        line-height: 1.75rem;
+        line-height: 1;
         font-size: 1.5rem;
         font-weight: 500;
         transition: 250ms ease-in-out;
@@ -226,13 +221,16 @@ const Quantity = styled.div`
     align-items: center;
     justify-content: center;
     justify-self: end;
-    gap: calc(var(--block-spacer-small));
-    height: 100%;
+    height: 3.25rem;
     font-size: 1.5rem;
     line-height: 1.75rem;
     font-weight: 500;
     text-align: center;
     user-select: none;
+
+    background: var(--color-bright);
+    border-radius: var(--block-border-radius-small);
+    padding: 0;
 
     svg {
         font-weight: 700;
@@ -243,26 +241,31 @@ const QuantityAction = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: end;
-    width: var(--block-padding-large);
+    justify-content: center;
+    width: 2.25rem;
     height: 100%;
-    border-radius: var(--block-border-radius);
+    border-radius: 0 0 0 var(--block-border-radius) 0;
+    border-radius: var(--block-border-radius-small);
     cursor: pointer;
     transition: 250ms ease-in-out;
+    text-align: center;
 
     &:first-child {
-        justify-content: start;
+        justify-content: center;
+        border-radius: 0 0 var(--block-border-radius) 0 0;
+        border-radius: var(--block-border-radius-small);
     }
 
     &.Inactive {
-        width: 0px;
+        width: 0;
         opacity: 0;
         pointer-events: none;
     }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
-            color: var(--accent-primary-dark);
+            background: var(--accent-secondary);
+            color: var(--accent-secondary-text);
         }
     }
 
@@ -272,9 +275,23 @@ const QuantityAction = styled.div`
         border-color: var(--accent-primary);
     }
 `;
-const QuantityValue = styled.div`
+const QuantityValue = styled.input`
+    -webkit-appearance: none;
+    display: block;
+    width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
     font-size: 1.75rem;
+    text-align: center;
+    outline: none;
+    transition: 250ms all ease-in-out;
+    font-variant: tabular-nums;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button,
+    &[type='number'] {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 `;
 
 const Prices = styled.div`
@@ -285,14 +302,13 @@ const Prices = styled.div`
     width: 100%;
 `;
 const Price = styled.div`
-    font-size: 1.85rem;
-    line-height: 1.85rem;
+    font-size: 1.95rem;
+    line-height: 1;
     font-weight: 600;
 
     &.Sale {
         font-size: 2.2rem;
-        line-height: 2rem;
-        font-weight: 800;
+        font-weight: 900;
         color: var(--color-sale);
     }
 `;
@@ -304,12 +320,30 @@ const PreviousPrice = styled.div`
     opacity: 0.75;
 `;
 
-const Badges = styled.div`
+const DiscountBadge = styled.div`
     position: absolute;
-    top: var(--block-spacer-small);
-    left: var(--block-spacer-small);
-    right: var(--block-spacer-small);
-    bottom: var(--block-spacer-small);
+    top: calc(var(--block-spacer-tiny));
+    right: var(--block-spacer-tiny);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--block-padding-small) var(--block-padding);
+    z-index: 1;
+    pointer-events: none;
+    font-weight: 500;
+    font-size: 1.15rem;
+    line-height: 1;
+    background: var(--color-sale);
+    color: var(--color-bright);
+    border-radius: var(--block-border-radius);
+    box-shadow: 0 0 0.5rem 0 var(--color-block-shadow);
+
+    b {
+        font-weight: 900;
+        font-size: 1.45rem;
+    }
+`;
+const Badges = styled.div`
     display: flex;
     align-items: start;
     justify-content: start;
@@ -330,23 +364,10 @@ const Badge = styled.div`
     background: var(--accent-primary-light);
     color: var(--accent-primary-text);
     font-weight: 600;
-    font-size: 1.25rem;
-    line-height: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.15rem;
     border-radius: var(--block-border-radius);
-    box-shadow: 0px 0px 0.5rem 0px var(--color-block-shadow);
 
-    &.Sale {
-        background: var(--color-sale);
-        color: var(--color-bright);
-    }
-    &.From {
-        background: var(--color-block);
-        color: var(--color-dark);
-
-        ${BadgeText} {
-            color: var(--color-dark);
-        }
-    }
     &.New {
         background: var(--accent-primary-light);
         color: var(--accent-primary-text);
@@ -366,11 +387,16 @@ const Container = styled.section<{ $available?: boolean }>`
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: var(--block-spacer);
     min-width: var(--component-product-card-width);
+    min-height: calc(var(--component-product-card-width) * 1.65);
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary-light);
     color: var(--accent-secondary-text);
+
+    @media (min-width: 950px) {
+        min-height: calc(var(--component-product-card-width) * 1.8);
+    }
 
     ${({ $available }) =>
         !$available &&
@@ -393,8 +419,8 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             src={image.url}
             alt={image.altText || ''}
             title={image.altText || undefined}
-            height={100}
-            width={100}
+            height={200}
+            width={200}
             loader={ImageLoader}
         />
     );
@@ -416,15 +442,26 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
     const { t } = useTranslation('common');
-    const [quantity, setQuantity] = useState(1);
+    const [quantityValue, setQuantityValue] = useState('1');
+    const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
     const { product, selectedVariant, setSelectedVariant } = useProduct();
+    const quantityRef = useRef<HTMLInputElement>();
 
     useEffect(() => {
-        if (quantity > 0) return;
-        setQuantity(1);
-    }, [quantity]);
+        if (Number.parseInt(quantityValue) < 0) {
+            setQuantityValue('1');
+            return;
+        } else if (Number.parseInt(quantityValue) > 999) {
+            setQuantityValue('999');
+            return;
+        }
+
+        if (!quantityRef.current) return; // TODO: Handle this properly.
+        const length = quantityValue.split('').length;
+        quantityRef.current.style.width = `${length * 1.2 + 1}rem`;
+    }, [quantityValue]);
 
     // TODO: Placeholder card?
     if (!product || !selectedVariant) return <Container className={`${className || ''} Loading`} />;
@@ -461,29 +498,20 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
 
     return (
         <Container className={className} $available={selectedVariant.availableForSale}>
-            <Badges>
-                {discount > 1 && ( // Handle rounding-errors
-                    <Badge className="Sale">
-                        <BadgeText>{discount}% OFF</BadgeText>
-                    </Badge>
-                )}
-                {isNewProduct && (
-                    <Badge className="New">
-                        <BadgeText>New!</BadgeText>
-                    </Badge>
-                )}
-                {isVegan && (
-                    <Badge className="Vegan">
-                        <BadgeText>Vegan</BadgeText>
-                    </Badge>
-                )}
-            </Badges>
             <ProductImage>
                 <Link href={href} prefetch={false}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
                     </ProductImageWrapper>
                 </Link>
+
+                {discount > 1 && ( // Handle rounding-errors
+                    <DiscountBadge>
+                        <BadgeText>
+                            <b>{discount}%</b> OFF
+                        </BadgeText>
+                    </DiscountBadge>
+                )}
             </ProductImage>
             <Details className="Details">
                 {product.vendor && (
@@ -499,9 +527,45 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                     </Link>
                 </Title>
 
-                {(description && <Description>{description}</Description>) || null}
+                {/* FIXME: Deal with options here */}
+                <Variants>
+                    {product.variants?.edges &&
+                        product.variants.edges.length > 1 &&
+                        product.variants.edges.map((edge) => {
+                            if (!edge?.node) return null;
+                            const variant = edge.node! as ProductVariant;
+                            let title = variant.title;
 
-                <VariantsContainer>
+                            // Handle variants that should have their weight as their actual title
+                            // FIXME: Remove `Size` when we've migrated to using Weight.
+                            // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
+                            if (
+                                variant.selectedOptions.length === 1 &&
+                                ['Size', 'Weight', 'Größe', 'Storlek'].includes(variant.selectedOptions.at(0)!.name) &&
+                                variant.weight &&
+                                variant.weightUnit
+                            ) {
+                                title = ConvertToLocalMeasurementSystem({
+                                    locale: locale.locale,
+                                    weight: variant.weight,
+                                    weightUnit: variant.weightUnit
+                                });
+                            }
+
+                            return (
+                                <Variant
+                                    key={variant.id}
+                                    title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                                    onClick={() => setSelectedVariant(variant)}
+                                    className={selectedVariant.id === variant.id ? 'Active' : ''}
+                                >
+                                    {title}
+                                </Variant>
+                            );
+                        })}
+                </Variants>
+
+                <CardFooter>
                     <Prices>
                         {selectedVariant?.compareAtPrice && (
                             <Money
@@ -522,46 +586,19 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                             null}
                     </Prices>
 
-                    {/* FIXME: Deal with options here */}
-                    <Variants>
-                        {product.variants?.edges &&
-                            product.variants.edges.length > 1 &&
-                            product.variants.edges.map((edge) => {
-                                if (!edge?.node) return null;
-                                const variant = edge.node! as ProductVariant;
-                                let title = variant.title;
-
-                                // Handle variants that should have their weight as their actual title
-                                // FIXME: Remove `Size` when we've migrated to using Weight.
-                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
-                                if (
-                                    variant.selectedOptions.length === 1 &&
-                                    ['Size', 'Weight', 'Größe', 'Storlek'].includes(
-                                        variant.selectedOptions.at(0)!.name
-                                    ) &&
-                                    variant.weight &&
-                                    variant.weightUnit
-                                ) {
-                                    title = ConvertToLocalMeasurementSystem({
-                                        locale: locale.locale,
-                                        weight: variant.weight,
-                                        weightUnit: variant.weightUnit
-                                    });
-                                }
-
-                                return (
-                                    <Variant
-                                        key={variant.id}
-                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                                        onClick={() => setSelectedVariant(variant)}
-                                        className={selectedVariant.id === variant.id ? 'Active' : ''}
-                                    >
-                                        {title}
-                                    </Variant>
-                                );
-                            })}
-                    </Variants>
-                </VariantsContainer>
+                    <Badges>
+                        {isNewProduct && (
+                            <Badge className="New">
+                                <BadgeText>New!</BadgeText>
+                            </Badge>
+                        )}
+                        {isVegan && (
+                            <Badge className="Vegan">
+                                <BadgeText>Vegan</BadgeText>
+                            </Badge>
+                        )}
+                    </Badges>
+                </CardFooter>
             </Details>
             <Actions>
                 <AddButton
@@ -586,7 +623,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                         }, 3000);
                     }}
                     disabled={
-                        !selectedVariant.availableForSale || (cart.status !== 'idle' && cart.status !== 'uninitialized')
+                        quantity < 1 ||
+                        !selectedVariant.availableForSale ||
+                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
                 >
                     <span>
@@ -598,12 +637,30 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}
-                        onClick={() => setQuantity(quantity - 1 || 0)}
+                        onClick={() => setQuantityValue(`${quantity - 1 || 0}`)}
                     >
                         <FiMinus />
                     </QuantityAction>
-                    <QuantityValue>{quantity}</QuantityValue>
-                    <QuantityAction onClick={() => setQuantity(quantity + 1)}>
+                    <QuantityValue
+                        ref={quantityRef as any}
+                        type="number"
+                        min={1}
+                        max={999}
+                        step={1}
+                        value={quantityValue}
+                        onBlur={(e) => {
+                            if (!quantityValue) setQuantityValue('1');
+                        }}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (!val) {
+                                setQuantityValue('');
+                            }
+
+                            setQuantityValue(val);
+                        }}
+                    />
+                    <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>
                         <FiPlus />
                     </QuantityAction>
                 </Quantity>
