@@ -12,6 +12,8 @@ import Pricing from '@/components/typography/pricing';
 import { SliceZone } from '@prismicio/react';
 import SplitView from '@/components/layout/split-view';
 import { StoreApi } from '@/api/store';
+import { Suspense } from 'react';
+import { getDictionary } from '@/i18n/dictionarie';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
@@ -40,7 +42,10 @@ export async function generateMetadata({ params }: { params: ProductPageParams }
 
 export default async function ProductPage({ params }: { params: ProductPageParams }) {
     const { locale: localeData, handle } = params;
+
+    if (process.env.NODE_ENV === 'development') return null;
     const locale = NextLocaleToLocale(localeData);
+    const i18n = await getDictionary(locale);
 
     if (!isValidHandle(handle)) return notFound();
 
@@ -64,7 +69,12 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                     price={product.variants.edges[0].node.price}
                     compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
                 />
-                {page?.slices && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />}
+
+                <Suspense>
+                    {page?.slices && (
+                        <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n }} />
+                    )}
+                </Suspense>
             </SplitView>
         </Page>
     );

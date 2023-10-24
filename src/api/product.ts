@@ -239,7 +239,7 @@ export const ProductApi = async ({ handle, locale }: { handle: string; locale?: 
                 }
             });
 
-            if (errors) return reject(new Error(errors.join('\n')));
+            if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
             if (!data?.productByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             try {

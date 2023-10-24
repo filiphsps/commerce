@@ -10,6 +10,7 @@ import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
 import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
+import { getDictionary } from '@/i18n/dictionarie';
 import { components as slices } from '@/slices';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
@@ -65,6 +66,7 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
     const { locale: localeData } = params;
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
+    const i18n = await getDictionary(locale);
 
     const store = await StoreApi({ locale });
 
@@ -76,9 +78,8 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
             <PageContent primary>
                 <PageHeader title={page?.title} subtitle={page?.description} />
 
-                <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch }} />
-
                 <Suspense>
+                    <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
                     <SearchContent store={store} />
                 </Suspense>
             </PageContent>

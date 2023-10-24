@@ -10,6 +10,7 @@ import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
 import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
+import { getDictionary } from '@/i18n/dictionarie';
 import { components as slices } from '@/slices';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
@@ -62,9 +63,9 @@ export async function generateStaticParams() {
 
 export type CartPageParams = { locale: string };
 export default async function SearchPage({ params }: { params: CartPageParams }) {
-    const { locale: localeData } = params;
+    const locale = NextLocaleToLocale(params.locale);
+    const i18n = await getDictionary(locale);
     const handle = 'cart';
-    const locale = NextLocaleToLocale(localeData);
 
     const store = await StoreApi({ locale });
 
@@ -79,7 +80,10 @@ export default async function SearchPage({ params }: { params: CartPageParams })
                 <Suspense>
                     <CartContent
                         store={store}
-                        slices={<SliceZone slices={page?.slices} components={slices} context={{ store, prefetch }} />}
+                        slices={
+                            <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
+                        }
+                        i18n={i18n}
                     />
                 </Suspense>
             </PageContent>

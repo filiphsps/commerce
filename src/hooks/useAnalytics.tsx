@@ -135,10 +135,10 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
 
     if (process.env.NODE_ENV === 'development') return;
 
-    if (!shopId) {
-        throw new Error(`Invalid shopId: ${shopId}`);
-    } else if (!domain) {
-        throw new Error(`Invalid domain: ${domain}`);
+    const path = usePathname();
+    if (!shopId || !domain) {
+        console.error(`Invalid shopId ("${shopId}") or domain ("${domain}") - on route: "${path}"`);
+        return;
     }
 
     const { lines, id: cartId, cost, status, totalQuantity } = useCart();
@@ -155,7 +155,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
         storefrontId: Config.shopify.storefront_id,
         currency: locale.currency,
-        acceptedLanguage: locale.language.toLowerCase(),
+        acceptedLanguage: locale.language,
         hasUserConsent: true,
         isMerchantRequest: true,
         ...((pagePropsAnalyticsData as any) || {})

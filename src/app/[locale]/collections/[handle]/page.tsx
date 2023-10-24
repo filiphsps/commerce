@@ -12,6 +12,7 @@ import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
 import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import { getDictionary } from '@/i18n/dictionarie';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
@@ -45,6 +46,7 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
 export default async function CollectionPage({ params }: { params: CollectionPageParams }) {
     const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
+    const i18n = await getDictionary(locale);
 
     if (!isValidHandle(handle)) return notFound();
 
@@ -73,7 +75,7 @@ export default async function CollectionPage({ params }: { params: CollectionPag
         <Page>
             <PageContent primary>
                 {(!page || page.enable_header) && <PageHeader title={collection.title} subtitle={subtitle} />}
-                {page && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />}
+                {page && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n }} />}
             </PageContent>
         </Page>
     );

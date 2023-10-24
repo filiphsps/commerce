@@ -5,6 +5,8 @@ import PageContent from '@/components/PageContent';
 import { Prefetch } from '@/utils/Prefetch';
 import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
+import { Suspense } from 'react';
+import { getDictionary } from '@/i18n/dictionarie';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
@@ -12,6 +14,7 @@ import { components as slices } from '@/slices';
 export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
     const { locale: localeData, uid } = params;
     const locale = NextLocaleToLocale(localeData);
+    const i18n = await getDictionary(locale);
 
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
@@ -27,7 +30,9 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return (
             <Page>
                 <PageContent primary>
-                    <SliceZone slices={page.slices} components={slices} context={{ store, prefetch }} />
+                    <Suspense>
+                        <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n }} />
+                    </Suspense>
                 </PageContent>
             </Page>
         );

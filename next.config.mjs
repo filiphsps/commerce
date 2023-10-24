@@ -6,7 +6,6 @@ let config = {
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    //i18n,
     productionBrowserSourceMaps: false,
     compress: true,
     experimental: {
