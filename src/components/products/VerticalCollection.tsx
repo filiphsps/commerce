@@ -6,6 +6,7 @@ import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '@/api/collection';
 import { Config } from '@/utils/Config';
 import type { FunctionComponent } from 'react';
+import type { LocaleDictionary } from '@/utils/Locale';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
@@ -66,11 +67,13 @@ interface VerticalCollectionProps {
     handle?: string;
     data?: Collection;
     store: StoreModel;
+    i18n: LocaleDictionary;
 }
 export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
     handle,
     data: collectionData,
-    store
+    store,
+    i18n
 }) => {
     const route = usePathname();
     const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
@@ -98,7 +101,7 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
                         data={product}
                         initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
                     >
-                        <ProductCard handle={product?.handle} store={store} />
+                        <ProductCard handle={product?.handle} store={store} i18n={i18n} />
                     </ProductProvider>
                 ))}
             </Content>

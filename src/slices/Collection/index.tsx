@@ -110,6 +110,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 limit={slice.primary.limit || 16}
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
+                                i18n={context.i18n}
                             />
                         </Content>
                     </PageContent>
@@ -117,7 +118,9 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
             );
 
         case 'full':
-            return <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} />;
+            return (
+                <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} i18n={context.i18n} />
+            );
         default:
             throw new Error('500: Invalid variant');
     }

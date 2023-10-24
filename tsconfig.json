@@ -33,6 +33,10 @@
             "@/utils/*": ["./src/utils/*"],
             "@/style/*": ["./src/scss/*"],
 
+            // i18n
+            "@/i18n/*": ["./src/locales/*"],
+            "@/i18n/dictionarie": ["./src/app/[locale]/dictionarie.ts"],
+
             // Prismic
             "@/slices/*": ["./src/slices/*"],
             "@/slices": ["./src/slices/index"],

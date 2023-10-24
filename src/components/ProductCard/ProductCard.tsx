@@ -1,5 +1,6 @@
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
+import { NextLocaleToLocale, useTranslation } from '@/utils/Locale';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import styled, { css } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
@@ -11,11 +12,10 @@ import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
+import type { LocaleDictionary } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { usePathname } from 'next/navigation';
-import { useTranslation } from 'next-i18next';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -436,12 +436,13 @@ interface ProductCardProps {
     handle?: string;
     store: StoreModel;
     className?: string;
+    i18n: LocaleDictionary;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n }) => {
     const route = usePathname();
     const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
-    const { t } = useTranslation('common');
+    const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
     const [addedToCart, setAddedToCart] = useState(false);
@@ -648,11 +649,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                         max={999}
                         step={1}
                         value={quantityValue}
-                        onBlur={(e) => {
+                        onBlur={(_) => {
                             if (!quantityValue) setQuantityValue('1');
                         }}
                         onChange={(e) => {
-                            const val = e.target.value;
+                            const val = e?.target?.value;
                             if (!val) {
                                 setQuantityValue('');
                             }

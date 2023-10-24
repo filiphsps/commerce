@@ -70,7 +70,7 @@ export const CollectionApi = async ({
                 }
             });
 
-            if (errors) return reject(new Error(errors.join('\n')));
+            if (errors) return reject(new Error(`500: ${errors.map((e) => e.message).join('\n')}`));
             if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             data.collectionByHandle.products.edges = await Promise.all(
@@ -120,7 +120,7 @@ export const CollectionsApi = async (): Promise<
             `
         });
 
-        if (errors) return reject(new Error(errors.join('\n')));
+        if (errors) return reject(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`);
 
         return resolve(data.collections.edges.map((item: any) => item.node));
     });

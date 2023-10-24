@@ -9,6 +9,8 @@ import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
 import { Prefetch } from '@/utils/Prefetch';
 import { SliceZone } from '@prismicio/react';
+import { Suspense } from 'react';
+import { getDictionary } from '@/i18n/dictionarie';
 import { components as slices } from '@/slices';
 
 export type CountriesPageParams = { locale: string };
@@ -20,6 +22,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const { locale: localeData } = params;
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
+    const i18n = await getDictionary(locale);
 
     const store = await StoreApi({ locale });
     const countries = await CountriesApi({ locale: locale.locale });
@@ -35,7 +38,9 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                     <LocaleSelector countries={countries} store={store} />
                 </PageContent>
 
-                <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch }} />
+                <Suspense>
+                    <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
+                </Suspense>
             </PageContent>
         </Page>
     );

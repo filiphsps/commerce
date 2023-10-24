@@ -1,4 +1,4 @@
-import { NextLocaleToCountry, NextLocaleToLanguage, NextLocaleToLocale } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 
 import { Config } from '@/utils/Config';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
@@ -65,15 +65,13 @@ export const LocalesApi = async (): Promise<string[]> => {
     });
 };
 
-export const StoreApi = async ({ locale }: { locale?: Locale }): Promise<StoreModel> => {
+export const StoreApi = async ({ locale }: { locale: Locale }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale) locale = NextLocaleToLocale();
-
         const client = createClient({});
         try {
             const { data: shopData } = await storefrontClient.query({
                 query: gql`
-                    query shop @inContext(language: ${locale.language}, country: ${locale.country}) {
+                    query shop @inContext(language: ${locale.language}, country: ${locale.language}) {
                         shop {
                             id
                             brand {

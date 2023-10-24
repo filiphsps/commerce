@@ -1,0 +1,24 @@
+{
+    "cart": {
+        "add-order-note": "Schreiben Sie eine Nachricht zu Ihrer Bestellung.",
+        "away-from-getting": "Bis zu",
+        "continue-to-checkout": "Zur Kasse gehen",
+        "estimated-total": "Geschätzte Gesamtsumme",
+        "free-shipping": "KOSTENLOSEM Versand",
+        "order-summary": "Bestellübersicht",
+        "promo-codes": "Aktionscodes",
+        "sale-discount": "Sale-Rabatt",
+        "shipping": "Versand",
+        "shipping-calculated-at-checkout": "Versand wird an der Kasse berechnet",
+        "subtotal": "Zwischensumme"
+    },
+    "common": {
+        "add-to-cart": "In den Warenkorb",
+        "added-to-cart": "Hinzugefügt!",
+        "cart-not-ready": "Einen augenblick...",
+        "out-of-stock": "Ausverkauft"
+    },
+    "header": {
+        "language-and-region-settings": "Einstellungen für Sprache und Region"
+    }
+}

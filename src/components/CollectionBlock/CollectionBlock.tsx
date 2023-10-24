@@ -3,6 +3,7 @@
 import styled, { css } from 'styled-components';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { LocaleDictionary } from '@/utils/Locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
 import { Suspense } from 'react';
@@ -88,8 +89,9 @@ type CollectionBlockProps = {
     showDescription?: boolean;
     search?: boolean;
     store: StoreModel;
+    i18n: LocaleDictionary;
 };
-const CollectionBlock = ({ data: collection, limit, isHorizontal, store }: CollectionBlockProps) => {
+const CollectionBlock = ({ data: collection, limit, isHorizontal, store, i18n }: CollectionBlockProps) => {
     const products = (collection?.products?.edges || []).map((edge, index) => {
         if (limit && index >= limit) return null;
         if (!edge?.node) return null;
@@ -101,7 +103,12 @@ const CollectionBlock = ({ data: collection, limit, isHorizontal, store }: Colle
                 data={product}
                 initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
             >
-                <ProductCard handle={product?.handle} store={store} className={(index === 0 && 'First') || ''} />
+                <ProductCard
+                    handle={product?.handle}
+                    store={store}
+                    className={(index === 0 && 'First') || ''}
+                    i18n={i18n}
+                />
             </ProductProvider>
         );
     });

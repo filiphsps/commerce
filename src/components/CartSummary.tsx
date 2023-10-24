@@ -1,17 +1,17 @@
 import { CartCost, Money, useCart } from '@shopify/hydrogen-react';
-import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
+import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 
 import { Button } from '@/components/Button';
 import { CartCoupons } from '@/components/CartCoupons';
 import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
-import type { FunctionComponent } from 'react';
-import Link from '@/components/link';
 import PageLoader from '@/components/PageLoader';
+import Link from '@/components/link';
+import { useTranslation, type LocaleDictionary } from '@/utils/Locale';
 import { Pluralize } from '@/utils/Pluralize';
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from 'next-i18next';
 
 const Container = styled.section`
     display: flex;
@@ -231,9 +231,10 @@ interface CartSummaryProps {
     onCheckout: any;
     freeShipping?: boolean;
     showLoader?: boolean;
+    i18n: LocaleDictionary;
 }
-export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, freeShipping, showLoader }) => {
-    const { t } = useTranslation('cart');
+export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, freeShipping, showLoader, i18n }) => {
+    const { t } = useTranslation('cart', i18n);
     const { totalQuantity, status, lines, cost, note } = useCart();
     const [showNote, setShowNote] = useState(false);
     const loading = showLoader || status !== 'idle';
@@ -282,7 +283,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
 
                 <CartCoupons />
 
-                <FreeShipping />
+                <FreeShipping i18n={i18n} />
 
                 {(totalQuantity && !showNote && (
                     <Action onClick={() => setShowNote(true)}>
