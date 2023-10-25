@@ -1,9 +1,9 @@
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import BaseLink from 'next/link';
-import type { ComponentProps } from 'react';
-import { Config } from '@/utils/Config';
-import NProgress from 'nprogress';
-import { NextLocaleToLocale } from '@/utils/Locale';
 import { usePathname } from 'next/navigation';
+import NProgress from 'nprogress';
+import type { ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {};
 

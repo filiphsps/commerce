@@ -1,4 +1,4 @@
-import { titleToHandle } from '@/utils/TitleToHandle';
+import { TitleToHandle } from '@/utils/title-to-handle';
 
 const example_titles = [
     ['Title', 'title'],
@@ -17,7 +17,7 @@ describe('Util', () => {
             for (let i = 0; i < example_titles.length; i++) {
                 const item = example_titles[i];
 
-                let res = titleToHandle(item[0]);
+                let res = TitleToHandle(item[0]);
                 expect(res == item[1]).toBeTruthy();
             }
         });

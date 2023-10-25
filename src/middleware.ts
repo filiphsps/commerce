@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-import { Locale, NextLocaleToLocale } from '@/utils/Locale';
+import { Locale, NextLocaleToLocale } from '@/utils/locale';
 
 function getHostname(request: NextRequest) {
     const { protocol, host } = request.nextUrl;

@@ -1,19 +1,19 @@
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '@/api/blog';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { Config } from '@/utils/Config';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
 import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { NextSeo } from 'next-seo';
 import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
+import Error from 'next/error';
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const Page = dynamic(() => import('@/components/Page'));
 const PageContent = dynamic(() => import('@/components/PageContent'));

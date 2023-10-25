@@ -1,7 +1,7 @@
 import { Money, useCart } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
 
-import { useTranslation, type LocaleDictionary } from '@/utils/Locale';
+import { useTranslation, type LocaleDictionary } from '@/utils/locale';
 import type { FunctionComponent } from 'react';
 
 const Container = styled.section<{ $active?: boolean }>`

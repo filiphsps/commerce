@@ -6,19 +6,19 @@ import * as Prismic from '@/prismic';
 
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { Config } from '@/utils/Config';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
-import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
-import { NextLocaleToLocale } from '@/utils/Locale';
+import { StoreApi } from '@/api/store';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
-import { PrismicPreview } from '@prismicio/next';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import ProvidersRegistry from '@/components/providers-registry';
-import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { PrismicPreview } from '@prismicio/next';
+import { Lexend_Deca } from 'next/font/google';
 
 const font = Lexend_Deca({
     weight: ['variable' as any],

@@ -1,12 +1,12 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 
-import { Config } from '@/utils/Config';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import type { Locale } from '@/utils/Locale';
+import { storefrontClient } from '@/api/shopify';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
+import { Config } from '@/utils/config';
+import type { Locale } from '@/utils/locale';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
-import { storefrontClient } from '@/api/shopify';
 
 // TODO: Migrate to `Locale` type.
 export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {

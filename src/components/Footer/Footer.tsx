@@ -1,15 +1,16 @@
-import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { FooterApi } from '@/api/footer';
-import { FooterModel } from '@/models/FooterModel';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
+import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
+import { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
+import { ImageLoader } from '@/utils/ImageLoader';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import styled from 'styled-components';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Logo = styled.div`

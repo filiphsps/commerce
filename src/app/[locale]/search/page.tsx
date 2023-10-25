@@ -1,17 +1,17 @@
-import { Config } from '@/utils/Config';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/Prefetch';
-import SearchContent from './search-content';
-import { SliceZone } from '@prismicio/react';
-import { StoreApi } from '@/api/store';
-import { Suspense } from 'react';
-import { asText } from '@prismicio/client';
 import { getDictionary } from '@/i18n/dictionarie';
 import { components as slices } from '@/slices';
+import { Prefetch } from '@/utils/Prefetch';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import { Suspense } from 'react';
+import SearchContent from './search-content';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale: localeData } = params;

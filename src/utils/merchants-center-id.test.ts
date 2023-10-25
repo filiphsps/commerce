@@ -1,5 +1,5 @@
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
 
 describe('Utils', () => {

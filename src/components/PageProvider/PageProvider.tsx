@@ -1,22 +1,22 @@
 'use client';
 
 import { NavigationApi, NavigationItem } from '@/api/navigation';
-import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
+import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/locale';
 import { Suspense, useState } from 'react';
 
-import { Config } from '@/utils/Config';
-import { FooterModel } from '@/models/FooterModel';
-import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
-import { HeaderModel } from '@/models/HeaderModel';
-import type { Locale } from '@/utils/Locale';
-import type { StoreModel } from '@/models/StoreModel';
-import { asHTML } from '@prismicio/client';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
+import { FooterModel } from '@/models/FooterModel';
+import { HeaderModel } from '@/models/HeaderModel';
+import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
+import type { Locale } from '@/utils/locale';
+import { asHTML } from '@prismicio/client';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Header = dynamic(() => import('@/components/Header'));

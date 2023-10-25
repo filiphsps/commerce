@@ -1,14 +1,14 @@
 'use client';
 
-import { Config } from '@/utils/Config';
-import type { FunctionComponent } from 'react';
-import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import PageLoader from '@/components/PageLoader';
-import type { VendorModel } from '@/models/VendorModel';
 import { VendorsApi } from '@/api/vendor';
-import styled from 'styled-components';
+import PageLoader from '@/components/PageLoader';
+import Link from '@/components/link';
+import type { VendorModel } from '@/models/VendorModel';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Container = styled.div`
