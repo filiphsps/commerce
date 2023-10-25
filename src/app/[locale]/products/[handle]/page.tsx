@@ -10,7 +10,7 @@ import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
@@ -23,7 +23,9 @@ export async function generateStaticParams() {
     // FIXME: Pagination.
     const { products } = await ProductsApi({ locale: DefaultLocale() });
 
-    return products.map(({ node }) => Config.i18n.locales.map((locale) => ({ locale, handle: node.handle }))).flat();
+    return products
+        .map(({ node }) => BuildConfig.i18n.locales.map((locale) => ({ locale, handle: node.handle })))
+        .flat();
 }
 
 export async function generateMetadata({ params }: { params: ProductPageParams }) {

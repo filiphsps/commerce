@@ -2,7 +2,7 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 
 import { storefrontClient } from '@/api/shopify';
 import type { RedirectModel } from '@/models/RedirectModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { gql } from 'graphql-tag';
 
 export const Convertor = (
@@ -25,7 +25,7 @@ export const Convertor = (
 // TODO: Migrate to `Locale` type.
 export const RedirectsApi = async ({ locale }: { locale?: string }): Promise<Array<RedirectModel>> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
+        if (!locale || locale === 'x-default') locale = BuildConfig.i18n.default;
 
         const country = NextLocaleToCountry(locale);
         const language = NextLocaleToLanguage(locale);

@@ -1,4 +1,4 @@
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import BaseLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -7,9 +7,10 @@ import type { ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {};
 
+// FIXME: Do this properly.
 export default function Link({ ...props }: Props) {
     const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
 
     let href = props.href.toString();
     if (!href.includes(':') && href.startsWith('/')) {

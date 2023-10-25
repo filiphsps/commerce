@@ -2,13 +2,13 @@ import { BlogApi } from '@/api/blog';
 import { CollectionsApi } from '@/api/collection';
 import { PagesApi } from '@/api/page';
 import { ProductsApi } from '@/api/product';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { DefaultLocale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {
     const urls: any[] = [];
-    const locales: string[] = Config?.i18n?.locales || [];
+    const locales: string[] = BuildConfig.i18n?.locales || [];
     const locale = DefaultLocale();
 
     interface SitemapEntry {
@@ -54,7 +54,7 @@ export async function GET() {
     );
 
     const objects: Array<SitemapEntry[]> = [pages, collections, products, blog];
-    const url = `https://${Config.domain}`;
+    const url = `https://${BuildConfig.domain}`;
 
     urls.push(
         ...objects
@@ -64,7 +64,9 @@ export async function GET() {
                 const modified = new Date().toISOString();
 
                 return locales?.map((locale) => ({
-                    loc: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}${item.location}`,
+                    loc: `https://${BuildConfig.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}${
+                        item.location
+                    }`,
                     lastmod: modified,
                     priority: item.priority || 0.7,
                     alternateRefs: locales?.map((locale) => ({

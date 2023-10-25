@@ -1,5 +1,8 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
-import { Config } from '@/utils/config';
+import Link from '@/components/link';
+import { FooterModel } from '@/models/FooterModel';
+import type { StoreModel } from '@/models/StoreModel';
+import { ImageLoader } from '@/utils/ImageLoader';
 import type { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { usePrismicClient } from '@prismicio/react';
@@ -8,12 +11,11 @@ import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import styled from 'styled-components';
-import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
+
 const Logo = styled.div`
     position: relative;
     display: block;

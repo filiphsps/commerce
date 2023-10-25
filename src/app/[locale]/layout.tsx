@@ -15,7 +15,7 @@ import PageProvider from '@/components/PageProvider';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import ProvidersRegistry from '@/components/providers-registry';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { PrismicPreview } from '@prismicio/next';
 import { Lexend_Deca } from 'next/font/google';
@@ -31,12 +31,12 @@ const font = Lexend_Deca({
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
-    const locales = Config.i18n.locales;
+    const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale });
 
     return {
-        metadataBase: new URL(`https://${Config.domain}`),
+        metadataBase: new URL(`https://${BuildConfig.domain}`),
         title: {
             default: store.name,
             template: `%s | ${store.name}`
@@ -53,11 +53,11 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             index: true
         },
         alternates: {
-            canonical: `https://${Config.domain}`,
+            canonical: `https://${BuildConfig.domain}`,
             languages: locales.reduce(
                 (prev, curr) => ({
                     ...prev,
-                    [curr]: `https://${Config.domain}/${curr}/`
+                    [curr]: `https://${BuildConfig.domain}/${curr}/`
                 }),
                 {}
             )
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export async function generateStaticParams() {
-    return Config.i18n.locales.map((locale) => ({ locale }));
+    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
 }
 
 export default async function RootLayout({
@@ -101,7 +101,7 @@ export default async function RootLayout({
                     type="Organization"
                     name={store.name}
                     description={store.description}
-                    url={`https://${Config.domain}/`}
+                    url={`https://${BuildConfig.domain}/`}
                     logo={store.favicon.src}
                     foundingDate="2023"
                     founders={[
@@ -137,7 +137,7 @@ export default async function RootLayout({
                         contactType: 'Customer relations and support',
                         email: 'hello@sweetsideofsweden.com',
                         telephone: '+1 866 502 5580',
-                        url: `https://${Config.domain}/about/`,
+                        url: `https://${BuildConfig.domain}/about/`,
                         availableLanguage: ['English', 'Swedish']
                     }}
                     sameAs={store?.social?.map(({ url }) => url)}
@@ -146,10 +146,10 @@ export default async function RootLayout({
                     useAppDir
                     name={store.name}
                     alternateName={'sweetsideofsweden'}
-                    url={`https://${Config.domain}/`}
+                    url={`https://${BuildConfig.domain}/`}
                     potentialActions={[
                         {
-                            target: `https://${Config.domain}/search/?q`,
+                            target: `https://${BuildConfig.domain}/search/?q`,
                             queryInput: 'search_term_string'
                         }
                     ]}
