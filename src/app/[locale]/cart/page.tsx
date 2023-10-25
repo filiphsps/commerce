@@ -58,7 +58,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export async function generateStaticParams() {
-    return Config.i18n.locales.map((locale) => ({ locale: locale }));
+    // TODO: Use list of locales to pre-generate pages for as it's expensive to do during the build.
+    return Config.i18n.locales.map((locale) => ({ locale }));
 }
 
 export type CartPageParams = { locale: string };
@@ -80,6 +81,7 @@ export default async function SearchPage({ params }: { params: CartPageParams })
                 <Suspense>
                     <CartContent
                         store={store}
+                        locale={locale}
                         slices={
                             <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
                         }

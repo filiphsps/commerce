@@ -1,22 +1,28 @@
 import type { HeaderModel } from '@/models/HeaderModel';
 import { createClient } from '@/prismic';
 import { Config } from '@/utils/config';
+import { DefaultLocale, type Locale } from '@/utils/locale';
+import type { Client as PrismicClient } from '@prismicio/client';
 
-// TODO: Migrate to `Locale` type.
-export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {
+export const HeaderApi = async ({
+    locale,
+    client: _client
+}: {
+    locale: Locale;
+    client?: PrismicClient;
+}): Promise<HeaderModel> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const client = createClient({});
+        const client = _client || createClient({ locale });
         try {
             const res = await client.getSingle('head', {
-                lang: locale
+                lang: locale.locale
             });
             return resolve(res.data as any as HeaderModel);
         } catch (error: any) {
+            // TODO: isDefaultLocale utility function.
             if (error.message.includes('No documents')) {
-                if (locale !== Config.i18n.default) {
-                    return resolve(await HeaderApi({})); // Try again with default locale
+                if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+                    return resolve(await HeaderApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
                 }
 
                 return reject(new Error('404: The requested document cannot be found'));

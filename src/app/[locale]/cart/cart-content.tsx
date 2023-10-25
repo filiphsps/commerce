@@ -4,11 +4,8 @@ import { CartSummary } from '@/components/CartSummary';
 import CartLines from '@/components/cart/cart-lines';
 import type { StoreModel } from '@/models/StoreModel';
 import { Checkout } from '@/utils/checkout';
-import { Config } from '@/utils/config';
-import type { LocaleDictionary } from '@/utils/locale';
-import { NextLocaleToLocale } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
-import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { styled } from 'styled-components';
 
@@ -47,19 +44,18 @@ const Sidebar = styled.article`
 
 type CartContentProps = {
     store?: StoreModel;
+    locale: Locale;
     slices: ReactNode;
     i18n: LocaleDictionary;
 };
-export default function CartContent({ slices, i18n }: CartContentProps) {
+export default function CartContent({ locale, slices, i18n }: CartContentProps) {
     const cart = useCart();
-    const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
 
     return (
         <Container>
             <Primary>
                 <Content>
-                    <CartLines cart={cart} />
+                    <CartLines cart={cart} locale={locale} />
                 </Content>
                 <Sidebar>
                     <CartSummary

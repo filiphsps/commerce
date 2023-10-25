@@ -127,7 +127,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
     let paths = [
         ...(
             locales?.map((locale) => ({
-                params: { locale: locale }
+                params: { locale }
             })) || []
         ).filter((a) => a?.params?.locale)
     ];
