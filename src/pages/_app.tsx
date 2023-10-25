@@ -2,19 +2,19 @@ import 'destyle.css';
 // Global styles
 import '@/style/app.scss';
 
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
 
 import { CartFragment } from '@/api/cart';
-import { Config } from '@/utils/Config';
-import Head from 'next/head';
-import { Lexend_Deca } from 'next/font/google';
-import NProgress from 'nprogress';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import PageProvider from '@/components/PageProvider';
 import { StoreApi } from '@/api/store';
+import PageProvider from '@/components/PageProvider';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Lexend_Deca } from 'next/font/google';
+import Head from 'next/head';
+import NProgress from 'nprogress';
 import useSWR from 'swr';
 
 const font = Lexend_Deca({

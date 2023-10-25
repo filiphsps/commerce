@@ -1,4 +1,4 @@
-export const titleToHandle = (title: string) => {
+export const TitleToHandle = (title: string) => {
     title = title || '';
     return title
         .toLowerCase()

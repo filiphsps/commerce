@@ -1,20 +1,20 @@
 'use client';
 
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
+import { useEffect, useState } from 'react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
-import { Config } from '@/utils/Config';
-import type { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
-import Link from '@/components/link';
-import Loader from '@/components/Loader';
-import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductApi } from '@/api/product';
+import Loader from '@/components/Loader';
+import Link from '@/components/link';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { TitleToHandle } from '@/utils/title-to-handle';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import { titleToHandle } from '@/utils/TitleToHandle';
+import Image from 'next/legacy/image';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
 import useSWR from 'swr';
 
 const Section = styled.td``;
@@ -352,7 +352,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${titleToHandle(product?.vendor)}/`} prefetch={false}>
+                        <Link href={`/collections/${TitleToHandle(product?.vendor)}/`} prefetch={false}>
                             {product?.vendor}
                         </Link>
                     </DetailsBrand>

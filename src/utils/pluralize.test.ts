@@ -1,4 +1,4 @@
-import { Pluralize } from '@/utils/Pluralize';
+import { Pluralize } from '@/utils/pluralize';
 
 describe('Utils', () => {
     describe('Pluralize', () => {

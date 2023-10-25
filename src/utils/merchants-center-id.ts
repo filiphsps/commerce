@@ -1,4 +1,4 @@
-import type { Locale } from '@/utils/Locale';
+import type { Locale } from '@/utils/locale';
 import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
 import { parseGid } from '@shopify/hydrogen-react';
 

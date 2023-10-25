@@ -1,21 +1,21 @@
 import { CollectionApi, CollectionsApi } from '@/api/collection';
 
-import { Config } from '@/utils/Config';
-import Content from '@/components/Content';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import { StoreApi } from '@/api/store';
+import Content from '@/components/Content';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/Prefetch';
-import { SliceZone } from '@prismicio/react';
-import { StoreApi } from '@/api/store';
-import { asText } from '@prismicio/client';
-import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { getDictionary } from '@/i18n/dictionarie';
-import { isValidHandle } from '@/utils/handle';
-import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
+import { Prefetch } from '@/utils/Prefetch';
+import { Config } from '@/utils/config';
+import { isValidHandle } from '@/utils/handle';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import { notFound } from 'next/navigation';
 
 export type CollectionPageParams = { locale: string; handle: string };
 

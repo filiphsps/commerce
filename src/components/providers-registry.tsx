@@ -3,8 +3,8 @@
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
 import { CartFragment } from '@/api/cart';
-import { Config } from '@/utils/Config';
-import type { Locale } from '@/utils/Locale';
+import { Config } from '@/utils/config';
+import type { Locale } from '@/utils/locale';
 import React from 'react';
 
 export default function ProvidersRegistry({ children, locale }: { children: React.ReactNode; locale: Locale }) {

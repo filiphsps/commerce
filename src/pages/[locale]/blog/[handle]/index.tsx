@@ -2,21 +2,21 @@ import { ArticleApi, BlogApi } from '@/api/blog';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { Config } from '@/utils/Config';
 import ContentComponent from '@/components/Content';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
-import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
+import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
 import { isValidHandle } from '@/utils/handle';
-import styled from 'styled-components';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Error from 'next/error';
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const ContentWrapper = styled.div`
     display: grid;

@@ -1,10 +1,10 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { Config } from '@/utils/Config';
+import { storefrontClient } from '@/api/shopify';
+import { Config } from '@/utils/config';
 import ConvertUnits from 'convert-units';
 import { gql } from 'graphql-tag';
-import { storefrontClient } from '@/api/shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id

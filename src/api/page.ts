@@ -3,8 +3,8 @@ import * as prismic from '@prismicio/client';
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 
 import { createClient } from '@/prismic';
-import { Config } from '@/utils/Config';
-import { NextLocaleToLocale, type Locale } from '@/utils/Locale';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale, type Locale } from '@/utils/locale';
 
 // TODO: Migrate to `Locale` type.
 export const PagesApi = async ({

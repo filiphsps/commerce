@@ -1,21 +1,21 @@
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import { NextLocaleToLocale, useTranslation } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
-import { NextLocaleToLocale, useTranslation } from '@/utils/Locale';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import styled, { css } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import styled, { css } from 'styled-components';
 
-import { Button } from '@/components/Button';
-import { Config } from '@/utils/Config';
 import { ConvertToLocalMeasurementSystem } from '@/api/product';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
+import { Button } from '@/components/Button';
 import Link from '@/components/link';
-import type { LocaleDictionary } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
-import { titleToHandle } from '@/utils/TitleToHandle';
+import { ImageLoader } from '@/utils/ImageLoader';
+import { Config } from '@/utils/config';
+import type { LocaleDictionary } from '@/utils/locale';
+import { TitleToHandle } from '@/utils/title-to-handle';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -517,7 +517,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n }) =
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${titleToHandle(product.vendor)}/`} prefetch={false}>
+                        <Link href={`/collections/${TitleToHandle(product.vendor)}/`} prefetch={false}>
                             {product.vendor}
                         </Link>
                     </Brand>

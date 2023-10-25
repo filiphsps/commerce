@@ -1,17 +1,17 @@
 'use client';
 
-import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
+import { SearchApi } from '@/api/search';
 import { Button } from '@/components/Button';
-import { Config } from '@/utils/Config';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import { NextLocaleToLocale } from '@/utils/Locale';
 import PageLoader from '@/components/PageLoader';
-import { SearchApi } from '@/api/search';
 import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
 import useSWR from 'swr';

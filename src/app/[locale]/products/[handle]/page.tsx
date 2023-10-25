@@ -1,22 +1,22 @@
 import { ProductApi, ProductsApi } from '@/api/product';
 
-import { Config } from '@/utils/Config';
-import Gallery from '@/components/Gallery';
-import Heading from '@/components/typography/heading';
-import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import { Prefetch } from '@/utils/Prefetch';
-import Pricing from '@/components/typography/pricing';
-import { SliceZone } from '@prismicio/react';
-import SplitView from '@/components/layout/split-view';
 import { StoreApi } from '@/api/store';
-import { Suspense } from 'react';
+import Gallery from '@/components/Gallery';
+import Page from '@/components/Page';
+import SplitView from '@/components/layout/split-view';
+import Heading from '@/components/typography/heading';
+import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionarie';
-import { isValidHandle } from '@/utils/handle';
-import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
+import { Prefetch } from '@/utils/Prefetch';
+import { Config } from '@/utils/config';
+import { isValidHandle } from '@/utils/handle';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { SliceZone } from '@prismicio/react';
+import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export type ProductPageParams = { locale: string; handle: string };
 
