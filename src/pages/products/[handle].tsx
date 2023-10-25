@@ -939,12 +939,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 <SliceZone slices={page?.data.slices2} components={components} context={{ store }} />
 
                 {recommendations?.length && recommendations.length >= 1 && (
-                    <PageContent
-                        style={
-                            ((pastel && { '--color-block': 'var(--accent-secondary-light)' }) ||
-                                {}) as React.CSSProperties
-                        }
-                    >
+                    <PageContent>
                         <Recommendations>
                             <RecommendationsTitle>Frequently enjoyed together with these</RecommendationsTitle>
                             <RecommendationsContent>
