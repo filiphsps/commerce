@@ -12,7 +12,7 @@ import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
 import { Config } from '@/utils/config';
 import { isValidHandle } from '@/utils/handle';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -21,7 +21,7 @@ export type ProductPageParams = { locale: string; handle: string };
 
 export async function generateStaticParams() {
     // FIXME: Pagination.
-    const { products } = await ProductsApi();
+    const { products } = await ProductsApi({ locale: DefaultLocale() });
 
     return products.map(({ node }) => Config.i18n.locales.map((locale) => ({ locale, handle: node.handle }))).flat();
 }
@@ -40,7 +40,6 @@ export async function generateMetadata({ params }: { params: ProductPageParams }
 export default async function ProductPage({ params }: { params: ProductPageParams }) {
     const { locale: localeData, handle } = params;
 
-    if (process.env.NODE_ENV === 'development') return null;
     const locale = NextLocaleToLocale(localeData);
     const i18n = await getDictionary(locale);
 
@@ -50,7 +49,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     const product = await ProductApi({ handle, locale });
 
     const { page } = await PageApi({ locale, handle, type: 'product_page' });
-    const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
+    const prefetch = (page && (await Prefetch(page, locale))) || null;
 
     return (
         <Page>

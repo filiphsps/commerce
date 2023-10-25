@@ -1,19 +1,14 @@
 'use client';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import type { LocaleDictionary } from '@/utils/locale';
-import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
-import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { ProductProvider } from '@shopify/hydrogen-react';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import ProductCard from '../ProductCard';
 
-const ProductCard = dynamic(() => import('@/components/ProductCard'));
-
-const Content = styled.div<{
-    $horizontal?: boolean;
-}>`
+const Content = styled.div`
     column-count: 2;
     column-gap: var(--block-spacer-large);
     gap: var(--block-spacer-large);
@@ -25,87 +20,80 @@ const Content = styled.div<{
         gap: var(--block-spacer);
     }
 
-    ${({ $horizontal }) =>
-        $horizontal &&
-        css`
-            padding: var(--block-padding-large) 0;
-            padding-right: var(--block-spacer-large);
-            margin: calc(var(--block-padding-large) * -1) 0;
-            column: none;
-            display: grid;
-            overflow-x: auto;
-            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
-            grid-template-rows: 1fr;
-            grid-auto-flow: column;
-            overscroll-behavior-x: contain;
-            scroll-padding-left: var(--block-padding-large);
+    &.Horizontal {
+        padding: var(--block-padding-large) 0;
+        padding-right: var(--block-spacer-large);
+        margin: calc(var(--block-padding-large) * -1) 0;
+        column: none;
+        display: grid;
+        overflow-x: auto;
+        grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+        grid-template-rows: 1fr;
+        grid-auto-flow: column;
+        overscroll-behavior-x: contain;
+        scroll-padding-left: var(--block-padding-large);
 
-            .First {
-                margin-left: calc(var(--block-spacer-large));
-            }
-        `}
+        .First {
+            margin-left: calc(var(--block-spacer-large));
+        }
+    }
 
-    ${({ $horizontal }) =>
-        !$horizontal &&
-        css`
-            display: grid;
-            grid-template-columns: repeat(
-                auto-fit,
-                minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
-            );
+    &.Vertical {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
+        );
 
-            @media (min-width: 950px) {
-                justify-content: start;
-            }
+        @media (min-width: 950px) {
+            justify-content: start;
+        }
 
-            section {
-                width: 100%;
-                min-width: unset;
-            }
-        `}
+        section {
+            width: 100%;
+            min-width: unset;
+        }
+    }
 `;
 
-const Container = styled.div<{
-    $horizontal?: boolean;
-}>`
+const Container = styled.div`
     position: relative;
     width: 100%;
     min-width: 100%;
 
-    ${({ $horizontal }) =>
-        $horizontal &&
-        css`
-            width: calc(100% + var(--block-padding-large) * 2);
-            margin-left: calc(var(--block-padding-large) * -1);
-        `}
+    &.Horizontal {
+        width: calc(100% + var(--block-padding-large) * 2);
+        margin-left: calc(var(--block-padding-large) * -1);
+    }
 `;
 
 type CollectionBlockProps = {
-    handle?: string;
-    limit?: number;
     data?: Collection;
-
+    limit?: number;
     isHorizontal?: boolean;
-    showDescription?: boolean;
-    search?: boolean;
     store: StoreModel;
     i18n: LocaleDictionary;
+    locale: Locale;
 };
-const CollectionBlock = ({ data: collection, limit, isHorizontal, store, i18n }: CollectionBlockProps) => {
-    const products = (collection?.products?.edges || []).map((edge, index) => {
+const CollectionBlock = ({ data: collection, limit, isHorizontal, store, locale, i18n }: CollectionBlockProps) => {
+    const products = collection?.products?.edges || [];
+
+    const items = products.map((edge, index) => {
         if (limit && index >= limit) return null;
         if (!edge?.node) return null;
 
         const product = edge.node;
+
         return (
             <ProductProvider
-                key={`minimal_${product?.id}`}
+                key={product?.id}
                 data={product}
                 initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
             >
                 <ProductCard
                     handle={product?.handle}
                     store={store}
+                    locale={locale}
                     className={(index === 0 && 'First') || ''}
                     i18n={i18n}
                 />
@@ -114,11 +102,9 @@ const CollectionBlock = ({ data: collection, limit, isHorizontal, store, i18n }:
     });
 
     return (
-        <Suspense>
-            <Container $horizontal={isHorizontal}>
-                <Content $horizontal={isHorizontal}>{products.length > 0 && products}</Content>
-            </Container>
-        </Suspense>
+        <Container className={(isHorizontal && 'Horizontal') || 'Vertical'}>
+            <Content className={(isHorizontal && 'Horizontal') || 'Vertical'}>{items}</Content>
+        </Container>
     );
 };
 

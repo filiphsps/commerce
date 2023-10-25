@@ -6,22 +6,22 @@ import Content from '@/components/Content';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
-import { components as slices } from '@/slices';
 import { Prefetch } from '@/utils/Prefetch';
 import { Config } from '@/utils/config';
 import { isValidHandle } from '@/utils/handle';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export type CollectionPageParams = { locale: string; handle: string };
 
 export async function generateStaticParams() {
     // FIXME: Pagination.
-    const collections = await CollectionsApi();
+    const collections = await CollectionsApi({ locale: DefaultLocale() });
 
     return collections.map(({ handle }) => Config.i18n.locales.map((locale) => ({ locale: locale, handle }))).flat();
 }
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
     const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
 
-    const collection = await CollectionApi({ handle, locale: locale.locale });
+    const collection = await CollectionApi({ handle, locale });
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
 
     return {
@@ -51,10 +51,10 @@ export default async function CollectionPage({ params }: { params: CollectionPag
     if (!isValidHandle(handle)) return notFound();
 
     const store = await StoreApi({ locale });
-    const collection = await CollectionApi({ handle, locale: locale.locale });
+    const collection = await CollectionApi({ handle, locale });
 
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
-    const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
+    const prefetch = (page && (await Prefetch(page, locale))) || null;
 
     const subtitle =
         ((collection as any)?.shortDescription?.value && (
@@ -75,7 +75,19 @@ export default async function CollectionPage({ params }: { params: CollectionPag
         <Page>
             <PageContent primary>
                 {(!page || page.enable_header) && <PageHeader title={collection.title} subtitle={subtitle} />}
-                {page && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n }} />}
+                <Suspense>
+                    {page && (
+                        <PrismicPage
+                            store={store}
+                            locale={locale}
+                            page={page}
+                            prefetch={prefetch}
+                            i18n={i18n}
+                            handle={handle}
+                            type={'collection_page'}
+                        />
+                    )}
+                </Suspense>
             </PageContent>
         </Page>
     );

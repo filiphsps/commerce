@@ -288,7 +288,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     } catch (error: any) {
         if (error.message?.includes('404')) {
             return {
-                notFound: true
+                notFound: true,
+                revalidate: 60
             };
         }
 

@@ -105,11 +105,11 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 </Header>
                             )}
                             <CollectionBlock
-                                handle={slice.primary.handle!}
                                 isHorizontal={slice.primary.direction === 'horizontal'}
                                 limit={slice.primary.limit || 16}
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
+                                locale={context.locale}
                                 i18n={context.i18n}
                             />
                         </Content>
@@ -119,7 +119,13 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
 
         case 'full':
             return (
-                <FullCollection slice={slice} prefetch={context.prefetch} store={context.store} i18n={context.i18n} />
+                <FullCollection
+                    slice={slice}
+                    prefetch={context.prefetch}
+                    store={context.store}
+                    locale={context.locale}
+                    i18n={context.i18n}
+                />
             );
         default:
             throw new Error('500: Invalid variant');
