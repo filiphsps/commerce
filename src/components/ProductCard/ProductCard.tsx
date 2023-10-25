@@ -370,9 +370,9 @@ const Container = styled.section<{ $available?: boolean }>`
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
-    background: var(--accent-secondary-light);
-    color: var(--accent-secondary-text);
-    border: var(--block-border-width) solid var(--accent-secondary-light);
+    background: #f8efd3; // TODO: replace this.
+    color: #101418;  // TODO: replace this.
+    border: var(--block-border-width) solid #f8efd3;
 
     &.Sale {
         border: var(--block-border-width) solid var(--color-sale);
