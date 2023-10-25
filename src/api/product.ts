@@ -1,3 +1,4 @@
+import type { Locale } from '@/utils/locale';
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -217,25 +218,24 @@ export const ConvertToLocalMeasurementSystem = ({
     return `${Math.ceil(res)}${targetUnit}`;
 };
 
-export const ProductApi = async ({ handle, locale }: { handle: string; locale?: string }): Promise<Product> => {
+export const ProductApi = async ({ handle, locale }: { handle: string; locale: Locale }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
 
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    query product($handle: String!) @inContext(language: ${language}, country: ${country}) {
+                    query product($handle: String!, $language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         productByHandle(handle: $handle) {
                             ${PRODUCT_FRAGMENT}
                         }
                     }
                 `,
                 variables: {
-                    handle
+                    handle,
+                    language: locale.language,
+                    country: locale.country
                 }
             });
 

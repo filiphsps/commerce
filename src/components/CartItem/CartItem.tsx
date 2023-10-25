@@ -8,12 +8,10 @@ import styled, { css } from 'styled-components';
 import { ProductApi } from '@/api/product';
 import Loader from '@/components/Loader';
 import Link from '@/components/link';
-import { Config } from '@/utils/config';
-import { NextLocaleToLocale } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/legacy/image';
-import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 import useSWR from 'swr';
 
@@ -284,10 +282,10 @@ const Content = styled.tr`
     }
 `;
 
-interface CartItemProps {}
-const CartItem: FunctionComponent<CartItemProps> = ({}) => {
-    const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+interface CartItemProps {
+    locale: Locale;
+}
+const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
     const cart = useCart();
     const line = useCartLine();
     const TempImage = Image as any;
@@ -297,7 +295,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({}) => {
             'ProductApi',
             {
                 handle: line?.merchandise?.product?.handle!,
-                locale: locale.locale
+                locale: locale
             }
         ],
         ([, props]) => ProductApi(props)

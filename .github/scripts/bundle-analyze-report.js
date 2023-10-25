@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
 import gzSize from 'gzip-size';
+import fs from 'node:fs';
 import path from 'node:path';
 
 // Pull options from `package.json`
@@ -69,6 +69,9 @@ const rawData = JSON.stringify({
 console.log(rawData);
 
 mkdirp(path.join(nextMetaRoot, 'analyze/'));
+if (!fs.existsSync(path.join(nextMetaRoot, 'analyze'))) {
+    fs.mkdirSync(path.join(nextMetaRoot, 'analyze'), { recursive: true });
+}
 fs.writeFileSync(path.join(nextMetaRoot, 'analyze/__bundle_analysis.json'), rawData);
 
 // --------------
@@ -134,7 +137,7 @@ function mkdirp(dirPath) {
     for (let i = 1; i <= parts.length; i++) {
         const subPath = path.join(...parts.slice(0, i));
         if (!fs.existsSync(subPath)) {
-            fs.mkdirSync(subPath);
+            fs.mkdirSync(subPath, { recursive: true });
         }
     }
 }

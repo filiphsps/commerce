@@ -81,6 +81,15 @@ export const NextLocaleToLocale = (locale?: string): Locale => {
     };
 };
 
+/***
+ * Returns the default locale.
+ *
+ * @returns {Locale} `Locale` object.
+ */
+export const DefaultLocale = (): Locale => {
+    return NextLocaleToLocale(defaultLocale);
+};
+
 // TODO: Make this a proper type that somehow reads from the dictionary files?
 export type LocaleDictionary = {} & any;
 

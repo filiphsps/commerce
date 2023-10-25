@@ -1,7 +1,7 @@
 'use client';
 
 import { NavigationApi, NavigationItem } from '@/api/navigation';
-import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/locale';
+import { NextLocaleToCurrency } from '@/utils/locale';
 import { Suspense, useState } from 'react';
 
 import { HeaderApi } from '@/api/header';
@@ -13,6 +13,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { Config } from '@/utils/config';
 import type { Locale } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
+import { usePrismicClient } from '@prismicio/react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
@@ -82,6 +83,7 @@ const HeaderContainer = styled.div`
 
 interface PageProviderProps {
     store: StoreModel;
+    locale: Locale;
     pagePropsAnalyticsData: any;
     data?: {
         navigation?: NavigationItem[];
@@ -92,18 +94,17 @@ interface PageProviderProps {
     className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const { store, pagePropsAnalyticsData, data } = props;
-
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { store, locale, pagePropsAnalyticsData, data } = props;
 
     const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { data: navigation } = useSWR(
         [
             'NavigationApi',
             {
-                locale: locale.locale
+                locale: locale,
+                client: usePrismicClient()
             }
         ],
         ([, props]) => NavigationApi(props),
@@ -116,7 +117,8 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         [
             'HeaderApi',
             {
-                locale: locale.locale
+                locale: locale,
+                client: usePrismicClient()
             }
         ],
         ([, props]) => HeaderApi(props),

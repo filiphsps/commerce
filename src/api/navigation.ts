@@ -1,5 +1,7 @@
 import { createClient } from '@/prismic';
 import { Config } from '@/utils/config';
+import { DefaultLocale, type Locale } from '@/utils/locale';
+import type { Client as PrismicClient } from '@prismicio/client';
 
 export type NavigationItem = {
     title: string;
@@ -11,15 +13,19 @@ export type NavigationItem = {
 };
 
 // TODO: Migrate to `Locale` type.
-export const NavigationApi = async ({ locale }: { locale?: string }): Promise<NavigationItem[]> => {
+export const NavigationApi = async ({
+    locale,
+    client: _client
+}: {
+    locale: Locale;
+    client?: PrismicClient;
+}): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const client = createClient({});
+        const client = _client || createClient({ locale });
 
         try {
             const navigation = await client.getSingle('navigation', {
-                lang: locale
+                lang: locale.locale
             });
 
             return resolve(
@@ -30,8 +36,9 @@ export const NavigationApi = async ({ locale }: { locale?: string }): Promise<Na
                 }))
             );
         } catch (error: any) {
-            if (error.message.includes('No documents') && locale !== Config.i18n.default) {
-                return resolve(await NavigationApi({})); // Try again with default locale
+            // TODO: isDefaultLocale utility function.
+            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+                return resolve(await NavigationApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
             }
 
             console.error(error);

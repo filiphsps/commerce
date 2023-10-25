@@ -1,7 +1,11 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { Config } from '@/utils/config';
-import { FooterApi } from '@/api/footer';
-import { FooterModel } from '@/models/FooterModel';
+
+import { NextLocaleToLocale } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+import { usePrismicClient } from '@prismicio/react';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
@@ -207,7 +211,8 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
         [
             'FooterApi',
             {
-                locale: locale.locale
+                locale: locale,
+                client: usePrismicClient()
             }
         ],
         ([, props]) => FooterApi(props),
