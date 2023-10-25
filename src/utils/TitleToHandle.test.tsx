@@ -1,17 +1,19 @@
-import { titleToHandle } from './TitleToHandle';
+import { titleToHandle } from '@/utils/TitleToHandle';
 
 const example_titles = [
-    ['Siberia', 'siberia'],
-    ['G.3', 'g-3'],
-    ['1.2kg Pakete', '1-2kg-pakete'],
-    ['On!', 'on'],
+    ['Title', 'title'],
+    ['Product Title', 'product-title'],
+    ['title.product', 'title-product'],
+    ['1.2kg Pack', '1-2kg-pack'],
+    ['Hello World!', 'hello-world'],
     ["A'hoy", 'ahoy'],
-    ['Rapé', 'rape']
+    ['Francén', 'francen'],
+    ['Another-Title', 'another-title']
 ];
 
 describe('Util', () => {
-    describe('titleToHandle', () => {
-        it('Should convert vendors to handles', () => {
+    describe('TitleToHandle', () => {
+        it('should convert titles to handles', () => {
             for (let i = 0; i < example_titles.length; i++) {
                 const item = example_titles[i];
 

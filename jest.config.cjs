@@ -6,7 +6,7 @@ const createJestConfig = nextJest({
 
 module.exports = createJestConfig({
     moduleDirectories: ['node_modules', './src/'],
-    collectCoverage: true,
+    collectCoverage: process.env.CI ? true : false,
     collectCoverageFrom: [
         "./src/**/*.{js,ts,jsx,tsx}",
         "!**/node_modules/**",
