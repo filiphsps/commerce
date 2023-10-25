@@ -72,8 +72,7 @@ export default function CartContent({ slices, i18n }: CartContentProps) {
                             try {
                                 await Checkout({
                                     cart,
-                                    locale: locale.locale,
-                                    locales: Config.i18n.locales
+                                    locale: locale
                                 });
                             } catch (error: any) {
                                 // FIXME: Also user-feedback here.

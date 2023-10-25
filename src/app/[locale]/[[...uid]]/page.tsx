@@ -24,7 +24,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
-        if (!page) return notFound(); // TODO
+        if (!page) return notFound(); // TODO: Return proper error
         const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
 
         return (
@@ -46,3 +46,5 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return notFound(); // FIXME: Return proper error
     }
 }
+
+export const revalidate = 300; // 5 minutes.

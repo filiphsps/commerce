@@ -2,9 +2,9 @@
  * Parse and if required rovide the best fallback for a
  * Shopify pricing string.
  *
- * @param fallback
- * @param prices array of strings | any
- * @returns number | typeof fallback
+ * @param {number | T} fallback - The fallback value.
+ * @param {string | any} prices - The prices to parse.
+ * @returns {(number | T)} The parsed price or the fallback.
  */
 export const ShopifyPriceToNumber = <T>(fallback: number | T, ...prices: Array<string | any>): number | T => {
     for (let i = 0; i < prices.length; i++) {
