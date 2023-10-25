@@ -1,7 +1,7 @@
 import { storefrontClient } from '@/api/shopify';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import type { Client as PrismicClient } from '@prismicio/client';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
@@ -157,7 +157,7 @@ export const StoreApi = async ({
                 }
             });
         } catch (error: any) {
-            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 console.warn(error);
                 return resolve(await StoreApi({ locale })); // Try again with default locale
             }

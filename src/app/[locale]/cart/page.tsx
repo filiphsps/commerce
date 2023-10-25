@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { Suspense } from 'react';
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { locale: localeData } = params;
     const handle = 'cart';
     const locale = NextLocaleToLocale(localeData);
-    const locales = Config.i18n.locales;
+    const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
@@ -25,17 +25,17 @@ export async function generateMetadata({ params }: { params: { locale: string } 
         title: page?.meta_title || page?.title || 'Cart', // FIXME: i18n fallback
         description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
-            canonical: `https://${Config.domain}/cart/`,
+            canonical: `https://${BuildConfig.domain}/cart/`,
             languages: locales.reduce(
                 (prev, curr) => ({
                     ...prev,
-                    [curr]: `https://${Config.domain}/${curr}/cart/`
+                    [curr]: `https://${BuildConfig.domain}/${curr}/cart/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `https://${Config.domain}${locale.locale}/cart/`,
+            url: `https://${BuildConfig.domain}${locale.locale}/cart/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
             description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 
 export async function generateStaticParams() {
     // TODO: Use list of locales to pre-generate pages for as it's expensive to do during the build.
-    return Config.i18n.locales.map((locale) => ({ locale }));
+    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
 }
 
 export type CartPageParams = { locale: string };

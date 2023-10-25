@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { Suspense } from 'react';
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { locale: localeData } = params;
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
-    const locales = Config.i18n.locales;
+    const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
@@ -25,17 +25,17 @@ export async function generateMetadata({ params }: { params: { locale: string } 
         title: page?.meta_title || page?.title || 'Search', // FIXME: i18n fallback
         description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
-            canonical: `https://${Config.domain}/search/`,
+            canonical: `https://${BuildConfig.domain}/search/`,
             languages: locales.reduce(
                 (prev, curr) => ({
                     ...prev,
-                    [curr]: `https://${Config.domain}/${curr}/search/`
+                    [curr]: `https://${BuildConfig.domain}/${curr}/search/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `https://${Config.domain}${locale.locale}/search/`,
+            url: `https://${BuildConfig.domain}${locale.locale}/search/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
             description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export async function generateStaticParams() {
-    return Config.i18n.locales.map((locale) => ({ locale }));
+    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
 }
 
 export type SearchPageParams = { locale: string };

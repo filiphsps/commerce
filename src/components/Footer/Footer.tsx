@@ -4,7 +4,6 @@ import Link from '@/components/link';
 import { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
 import { ImageLoader } from '@/utils/ImageLoader';
-import { Config } from '@/utils/config';
 import type { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { usePrismicClient } from '@prismicio/react';
@@ -12,6 +11,7 @@ import Image from 'next/image';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
+
 const Logo = styled.div`
     position: relative;
     display: block;

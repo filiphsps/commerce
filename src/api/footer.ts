@@ -1,6 +1,6 @@
 import { FooterModel } from '@/models/FooterModel';
 import { createClient } from '@/prismic';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { DefaultLocale, type Locale } from '@/utils/locale';
 import type { Client as PrismicClient } from '@prismicio/client';
 
@@ -27,7 +27,7 @@ export const FooterApi = async ({
             });
         } catch (error: any) {
             // TODO: isDefaultLocale utility function.
-            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await FooterApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
             }
 

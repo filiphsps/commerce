@@ -10,7 +10,7 @@ import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
 import PageLoader from '@/components/PageLoader';
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
@@ -134,7 +134,7 @@ export default function SearchContent({}: SearchContentProps) {
     const router = useRouter();
     const route = usePathname();
     const query = useSearchParams()?.get('q') || '';
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
 
     const [input, setInput] = useState<string>(query || '');
     const [showFilters, setShowFilters] = useState(false);
