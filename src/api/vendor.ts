@@ -1,8 +1,8 @@
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { VendorModel } from '@/models/VendorModel';
-import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
-import { titleToHandle } from '@/utils/TitleToHandle';
+import type { VendorModel } from '@/models/VendorModel';
+import { TitleToHandle } from '@/utils/title-to-handle';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { gql } from 'graphql-tag';
 
 export const Convertor = (
     products: Array<{
@@ -22,7 +22,7 @@ export const Convertor = (
     // Remove duplicates and create a proper object
     return Array.from(new Set(vendors)).map((vendor) => ({
         title: vendor,
-        handle: titleToHandle(vendor)
+        handle: TitleToHandle(vendor)
     }));
 };
 

@@ -1,9 +1,9 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 
-import { Config } from '@/utils/Config';
-import type { RedirectModel } from '@/models/RedirectModel';
-import { gql } from 'graphql-tag';
 import { storefrontClient } from '@/api/shopify';
+import type { RedirectModel } from '@/models/RedirectModel';
+import { Config } from '@/utils/config';
+import { gql } from 'graphql-tag';
 
 export const Convertor = (
     redirects: Array<{

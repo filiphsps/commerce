@@ -8,8 +8,8 @@ import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import PageLoader from '@/components/PageLoader';
 import Link from '@/components/link';
-import { useTranslation, type LocaleDictionary } from '@/utils/Locale';
-import { Pluralize } from '@/utils/Pluralize';
+import { useTranslation, type LocaleDictionary } from '@/utils/locale';
+import { Pluralize } from '@/utils/pluralize';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 

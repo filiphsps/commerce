@@ -3,7 +3,7 @@
 import styled, { css } from 'styled-components';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import type { LocaleDictionary } from '@/utils/Locale';
+import type { LocaleDictionary } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
 import { Suspense } from 'react';

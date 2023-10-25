@@ -1,10 +1,10 @@
 import { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 
 import { CollectionApi } from '@/api/collection';
-import { Config } from '@/utils/Config';
-import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ProductVisuals } from '@/api/product';
 import { VendorsApi } from '@/api/vendor';
+import { Config } from '@/utils/config';
+import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 
 const Prefetch = (
     page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData,

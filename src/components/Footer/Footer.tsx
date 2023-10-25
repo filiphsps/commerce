@@ -1,11 +1,12 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
+import { Config } from '@/utils/config';
 import { FooterApi } from '@/api/footer';
 import { FooterModel } from '@/models/FooterModel';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
 import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
+import { NextLocaleToLocale } from '@/utils/locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import styled from 'styled-components';

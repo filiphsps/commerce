@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/Locale';
+import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
 const stub = { cart: {}, common: {}, header: {} };
 

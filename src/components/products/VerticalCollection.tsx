@@ -2,16 +2,16 @@
 
 import styled, { css } from 'styled-components';
 
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '@/api/collection';
-import { Config } from '@/utils/Config';
-import type { FunctionComponent } from 'react';
-import type { LocaleDictionary } from '@/utils/Locale';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
+import type { LocaleDictionary } from '@/utils/locale';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { ProductProvider } from '@shopify/hydrogen-react';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
 import useSWR from 'swr';
 
 const ProductCard = dynamic(() => import('@/components/ProductCard'));

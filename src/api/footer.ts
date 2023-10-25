@@ -1,6 +1,6 @@
-import { Config } from '@/utils/Config';
 import { FooterModel } from '@/models/FooterModel';
 import { createClient } from '@/prismic';
+import { Config } from '@/utils/config';
 
 // TODO: Migrate to `Locale` type.
 export const FooterApi = async ({ locale }: { locale?: string }): Promise<FooterModel> => {

@@ -1,6 +1,6 @@
-import { Config } from '@/utils/Config';
 import type { HeaderModel } from '@/models/HeaderModel';
 import { createClient } from '@/prismic';
+import { Config } from '@/utils/config';
 
 // TODO: Migrate to `Locale` type.
 export const HeaderApi = async ({ locale }: { locale?: string }): Promise<HeaderModel> => {

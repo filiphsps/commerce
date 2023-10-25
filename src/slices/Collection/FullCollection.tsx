@@ -1,8 +1,8 @@
-import type { CollectionSliceFull } from '@/prismic/types';
-import type { FunctionComponent } from 'react';
-import type { LocaleDictionary } from '@/utils/Locale';
 import type { StoreModel } from '@/models/StoreModel';
+import type { CollectionSliceFull } from '@/prismic/types';
+import type { LocaleDictionary } from '@/utils/locale';
 import dynamic from 'next/dynamic';
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const PageContent = dynamic(() => import('@/components/PageContent'));

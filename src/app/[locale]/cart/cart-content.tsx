@@ -1,16 +1,16 @@
 'use client';
 
-import CartLines from '@/components/cart/cart-lines';
 import { CartSummary } from '@/components/CartSummary';
-import { Checkout } from '@/utils/checkout';
-import { Config } from '@/utils/Config';
-import type { LocaleDictionary } from '@/utils/Locale';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import type { ReactNode } from 'react';
+import CartLines from '@/components/cart/cart-lines';
 import type { StoreModel } from '@/models/StoreModel';
-import { styled } from 'styled-components';
+import { Checkout } from '@/utils/checkout';
+import { Config } from '@/utils/config';
+import type { LocaleDictionary } from '@/utils/locale';
+import { NextLocaleToLocale } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { styled } from 'styled-components';
 
 const Container = styled.main`
     display: flex;

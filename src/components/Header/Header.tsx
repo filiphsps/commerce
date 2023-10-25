@@ -1,20 +1,20 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
 import { Input } from '@/components/Input';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
-import NProgress from 'nprogress';
-import { Pluralize } from '@/utils/Pluralize';
 import type { StoreModel } from '@/models/StoreModel';
+import { ImageLoader } from '@/utils/ImageLoader';
+import { Pluralize } from '@/utils/pluralize';
 import { useCart } from '@shopify/hydrogen-react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import NProgress from 'nprogress';
+import type { FunctionComponent } from 'react';
 
 const Content = styled.div`
     display: grid;

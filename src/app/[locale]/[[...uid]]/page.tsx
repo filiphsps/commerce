@@ -1,15 +1,15 @@
-import { NextLocaleToLocale } from '@/utils/Locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import PageContent from '@/components/PageContent';
-import { Prefetch } from '@/utils/Prefetch';
-import { SliceZone } from '@prismicio/react';
 import { StoreApi } from '@/api/store';
-import { Suspense } from 'react';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
 import { getDictionary } from '@/i18n/dictionarie';
-import { isValidHandle } from '@/utils/handle';
-import { notFound } from 'next/navigation';
 import { components as slices } from '@/slices';
+import { Prefetch } from '@/utils/Prefetch';
+import { isValidHandle } from '@/utils/handle';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { SliceZone } from '@prismicio/react';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
     const { locale: localeData, uid } = params;

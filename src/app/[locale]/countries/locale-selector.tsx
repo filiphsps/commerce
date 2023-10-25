@@ -2,11 +2,11 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import { Config } from '@/utils/Config';
+import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import type { StoreModel } from '@/models/StoreModel';
 import { styled } from 'styled-components';
 
 const List = styled.article`

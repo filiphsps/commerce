@@ -1,10 +1,10 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 
-import { Config } from '@/utils/Config';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/product';
+import { storefrontClient } from '@/api/shopify';
+import { Config } from '@/utils/config';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
-import { storefrontClient } from '@/api/shopify';
 
 // TODO: Migrate to the new recommendations api.
 // TODO: Migrate to `Locale` type.

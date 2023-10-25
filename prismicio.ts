@@ -1,8 +1,8 @@
+import { Config } from '@/utils/config';
 import type { ClientConfig } from '@prismicio/client';
-import { Config } from '@/utils/Config';
+import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
-import { createClient as prismicCreateClient } from '@prismicio/client';
 
 /**
  * The project's Prismic repository name.

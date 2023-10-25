@@ -4,7 +4,7 @@ import {
     NextLocaleToLanguage,
     NextLocaleToLocale,
     useTranslation
-} from '@/utils/Locale';
+} from '@/utils/locale';
 
 import type { StoreModel } from '@/models/StoreModel';
 

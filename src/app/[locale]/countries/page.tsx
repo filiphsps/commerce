@@ -1,17 +1,17 @@
 import { CountriesApi, StoreApi } from '@/api/store';
 
-import { Config } from '@/utils/Config';
-import LocaleSelector from './locale-selector';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/Prefetch';
-import { SliceZone } from '@prismicio/react';
-import { Suspense } from 'react';
 import { getDictionary } from '@/i18n/dictionarie';
 import { components as slices } from '@/slices';
+import { Prefetch } from '@/utils/Prefetch';
+import { Config } from '@/utils/config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { SliceZone } from '@prismicio/react';
+import { Suspense } from 'react';
+import LocaleSelector from './locale-selector';
 
 export type CountriesPageParams = { locale: string };
 
