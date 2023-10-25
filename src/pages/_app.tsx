@@ -10,7 +10,7 @@ import Router, { useRouter } from 'next/router';
 import { CartFragment } from '@/api/cart';
 import { StoreApi } from '@/api/store';
 import PageProvider from '@/components/PageProvider';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Lexend_Deca } from 'next/font/google';
 import Head from 'next/head';
@@ -90,7 +90,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 type="Organization"
                 name={store?.name}
                 description={store?.description}
-                url={`https://${Config.domain}/`}
+                url={`https://${BuildConfig.domain}/`}
                 logo={store?.favicon.src}
                 foundingDate="2023"
                 founders={[
@@ -126,7 +126,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     contactType: 'Customer relations and support',
                     email: 'hello@sweetsideofsweden.com',
                     telephone: '+1 866 502 5580',
-                    url: `https://${Config.domain}/about/`,
+                    url: `https://${BuildConfig.domain}/about/`,
                     availableLanguage: ['English', 'Swedish'],
                     areaServed:
                         store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
@@ -139,10 +139,10 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             <SiteLinksSearchBoxJsonLd
                 name={store?.name}
                 alternateName={'sweetsideofsweden'}
-                url={`https://${Config.domain}/`}
+                url={`https://${BuildConfig.domain}/`}
                 potentialActions={[
                     {
-                        target: `https://${Config.domain}/search/?q`,
+                        target: `https://${BuildConfig.domain}/search/?q`,
                         queryInput: 'search_term_string'
                     }
                 ]}
@@ -150,10 +150,10 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
 
             {/* Page */}
             <ShopifyProvider
-                storefrontId={Config.shopify.storefront_id}
-                storeDomain={`https://${Config.shopify.checkout_domain}`}
-                storefrontApiVersion={Config.shopify.api}
-                storefrontToken={Config.shopify.token}
+                storefrontId={BuildConfig.shopify.storefront_id}
+                storeDomain={`https://${BuildConfig.shopify.checkout_domain}`}
+                storefrontApiVersion={BuildConfig.shopify.api}
+                storefrontToken={BuildConfig.shopify.token}
                 countryIsoCode={locale.country}
                 languageIsoCode={locale.language}
             >

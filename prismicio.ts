@@ -1,4 +1,4 @@
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { NextLocaleToLocale } from '@/utils/locale';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
@@ -9,7 +9,7 @@ import { enableAutoPreviews } from '@prismicio/next';
 /**
  * The project's Prismic repository name.
  */
-export const repositoryName = Config.prismic.name;
+export const repositoryName = BuildConfig.prismic.name;
 export const accessToken = process.env.PRISMIC_TOKEN;
 
 /**

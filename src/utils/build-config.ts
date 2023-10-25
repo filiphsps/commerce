@@ -1,4 +1,4 @@
-export const Config = {
+export const BuildConfig = {
     environment: process.env.NODE_ENV || 'production',
     domain: process.env.DOMAIN || 'www.sweetsideofsweden.com',
     GTM: process.env.GTM,

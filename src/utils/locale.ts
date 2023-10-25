@@ -1,10 +1,10 @@
 import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 
 // TODO: This should be tenant configurable.
-const defaultLocale = Config.i18n.default;
+const defaultLocale = BuildConfig.i18n.default;
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 
@@ -45,7 +45,7 @@ export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
  */
 export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode; store: StoreModel }): CurrencyCode =>
     (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode ||
-        Config.i18n.currencies[0]) as CurrencyCode;
+        BuildConfig.i18n.currencies[0]) as CurrencyCode;
 
 /***
  * Converts a locale string to a Locale.

@@ -8,7 +8,7 @@ import PageContent from '@/components/PageContent';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -149,17 +149,17 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
             <NextSeo
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
-                canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
+                canonical={`https://${BuildConfig.domain}/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/${
+                        href: `https://${BuildConfig.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/${
                             article.handle
                         }/`
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/blog/${article.handle}/`,
+                    url: `https://${BuildConfig.domain}/blog/${article.handle}/`,
                     locale: router.locale,
                     type: 'article',
                     title: article.seo.title || article.title,
@@ -179,7 +179,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 }}
             />
             <NewsArticleJsonLd
-                url={`https://${Config.domain}/blog/${article.handle}`}
+                url={`https://${BuildConfig.domain}/blog/${article.handle}`}
                 description={article.seo.description || article.excerpt}
                 body={article.content}
                 title={article.title}
@@ -242,7 +242,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
 };
 
 export const getStaticPaths: GetStaticPaths = async ({}) => {
-    const locales = Config.i18n.locales;
+    const locales = BuildConfig.i18n.locales;
     const blog: any = await BlogApi({ handle: 'news' });
 
     let paths = [

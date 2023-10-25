@@ -4,7 +4,7 @@ import { VendorsApi } from '@/api/vendor';
 import PageLoader from '@/components/PageLoader';
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
@@ -66,7 +66,7 @@ interface VendorsProps {
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
     const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
 
     const { data: vendors } = useSWR(
         [

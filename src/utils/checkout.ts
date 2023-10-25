@@ -1,4 +1,4 @@
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import type { CartWithActions } from '@shopify/hydrogen-react';
@@ -36,7 +36,7 @@ export const Checkout = async ({ cart, locale }: { cart: CartWithActions; locale
     if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
-    const url = cart.checkoutUrl.replace(Config.shopify.domain, Config.shopify.checkout_domain);
+    const url = cart.checkoutUrl.replace(BuildConfig.shopify.domain, BuildConfig.shopify.checkout_domain);
 
     try {
         // Google Tracking

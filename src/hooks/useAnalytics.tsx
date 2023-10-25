@@ -13,7 +13,7 @@ import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/s
 
 import { usePrevious } from '@/hooks/usePrevious';
 import { ShopifyPriceToNumber } from '@/utils/Pricing';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
@@ -116,7 +116,7 @@ export const sendPageViewEvent = ({
                 eventName: AnalyticsEventName.PAGE_VIEW,
                 payload
             },
-            Config.shopify.checkout_domain
+            BuildConfig.shopify.checkout_domain
         );
     } catch (error) {
         console.warn(error);
@@ -152,7 +152,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         ...viewPayload,
         shopId,
         shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
-        storefrontId: Config.shopify.storefront_id,
+        storefrontId: BuildConfig.shopify.storefront_id,
         currency: locale.currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true,
@@ -211,7 +211,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
                     eventName: AnalyticsEventName.ADD_TO_CART,
                     payload
                 },
-                Config.shopify.checkout_domain
+                BuildConfig.shopify.checkout_domain
             );
         } catch (error) {
             console.warn(error);

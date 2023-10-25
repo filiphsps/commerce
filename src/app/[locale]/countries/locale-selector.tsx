@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
@@ -90,8 +90,8 @@ type LocaleSelectorProps = {
 export default function LocaleSelector({ countries }: LocaleSelectorProps) {
     const router = useRouter();
     const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
-    const locales = Config.i18n.locales;
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
+    const locales = BuildConfig.i18n.locales;
 
     const markets = (
         countries?.map((country) =>

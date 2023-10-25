@@ -4,7 +4,7 @@ import { BlogApi } from '@/api/blog';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { NextSeo } from 'next-seo';
@@ -86,11 +86,11 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
         <Page className="BlogPage">
             <NextSeo
                 title="Blog"
-                canonical={`https://${Config.domain}/${router.locale}/blog/`}
+                canonical={`https://${BuildConfig.domain}/${router.locale}/blog/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/`
+                        href: `https://${BuildConfig.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/`
                     })) || []
                 }
             />
@@ -122,7 +122,7 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async ({}) => {
-    const locales = Config.i18n.locales;
+    const locales = BuildConfig.i18n.locales;
 
     let paths = [
         ...(

@@ -9,7 +9,7 @@ import PageHeader from '@/components/PageHeader';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
@@ -23,7 +23,9 @@ export async function generateStaticParams() {
     // FIXME: Pagination.
     const collections = await CollectionsApi({ locale: DefaultLocale() });
 
-    return collections.map(({ handle }) => Config.i18n.locales.map((locale) => ({ locale: locale, handle }))).flat();
+    return collections
+        .map(({ handle }) => BuildConfig.i18n.locales.map((locale) => ({ locale: locale, handle })))
+        .flat();
 }
 
 export async function generateMetadata({ params }: { params: CollectionPageParams }) {

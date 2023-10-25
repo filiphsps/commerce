@@ -2,7 +2,7 @@ import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/product';
 import { storefrontClient } from '@/api/shopify';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
@@ -11,7 +11,7 @@ import { gql } from 'graphql-tag';
 export const RecommendationApi = async ({ id, locale }: { id?: string; locale?: string }): Promise<Product[]> => {
     return new Promise(async (resolve, reject) => {
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
+        if (!locale || locale === 'x-default') locale = BuildConfig.i18n.default;
 
         const country = NextLocaleToCountry(locale);
         const language = NextLocaleToLanguage(locale);

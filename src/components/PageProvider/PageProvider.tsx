@@ -10,7 +10,7 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import { FooterModel } from '@/models/FooterModel';
 import { HeaderModel } from '@/models/HeaderModel';
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
 import { usePrismicClient } from '@prismicio/react';
@@ -133,7 +133,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             ...locale,
             currency: NextLocaleToCurrency({ country, store }) // FIXME: Remove this when `NextLocaleToCurrency` works.
         } as Locale,
-        domain: Config.domain,
+        domain: BuildConfig.domain,
         shopId: store?.id,
         pagePropsAnalyticsData
     });

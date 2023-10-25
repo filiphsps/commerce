@@ -4,7 +4,7 @@ import { asLink } from '@prismicio/client';
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 
 import { createClient } from '@/prismic';
-import { Config } from '@/utils/config';
+import { BuildConfig } from '@/utils/build-config';
 import { DefaultLocale, type Locale } from '@/utils/locale';
 
 export const PagesApi = async ({
@@ -35,7 +35,7 @@ export const PagesApi = async ({
             // TODO: Error type.
         } catch (error: any) {
             // TODO: isDefaultLocale utility function.
-            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await PagesApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale.
             }
 
@@ -79,7 +79,7 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
             });
         } catch (error: any) {
             // TODO: isDefaultLocale utility function.
-            if (error.message.includes('No documents') && locale.locale !== Config.i18n.default) {
+            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await PageApi({ locale: DefaultLocale(), handle, type, client: _client })); // Try again with default locale
             }
 
