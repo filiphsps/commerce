@@ -3,16 +3,14 @@ import { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocument
 import { CollectionApi } from '@/api/collection';
 import type { ProductVisuals } from '@/api/product';
 import { VendorsApi } from '@/api/vendor';
-import { Config } from '@/utils/config';
+import type { Locale } from '@/utils/locale';
 import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 
 const Prefetch = (
     page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData,
-    locale?: string,
+    locale: Locale,
     initialData?: any
 ) => {
-    if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
     return new Promise<{
         collections?: any;
         products?: any;

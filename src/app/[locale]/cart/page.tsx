@@ -3,13 +3,12 @@ import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
-import { components as slices } from '@/slices';
 import { Prefetch } from '@/utils/Prefetch';
 import { Config } from '@/utils/config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
 import CartContent from './cart-content';
 
@@ -71,7 +70,7 @@ export default async function SearchPage({ params }: { params: CartPageParams })
     const store = await StoreApi({ locale });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
+    const prefetch = (page && (await Prefetch(page, locale))) || null;
 
     return (
         <Page>
@@ -83,7 +82,17 @@ export default async function SearchPage({ params }: { params: CartPageParams })
                         store={store}
                         locale={locale}
                         slices={
-                            <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
+                            page && (
+                                <PrismicPage
+                                    store={store}
+                                    locale={locale}
+                                    page={page}
+                                    prefetch={prefetch}
+                                    i18n={i18n}
+                                    handle={handle}
+                                    type={'custom_page'}
+                                />
+                            )
                         }
                         i18n={i18n}
                     />

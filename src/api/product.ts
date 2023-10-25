@@ -1,9 +1,8 @@
 import type { Locale } from '@/utils/locale';
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
+import { NextLocaleToCountry } from '@/utils/locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { storefrontClient } from '@/api/shopify';
-import { Config } from '@/utils/config';
 import ConvertUnits from 'convert-units';
 import { gql } from 'graphql-tag';
 
@@ -225,10 +224,14 @@ export const ProductApi = async ({ handle, locale }: { handle: string; locale: L
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
+                    fragment product on Product {
+                        ${PRODUCT_FRAGMENT}
+                    }
+
                     query product($handle: String!, $language: LanguageCode!, $country: CountryCode!)
                     @inContext(language: $language, country: $country) {
                         productByHandle(handle: $handle) {
-                            ${PRODUCT_FRAGMENT}
+                            ...product
                         }
                     }
                 `,
@@ -289,10 +292,15 @@ export const ProductsCountApi = async (): Promise<number> => {
     return count;
 };
 
-export const ProductsApi = async (
-    limit: number = 250,
-    cursor?: string
-): Promise<{
+export const ProductsApi = async ({
+    locale,
+    limit = 250,
+    cursor
+}: {
+    locale: Locale;
+    limit?: number;
+    cursor?: string;
+}): Promise<{
     products: ProductEdge[];
     cursor?: string;
     pagination: {
@@ -307,9 +315,11 @@ export const ProductsApi = async (
                     fragment product on Product {
                         ${PRODUCT_FRAGMENT}
                     }
-                    query products {
+
+                    query products($limit: Int!, $language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         products(
-                            first: ${limit},
+                            first: $limit,
                             sortKey: BEST_SELLING
                             ${cursor ? `, after: "${cursor}"` : ''})
                         {
@@ -325,10 +335,18 @@ export const ProductsApi = async (
                             }
                         }
                     }
-                `
+                `,
+                variables: {
+                    limit,
+                    language: locale.language,
+                    country: locale.country
+                }
             });
 
-            if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
+            if (errors)
+                return reject(
+                    new Error(`500: Something wen't wrong on our end (${errors.map((e) => e.message).join('\n')})`)
+                );
             if (!data.products) return reject(new Error('404: The requested document cannot be found'));
 
             return resolve({
@@ -347,12 +365,14 @@ export const ProductsApi = async (
 };
 
 export const ProductsPaginationApi = async ({
+    locale,
     limit,
     vendor,
     sorting,
     before,
     after
 }: {
+    locale: Locale;
     limit?: number;
     vendor?: string;
     sorting?: 'BEST_SELLING' | 'CREATED_AT' | 'PRICE' | 'RELEVANCE' | 'TITLE' | 'VENDOR';
@@ -377,7 +397,9 @@ export const ProductsPaginationApi = async ({
                     fragment product on Product {
                         ${PRODUCT_FRAGMENT}
                     }
-                    query products {
+
+                    query products($language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         products(
                             first: ${limit_n},
                             sortKey: ${sort_key}
@@ -400,7 +422,11 @@ export const ProductsPaginationApi = async ({
                             }
                         }
                     }
-                `
+                `,
+                variables: {
+                    language: locale.language,
+                    country: locale.country
+                }
             });
 
             const page_info = data.products.pageInfo;
@@ -427,18 +453,15 @@ export type ProductVisuals = {
     secondaryAccentDark: boolean;
     transparentBackgrounds: boolean;
 };
-export const ProductVisualsApi = async ({ id, locale }: { id: string; locale?: string }): Promise<ProductVisuals> => {
+export const ProductVisualsApi = async ({ id, locale }: { id: string; locale: Locale }): Promise<ProductVisuals> => {
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('400: Invalid id'));
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
 
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    query metaobject($id: ID!) @inContext(language: ${language}, country: ${country}) {
+                    query metaobject($id: ID!, $language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         metaobject(id: $id) {
                             primaryAccent: field(key: "primary_accent") {
                                 value
@@ -459,7 +482,9 @@ export const ProductVisualsApi = async ({ id, locale }: { id: string; locale?: s
                     }
                 `,
                 variables: {
-                    id
+                    id,
+                    language: locale.language,
+                    country: locale.country
                 }
             });
 

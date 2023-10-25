@@ -3,12 +3,13 @@ import { CollectionsApi } from '@/api/collection';
 import { PagesApi } from '@/api/page';
 import { ProductsApi } from '@/api/product';
 import { Config } from '@/utils/config';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {
     const urls: any[] = [];
     const locales: string[] = Config?.i18n?.locales || [];
+    const locale = DefaultLocale();
 
     interface SitemapEntry {
         location: string;
@@ -17,7 +18,7 @@ export async function GET() {
 
     let pages: SitemapEntry[] = [];
     try {
-        pages = ((await PagesApi({ locale: NextLocaleToLocale() })) as any).paths
+        pages = ((await PagesApi({ locale })) as any).paths
             .filter((i: any) => i !== '/')
             .map(
                 (page: any) =>
@@ -30,14 +31,14 @@ export async function GET() {
         console.warn(error);
     }
 
-    const collections = (await CollectionsApi()).map(
+    const collections = (await CollectionsApi({ locale })).map(
         (collection) =>
             ({
                 location: `collections/${collection.handle}/`,
                 priority: 1.0
             }) as SitemapEntry
     );
-    const products = (await ProductsApi()).products.map(
+    const products = (await ProductsApi({ locale })).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
