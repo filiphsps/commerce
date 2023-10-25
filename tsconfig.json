@@ -51,6 +51,7 @@
         "prismicio-types.d.ts",
         "./src/@types",
         "./src/**/*.ts",
-        "./src/**/*.tsx"
+        "./src/**/*.tsx",
+        "./jest-setup.ts"
     ]
 }

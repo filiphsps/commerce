@@ -1,5 +1,3 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
-
 import { storefrontClient } from '@/api/shopify';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
@@ -9,18 +7,13 @@ import type { Client as PrismicClient } from '@prismicio/client';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-// TODO: Migrate to `Locale` type.
-export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Country[]> => {
+export const CountriesApi = async ({ locale }: { locale: Locale }): Promise<Country[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-            const country = NextLocaleToCountry(locale);
-            const language = NextLocaleToLanguage(locale);
-
             const { data: localData } = await storefrontClient.query({
                 query: gql`
-                    query localization @inContext(language: ${language}, country: ${country}) {
+                    query localization($language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         localization {
                             availableCountries {
                                 availableLanguages {
@@ -37,7 +30,11 @@ export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Cou
                             }
                         }
                     }
-                `
+                `,
+                variables: {
+                    language: locale.language,
+                    country: locale.country
+                }
             });
 
             return resolve(localData?.localization?.availableCountries);
@@ -48,10 +45,10 @@ export const CountriesApi = async ({ locale }: { locale?: string }): Promise<Cou
     });
 };
 
-export const LocalesApi = async (): Promise<string[]> => {
+export const LocalesApi = async ({ locale }: { locale: Locale }): Promise<string[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const countries = await CountriesApi({});
+            const countries = await CountriesApi({ locale });
             const locales = countries.flatMap((country) =>
                 country.availableLanguages.map(
                     (language) => `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
@@ -74,7 +71,7 @@ export const StoreApi = async ({
     client?: PrismicClient;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({});
+        const client = _client || createClient({ locale });
 
         try {
             const { data: shopData } = await storefrontClient.query({

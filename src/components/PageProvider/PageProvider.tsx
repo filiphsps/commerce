@@ -127,13 +127,11 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         }
     );
 
-    const { country, language } = locale;
+    const { country } = locale;
     useAnalytics({
         locale: {
-            locale: locale.locale,
-            language,
-            country,
-            currency: NextLocaleToCurrency({ country, store })
+            ...locale,
+            currency: NextLocaleToCurrency({ country, store }) // FIXME: Remove this when `NextLocaleToCurrency` works.
         } as Locale,
         domain: Config.domain,
         shopId: store?.id,
@@ -141,10 +139,8 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     });
     useCartUtils({
         locale: {
-            locale: locale.locale,
-            language,
-            country,
-            currency: NextLocaleToCurrency({ country, store })
+            ...locale,
+            currency: NextLocaleToCurrency({ country, store }) // FIXME: Remove this when `NextLocaleToCurrency` works.
         } as Locale
     });
 
@@ -202,7 +198,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             )}
 
             {props.children}
-            <Footer store={props?.store} data={data?.footer} />
+            <Footer store={props?.store} locale={locale} data={data?.footer} />
         </Container>
     );
 };
