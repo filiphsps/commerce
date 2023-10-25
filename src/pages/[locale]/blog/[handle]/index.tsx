@@ -249,7 +249,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
         ...blog.articles
             ?.map((article: any) => [
                 ...(locales?.map((locale) => ({
-                    params: { handle: article?.handle, locale: locale }
+                    params: { handle: article?.handle, locale }
                 })) || [])
             ])
             .flat()

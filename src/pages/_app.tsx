@@ -158,7 +158,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 languageIsoCode={locale.language}
             >
                 <CartProvider cartFragment={CartFragment}>
-                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>
+                    <PageProvider store={store} locale={locale} pagePropsAnalyticsData={pageProps.analytics}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
                 </CartProvider>

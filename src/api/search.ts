@@ -1,19 +1,17 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/product';
 import { storefrontClient } from '@/api/shopify';
-import { Config } from '@/utils/config';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-// TODO: Migrate to `Locale` type.
 export const SearchApi = async ({
     query,
     locale,
     limit
 }: {
     query: string;
-    locale?: string;
+    locale: Locale;
     limit?: number;
 }): Promise<{
     products: Product[];
@@ -21,15 +19,12 @@ export const SearchApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
 
         const search = async ({ type }: { type: 'PRODUCT' }) => {
             const { data } = await storefrontClient.query({
                 query: gql`
-                    query searchProducts($query: String!, $first: Int) @inContext(language: ${language}, country: ${country}) {
+                    query searchProducts($query: String!, $first: Int, $language: LanguageCode!, $country: CountryCode!)
+                        @inContext(language: $language, country: $country) {
                         search(query: $query, first: $first, types: ${type}) {
                             productFilters {
                                 id
@@ -55,7 +50,9 @@ export const SearchApi = async ({
                 `,
                 variables: {
                     query,
-                    first: limit || 75
+                    first: limit || 75,
+                    language: locale.language,
+                    country: locale.country
                 }
             });
 
@@ -83,7 +80,7 @@ export const SearchPredictionApi = async ({
     locale
 }: {
     query: string;
-    locale?: string;
+    locale: Locale;
 }): Promise<{
     queries?: {
         styledText: string;
@@ -92,14 +89,11 @@ export const SearchPredictionApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
 
         const { data } = await storefrontClient.query({
             query: gql`
-                query predictiveSearch($query: String!) @inContext(language: ${language}, country: ${country}) {
+                query predictiveSearch($query: String!, $language: LanguageCode!, $country: CountryCode!)
+                @inContext(language: $language, country: $country) {
                     predictiveSearch(query: $query, types: [QUERY], limit: 5) {
                         queries {
                             styledText
@@ -109,7 +103,9 @@ export const SearchPredictionApi = async ({
                 }
             `,
             variables: {
-                query
+                query,
+                language: locale.language,
+                country: locale.country
             }
         });
 

@@ -3,13 +3,12 @@ import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
+import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionarie';
-import { components as slices } from '@/slices';
 import { Prefetch } from '@/utils/Prefetch';
 import { Config } from '@/utils/config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
 import SearchContent from './search-content';
 
@@ -58,7 +57,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export async function generateStaticParams() {
-    return Config.i18n.locales.map((locale) => ({ locale: locale }));
+    return Config.i18n.locales.map((locale) => ({ locale }));
 }
 
 export type SearchPageParams = { locale: string };
@@ -79,7 +78,20 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
                 <PageHeader title={page?.title} subtitle={page?.description} />
 
                 <Suspense>
-                    <SliceZone slices={page?.slices} components={slices} context={{ store, prefetch, i18n }} />
+                    <Suspense>
+                        {page && (
+                            <PrismicPage
+                                store={store}
+                                locale={locale}
+                                page={page}
+                                prefetch={prefetch}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'custom_page'}
+                            />
+                        )}
+                    </Suspense>
+
                     <SearchContent store={store} />
                 </Suspense>
             </PageContent>

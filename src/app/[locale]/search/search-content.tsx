@@ -167,7 +167,7 @@ export default function SearchContent({}: SearchContentProps) {
             'SearchApi',
             {
                 query: query,
-                locale: locale.locale
+                locale: locale
             }
         ]) ||
             null,

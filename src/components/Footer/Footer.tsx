@@ -7,6 +7,7 @@ import { ImageLoader } from '@/utils/ImageLoader';
 import { Config } from '@/utils/config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { usePrismicClient } from '@prismicio/react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
@@ -207,7 +208,8 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
         [
             'FooterApi',
             {
-                locale: locale.locale
+                locale: locale,
+                client: usePrismicClient()
             }
         ],
         ([, props]) => FooterApi(props),

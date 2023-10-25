@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export async function generateStaticParams() {
-    return Config.i18n.locales.map((locale) => ({ locale: locale }));
+    return Config.i18n.locales.map((locale) => ({ locale }));
 }
 
 export default async function RootLayout({
@@ -80,9 +80,9 @@ export default async function RootLayout({
     const locale = NextLocaleToLocale(localeData);
 
     const store = await StoreApi({ locale });
-    const navigation = await NavigationApi({ locale: locale.locale });
-    const header = await HeaderApi({ locale: locale.locale });
-    const footer = await FooterApi({ locale: locale.locale });
+    const navigation = await NavigationApi({ locale });
+    const header = await HeaderApi({ locale });
+    const footer = await FooterApi({ locale });
 
     return (
         <html
@@ -157,7 +157,12 @@ export default async function RootLayout({
 
                 <ProvidersRegistry locale={locale}>
                     <StyledComponentsRegistry>
-                        <PageProvider store={store} pagePropsAnalyticsData={{}} data={{ navigation, header, footer }}>
+                        <PageProvider
+                            store={store}
+                            locale={locale}
+                            pagePropsAnalyticsData={{}}
+                            data={{ navigation, header, footer }}
+                        >
                             {children}
 
                             <PageContent primary>

@@ -1,9 +1,11 @@
 'use client';
 
-import { CartLineProvider, CartWithActions } from '@shopify/hydrogen-react';
+import type { CartWithActions } from '@shopify/hydrogen-react';
+import { CartLineProvider } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
 import PageLoader from '@/components/PageLoader';
+import type { Locale } from '@/utils/locale';
 import { styled } from 'styled-components';
 
 const Container = styled.table`
@@ -41,8 +43,9 @@ const Container = styled.table`
 
 type CartContentProps = {
     cart: CartWithActions;
+    locale: Locale;
 };
-export default function CartLines({ cart }: CartContentProps) {
+export default function CartLines({ cart, locale }: CartContentProps) {
     if (!cart.lines || cart.lines.length <= 0) return <PageLoader />;
 
     return (
@@ -53,7 +56,7 @@ export default function CartLines({ cart }: CartContentProps) {
 
                     return (
                         <CartLineProvider key={item.id} line={item}>
-                            <CartItem />
+                            <CartItem locale={locale} />
                         </CartLineProvider>
                     );
                 })}

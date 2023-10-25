@@ -1,5 +1,7 @@
 import { Config } from '@/utils/config';
-import type { ClientConfig } from '@prismicio/client';
+import type { Locale } from '@/utils/locale';
+import { NextLocaleToLocale } from '@/utils/locale';
+import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
@@ -20,27 +22,43 @@ const routes: ClientConfig['routes'] = [
     {
         type: 'custom_page',
         uid: 'homepage',
-        path: '/:lang?'
+        path: '/:lang/'
     },
     {
         type: 'custom_page',
-        path: '/:lang?/countries'
+        uid: 'countries',
+        path: '/:lang/countries/'
     },
     {
         type: 'custom_page',
-        path: '/:lang?/search'
+        uid: 'search',
+        path: '/:lang/search/'
+    },
+    {
+        type: 'custom_page',
+        uid: 'cart',
+        path: '/:lang/cart/'
     },
     {
         type: 'product_page',
-        path: '/:lang?/products/:uid'
+        path: '/:lang/products/:uid/'
     },
     {
         type: 'collection_page',
-        path: '/:lang?/collections/:uid'
+        path: '/:lang/collections/:uid/'
     },
     {
         type: 'custom_page',
-        path: '/:lang?/:uid'
+        uid: 'blog',
+        path: '/:lang/blog/'
+    },
+    {
+        type: 'custom_page',
+        path: '/:lang/blog/:uid/'
+    },
+    {
+        type: 'custom_page',
+        path: '/:lang/:uid/'
     }
 ];
 
@@ -48,9 +66,10 @@ const routes: ClientConfig['routes'] = [
  * Creates a Prismic client for the project's repository. The client is used to
  * query content from the Prismic API.
  *
- * @param config - Configuration for the Prismic client.
+ * @param config {CreateClientConfig} - Configuration for the Prismic client.
+ * @returns {Client} - A Prismic client.
  */
-export const createClient = (config: CreateClientConfig = {}) => {
+export const createClient = (config: CreateClientConfig & { locale?: Locale } = {}): Client => {
     const client = prismicCreateClient(repositoryName, {
         routes,
         accessToken: accessToken || undefined,
@@ -58,6 +77,9 @@ export const createClient = (config: CreateClientConfig = {}) => {
             process.env.NODE_ENV === 'production'
                 ? { next: { tags: ['prismic'] }, cache: 'force-cache' }
                 : { next: { revalidate: 5 } },
+        defaultParams: {
+            lang: config.locale?.locale
+        },
         ...config
     });
 
@@ -68,4 +90,24 @@ export const createClient = (config: CreateClientConfig = {}) => {
     });
 
     return client;
+};
+
+export const linkResolver: LinkResolverFunction<any> = (doc) => {
+    const locale = NextLocaleToLocale(doc.lang);
+
+    if (doc.type === 'custom_page') {
+        if (doc.uid === 'homepage') return `/${locale.locale}/`;
+        else if (doc.uid === 'countries') return `/${locale.locale}/countries/`;
+        else if (doc.uid === 'search') return `/${locale.locale}/search/`;
+        else if (doc.uid === 'cart') return `/${locale.locale}/cart/`;
+        else if (doc.uid === 'blog') return `/${locale.locale}/blog/`;
+        // TODO: Handle pages with multi-level paths.
+        else if (doc.uid) return `/${locale.locale}/${doc.uid}/`;
+    } else if (doc.type === 'product_page') {
+        return `/${locale.locale}/products/${doc.uid}/`;
+    } else if (doc.type === 'collection_page') {
+        return `/${locale.locale}/collection/${doc.uid}/`;
+    }
+
+    return null;
 };
