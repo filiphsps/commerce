@@ -1,5 +1,4 @@
 import type { Locale } from '@/utils/locale';
-import { NextLocaleToCountry } from '@/utils/locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
 import { storefrontClient } from '@/api/shopify';
@@ -183,7 +182,7 @@ export const ConvertToLocalMeasurementSystem = ({
     weight,
     weightUnit
 }: {
-    locale?: string;
+    locale: Locale;
     weight: number;
     weightUnit: WeightUnit;
 }): string => {
@@ -203,11 +202,9 @@ export const ConvertToLocalMeasurementSystem = ({
                 return 'g';
         }
     };
-
-    const country = NextLocaleToCountry(locale);
     // FIXME: Support more than just US here, because apparently there's
     //        more countries out there using imperial..
-    const metric = country !== 'US';
+    const metric = locale.country !== 'US';
     const unit = weightUnitToConvertUnits(weightUnit);
     // TODO: Do this properly.
     const targetUnit = (metric && 'g') || 'oz';

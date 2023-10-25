@@ -5,15 +5,13 @@ import { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
 import { ImageLoader } from '@/utils/ImageLoader';
 import { Config } from '@/utils/config';
-import { NextLocaleToLocale } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { usePrismicClient } from '@prismicio/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
-
 const Logo = styled.div`
     position: relative;
     display: block;
@@ -195,15 +193,10 @@ const Social = styled(Link)`
 
 interface FooterProps {
     store?: StoreModel;
-    country?: string;
+    locale: Locale;
     data?: FooterModel;
 }
-const Footer: FunctionComponent<FooterProps> = (props) => {
-    const { store, data } = props;
-
-    const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
-
+const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
     const { data: footer } = useSWR(
         [
             'FooterApi',
@@ -219,7 +212,6 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
     );
 
     // FIXME: Dynamic copyright copy.
-    // FIXME: Togglable newsletter view.
 
     return (
         <FooterContainer>

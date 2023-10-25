@@ -546,7 +546,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                                 variant.weightUnit
                             ) {
                                 title = ConvertToLocalMeasurementSystem({
-                                    locale: locale.locale,
+                                    locale: locale,
                                     weight: variant.weight,
                                     weightUnit: variant.weightUnit
                                 });
