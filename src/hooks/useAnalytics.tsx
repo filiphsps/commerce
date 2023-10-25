@@ -85,9 +85,8 @@ export const sendPageViewEvent = ({
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
-                                locale: locale.locale,
-                                productId: product.productGid!,
-                                variantId: product.variantGid!
+                                locale: locale,
+                                product: product
                             }),
                             item_name: product.name,
                             item_variant: product.variantName,
@@ -227,9 +226,11 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
                     return [
                         {
                             item_id: ProductToMerchantsCenterId({
-                                locale: locale.locale,
-                                productId: line.merchandise.product.id,
-                                variantId: line.merchandise.id
+                                locale: locale,
+                                product: {
+                                    productGid: line.merchandise.product.id,
+                                    variantGid: line.merchandise.id
+                                } as any
                             }),
                             item_name: line.merchandise.product.title,
                             item_variant: line.merchandise.title,

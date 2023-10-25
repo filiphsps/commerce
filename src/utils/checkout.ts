@@ -1,5 +1,6 @@
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import { Config } from '@/utils/Config';
+import type { Locale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 
 // Const hacky workaround for ga4 cross-domain
@@ -31,15 +32,7 @@ export const getCrossDomainLinkerParameter = () => {
     return null; // TODO: Throw error?
 };
 
-export const Checkout = async ({
-    cart,
-    locale,
-    locales
-}: {
-    cart: CartWithActions;
-    locale?: string;
-    locales?: string[];
-}) => {
+export const Checkout = async ({ cart, locale }: { cart: CartWithActions; locale: Locale }) => {
     if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
@@ -60,9 +53,11 @@ export const Checkout = async ({
                         (line) =>
                             line && {
                                 item_id: ProductToMerchantsCenterId({
-                                    locale: (locale !== 'x-default' && locale) || locales?.[1],
-                                    productId: line.merchandise?.product?.id!,
-                                    variantId: line.merchandise?.id!
+                                    locale: locale,
+                                    product: {
+                                        productGid: line.merchandise!.product!.id,
+                                        variantGid: line.merchandise!.id
+                                    } as any
                                 }),
                                 item_name: line.merchandise?.product?.title,
                                 item_variant: line.merchandise?.title,
