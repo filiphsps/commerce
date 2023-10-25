@@ -6,6 +6,7 @@ import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDoc
 import { components as slices } from '@/slices';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { SliceZone, usePrismicClient } from '@prismicio/react';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 type PageParams = {
@@ -39,5 +40,9 @@ export default function PrismicPage({ store, locale, prefetch, i18n, page: pageD
 
     if (!page) return null;
 
-    return <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n }} />;
+    const children = useMemo(
+        () => <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n, locale }} />,
+        [handle]
+    );
+    return children;
 }

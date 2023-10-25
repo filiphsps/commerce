@@ -27,7 +27,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const countries = await CountriesApi({ locale: locale.locale });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch(page, locale.locale))) || null;
+    const prefetch = (page && (await Prefetch(page, locale))) || null;
 
     return (
         <Page>

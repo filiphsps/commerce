@@ -1,4 +1,6 @@
-import { NextLocaleToLocale, useTranslation } from '@/utils/locale';
+'use client';
+
+import { useTranslation } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
@@ -10,11 +12,9 @@ import { Button } from '@/components/Button';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import { ImageLoader } from '@/utils/ImageLoader';
-import { Config } from '@/utils/config';
-import type { LocaleDictionary } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 
 export const ProductImage = styled.div`
@@ -41,6 +41,7 @@ export const ProductImage = styled.div`
         }
     }
 `;
+
 const ProductImageWrapper = styled.div`
     position: relative;
     display: flex;
@@ -276,7 +277,7 @@ const QuantityAction = styled.div`
     }
 `;
 const QuantityValue = styled.input`
-    -webkit-appearance: none;
+    appearance: none;
     display: block;
     width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
@@ -433,15 +434,13 @@ export const AppendShopifyParameters = ({ params, url }: { params?: string | nul
 };
 
 interface ProductCardProps {
-    handle?: string;
     store: StoreModel;
+    locale: Locale;
+    handle?: string;
     className?: string;
     i18n: LocaleDictionary;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n }) => {
-    const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || Config.i18n.default); // FIXME: Handle this properly.
-
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n }) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
@@ -464,7 +463,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n }) =
         quantityRef.current.style.width = `${length * 1.2 + 1}rem`;
     }, [quantityValue]);
 
-    // TODO: Placeholder card?
+    // TODO: Placeholder animation.
     if (!product || !selectedVariant) return <Container className={`${className || ''} Loading`} />;
 
     const isNewProduct =

@@ -160,7 +160,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     } catch (error: any) {
         if (error.message?.includes('404')) {
             return {
-                props: {},
+                notFound: true,
                 revalidate: 60
             };
         }

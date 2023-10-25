@@ -106,6 +106,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         priority={slide.defer ? false : true}
                                                         imgixParams={{ q: 65 }}
                                                         loader={ImageLoader}
+                                                        fallbackAlt=""
                                                     />
                                                     <PrismicNextImage
                                                         field={slide.image}
@@ -113,6 +114,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         loading={slide.defer ? 'lazy' : 'eager'}
                                                         priority={slide.defer ? false : true}
                                                         loader={ImageLoader}
+                                                        fallbackAlt=""
                                                     />
                                                 </>
                                             )}

@@ -1,33 +1,27 @@
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import { storefrontClient } from '@/api/shopify';
-import { Config } from '@/utils/config';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-// TODO: Migrate to `Locale` type.
 export const CollectionApi = async ({
     handle,
     locale,
     limit
 }: {
     handle: string;
-    locale?: string;
+    locale: Locale;
     limit?: number;
 }): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
 
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
-
         try {
             const { data, errors } = await storefrontClient.query({
                 query: gql`
-                    query collection($handle: String!, $limit: Int!) @inContext(language: ${language}, country: ${country}) {
+                    query collection($handle: String!, $limit: Int!, $language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         collectionByHandle(handle: $handle) {
                             id
                             handle
@@ -66,11 +60,16 @@ export const CollectionApi = async ({
                 `,
                 variables: {
                     handle: handle,
-                    limit: limit || 250
+                    limit: limit || 250,
+                    language: locale.language,
+                    country: locale.country
                 }
             });
 
-            if (errors) return reject(new Error(`500: ${errors.map((e) => e.message).join('\n')}`));
+            if (errors)
+                return reject(
+                    new Error(`500: Something wen't wrong on our end (${errors.map((e) => e.message).join('\n')})`)
+                );
             if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
 
             data.collectionByHandle.products.edges = await Promise.all(
@@ -98,16 +97,22 @@ export const CollectionApi = async ({
     });
 };
 
-export const CollectionsApi = async (): Promise<
+export const CollectionsApi = async ({
+    locale
+}: {
+    locale: Locale;
+}): Promise<
     Array<{
         id: string;
         handle: string;
     }>
 > => {
     return new Promise(async (resolve, reject) => {
+        // TODO: Pagination.
         const { data, errors } = await storefrontClient.query({
             query: gql`
-                query collections {
+                query collections($language: LanguageCode!, $country: CountryCode!)
+                @inContext(language: $language, country: $country) {
                     collections(first: 250) {
                         edges {
                             node {
@@ -117,7 +122,11 @@ export const CollectionsApi = async (): Promise<
                         }
                     }
                 }
-            `
+            `,
+            variables: {
+                language: locale.language,
+                country: locale.country
+            }
         });
 
         if (errors) return reject(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`);

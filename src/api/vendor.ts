@@ -1,5 +1,6 @@
 import { storefrontClient } from '@/api/shopify';
 import type { VendorModel } from '@/models/VendorModel';
+import type { Locale } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
@@ -26,14 +27,13 @@ export const Convertor = (
     }));
 };
 
-// TODO: Migrate to `Locale` type.
-// eslint-disable-next-line no-unused-vars, unused-imports/no-unused-vars
-export const VendorsApi = async ({ locale }: { locale?: string }): Promise<VendorModel[]> => {
+export const VendorsApi = async ({ locale }: { locale: Locale }): Promise<VendorModel[]> => {
     return new Promise(async (resolve, reject) => {
         try {
             const res = await storefrontClient.query({
                 query: gql`
-                    query products {
+                    query products($language: LanguageCode!, $country: CountryCode!)
+                    @inContext(language: $language, country: $country) {
                         products(first: 250, sortKey: BEST_SELLING) {
                             edges {
                                 node {
@@ -43,7 +43,11 @@ export const VendorsApi = async ({ locale }: { locale?: string }): Promise<Vendo
                             }
                         }
                     }
-                `
+                `,
+                variables: {
+                    language: locale.language,
+                    country: locale.country
+                }
             });
 
             return resolve(Convertor(res?.data?.products?.edges));

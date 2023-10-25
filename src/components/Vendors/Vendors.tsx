@@ -72,7 +72,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
         [
             'VendorsApi',
             {
-                locale: locale.locale
+                locale: locale
             }
         ],
         ([, props]) => VendorsApi(props),
