@@ -6,7 +6,7 @@
     "type": "module",
     "engines": {
         "npm": ">=8",
-        "node": "18"
+        "node": ">=18 <=20"
     },
     "cacheDirectories": [
         ".next/cache"
