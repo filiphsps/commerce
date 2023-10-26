@@ -1,3 +1,16 @@
 {
-    "recommendations": ["jgclark.vscode-todo-highlight"]
+    "recommendations": [
+        "jgclark.vscode-todo-highlight",
+        "formulahendry.auto-rename-tag",
+        "formulahendry.auto-close-tag",
+        "graphql.vscode-graphql",
+        "graphql.vscode-graphql-syntax",
+        "bierner.markdown-checkbox",
+        "bierner.markdown-preview-github-styles",
+        "esbenp.prettier-vscode",
+        "medo64.render-crlf",
+        "amatiasq.sort-imports",
+        "styled-components.vscode-styled-components",
+        "wakatime.vscode-wakatime"
+    ]
 }
