@@ -1,10 +1,11 @@
+import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
+
 import { BuildConfig } from '@/utils/build-config';
+import type { CreateClientConfig } from '@prismicio/next';
 import type { Locale } from '@/utils/locale';
 import { NextLocaleToLocale } from '@/utils/locale';
-import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
-import { createClient as prismicCreateClient } from '@prismicio/client';
-import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
+import { createClient as prismicCreateClient } from '@prismicio/client';
 
 /**
  * The project's Prismic repository name.
@@ -66,8 +67,8 @@ const routes: ClientConfig['routes'] = [
  * Creates a Prismic client for the project's repository. The client is used to
  * query content from the Prismic API.
  *
- * @param config {CreateClientConfig} - Configuration for the Prismic client.
- * @returns {Client} - A Prismic client.
+ * @param {CreateClientConfig} config - Configuration for the Prismic client.
+ * @returns {Client} A Prismic client.
  */
 export const createClient = (config: CreateClientConfig & { locale?: Locale } = {}): Client => {
     const client = prismicCreateClient(repositoryName, {

@@ -1,7 +1,8 @@
-import type { VendorModel } from '@/models/VendorModel';
+import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
+
 import type { AbstractApi } from '@/utils/abstract-api';
 import { TitleToHandle } from '@/utils/title-to-handle';
-import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { VendorModel } from '@/models/VendorModel';
 import { gql } from 'graphql-tag';
 
 /***
@@ -9,7 +10,7 @@ import { gql } from 'graphql-tag';
  * TODO: Remove this and use the standard layout.
  *
  * @param {Array<{ node: Product }>} products - The list of products.
- * @returns {VendorModel[]} - The list of vendors.
+ * @returns {VendorModel[]} The list of vendors.
  */
 export const Convertor = (
     products: Array<{
@@ -37,7 +38,7 @@ export const Convertor = (
  * Get all vendors from Shopify.
  *
  * @param {AbstractApi} client - The client to use for the query.
- * @returns {Promise<VendorModel[]>} - The list of vendors.
+ * @returns {Promise<VendorModel[]>} The list of vendors.
  */
 export const VendorsApi = async ({ client }: { client: AbstractApi }): Promise<VendorModel[]> => {
     return new Promise(async (resolve, reject) => {

@@ -1,6 +1,7 @@
-import type { RedirectModel } from '@/models/RedirectModel';
-import { AbstractApi } from '@/utils/abstract-api';
 import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
+
+import { AbstractApi } from '@/utils/abstract-api';
+import type { RedirectModel } from '@/models/RedirectModel';
 import { gql } from 'graphql-tag';
 
 /***
@@ -28,7 +29,7 @@ export const Convertor = (redirects: UrlRedirect[]): Array<RedirectModel> => {
  *
  * @param {AbstractApi} client - The client to use for the query.
  * @param {string} cursor - The cursor to use for the query.
- * @returns {Promise<RedirectModel[]>} - The list of redirects.
+ * @returns {Promise<RedirectModel[]>} The list of redirects.
  */
 export const RedirectsApi = async ({
     client,
@@ -87,7 +88,7 @@ export const RedirectsApi = async ({
  *
  * @param {AbstractApi} client - The client to use for the query.
  * @param {string} path - The path to get the redirect for.
- * @returns {Promise<string | null>} - The redirect target.
+ * @returns {Promise<string | null>} The redirect target.
  */
 export const RedirectApi = async ({ client, path }: { client: AbstractApi; path: string }): Promise<string | null> => {
     return new Promise(async (resolve, reject) => {
