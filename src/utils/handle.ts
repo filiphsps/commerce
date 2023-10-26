@@ -1,4 +1,10 @@
-export const isValidHandle = (handle: any): boolean => {
+/***
+ * Verifies if a handle is valid.
+ *
+ * @param {unknown} handle - The handle to verify.
+ * @returns {boolean} Whether the handle is valid.
+ */
+export const isValidHandle = (handle: unknown): boolean => {
     if (!handle) return false;
     else if (typeof handle !== 'string') return false;
     else if (handle.length <= 0) return false;
