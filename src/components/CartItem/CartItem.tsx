@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import { ProductApi } from '@/api/product';
+import { ProductApi } from '@/api/shopify/product';
 import Loader from '@/components/Loader';
 import Link from '@/components/link';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
+import { useApolloClient } from '@apollo/client';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/legacy/image';
 import type { FunctionComponent } from 'react';
@@ -294,8 +296,8 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
         [
             'ProductApi',
             {
-                handle: line?.merchandise?.product?.handle!,
-                locale: locale
+                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
+                handle: line?.merchandise?.product?.handle!
             }
         ],
         ([, props]) => ProductApi(props)

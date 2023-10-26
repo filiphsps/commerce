@@ -1,14 +1,15 @@
-import { PageApi } from '@/api/page';
-import { StoreApi } from '@/api/store';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
-import { Prefetch } from '@/utils/Prefetch';
-import { isValidHandle } from '@/utils/handle';
 import { NextLocaleToLocale } from '@/utils/locale';
-import { notFound } from 'next/navigation';
+import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
+import PageContent from '@/components/PageContent';
+import { Prefetch } from '@/utils/Prefetch';
+import PrismicPage from '@/components/prismic-page';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
+import { getDictionary } from '@/i18n/dictionarie';
+import { isValidHandle } from '@/utils/handle';
+import { notFound } from 'next/navigation';
 
 export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
     const { locale: localeData, uid } = params;
@@ -18,13 +19,14 @@ export default async function CustomPage({ params }: { params: { locale: string;
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
 
-    const store = await StoreApi({ locale });
+    const client = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, shopify: client });
 
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error
-        const prefetch = (page && (await Prefetch(page, locale))) || null;
+        const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
         return (
             <Page>

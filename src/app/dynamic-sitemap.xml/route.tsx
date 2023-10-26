@@ -1,9 +1,10 @@
 import { BlogApi } from '@/api/blog';
-import { CollectionsApi } from '@/api/collection';
-import { PagesApi } from '@/api/page';
-import { ProductsApi } from '@/api/product';
 import { BuildConfig } from '@/utils/build-config';
+import { CollectionsApi } from '@/api/shopify/collection';
 import { DefaultLocale } from '@/utils/locale';
+import { PagesApi } from '@/api/page';
+import { ProductsApi } from '@/api/shopify/product';
+import { StorefrontApiClient } from '@/api/shopify';
 import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {
@@ -31,29 +32,33 @@ export async function GET() {
         console.warn(error);
     }
 
-    const collections = (await CollectionsApi({ locale })).map(
+    const client = StorefrontApiClient({ locale });
+
+    const collections = (await CollectionsApi({ client })).map(
         (collection) =>
             ({
                 location: `collections/${collection.handle}/`,
                 priority: 1.0
             }) as SitemapEntry
     );
-    const products = (await ProductsApi({ locale })).products.map(
+    const products = (await ProductsApi({ client })).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
                 priority: 0.8
             }) as SitemapEntry
     );
-    const blog = ((await BlogApi({ handle: 'news' })) as any).articles.map(
-        (blog: any) =>
+
+    // TODO: Handle multiple blogs.
+    const blogs = (await BlogApi({ client, handle: 'news' })).articles.edges.map(
+        ({ node: article }) =>
             ({
-                location: `blog/${blog.handle}/`,
+                location: `blog/news/${article.handle}/`,
                 priority: 0.9
             }) as SitemapEntry
     );
 
-    const objects: Array<SitemapEntry[]> = [pages, collections, products, blog];
+    const objects: Array<SitemapEntry[]> = [pages, collections, products, blogs];
     const url = `https://${BuildConfig.domain}`;
 
     urls.push(

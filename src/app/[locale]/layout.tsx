@@ -5,20 +5,21 @@ import '@/style/app.scss';
 import * as Prismic from '@/prismic';
 
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 
+import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { BuildConfig } from '@/utils/build-config';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
+import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
-import { StoreApi } from '@/api/store';
+import { NextLocaleToLocale } from '@/utils/locale';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import ProvidersRegistry from '@/components/providers-registry';
-import StyledComponentsRegistry from '@/components/styled-components-registry';
-import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
 import { PrismicPreview } from '@prismicio/next';
-import { Lexend_Deca } from 'next/font/google';
+import ProvidersRegistry from '@/components/providers-registry';
+import { StoreApi } from '@/api/store';
+import StyledComponentsRegistry from '@/components/styled-components-registry';
 
 const font = Lexend_Deca({
     weight: ['variable' as any],
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const locale = NextLocaleToLocale(localeData);
     const locales = BuildConfig.i18n.locales;
 
-    const store = await StoreApi({ locale });
+    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
 
     return {
         metadataBase: new URL(`https://${BuildConfig.domain}`),
@@ -79,7 +80,9 @@ export default async function RootLayout({
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
 
-    const store = await StoreApi({ locale });
+    const shopifyApi = shopifyApiConfig();
+
+    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
     const navigation = await NavigationApi({ locale });
     const header = await HeaderApi({ locale });
     const footer = await FooterApi({ locale });
@@ -155,7 +158,7 @@ export default async function RootLayout({
                     ]}
                 />
 
-                <ProvidersRegistry locale={locale}>
+                <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()}>
                     <StyledComponentsRegistry>
                         <PageProvider
                             store={store}

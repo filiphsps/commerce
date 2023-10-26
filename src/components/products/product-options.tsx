@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ConvertToLocalMeasurementSystem } from '@/api/product';
+import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import { Locale } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 

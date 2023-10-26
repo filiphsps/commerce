@@ -1,31 +1,39 @@
-import type { Locale } from '@/utils/locale';
-
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/product';
-import { storefrontClient } from '@/api/shopify';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import type { AbstractApi } from '@/utils/abstract-api';
+import type {
+    PredictiveSearchResult,
+    Product,
+    SearchResultItemConnection
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 export const SearchApi = async ({
+    client,
     query,
-    locale,
     limit
 }: {
+    client: AbstractApi;
     query: string;
-    locale: Locale;
     limit?: number;
 }): Promise<{
     products: Product[];
-    productFilters: any[];
+    productFilters: SearchResultItemConnection['productFilters'];
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
 
         const search = async ({ type }: { type: 'PRODUCT' }) => {
-            const { data } = await storefrontClient.query({
-                query: gql`
-                    query searchProducts($query: String!, $first: Int, $language: LanguageCode!, $country: CountryCode!)
-                        @inContext(language: $language, country: $country) {
-                        search(query: $query, first: $first, types: ${type}) {
+            const { data } = await client.query<{ search: SearchResultItemConnection }>(
+                gql`
+                    query searchProducts(
+                            $query: String!,
+                            $first: Int,
+                            $type: [SearchType!],
+                            $language: LanguageCode!,
+                            $country: CountryCode!)
+                            @inContext(language: $language, country: $country) {
+
+                        search(query: $query, first: $first, types: $type) {
                             productFilters {
                                 id
                                 label
@@ -48,13 +56,12 @@ export const SearchApi = async ({
                         }
                     }
                 `,
-                variables: {
+                {
                     query,
-                    first: limit || 75,
-                    language: locale.language,
-                    country: locale.country
+                    type: type,
+                    first: limit || 75
                 }
-            });
+            );
 
             return {
                 result: data?.search?.edges?.map((item: any) => item?.node) || [],
@@ -76,22 +83,17 @@ export const SearchApi = async ({
 };
 
 export const SearchPredictionApi = async ({
-    query,
-    locale
+    client,
+    query
 }: {
+    client: AbstractApi;
     query: string;
-    locale: Locale;
-}): Promise<{
-    queries?: {
-        styledText: string;
-        text: string;
-    }[];
-}> => {
+}): Promise<PredictiveSearchResult | {}> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return reject();
 
-        const { data } = await storefrontClient.query({
-            query: gql`
+        const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
+            gql`
                 query predictiveSearch($query: String!, $language: LanguageCode!, $country: CountryCode!)
                 @inContext(language: $language, country: $country) {
                     predictiveSearch(query: $query, types: [QUERY], limit: 5) {
@@ -102,17 +104,11 @@ export const SearchPredictionApi = async ({
                     }
                 }
             `,
-            variables: {
-                query,
-                language: locale.language,
-                country: locale.country
+            {
+                query
             }
-        });
+        );
 
-        const { queries } = data?.predictiveSearch;
-
-        return resolve({
-            queries
-        });
+        return resolve(data?.predictiveSearch || {});
     });
 };

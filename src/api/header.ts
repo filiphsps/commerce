@@ -25,7 +25,7 @@ export const HeaderApi = async ({
                     return resolve(await HeaderApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
                 }
 
-                return reject(new Error('404: The requested document cannot be found'));
+                return reject(new Error(`404: "Header" with the locale "${locale.locale}" cannot be found`));
             }
 
             console.error(error);
