@@ -7,7 +7,7 @@ import Heading from '@/components/typography/heading';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import { Prefetch } from '@/utils/Prefetch';
+import { Prefetch } from '@/utils/prefetch';
 import Pricing from '@/components/typography/pricing';
 import PrismicPage from '@/components/prismic-page';
 import SplitView from '@/components/layout/split-view';

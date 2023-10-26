@@ -2,7 +2,6 @@
 
 import PageContent from '@/components/PageContent';
 import Link from '@/components/link';
-import { ImageLoader } from '@/utils/ImageLoader';
 import { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
@@ -105,7 +104,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         loading={slide.defer ? 'lazy' : 'eager'}
                                                         priority={slide.defer ? false : true}
                                                         imgixParams={{ q: 65 }}
-                                                        loader={ImageLoader}
+                                                        loader={undefined}
                                                         fallbackAlt=""
                                                     />
                                                     <PrismicNextImage
@@ -113,7 +112,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         className="Image Desktop"
                                                         loading={slide.defer ? 'lazy' : 'eager'}
                                                         priority={slide.defer ? false : true}
-                                                        loader={ImageLoader}
+                                                        loader={undefined}
                                                         fallbackAlt=""
                                                     />
                                                 </>

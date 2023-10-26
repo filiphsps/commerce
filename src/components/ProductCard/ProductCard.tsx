@@ -1,21 +1,20 @@
 'use client';
 
-import { useTranslation } from '@/utils/locale';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import { useEffect, useRef, useState } from 'react';
-import { FiMinus, FiPlus } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
 
-import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import { Button } from '@/components/Button';
+import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
+import type { FunctionComponent } from 'react';
+import Image from 'next/image';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { ImageLoader } from '@/utils/ImageLoader';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
-import Image from 'next/image';
-import type { FunctionComponent } from 'react';
+import { useTranslation } from '@/utils/locale';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -416,14 +415,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
     if (!image) return null;
 
     return (
-        <Image
-            src={image.url}
-            alt={image.altText || ''}
-            title={image.altText || undefined}
-            height={200}
-            width={200}
-            loader={ImageLoader}
-        />
+        <Image src={image.url} alt={image.altText || ''} title={image.altText || undefined} height={200} width={200} />
     );
 };
 

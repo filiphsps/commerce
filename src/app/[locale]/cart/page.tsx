@@ -5,7 +5,7 @@ import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/Prefetch';
+import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
 import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';

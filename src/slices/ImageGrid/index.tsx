@@ -1,7 +1,6 @@
 'use client';
 
 import { Content } from '@prismicio/client';
-import { ImageLoader } from '@/utils/ImageLoader';
 import Link from '@/components/link';
 import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';
@@ -105,13 +104,7 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                 <Grid>
                     {slice.items.map(({ href, title, image }) => (
                         <Item key={href!} href={href! || ''} title={title!}>
-                            <Banner
-                                field={image}
-                                width={300}
-                                height={300}
-                                sizes="(max-width: 950px) 250px, 25vw"
-                                loader={ImageLoader}
-                            />
+                            <Banner field={image} width={300} height={300} sizes="(max-width: 950px) 250px, 25vw" />
                             <TitleContainer>
                                 <Title>{title}</Title>
                             </TitleContainer>
