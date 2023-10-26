@@ -11,7 +11,7 @@ const example_titles = [
     ['Another-Title', 'another-title']
 ];
 
-describe('Util', () => {
+describe('Utils', () => {
     describe('TitleToHandle', () => {
         it('should convert titles to handles', () => {
             for (let i = 0; i < example_titles.length; i++) {
