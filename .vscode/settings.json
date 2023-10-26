@@ -5,5 +5,21 @@
         "source.fixAll": true,
         "source.organizeImports": true,
         "source.sortMembers": true
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.next": true,
+        "**/node_modules": true,
+        "**/__snapshots__": true,
+        "**/coverage": true,
+        "**/package-lock.json": true,
+        "**/next-env.d.ts": true,
+        "**/prismicio-types.d.ts": true,
+        "**/*.tsbuildinfo": true
     }
 }
