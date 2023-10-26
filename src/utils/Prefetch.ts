@@ -1,23 +1,27 @@
-import { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
+import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 
-import { CollectionApi } from '@/api/collection';
-import type { ProductVisuals } from '@/api/product';
-import { VendorsApi } from '@/api/vendor';
-import type { Locale } from '@/utils/locale';
+import type { AbstractApi } from './abstract-api';
+import { CollectionApi } from '@/api/shopify/collection';
 import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ProductVisuals } from '@/api/shopify/product';
+import { VendorsApi } from '@/api/shopify/vendor';
 
-const Prefetch = (
-    page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData,
-    locale: Locale,
-    initialData?: any
-) => {
+const Prefetch = ({
+    client,
+    page,
+    initialData
+}: {
+    client: AbstractApi;
+    page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData;
+    initialData?: any;
+}) => {
     return new Promise<{
         collections?: any;
         products?: any;
         shop?: any;
         vendors?: any;
     }>(async (resolve, reject) => {
-        if (!page) return reject(new Error('404: Invalid page'));
+        if (!page) return reject(new Error(`400: Invalid page`));
 
         const slices = page?.slices;
         let collections = initialData?.collections || {},
@@ -35,8 +39,8 @@ const Prefetch = (
                     case 'collection':
                         if (handle && !collections[handle]) {
                             collections[handle] = await CollectionApi({
+                                client,
                                 handle,
-                                locale,
                                 limit: (slice?.primary as any)?.limit || 16
                             });
                             if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
@@ -113,7 +117,7 @@ const Prefetch = (
                         }
                         break;
                     case 'vendors':
-                        vendors = await VendorsApi({ locale });
+                        vendors = await VendorsApi({ client });
                         break;
                 }
             } catch (error) {

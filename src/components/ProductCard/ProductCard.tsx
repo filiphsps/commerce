@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import { ConvertToLocalMeasurementSystem } from '@/api/product';
+import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import { Button } from '@/components/Button';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';

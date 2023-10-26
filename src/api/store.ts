@@ -1,43 +1,38 @@
-import { storefrontClient } from '@/api/shopify';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
+import type { AbstractApi } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
+import { DefaultLocale, type Locale } from '@/utils/locale';
 import type { Client as PrismicClient } from '@prismicio/client';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Country, Localization, Shop } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-export const CountriesApi = async ({ locale }: { locale: Locale }): Promise<Country[]> => {
+export const CountriesApi = async ({ client }: { client: AbstractApi }): Promise<Country[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data: localData } = await storefrontClient.query({
-                query: gql`
-                    query localization($language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
-                        localization {
-                            availableCountries {
-                                availableLanguages {
-                                    isoCode
-                                    name
-                                }
-                                currency {
-                                    isoCode
-                                    name
-                                    symbol
-                                }
+            const { data: localData } = await client.query<{ localization: Localization }>(gql`
+                query localization($language: LanguageCode!, $country: CountryCode!)
+                @inContext(language: $language, country: $country) {
+                    localization {
+                        availableCountries {
+                            availableLanguages {
                                 isoCode
                                 name
                             }
+                            currency {
+                                isoCode
+                                name
+                                symbol
+                            }
+                            isoCode
+                            name
                         }
                     }
-                `,
-                variables: {
-                    language: locale.language,
-                    country: locale.country
                 }
-            });
+            `);
 
-            return resolve(localData?.localization?.availableCountries);
+            // FIXME: handle errors and missing data.
+            return resolve(localData?.localization?.availableCountries!);
         } catch (error) {
             console.error(error);
             return reject(error);
@@ -45,10 +40,10 @@ export const CountriesApi = async ({ locale }: { locale: Locale }): Promise<Coun
     });
 };
 
-export const LocalesApi = async ({ locale }: { locale: Locale }): Promise<string[]> => {
+export const LocalesApi = async ({ client }: { client: AbstractApi }): Promise<string[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const countries = await CountriesApi({ locale });
+            const countries = await CountriesApi({ client });
             const locales = countries.flatMap((country) =>
                 country.availableLanguages.map(
                     (language) => `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
@@ -65,17 +60,19 @@ export const LocalesApi = async ({ locale }: { locale: Locale }): Promise<string
 
 export const StoreApi = async ({
     locale,
-    client: _client
+    client: _client,
+    shopify // TODO: Separate this from prismic
 }: {
     locale: Locale;
     client?: PrismicClient;
+    shopify: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const client = _client || createClient({ locale });
 
         try {
-            const { data: shopData } = await storefrontClient.query({
-                query: gql`
+            const { data: shopData } = await shopify.query<{ shop: Shop }>(
+                gql`
                     query store($language: LanguageCode!, $country: CountryCode!)
                     @inContext(language: $language, country: $country) {
                         shop {
@@ -113,11 +110,11 @@ export const StoreApi = async ({
                         }
                     }
                 `,
-                variables: {
+                {
                     language: locale.language,
                     country: locale.country
                 }
-            });
+            );
 
             let res: Record<string, any>;
 
@@ -159,7 +156,13 @@ export const StoreApi = async ({
         } catch (error: any) {
             if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 console.warn(error);
-                return resolve(await StoreApi({ locale })); // Try again with default locale
+                return resolve(
+                    await StoreApi({
+                        locale: DefaultLocale(),
+                        client: _client,
+                        shopify
+                    })
+                ); // Try again with default locale
             }
 
             console.error(error);

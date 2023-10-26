@@ -1,27 +1,28 @@
-import { ProductApi, ProductsApi } from '@/api/product';
-
-import { PageApi } from '@/api/page';
-import { StoreApi } from '@/api/store';
-import Gallery from '@/components/Gallery';
-import Page from '@/components/Page';
-import SplitView from '@/components/layout/split-view';
-import PrismicPage from '@/components/prismic-page';
-import Heading from '@/components/typography/heading';
-import Pricing from '@/components/typography/pricing';
-import { getDictionary } from '@/i18n/dictionarie';
-import { Prefetch } from '@/utils/Prefetch';
-import { BuildConfig } from '@/utils/build-config';
-import { isValidHandle } from '@/utils/handle';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
+
+import { BuildConfig } from '@/utils/build-config';
+import Gallery from '@/components/Gallery';
+import Heading from '@/components/typography/heading';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import { notFound } from 'next/navigation';
+import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
+import { Prefetch } from '@/utils/Prefetch';
+import Pricing from '@/components/typography/pricing';
+import PrismicPage from '@/components/prismic-page';
+import SplitView from '@/components/layout/split-view';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
+import { getDictionary } from '@/i18n/dictionarie';
+import { isValidHandle } from '@/utils/handle';
+import { notFound } from 'next/navigation';
 
 export type ProductPageParams = { locale: string; handle: string };
 
 export async function generateStaticParams() {
     // FIXME: Pagination.
-    const { products } = await ProductsApi({ locale: DefaultLocale() });
+    const { products } = await ProductsApi({ client: StorefrontApiClient({ locale: DefaultLocale() }) });
 
     return products
         .map(({ node }) => BuildConfig.i18n.locales.map((locale) => ({ locale, handle: node.handle })))
@@ -32,7 +33,8 @@ export async function generateMetadata({ params }: { params: ProductPageParams }
     const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
 
-    const product = await ProductApi({ handle, locale });
+    const client = StorefrontApiClient({ locale });
+    const product = await ProductApi({ client, handle });
 
     return {
         title: `${product.vendor} ${product.title}`
@@ -47,11 +49,12 @@ export default async function ProductPage({ params }: { params: ProductPageParam
 
     if (!isValidHandle(handle)) return notFound();
 
-    const store = await StoreApi({ locale });
-    const product = await ProductApi({ handle, locale });
+    const client = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, shopify: client });
+    const product = await ProductApi({ client, handle });
 
     const { page } = await PageApi({ locale, handle, type: 'product_page' });
-    const prefetch = (page && (await Prefetch(page, locale))) || null;
+    const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     return (
         <Page>

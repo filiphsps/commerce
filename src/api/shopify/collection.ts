@@ -1,25 +1,29 @@
-import type { Locale } from '@/utils/locale';
 import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
-import { storefrontClient } from '@/api/shopify';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { AbstractApi } from '@/utils/abstract-api';
+import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
+/***
+ * Get a collection from Shopify.
+ * NOTE: We modify the descriptionHtml to remove all non-breaking spaces
+ *       and replace them with normal spaces.
+ */
 export const CollectionApi = async ({
+    client,
     handle,
-    locale,
     limit
 }: {
+    client: AbstractApi;
     handle: string;
-    locale: Locale;
     limit?: number;
 }): Promise<Collection> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
 
         try {
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
+            const { data, errors } = await client.query<{ collectionByHandle: Collection }>(
+                gql`
                     query collection($handle: String!, $limit: Int!, $language: LanguageCode!, $country: CountryCode!)
                     @inContext(language: $language, country: $country) {
                         collectionByHandle(handle: $handle) {
@@ -58,26 +62,25 @@ export const CollectionApi = async ({
                         }
                     }
                 `,
-                variables: {
+                {
                     handle: handle,
-                    limit: limit || 250,
-                    language: locale.language,
-                    country: locale.country
+                    limit: limit || 250
                 }
-            });
+            );
 
             if (errors)
                 return reject(
-                    new Error(`500: Something wen't wrong on our end (${errors.map((e) => e.message).join('\n')})`)
+                    new Error(`500: Something went wrong on our end (${errors.map((e) => e.message).join('\n')})`)
                 );
-            if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.collectionByHandle)
+                return reject(new Error(`404: "Collection" with handle "${handle}" cannot be found`));
 
             data.collectionByHandle.products.edges = await Promise.all(
                 data.collectionByHandle.products.edges.map(async (edge: any) => {
                     if (edge.node.visuals?.value) {
                         edge.node.visualsData = await ProductVisualsApi({
-                            id: edge.node.visuals.value,
-                            locale
+                            client,
+                            id: edge.node.visuals.value
                         });
                         return edge;
                     }
@@ -86,6 +89,7 @@ export const CollectionApi = async ({
                 })
             );
 
+            // TODO: Turn into a generic utility function to handle every case like this?
             data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml
                 .replaceAll(/ /g, ' ')
                 .replaceAll('\u00A0', ' ');
@@ -98,9 +102,9 @@ export const CollectionApi = async ({
 };
 
 export const CollectionsApi = async ({
-    locale
+    client
 }: {
-    locale: Locale;
+    client: AbstractApi;
 }): Promise<
     Array<{
         id: string;
@@ -109,27 +113,22 @@ export const CollectionsApi = async ({
 > => {
     return new Promise(async (resolve, reject) => {
         // TODO: Pagination.
-        const { data, errors } = await storefrontClient.query({
-            query: gql`
-                query collections($language: LanguageCode!, $country: CountryCode!)
-                @inContext(language: $language, country: $country) {
-                    collections(first: 250) {
-                        edges {
-                            node {
-                                id
-                                handle
-                            }
+        const { data, errors } = await client.query<{ collections: CollectionConnection }>(gql`
+            query collections($language: LanguageCode!, $country: CountryCode!)
+            @inContext(language: $language, country: $country) {
+                collections(first: 250) {
+                    edges {
+                        node {
+                            id
+                            handle
                         }
                     }
                 }
-            `,
-            variables: {
-                language: locale.language,
-                country: locale.country
             }
-        });
+        `);
 
         if (errors) return reject(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`);
+        else if (!data?.collections) return reject(`404: No collections could be found`);
 
         return resolve(data.collections.edges.map((item: any) => item.node));
     });

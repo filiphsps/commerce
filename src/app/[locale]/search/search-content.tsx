@@ -4,14 +4,16 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
-import { SearchApi } from '@/api/search';
+import { SearchApi } from '@/api/shopify/search';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
 import PageLoader from '@/components/PageLoader';
 import type { StoreModel } from '@/models/StoreModel';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
+import { useApolloClient } from '@apollo/client';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
 import useSWR from 'swr';
@@ -166,8 +168,8 @@ export default function SearchContent({}: SearchContentProps) {
         (query.length > 0 && [
             'SearchApi',
             {
-                query: query,
-                locale: locale
+                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
+                query: query
             }
         ]) ||
             null,

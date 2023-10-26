@@ -1,11 +1,13 @@
 'use client';
 
-import { VendorsApi } from '@/api/vendor';
+import { VendorsApi } from '@/api/shopify/vendor';
 import PageLoader from '@/components/PageLoader';
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
+import { useApolloClient } from '@apollo/client';
 import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
@@ -72,7 +74,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
         [
             'VendorsApi',
             {
-                locale: locale
+                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() })
             }
         ],
         ([, props]) => VendorsApi(props),

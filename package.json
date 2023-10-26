@@ -60,6 +60,7 @@
     ],
     "dependencies": {
         "@apollo/client": "3.8.6",
+        "@apollo/experimental-nextjs-app-support": "0.4.3",
         "@prismicio/client": "7.3.1",
         "@prismicio/next": "1.4.0",
         "@prismicio/react": "2.7.3",
@@ -101,6 +102,7 @@
         "eslint": "8.52.0",
         "eslint-config-next": "13.5.6",
         "eslint-config-prettier": "9.0.0",
+        "eslint-plugin-jsdoc": "46.8.2",
         "eslint-plugin-unused-imports": "3.0.0",
         "graphql": "16.8.1",
         "gzip-size": "6.0.0",

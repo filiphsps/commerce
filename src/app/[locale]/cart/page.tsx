@@ -1,16 +1,17 @@
-import { PageApi } from '@/api/page';
-import { StoreApi } from '@/api/store';
+import { BuildConfig } from '@/utils/build-config';
+import CartContent from './cart-content';
+import { NextLocaleToLocale } from '@/utils/locale';
 import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
+import PrismicPage from '@/components/prismic-page';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import CartContent from './cart-content';
+import { asText } from '@prismicio/client';
+import { getDictionary } from '@/i18n/dictionarie';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale: localeData } = params;
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const locale = NextLocaleToLocale(localeData);
     const locales = BuildConfig.i18n.locales;
 
-    const store = await StoreApi({ locale });
+    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
     return {
@@ -67,10 +68,10 @@ export default async function SearchPage({ params }: { params: CartPageParams })
     const i18n = await getDictionary(locale);
     const handle = 'cart';
 
-    const store = await StoreApi({ locale });
-
+    const client = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, shopify: client });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch(page, locale))) || null;
+    const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     return (
         <Page>

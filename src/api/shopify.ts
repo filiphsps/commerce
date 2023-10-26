@@ -1,35 +1,37 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
+import 'server-only';
 
+import type { ApiConfig } from '@/api/client';
+import { setupApi } from '@/api/client';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
+import type { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 
-export const shopifyClient = createStorefrontClient({
-    publicStorefrontToken: BuildConfig.shopify.token,
-    storeDomain: `https://${BuildConfig.shopify.checkout_domain}`,
-    storefrontApiVersion: BuildConfig.shopify.api
-});
+export const shopifyApiConfig = (): {
+    public: () => ApiConfig;
+    private: () => ApiConfig;
+} => {
+    const api = createStorefrontClient({
+        publicStorefrontToken: BuildConfig.shopify.token,
+        privateStorefrontToken: BuildConfig.shopify.private_token,
+        storeDomain: `https://${BuildConfig.shopify.checkout_domain}`,
+        storefrontApiVersion: BuildConfig.shopify.api
+    });
 
-export const storefrontClient = new ApolloClient({
-    ssrMode: true,
-    link: new HttpLink({
-        uri: shopifyClient.getStorefrontApiUrl(),
-        headers: shopifyClient.getPublicTokenHeaders()
-    }),
-    cache: new InMemoryCache({
-        canonizeResults: true,
-        addTypename: false
-    }),
-    defaultOptions: {
-        watchQuery: {
-            fetchPolicy: 'no-cache',
-            errorPolicy: 'ignore'
-        },
-        query: {
-            fetchPolicy: 'no-cache',
-            errorPolicy: 'all'
-        },
-        mutate: {
-            errorPolicy: 'all'
-        }
-    }
-});
+    return {
+        public: () => ({
+            uri: api.getStorefrontApiUrl(),
+            headers: api.getPrivateTokenHeaders()
+        }),
+        private: () => ({
+            uri: api.getStorefrontApiUrl(),
+            headers: api.getPrivateTokenHeaders()
+        })
+    };
+};
+
+export const StorefrontApiClient = ({ locale }: { locale: Locale }) =>
+    ShopifyApolloApiBuilder({
+        api: setupApi(shopifyApiConfig().private()).getClient(),
+        locale
+    });

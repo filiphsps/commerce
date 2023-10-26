@@ -1,8 +1,8 @@
-import type { Locale } from '@/utils/locale';
-import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product, ProductConnection, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { storefrontClient } from '@/api/shopify';
+import type { AbstractApi } from '@/utils/abstract-api';
 import ConvertUnits from 'convert-units';
+import type { Locale } from '@/utils/locale';
 import { gql } from 'graphql-tag';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
@@ -214,13 +214,13 @@ export const ConvertToLocalMeasurementSystem = ({
     return `${Math.ceil(res)}${targetUnit}`;
 };
 
-export const ProductApi = async ({ handle, locale }: { handle: string; locale: Locale }): Promise<Product> => {
+export const ProductApi = async ({ client, handle }: { client: AbstractApi; handle: string }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
 
         try {
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
+            const { data, errors } = await client.query<{ productByHandle: Product }>(
+                gql`
                     fragment product on Product {
                         ${PRODUCT_FRAGMENT}
                     }
@@ -232,15 +232,14 @@ export const ProductApi = async ({ handle, locale }: { handle: string; locale: L
                         }
                     }
                 `,
-                variables: {
-                    handle,
-                    language: locale.language,
-                    country: locale.country
+                {
+                    handle
                 }
-            });
+            );
 
             if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
-            if (!data?.productByHandle) return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.productByHandle)
+                return reject(new Error(`404: "Product" with handle "${handle}" cannot be found`));
 
             try {
                 data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
@@ -249,17 +248,17 @@ export const ProductApi = async ({ handle, locale }: { handle: string; locale: L
             } catch {}
 
             return resolve(data.productByHandle);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             return reject(error);
         }
     });
 };
 
-export const ProductsCountApi = async (): Promise<number> => {
+export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Promise<number> => {
     const count_products = async (count: number = 0, cursor?: string) => {
-        const { data } = await storefrontClient.query({
-            query: gql`
+        const { data } = await client.query<{ products: ProductConnection }>(
+            gql`
                 query products {
                     products(
                         first: 250,
@@ -278,9 +277,12 @@ export const ProductsCountApi = async (): Promise<number> => {
                     }
                 }
             `
-        });
+        );
 
-        if (data.products.pageInfo.hasNextPage) count += await count_products(count, data.products.edges.at(-1).cursor);
+        if (!data?.products?.edges) return count;
+
+        if (data.products.pageInfo.hasNextPage)
+            count += await count_products(count, data.products.edges.at(-1)!.cursor);
 
         return count + data.products.edges.length;
     };
@@ -290,11 +292,11 @@ export const ProductsCountApi = async (): Promise<number> => {
 };
 
 export const ProductsApi = async ({
-    locale,
+    client,
     limit = 250,
     cursor
 }: {
-    locale: Locale;
+    client: AbstractApi;
     limit?: number;
     cursor?: string;
 }): Promise<{
@@ -307,8 +309,8 @@ export const ProductsApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
+            const { data, errors } = await client.query<{ products: ProductConnection }>(
+                gql`
                     fragment product on Product {
                         ${PRODUCT_FRAGMENT}
                     }
@@ -333,22 +335,20 @@ export const ProductsApi = async ({
                         }
                     }
                 `,
-                variables: {
-                    limit,
-                    language: locale.language,
-                    country: locale.country
+                {
+                    limit
                 }
-            });
+            );
 
             if (errors)
                 return reject(
-                    new Error(`500: Something wen't wrong on our end (${errors.map((e) => e.message).join('\n')})`)
+                    new Error(`500: Something went wrong on our end (${errors.map((e) => e.message).join('\n')})`)
                 );
-            if (!data.products) return reject(new Error('404: The requested document cannot be found'));
+            if (!data?.products?.edges) return reject(new Error(`404: No products could be found`));
 
             return resolve({
                 products: data.products.edges,
-                cursor: data.products.edges.at(-1).cursor,
+                cursor: data.products.edges.at(-1)!.cursor,
                 pagination: {
                     next: data.products.pageInfo.hasNextPage,
                     previous: data.products.pageInfo.hasPreviousPage
@@ -362,14 +362,14 @@ export const ProductsApi = async ({
 };
 
 export const ProductsPaginationApi = async ({
-    locale,
+    client,
     limit,
     vendor,
     sorting,
     before,
     after
 }: {
-    locale: Locale;
+    client: AbstractApi;
     limit?: number;
     vendor?: string;
     sorting?: 'BEST_SELLING' | 'CREATED_AT' | 'PRICE' | 'RELEVANCE' | 'TITLE' | 'VENDOR';
@@ -389,8 +389,8 @@ export const ProductsPaginationApi = async ({
 
     return new Promise(async (resolve, reject) => {
         try {
-            const { data } = await storefrontClient.query({
-                query: gql`
+            const { data } = await client.query<{ products: ProductConnection }>(
+                gql`
                     fragment product on Product {
                         ${PRODUCT_FRAGMENT}
                     }
@@ -419,26 +419,24 @@ export const ProductsPaginationApi = async ({
                             }
                         }
                     }
-                `,
-                variables: {
-                    language: locale.language,
-                    country: locale.country
-                }
-            });
+                `
+            );
 
-            const page_info = data.products.pageInfo;
-            resolve({
+            const page_info = data?.products.pageInfo;
+            if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
+
+            return resolve({
                 page_info: {
-                    start_cursor: page_info.startCursor,
-                    end_cursor: page_info.endCursor,
+                    start_cursor: page_info.startCursor || '', // TODO: Handle this properly.
+                    end_cursor: page_info.endCursor || '', // TODO: Handle this properly.
                     has_next_page: page_info.hasNextPage,
                     has_prev_page: page_info.hasPreviousPage
                 },
                 products: data.products?.edges || []
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            reject(error);
+            return reject(error);
         }
     });
 };
@@ -450,13 +448,19 @@ export type ProductVisuals = {
     secondaryAccentDark: boolean;
     transparentBackgrounds: boolean;
 };
-export const ProductVisualsApi = async ({ id, locale }: { id: string; locale: Locale }): Promise<ProductVisuals> => {
+export const ProductVisualsApi = async ({
+    client,
+    id
+}: {
+    client: AbstractApi;
+    id: string;
+}): Promise<ProductVisuals> => {
     return new Promise(async (resolve, reject) => {
         if (!id) return reject(new Error('400: Invalid id'));
 
         try {
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
+            const { data, errors } = await client.query<{ metaobject: any }>(
+                gql`
                     query metaobject($id: ID!, $language: LanguageCode!, $country: CountryCode!)
                     @inContext(language: $language, country: $country) {
                         metaobject(id: $id) {
@@ -478,14 +482,14 @@ export const ProductVisualsApi = async ({ id, locale }: { id: string; locale: Lo
                         }
                     }
                 `,
-                variables: {
-                    id,
-                    language: locale.language,
-                    country: locale.country
+                {
+                    id
                 }
-            });
+            );
 
-            if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
+            if (errors) return reject(new Error(`500: Something went wrong on our end`));
+            else if (!data?.metaobject) return reject(new Error(`404: "Product" with id "${id}" cannot be found`));
+
             try {
                 return resolve({
                     primaryAccent: data.metaobject.primaryAccent.value,
@@ -494,10 +498,10 @@ export const ProductVisualsApi = async ({ id, locale }: { id: string; locale: Lo
                     secondaryAccentDark: data.metaobject.secondaryAccentDark?.value === 'true',
                     transparentBackgrounds: data.metaobject.transparentBackgrounds.value === 'true'
                 });
-            } catch (error) {
-                return reject(new Error(`404: The requested document cannot be found`));
+            } catch (error: any) {
+                return reject(new Error(`500: Something went wrong on our end`));
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             return reject(error);
         }
