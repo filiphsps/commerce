@@ -1,16 +1,17 @@
 import { CountriesApi, StoreApi } from '@/api/store';
 
-import { PageApi } from '@/api/page';
+import { BuildConfig } from '@/utils/build-config';
+import LocaleSelector from './locale-selector';
+import { NextLocaleToLocale } from '@/utils/locale';
 import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
 import { Prefetch } from '@/utils/Prefetch';
-import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
+import PrismicPage from '@/components/prismic-page';
+import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import LocaleSelector from './locale-selector';
+import { getDictionary } from '@/i18n/dictionarie';
 
 export type CountriesPageParams = { locale: string };
 
@@ -23,11 +24,12 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const locale = NextLocaleToLocale(localeData);
     const i18n = await getDictionary(locale);
 
-    const store = await StoreApi({ locale });
-    const countries = await CountriesApi({ locale: locale });
+    const client = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, shopify: client });
+    const countries = await CountriesApi({ client });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch(page, locale))) || null;
+    const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     return (
         <Page>

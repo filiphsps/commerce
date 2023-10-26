@@ -2,9 +2,11 @@
 
 import styled, { css } from 'styled-components';
 
-import { CollectionApi } from '@/api/collection';
+import { CollectionApi } from '@/api/shopify/collection';
 import type { StoreModel } from '@/models/StoreModel';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { useApolloClient } from '@apollo/client';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import dynamic from 'next/dynamic';
@@ -78,8 +80,8 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
         [
             'CollectionApi',
             {
-                handle: handle || collectionData?.handle!,
-                locale
+                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
+                handle: handle || collectionData?.handle!
             }
         ],
         ([, props]) => CollectionApi(props),
