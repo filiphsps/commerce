@@ -1,6 +1,7 @@
-import { ProductOptions } from '@/components/products/product-options';
-import { NextLocaleToLocale } from '@/utils/locale';
 import { fireEvent, render, screen } from '@testing-library/react';
+
+import { NextLocaleToLocale } from '@/utils/locale';
+import { ProductOptions } from '@/components/products/product-options';
 
 const options = [
     {
@@ -20,7 +21,7 @@ const selectedOptions = {
 
 // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
 // required functions to prevent `<ProductProvider>` error.
-jest.mock('@shopify/hydrogen-react', () => ({
+vi.mock('@shopify/hydrogen-react', () => ({
     useProduct: () => ({ options, selectedOptions }),
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
@@ -30,7 +31,7 @@ jest.mock('@shopify/hydrogen-react', () => ({
 
 describe('Components', () => {
     describe('ProductOptions', () => {
-        const onOptionChange = jest.fn();
+        const onOptionChange = vi.fn();
 
         it('renders all options and values', () => {
             render(<ProductOptions locale={NextLocaleToLocale('en-GB')} onOptionChange={onOptionChange} />);
