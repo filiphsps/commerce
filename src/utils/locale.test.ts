@@ -32,7 +32,7 @@ describe('Utils', () => {
             ]);
         });
 
-        it.failing('should convert an ISO 639-1 string to a the Locale object', () => {
+        it.todo('should convert an ISO 639-1 string to a the Locale object', () => {
             const locales = [NextLocaleToLocale('en'), NextLocaleToLocale('fr'), NextLocaleToLocale('es')];
 
             expect(locales).toEqual([
@@ -66,13 +66,13 @@ describe('Utils', () => {
             expect(countryCodes).toEqual(['US', 'CA', 'MX']);
         });
 
-        it.failing('should convert an ISO 639-1 string to a CountryCode string', () => {
+        it.todo('should convert an ISO 639-1 string to a CountryCode string', () => {
             const countryCodes = [NextLocaleToCountry('en'), NextLocaleToCountry('fr'), NextLocaleToCountry('es')];
 
             expect(countryCodes).toEqual(['US', 'FR', 'ES']);
         });
 
-        it.failing('should return the default country code if the locale is invalid', () => {
+        it.todo('should return the default country code if the locale is invalid', () => {
             const countryCode = NextLocaleToCountry('invalid-locale');
 
             expect(countryCode).toEqual('SE');
@@ -96,7 +96,7 @@ describe('Utils', () => {
             expect(languageCodes).toEqual(['EN', 'FR', 'ES']);
         });
 
-        it.failing('should return the default language code if the locale is invalid', () => {
+        it.todo('should return the default language code if the locale is invalid', () => {
             const languageCode = NextLocaleToLanguage('invalid-locale');
 
             expect(languageCode).toEqual('EN');
@@ -162,7 +162,7 @@ describe('Utils', () => {
     describe('NextLocaleToLocale', () => {
         beforeEach(() => {
             // Suppress console.warn output which occurs when an invalid locale is passed to NextLocaleToLocale
-            jest.spyOn(console, 'warn').mockImplementation(() => {});
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
         });
 
         it('should convert a locale string to a Locale object', () => {

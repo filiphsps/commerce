@@ -7,7 +7,7 @@ node_modules/
 /coverage
 
 # next.js
-.next/
+.next
 next.lock/
 out/
 dist/
