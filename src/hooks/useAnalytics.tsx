@@ -1,6 +1,5 @@
 'use client';
 
-import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName,
     AnalyticsPageType,
@@ -10,15 +9,16 @@ import {
     useShopifyCookies
 } from '@shopify/hydrogen-react';
 import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ShopifyAddToCartPayload, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 
-import { usePrevious } from '@/hooks/usePrevious';
-import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
-import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { usePrevious } from '@/hooks/usePrevious';
 
 const trimDomain = (domain?: string): string | undefined => {
     if (!domain) return undefined;

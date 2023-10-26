@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
-import { ImageLoader } from '@/utils/ImageLoader';
 import styled from 'styled-components';
 
 const Previews = styled.div`
@@ -150,7 +149,6 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                         width={image.width || 0}
                         height={image.height || 0}
                         priority
-                        loader={ImageLoader}
                     />
                 </ImageWrapper>
             </Primary>
@@ -170,7 +168,6 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                                     width={125}
                                     height={125}
                                     sizes="(max-width: 950px) 75px, 250px"
-                                    loader={ImageLoader}
                                 />
                             </ImageWrapper>
                         </Preview>

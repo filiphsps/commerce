@@ -2,18 +2,23 @@ import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import Link from '@/components/link';
 import { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
-import { ImageLoader } from '@/utils/ImageLoader';
 import type { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { usePrismicClient } from '@prismicio/react';
 import Image from 'next/image';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
 import Link from '@/components/link';
+import { FooterApi } from '@/api/footer';
+import { FooterModel } from '@/models/FooterModel';
+import type { FunctionComponent } from 'react';
+import Image from 'next/image';
+import Link from '@/components/link';
+import type { Locale } from '@/utils/locale';
 import type { StoreModel } from '@/models/StoreModel';
 import { asText } from '@prismicio/client';
 import styled from 'styled-components';
+import { usePrismicClient } from '@prismicio/react';
 import useSWR from 'swr';
 
 const Logo = styled.div`
@@ -224,13 +229,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                     <FooterBlock>
                         <Logo>
                             {store?.logo?.src && (
-                                <Image
-                                    src={store?.logo.src}
-                                    alt="Logo"
-                                    fill
-                                    sizes="(max-width: 950px) 75px, 250px"
-                                    loader={ImageLoader}
-                                />
+                                <Image src={store?.logo.src} alt="Logo" fill sizes="(max-width: 950px) 75px, 250px" />
                             )}
                         </Logo>
 
