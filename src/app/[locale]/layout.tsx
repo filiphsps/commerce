@@ -22,7 +22,7 @@ import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
 
 const font = Lexend_Deca({
-    weight: ['variable' as any],
+    weight: 'variable',
     subsets: ['latin'],
     display: 'swap',
     variable: '--font-primary',
