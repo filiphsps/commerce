@@ -4,22 +4,22 @@ import '@/style/app.scss';
 
 import * as Prismic from '@/prismic';
 
-import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { BuildConfig } from '@/utils/build-config';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
-import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { StoreApi } from '@/api/store';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
-import { PrismicPreview } from '@prismicio/next';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import ProvidersRegistry from '@/components/providers-registry';
-import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { PrismicPreview } from '@prismicio/next';
+import { Lexend_Deca } from 'next/font/google';
 
 const font = Lexend_Deca({
     weight: 'variable',
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
         metadataBase: new URL(`https://${BuildConfig.domain}`),
         title: {
             default: store.name,
-            template: `%s | ${store.name}`
+            template: `%s · ${store.name}`
         },
         viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
         themeColor: store.accent.secondary,
@@ -54,15 +54,16 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             index: true
         },
         alternates: {
-            canonical: `https://${BuildConfig.domain}`,
+            canonical: `https://${BuildConfig.domain}/`,
             languages: locales.reduce(
-                (prev, curr) => ({
+                (prev, locale) => ({
                     ...prev,
-                    [curr]: `https://${BuildConfig.domain}/${curr}/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/`
                 }),
                 {}
             )
-        }
+        },
+        referrer: 'origin'
     };
 }
 
