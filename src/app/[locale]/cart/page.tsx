@@ -1,17 +1,17 @@
-import { PageApi } from '@/api/page';
-import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { BuildConfig } from '@/utils/build-config';
+import CartContent from './cart-content';
+import { NextLocaleToLocale } from '@/utils/locale';
 import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
-import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
-import { asText } from '@prismicio/client';
+import PrismicPage from '@/components/prismic-page';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import CartContent from './cart-content';
+import { asText } from '@prismicio/client';
+import { getDictionary } from '@/i18n/dictionarie';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale: localeData } = params;
@@ -23,14 +23,14 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
     return {
-        title: page?.meta_title || page?.title || 'Cart', // FIXME: i18n fallback
+        title: page?.meta_title || page?.title || 'Cart', // TODO: fallback should respect i18n.
         description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
             canonical: `https://${BuildConfig.domain}/cart/`,
             languages: locales.reduce(
-                (prev, curr) => ({
+                (prev, locale) => ({
                     ...prev,
-                    [curr]: `https://${BuildConfig.domain}/${curr}/cart/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/cart/`
                 }),
                 {}
             )
