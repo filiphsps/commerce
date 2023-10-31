@@ -1,6 +1,6 @@
 'use client';
 
-import { Content } from '@prismicio/client';
+import type { Content } from '@prismicio/client';
 import Link from '@/components/link';
 import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';

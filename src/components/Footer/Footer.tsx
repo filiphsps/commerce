@@ -1,6 +1,6 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { FooterApi } from '@/api/footer';
-import { FooterModel } from '@/models/FooterModel';
+import type { FooterModel } from '@/models/FooterModel';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import Link from '@/components/link';

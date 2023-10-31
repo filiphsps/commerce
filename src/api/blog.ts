@@ -1,5 +1,5 @@
 import type { AbstractApi } from '@/utils/abstract-api';
-import { Blog } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 export const BlogApi = async ({ client, handle }: { client: AbstractApi; handle: string }): Promise<Blog> => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Content } from '@prismicio/client';
+import type { Content } from '@prismicio/client';
 import Image from 'next/legacy/image';
 import PageContent from '@/components/PageContent';
 import type { SliceComponentProps } from '@prismicio/react';

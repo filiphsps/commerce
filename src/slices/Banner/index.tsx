@@ -1,6 +1,7 @@
 'use client';
 
-import { Content, asLink } from '@prismicio/client';
+import type { Content} from '@prismicio/client';
+import { asLink } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
 import Link from '@/components/link';

@@ -1,6 +1,6 @@
 import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
-import { AbstractApi } from '@/utils/abstract-api';
+import type { AbstractApi } from '@/utils/abstract-api';
 import type { RedirectModel } from '@/models/RedirectModel';
 import { gql } from 'graphql-tag';
 

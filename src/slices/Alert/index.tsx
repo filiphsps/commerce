@@ -1,9 +1,10 @@
 'use client';
 
-import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import { PrismicRichText } from '@prismicio/react';
 
 import { Alert as AlertComponent } from '@/components/Alert';
-import { Content } from '@prismicio/client';
+import type { Content } from '@prismicio/client';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 

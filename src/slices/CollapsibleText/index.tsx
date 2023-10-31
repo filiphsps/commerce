@@ -4,7 +4,8 @@ import { Content } from '@prismicio/client';
 
 import PageContent from '@/components/PageContent';
 import { Overview } from '@/components/typography/Overview';
-import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import { PrismicRichText } from '@prismicio/react';
 import Color from 'color';
 import { FiChevronUp } from 'react-icons/fi';
 import styled from 'styled-components';

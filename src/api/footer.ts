@@ -1,4 +1,4 @@
-import { FooterModel } from '@/models/FooterModel';
+import type { FooterModel } from '@/models/FooterModel';
 import { createClient } from '@/prismic';
 import { BuildConfig } from '@/utils/build-config';
 import { DefaultLocale, type Locale } from '@/utils/locale';
