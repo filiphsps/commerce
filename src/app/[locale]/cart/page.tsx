@@ -1,17 +1,17 @@
-import { BuildConfig } from '@/utils/build-config';
-import CartContent from './cart-content';
-import { NextLocaleToLocale } from '@/utils/locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import { StorefrontApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
-import { StoreApi } from '@/api/store';
-import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
-import { asText } from '@prismicio/client';
 import { getDictionary } from '@/i18n/dictionarie';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Prefetch } from '@/utils/prefetch';
+import { asText } from '@prismicio/client';
+import { Suspense } from 'react';
+import CartContent from './cart-content';
 
 export async function generateMetadata({ params }: { params: { locale: string } }) {
     const { locale: localeData } = params;
@@ -80,7 +80,6 @@ export default async function SearchPage({ params }: { params: CartPageParams })
 
                 <Suspense>
                     <CartContent
-                        store={store}
                         locale={locale}
                         slices={
                             page && (
