@@ -1,5 +1,4 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
-import { Config } from '@/utils/Config';
 import { FooterApi } from '@/api/footer';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
@@ -262,9 +261,12 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         <AcceptedPaymentMethods store={store!} />
                         <LegalAndCopyright>
                             <ImportantLinks>
-                                <Policy href="mailto:dennis@sweetsideofsweden.com">Contact Us</Policy>
+                                <Policy href="mailto:hello@sweetsideofsweden.com">Contact Us</Policy>
                                 <Policy href="/about/" prefetch={false}>
                                     About
+                                </Policy>
+                                <Policy href="https://nordcom.io/legal/terms-of-service/" prefetch={false}>
+                                    Terms of Service
                                 </Policy>
                                 <Policy href="/privacy-policy/" prefetch={false}>
                                     Privacy Policy
@@ -292,13 +294,13 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         </Socials>
                         <LegalAndCopyright>
                             <Copyright>
-                                <span>&copy; 2020-{new Date().getFullYear()} </span>
+                                <span>&copy; {new Date().getFullYear()} </span>
                                 <span>
-                                    <Link href={`https://${Config.domain}/`} prefetch={false}>
-                                        {store?.name}
-                                    </Link>{' '}
-                                    - All rights reserved
+                                    <Link href={`https://nordcom.io/`} prefetch={false}>
+                                        Nordcom Group Inc.
+                                    </Link>
                                 </span>
+                                <span> - All Rights Reserved</span>
                             </Copyright>
                         </LegalAndCopyright>
                     </FooterBottomSectionBlock>
