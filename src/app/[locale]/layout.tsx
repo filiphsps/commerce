@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
 
     return {
-        metadataBase: new URL(`https://${BuildConfig.domain}`),
+        metadataBase: new URL(`https://${BuildConfig.domain}/`),
         title: {
             default: store.name,
             template: `%s · ${store.name}`

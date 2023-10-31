@@ -253,10 +253,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                         <AcceptedPaymentMethods store={store!} />
                         <LegalAndCopyright>
                             <ImportantLinks>
-                                <Policy href="mailto:hello@sweetsideofsweden.com">Contact Us</Policy>
-                                <Policy href="/about/" prefetch={false}>
-                                    About
-                                </Policy>
+                                <Policy href="mailto:hello@sweetsideofsweden.com">Contact</Policy>
                                 <Policy href="https://nordcom.io/legal/terms-of-service/" prefetch={false}>
                                     Terms of Service
                                 </Policy>

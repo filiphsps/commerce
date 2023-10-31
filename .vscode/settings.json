@@ -49,5 +49,8 @@
         "**/next-env.d.ts": true,
         "**/prismicio-types.d.ts": true,
         "**/*.tsbuildinfo": true
-    }
+    },
+    "files.autoSave": "onFocusChange",
+    "git.enableCommitSigning": true,
+    "git.mergeEditor": true
 }
