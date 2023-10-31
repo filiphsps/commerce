@@ -50,7 +50,7 @@
         "**/prismicio-types.d.ts": true,
         "**/*.tsbuildinfo": true
     },
-    "files.autoSave": "onFocusChange",
+    "files.autoSave": "off",
     "git.enableCommitSigning": true,
     "git.mergeEditor": true
 }
