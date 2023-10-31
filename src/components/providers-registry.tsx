@@ -1,15 +1,15 @@
 'use client';
 
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-
-import { CartFragment } from '@/api/cart';
-import type { ApiConfig } from '@/api/client';
-import { createClient, linkResolver, repositoryName } from '@/prismic';
-import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
 import { PrismicProvider, PrismicToolbar } from '@prismicio/react';
-import type { ReactNode } from 'react';
+import { createClient, linkResolver, repositoryName } from '@/prismic';
+
+import type { ApiConfig } from '@/api/client';
 import ApiProvider from './api-provider';
+import { BuildConfig } from '@/utils/build-config';
+import { CartFragment } from '@/api/cart';
+import type { Locale } from '@/utils/locale';
+import type { ReactNode } from 'react';
 
 export default function ProvidersRegistry({
     children,
