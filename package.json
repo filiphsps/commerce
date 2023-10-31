@@ -112,7 +112,7 @@
         "eslint-plugin-prettier": "5.0.1",
         "eslint-plugin-unused-imports": "3.0.0",
         "graphql": "16.8.1",
-        "gzip-size": "6.0.0",
+        "gzip-size": "7.0.0",
         "husky": "8.0.3",
         "jsdom": "22.1.0",
         "lint-staged": "15.0.2",
