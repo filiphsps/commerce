@@ -1,10 +1,10 @@
 'use client';
 
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+
 import { CartSummary } from '@/components/CartSummary';
 import CartLines from '@/components/cart/cart-lines';
-import type { StoreModel } from '@/models/StoreModel';
 import { Checkout } from '@/utils/checkout';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 import { styled } from 'styled-components';
@@ -43,7 +43,6 @@ const Sidebar = styled.article`
 `;
 
 type CartContentProps = {
-    store?: StoreModel;
     locale: Locale;
     slices: ReactNode;
     i18n: LocaleDictionary;
