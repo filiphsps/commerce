@@ -23,14 +23,14 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
     return {
-        title: page?.meta_title || page?.title || 'Search', // FIXME: i18n fallback
+        title: page?.meta_title || page?.title || 'Search', // TODO: fallback should respect i18n.
         description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
             canonical: `https://${BuildConfig.domain}/search/`,
             languages: locales.reduce(
-                (prev, curr) => ({
+                (prev, locale) => ({
                     ...prev,
-                    [curr]: `https://${BuildConfig.domain}/${curr}/search/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/search/`
                 }),
                 {}
             )

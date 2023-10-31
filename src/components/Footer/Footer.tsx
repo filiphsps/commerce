@@ -1,14 +1,14 @@
-import { FooterApi } from '@/api/footer';
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
-import Link from '@/components/link';
+import { FooterApi } from '@/api/footer';
 import { FooterModel } from '@/models/FooterModel';
-import type { StoreModel } from '@/models/StoreModel';
-import type { Locale } from '@/utils/locale';
-import { asText } from '@prismicio/client';
-import { usePrismicClient } from '@prismicio/react';
-import Image from 'next/image';
 import type { FunctionComponent } from 'react';
+import Image from 'next/image';
+import Link from '@/components/link';
+import type { Locale } from '@/utils/locale';
+import type { StoreModel } from '@/models/StoreModel';
+import { asHTML } from '@prismicio/client';
 import styled from 'styled-components';
+import { usePrismicClient } from '@prismicio/react';
 import useSWR from 'swr';
 
 const Logo = styled.div`
@@ -225,7 +225,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
 
                         <Address
                             dangerouslySetInnerHTML={{
-                                __html: asText(footer?.address, '<br />') || ''
+                                __html: asHTML(footer?.address) || ''
                             }}
                         />
                     </FooterBlock>
@@ -253,8 +253,8 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                         <AcceptedPaymentMethods store={store!} />
                         <LegalAndCopyright>
                             <ImportantLinks>
-                                <Policy href="mailto:hello@sweetsideofsweden.com">Contact</Policy>
-                                <Policy href="https://nordcom.io/legal/terms-of-service/" prefetch={false}>
+                                <Policy href="/contact/">Contact</Policy>
+                                <Policy href="https://nordcom.io/legal/terms-of-service/" target="_blank">
                                     Terms of Service
                                 </Policy>
                                 <Policy href="/privacy-policy/" prefetch={false}>
@@ -285,7 +285,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                             <Copyright>
                                 <span>&copy; {new Date().getFullYear()} </span>
                                 <span>
-                                    <Link href={`https://nordcom.io/`} prefetch={false}>
+                                    <Link href={`https://nordcom.io/`} target="_blank">
                                         Nordcom Group Inc.
                                     </Link>
                                 </span>

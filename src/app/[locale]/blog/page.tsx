@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
     return {
-        title: page?.meta_title || page?.title || 'Blog', // FIXME: i18n fallback
+        title: page?.meta_title || page?.title || 'Blog', // TODO: fallback should respect i18n.
         description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
             canonical: `https://${BuildConfig.domain}/blog/`,
