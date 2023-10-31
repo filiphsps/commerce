@@ -1,7 +1,7 @@
 'use client';
 
 import { Money } from '@shopify/hydrogen-react';
-import { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import { styled } from 'styled-components';
 
 const Container = styled.section`

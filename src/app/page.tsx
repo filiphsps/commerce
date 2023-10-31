@@ -1,5 +1,5 @@
 import { BuildConfig } from '@/utils/build-config';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {

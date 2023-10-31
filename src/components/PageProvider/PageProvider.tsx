@@ -1,14 +1,15 @@
 'use client';
 
-import { NavigationApi, NavigationItem } from '@/api/navigation';
+import type { NavigationItem } from '@/api/navigation';
+import { NavigationApi } from '@/api/navigation';
 import { NextLocaleToCurrency } from '@/utils/locale';
 import { Suspense, useState } from 'react';
 
 import { HeaderApi } from '@/api/header';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
-import { FooterModel } from '@/models/FooterModel';
-import { HeaderModel } from '@/models/HeaderModel';
+import type { FooterModel } from '@/models/FooterModel';
+import type { HeaderModel } from '@/models/HeaderModel';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';

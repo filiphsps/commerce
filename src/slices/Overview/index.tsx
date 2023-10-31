@@ -1,8 +1,9 @@
 'use client';
 
-import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
+import type { SliceComponentProps } from '@prismicio/react';
+import { PrismicRichText } from '@prismicio/react';
 
-import { Content } from '@prismicio/client';
+import type { Content } from '@prismicio/client';
 import { Overview } from '@/components/typography/Overview';
 import PageContent from '@/components/PageContent';
 import styled from 'styled-components';
