@@ -24,6 +24,6 @@ runs:
                   ${{ github.workspace }}/**/.next
                   ${{ github.workspace }}/**/.turbo
                   ${{ github.workspace }}/**/.vercel
-              key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.json') }}
+              key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
               restore-keys: |
                   ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-
