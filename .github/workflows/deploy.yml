@@ -6,6 +6,7 @@ on:
             - CI
         types:
             - completed
+
 env:
     CI: true
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -46,6 +47,7 @@ jobs:
                   environment: production
 
             - name: 🔥 Purge CloudFlare cache
+              if: false
               run: |
                   curl -X POST \
                   -H "Content-Type: application/json" \
