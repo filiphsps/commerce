@@ -1,48 +1,54 @@
-name: 🧠 CI
+name: CI
 
 on:
-    pull_request_target:
-        paths-ignore:
-            - '**.md'
-    push:
-        branches:
-            - master
-            - staging
+    pull_request:
         paths-ignore:
             - '**.md'
             - '**.txt'
             - 'LICENSE'
 
+    push:
+        branches:
+            - master
+            - staging
+            #- 'dev/*'
+            #- '**FRO-**'
+        paths-ignore:
+            - '**.md'
+            - '**.txt'
+            - 'LICENSE'
+
+env:
+    CI: true
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
 jobs:
-    test:
-        name: 🔬 Test
+    build:
+        name: 🔨 Build
         timeout-minutes: 10
         runs-on: ubuntu-latest
-        env:
-            CI: true
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v4
 
-            - name: 🏎️ Setup nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 'lts/*'
-                  cache: 'npm'
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-            - name: 💾 Cache node modules
-              uses: actions/cache@v3
-              with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-node-test-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-test-
+            - name: 🔨 Build
+              run: npm run build
 
-            - name: 📦 Download dependencies
-              run: npm ci
+    test:
+        name: 🔬 Test
+        needs: [build]
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
 
-            - name: 📋 Lint
-              run: npm run lint
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
             - name: 🧪 Test
               run: npm run test
@@ -50,81 +56,48 @@ jobs:
             - name: 🦺 Codecov Coverage Reports
               uses: codecov/codecov-action@v3
               env:
-                CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    build:
-        if: false
-        name: 🏗️ Build
+    lint:
+        name: 📋 Lint
+        needs: [build]
+        timeout-minutes: 5
         runs-on: ubuntu-latest
-        env:
-            CI: true
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v4
 
-            - name: 🏎️ Setup nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 'lts/*'
-                  cache: 'npm'
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-            - name: 💾 Cache node modules
-              uses: actions/cache@v3
-              with:
-                  path: |
-                      ~/.npm
-                      ${{ github.workspace }}/.next/cache
-                  # Generate a new cache whenever packages or source files change.
-                  key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
-                  # If source files changed but packages didn't, rebuild from a prior cache.
-                  restore-keys: |
-                      ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-
+            - name: 📋 Lint
+              run: npm run lint
 
-            - name: 📦 Download dependencies
-              run: npm ci
-
-            - name: 🛠️ Build
-              run: npm run build
-
-    deploy-vercel:
-        if: false
-        name: 🚚 Deploy Vercel
-        needs: [test]
-        timeout-minutes: 30
+    typecheck:
+        name: ✅ Typecheck
+        needs: [build]
+        timeout-minutes: 5
         runs-on: ubuntu-latest
-        env:
-            CI: true
-            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-            VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v4
 
-            - name: 🏎️ Setup nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 'lts/*'
-                  cache: 'npm'
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-            - name: 💾 Cache node modules
-              uses: actions/cache@v3
-              with:
-                  path: ~/.npm
-                  # Re-use npm cache from the build job
-                  key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-build-
+            - name: 📋 Typecheck
+              run: npm run typecheck
 
-            - name: 📦 Download dependencies
-              run: npm ci
+    # dispatch:
+    #     name: 🗣️ Dispatch
+    #     needs: [test, lint, typecheck]
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - name: 🕶️ Checkout repository
+    #           uses: actions/checkout@v4
 
-            - name: 📐 Install & Configure Vercel CLI
-              run: |
-                  npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: 🚚 Push to Vercel
-              run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: 🔥 Purge CloudFlare cache
-              run: 'curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ID }}/purge_cache" -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_TOKEN }}" -H "Content-Type: application/json" --data "{\"purge_everything\":true}"'
+    #         # Deliberately empty as this is just used
+    #         # to trigger other workflows when this one
+    #         # completes successfully. Otherwise we can't
+    #         # make sure that every test, lint and typecheck
+    #         # job has validated and completed successfully.

@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+    workflow_run:
+        workflows:
+            - CI
+        types:
+            - completed
+env:
+    CI: true
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+jobs:
+    vercel:
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        name: 🚚 Deploy Vercel
+        timeout-minutes: 5
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch }}
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            #- name: 📐 Install & Configure Vercel CLI
+            #  run: |
+            #      npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+
+            #- name: 🚚 Push to Vercel
+            #  run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: 🔥 Purge CloudFlare cache
+              run: |
+                  curl -X POST \
+                  -H "Content-Type: application/json" \
+                  -H "Accept: application/json, application/vnd.github.v3+json" \
+                  -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_TOKEN }}" \
+                  --data "{\"purge_everything\":true}" \
+                  https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ID }}/purge_cache

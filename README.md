@@ -1,4 +1,4 @@
-# sweetsideofsweden-frontend
+# @nordcom/ecommerce
 
 [![Unit & Integration Testing](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/NordcomInc/sweetsideofsweden-frontend/actions/workflows/ci.yml)
 [![WakaTime](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend.svg)](https://wakatime.com/badge/github/NordcomInc/sweetsideofsweden-frontend)
@@ -8,17 +8,17 @@ A modern e-commerce platform that uses various integrations to handle everything
 > [!IMPORTANT]  
 > The integrations are currently hard-coded. In the future we will support integrations as plugins.
 
--   Complete SSR-support
--   Per-component testing
--   Always targeting nodejs **LTS**
--   npm
+- Complete SSR-support
+- Per-component testing
+- Always targeting nodejs **LTS**
+- npm
 
 ## Supported Integartions
 
--   Storefronts
-    -   Shopify
--   CMSs
-    -   Prismic
+- Storefronts
+  - Shopify
+- CMSs
+  - Prismic
 
 ## Usage
 
@@ -27,5 +27,8 @@ A modern e-commerce platform that uses various integrations to handle everything
 
 ## Maintainers
 
--   2019-2023: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).
--   2023: Nordcom Group Inc. - [@NordcomInc](https://github.com/NordcomInc).
+- 2019-2023: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).
+- 2023: Nordcom Group Inc. - [@NordcomInc](https://github.com/NordcomInc).
+
+© 2019-2023 Filiph Siitam Sandström.
+© 2023 Nordcom Group Inc.

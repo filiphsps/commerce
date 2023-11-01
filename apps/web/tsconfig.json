@@ -1,0 +1,40 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "strictNullChecks": true,
+        "baseUrl": ".",
+        "rootDir": ".",
+        "paths": {
+            "@/components/*": ["./src/components/*"],
+            "@/hooks/*": ["./src/hooks/*"],
+            "@/api/*": ["./src/api/*"],
+            "@/models/*": ["./src/models/*"],
+            "@/utils/*": ["./src/utils/*"],
+            "@/style/*": ["./src/scss/*"],
+
+            // i18n
+            "@/i18n/*": ["./src/locales/*"],
+            "@/i18n/dictionarie": ["./src/app/[locale]/dictionarie.ts"],
+
+            // Prismic
+            "@/slices/*": ["./src/slices/*"],
+            "@/slices": ["./src/slices/index"],
+            "@/prismic/types": ["./prismicio-types.d.ts"],
+            "@/prismic": ["./prismicio.ts"]
+        }
+    },
+    "exclude": ["node_modules"],
+    "include": [
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "prismicio-types.d.ts",
+        "./src/@types",
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
+    ]
+}

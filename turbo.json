@@ -1,0 +1,21 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": ["**/.env.*local", "tsconfig.json"],
+    "pipeline": {
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": [".next/**", "!.next/cache/**"]
+        },
+        "lint": { "cache": false },
+        "test": { "cache": false },
+        "typecheck": { "cache": false },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "slicemachine": {
+            "cache": false,
+            "persistent": true
+        }
+    }
+}
