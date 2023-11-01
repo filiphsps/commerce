@@ -74,7 +74,7 @@
         "turbo": "1.10.16",
         "typescript": "5.2.2"
     },
-    "packageManager": "npm@10.2.0",
+    "packageManager": "npm@10.2.2",
     "nextBundleAnalysis": {
         "budget": 248400,
         "budgetPercentIncreaseRed": 20,
