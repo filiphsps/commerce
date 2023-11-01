@@ -1,14 +1,17 @@
 name: 🧠 CI
 
 on:
-    pull_request:
+    pull_request_target:
         paths-ignore:
             - '**.md'
     push:
         branches:
             - master
+            - staging
         paths-ignore:
             - '**.md'
+            - '**.txt'
+            - 'LICENSE'
 
 jobs:
     test:
@@ -43,6 +46,11 @@ jobs:
 
             - name: 🧪 Test
               run: npm run test
+
+            - name: 🦺 Codecov Coverage Reports
+              uses: codecov/codecov-action@v3
+              env:
+                CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     build:
         if: false
