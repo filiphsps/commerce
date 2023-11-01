@@ -1,0 +1,121 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@nordcom/ecommerce-frontend",
+    "version": "1.4.0",
+    "private": true,
+    "sideEffects": false,
+    "type": "module",
+    "cacheDirectories": [
+        ".next/cache"
+    ],
+    "prettier": "@nordcom/prettier",
+    "scripts": {
+        "start": "next start -p $PORT",
+        "dev": "next dev",
+        "build": "next build",
+        "postbuild": "npm run sitemap",
+        "sitemap": "next-sitemap",
+        "postsitemap": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
+        "lint": "concurrently --raw npm:lint:*",
+        "lint:next": "next lint",
+        "lint:prettier": "prettier src/**/*.* --check",
+        "typecheck": "tsc -noEmit",
+        "test": "concurrently --raw npm:test:*",
+        "test:vitest": "vitest run --coverage",
+        "slicemachine": "start-slicemachine"
+    },
+    "author": {
+        "name": "Nordcom Group Inc.",
+        "email": "opensource@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Siitam Sandström",
+            "email": "filiph@nordcom.io",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+    },
+    "keywords": [
+        "nextjs",
+        "react"
+    ],
+    "bugs": {
+        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+    },
+    "homepage": "https://www.sweetsideofsweden.com/",
+    "browserslist": [
+        ">0.5%",
+        "defaults",
+        "supports es6-module",
+        "supports css-grid"
+    ],
+    "dependencies": {
+        "@apollo/client": "3.8.6",
+        "@apollo/experimental-nextjs-app-support": "0.5.0",
+        "@prismicio/client": "7.3.1",
+        "@prismicio/next": "1.4.0",
+        "@prismicio/react": "2.7.3",
+        "@shopify/hydrogen-react": "2023.10.0",
+        "@thebeyondgroup/shopify-rich-text-renderer": "1.0.0",
+        "@vercel/edge-config": "0.4.1",
+        "accept-language-parser": "1.5.0",
+        "color": "4.2.3",
+        "convert-units": "2.3.4",
+        "destyle.css": "4.0.0",
+        "next": "14.0.1",
+        "next-seo": "6.4.0",
+        "nprogress": "0.2.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "react-icons": "4.11.0",
+        "react-slick": "0.29.0",
+        "sass": "1.69.5",
+        "sharp": "0.32.6",
+        "styled-components": "6.1.0",
+        "swr": "2.2.4"
+    },
+    "devDependencies": {
+        "@nordcom/prettier": "0.1.1",
+        "@slicemachine/adapter-next": "0.3.23",
+        "@testing-library/jest-dom": "6.1.4",
+        "@testing-library/react": "14.0.0",
+        "@types/accept-language-parser": "1.5.5",
+        "@types/color": "3.0.5",
+        "@types/convert-units": "2.3.8",
+        "@types/node": "20.8.10",
+        "@types/nprogress": "0.2.2",
+        "@types/react": "18.2.33",
+        "@types/react-dom": "18.2.14",
+        "@types/react-slick": "0.23.11",
+        "@types/styled-components": "5.1.29",
+        "@typescript-eslint/eslint-plugin": "6.9.1",
+        "@vitejs/plugin-react": "4.1.0",
+        "@vitest/coverage-v8": "0.34.6",
+        "babel-plugin-module-resolver": "5.0.0",
+        "concurrently": "8.2.2",
+        "eslint": "8.52.0",
+        "eslint-config-next": "14.0.1",
+        "eslint-config-prettier": "9.0.0",
+        "eslint-plugin-import": "2.29.0",
+        "eslint-plugin-jsdoc": "46.8.2",
+        "eslint-plugin-jsx-a11y": "6.7.1",
+        "eslint-plugin-prettier": "5.0.1",
+        "eslint-plugin-unused-imports": "3.0.0",
+        "graphql": "16.8.1",
+        "husky": "8.0.3",
+        "jsdom": "22.1.0",
+        "lint-staged": "15.0.2",
+        "next-sitemap": "4.2.3",
+        "prettier": "3.0.3",
+        "pretty-xml": "1.2.1",
+        "server-only": "0.0.1",
+        "slice-machine-ui": "1.19.1",
+        "typescript": "5.2.2",
+        "vitest": "0.34.6"
+    }
+}

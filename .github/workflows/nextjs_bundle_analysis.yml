@@ -1,11 +1,15 @@
-name: 'Next.js Bundle Analysis'
+name: Bundle Analysis
 
 on:
-    pull_request:
-    push:
-        branches:
-            - master
-    workflow_dispatch:
+    workflow_run:
+        workflows:
+            - CI
+        types:
+            - completed
+    # push:
+    #     branches:
+    #         - master
+    # workflow_dispatch:
 
 defaults:
     run:
@@ -16,70 +20,58 @@ permissions:
     actions: read
     pull-requests: write
 
+env:
+    CI: true
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
 jobs:
     analyze:
         name: 🧪 Analyze
         timeout-minutes: 10
         runs-on: ubuntu-latest
-        env:
-            CI: true
         steps:
-            - uses: actions/checkout@v4
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
 
-            - name: Install Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 'lts/*'
-                  cache: 'npm'
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
-            - name: Install dependencies
-              uses: bahmutov/npm-install@v1
-              with:
-                  install-command: npm ci
-
-            - name: Restore next build
-              uses: actions/cache@v3
-              id: restore-build-cache
-              env:
-                  cache-name: cache-next-build
-              with:
-                  path: .next/cache
-                  key: ${{ runner.os }}-build-${{ env.cache-name }}
-
-            - name: Build next.js app
+            - name: 🔨 Build
               run: npm run build
 
-            - name: Analyze bundle
-              run: node ./.github/scripts/bundle-analyze-report.js
+            - name: 🔬 Analyze bundle
+              run: node ./.github/common/scripts/bundle-analyze-report.js
 
-            - name: Upload bundle
+            - name: 🌎 Upload bundle
               uses: actions/upload-artifact@v3
               with:
                   name: bundle
-                  path: .next/analyze/__bundle_analysis.json
+                  path: apps/web/.next/analyze/__bundle_analysis.json
 
-            - name: Download base branch bundle stats
+            - name: 📦 Download base branch bundle stats
               uses: dawidd6/action-download-artifact@v2
               if: success() && github.event.number
               with:
                   workflow: nextjs_bundle_analysis.yml
                   branch: ${{ github.event.pull_request.base.ref }}
-                  path: .next/analyze/base
+                  path: apps/web/.next/analyze/base
+                  if_no_artifact_found: warn
 
-            - name: Compare with base branch bundle
+            - name: 📃 Compare with base branch bundle
               if: success() && github.event.number
-              run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
+              run: ls -laR apps/web/.next/analyze/base && npx -p nextjs-bundle-analysis compare
 
-            - name: Get Comment Body
+            - name: 💬 Get Comment Body
               id: get-comment-body
               if: success() && github.event.number
               # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
               run: |
                   echo "body<<EOF" >> $GITHUB_OUTPUT
-                  echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
+                  echo "$(cat apps/web/.next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
                   echo EOF >> $GITHUB_OUTPUT
 
-            - name: Comment
+            - name: 🗣️ Comment
               uses: marocchino/sticky-pull-request-comment@v2
               with:
                   header: next-touched-pages

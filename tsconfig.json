@@ -23,35 +23,7 @@
         "jsx": "preserve",
         "incremental": true,
         "downlevelIteration": false,
-        "strictNullChecks": true,
-        "baseUrl": ".",
-        "rootDir": "./",
-        "paths": {
-            "@/components/*": ["./src/components/*"],
-            "@/hooks/*": ["./src/hooks/*"],
-            "@/api/*": ["./src/api/*"],
-            "@/models/*": ["./src/models/*"],
-            "@/utils/*": ["./src/utils/*"],
-            "@/style/*": ["./src/scss/*"],
-
-            // i18n
-            "@/i18n/*": ["./src/locales/*"],
-            "@/i18n/dictionarie": ["./src/app/[locale]/dictionarie.ts"],
-
-            // Prismic
-            "@/slices/*": ["./src/slices/*"],
-            "@/slices": ["./src/slices/index"],
-            "@/prismic/types": ["./prismicio-types.d.ts"],
-            "@/prismic": ["./prismicio.ts"]
-        }
+        "strictNullChecks": true
     },
-    "exclude": ["node_modules", "public"],
-    "include": [
-        "next-env.d.ts",
-        ".next/types/**/*.ts",
-        "prismicio-types.d.ts",
-        "./src/@types",
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
-    ]
+    "exclude": ["node_modules", "public"]
 }

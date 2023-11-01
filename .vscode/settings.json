@@ -15,6 +15,7 @@
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.renderWhitespace": "all",
     "editor.codeActionsOnSave": {
         "source.fixAll": true,
         "source.organizeImports": true,
@@ -43,14 +44,14 @@
         "**/Thumbs.db": true,
         "**/.next": true,
         "**/node_modules": true,
-        "**/__snapshots__": true,
         "**/coverage": true,
         "**/package-lock.json": true,
-        "**/next-env.d.ts": true,
-        "**/prismicio-types.d.ts": true,
         "**/*.tsbuildinfo": true
     },
     "files.autoSave": "off",
+    "files.trimTrailingWhitespace": true,
+    "files.eol": "\n",
+    "files.trimFinalNewlines": false,
     "git.enableCommitSigning": true,
     "git.mergeEditor": true
 }

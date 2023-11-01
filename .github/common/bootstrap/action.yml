@@ -1,0 +1,29 @@
+name: '📦 Bootstrap'
+description: 'Install and configure dependencies'
+
+runs:
+    using: 'composite'
+    steps:
+        - name: 🏎️ Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+              node-version-file: '.nvmrc'
+              registry-url: 'https://registry.npmjs.org'
+              cache: 'npm'
+
+        - name: 📦 Install dependencies
+          shell: bash
+          run: npm ci
+
+        - name: 💾 Cache node modules
+          uses: actions/cache@v3
+          with:
+              path: |
+                  ~/.npm
+                  ${{ github.workspace }}/.turbo
+                  ${{ github.workspace }}/**/.next
+                  ${{ github.workspace }}/**/.turbo
+                  ${{ github.workspace }}/**/.vercel
+              key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '**/*.json') }}
+              restore-keys: |
+                  ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-
