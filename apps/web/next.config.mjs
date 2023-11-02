@@ -72,6 +72,9 @@ let config = {
         PRISMIC_REPO: process.env.PRISMIC_REPO
     },
     serverRuntimeConfig: {
+        // Shopify
+        SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
+    
         // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN
     },
