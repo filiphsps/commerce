@@ -11,25 +11,24 @@ const Previews = styled.div`
     position: relative;
     grid-area: previews;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
-    gap: var(--block-spacer);
 
     @media (min-width: 950px) {
         display: flex;
         position: relative;
-        inset: unset;
-        //flex-direction: column;
+        flex-direction: row;
         height: fit-content;
     }
 `;
 const Preview = styled.div`
     overflow: hidden;
-    width: fit-content;
+    width: 6rem;
     height: 6rem;
-    padding: var(--block-padding);
-    background: var(--background-preview);
+    padding: var(--block-padding-small);
+    background: var(--color-block);
     border-radius: var(--block-border-radius);
     cursor: pointer;
     transition: 150ms ease-in-out;
@@ -39,7 +38,8 @@ const Preview = styled.div`
     @media (min-width: 950px) {
         width: 12rem;
         height: fit-content;
-        border: var(--block-border-width) solid var(--background-preview);
+        padding: var(--block-padding);
+        border: var(--block-border-width) solid var(--color-block);
         opacity: 1;
     }
 
@@ -53,7 +53,6 @@ const Preview = styled.div`
     @media (max-width: 950px) {
         img {
             width: auto;
-            object-fit: cover;
             height: 100%;
         }
     }
@@ -62,9 +61,11 @@ const Preview = styled.div`
 const Primary = styled.div`
     position: relative;
     grid-area: primary;
-    width: auto;
+    width: 100%;
     height: fit-content;
     padding: calc(var(--block-padding-large) * 2);
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
 
     @media (max-width: 950px) {
         padding: 0;
@@ -93,11 +94,19 @@ const ImageWrapper = styled.div`
 const Container = styled.div`
     position: relative;
     display: grid;
-    grid-template-areas: 'primary' 'previews';
+    grid-template-areas: 'primary previews';
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr;
+    gap: var(--block-spacer);
     width: 100%;
     max-height: 100%;
-    gap: var(--block-spacer);
     transition: 150ms ease-in-out;
+
+    @media (min-width: 950px) {
+        grid-template-areas: 'primary' 'previews';
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
 
     img {
         flex-shrink: 1;

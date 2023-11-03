@@ -10,26 +10,30 @@ const Container = styled.div`
     grid-template-rows: auto auto;
     grid-template-areas: 'aside' 'primary';
     gap: 0;
-    max-width: var(--page-width);
     width: 100%;
+    max-width: var(--page-width);
     margin: 0 auto;
+    padding: calc(var(--block-spacer-large) * 2) calc(var(--block-spacer) / 2);
 
     @media (min-width: 950px) {
-        grid-template-columns: 60% auto;
+        grid-template-columns: 55% auto;
         grid-template-rows: auto;
         grid-template-areas: 'aside primary';
-        max-width: 100vw;
+        gap: var(--block-spacer-large);
+        max-width: 100%;
+        padding: calc(var(--block-spacer-large) * 2) var(--block-spacer);
     }
 `;
 
 const Aside = styled.div`
     position: relative;
     grid-area: aside;
-    height: 30vh;
-    background: var(--color-block);
+    margin: var(--block-spacer);
+    margin-top: 0;
 
     @media (min-width: 950px) {
-        height: unset;
+        margin-right: 0;
+        margin: 0 0 0 var(--block-spacer);
         padding-left: calc(60vw - calc(var(--page-width) * 0.6) - var(--block-padding-large) * 2);
     }
 `;
@@ -42,6 +46,7 @@ const Primary = styled.div`
 
     @media (min-width: 950px) {
         padding: var(--block-padding);
+        margin: 0 var(--block-spacer) 0 0;
         max-width: calc(calc(var(--page-width) * 0.4) - var(--block-padding-large));
     }
 `;

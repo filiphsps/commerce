@@ -16,7 +16,7 @@ const Span = styled.span``;
 const Price = styled.div`
     position: relative;
     display: inline-block;
-    font-size: 2.5rem;
+    font-size: 3rem;
     line-height: 1;
     font-weight: 700;
 
@@ -27,8 +27,11 @@ const Price = styled.div`
 `;
 const PreviousPrice = styled(Price)`
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--color-gray);
+
+    // Optically balance.
+    padding-bottom: 0.15rem;
 `;
 const Strike = styled.s`
     position: relative;
@@ -39,8 +42,8 @@ const Strike = styled.s`
         position: absolute;
         display: block;
         height: 0.25rem;
-        width: calc(100% - 0.5rem);
-        inset: 50% 0 0 0;
+        width: 95%;
+        inset: 48% 0 0 2.5%;
         white-space: nowrap;
         border-radius: 1rem;
         transform: rotate(-15deg);
