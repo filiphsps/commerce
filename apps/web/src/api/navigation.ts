@@ -36,7 +36,7 @@ export const NavigationApi = async ({
                 }))
             );
         } catch (error: any) {
-            // TODO: isDefaultLocale utility function.
+            // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await NavigationApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
             }

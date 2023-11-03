@@ -65,9 +65,8 @@ interface StockStatusProps {
 export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) => {
     if (!product || !product.availableForSale) return null;
 
-    // TODO: proper i18n
+    // TODO: Proper i18n.
     const available = `In stock and available`;
-    //const fewAvailable = `Limited amount in stock`;
 
     return (
         <Entry $status="good" title={available}>

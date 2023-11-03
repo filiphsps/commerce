@@ -44,11 +44,11 @@ const Spacing = ({ slice }: SpacingProps): JSX.Element => {
                         return <Small />;
                     case 'large':
                         return <Large />;
+
+                    // TODO: Maybe we should throw on default.
                     default:
                     case 'normal':
                         return <Normal />;
-                    // TODO: maybe we should throw on default?
-                    // or maybe not to handle old deployments?
                 }
             })(slice)}
         </Container>

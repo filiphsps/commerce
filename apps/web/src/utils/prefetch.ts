@@ -50,7 +50,7 @@ const Prefetch = ({
                                 );
 
                             // Only supply the used parameters
-                            // TODO: this should be a utility function.
+                            // TODO: This should be a utility function.
                             collections[handle].products.edges = (
                                 collections[handle].products.edges as Array<
                                     ProductEdge & { node: { visuals: ProductVisuals } }

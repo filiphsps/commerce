@@ -1,7 +1,7 @@
+import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
 
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 /***
@@ -89,7 +89,7 @@ export const CollectionApi = async ({
                 })
             );
 
-            // TODO: Turn into a generic utility function to handle every case like this?
+            // TODO: Maybe turn into a generic utility function to handle every case like this.
             data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml
                 .replaceAll(/ /g, ' ')
                 .replaceAll('\u00A0', ' ');

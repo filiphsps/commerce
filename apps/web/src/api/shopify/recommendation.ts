@@ -6,7 +6,7 @@ import { gql } from 'graphql-tag';
 // TODO: Migrate to the new recommendations api.
 export const RecommendationApi = async ({ client, id }: { client: AbstractApi; id: string }): Promise<Product[]> => {
     return new Promise(async (resolve, reject) => {
-        // TODO: Use parseGid from `@shopify/hydrogen-react` to validate the id.
+        // TODO: Use `parseGid` from `@shopify/hydrogen-react` to validate the id.
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
 
         try {
