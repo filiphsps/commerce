@@ -42,7 +42,7 @@ const DiscountCodeItem = styled(Badge)`
     font-size: 1.25rem;
     line-height: 1.5rem;
     text-align: center;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 `;
 const DiscountCodeItemRemove = styled(FiX)`
     display: none;

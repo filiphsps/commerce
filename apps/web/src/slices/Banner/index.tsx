@@ -1,12 +1,12 @@
 'use client';
 
-import type { Content} from '@prismicio/client';
-import { asLink } from '@prismicio/client';
 import styled, { css } from 'styled-components';
 
+import type { Content } from '@prismicio/client';
 import Link from '@/components/link';
 import { PrismicRichText } from '@prismicio/react';
 import type { SliceComponentProps } from '@prismicio/react';
+import { asLink } from '@prismicio/client';
 import color from 'color';
 
 const Contents = styled.div`
@@ -79,7 +79,7 @@ const Action = styled(Link)<{ $primary?: boolean }>`
     font-size: 1.5rem;
     line-height: 1.75rem;
     text-align: center;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     user-select: none;
 
     @media (min-width: 950px) {

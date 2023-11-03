@@ -26,7 +26,7 @@ const Block = styled.section`
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary-light);
     color: var(--color-dark);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 `;
 const SmallBlock = styled(Block)`
     padding: var(--block-padding);
@@ -72,7 +72,7 @@ const Action = styled.div`
     font-weight: 600;
     cursor: pointer;
     opacity: 0.75;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &:hover {
         color: var(--accent-primary-dark);
@@ -94,7 +94,7 @@ const CheckoutButtonIcon = styled.div`
     line-height: 100%;
     width: 0;
     height: 100%;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     opacity: 0;
 
     svg {

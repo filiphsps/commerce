@@ -1,6 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { HTMLProps, ReactNode } from 'react';
+
 import { styled } from 'styled-components';
 
 const Container = styled.div`
@@ -22,16 +23,22 @@ const Container = styled.div`
 `;
 
 const Aside = styled.div`
+    position: relative;
     grid-area: aside;
+    height: 30vh;
     background: var(--color-block);
 
     @media (min-width: 950px) {
+        height: unset;
         padding-left: calc(60vw - calc(var(--page-width) * 0.6) - var(--block-padding-large) * 2);
     }
 `;
 
 const Primary = styled.div`
     grid-area: primary;
+    display: flex;
+    flex-direction: column;
+    margin: var(--block-spacer);
 
     @media (min-width: 950px) {
         padding: var(--block-padding);
@@ -42,12 +49,14 @@ const Primary = styled.div`
 type SplitViewProps = {
     children: ReactNode;
     aside: ReactNode;
-};
-const SplitView = ({ aside, children }: SplitViewProps) => {
+} & HTMLProps<HTMLDivElement>;
+const SplitView = (props: SplitViewProps) => {
+    const { aside, children } = props;
+
     return (
         <Container>
             <Aside>{aside}</Aside>
-            <Primary>{children}</Primary>
+            <Primary {...props}>{children}</Primary>
         </Container>
     );
 };
