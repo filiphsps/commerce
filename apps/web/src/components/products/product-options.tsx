@@ -1,3 +1,5 @@
+'use client';
+
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import type { Locale } from '@/utils/locale';
 import styled from 'styled-components';
@@ -84,7 +86,7 @@ const Option = styled.div`
 export type ProductOptionProps = {
     locale: Locale;
     // eslint-disable-next-line no-unused-vars, unused-imports/no-unused-vars
-    onOptionChange: (props: { name: string; value: string }) => void;
+    onOptionChange?: (props: { name: string; value: string }) => void;
 };
 export const ProductOptions = ({ locale, onOptionChange }: ProductOptionProps) => {
     const { options, selectedOptions } = useProduct();
@@ -115,7 +117,7 @@ export const ProductOptions = ({ locale, onOptionChange }: ProductOptionProps) =
                                     key={value}
                                     className={(selectedOptions?.[option.name!] === value && 'Selected') || ''}
                                     onClick={() =>
-                                        onOptionChange({
+                                        onOptionChange?.({
                                             name: option.name!,
                                             value: value!
                                         })
