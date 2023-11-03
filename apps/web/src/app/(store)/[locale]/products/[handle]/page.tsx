@@ -68,7 +68,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                     </>
                 }
                 style={{
-                    gap: 'var(--block-spacer-small)'
+                    gap: 'var(--block-spacer)'
                 }}
             >
                 <Heading title={product.title} subtitle={product.vendor} reverse />

@@ -11,7 +11,7 @@ const Container = styled.section`
 
 export const Title = styled.h1`
     font-size: 3rem;
-    line-height: 1;
+    line-height: 0.95;
     font-weight: 400;
 `;
 
