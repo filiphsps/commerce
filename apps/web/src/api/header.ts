@@ -19,7 +19,7 @@ export const HeaderApi = async ({
             });
             return resolve(res.data as any as HeaderModel);
         } catch (error: any) {
-            // TODO: isDefaultLocale utility function.
+            // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents')) {
                 if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                     return resolve(await HeaderApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale

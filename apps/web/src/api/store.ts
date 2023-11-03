@@ -31,7 +31,7 @@ export const CountriesApi = async ({ client }: { client: AbstractApi }): Promise
                 }
             `);
 
-            // FIXME: handle errors and missing data.
+            // FIXME: Handle errors or missing data.
             return resolve(localData?.localization?.availableCountries!);
         } catch (error) {
             console.error(error);
@@ -61,7 +61,7 @@ export const LocalesApi = async ({ client }: { client: AbstractApi }): Promise<s
 export const StoreApi = async ({
     locale,
     client: _client,
-    shopify // TODO: Separate this from prismic
+    shopify // TODO: Separate this from prismic.
 }: {
     locale: Locale;
     client?: PrismicClient;

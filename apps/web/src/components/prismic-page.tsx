@@ -1,11 +1,12 @@
 'use client';
 
-import { PageApi } from '@/api/page';
-import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
-import { components as slices } from '@/slices';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { SliceZone, usePrismicClient } from '@prismicio/react';
+
+import { PageApi } from '@/api/page';
+import type { StoreModel } from '@/models/StoreModel';
+import { components as slices } from '@/slices';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -14,7 +15,7 @@ type PageParams = {
     locale: Locale;
     prefetch: any;
     i18n: LocaleDictionary;
-    // TODO: Type for this
+    // TODO: Type for this.
     page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData;
     handle: string;
     type: string;

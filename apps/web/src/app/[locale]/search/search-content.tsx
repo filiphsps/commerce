@@ -1,21 +1,21 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { SearchApi } from '@/api/shopify/search';
+import { BuildConfig } from '@/utils/build-config';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import PageLoader from '@/components/PageLoader';
-import type { StoreModel } from '@/models/StoreModel';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
-import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
-import { useApolloClient } from '@apollo/client';
+import PageLoader from '@/components/PageLoader';
+import { SearchApi } from '@/api/shopify/search';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
+import { useApolloClient } from '@apollo/client';
 import useSWR from 'swr';
 
 const ProductSearchFilters = dynamic(
@@ -192,7 +192,7 @@ export default function SearchContent({}: SearchContentProps) {
                         }
                         autoFocus={true}
                         spellCheck={false}
-                        /* TODO: Make this configurable */
+                        /* TODO: Make this configurable. */
                         placeholder="Find the perfect candy, chocolate, licorice and snacks"
                     />
                     {query.length > 0 && (
@@ -205,7 +205,7 @@ export default function SearchContent({}: SearchContentProps) {
                 <SearchButton
                     //disabled={!router.isReady}
                     onClick={() => router.push(`/${locale.locale}/search/?q=${encodeURI(input)}`)}
-                    /* TODO: Make this configurable */
+                    /* TODO: Make this configurable. */
                     title="Press this to search the world of Swedish sweets and candy"
                 >
                     <FiSearch />

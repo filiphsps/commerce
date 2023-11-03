@@ -1,24 +1,24 @@
 'use client';
 
-import type { NavigationItem } from '@/api/navigation';
-import { NavigationApi } from '@/api/navigation';
-import { NextLocaleToCurrency } from '@/utils/locale';
 import { Suspense, useState } from 'react';
 
+import { BuildConfig } from '@/utils/build-config';
+import type { FooterModel } from '@/models/FooterModel';
+import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
+import type { HeaderModel } from '@/models/HeaderModel';
+import type { Locale } from '@/utils/locale';
+import { NavigationApi } from '@/api/navigation';
+import type { NavigationItem } from '@/api/navigation';
+import { NextLocaleToCurrency } from '@/utils/locale';
+import type { StoreModel } from '@/models/StoreModel';
+import { asHTML } from '@prismicio/client';
+import dynamic from 'next/dynamic';
+import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
-import type { FooterModel } from '@/models/FooterModel';
-import type { HeaderModel } from '@/models/HeaderModel';
-import type { StoreModel } from '@/models/StoreModel';
-import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
-import { asHTML } from '@prismicio/client';
-import { usePrismicClient } from '@prismicio/react';
-import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
+import { usePrismicClient } from '@prismicio/react';
 import useSWR from 'swr';
 
 const Header = dynamic(() => import('@/components/Header'));
@@ -66,7 +66,7 @@ const Announcements = styled.div`
 const Container = styled.div`
     overscroll-behavior-x: none;
 
-    // TODO: Move this to a prop
+    // TODO: Move this to a prop.
     &.SideBar-Open {
         @media (max-width: 950px) {
             height: 100vh;
@@ -148,7 +148,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const above = header?.announcements?.filter((item) => item.location === 'above') || [];
     const bellow = header?.announcements?.filter((item) => item.location === 'bellow') || [];
 
-    // TODO: handle this way better.
+    // TODO: Handle this properly.
     const isSliceSimulator = route === '/slice-simulator/';
     if (isSliceSimulator) return <>{props.children}</>;
 

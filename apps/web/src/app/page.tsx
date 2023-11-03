@@ -10,8 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NoLocalePage({}) {
-    // TODO: Maybe allow for single-locale tenants?
-
-    // FIXME: properly detect the user's locale.
+    // TODO: Maybe allow for single-locale tenants.
+    // FIXME: Properly detect the user's locale.
     return redirect(`/${BuildConfig.i18n.default}/`);
 }

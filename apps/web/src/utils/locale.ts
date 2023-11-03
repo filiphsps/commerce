@@ -35,7 +35,7 @@ export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
         (locale && locale.length === 2 && locale) ||
         locale?.split('-')?.[0] ||
         defaultLocale.split('-')[0]
-    ).toUpperCase() as LanguageCode; // TODO: replace `toUpperCase` with `toLowerCase`
+    ).toUpperCase() as LanguageCode; // TODO: Replace `toUpperCase` with `toLowerCase`.
 
 /***
  * Converts a locale string to a `CurrencyCode`.
@@ -76,8 +76,9 @@ export const NextLocaleToLocale = (locale?: string): Locale => {
     return {
         locale: `${language.toLowerCase()}-${country}`,
         language,
-        country
+        country,
         // TODO: Add currency.
+        currency: undefined
     };
 };
 
@@ -90,7 +91,7 @@ export const DefaultLocale = (): Locale => {
     return NextLocaleToLocale(defaultLocale);
 };
 
-// TODO: Make this a proper type that somehow reads from the dictionary files?
+// TODO: Somehow make this a proper type that reads from the dictionary files.
 export type LocaleDictionary = {} & any;
 
 /***

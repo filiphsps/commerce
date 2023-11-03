@@ -56,7 +56,7 @@ interface AlertProps {
     severity: 'success' | 'info' | 'warning' | 'error';
     children: React.ReactNode;
 }
-// FIXME: Actually respect `severity`
+// TODO: Actually respect `severity`.
 export const Alert: FunctionComponent<AlertProps> = ({ children }) => {
     return (
         <Container

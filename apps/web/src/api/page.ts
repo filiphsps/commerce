@@ -25,7 +25,7 @@ export const PagesApi = async ({
 
             if (!pages) return reject();
 
-            // TODO: remove filter when we have migrated the shop page
+            // TODO: Remove filter once we have migrated the shop page.
             const paths = pages
                 .map((page) => asLink(page))
                 .filter((i) => i && !['/shop', '/countries', '/search', '/cart'].includes(i));
@@ -34,7 +34,7 @@ export const PagesApi = async ({
             });
             // TODO: Error type.
         } catch (error: any) {
-            // TODO: isDefaultLocale utility function.
+            // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await PagesApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale.
             }
@@ -78,7 +78,7 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
                 page: page as any
             });
         } catch (error: any) {
-            // TODO: isDefaultLocale utility function.
+            // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
                 return resolve(await PageApi({ locale: DefaultLocale(), handle, type, client: _client })); // Try again with default locale
             }

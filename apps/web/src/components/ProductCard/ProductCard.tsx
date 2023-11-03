@@ -482,7 +482,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         (product.seo?.description || product.description) &&
         (product.seo?.description || product.description)?.substring(0, 72) + '\u2026';
 
-    // TODO: Hotlink to variant
+    // TODO: Hotlink to variant.
     const href = AppendShopifyParameters({
         url: `/products/${product.handle}/`,
         params: (product as any).trackingParameters

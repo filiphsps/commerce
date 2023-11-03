@@ -213,7 +213,7 @@ export type BannerProps = SliceComponentProps<Content.BannerSlice>;
  * Component for "Banner" Slices.
  */
 const Banner = ({ slice }: BannerProps): JSX.Element => {
-    // TODO: Handle other variations
+    // TODO: Handle other variations.
     return (
         <Container
             data-slice-type={slice.slice_type}

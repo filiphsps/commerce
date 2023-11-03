@@ -336,7 +336,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
     const [scrollTop, setScrollTop] = useState(0);
 
     useEffect(() => {
-        NProgress.done(true); // TODO: Move this to it's own component
+        NProgress.done(true); // TODO: Move this to it's own component.
         if (searchOpen && route === '/search') setSearchOpen(false);
     }, [route]);
 
