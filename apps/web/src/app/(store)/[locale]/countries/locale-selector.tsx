@@ -31,7 +31,7 @@ const Locale = styled.div<{ $selected?: boolean }>`
     border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     cursor: pointer;
 
     &.Active {

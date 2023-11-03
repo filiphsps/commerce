@@ -32,7 +32,7 @@ const Preview = styled.div`
     background: var(--background-preview);
     border-radius: var(--block-border-radius);
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     user-select: none;
     opacity: 0.5;
 
@@ -60,18 +60,18 @@ const Preview = styled.div`
 `;
 
 const Primary = styled.div`
-    overflow: hidden;
     position: relative;
     grid-area: primary;
     width: auto;
     height: fit-content;
     padding: calc(var(--block-padding-large) * 2);
-    background: var(--background);
-    border-radius: var(--block-border-radius);
 
     @media (max-width: 950px) {
+        padding: 0;
+
         img {
-            max-height: 35vh;
+            height: calc(35vh - calc(6rem + var(--block-spacer)));
+            max-height: calc(100% - calc(6rem + var(--block-spacer)));
         }
     }
 
@@ -87,7 +87,7 @@ const ImageWrapper = styled.div`
     align-items: center;
     position: relative;
     flex-shrink: 1;
-    height: 100%;
+    max-height: 100%;
 `;
 
 const Container = styled.div`
@@ -95,23 +95,20 @@ const Container = styled.div`
     display: grid;
     grid-template-areas: 'primary' 'previews';
     width: 100%;
-    height: 100%;
+    max-height: 100%;
     gap: var(--block-spacer);
-    transition: 250ms ease-in-out;
-
-    @media (min-width: 950px) {
-        overflow: unset;
-        border-radius: none;
-    }
+    transition: 150ms ease-in-out;
 
     img {
         flex-shrink: 1;
         width: 100%;
         object-fit: contain;
         object-position: center;
-        max-height: 35vh;
+        height: calc(30vh - calc(6rem + var(--block-spacer)));
+        max-height: calc(100% - calc(6rem + var(--block-spacer)));
 
         @media (min-width: 950px) {
+            height: unset;
             max-height: 70vh;
         }
     }

@@ -43,7 +43,7 @@ const TitleContainer = styled.div`
     align-items: center;
     height: auto;
     padding: var(--block-padding) var(--block-padding-large);
-    transition: 250ms ease-in-out outline-color;
+    transition: 150ms ease-in-out outline-color;
     border-radius: var(--block-border-radius);
     border-top-right-radius: 0;
     border-top-left-radius: 0;
@@ -67,7 +67,7 @@ const Banner = styled(PrismicNextImage)`
     aspect-ratio: 21 / 6;
     object-fit: cover;
     object-position: 20% center;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 `;
 
 const Item = styled(Link)`
@@ -76,7 +76,7 @@ const Item = styled(Link)`
     grid-template-rows: auto 1fr;
     border-radius: var(--block-border-radius);
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {

@@ -1,20 +1,20 @@
 'use client';
 
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
-import { useEffect, useState } from 'react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
+import { useEffect, useState } from 'react';
 
-import { ProductApi } from '@/api/shopify/product';
-import Loader from '@/components/Loader';
+import type { FunctionComponent } from 'react';
+import Image from 'next/legacy/image';
 import Link from '@/components/link';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import Loader from '@/components/Loader';
 import type { Locale } from '@/utils/locale';
+import { ProductApi } from '@/api/shopify/product';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { useApolloClient } from '@apollo/client';
-import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import Image from 'next/legacy/image';
-import type { FunctionComponent } from 'react';
 import useSWR from 'swr';
 
 const Section = styled.td``;
@@ -33,7 +33,7 @@ const Details = styled(SectionContent)`
 `;
 const DetailsBrand = styled.div`
     font-weight: 700;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -45,7 +45,7 @@ const DetailsTitle = styled.div`
     font-size: 1.75rem;
     line-height: 2rem;
     font-weight: 500;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     word-wrap: break-word;
     hyphens: auto;
 
@@ -89,7 +89,7 @@ const ProductImage = styled(Section)`
     border-radius: var(--block-border-radius);
     border: 0.2rem solid #fefefe;
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -187,7 +187,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
     background: var(--color-bright);
     border-radius: var(--block-border-radius);
     color: var(--color-dark);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     ${(props) =>
         props.disabled &&

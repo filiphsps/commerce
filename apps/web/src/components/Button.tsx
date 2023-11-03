@@ -10,7 +10,7 @@ export const Button = styled.button`
     font-weight: 500;
     text-align: center;
     user-select: none;
-    transition: 250ms all ease-in-out;
+    transition: 150ms all ease-in-out;
     border-radius: var(--block-border-radius);
 
     background-color: var(--accent-primary);

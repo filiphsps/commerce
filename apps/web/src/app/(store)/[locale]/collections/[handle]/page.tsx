@@ -1,23 +1,23 @@
 import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 
-import { PageApi } from '@/api/page';
-import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
-import Content from '@/components/Content';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
 import { BuildConfig } from '@/utils/build-config';
-import { isValidHandle } from '@/utils/handle';
+import Content from '@/components/Content';
+import Heading from '@/components/typography/heading';
+import type { Metadata } from 'next';
+import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
+import PageContent from '@/components/PageContent';
 import { Prefetch } from '@/utils/prefetch';
+import PrismicPage from '@/components/prismic-page';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
+import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
-import type { Metadata } from 'next';
+import { getDictionary } from '@/i18n/dictionarie';
+import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 export type CollectionPageParams = { locale: string; handle: string };
 
@@ -82,7 +82,7 @@ export default async function CollectionPage({ params }: { params: CollectionPag
     return (
         <Page>
             <PageContent primary>
-                {(!page || page.enable_header) && <PageHeader title={collection.title} subtitle={subtitle} />}
+                {(!page || page.enable_header) && <Heading title={collection.title} subtitle={subtitle} />}
                 <Suspense>
                     {page && (
                         <PrismicPage

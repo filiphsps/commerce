@@ -1,19 +1,19 @@
-import { PageApi } from '@/api/page';
-import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
-import PrismicPage from '@/components/prismic-page';
-import { getDictionary } from '@/i18n/dictionarie';
 import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
-import { asText } from '@prismicio/client';
+import Heading from '@/components/typography/heading';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { NextLocaleToLocale } from '@/utils/locale';
+import Page from '@/components/Page';
+import { PageApi } from '@/api/page';
+import PageContent from '@/components/PageContent';
+import { Prefetch } from '@/utils/prefetch';
+import PrismicPage from '@/components/prismic-page';
 import SearchContent from './search-content';
+import { StoreApi } from '@/api/store';
+import { StorefrontApiClient } from '@/api/shopify';
+import { Suspense } from 'react';
+import { asText } from '@prismicio/client';
+import { getDictionary } from '@/i18n/dictionarie';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
@@ -81,7 +81,7 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
     return (
         <Page>
             <PageContent primary>
-                <PageHeader title={page?.title} subtitle={page?.description} />
+                <Heading title={page?.title} subtitle={page?.description} />
 
                 <Suspense>
                     <Suspense>

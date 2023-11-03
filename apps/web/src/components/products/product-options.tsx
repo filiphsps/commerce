@@ -1,7 +1,6 @@
-import styled from 'styled-components';
-
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import type { Locale } from '@/utils/locale';
+import styled from 'styled-components';
 import { useProduct } from '@shopify/hydrogen-react';
 
 const OptionTitle = styled.div`
@@ -32,7 +31,7 @@ const OptionValue = styled.div`
     text-align: center;
     font-size: 1.25rem;
     font-weight: 700;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     cursor: pointer;
 
     @media (min-width: 950px) {

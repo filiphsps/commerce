@@ -10,7 +10,7 @@ const Container = styled.section<{ $active?: boolean }>`
     justify-content: stretch;
     gap: var(--block-spacer-small);
     color: var(--color-dark);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     ${({ $active }) =>
         $active &&
