@@ -24,7 +24,7 @@ export const ProductImage = styled.div`
     width: 100%;
     padding: var(--block-padding-small) var(--block-padding);
     border-radius: var(--block-border-radius-small);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     user-select: none;
     background: var(--color-bright);
     height: 13rem;
@@ -130,7 +130,7 @@ const CardFooter = styled.div`
     width: 100%;
     height: 100%;
     margin-top: var(--block-spacer-large);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 `;
 const Variants = styled.div`
     display: flex;
@@ -190,7 +190,7 @@ const AddButton = styled(Button)<{ $added?: boolean }>`
         line-height: 1;
         font-size: 1.5rem;
         font-weight: 500;
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         @media (hover: hover) and (pointer: fine) {
             &:enabled:hover {
@@ -247,7 +247,7 @@ const QuantityAction = styled.div`
     border-radius: 0 0 0 var(--block-border-radius) 0;
     border-radius: var(--block-border-radius-small);
     cursor: pointer;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     text-align: center;
 
     &:first-child {
@@ -283,7 +283,7 @@ const QuantityValue = styled.input`
     font-size: 1.75rem;
     text-align: center;
     outline: none;
-    transition: 250ms all ease-in-out;
+    transition: 150ms all ease-in-out;
     font-variant: tabular-nums;
 
     &::-webkit-inner-spin-button,

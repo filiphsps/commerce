@@ -69,7 +69,7 @@ const Menu = styled.div`
     left: 0;
     right: 0;
     max-height: 0;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     border-color: var(--accent-secondary);
     background: var(--accent-secondary-light);
     color: var(--color-dark);
@@ -101,7 +101,7 @@ const MenuItemDescription = styled.div`
 `;
 const MenuItem = styled.div`
     margin-bottom: var(--block-spacer);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     &.Active {
         ${MenuItemTitle} {
@@ -224,7 +224,7 @@ const Action = styled.div<{ $active?: boolean }>`
     border-radius: var(--block-border-radius);
     color: var(--accent-secondary-text);
     cursor: pointer;
-    transition: 250ms all ease-in-out;
+    transition: 150ms all ease-in-out;
 
     font-weight: 600;
     line-height: 1.25rem;
@@ -308,7 +308,7 @@ const Header = styled.header<{ $scrolled?: boolean }>`
     display: grid;
     width: 100%;
     background: var(--accent-secondary-light);
-    transition: 250ms ease-in-out background-color;
+    transition: 150ms ease-in-out background-color;
     border-bottom: calc(var(--block-border-width) / 2) solid transparent;
 
     ${({ $scrolled }) =>

@@ -50,7 +50,7 @@ const FooterContainer = styled.footer`
     padding-top: 1rem;
 
     a {
-        transition: 250ms ease-in-out;
+        transition: 150ms ease-in-out;
 
         @media (hover: hover) and (pointer: fine) {
             &:hover {

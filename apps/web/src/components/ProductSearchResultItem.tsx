@@ -1,5 +1,5 @@
 import { Image, ProductPrice } from '@shopify/hydrogen-react';
-import { Subtitle, Title } from '@/components/PageHeader/PageHeader';
+import { SubTitle, Title } from './typography/heading';
 
 import { AppendShopifyParameters } from '@/components/ProductCard/ProductCard';
 import type { FunctionComponent } from 'react';
@@ -23,7 +23,7 @@ const Meta = styled.div`
     justify-content: center;
     gap: 0.25rem;
 `;
-const MetaVendor = styled(Subtitle)`
+const MetaVendor = styled(SubTitle)`
     font-size: 1.75rem;
     line-height: 1.75rem;
 `;

@@ -12,7 +12,7 @@ const Label = styled.div`
     font-weight: 500;
     font-size: 1.5rem;
     line-height: 1.5rem;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     div {
         font-size: 1.5rem;

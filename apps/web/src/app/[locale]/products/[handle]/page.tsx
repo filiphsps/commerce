@@ -65,8 +65,11 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                         <Gallery selected={product.images.edges[0].node.id!} images={product.images} />
                     </>
                 }
+                style={{
+                    gap: 'var(--block-spacer-small)'
+                }}
             >
-                <Heading title={product.title} subtitle={product.vendor} />
+                <Heading title={product.title} subtitle={product.vendor} reverse />
                 <Pricing
                     price={product.variants.edges[0].node.price}
                     compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}

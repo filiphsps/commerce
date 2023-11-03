@@ -2,11 +2,11 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 
-import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
+import { NextLocaleToLocale } from '@/utils/locale';
+import type { StoreModel } from '@/models/StoreModel';
 import { styled } from 'styled-components';
 
 const List = styled.article`
@@ -31,7 +31,7 @@ const Locale = styled.div<{ $selected?: boolean }>`
     border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
     background: var(--color-block);
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
     cursor: pointer;
 
     &.Active {

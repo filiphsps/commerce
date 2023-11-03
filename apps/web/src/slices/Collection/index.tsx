@@ -5,8 +5,8 @@ import styled, { css } from 'styled-components';
 
 import CollectionBlock from '@/components/CollectionBlock';
 import PageContent from '@/components/PageContent';
-import { Title } from '@/components/PageHeader/PageHeader';
 import Link from '@/components/link';
+import { Title } from '@/components/typography/heading';
 import type { SliceComponentProps } from '@prismicio/react';
 import { FullCollection } from './FullCollection';
 
@@ -49,7 +49,7 @@ const Header = styled.div<{ $alignment: 'left' | 'center' | 'right' }>`
 const CollectionTitle = styled(Title)`
     font-size: 2.25rem;
     line-height: 2.5rem;
-    transition: 250ms ease-in-out;
+    transition: 150ms ease-in-out;
 
     text-decoration: underline;
     text-decoration-style: dotted;

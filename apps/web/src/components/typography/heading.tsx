@@ -3,29 +3,34 @@
 import type { ReactNode } from 'react';
 import { styled } from 'styled-components';
 
-const Container = styled.section``;
-
-const Title = styled.h1`
-    font-size: 3rem;
-    line-height: 3.25rem;
-    font-weight: 700;
+const Container = styled.section`
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-small);
 `;
 
-const SubTitle = styled.h2`
-    font-size: 2rem;
-    line-height: 2.25rem;
-    font-weight: 500;
+export const Title = styled.h1`
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 400;
+`;
+
+export const SubTitle = styled.h2`
+    font-size: 2.25rem;
+    line-height: 1;
+    font-weight: 700;
 `;
 
 type HeadingProps = {
     title: ReactNode;
     subtitle: ReactNode;
+    reverse?: boolean;
 };
-const Heading = ({ title, subtitle }: HeadingProps) => {
+const Heading = ({ title, subtitle, reverse }: HeadingProps) => {
     return (
         <Container>
-            <SubTitle>{subtitle}</SubTitle>
-            <Title>{title}</Title>
+            {!reverse ? <Title>{title}</Title> : <SubTitle>{subtitle}</SubTitle>}
+            {reverse ? <Title>{title}</Title> : <SubTitle>{subtitle}</SubTitle>}
         </Container>
     );
 };

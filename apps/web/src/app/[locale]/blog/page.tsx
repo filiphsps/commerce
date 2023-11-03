@@ -1,10 +1,10 @@
 import { BuildConfig } from '@/utils/build-config';
+import Heading from '@/components/typography/heading';
 import type { Metadata } from 'next';
 import { NextLocaleToLocale } from '@/utils/locale';
 import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
-import PageHeader from '@/components/PageHeader';
 import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
 import { StoreApi } from '@/api/store';
@@ -76,7 +76,7 @@ export default async function SearchPage({ params }: { params: BlogPageParams })
     return (
         <Page>
             <PageContent primary>
-                <PageHeader title={page?.title} subtitle={page?.description} />
+                <Heading title={page?.title} subtitle={page?.description} />
 
                 <Suspense>
                     {page && (
