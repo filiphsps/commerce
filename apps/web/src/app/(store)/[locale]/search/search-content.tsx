@@ -190,7 +190,7 @@ export default function SearchContent({ locale }: SearchContentProps) {
                         }
                         autoFocus={true}
                         spellCheck={false}
-                        /* TODO: Make this configurable */
+                        /* TODO: Make this configurable. */
                         placeholder="Find the perfect candy, chocolate, licorice and snacks"
                     />
                     {query.length > 0 && (
@@ -203,7 +203,7 @@ export default function SearchContent({ locale }: SearchContentProps) {
                 <SearchButton
                     //disabled={!router.isReady}
                     onClick={() => router.push(`/${locale.locale}/search/?q=${encodeURI(input)}`)}
-                    /* TODO: Make this configurable */
+                    /* TODO: Make this configurable. */
                     title="Press this to search the world of Swedish sweets and candy"
                 >
                     <FiSearch />

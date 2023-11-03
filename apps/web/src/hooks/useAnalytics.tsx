@@ -163,7 +163,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const route = usePathname();
 
     // Page view analytics
-    // FIXME: We miss the initial PageView
+    // FIXME: We miss firing on the initial PageView.
     useEffect(() => {
         if (!route) return;
 
@@ -183,7 +183,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
 
     // Add to cart analytics
     useEffect(() => {
-        // TODO: create useCartEvents hooks to simplify this
+        // TODO: Create `useCartEvents` hooks to simplify this.
         if (!pageAnalytics.shopId) return;
         if (
             !previousStatus ||

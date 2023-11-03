@@ -52,7 +52,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
-        if (!page) return notFound(); // TODO: Return proper error
+        if (!page) return notFound(); // TODO: Return proper error.
         const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
         return (
@@ -79,7 +79,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
         }
 
         console.error(error);
-        return notFound(); // FIXME: Return proper error
+        return notFound(); // FIXME: Return proper error.
     }
 }
 

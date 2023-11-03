@@ -210,8 +210,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
         }
     );
 
-    // FIXME: Dynamic copyright copy.
-
+    // TODO: Dynamic copyright copy and content.
     return (
         <FooterContainer>
             <FooterWrapper>

@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { createClient } from '@/prismic';
 import { DefaultLocale } from '@/utils/locale';
 import { asLink } from '@prismicio/client';
+import { createClient } from '@/prismic';
 
 /***
  * This is a webhook handler for Prismic that will revalidate
@@ -22,7 +22,7 @@ const revalidateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ message: 'Invalid body' });
 
     // Check for secret to confirm this is a valid request
-    // TODO: get secret from config.
+    // TODO: Get secret from edge-config.
     if (req.body.secret !== process.env.WEBHOOK_REVALIDATE) {
         return res.status(401).json({ message: 'Invalid token' });
     }
@@ -30,7 +30,7 @@ const revalidateHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     // If you have a `createClient()` function defined elsewhere in
     // your app, use that instead
     const client = createClient({
-        locale: DefaultLocale() // TODO: get locale from request.
+        locale: DefaultLocale() // TODO: Get locale from request.
     });
 
     // Get a list of URLs for any new, updated, or deleted documents

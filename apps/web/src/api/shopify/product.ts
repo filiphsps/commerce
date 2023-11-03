@@ -197,13 +197,13 @@ export const ConvertToLocalMeasurementSystem = ({
             case 'POUNDS':
                 return 'lb';
 
-            // TODO: Handle this; which should never be possible tbh
+            // TODO: Handle this; which should never possibly actually occur.
             default:
                 return 'g';
         }
     };
-    // FIXME: Support more than just US here, because apparently there's
-    //        more countries out there using imperial..
+    // FIXME: Support more than just US here, because apparently there's alot
+    //        more countries out there using imperial.
     const metric = locale.country !== 'US';
     const unit = weightUnitToConvertUnits(weightUnit);
     // TODO: Do this properly.

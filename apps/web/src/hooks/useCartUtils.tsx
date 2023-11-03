@@ -21,7 +21,7 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
 
     // Discount codes in url
     useEffect(() => {
-        // TODO: Create a cart if one doesn't exist
+        // TODO: Create a cart if one doesn't exist.
         if (!query || (!query.discount && status !== 'idle')) return;
         const discount = query.discount?.toString();
         if (!discount) return;
@@ -41,6 +41,6 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
 
         if (error) console.warn(error);
 
-        // TODO: Check cart errors and validate that the code was actually valid...
+        // TODO: Check cart errors and validate that the code was actually valid.
     }, [query, status]);
 }

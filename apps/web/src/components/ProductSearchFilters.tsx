@@ -120,7 +120,7 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
             );
         }
 
-        // TODO: Handle this
+        // TODO: Handle this.
         default: {
             return null;
         }

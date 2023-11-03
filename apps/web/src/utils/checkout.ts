@@ -1,7 +1,7 @@
 import { BuildConfig } from '@/utils/build-config';
+import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import type { CartWithActions } from '@shopify/hydrogen-react';
 
 // Const hacky workaround for ga4 cross-domain
 // Ugly hack taken from StackOverflow
@@ -29,7 +29,7 @@ export const getCrossDomainLinkerParameter = () => {
     const _glNode = formNode.querySelector('input[name="_gl"]') as any;
 
     if (_glNode) return _glNode.value as string;
-    return null; // TODO: Throw error?
+    return null; // TODO: Maybe throw an error here.
 };
 
 export const Checkout = async ({ cart, locale }: { cart: CartWithActions; locale: Locale }) => {
