@@ -5,7 +5,16 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
     plugins: [react()],
     resolve: {
-        alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }]
+        alias: [
+            {
+                find: '@/prismic',
+                replacement: path.resolve(__dirname, 'prismicio.ts')
+            },
+            {
+                find: '@',
+                replacement: path.resolve(__dirname, './src')
+            }
+        ]
     },
     test: {
         globals: true,
