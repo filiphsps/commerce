@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-let config = {
+const config = {
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
@@ -7,16 +7,16 @@ let config = {
     productionBrowserSourceMaps: false,
     compress: true,
     experimental: {
-        scrollRestoration: true,
         esmExternals: true,
         optimizePackageImports: [
-            '@shopify/hydrogen-react',
-            'react-icons',
+            '@apollo/client',
             '@prismicio/client',
             '@prismicio/next',
             '@prismicio/react',
-            '@apollo/client'
+            '@shopify/hydrogen-react',
+            'react-icons',
         ],
+        scrollRestoration: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP']
     },
     images: {
@@ -53,6 +53,7 @@ let config = {
     eslint: {
         ignoreDuringBuilds: true
     },
+
     env: {
         // Settings
         DOMAIN: process.env.DOMAIN,
@@ -74,10 +75,11 @@ let config = {
     serverRuntimeConfig: {
         // Shopify
         SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
-    
+
         // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN
     },
+
     webpack(config, { webpack }) {
         config.plugins.push(
             new webpack.DefinePlugin({
