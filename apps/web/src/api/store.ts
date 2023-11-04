@@ -128,7 +128,7 @@ export const StoreApi = async ({
                 res = (await client.getSingle('store')).data;
             }
 
-            const currencies: string[] = res.currencies.map((item: any) => item.currency);
+            const currencies: string[] = res.currencies?.map((item: any) => item.currency) || [];
             return resolve({
                 id: shopData?.shop?.id || '',
                 name: res.store_name,
