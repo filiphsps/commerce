@@ -15,7 +15,7 @@ import SplitView from '@/components/layout/split-view';
 import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import { getDictionary } from '@/i18n/dictionarie';
+import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 
@@ -63,9 +63,9 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         <Page>
             <SplitView
                 aside={
-                    <>
+                    !!product?.images?.edges?.[0] && (
                         <Gallery selected={product.images.edges[0].node.id!} images={product.images} />
-                    </>
+                    )
                 }
                 style={{
                     gap: 'var(--block-spacer)'
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 />
 
                 <Suspense>
-                    {page?.slices && (
+                    {page?.slices && page?.slices.length <= 0 && (
                         <PrismicPage
                             store={store}
                             locale={locale}

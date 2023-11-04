@@ -15,7 +15,7 @@ import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
-import { getDictionary } from '@/i18n/dictionarie';
+import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 

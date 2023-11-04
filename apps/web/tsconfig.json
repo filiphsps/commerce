@@ -19,7 +19,7 @@
 
             // i18n
             "@/i18n/*": ["./src/locales/*"],
-            "@/i18n/dictionarie": ["./src/app/(store)/[locale]/dictionarie.ts"],
+            "@/i18n/dictionary": ["./src/app/(store)/[locale]/dictionary.ts"],
 
             // Prismic
             "@/slices/*": ["./src/slices/*"],

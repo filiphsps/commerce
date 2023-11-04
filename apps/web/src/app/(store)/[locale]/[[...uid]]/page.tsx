@@ -10,7 +10,7 @@ import { RedirectToLocale } from '../../../(redirect)/[[...handle]]/util';
 import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import { getDictionary } from '@/i18n/dictionarie';
+import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';

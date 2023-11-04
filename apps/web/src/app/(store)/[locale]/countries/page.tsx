@@ -11,7 +11,7 @@ import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
-import { getDictionary } from '@/i18n/dictionarie';
+import { getDictionary } from '@/i18n/dictionary';
 import { notFound } from 'next/navigation';
 
 export type CountriesPageParams = { locale: string };
