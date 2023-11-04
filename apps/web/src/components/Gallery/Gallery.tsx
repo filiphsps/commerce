@@ -149,7 +149,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
             <Primary>
                 <ImageWrapper>
                     <Image
-                        src={image.url}
+                        src={image.url || image.src || ''}
                         alt={image.altText || ''}
                         title={image.altText || undefined}
                         width={image.width || 0}

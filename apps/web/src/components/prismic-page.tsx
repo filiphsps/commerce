@@ -21,6 +21,8 @@ type PageParams = {
     type: string;
 };
 export default function PrismicPage({ store, locale, prefetch, i18n, page: pageData, handle, type }: PageParams) {
+    if (pageData?.slices && pageData.slices.length <= 0) return null;
+
     const {
         data: { page }
     } = useSWR(
