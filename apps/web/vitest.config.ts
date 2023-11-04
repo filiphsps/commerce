@@ -11,6 +11,10 @@ export default defineConfig({
                 replacement: path.resolve(__dirname, 'prismicio.ts')
             },
             {
+                find: '@/i18n/dictionary',
+                replacement: path.resolve(__dirname, './src/app/[locale]/dictionary.ts')
+            },
+            {
                 find: '@',
                 replacement: path.resolve(__dirname, './src')
             }

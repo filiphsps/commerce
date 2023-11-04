@@ -53,5 +53,5 @@
     "files.eol": "\n",
     "files.trimFinalNewlines": false,
     "git.enableCommitSigning": true,
-    "git.mergeEditor": true
+    "git.mergeEditor": false
 }

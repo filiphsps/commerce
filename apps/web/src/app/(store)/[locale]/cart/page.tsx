@@ -12,7 +12,7 @@ import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
-import { getDictionary } from '@/i18n/dictionarie';
+import { getDictionary } from '@/i18n/dictionary';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
