@@ -12,7 +12,7 @@ export default defineConfig({
             },
             {
                 find: '@/i18n/dictionary',
-                replacement: path.resolve(__dirname, './src/app/[locale]/dictionary.ts')
+                replacement: path.resolve(__dirname, './src/app/(store)/[locale]/dictionary.ts')
             },
             {
                 find: '@',
