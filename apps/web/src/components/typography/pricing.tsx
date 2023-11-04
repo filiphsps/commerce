@@ -59,7 +59,7 @@ const Pricing = (props: PricingProps) => {
     const { price, compareAtPrice } = props;
 
     return (
-        <Container {...props}>
+        <Container {...{ ...props, compareAtPrice: undefined }}>
             <Price>
                 <Money data={price} as={Span} className={(compareAtPrice && 'Sale') || ''} />
             </Price>
