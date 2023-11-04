@@ -1,0 +1,16 @@
+{
+    "pullRequestConfig": {
+        "provider": "github",
+        "hostRootUrl": "https://github.com",
+        "sourceRemote": "origin",
+        "sourceOwner": "NordcomInc",
+        "sourceRepo": "sweetsideofsweden-frontend",
+        "destRemote": "origin",
+        "destOwner": "NordcomInc",
+        "destRepo": "sweetsideofsweden-frontend",
+        "destProjectId": "",
+        "destBranch": "staging",
+        "custom": null
+    },
+    "exportedAt": 1699132790478
+}
