@@ -26,7 +26,7 @@ const Content = styled.div`
     margin: 0 auto;
     user-select: none;
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         grid-template-columns: 10rem 1fr auto;
         gap: var(--block-spacer-large);
     }
@@ -41,6 +41,7 @@ const Logo = styled.div`
     background: var(--accent-primary);
     border-radius: var(--block-border-radius);
     user-select: none;
+    outline: none;
 
     a {
         position: relative;
@@ -55,7 +56,7 @@ const Logo = styled.div`
         }
     }
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         padding: 0.25rem 0.75rem;
         height: 100%;
     }
@@ -91,6 +92,7 @@ const MenuContent = styled.div`
 `;
 const MenuItemTitle = styled.div`
     font-weight: 500;
+    line-height: 1.15;
 `;
 const MenuItemDescription = styled.div`
     font-weight: 500;
@@ -127,10 +129,10 @@ const Navigation = styled.nav`
     height: 100%;
     font-weight: 500;
     font-size: 1.75rem;
-    line-height: 1.75rem;
+    line-height: 1;
     color: var(--color-dark);
 
-    @media (max-width: 950px) {
+    @media (max-width: 1150px) {
         display: none;
     }
 
@@ -167,7 +169,7 @@ const NavigationItem = styled.div`
         display: inline-block;
         height: 2rem;
         font-size: 1.25rem;
-        line-height: 100%;
+        line-height: 1;
         vertical-align: middle;
     }
 
@@ -181,6 +183,7 @@ const NavigationItem = styled.div`
             text-transform: uppercase;
             gap: 0.25rem;
             text-transform: unset;
+            white-space: nowrap;
         }
     }
 
@@ -277,7 +280,7 @@ const CartIndicator = styled.span`
 
     pointer-events: none;
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         right: calc(var(--block-spacer-small) * -0.5);
         top: calc(var(--block-spacer-small) * -0.5);
     }
@@ -299,7 +302,7 @@ const HamburgerMenu = styled.div`
         line-height: 3rem;
     }
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         display: none;
     }
 `;
@@ -318,7 +321,7 @@ const Header = styled.header<{ $scrolled?: boolean }>`
             box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
         `}
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         height: calc(4.5rem + calc(var(--block-padding) * 2));
     }
 `;
@@ -365,7 +368,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                             width={250}
                             height={150}
                             alt={`Store logo`}
-                            sizes="(max-width: 950px) 75px, 200px"
+                            sizes="(max-width: 1150px) 75px, 200px"
                         />
                     </Link>
                 </Logo>

@@ -20,7 +20,7 @@ const Container = styled.div`
         left: 0;
     }
 
-    @media (min-width: 950px) {
+    @media (min-width: 1150px) {
         display: none;
     }
 `;

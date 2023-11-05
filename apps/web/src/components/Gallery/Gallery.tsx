@@ -61,24 +61,13 @@ const Preview = styled.div`
 const Primary = styled.div`
     position: relative;
     grid-area: primary;
-    width: 100%;
-    height: fit-content;
-    padding: calc(var(--block-padding-large) * 2);
-    border-radius: var(--block-border-radius);
+    padding: var(--block-padding);
+    border-radius: var(--block-border-radius-large);
     background: var(--color-block);
 
-    @media (max-width: 950px) {
-        padding: 0;
-
-        img {
-            height: calc(35vh - calc(6rem + var(--block-spacer)));
-            max-height: calc(100% - calc(6rem + var(--block-spacer)));
-        }
-    }
-
     @media (min-width: 950px) {
-        width: 100%;
-        height: 100%;
+        padding: calc(var(--block-padding-large) * 2);
+        max-height: unset;
     }
 `;
 
@@ -113,12 +102,17 @@ const Container = styled.div`
         width: 100%;
         object-fit: contain;
         object-position: center;
-        height: calc(30vh - calc(6rem + var(--block-spacer)));
-        max-height: calc(100% - calc(6rem + var(--block-spacer)));
+        --padding: var(--block-spacer);
+        --calculated: calc(var(--padding) * 2 - var(--block-spacer) * 2);
+        height: calc(30vh - var(--calculated));
+        max-height: calc(100% - var(--calculated));
+        padding: var(--padding);
 
         @media (min-width: 950px) {
             height: unset;
             max-height: 70vh;
+            max-width: 48rem;
+            padding: var(--block-padding-large);
         }
     }
 
