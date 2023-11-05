@@ -30,9 +30,10 @@ export async function generateStaticParams() {
         .flat();
 }
 
-export async function generateMetadata({ params }: { params: ProductPageParams }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: ProductPageParams }): Promise<Metadata | null> {
     const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return null;
 
     const client = StorefrontApiClient({ locale });
     const product = await ProductApi({ client, handle });
@@ -46,6 +47,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     const { locale: localeData, handle } = params;
 
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
     if (!isValidHandle(handle)) return notFound();

@@ -1,12 +1,12 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { notFound, usePathname, useRouter } from 'next/navigation';
 
-import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
+import { NextLocaleToLocale } from '@/utils/locale';
+import type { StoreModel } from '@/models/StoreModel';
 import { styled } from 'styled-components';
 
 const List = styled.article`
@@ -91,6 +91,7 @@ export default function LocaleSelector({ countries }: LocaleSelectorProps) {
     const router = useRouter();
     const route = usePathname();
     const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
+    if (!locale) return notFound();
     const locales = BuildConfig.i18n.locales;
 
     const markets = (

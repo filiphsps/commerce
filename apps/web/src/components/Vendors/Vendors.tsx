@@ -1,16 +1,16 @@
 'use client';
 
-import { VendorsApi } from '@/api/shopify/vendor';
-import PageLoader from '@/components/PageLoader';
-import Link from '@/components/link';
-import type { VendorModel } from '@/models/VendorModel';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
+import type { FunctionComponent } from 'react';
+import Link from '@/components/link';
 import { NextLocaleToLocale } from '@/utils/locale';
+import PageLoader from '@/components/PageLoader';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import type { VendorModel } from '@/models/VendorModel';
+import { VendorsApi } from '@/api/shopify/vendor';
+import styled from 'styled-components';
 import { useApolloClient } from '@apollo/client';
 import { usePathname } from 'next/navigation';
-import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Container = styled.div`
@@ -68,7 +68,7 @@ interface VendorsProps {
 }
 const Vendors: FunctionComponent<VendorsProps> = (props) => {
     const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
+    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default)!; // FIXME: Handle this properly.
 
     const { data: vendors } = useSWR(
         [

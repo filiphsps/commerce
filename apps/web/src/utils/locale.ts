@@ -52,19 +52,22 @@ export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode;
  *
  * > NOTE: If the locale is invalid, the default locale will be used.
  *         the default locale is defined in `Config.i18n.default` and
- *         is not tenant configurable at tthe moment.
+ *         is not tenant configurable at the moment.
  *
  * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {Locale} `Locale` object.
  */
-export const NextLocaleToLocale = (locale?: string): Locale => {
-    if (!locale || locale === 'x-default' || locale.length < 2 || locale.length > 5) {
-        console.warn(`Invalid locale: ${locale}`);
-
-        return NextLocaleToLocale(defaultLocale);
+export const NextLocaleToLocale = (locale?: string): Locale | null => {
+    if (
+        !locale ||
+        locale === 'x-default' ||
+        locale.length < 2 ||
+        locale.length > 5 ||
+        (locale.length > 2 && !locale.includes('-'))
+    ) {
+        // FIXME: Handle invalid locales in a better way.
+        return null;
     }
-
-    // FIXME: Handle invalid locales.
 
     if (locale.length === 2) {
         // FIXME: Get default country for a given language.
@@ -87,7 +90,7 @@ export const NextLocaleToLocale = (locale?: string): Locale => {
  * @returns {Locale} `Locale` object.
  */
 export const DefaultLocale = (): Locale => {
-    return NextLocaleToLocale(defaultLocale);
+    return NextLocaleToLocale(defaultLocale)!;
 };
 
 // TODO: Make this a proper type that somehow reads from the dictionary files?

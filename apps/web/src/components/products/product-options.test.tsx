@@ -34,7 +34,7 @@ describe('Components', () => {
         const onOptionChange = vi.fn();
 
         it('renders all options and values', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')} onOptionChange={onOptionChange} />);
+            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} onOptionChange={onOptionChange} />);
             options.forEach((option) => {
                 const optionTitle = screen.getByText(option.name);
                 expect(optionTitle).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('Components', () => {
         });
 
         it('calls onOptionChange when an option is clicked', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')} onOptionChange={onOptionChange} />);
+            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} onOptionChange={onOptionChange} />);
             const firstOption = options[0];
             const firstOptionValue = firstOption.values[0];
             const firstOptionValueElement = screen.getByText(firstOptionValue);
@@ -56,7 +56,7 @@ describe('Components', () => {
         });
 
         it('converts grams to ounces when locale is en-US', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-US')} onOptionChange={onOptionChange} />);
+            render(<ProductOptions locale={NextLocaleToLocale('en-US')!} onOptionChange={onOptionChange} />);
             // We can't use sizeOptionValues[0] because it's in grams.
             const sizeOptionValueElement = screen.getByText('4oz');
 

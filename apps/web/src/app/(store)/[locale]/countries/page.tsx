@@ -12,6 +12,7 @@ import PrismicPage from '@/components/prismic-page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
 import { getDictionary } from '@/i18n/dictionarie';
+import { notFound } from 'next/navigation';
 
 export type CountriesPageParams = { locale: string };
 
@@ -22,6 +23,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
     const { locale: localeData } = params;
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
     const client = StorefrontApiClient({ locale });

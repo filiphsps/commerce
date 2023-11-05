@@ -94,7 +94,7 @@ export const createClient = (config: CreateClientConfig & { locale?: Locale } = 
 };
 
 export const linkResolver: LinkResolverFunction<any> = (doc) => {
-    const locale = NextLocaleToLocale(doc.lang);
+    const locale = NextLocaleToLocale(doc.lang)!; // FIXME: handle invalid locales.
 
     if (doc.type === 'custom_page') {
         if (doc.uid === 'homepage') return `/${locale.locale}/`;

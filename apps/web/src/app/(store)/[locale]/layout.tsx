@@ -4,6 +4,7 @@ import '@/style/app.scss';
 
 import * as Prismic from '@/prismic';
 
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
@@ -14,11 +15,11 @@ import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
 import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
-import { NextLocaleToLocale } from '@/utils/locale';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
 import { PrismicPreview } from '@prismicio/next';
 import ProvidersRegistry from '@/components/providers-registry';
+import type { ReactNode } from 'react';
 import { StoreApi } from '@/api/store';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
 
@@ -30,10 +31,9 @@ const font = Lexend_Deca({
     preload: true
 });
 
-export async function generateViewport({ params }: { params: { locale: string } }): Promise<Viewport> {
+export async function generateViewport({ params }: { params: { locale: string } }): Promise<Viewport | null> {
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData);
-
+    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
 
     return {
@@ -41,19 +41,18 @@ export async function generateViewport({ params }: { params: { locale: string } 
         width: 'device-width',
         initialScale: 1,
         interactiveWidget: 'resizes-visual'
-        //shrinkToFit: 'no'
     };
 }
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData);
+    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
     const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
 
     return {
-        metadataBase: new URL(`https://${BuildConfig.domain}/`),
+        metadataBase: new URL(`https://${BuildConfig.domain}/${locale.locale}/`),
         title: {
             default: store.name,
             template: `%s · ${store.name}`
@@ -81,19 +80,16 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
+// FIXME: We need to enable this to support dynamic locales.
+export const dynamicParams = false;
 export async function generateStaticParams() {
     return BuildConfig.i18n.locales.map((locale) => ({ locale }));
 }
 
-export default async function RootLayout({
-    children,
-    params
-}: {
-    children: React.ReactNode;
-    params: { locale: string };
-}) {
+export default async function RootLayout(props: { children: ReactNode; params: { locale: string } }) {
+    const { children, params } = props;
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData);
+    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
 
     const shopifyApi = shopifyApiConfig();
 
