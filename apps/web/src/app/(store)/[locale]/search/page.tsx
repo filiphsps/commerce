@@ -1,23 +1,25 @@
-import { BuildConfig } from '@/utils/build-config';
-import type { Metadata } from 'next';
-import { NextLocaleToLocale } from '@/utils/locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import { StorefrontApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
-import SearchContent from './search-content';
-import { StoreApi } from '@/api/store';
-import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
-import { asText } from '@prismicio/client';
 import { getDictionary } from '@/i18n/dictionarie';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Prefetch } from '@/utils/prefetch';
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import SearchContent from './search-content';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return null;
     const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
@@ -67,6 +69,7 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
     const { locale: localeData } = params;
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
     const client = StorefrontApiClient({ locale });
@@ -95,7 +98,7 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
                         )}
                     </Suspense>
 
-                    <SearchContent store={store} />
+                    <SearchContent store={store} locale={locale} />
                 </Suspense>
             </PageContent>
         </Page>

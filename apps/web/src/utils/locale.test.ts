@@ -11,7 +11,7 @@ import type { StoreModel } from '@/models/StoreModel';
 describe('Utils', () => {
     describe('NextLocaleToLocale', () => {
         it('should convert an ISO 639-1 and ISO 3166-1 Alpha-2 string to a the Locale object', () => {
-            const locales = [NextLocaleToLocale('en-US'), NextLocaleToLocale('fr-CA'), NextLocaleToLocale('es-MX')];
+            const locales = [NextLocaleToLocale('en-US')!, NextLocaleToLocale('fr-CA')!, NextLocaleToLocale('es-MX')!];
 
             expect(locales).toEqual([
                 {
@@ -33,7 +33,7 @@ describe('Utils', () => {
         });
 
         it.todo('should convert an ISO 639-1 string to a the Locale object', () => {
-            const locales = [NextLocaleToLocale('en'), NextLocaleToLocale('fr'), NextLocaleToLocale('es')];
+            const locales = [NextLocaleToLocale('en')!, NextLocaleToLocale('fr')!, NextLocaleToLocale('es')!];
 
             expect(locales).toEqual([
                 {
@@ -58,24 +58,24 @@ describe('Utils', () => {
     describe('NextLocaleToCountry', () => {
         it('should convert an ISO 639-1 and ISO 3166-1 Alpha-2 string to a CountryCode string', () => {
             const countryCodes = [
-                NextLocaleToCountry('en-US'),
-                NextLocaleToCountry('fr-CA'),
-                NextLocaleToCountry('es-MX')
+                NextLocaleToCountry('en-US')!,
+                NextLocaleToCountry('fr-CA')!,
+                NextLocaleToCountry('es-MX')!
             ];
 
             expect(countryCodes).toEqual(['US', 'CA', 'MX']);
         });
 
         it.todo('should convert an ISO 639-1 string to a CountryCode string', () => {
-            const countryCodes = [NextLocaleToCountry('en'), NextLocaleToCountry('fr'), NextLocaleToCountry('es')];
+            const countryCodes = [NextLocaleToCountry('en')!, NextLocaleToCountry('fr')!, NextLocaleToCountry('es')!];
 
             expect(countryCodes).toEqual(['US', 'FR', 'ES']);
         });
 
-        it.todo('should return the default country code if the locale is invalid', () => {
+        it.todo('should return null if the locale is invalid', () => {
             const countryCode = NextLocaleToCountry('invalid-locale');
 
-            expect(countryCode).toEqual('SE');
+            expect(countryCode).toEqual(null);
         });
     });
 
@@ -166,7 +166,7 @@ describe('Utils', () => {
         });
 
         it('should convert a locale string to a Locale object', () => {
-            const locales = [NextLocaleToLocale('en-US'), NextLocaleToLocale('fr-CA'), NextLocaleToLocale('es-MX')];
+            const locales = [NextLocaleToLocale('en-US')!, NextLocaleToLocale('fr-CA')!, NextLocaleToLocale('es-MX')!];
 
             expect(locales).toEqual([
                 {
@@ -187,14 +187,10 @@ describe('Utils', () => {
             ]);
         });
 
-        it('should return the default locale if the locale is invalid', () => {
+        it('should return null if the locale is invalid', () => {
             const locale = NextLocaleToLocale('invalid-locale');
 
-            expect(locale).toEqual({
-                locale: 'en-US',
-                language: 'EN',
-                country: 'US'
-            });
+            expect(locale).toEqual(null);
         });
     });
 

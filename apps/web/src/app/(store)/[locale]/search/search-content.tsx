@@ -1,21 +1,20 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { SearchApi } from '@/api/shopify/search';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
+import type { Locale } from '@/utils/locale';
 import PageLoader from '@/components/PageLoader';
-import type { StoreModel } from '@/models/StoreModel';
+import { SearchApi } from '@/api/shopify/search';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
-import { BuildConfig } from '@/utils/build-config';
-import { NextLocaleToLocale } from '@/utils/locale';
-import { useApolloClient } from '@apollo/client';
+import type { StoreModel } from '@/models/StoreModel';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
+import { useApolloClient } from '@apollo/client';
 import useSWR from 'swr';
 
 const ProductSearchFilters = dynamic(
@@ -131,12 +130,11 @@ const ContentHeader = styled(SearchHeader)`
 
 type SearchContentProps = {
     store?: StoreModel;
+    locale: Locale;
 };
-export default function SearchContent({}: SearchContentProps) {
+export default function SearchContent({ locale }: SearchContentProps) {
     const router = useRouter();
-    const route = usePathname();
     const query = useSearchParams()?.get('q') || '';
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
 
     const [input, setInput] = useState<string>(query || '');
     const [showFilters, setShowFilters] = useState(false);

@@ -1,19 +1,46 @@
+import { BuildConfig } from '@/utils/build-config';
+import type { Metadata } from 'next';
 import { NextLocaleToLocale } from '@/utils/locale';
 import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
+import { RedirectToLocale } from '../../../(redirect)/[[...handle]]/util';
 import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
 import { getDictionary } from '@/i18n/dictionarie';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
+import { metadata as notFoundMetadata } from '../not-found';
+
+export async function generateMetadata({
+    params
+}: {
+    params: { locale: string; uid: string[] };
+}): Promise<Metadata | null> {
+    const { locale: localeData, uid } = params;
+    const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFoundMetadata;
+    const locales = BuildConfig.i18n.locales;
+
+    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
+    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+
+    if (!page) return notFoundMetadata;
+
+    return {
+        title: page.meta_title || page.title
+        // TODO: Metadata.
+    };
+}
 
 export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
     const { locale: localeData, uid } = params;
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return RedirectToLocale({ handle: [localeData, ...(uid || [])] });
     const i18n = await getDictionary(locale);
 
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';

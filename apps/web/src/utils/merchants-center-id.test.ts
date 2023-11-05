@@ -9,7 +9,7 @@ describe('Utils', () => {
                 variantGid: 'gid://shopify/ProductVariant/456'
             } as any;
 
-            const locale = NextLocaleToLocale('en-US');
+            const locale = NextLocaleToLocale('en-US')!;
 
             const merchantsCenterId = ProductToMerchantsCenterId({
                 locale,
@@ -26,7 +26,7 @@ describe('Utils', () => {
                 variantGid: 'gid://shopify/ProductVariant/456'
             } as any;
 
-            const locale = NextLocaleToLocale('fr-CA');
+            const locale = NextLocaleToLocale('fr-CA')!;
 
             const merchantsCenterId = ProductToMerchantsCenterId({
                 locale,

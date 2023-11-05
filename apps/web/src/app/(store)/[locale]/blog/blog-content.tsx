@@ -10,6 +10,6 @@ type BlogContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 };
-export default function BlogsContent({ locale, i18n }: BlogContentProps) {
+export default function BlogsContent({}: BlogContentProps) {
     return <Container></Container>;
 }

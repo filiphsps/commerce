@@ -12,11 +12,13 @@ import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
 import { asText } from '@prismicio/client';
 import { getDictionary } from '@/i18n/dictionarie';
+import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
     const handle = 'blog';
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
     const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
@@ -65,6 +67,7 @@ export async function generateStaticParams() {
 export type BlogPageParams = { locale: string };
 export default async function SearchPage({ params }: { params: BlogPageParams }) {
     const locale = NextLocaleToLocale(params.locale);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
     const handle = 'blog';
 

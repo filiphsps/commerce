@@ -1,23 +1,25 @@
-import { BuildConfig } from '@/utils/build-config';
-import CartContent from './cart-content';
-import type { Metadata } from 'next';
-import { NextLocaleToLocale } from '@/utils/locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
+import { StorefrontApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PageHeader from '@/components/PageHeader';
-import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
-import { StoreApi } from '@/api/store';
-import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
-import { asText } from '@prismicio/client';
 import { getDictionary } from '@/i18n/dictionarie';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Prefetch } from '@/utils/prefetch';
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import CartContent from './cart-content';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
     const handle = 'cart';
     const locale = NextLocaleToLocale(localeData);
+    if (!locale) return null;
     const locales = BuildConfig.i18n.locales;
 
     const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
@@ -64,8 +66,9 @@ export async function generateStaticParams() {
 }
 
 export type CartPageParams = { locale: string };
-export default async function SearchPage({ params }: { params: CartPageParams }) {
+export default async function CartPage({ params }: { params: CartPageParams }) {
     const locale = NextLocaleToLocale(params.locale);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
     const handle = 'cart';
 
