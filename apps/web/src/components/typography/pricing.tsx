@@ -3,6 +3,7 @@
 import type { HTMLProps } from 'react';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { styled } from 'styled-components';
 
 const Container = styled.section`
@@ -59,7 +60,7 @@ const Pricing = (props: PricingProps) => {
     const { price, compareAtPrice } = props;
 
     return (
-        <Container {...{ ...props, compareAtPrice: undefined }}>
+        <Container {...RemoveInvalidProps(props)}>
             <Price>
                 <Money data={price} as={Span} className={(compareAtPrice && 'Sale') || ''} />
             </Price>

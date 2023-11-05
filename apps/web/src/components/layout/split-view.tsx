@@ -2,6 +2,7 @@
 
 import type { HTMLProps, ReactNode } from 'react';
 
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { styled } from 'styled-components';
 
 const Container = styled.div`
@@ -61,7 +62,7 @@ const SplitView = (props: SplitViewProps) => {
     return (
         <Container>
             <Aside>{aside}</Aside>
-            <Primary {...props}>{children}</Primary>
+            <Primary {...RemoveInvalidProps(props)}>{children}</Primary>
         </Container>
     );
 };
