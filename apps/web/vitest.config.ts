@@ -1,6 +1,6 @@
-import { defineConfig } from 'vitest/config';
-import path from 'node:path';
 import react from '@vitejs/plugin-react';
+import path from 'node:path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
     plugins: [react()],
@@ -30,8 +30,8 @@ export default defineConfig({
 
         coverage: {
             all: true,
-            include: ['src/**/*.{js,ts,jsx,tsx}'],
-            exclude: ['**/*.d.ts', '**/*.test.{js,ts,jsx,tsx}', '**/*.spec.{js,ts,jsx,tsx}']
+            include: ['**/src/**/*.{js,ts,jsx,tsx}'],
+            exclude: ['**/*.d.ts', '**/*.test.{js,ts,jsx,tsx}', '**/*.test.{js,ts,jsx,tsx}']
         }
     }
 });
