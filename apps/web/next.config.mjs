@@ -74,19 +74,10 @@ let config = {
     serverRuntimeConfig: {
         // Shopify
         SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
-    
+
         // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN
     },
-    webpack(config, { webpack }) {
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                'globalThis.__DEV__': false
-            })
-        );
-        return config;
-    },
-
     async redirects() {
         return [
             {
