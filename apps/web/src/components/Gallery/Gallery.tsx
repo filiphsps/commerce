@@ -122,7 +122,7 @@ const Container = styled.div`
 `;
 
 interface GalleryProps {
-    selected: string | null;
+    selected?: string | null;
     images: ImageConnection | null;
 }
 const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex, images }) => {
