@@ -640,6 +640,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         max={999}
                         step={1}
                         value={quantityValue}
+                        placeholder="Quantity"
                         onBlur={(_) => {
                             if (!quantityValue) setQuantityValue('1');
                         }}
