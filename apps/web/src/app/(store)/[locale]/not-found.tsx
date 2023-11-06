@@ -4,8 +4,11 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 
 export const metadata: Metadata = {
-    title: ' 404 - Page Not Found',
-    robots: { index: false, follow: false }
+    title: '404 - Page Not Found',
+    robots: {
+        index: false,
+        follow: false
+    }
 };
 
 export default function NotFound() {

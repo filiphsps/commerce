@@ -78,7 +78,7 @@ export const ProductSearchResultItem: FunctionComponent<ProductSearchResultItemP
                     <MetaTitle>{product.title}</MetaTitle>
                 </Meta>
                 <Pricing>
-                    <ProductPrice data={product} as={PricingPrice} />
+                    <ProductPrice data={product} as={PricingPrice as any} />
                 </Pricing>
             </Container>
         </Link>
