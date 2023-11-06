@@ -2,8 +2,6 @@ import 'destyle.css';
 // Global style
 import '@/style/app.scss';
 
-import * as Prismic from '@/prismic';
-
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
@@ -17,11 +15,9 @@ import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
-import { PrismicPreview } from '@prismicio/next';
 import ProvidersRegistry from '@/components/providers-registry';
 import type { ReactNode } from 'react';
 import { StoreApi } from '@/api/store';
-import StyledComponentsRegistry from '@/components/styled-components-registry';
 
 const font = Lexend_Deca({
     weight: 'variable',
@@ -101,7 +97,6 @@ export default async function RootLayout(props: { children: ReactNode; params: {
     return (
         <html
             lang={locale.locale}
-            className={font.variable}
             style={
                 {
                     '--accent-primary': store.accent.primary,
@@ -110,7 +105,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
             }
         >
             <head />
-            <body>
+            <body className={font.variable}>
                 <SocialProfileJsonLd
                     useAppDir
                     type="Organization"
@@ -171,21 +166,18 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                 />
 
                 <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()}>
-                    <StyledComponentsRegistry>
-                        <PageProvider
-                            store={store}
-                            locale={locale}
-                            pagePropsAnalyticsData={{}}
-                            data={{ navigation, header, footer }}
-                        >
-                            {children}
+                    <PageProvider
+                        store={store}
+                        locale={locale}
+                        pagePropsAnalyticsData={{}}
+                        data={{ navigation, header, footer }}
+                    >
+                        {children}
 
-                            <PageContent primary>
-                                <Breadcrumbs store={store} />
-                            </PageContent>
-                        </PageProvider>
-                        <PrismicPreview repositoryName={Prismic.repositoryName} />
-                    </StyledComponentsRegistry>
+                        <PageContent primary>
+                            <Breadcrumbs store={store} />
+                        </PageContent>
+                    </PageProvider>
                 </ProvidersRegistry>
             </body>
         </html>
