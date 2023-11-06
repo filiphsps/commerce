@@ -38,7 +38,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
             <PageContent primary>
                 <PageContent>
                     <Heading title={page?.title} subtitle={page?.description} />
-                    <LocaleSelector countries={countries} store={store} />
+                    <LocaleSelector countries={countries} store={store} locale={locale} />
                 </PageContent>
 
                 <Suspense>

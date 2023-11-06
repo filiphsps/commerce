@@ -6,7 +6,7 @@ import { PageApi } from '@/api/page';
 import PageContent from '@/components/PageContent';
 import { Prefetch } from '@/utils/prefetch';
 import PrismicPage from '@/components/prismic-page';
-import { RedirectToLocale } from '../../../(redirect)/[[...handle]]/util';
+import { RedirectToLocale } from '../util';
 import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Suspense } from 'react';
@@ -82,5 +82,3 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return notFound(); // FIXME: Return proper error.
     }
 }
-
-export const revalidate = 300; // 5 minutes.

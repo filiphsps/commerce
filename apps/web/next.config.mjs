@@ -4,7 +4,7 @@ const config = {
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
-    productionBrowserSourceMaps: false,
+    productionBrowserSourceMaps: true,
     compress: true,
     experimental: {
         esmExternals: true,
@@ -20,7 +20,6 @@ const config = {
         webVitalsAttribution: ['CLS', 'LCP', 'INP']
     },
     images: {
-        minimumCacheTTL: 60 * 6,
         remotePatterns: [
             {
                 protocol: 'https',
@@ -39,7 +38,7 @@ const config = {
                 hostname: '**.github.io'
             }
         ],
-        formats: ['image/webp'] // Disable 'image/avif' till cloudflare supports it.
+        formats: ['image/webp', 'image/avif']
     },
     compiler: {
         styledComponents: true,

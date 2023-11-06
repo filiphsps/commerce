@@ -1,19 +1,18 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
 import { Input } from '@/components/Input';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
-import NProgress from 'nprogress';
-import { Pluralize } from '@/utils/pluralize';
 import type { StoreModel } from '@/models/StoreModel';
+import { Pluralize } from '@/utils/pluralize';
 import { useCart } from '@shopify/hydrogen-react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
 
 const Content = styled.div`
     display: grid;
@@ -339,7 +338,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
     const [scrollTop, setScrollTop] = useState(0);
 
     useEffect(() => {
-        NProgress.done(true); // TODO: Move this to it's own component.
         if (searchOpen && route === '/search') setSearchOpen(false);
     }, [route]);
 

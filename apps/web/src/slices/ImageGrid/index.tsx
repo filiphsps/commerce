@@ -1,14 +1,13 @@
 'use client';
 
-import type { Content } from '@prismicio/client';
-import Link from '@/components/link';
 import PageContent from '@/components/PageContent';
+import Link from '@/components/link';
+import type { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
 const Container = styled.section`
-    //grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
     width: 100%;
     padding: 0;
     margin: 0;
@@ -61,15 +60,6 @@ const TitleContainer = styled.div`
     }
 `;
 
-const Banner = styled(PrismicNextImage)`
-    width: 100%;
-    height: auto;
-    aspect-ratio: 21 / 6;
-    object-fit: cover;
-    object-position: 20% center;
-    transition: 150ms ease-in-out;
-`;
-
 const Item = styled(Link)`
     overflow: hidden;
     display: grid;
@@ -104,7 +94,20 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                 <Grid>
                     {slice.items.map(({ href, title, image }) => (
                         <Item key={href!} href={href! || ''} title={title!}>
-                            <Banner field={image} width={300} height={300} sizes="(max-width: 950px) 250px, 25vw" />
+                            <PrismicNextImage
+                                style={{
+                                    width: '100%',
+                                    height: 'auto',
+                                    aspectRatio: '21 / 6',
+                                    objectFit: 'cover',
+                                    objectPosition: '20% center',
+                                    transition: '150ms ease-in-out'
+                                }}
+                                field={image}
+                                width={300}
+                                height={300}
+                                sizes="(max-width: 950px) 250px, 25vw"
+                            />
                             <TitleContainer>
                                 <Title>{title}</Title>
                             </TitleContainer>

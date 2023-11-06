@@ -1,6 +1,5 @@
 'use client';
 
-import type { ApiConfig } from '@/api/client';
 import { ApolloLink, HttpLink } from '@apollo/client';
 import {
     ApolloNextAppProvider,
@@ -8,6 +7,8 @@ import {
     NextSSRInMemoryCache,
     SSRMultipartLink
 } from '@apollo/experimental-nextjs-app-support/ssr';
+
+import type { ApiConfig } from '@/api/client';
 import type { ReactNode } from 'react';
 
 const createClientMaker = ({ apiConfig }: { apiConfig: ApiConfig }) => {

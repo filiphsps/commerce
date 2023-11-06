@@ -108,19 +108,6 @@ body {
     }
 }
 
-#nprogress {
-    pointer-events: none;
-}
-#nprogress .bar {
-    background: var(--accent-primary-light);
-    position: fixed;
-    z-index: 2147483647;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--block-padding-small);
-}
-
 input[type='search']::-webkit-search-decoration,
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-results-button,

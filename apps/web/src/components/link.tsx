@@ -1,25 +1,33 @@
-import BaseLink from 'next/link';
+'use client';
+
 import { BuildConfig } from '@/utils/build-config';
-import type { ComponentProps } from 'react';
-import NProgress from 'nprogress';
-import { NextLocaleToLocale } from '@/utils/locale';
-import { usePathname } from 'next/navigation';
+import { DefaultLocale } from '@/utils/locale';
+import BaseLink from 'next/link';
+import { useMemo, type ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {};
 
-// FIXME: Do this properly.
+// FIXME: i18n provider?
 export default function Link({ ...props }: Props) {
-    const route = usePathname();
-    const locale = NextLocaleToLocale(route?.split('/').at(1) || BuildConfig.i18n.default); // FIXME: Handle this properly.
-
-    // FIXME: Handle this ASAP.
-    if (!locale) return null;
+    const locale = DefaultLocale();
 
     let href = props.href.toString();
-    if (!href.includes(':') && href.startsWith('/')) {
-        // TODO: Check if lang is already a part of the URL.
-        href = `/${locale.locale}${props.href}`.replaceAll('//', '');
+    if ((!href.includes(':') && href.startsWith('/')) || href.includes(BuildConfig.domain)) {
+        // Remove our own domain from the URL.
+        href = href.replaceAll(`https://${BuildConfig.domain}/`, '');
+
+        // Check if any lang (xx-YY) is already a part of the URL.
+        if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) {
+            // Add locale to href.
+            href = `/${locale.locale}${href}`;
+        }
+
+        // Fix all occurrences of double slashes.
+        href = href.replaceAll('//', '');
     }
 
-    return <BaseLink {...props} href={href} onClick={() => NProgress.start()} />;
+    if (props.href || href) props.href = href;
+    const component = useMemo(() => <BaseLink {...props} />, [props.href]);
+
+    return component;
 }

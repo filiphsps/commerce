@@ -1,6 +1,7 @@
 import { BuildConfig } from '@/utils/build-config';
 import { redirect } from 'next/navigation';
-import { NoLocalePageParams } from './route';
+
+export type NoLocalePageParams = { handle: string[] | undefined };
 
 export const RedirectToLocale = async ({ handle }: NoLocalePageParams) => {
     const path = (handle || []).join('/');
