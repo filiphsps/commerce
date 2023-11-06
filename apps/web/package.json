@@ -88,7 +88,7 @@
         "@types/color": "3.0.5",
         "@types/convert-units": "2.3.8",
         "@types/node": "20.8.10",
-        "@types/react": "18.2.35",
+        "@types/react": "18.2.36",
         "@types/react-dom": "18.2.14",
         "@types/react-slick": "0.23.11",
         "@types/styled-components": "5.1.29",
