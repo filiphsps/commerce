@@ -67,20 +67,15 @@ const Details = styled.div`
     align-items: flex-start;
     justify-self: stretch;
     min-height: 10rem;
-    gap: calc(var(--block-spacer-small) / 4);
-
-    @media (min-width: 950px) {
-        gap: calc(var(--block-spacer-small) / 2);
-    }
+    margin-top: var(--block-spacer-small);
 `;
 const Brand = styled.div`
     font-size: 1.5rem;
-    line-height: 0.9;
-    font-weight: 600;
-    opacity: 0.85;
+    line-height: 1;
+    font-weight: 500;
 
     @media (min-width: 950px) {
-        font-size: 1.75rem;
+        font-size: 1.65rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -101,7 +96,7 @@ const Title = styled.div`
     height: 100%;
     font-size: 2rem;
     line-height: 1.1;
-    font-weight: 650;
+    font-weight: 700;
     hyphens: auto;
 
     @media (min-width: 950px) {
@@ -125,33 +120,44 @@ const CardFooter = styled.div`
     grid-template-columns: 1fr auto;
     justify-content: flex-end;
     align-items: flex-end;
-    justify-self: end;
     gap: var(--block-spacer);
     width: 100%;
-    height: 100%;
-    margin-top: var(--block-spacer-large);
-    transition: 150ms ease-in-out;
+    max-height: 100%;
+    margin-top: var(--block-spacer-tiny);
 `;
+
+/*gap: var(--block-spacer-tiny);*/
 const Variants = styled.div`
     display: flex;
     align-items: end;
     justify-content: start;
-    gap: var(--block-spacer-tiny);
     width: 100%;
     height: 100%;
 `;
+
+/* width: 5rem;
+height: 3rem;
+padding: var(--block-spacer-tiny) 0 0 0;
+font-size: 1.5rem; */
 const Variant = styled.div`
-    height: 2.25rem;
-    padding: 0.25rem;
-    margin: -0.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: var(--block-spacer-tiny) var(--block-spacer-tiny) 0 var(--block-spacer-tiny);
     font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1.75rem;
+    font-size: 1.75rem;
+    line-height: normal;
     text-align: right;
-    opacity: 0.5;
     cursor: pointer;
+    opacity: 0.85;
+    transition: 150ms ease-in-out all;
+
     &.Active {
         opacity: 1;
+        font-weight: 700;
+        /*font-size: 1.75rem;*/
+        color: var(--accent-primary);
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -322,8 +328,7 @@ const PreviousPrice = styled.div`
 
 const DiscountBadge = styled.div`
     position: absolute;
-    top: calc(var(--block-spacer-tiny));
-    right: var(--block-spacer-tiny);
+    inset: var(--block-spacer-tiny) var(--block-spacer-tiny) auto auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -341,6 +346,7 @@ const DiscountBadge = styled.div`
     b {
         font-weight: 900;
         font-size: 1.45rem;
+        margin-right: var(--block-spacer-tiny);
     }
 `;
 const Badges = styled.div`
@@ -350,8 +356,10 @@ const Badges = styled.div`
     gap: var(--block-spacer-small);
     z-index: 1;
     pointer-events: none;
+
+    position: absolute;
+    inset: auto 0 0 auto;
 `;
-const BadgeText = styled.div``;
 const Badge = styled.div`
     flex-shrink: 1;
     display: flex;
@@ -359,22 +367,24 @@ const Badge = styled.div`
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer-small);
-    height: auto;
-    padding: var(--block-padding-small) var(--block-padding);
+    padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
+        var(--block-padding);
     background: var(--accent-primary-light);
     color: var(--accent-primary-text);
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 1.15rem;
-    border-radius: var(--block-border-radius);
+    border-top-left-radius: var(--block-border-radius);
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: normal;
+    text-align: center;
 
     &.New {
         background: var(--accent-primary-light);
         color: var(--accent-primary-text);
     }
     &.Vegan {
-        background: var(--color-green);
+        background: rgba(var(--color-green-rgb), 0.9);
         color: var(--color-bright);
+        text-shadow: 0 0 0.25rem var(--color-dark);
     }
 `;
 
@@ -385,7 +395,7 @@ const Container = styled.section<{ $available?: boolean }>`
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-small);
     min-width: var(--component-product-card-width);
     min-height: calc(var(--component-product-card-width) * 1.65);
     padding: calc(var(--block-padding) - var(--block-border-width));
@@ -499,11 +509,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
 
                 {discount > 1 && ( // Handle rounding-errors
                     <DiscountBadge>
-                        <BadgeText>
-                            <b>{discount}%</b> OFF
-                        </BadgeText>
+                        <b>{discount}%</b> OFF
                     </DiscountBadge>
                 )}
+
+                <Badges>
+                    {isNewProduct && <Badge className="New">New!</Badge>}
+                    {isVegan && <Badge className="Vegan">Vegan</Badge>}
+                </Badges>
             </ProductImage>
             <Details className="Details">
                 {product.vendor && (
@@ -518,44 +531,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         {product.title}
                     </Link>
                 </Title>
-
-                {/* FIXME: Deal with options here */}
-                <Variants>
-                    {product.variants?.edges &&
-                        product.variants.edges.length > 1 &&
-                        product.variants.edges.map((edge) => {
-                            if (!edge?.node) return null;
-                            const variant = edge.node! as ProductVariant;
-                            let title = variant.title;
-
-                            // Handle variants that should have their weight as their actual title
-                            // FIXME: Remove `Size` when we've migrated to using Weight.
-                            // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
-                            if (
-                                variant.selectedOptions.length === 1 &&
-                                ['Size', 'Weight', 'Größe', 'Storlek'].includes(variant.selectedOptions.at(0)!.name) &&
-                                variant.weight &&
-                                variant.weightUnit
-                            ) {
-                                title = ConvertToLocalMeasurementSystem({
-                                    locale: locale,
-                                    weight: variant.weight,
-                                    weightUnit: variant.weightUnit
-                                });
-                            }
-
-                            return (
-                                <Variant
-                                    key={variant.id}
-                                    title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                                    onClick={() => setSelectedVariant(variant)}
-                                    className={selectedVariant.id === variant.id ? 'Active' : ''}
-                                >
-                                    {title}
-                                </Variant>
-                            );
-                        })}
-                </Variants>
 
                 <CardFooter>
                     <Prices>
@@ -578,18 +553,45 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                             null}
                     </Prices>
 
-                    <Badges>
-                        {isNewProduct && (
-                            <Badge className="New">
-                                <BadgeText>New!</BadgeText>
-                            </Badge>
-                        )}
-                        {isVegan && (
-                            <Badge className="Vegan">
-                                <BadgeText>Vegan</BadgeText>
-                            </Badge>
-                        )}
-                    </Badges>
+                    {/* FIXME: Deal with options here */}
+                    <Variants>
+                        {product.variants?.edges &&
+                            product.variants.edges.length > 1 &&
+                            product.variants.edges.map((edge) => {
+                                if (!edge?.node) return null;
+                                const variant = edge.node! as ProductVariant;
+                                let title = variant.title;
+
+                                // Handle variants that should have their weight as their actual title
+                                // FIXME: Remove `Size` when we've migrated to using Weight.
+                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
+                                if (
+                                    variant.selectedOptions.length === 1 &&
+                                    ['Size', 'Weight', 'Größe', 'Storlek'].includes(
+                                        variant.selectedOptions.at(0)!.name
+                                    ) &&
+                                    variant.weight &&
+                                    variant.weightUnit
+                                ) {
+                                    title = ConvertToLocalMeasurementSystem({
+                                        locale: locale,
+                                        weight: variant.weight,
+                                        weightUnit: variant.weightUnit
+                                    });
+                                }
+
+                                return (
+                                    <Variant
+                                        key={variant.id}
+                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                                        onClick={() => setSelectedVariant(variant)}
+                                        className={selectedVariant.id === variant.id ? 'Active' : ''}
+                                    >
+                                        {title}
+                                    </Variant>
+                                );
+                            })}
+                    </Variants>
                 </CardFooter>
             </Details>
             <Actions>
