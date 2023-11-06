@@ -37,7 +37,7 @@ const Aside = styled.div`
         margin: 0;
         padding: 0;
         width: var(--page-width);
-        max-width: calc(calc(var(--page-width) * 0.55) - calc(var(--block-spacer-large) * 2));
+        max-width: calc(calc(var(--page-width) * 0.58) - calc(var(--block-spacer-large) * 2));
     }
 `;
 
@@ -51,7 +51,7 @@ const Primary = styled.div`
         margin: 0;
         padding: 0;
         width: var(--page-width);
-        max-width: calc(calc(var(--page-width) * 0.45) - calc(var(--block-spacer-large) * 2));
+        max-width: calc(calc(var(--page-width) * 0.42) - calc(var(--block-spacer-large) * 2));
     }
 `;
 

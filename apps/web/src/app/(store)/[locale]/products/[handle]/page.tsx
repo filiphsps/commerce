@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                     gap: 'var(--block-spacer)'
                 }}
             >
-                <Heading title={product.title} subtitle={product.vendor} reverse />
+                <Heading title={product.title} subtitle={product.vendor} reverse bold />
                 <Pricing
                     price={product.variants.edges[0].node.price}
                     compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}

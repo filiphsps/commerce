@@ -1,37 +1,36 @@
-'use client';
+import type { HTMLProps, ReactNode } from 'react';
 
-import type { ReactNode } from 'react';
-import { styled } from 'styled-components';
+import styles from '@/components/typography/heading.module.css';
 
-const Container = styled.section`
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-small);
-`;
+type TitleProps = {
+    children?: ReactNode;
+} & HTMLProps<HTMLDivElement>;
+export const Title = ({ children }: TitleProps) => {
+    return <div className={styles.title}>{children}</div>;
+};
 
-export const Title = styled.h1`
-    font-size: 3rem;
-    line-height: 0.95;
-    font-weight: 400;
-`;
-
-export const SubTitle = styled.h2`
-    font-size: 2.25rem;
-    line-height: 1;
-    font-weight: 700;
-`;
+type SubTitleProps = {
+    children?: ReactNode;
+} & HTMLProps<HTMLDivElement>;
+export const SubTitle = ({ children }: SubTitleProps) => {
+    return <div className={styles.subtitle}>{children}</div>;
+};
 
 type HeadingProps = {
     title: ReactNode;
     subtitle: ReactNode;
     reverse?: boolean;
+    bold?: boolean;
 };
-const Heading = ({ title, subtitle, reverse }: HeadingProps) => {
+const Heading = ({ title, subtitle, reverse, bold }: HeadingProps) => {
+    const titleComponent = <Title>{title}</Title>;
+    const subtitleComponent = <SubTitle>{subtitle}</SubTitle>;
+
     return (
-        <Container>
-            {!reverse ? <Title>{title}</Title> : <SubTitle>{subtitle}</SubTitle>}
-            {reverse ? <Title>{title}</Title> : <SubTitle>{subtitle}</SubTitle>}
-        </Container>
+        <div className={`${styles.container} ${(bold && styles.bold) || ''}`}>
+            {!reverse ? titleComponent : subtitleComponent}
+            {reverse ? titleComponent : subtitleComponent}
+        </div>
     );
 };
 
