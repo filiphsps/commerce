@@ -62,6 +62,8 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     return (
         <Page>
             <SplitView
+                primaryDesktopWidth={0.42}
+                asideDesktopWidth={0.58}
                 aside={
                     !!product?.images?.edges?.[0] && (
                         <Gallery selected={product.images.edges[0].node.id!} images={product.images} />
