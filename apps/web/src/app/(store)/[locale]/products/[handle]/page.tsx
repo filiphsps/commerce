@@ -18,6 +18,7 @@ import { Suspense } from 'react';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { notFound } from 'next/navigation';
+import styles from './page.module.scss';
 
 export type ProductPageParams = { locale: string; handle: string };
 
@@ -62,22 +63,26 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     return (
         <Page>
             <SplitView
-                primaryDesktopWidth={0.42}
+                primaryDesktopWidth={0.52}
+                primaryClassName={styles.headingPrimary}
                 asideDesktopWidth={0.58}
-                aside={
-                    !!product?.images?.edges?.[0] && (
-                        <Gallery selected={product.images.edges[0].node.id!} images={product.images} />
-                    )
-                }
-                style={{
-                    gap: 'var(--block-spacer)'
-                }}
+                aside={<Gallery selected={product.images.edges?.[0].node.id} images={product.images} />}
+                padding
             >
-                <Heading title={product.title} subtitle={product.vendor} reverse bold />
-                <Pricing
-                    price={product.variants.edges[0].node.price}
-                    compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
-                />
+                <SplitView
+                    primaryDesktopWidth={0.8}
+                    asideDesktopWidth={0.2}
+                    asideClassName={styles.headingAside}
+                    aside={
+                        <Pricing
+                            price={product.variants.edges[0].node.price}
+                            compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
+                        />
+                    }
+                    reverse
+                >
+                    <Heading title={product.title} subtitle={product.vendor} reverse bold />
+                </SplitView>
 
                 <Suspense>
                     {page?.slices && page?.slices.length <= 0 && (
