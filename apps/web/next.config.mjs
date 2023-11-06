@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,
-    reactStrictMode: true,
+    reactStrictMode: false, // FIXME: this should be true.
     trailingSlash: true,
     swcMinify: true,
     productionBrowserSourceMaps: true,

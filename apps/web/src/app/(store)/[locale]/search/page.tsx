@@ -84,19 +84,17 @@ export default async function SearchPage({ params }: { params: SearchPageParams 
                 <Heading title={page?.title} subtitle={page?.description} />
 
                 <Suspense>
-                    <Suspense>
-                        {page && (
-                            <PrismicPage
-                                store={store}
-                                locale={locale}
-                                page={page}
-                                prefetch={prefetch}
-                                i18n={i18n}
-                                handle={handle}
-                                type={'custom_page'}
-                            />
-                        )}
-                    </Suspense>
+                    {page && (
+                        <PrismicPage
+                            store={store}
+                            locale={locale}
+                            page={page}
+                            prefetch={prefetch}
+                            i18n={i18n}
+                            handle={handle}
+                            type={'custom_page'}
+                        />
+                    )}
 
                     <SearchContent store={store} locale={locale} />
                 </Suspense>
