@@ -646,6 +646,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         }}
                         onChange={(e) => {
                             const val = e?.target?.value;
+
+                            // FRO-58: Only allow numbers
+                            if (val && /[^0-9]/.test(val)) return;
+
                             if (!val) {
                                 setQuantityValue('');
                             }
