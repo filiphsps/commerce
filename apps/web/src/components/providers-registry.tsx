@@ -8,6 +8,7 @@ import type { ApiConfig } from '@/api/client';
 import ApiProvider from './api-provider';
 import { BuildConfig } from '@/utils/build-config';
 import { CartFragment } from '@/api/cart';
+import { HeaderProvider } from './Header/header-provider';
 import type { Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
 
@@ -32,11 +33,11 @@ export default function ProvidersRegistry({
             >
                 <CartProvider cartFragment={CartFragment}>
                     <ApiProvider apiConfig={apiConfig}>
-                        {children}
-                        <PrismicToolbar repositoryName={repositoryName} />
+                        <HeaderProvider>{children}</HeaderProvider>
                     </ApiProvider>
                 </CartProvider>
             </ShopifyProvider>
+            <PrismicToolbar repositoryName={repositoryName} />
         </PrismicProvider>
     );
 }

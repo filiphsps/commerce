@@ -2,6 +2,7 @@ import { Money, useCart } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
 
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import type { FunctionComponent } from 'react';
 
 const Container = styled.section<{ $active?: boolean }>`
@@ -105,7 +106,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         null;
 
     return (
-        <Container {...props} $active={freeShipping}>
+        <Container {...RemoveInvalidProps(props)} $active={freeShipping}>
             {
                 <Label>
                     {amountLeftComponent}

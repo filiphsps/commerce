@@ -1,7 +1,5 @@
 'use client';
 
-import { Suspense, useState } from 'react';
-
 import { BuildConfig } from '@/utils/build-config';
 import type { FooterModel } from '@/models/FooterModel';
 import type { FunctionComponent } from 'react';
@@ -20,6 +18,7 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import { usePathname } from 'next/navigation';
 import { usePrismicClient } from '@prismicio/react';
 import useSWR from 'swr';
+import { useState } from 'react';
 
 const Header = dynamic(() => import('@/components/Header'));
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
@@ -168,14 +167,12 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
             <HeaderContainer>
-                <Suspense>
-                    <Header
-                        store={props?.store}
-                        navigation={navigation}
-                        sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
-                        sidebarOpen={sidebarOpen}
-                    />
-                </Suspense>
+                <Header
+                    store={props?.store}
+                    navigation={navigation}
+                    sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+                    sidebarOpen={sidebarOpen}
+                />
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}

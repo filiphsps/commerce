@@ -67,7 +67,6 @@ const Details = styled.div`
     align-items: flex-start;
     justify-self: stretch;
     min-height: 10rem;
-    margin-top: var(--block-spacer-small);
 `;
 const Brand = styled.div`
     font-size: 1.5rem;
@@ -98,6 +97,7 @@ const Title = styled.div`
     line-height: 1.1;
     font-weight: 700;
     hyphens: auto;
+    -webkit-hyphens: auto;
 
     @media (min-width: 950px) {
         font-size: 2.25rem;
@@ -179,46 +179,41 @@ const Actions = styled.div`
     gap: var(--block-spacer-small);
 `;
 const AddButton = styled(Button)<{ $added?: boolean }>`
-    && {
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 3.15rem;
-        max-height: 3.45rem;
-        min-width: 100%;
-        padding: var(--block-padding-small) var(--block-padding);
-        border-radius: var(--block-border-radius-small);
-        border: var(--block-border-width) solid var(--accent-primary);
-        color: var(--accent-primary-text);
-        background: var(--accent-primary);
-        box-shadow: none;
-        line-height: 1;
-        font-size: 1.5rem;
-        font-weight: 500;
-        transition: 150ms ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: var(--block-padding-small);
+    border-radius: var(--block-border-radius-small);
+    border: var(--block-border-width) solid var(--accent-primary);
+    color: var(--accent-primary-text);
+    background: var(--accent-primary);
+    line-height: 1;
+    font-size: 1.5rem;
+    font-weight: 500;
+    transition: 150ms ease-in-out;
 
-        @media (hover: hover) and (pointer: fine) {
-            &:enabled:hover {
-                background: var(--accent-secondary);
-                border-color: var(--accent-secondary);
-                color: var(--accent-secondary-text);
-            }
-        }
-
-        &:enabled:active {
+    @media (hover: hover) and (pointer: fine) {
+        &:enabled:hover {
             background: var(--accent-secondary);
             border-color: var(--accent-secondary);
             color: var(--accent-secondary-text);
         }
+    }
 
-        &.Added,
-        &.Added:enabled:active,
-        &.Added:enabled:hover {
-            background: var(--accent-secondary-dark) !important;
-            border-color: var(--accent-secondary-dark) !important;
-            color: var(--accent-secondary-text) !important;
-        }
+    &:enabled:active {
+        background: var(--accent-secondary);
+        border-color: var(--accent-secondary);
+        color: var(--accent-secondary-text);
+    }
+
+    &.Added,
+    &.Added:enabled:active,
+    &.Added:enabled:hover {
+        background: var(--accent-secondary-dark) !important;
+        border-color: var(--accent-secondary-dark) !important;
+        color: var(--accent-secondary-text) !important;
     }
 `;
 const Quantity = styled.div`
@@ -227,7 +222,7 @@ const Quantity = styled.div`
     align-items: center;
     justify-content: center;
     justify-self: end;
-    height: 3.25rem;
+    height: 100%;
     font-size: 1.5rem;
     line-height: 1.75rem;
     font-weight: 500;
@@ -397,7 +392,7 @@ const Container = styled.section<{ $available?: boolean }>`
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: var(--block-spacer-small);
     min-width: var(--component-product-card-width);
-    min-height: calc(var(--component-product-card-width) * 1.65);
+    min-height: 30rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
@@ -405,7 +400,7 @@ const Container = styled.section<{ $available?: boolean }>`
     color: var(--accent-secondary-text);
 
     @media (min-width: 950px) {
-        min-height: calc(var(--component-product-card-width) * 1.8);
+        min-height: 36rem;
     }
 
     ${({ $available }) =>
@@ -462,7 +457,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
 
         if (!quantityRef.current) return; // TODO: Handle this properly.
         const length = quantityValue.split('').length;
-        quantityRef.current.style.width = `${length * 1.2 + 1}rem`;
+        quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
     }, [quantityValue]);
 
     // TODO: Placeholder animation.
@@ -622,11 +617,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         (cart.status !== 'idle' && cart.status !== 'uninitialized')
                     }
                 >
-                    <span>
-                        {(!selectedVariant.availableForSale && t('out-of-stock')) ||
-                            (addedToCart && t('added-to-cart')) ||
-                            t('add-to-cart')}
-                    </span>
+                    {(!selectedVariant.availableForSale && t('out-of-stock')) ||
+                        (addedToCart && t('added-to-cart')) ||
+                        t('add-to-cart')}
                 </AddButton>
                 <Quantity>
                     <QuantityAction
@@ -652,11 +645,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                             // FRO-58: Only allow numbers
                             if (val && /[^0-9]/.test(val)) return;
 
-                            if (!val) {
+                            if (!val || val === '') {
                                 setQuantityValue('');
                             }
 
-                            setQuantityValue(val);
+                            setQuantityValue((Number.parseInt(val) || 0).toString());
                         }}
                     />
                     <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>

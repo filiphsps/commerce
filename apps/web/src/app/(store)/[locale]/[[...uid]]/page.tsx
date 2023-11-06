@@ -59,15 +59,17 @@ export default async function CustomPage({ params }: { params: { locale: string;
             <Page>
                 <PageContent primary>
                     <Suspense>
-                        <PrismicPage
-                            store={store}
-                            locale={locale}
-                            page={page}
-                            prefetch={prefetch}
-                            i18n={i18n}
-                            handle={handle}
-                            type={'custom_page'}
-                        />
+                        {page && (
+                            <PrismicPage
+                                store={store}
+                                locale={locale}
+                                page={page}
+                                prefetch={prefetch}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'custom_page'}
+                            />
+                        )}
                     </Suspense>
                 </PageContent>
             </Page>
