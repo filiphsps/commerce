@@ -1,0 +1,157 @@
+@import '@/style/variables.scss';
+
+.container {
+    display: grid;
+    width: 100%;
+    background: var(--accent-secondary-light);
+    transition: 150ms ease-in-out background-color;
+    border-bottom: calc(var(--block-border-width) / 2) solid transparent;
+
+    transition:
+        150ms ease-in-out box-shadow,
+        150ms ease-in-out border-color;
+
+    @media (min-width: $breakpoint-tablet-medium) {
+        height: calc(4.5rem + calc(var(--block-padding) * 2));
+    }
+}
+
+[data-scrolled='true'] {
+    .container {
+        border-bottom-color: var(--accent-secondary);
+        box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
+    }
+}
+
+.content {
+    display: grid;
+    grid-template-columns: auto 11.25rem 1fr;
+    gap: var(--block-spacer);
+    max-width: var(--page-width);
+    width: 100%;
+    height: 100%;
+    padding: var(--block-padding) var(--block-spacer-large);
+    margin: 0 auto;
+    user-select: none;
+    -webkit-user-select: none;
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 4.5rem;
+        padding: 0.5rem 0.25rem;
+        background: var(--accent-primary);
+        border-radius: var(--block-border-radius);
+        user-select: none;
+        -webkit-user-select: none;
+        outline: none;
+
+        a {
+            position: relative;
+            display: block;
+            height: 100%;
+            width: 100%;
+
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: contain;
+            }
+        }
+
+        @media (min-width: $breakpoint-tablet-medium) {
+            padding: 0.25rem 0.75rem;
+            height: 100%;
+        }
+    }
+
+    .cart-indicator {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        right: calc(var(--block-spacer-small) * -1);
+        top: calc(var(--block-spacer-small) * -1);
+        height: 2rem;
+        width: 2rem;
+        aspect-ratio: 1 / 1;
+
+        background: var(--accent-secondary);
+        color: var(--accent-secondary-text);
+        border-radius: 100%;
+
+        pointer-events: none;
+
+        @media (min-width: $breakpoint-tablet-medium) {
+            right: calc(var(--block-spacer-small) * -0.5);
+            top: calc(var(--block-spacer-small) * -0.5);
+        }
+    }
+
+    @media (min-width: $breakpoint-tablet-medium) {
+        grid-template-columns: 10rem 1fr auto;
+        gap: var(--block-spacer-large);
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: calc(var(--block-spacer) * 2);
+
+        .SearchBar {
+            max-width: 24rem;
+
+            input {
+                height: 100%;
+                border-radius: var(--block-border-radius);
+                color: var(--color-dark);
+            }
+        }
+
+        .action {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
+            border-radius: var(--block-border-radius);
+            color: var(--accent-secondary-text);
+            cursor: pointer;
+            transition: 150ms all ease-in-out;
+
+            font-weight: 600;
+            line-height: 1.25rem;
+            font-size: 1.25rem;
+
+            svg {
+                font-size: 2.5rem;
+            }
+
+            &:empty {
+                display: none;
+            }
+
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: var(--accent-primary);
+                }
+            }
+
+            &.active {
+                padding: 0 var(--block-padding);
+                color: var(--accent-secondary-light);
+                background: var(--accent-primary);
+
+                @media (hover: hover) and (pointer: fine) {
+                    &:hover {
+                        background: var(--accent-secondary);
+                        color: var(--accent-secondary-text);
+                    }
+                }
+            }
+        }
+    }
+}

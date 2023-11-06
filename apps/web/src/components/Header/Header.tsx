@@ -1,329 +1,16 @@
-'use client';
+import { FiSearch, FiShoppingBag } from 'react-icons/fi';
 
-import { useEffect, useState } from 'react';
-import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
-
-import { Input } from '@/components/Input';
 import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
-import Link from '@/components/link';
-import type { StoreModel } from '@/models/StoreModel';
-import { Pluralize } from '@/utils/pluralize';
-import { useCart } from '@shopify/hydrogen-react';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
-
-const Content = styled.div`
-    display: grid;
-    grid-template-columns: auto 11.25rem 1fr;
-    gap: var(--block-spacer);
-    max-width: var(--page-width);
-    width: 100%;
-    height: 100%;
-    padding: var(--block-padding) var(--block-spacer-large);
-    margin: 0 auto;
-    user-select: none;
-
-    @media (min-width: 1150px) {
-        grid-template-columns: 10rem 1fr auto;
-        gap: var(--block-spacer-large);
-    }
-`;
-
-const Logo = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 4.5rem;
-    padding: 0.5rem 0.25rem;
-    background: var(--accent-primary);
-    border-radius: var(--block-border-radius);
-    user-select: none;
-    outline: none;
-
-    a {
-        position: relative;
-        display: block;
-        height: 100%;
-        width: 100%;
-
-        img {
-            height: 100%;
-            width: 100%;
-            object-fit: contain;
-        }
-    }
-
-    @media (min-width: 1150px) {
-        padding: 0.25rem 0.75rem;
-        height: 100%;
-    }
-`;
-
-const Menu = styled.div`
-    z-index: 9999;
-    overflow: hidden;
-    position: absolute;
-    top: 6rem;
-    left: 0;
-    right: 0;
-    max-height: 0;
-    transition: 150ms ease-in-out;
-    border-color: var(--accent-secondary);
-    background: var(--accent-secondary-light);
-    color: var(--color-dark);
-    box-shadow: 0 1rem 1rem -1rem var(--color-block-shadow);
-    cursor: unset;
-
-    /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
-    &:hover {
-        max-height: 100vh;
-    }
-`;
-const MenuContent = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    gap: var(--block-spacer-large);
-    padding: 2rem 2rem 1rem 2rem;
-    max-width: 1465px;
-    margin: 0 auto;
-`;
-const MenuItemTitle = styled.div`
-    font-weight: 500;
-    line-height: 1.15;
-`;
-const MenuItemDescription = styled.div`
-    font-weight: 500;
-    font-size: 1.25rem;
-    text-transform: none;
-    opacity: 0.75;
-    margin-top: 0.5rem;
-`;
-const MenuItem = styled.div`
-    margin-bottom: var(--block-spacer);
-    transition: 150ms ease-in-out;
-
-    &.Active {
-        ${MenuItemTitle} {
-            font-weight: 700;
-        }
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            ${MenuItemTitle} {
-                font-weight: 700;
-            }
-        }
-    }
-`;
-
-const Navigation = styled.nav`
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: calc(var(--block-spacer) * 2);
-    margin-left: var(--block-spacer);
-    height: 100%;
-    font-weight: 500;
-    font-size: 1.75rem;
-    line-height: 1;
-    color: var(--color-dark);
-
-    @media (max-width: 1150px) {
-        display: none;
-    }
-
-    a {
-        cursor: pointer;
-
-        @media (hover: hover) and (pointer: fine) {
-            &:hover,
-            &:active,
-            &.Active {
-                color: var(--accent-primary);
-            }
-        }
-
-        &.Active {
-            color: var(--accent-primary);
-            text-decoration: underline;
-            text-decoration-style: solid;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);
-            font-weight: 700;
-        }
-    }
-`;
-const NavigationItem = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--block-spacer-small);
-    height: 100%;
-    cursor: pointer;
-
-    svg {
-        display: inline-block;
-        height: 2rem;
-        font-size: 1.25rem;
-        line-height: 1;
-        vertical-align: middle;
-    }
-
-    a {
-        text-transform: uppercase;
-
-        &.Top {
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            text-transform: uppercase;
-            gap: 0.25rem;
-            text-transform: unset;
-            white-space: nowrap;
-        }
-    }
-
-    /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
-    &:hover ${Menu} {
-        max-height: 100vh;
-        border-bottom: 0.05rem solid var(--accent-secondary);
-    }
-`;
-const NavigationViewAll = styled.div`
-    svg {
-        font-size: 2rem;
-        stroke-width: 0.24ex;
-    }
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: calc(var(--block-spacer) * 2);
-
-    .SearchBar {
-        max-width: 24rem;
-
-        ${Input} {
-            height: 100%;
-            border-radius: var(--block-border-radius);
-            color: var(--color-dark);
-        }
-    }
-`;
-
-const Action = styled.div<{ $active?: boolean }>`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-
-    border-radius: var(--block-border-radius);
-    color: var(--accent-secondary-text);
-    cursor: pointer;
-    transition: 150ms all ease-in-out;
-
-    font-weight: 600;
-    line-height: 1.25rem;
-    font-size: 1.25rem;
-
-    svg {
-        font-size: 2.5rem;
-    }
-
-    &:empty {
-        display: none;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            color: var(--accent-primary);
-        }
-    }
-
-    ${({ $active }) =>
-        $active &&
-        css`
-            padding: 0 var(--block-padding);
-            color: var(--accent-secondary-light);
-            background: var(--accent-primary);
-
-            @media (hover: hover) and (pointer: fine) {
-                &:hover {
-                    background: var(--accent-secondary);
-                    color: var(--accent-secondary-text);
-                }
-            }
-        `}
-`;
-
-const CartIndicator = styled.span`
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    right: calc(var(--block-spacer-small) * -1);
-    top: calc(var(--block-spacer-small) * -1);
-    height: 2rem;
-    width: 2rem;
-    aspect-ratio: 1 / 1;
-
-    background: var(--accent-secondary);
-    color: var(--accent-secondary-text);
-    border-radius: 100%;
-
-    pointer-events: none;
-
-    @media (min-width: 1150px) {
-        right: calc(var(--block-spacer-small) * -0.5);
-        top: calc(var(--block-spacer-small) * -0.5);
-    }
-`;
-
-const HamburgerMenu = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 5rem;
-    cursor: pointer;
-    background: var(--accent-primary);
-    border-radius: var(--block-border-radius);
-    color: var(--accent-primary-text);
-
-    svg.Icon {
-        font-size: 3rem;
-        line-height: 3rem;
-    }
-
-    @media (min-width: 1150px) {
-        display: none;
-    }
-`;
-
-const Header = styled.header<{ $scrolled?: boolean }>`
-    display: grid;
-    width: 100%;
-    background: var(--accent-secondary-light);
-    transition: 150ms ease-in-out background-color;
-    border-bottom: calc(var(--block-border-width) / 2) solid transparent;
-
-    ${({ $scrolled }) =>
-        $scrolled &&
-        css`
-            border-bottom-color: var(--accent-secondary);
-            box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
-        `}
-
-    @media (min-width: 1150px) {
-        height: calc(4.5rem + calc(var(--block-padding) * 2));
-    }
-`;
+import { HamburgerMenu } from '@/components/Header/hamburger-menu';
+import { HeaderContainer } from '@/components/Header/header-container';
+import { HeaderNavigation } from '@/components/Header/header-navigation';
+import Image from 'next/image';
+import Link from '@/components/link';
+import { Pluralize } from '@/utils/pluralize';
+import type { StoreModel } from '@/models/StoreModel';
+import styles from '@/components/Header/header.module.scss';
+import { useCart } from '@shopify/hydrogen-react';
 
 interface HeaderProps {
     store?: StoreModel;
@@ -333,135 +20,58 @@ interface HeaderProps {
 }
 const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, sidebarToggle, sidebarOpen }) => {
     const cart = useCart();
-    const route = usePathname();
-    const [searchOpen, setSearchOpen] = useState(false);
-    const [scrollTop, setScrollTop] = useState(0);
-
-    useEffect(() => {
-        if (searchOpen && route === '/search') setSearchOpen(false);
-    }, [route]);
-
-    useEffect(() => {
-        const onScroll = (event: any) => {
-            if (!event?.target?.documentElement?.scrollTo) return;
-
-            setScrollTop(event?.target?.documentElement?.scrollTop);
-        };
-        window.addEventListener('scroll', onScroll);
-
-        return () => window.removeEventListener('scroll', onScroll);
-    }, [scrollTop]);
 
     return (
-        <Header $scrolled={scrollTop >= 40}>
-            <Content>
-                <HamburgerMenu onClick={() => sidebarToggle?.()}>
-                    {sidebarOpen ? <FiX className="Icon" /> : <FiAlignLeft className="Icon" />}
-                </HamburgerMenu>
+        <HeaderContainer>
+            <HamburgerMenu onClick={() => sidebarToggle?.()} open={sidebarOpen} />
 
-                <Logo>
-                    <Link href={'/'} prefetch={false}>
-                        <Image
-                            src={store?.logo?.src!}
-                            width={250}
-                            height={150}
-                            alt={`Store logo`}
-                            sizes="(max-width: 1150px) 75px, 200px"
-                        />
+            <div className={styles.logo}>
+                <Link href={'/'} prefetch={false}>
+                    <Image
+                        src={store?.logo?.src!}
+                        width={250}
+                        height={150}
+                        alt={`Store logo`}
+                        priority={true}
+                        sizes="(max-width: 1150px) 75px, 200px"
+                    />
+                </Link>
+            </div>
+
+            <HeaderNavigation menu={navigation} />
+
+            <div className={styles.actions}>
+                <div className={styles.action}>
+                    <Link
+                        href={'/search/'}
+                        className="Wrapper"
+                        title="Search for products, collections and pages across the whole store"
+                        prefetch={false}
+                    >
+                        <FiSearch />
                     </Link>
-                </Logo>
-
-                <Navigation>
-                    {navigation?.map?.((item: any, index: number) => {
-                        return (
-                            <NavigationItem key={item.handle + `${index}`}>
-                                <Link
-                                    href={`/${item?.handle || ''}`}
-                                    title={item.title}
-                                    className={`Top ${
-                                        (route === '/' && item?.handle === null) || `/${item?.handle}` === route
-                                            ? 'Active'
-                                            : ''
-                                    }`}
-                                    prefetch={false}
-                                >
-                                    {item?.title || null}
-                                    {(item?.children?.length > 0 && (
-                                        <NavigationViewAll>
-                                            <FiChevronDown />
-                                        </NavigationViewAll>
-                                    )) ||
-                                        null}
-                                </Link>
-                                {(item.children.length && (
-                                    <Menu>
-                                        <MenuContent>
-                                            {item.children.map((item: any, index: number) => (
-                                                <MenuItem
-                                                    key={item.handle + `${index}`}
-                                                    className={
-                                                        (route === '/' && item?.handle === null) ||
-                                                        `/${item?.handle}` === route
-                                                            ? 'Active'
-                                                            : ''
-                                                    }
-                                                >
-                                                    <Link
-                                                        href={`/${item?.handle || ''}`}
-                                                        title={item.title}
-                                                        prefetch={false}
-                                                    >
-                                                        <MenuItemTitle>{item.title}</MenuItemTitle>
-                                                        {item.description && (
-                                                            <MenuItemDescription>
-                                                                {item.description}
-                                                            </MenuItemDescription>
-                                                        )}
-                                                    </Link>
-                                                </MenuItem>
-                                            ))}
-                                        </MenuContent>
-                                    </Menu>
-                                )) ||
-                                    null}
-                            </NavigationItem>
-                        );
-                    })}
-                </Navigation>
-
-                <Actions>
-                    <Action>
-                        <Link
-                            href={'/search/'}
-                            className="Wrapper"
-                            title="Search for products, collections and pages across the whole store"
-                            prefetch={false}
-                        >
-                            <FiSearch />
-                        </Link>
-                    </Action>
-                    <Action>
-                        <Link title="Language and Region settings" href="/countries/" prefetch={false}>
-                            <CurrentLocaleFlag />
-                        </Link>
-                    </Action>
-                    <Action $active={(cart?.totalQuantity || 0) > 0}>
-                        <Link
-                            href={'/cart/'}
-                            className="Wrapper"
-                            title={`There are ${cart?.totalQuantity || 0} ${Pluralize({
-                                count: cart?.totalQuantity || 0,
-                                noun: 'item'
-                            })} in your cart`}
-                            prefetch={false}
-                        >
-                            {!!cart?.totalQuantity && <CartIndicator>{cart?.totalQuantity}</CartIndicator>}
-                            <FiShoppingBag />
-                        </Link>
-                    </Action>
-                </Actions>
-            </Content>
-        </Header>
+                </div>
+                <div className={styles.action}>
+                    <Link title="Language and Region settings" href="/countries/" prefetch={false}>
+                        <CurrentLocaleFlag />
+                    </Link>
+                </div>
+                <div className={`${styles.action} ${((cart?.totalQuantity || 0) > 0 && styles.active) || ''}`}>
+                    <Link
+                        href={'/cart/'}
+                        className="Wrapper"
+                        title={`There are ${cart?.totalQuantity || 0} ${Pluralize({
+                            count: cart?.totalQuantity || 0,
+                            noun: 'item'
+                        })} in your cart`}
+                        prefetch={false}
+                    >
+                        {!!cart?.totalQuantity && <div className={styles['cart-indicator']}>{cart?.totalQuantity}</div>}
+                        <FiShoppingBag />
+                    </Link>
+                </div>
+            </div>
+        </HeaderContainer>
     );
 };
 

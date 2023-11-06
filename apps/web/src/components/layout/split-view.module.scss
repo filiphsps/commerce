@@ -8,7 +8,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-self: start;
+    justify-self: flex-start;
     gap: calc(var(--block-spacer-large) * 2);
     width: 100%;
     max-width: var(--max-width);

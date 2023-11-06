@@ -1,0 +1,22 @@
+@import '@/style/variables.scss';
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 5rem;
+    cursor: pointer;
+    background: var(--accent-primary);
+    border-radius: var(--block-border-radius);
+    color: var(--accent-primary-text);
+
+    svg.icon {
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+
+    @media (min-width: $breakpoint-tablet-medium) {
+        display: none;
+    }
+}

@@ -48,6 +48,7 @@ const DetailsTitle = styled.div`
     transition: 150ms ease-in-out;
     word-wrap: break-word;
     hyphens: auto;
+    -webkit-hyphens: auto;
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
