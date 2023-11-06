@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import ContentComponent from '@/components/Content';
 import type { FunctionComponent } from 'react';
-import Image from 'next/image';
+import { PrismicNextImage } from '@prismicio/next';
 
 const Container = styled.div<{ $layout?: 'left' | 'right' }>`
     display: grid;
@@ -120,7 +120,12 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
         <Container style={style} className="TextBlock Block" $layout={layout}>
             <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
-                    <Image src={image?.url} alt={image?.alt || 'Decorative image to content'} fill />
+                    <PrismicNextImage
+                        field={image as any}
+                        imgixParams={{ q: 65 }}
+                        loader={undefined}
+                        sizes="(max-width: 1150px) 75px, 200px"
+                    />
                 </ImageWrapper>
             </ImageContainer>
             <Content>{body}</Content>
