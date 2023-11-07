@@ -16,7 +16,9 @@
         "add-to-cart": "Lägg till",
         "added-to-cart": "Tillagd!",
         "cart-not-ready": "En sekund...",
-        "out-of-stock": "Slutsåld"
+        "out-of-stock": "Slutsåld",
+        "too-low-quantity": "För lågt antal",
+        "quantity": "Antal"
     },
     "header": {
         "language-and-region-settings": "Språk- och regioninställningar"

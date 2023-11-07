@@ -16,7 +16,9 @@
         "add-to-cart": "Add to Cart",
         "added-to-cart": "Added!",
         "cart-not-ready": "Hang on...",
-        "out-of-stock": "Out of Stock"
+        "out-of-stock": "Out of Stock",
+        "quantity-too-low": "Too Low Quantity",
+        "quantity": "Quantity"
     },
     "header": {
         "language-and-region-settings": "Language and Region settings"

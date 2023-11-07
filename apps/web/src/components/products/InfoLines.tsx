@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 
-import { FiPackage } from 'react-icons/fi';
-import type { FunctionComponent } from 'react';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { FunctionComponent } from 'react';
+import { FiPackage } from 'react-icons/fi';
 
 type Status = 'good' | 'warning' | 'error';
 
@@ -11,8 +11,7 @@ const Container = styled.section`
     justify-content: center;
     align-items: center;
     padding: 0;
-    margin-top: calc(var(--block-padding-small) * -1);
-    margin-bottom: var(--block-padding-large);
+    margin-bottom: var(--block-padding);
 
     &:empty {
         display: none;
@@ -26,17 +25,13 @@ const Entry = styled.div<{ $status: Status }>`
     width: 100%;
     padding: 0 var(--block-padding-small);
     gap: 0.25rem;
-    height: 2rem;
-    //background: var(--color-block);
-    border-radius: 6rem;
     user-select: none;
 
     ${({ $status }) => {
         switch ($status) {
             case 'good':
                 return css`
-                    color: var(--color-success-light);
-                    //background: var(--color-block-pastel-lime-light);
+                    color: var(--color-success-dark);
                 `;
             case 'warning':
                 return '';

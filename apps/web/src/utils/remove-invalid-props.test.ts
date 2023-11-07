@@ -1,4 +1,5 @@
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
+import { describe, expect, it } from 'vitest';
 
 describe('Utils', () => {
     describe('RemoveInvalidProps', () => {

@@ -40,7 +40,9 @@ export default function ProvidersRegistry({
                         <ApiProvider apiConfig={apiConfig}>
                             <HeaderProvider>
                                 {children}
-                                <PrismicPreview repositoryName={Prismic.repositoryName} />
+                                {BuildConfig.prismic.toolbar ? (
+                                    <PrismicPreview repositoryName={Prismic.repositoryName} />
+                                ) : null}
                             </HeaderProvider>
                         </ApiProvider>
                     </CartProvider>

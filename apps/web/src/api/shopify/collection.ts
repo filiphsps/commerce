@@ -1,5 +1,5 @@
 import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/storefront-api-types';
-import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 
 import type { AbstractApi } from '@/utils/abstract-api';
 import { gql } from 'graphql-tag';
@@ -74,20 +74,6 @@ export const CollectionApi = async ({
                 );
             if (!data?.collectionByHandle)
                 return reject(new Error(`404: "Collection" with handle "${handle}" cannot be found`));
-
-            data.collectionByHandle.products.edges = await Promise.all(
-                data.collectionByHandle.products.edges.map(async (edge: any) => {
-                    if (edge.node.visuals?.value) {
-                        edge.node.visualsData = await ProductVisualsApi({
-                            client,
-                            id: edge.node.visuals.value
-                        });
-                        return edge;
-                    }
-
-                    return edge;
-                })
-            );
 
             // TODO: Maybe turn into a generic utility function to handle every case like this.
             data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml

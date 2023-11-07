@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import Image from 'next/image';
+import type { HTMLProps } from 'react';
 import styled from 'styled-components';
 
 const Previews = styled.div`
@@ -107,6 +108,8 @@ const Container = styled.div`
         height: calc(30vh - var(--calculated));
         max-height: calc(100% - var(--calculated));
         padding: var(--padding);
+        mix-blend-mode: multiply;
+        filter: brightness(110%);
 
         @media (min-width: 950px) {
             height: unset;
@@ -121,25 +124,26 @@ const Container = styled.div`
     }
 `;
 
-interface GalleryProps {
-    selected?: string | null;
+type GalleryProps = {
+    initialImageId?: string | null;
     images: ImageConnection | null;
-}
-const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex, images }) => {
-    const [selected, setSelected] = useState(defaultImageIndex || images?.edges[0].node.id);
+} & HTMLProps<HTMLDivElement>;
+const Gallery = (props: GalleryProps) => {
+    const { initialImageId, images } = props;
+    const [selected, setSelected] = useState(initialImageId || images?.edges[0].node.id);
 
     useEffect(() => {
-        if (!defaultImageIndex) return;
-        else if (defaultImageIndex == selected) return;
+        if (!initialImageId) return;
+        else if (initialImageId == selected) return;
 
-        setSelected(defaultImageIndex);
-    }, [defaultImageIndex]);
+        setSelected(initialImageId);
+    }, [initialImageId]);
 
     if (!images) return null;
 
     const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
-        <Container>
+        <Container {...RemoveInvalidProps(props)}>
             <Primary>
                 <ImageWrapper>
                     <Image
@@ -148,6 +152,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                         title={image.altText || undefined}
                         width={image.width || 0}
                         height={image.height || 0}
+                        sizes="(max-width: 950px) 125px, 950px"
                         priority
                     />
                 </ImageWrapper>
@@ -167,7 +172,8 @@ const Gallery: FunctionComponent<GalleryProps> = ({ selected: defaultImageIndex,
                                     title={image.altText || undefined}
                                     width={125}
                                     height={125}
-                                    sizes="(max-width: 950px) 75px, 250px"
+                                    sizes="(max-width: 950px) 50px, 250px"
+                                    priority
                                 />
                             </ImageWrapper>
                         </Preview>

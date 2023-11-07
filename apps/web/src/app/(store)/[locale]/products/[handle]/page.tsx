@@ -1,5 +1,5 @@
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale, useTranslation } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
@@ -8,13 +8,16 @@ import Content from '@/components/Content';
 import Gallery from '@/components/Gallery';
 import Page from '@/components/Page';
 import SplitView from '@/components/layout/split-view';
+import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
+import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
+import { TitleToHandle } from '@/utils/title-to-handle';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -50,6 +53,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
+    const { t } = useTranslation('common', i18n);
 
     if (!isValidHandle(handle)) return notFound();
 
@@ -61,24 +65,31 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-    const fixDescriptionButShouldBeAProperParserInTheFuture = (description?: string): string => {
-        if (!description) return '';
+    const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
+        if (!description) return null;
         let result = description;
 
         const titleTags = new RegExp('(?<=<h1>)(.+?)(?=</h1>)').exec(description)?.[0];
         if (titleTags && result.startsWith(`<h1>${titleTags}</h1>\n`))
             result = result.replace(`<h1>${titleTags}</h1>\n`, '');
+        else return null;
 
         return result;
     };
 
     return (
-        <Page>
+        <Page className={styles.container}>
             <SplitView
                 primaryDesktopWidth={0.42}
                 primaryClassName={styles.headingPrimary}
                 asideDesktopWidth={0.58}
-                aside={<Gallery selected={product.images.edges?.[0].node.id} images={product.images} />}
+                aside={
+                    <Gallery
+                        initialImageId={product.images.edges?.[0].node.id}
+                        images={product.images}
+                        className={styles.gallery}
+                    />
+                }
                 padding
             >
                 <div className={styles.content}>
@@ -95,14 +106,30 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                         style={{ gap: '0' }}
                         reverse
                     >
-                        <Heading title={product.title} subtitle={product.vendor} reverse bold />
+                        <Heading
+                            title={product.title}
+                            subtitle={
+                                <Link href={`/collections/${TitleToHandle(product.vendor)}`}>{product.vendor}</Link>
+                            }
+                            reverse
+                            bold
+                        />
                     </SplitView>
+
+                    <ProductActionsContainer
+                        locale={locale}
+                        i18n={i18n}
+                        className={styles.actions}
+                        product={product as any}
+                    />
 
                     <Content
                         dangerouslySetInnerHTML={{
-                            __html: fixDescriptionButShouldBeAProperParserInTheFuture(product.descriptionHtml)
+                            __html: todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || ''
                         }}
                     />
+
+                    <div className={styles.prismicDivider} />
 
                     {page?.slices && page?.slices.length >= 0 && (
                         <PrismicPage
@@ -120,3 +147,5 @@ export default async function ProductPage({ params }: { params: ProductPageParam
         </Page>
     );
 }
+
+export const revalidate = 120;

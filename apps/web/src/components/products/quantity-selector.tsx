@@ -1,0 +1,99 @@
+'use client';
+
+import styles from '@/components/products/quantity-selector.module.scss';
+import { Locale, LocaleDictionary, useTranslation } from '@/utils/locale';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
+import { useCallback, useEffect, useState, type HTMLProps } from 'react';
+import { TbMinus, TbPlus } from 'react-icons/tb';
+
+export const QuantityInputFilter = (value?: string, prev?: string): string => {
+    // FRO-58: Only allow numbers
+    if (value && (/^[^\d()]*$/.test(value) || value.includes('.'))) return prev ?? '';
+
+    if (!value || value === '') {
+        return '';
+    }
+
+    let quantity = Number.parseInt(value) || 0;
+    if (quantity < 0) {
+        quantity = 0;
+    } else if (quantity > 999) {
+        quantity = 999;
+    }
+
+    return quantity.toString(10);
+};
+
+export type QuantitySelectorProps = {
+    locale: Locale;
+    i18n: LocaleDictionary;
+    update: (quantity: number) => void;
+    value: number;
+} & HTMLProps<HTMLDivElement>;
+
+export const QuantitySelector = (props: QuantitySelectorProps) => {
+    const { className, i18n, value: quantity, update } = props;
+    const { t } = useTranslation('common', i18n);
+    const [quantityValue, setQuantityValue] = useState('1');
+
+    const updateQuantity = useCallback(
+        (value: string | number) => {
+            if (typeof value === 'string' && value === '') return;
+            else if (value === quantity) return;
+            update(typeof value === 'string' ? Number.parseInt(value) : value);
+        },
+        [update, quantity]
+    );
+
+    useEffect(() => {
+        if (quantity.toString() === quantityValue) return;
+        setQuantityValue(quantity.toString());
+    }, [quantity]);
+
+    return (
+        <section
+            {...RemoveInvalidProps({ ...props, children: undefined })}
+            className={`${styles.container} ${className || ''}`}
+        >
+            <button
+                type="button"
+                className={`${styles.button} ${styles.add}`}
+                disabled={quantity <= 1}
+                onClick={() => quantity > 1 && updateQuantity(quantity - 1)}
+            >
+                <TbMinus />
+            </button>
+            <input
+                type="number"
+                min={1}
+                max={999}
+                step={1}
+                pattern="[0-9]"
+                className={styles.input}
+                value={quantityValue}
+                placeholder={t('quantity')}
+                onBlur={(_) => {
+                    if (!quantityValue) updateQuantity('1');
+                    updateQuantity(quantityValue);
+                }}
+                onKeyDown={({ key, preventDefault }) => {
+                    if (key === 'Enter') return updateQuantity(quantityValue);
+                    else if (['.', ',', '-', '+'].includes(key)) return preventDefault();
+                }}
+                onChange={(e) => {
+                    const value = QuantityInputFilter(e?.target?.value, quantityValue);
+                    if (value == quantityValue) return;
+
+                    setQuantityValue(value);
+                }}
+            />
+            <button
+                type="button"
+                className={`${styles.button} ${styles.remove}`}
+                onClick={() => updateQuantity(quantity + 1)}
+            >
+                <TbPlus />
+            </button>
+        </section>
+    );
+};

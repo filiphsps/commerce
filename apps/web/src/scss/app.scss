@@ -42,9 +42,9 @@ body {
 
 :root {
     --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
-    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 75%, var(--color-bright));
+    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright));
 
-    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 60%, var(--color-dark));
+    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 75%, var(--color-dark));
     --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 40%, var(--color-bright));
 
     --accent-primary-text: #ececec;
@@ -55,13 +55,17 @@ body {
 
     --color-sale: #b51200;
 
-    --color-success: #3b9e3b;
+    --color-success: #2dc653;
+    --color-success-dark: #25a244;
     --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
+    --color-success-text: color-mix(in srgb, var(--color-success-dark) 45%, var(--color-dark));
     --color-danger: #a53d3a;
 
     --color-lights-out: #051821;
 
     --color-block: #e6e6e6;
+    --color-block-dark: #bebebe;
+    --color-block-black: #7c7c7c;
     --color-block-shadow: rgba(0, 0, 0, 0.35);
 
     --color-gray: #989898;
@@ -81,7 +85,8 @@ body {
     --block-border-radius: 1.25rem;
     --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
     --block-border-radius-tiny: 0.65rem;
-    --block-border-width: 0.35rem;
+    --block-border-width: 0.3rem;
+    --block-border-width-small: 0.18rem;
 
     --block-padding: 1rem;
     --block-padding-small: 0.5rem;
@@ -91,8 +96,9 @@ body {
     --block-spacer-small: 0.75rem;
     --block-spacer-tiny: 0.5rem;
     --block-spacer-large: 1.5rem;
+    --block-spacer-huge: 2rem;
 
-    @media (max-width: 950px) {
+    /*@media (max-width: 950px) {
         --block-border-width: 0.35rem;
 
         --block-padding: 1rem;
@@ -102,7 +108,7 @@ body {
         --block-spacer: 0.75rem;
         --block-spacer-small: 0.5rem;
         --block-spacer-large: 1rem;
-    }
+    }*/
 }
 
 input[type='search']::-webkit-search-decoration,
