@@ -1,19 +1,18 @@
-import { BuildConfig } from '@/utils/build-config';
-import CartContent from './cart-content';
-import Heading from '@/components/typography/heading';
-import type { Metadata } from 'next';
-import { NextLocaleToLocale } from '@/utils/locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import PageContent from '@/components/PageContent';
-import { Prefetch } from '@/utils/prefetch';
-import PrismicPage from '@/components/prismic-page';
-import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
-import { asText } from '@prismicio/client';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PrismicPage from '@/components/prismic-page';
+import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Prefetch } from '@/utils/prefetch';
+import { asText } from '@prismicio/client';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import CartContent from './cart-content';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
@@ -82,25 +81,23 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
             <PageContent primary>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                <Suspense>
-                    <CartContent
-                        locale={locale}
-                        slices={
-                            page && (
-                                <PrismicPage
-                                    store={store}
-                                    locale={locale}
-                                    page={page}
-                                    prefetch={prefetch}
-                                    i18n={i18n}
-                                    handle={handle}
-                                    type={'custom_page'}
-                                />
-                            )
-                        }
-                        i18n={i18n}
-                    />
-                </Suspense>
+                <CartContent
+                    locale={locale}
+                    slices={
+                        page && (
+                            <PrismicPage
+                                store={store}
+                                locale={locale}
+                                page={page}
+                                prefetch={prefetch}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'custom_page'}
+                            />
+                        )
+                    }
+                    i18n={i18n}
+                />
             </PageContent>
         </Page>
     );

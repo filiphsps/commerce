@@ -6,6 +6,7 @@ import type { Client as PrismicClient } from '@prismicio/client';
 export type NavigationItem = {
     title: string;
     handle?: string;
+    description?: string;
     children: Array<{
         title: string;
         handle?: string;

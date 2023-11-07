@@ -1,0 +1,17 @@
+.container {
+    overscroll-behavior-x: none;
+}
+
+.header {
+    position: sticky;
+    z-index: 99999999;
+    top: -1px;
+}
+
+@media (max-width: 950px) {
+    .container.sidebar {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
+}

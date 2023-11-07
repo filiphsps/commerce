@@ -1,23 +1,23 @@
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 
-import { BuildConfig } from '@/utils/build-config';
-import Gallery from '@/components/Gallery';
-import Heading from '@/components/typography/heading';
-import type { Metadata } from 'next';
-import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import { Prefetch } from '@/utils/prefetch';
-import Pricing from '@/components/typography/pricing';
-import PrismicPage from '@/components/prismic-page';
-import SplitView from '@/components/layout/split-view';
-import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
+import { StoreApi } from '@/api/store';
+import Gallery from '@/components/Gallery';
+import Page from '@/components/Page';
+import SplitView from '@/components/layout/split-view';
+import PrismicPage from '@/components/prismic-page';
+import Heading from '@/components/typography/heading';
+import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
+import { Prefetch } from '@/utils/prefetch';
+import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import styles from './page.module.scss';
 
 export type ProductPageParams = { locale: string; handle: string };
@@ -85,7 +85,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 </SplitView>
 
                 <Suspense>
-                    {page?.slices && page?.slices.length <= 0 && (
+                    {page?.slices && page?.slices.length >= 0 && (
                         <PrismicPage
                             store={store}
                             locale={locale}

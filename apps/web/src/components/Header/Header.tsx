@@ -1,29 +1,33 @@
 import { FiSearch, FiShoppingBag } from 'react-icons/fi';
 
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
-import type { FunctionComponent } from 'react';
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
 import { HeaderNavigation } from '@/components/Header/header-navigation';
-import Image from 'next/image';
-import Link from '@/components/link';
-import { Pluralize } from '@/utils/pluralize';
-import type { StoreModel } from '@/models/StoreModel';
 import styles from '@/components/Header/header.module.scss';
-import { useCart } from '@shopify/hydrogen-react';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
+import Link from '@/components/link';
+import type { StoreModel } from '@/models/StoreModel';
+import type { Locale } from '@/utils/locale';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
 
 interface HeaderProps {
     store?: StoreModel;
     navigation?: any;
     sidebarToggle?: any;
     sidebarOpen?: boolean;
+    locale: Locale;
 }
-const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, sidebarToggle, sidebarOpen }) => {
-    const cart = useCart();
-
+const HeaderComponent: FunctionComponent<HeaderProps> = ({
+    store,
+    navigation,
+    /*sidebarToggle,*/ sidebarOpen,
+    locale
+}) => {
+    //onClick={() => sidebarToggle?.()}
     return (
         <HeaderContainer>
-            <HamburgerMenu onClick={() => sidebarToggle?.()} open={sidebarOpen} />
+            <HamburgerMenu open={sidebarOpen} />
 
             <div className={styles.logo}>
                 <Link href={'/'} prefetch={false}>
@@ -38,7 +42,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                 </Link>
             </div>
 
-            <HeaderNavigation menu={navigation} />
+            <HeaderNavigation menu={navigation} locale={locale} />
 
             <div className={styles.actions}>
                 <div className={styles.action}>
@@ -56,17 +60,8 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                         <CurrentLocaleFlag />
                     </Link>
                 </div>
-                <div className={`${styles.action} ${((cart?.totalQuantity || 0) > 0 && styles.active) || ''}`}>
-                    <Link
-                        href={'/cart/'}
-                        className="Wrapper"
-                        title={`There are ${cart?.totalQuantity || 0} ${Pluralize({
-                            count: cart?.totalQuantity || 0,
-                            noun: 'item'
-                        })} in your cart`}
-                        prefetch={false}
-                    >
-                        {!!cart?.totalQuantity && <div className={styles['cart-indicator']}>{cart?.totalQuantity}</div>}
+                <div className={`${styles.action} ${(0 > 0 && styles.active) || ''}`}>
+                    <Link href={'/cart/'} prefetch={false}>
                         <FiShoppingBag />
                     </Link>
                 </div>
