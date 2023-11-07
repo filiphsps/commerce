@@ -22,6 +22,11 @@
         .side {
             width: 100%;
             max-width: calc(calc(var(--max-width) * var(--desktop-width)) - calc(var(--block-spacer-large) * 2));
+
+            &.specific {
+                max-width: var(--desktop-width);
+                height: 100%;
+            }
         }
     }
 
@@ -37,10 +42,14 @@
                 var(--block-spacer-large);
         }
 
-        & > .side {
+        &.padding .side {
             margin: 0 var(--block-spacer);
 
             @media (min-width: $breakpoint-mobile) {
+                margin: 0;
+            }
+
+            &.specific {
                 margin: 0;
             }
         }

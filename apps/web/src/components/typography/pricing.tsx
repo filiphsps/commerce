@@ -1,9 +1,9 @@
 'use client';
 
-import type { HTMLProps } from 'react';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
+import type { HTMLProps } from 'react';
 import { styled } from 'styled-components';
 
 const Container = styled.section`
@@ -12,6 +12,11 @@ const Container = styled.section`
     justify-content: start;
     align-items: end;
     gap: var(--block-spacer-small);
+
+    @media (min-width: 920px) {
+        flex-direction: column-reverse;
+        gap: 0;
+    }
 `;
 const Span = styled.span``;
 const Price = styled.div`
