@@ -84,7 +84,7 @@
         "@slicemachine/adapter-next": "0.3.23",
         "@testing-library/jest-dom": "6.1.4",
         "@testing-library/react": "14.0.0",
-        "@types/accept-language-parser": "1.5.5",
+        "@types/accept-language-parser": "1.5.6",
         "@types/color": "3.0.5",
         "@types/convert-units": "2.3.8",
         "@types/node": "20.8.10",
