@@ -1,10 +1,9 @@
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 
-import type { AbstractApi } from './abstract-api';
 import { CollectionApi } from '@/api/shopify/collection';
-import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ProductVisuals } from '@/api/shopify/product';
 import { VendorsApi } from '@/api/shopify/vendor';
+import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
+import type { AbstractApi } from './abstract-api';
 
 const Prefetch = ({
     client,
@@ -41,7 +40,8 @@ const Prefetch = ({
                             collections[handle] = await CollectionApi({
                                 client,
                                 handle,
-                                limit: (slice?.primary as any)?.limit || 16
+                                limit:
+                                    (slice.variation !== 'full' && ((slice?.primary as any)?.limit || 16)) || undefined
                             });
                             if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
                                 collections[handle].products.edges = collections[handle].products.edges.slice(
@@ -52,9 +52,7 @@ const Prefetch = ({
                             // Only supply the used parameters
                             // TODO: This should be a utility function.
                             collections[handle].products.edges = (
-                                collections[handle].products.edges as Array<
-                                    ProductEdge & { node: { visuals: ProductVisuals } }
-                                >
+                                collections[handle].products.edges as Array<ProductEdge>
                             ).map(
                                 ({
                                     node: {
@@ -67,8 +65,7 @@ const Prefetch = ({
                                         tags,
                                         seo,
                                         variants,
-                                        images,
-                                        visuals
+                                        images
                                     }
                                 }) => ({
                                     node: {
@@ -109,8 +106,7 @@ const Prefetch = ({
                                                 })
                                             )
                                         },
-                                        images,
-                                        visuals
+                                        images
                                     }
                                 })
                             );

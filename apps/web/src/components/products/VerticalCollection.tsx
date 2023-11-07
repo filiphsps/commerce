@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { CollectionApi } from '@/api/shopify/collection';
 import type { StoreModel } from '@/models/StoreModel';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useApolloClient } from '@apollo/client';
 import { ProductProvider } from '@shopify/hydrogen-react';
@@ -95,15 +96,17 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
     return (
         <Container>
             <Content $short={(products.length || 0) < 5}>
-                {products.map(({ node: product }) => (
-                    <ProductProvider
-                        key={product?.id}
-                        data={product}
-                        initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
-                    >
-                        <ProductCard handle={product?.handle} store={store} locale={locale} i18n={i18n} />
-                    </ProductProvider>
-                ))}
+                {products.map(({ node: product }) => {
+                    return (
+                        <ProductProvider
+                            key={product?.id}
+                            data={product}
+                            initialVariantId={FirstAvailableVariant(product)?.id}
+                        >
+                            <ProductCard handle={product?.handle} store={store} locale={locale} i18n={i18n} />
+                        </ProductProvider>
+                    );
+                })}
             </Content>
         </Container>
     );

@@ -41,11 +41,9 @@ export default function PrismicPage({ store, locale, prefetch, i18n, page: pageD
         }
     );
 
-    if (!page) return null;
-
-    const children = useMemo(
-        () => <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n, locale }} />,
+    return useMemo(
+        () =>
+            page && <SliceZone slices={page.slices} components={slices} context={{ store, prefetch, i18n, locale }} />,
         [handle]
     );
-    return children;
 }

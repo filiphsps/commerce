@@ -1,5 +1,6 @@
 import { NextLocaleToLocale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { describe, expect, it } from 'vitest';
 
 describe('Utils', () => {
     describe('MerchantsCenterId', () => {

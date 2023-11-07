@@ -84,3 +84,5 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return notFound(); // FIXME: Return proper error.
     }
 }
+
+export const revalidate = 120;

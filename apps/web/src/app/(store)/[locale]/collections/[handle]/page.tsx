@@ -100,3 +100,5 @@ export default async function CollectionPage({ params }: { params: CollectionPag
         </Page>
     );
 }
+
+export const revalidate = 120;

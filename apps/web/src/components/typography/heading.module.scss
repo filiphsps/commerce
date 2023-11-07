@@ -1,12 +1,10 @@
 .title {
     font-size: 3.25rem;
-    line-height: 1;
+    line-height: 1.2;
     font-weight: 400;
-    margin-top: calc(calc(0.5rem - calc(var(--block-spacer-tiny) / 2)) * -1);
-    padding-bottom: 0.5rem;
 
     &.bold {
-        font-weight: 800;
+        font-weight: 700;
     }
 }
 .subtitle {

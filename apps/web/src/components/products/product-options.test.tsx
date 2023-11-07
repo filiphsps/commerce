@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { NextLocaleToLocale } from '@/utils/locale';
 import { ProductOptions } from '@/components/products/product-options';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { describe, expect, it, vi } from 'vitest';
 
 const options = [
     {
@@ -21,8 +22,14 @@ const selectedOptions = {
 
 // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
 // required functions to prevent `<ProductProvider>` error.
+const setSelectedOptions = vi.fn();
 vi.mock('@shopify/hydrogen-react', () => ({
-    useProduct: () => ({ options, selectedOptions }),
+    useProduct: () => ({
+        options,
+        selectedOptions,
+        setSelectedOptions,
+        isOptionInStock: vi.fn().mockReturnValue(true)
+    }),
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
         getPublicTokenHeaders: () => ({})
@@ -34,7 +41,7 @@ describe('Components', () => {
         const onOptionChange = vi.fn();
 
         it('renders all options and values', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} onOptionChange={onOptionChange} />);
+            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} />);
             options.forEach((option) => {
                 const optionTitle = screen.getByText(option.name);
                 expect(optionTitle).toBeInTheDocument();
@@ -46,17 +53,14 @@ describe('Components', () => {
             });
         });
 
-        it('calls onOptionChange when an option is clicked', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} onOptionChange={onOptionChange} />);
-            const firstOption = options[0];
-            const firstOptionValue = firstOption.values[0];
-            const firstOptionValueElement = screen.getByText(firstOptionValue);
-            fireEvent.click(firstOptionValueElement);
-            expect(onOptionChange).toHaveBeenCalledWith({ name: firstOption.name, value: firstOptionValue });
+        it('calls setSelectedOptions when an option is clicked', () => {
+            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} />);
+            fireEvent.click(screen.getByText('Green'));
+            expect(setSelectedOptions).toHaveBeenCalledWith({ Color: 'Green', Size: '200g' });
         });
 
         it('converts grams to ounces when locale is en-US', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-US')!} onOptionChange={onOptionChange} />);
+            render(<ProductOptions locale={NextLocaleToLocale('en-US')!} />);
             // We can't use sizeOptionValues[0] because it's in grams.
             const sizeOptionValueElement = screen.getByText('4oz');
 

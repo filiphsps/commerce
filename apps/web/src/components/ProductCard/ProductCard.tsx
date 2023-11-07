@@ -1,20 +1,21 @@
 'use client';
 
-import { FiMinus, FiPlus } from 'react-icons/fi';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import styled, { css } from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import styled, { css } from 'styled-components';
 
-import { Button } from '@/components/Button';
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
+import { Button } from '@/components/Button';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { TitleToHandle } from '@/utils/title-to-handle';
 import { useTranslation } from '@/utils/locale';
+import { TitleToHandle } from '@/utils/title-to-handle';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
+import { QuantityInputFilter } from '../products/quantity-selector';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -285,7 +286,7 @@ const QuantityValue = styled.input`
     text-align: center;
     outline: none;
     transition: 150ms all ease-in-out;
-    font-variant: tabular-nums;
+    font-variant: common-ligatures tabular-nums slashed-zero;
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button,
@@ -624,7 +625,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}
-                        onClick={() => setQuantityValue(`${quantity - 1 || 0}`)}
+                        onClick={() => quantity <= 0 && setQuantityValue(`${quantity - 1}`)}
                     >
                         <FiMinus />
                     </QuantityAction>
@@ -634,22 +635,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         min={1}
                         max={999}
                         step={1}
+                        pattern="[0-9]"
                         value={quantityValue}
                         placeholder="Quantity"
                         onBlur={(_) => {
                             if (!quantityValue) setQuantityValue('1');
                         }}
                         onChange={(e) => {
-                            const val = e?.target?.value;
-
-                            // FRO-58: Only allow numbers
-                            if (val && /[^0-9]/.test(val)) return;
-
-                            if (!val || val === '') {
-                                setQuantityValue('');
-                            }
-
-                            setQuantityValue((Number.parseInt(val) || 0).toString());
+                            setQuantityValue(QuantityInputFilter(e?.target?.value, quantityValue));
                         }}
                     />
                     <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>

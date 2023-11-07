@@ -1,6 +1,6 @@
-import ProductPage, { generateMetadata } from './page';
-import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import ProductPage, { generateMetadata } from './page';
 
 import type { ProductPageParams } from './page';
 
@@ -27,6 +27,30 @@ describe('Pages', () => {
             }
         })
     }));
+
+    // Mock `@shopify/hydrogen-react`.
+    vi.mock('@shopify/hydrogen-react', async () => {
+        const module: any = await vi.importActual('@shopify/hydrogen-react');
+
+        return {
+            ...module,
+            useProduct: vi.fn().mockReturnValue({
+                selectedVariant: {
+                    availableForSale: true
+                },
+                variants: {
+                    edges: [
+                        {
+                            availableForSale: true
+                        }
+                    ]
+                }
+            }),
+            useCart: vi.fn().mockReturnValue({
+                status: 'uninitialized'
+            })
+        };
+    });
 
     describe('ProductPage', () => {
         const { product } = vi.hoisted(() => ({
@@ -55,7 +79,8 @@ describe('Pages', () => {
                                 compareAtPrice: {
                                     amount: '15.00',
                                     currencyCode: 'USD'
-                                }
+                                },
+                                selectedOptions: []
                             }
                         }
                     ]

@@ -1,0 +1,35 @@
+@import '@/style/variables.scss';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-large);
+    @media (min-width: $breakpoint-mobile) {
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: auto 1fr 1fr;
+        grid-template-rows: 1fr 5rem;
+        grid-template-areas: 'quantity-label option-labels option-labels' 'quantity options options';
+        gap: var(--block-spacer-large);
+
+        @media (min-width: $breakpoint-mobile) {
+            grid-template-columns: auto auto;
+            grid-template-rows: 1fr 4.25rem;
+            grid-template-areas: 'quantity-label option-labels' 'quantity options';
+            grid-template-columns: minmax(18rem, auto) 1fr;
+            gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
+        }
+    }
+}
+
+/* TODO: Generic component. */
+.label {
+    grid-area: label;
+    display: block;
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.5rem;
+}

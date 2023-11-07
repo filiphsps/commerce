@@ -36,7 +36,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         width={250}
                         height={150}
                         alt={`Store logo`}
-                        priority={true}
+                        priority
                         sizes="(max-width: 1150px) 75px, 200px"
                     />
                 </Link>

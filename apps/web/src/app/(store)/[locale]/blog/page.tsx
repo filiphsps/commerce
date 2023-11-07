@@ -98,3 +98,5 @@ export default async function SearchPage({ params }: { params: BlogPageParams })
         </Page>
     );
 }
+
+export const revalidate = 120;
