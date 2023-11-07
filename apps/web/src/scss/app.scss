@@ -98,8 +98,8 @@ body {
     --block-spacer-large: 1.5rem;
     --block-spacer-huge: 2rem;
 
-    /*@media (max-width: 950px) {
-        --block-border-width: 0.35rem;
+    @media (max-width: 950px) {
+        --block-border-width: 0.3rem;
 
         --block-padding: 1rem;
         --block-padding-small: 0.5rem;
@@ -108,7 +108,7 @@ body {
         --block-spacer: 0.75rem;
         --block-spacer-small: 0.5rem;
         --block-spacer-large: 1rem;
-    }*/
+    }
 }
 
 input[type='search']::-webkit-search-decoration,
