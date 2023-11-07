@@ -2,18 +2,18 @@
 
 import * as Prismic from '@/prismic';
 
-import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { createClient, linkResolver } from '@/prismic';
+import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
-import type { ApiConfig } from '@/api/client';
-import ApiProvider from './api-provider';
-import { BuildConfig } from '@/utils/build-config';
 import { CartFragment } from '@/api/cart';
-import { HeaderProvider } from './Header/header-provider';
+import type { ApiConfig } from '@/api/client';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { PrismicPreview } from '@prismicio/next';
 import { PrismicProvider } from '@prismicio/react';
 import type { ReactNode } from 'react';
+import { HeaderProvider } from './Header/header-provider';
+import ApiProvider from './api-provider';
 import StyledComponentsRegistry from './styled-components-registry';
 
 export default function ProvidersRegistry({
@@ -38,11 +38,13 @@ export default function ProvidersRegistry({
                 >
                     <CartProvider cartFragment={CartFragment}>
                         <ApiProvider apiConfig={apiConfig}>
-                            <HeaderProvider>{children}</HeaderProvider>
+                            <HeaderProvider>
+                                {children}
+                                <PrismicPreview repositoryName={Prismic.repositoryName} />
+                            </HeaderProvider>
                         </ApiProvider>
                     </CartProvider>
                 </ShopifyProvider>
-                <PrismicPreview repositoryName={Prismic.repositoryName} />
             </PrismicProvider>
         </StyledComponentsRegistry>
     );
