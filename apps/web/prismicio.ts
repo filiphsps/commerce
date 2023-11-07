@@ -1,11 +1,11 @@
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
 import { BuildConfig } from '@/utils/build-config';
-import type { CreateClientConfig } from '@prismicio/next';
 import type { Locale } from '@/utils/locale';
 import { NextLocaleToLocale } from '@/utils/locale';
-import { enableAutoPreviews } from '@prismicio/next';
 import { createClient as prismicCreateClient } from '@prismicio/client';
+import type { CreateClientConfig } from '@prismicio/next';
+import { enableAutoPreviews } from '@prismicio/next';
 
 /**
  * The project's Prismic repository name.
@@ -74,10 +74,10 @@ export const createClient = (config: CreateClientConfig & { locale?: Locale } = 
     const client = prismicCreateClient(repositoryName, {
         routes,
         accessToken: accessToken || undefined,
-        fetchOptions:
-            process.env.NODE_ENV === 'production'
-                ? { next: { tags: ['prismic'] }, cache: 'force-cache' }
-                : { next: { revalidate: 5 } },
+        fetchOptions: {
+            cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'no-store',
+            next: { tags: ['prismic'] }
+        },
         defaultParams: {
             lang: config.locale?.locale
         },
