@@ -4,6 +4,7 @@ import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
+import Content from '@/components/Content';
 import Gallery from '@/components/Gallery';
 import Page from '@/components/Page';
 import SplitView from '@/components/layout/split-view';
@@ -59,10 +60,22 @@ export default async function ProductPage({ params }: { params: ProductPageParam
     const { page } = await PageApi({ locale, handle, type: 'product_page' });
     const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
+    // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
+    const fixDescriptionButShouldBeAProperParserInTheFuture = (description?: string): string => {
+        if (!description) return '';
+        let result = description;
+
+        const titleTags = new RegExp('(?<=<h1>)(.+?)(?=</h1>)').exec(description)?.[0];
+        if (titleTags && result.startsWith(`<h1>${titleTags}</h1>\n`))
+            result = result.replace(`<h1>${titleTags}</h1>\n`, '');
+
+        return result;
+    };
+
     return (
         <Page>
             <SplitView
-                primaryDesktopWidth={0.52}
+                primaryDesktopWidth={0.42}
                 primaryClassName={styles.headingPrimary}
                 asideDesktopWidth={0.58}
                 aside={<Gallery selected={product.images.edges?.[0].node.id} images={product.images} />}
@@ -70,8 +83,8 @@ export default async function ProductPage({ params }: { params: ProductPageParam
             >
                 <div className={styles.content}>
                     <SplitView
-                        primaryDesktopWidth={0.8}
-                        asideDesktopWidth={0.2}
+                        primaryDesktopWidth={'100%'}
+                        asideDesktopWidth={'14rem'}
                         asideClassName={styles.headingAside}
                         aside={
                             <Pricing
@@ -79,11 +92,17 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                                 compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
                             />
                         }
-                        style={{}}
+                        style={{ gap: '0' }}
                         reverse
                     >
                         <Heading title={product.title} subtitle={product.vendor} reverse bold />
                     </SplitView>
+
+                    <Content
+                        dangerouslySetInnerHTML={{
+                            __html: fixDescriptionButShouldBeAProperParserInTheFuture(product.descriptionHtml)
+                        }}
+                    />
 
                     {page?.slices && page?.slices.length >= 0 && (
                         <PrismicPage

@@ -1,8 +1,9 @@
 .title {
     font-size: 3.25rem;
-    line-height: normal;
+    line-height: 1;
     font-weight: 400;
-    margin-top: -0.5rem;
+    margin-top: calc(calc(0.5rem - calc(var(--block-spacer-tiny) / 2)) * -1);
+    padding-bottom: 0.5rem;
 
     &.bold {
         font-weight: 800;
