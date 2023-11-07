@@ -2,22 +2,23 @@ import 'destyle.css';
 // Global style
 import '@/style/app.scss';
 
+import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 
-import Breadcrumbs from '@/components/informational/breadcrumbs';
-import { BuildConfig } from '@/utils/build-config';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
-import { Lexend_Deca } from 'next/font/google';
 import { NavigationApi } from '@/api/navigation';
+import { StoreApi } from '@/api/store';
+import Header from '@/components/Header';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import ProvidersRegistry from '@/components/providers-registry';
+import { BuildConfig } from '@/utils/build-config';
+import { Lexend_Deca } from 'next/font/google';
 import type { ReactNode } from 'react';
-import { StoreApi } from '@/api/store';
 
 const font = Lexend_Deca({
     weight: 'variable',
@@ -93,6 +94,8 @@ export default async function RootLayout(props: { children: ReactNode; params: {
     const navigation = await NavigationApi({ locale });
     const header = await HeaderApi({ locale });
     const footer = await FooterApi({ locale });
+
+    const headerComponent = <Header store={store} navigation={navigation} locale={locale} />;
 
     return (
         <html
@@ -171,6 +174,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                         locale={locale}
                         pagePropsAnalyticsData={{}}
                         data={{ navigation, header, footer }}
+                        header={headerComponent}
                     >
                         {children}
 

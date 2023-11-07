@@ -22,18 +22,9 @@
         @media (hover: hover) and (pointer: fine) {
             &:hover,
             &:active,
-            &.Active {
+            &.active {
                 color: var(--accent-primary);
             }
-        }
-
-        &.active {
-            color: var(--accent-primary);
-            text-decoration: underline;
-            text-decoration-style: solid;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);
-            font-weight: 700;
         }
     }
 
@@ -125,4 +116,13 @@
             border-bottom: 0.05rem solid var(--accent-secondary);
         }
     }
+}
+
+.active {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 0.2rem;
+    text-underline-offset: var(--block-border-width);
+    font-weight: 700;
 }

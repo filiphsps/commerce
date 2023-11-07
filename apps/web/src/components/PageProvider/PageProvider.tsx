@@ -1,26 +1,21 @@
 'use client';
 
-import { BuildConfig } from '@/utils/build-config';
-import type { FooterModel } from '@/models/FooterModel';
-import type { FunctionComponent } from 'react';
-import { HeaderApi } from '@/api/header';
-import type { HeaderModel } from '@/models/HeaderModel';
-import type { Locale } from '@/utils/locale';
-import { NavigationApi } from '@/api/navigation';
 import type { NavigationItem } from '@/api/navigation';
-import { NextLocaleToCurrency } from '@/utils/locale';
-import type { StoreModel } from '@/models/StoreModel';
-import { asHTML } from '@prismicio/client';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
-import { usePathname } from 'next/navigation';
-import { usePrismicClient } from '@prismicio/react';
-import useSWR from 'swr';
+import type { FooterModel } from '@/models/FooterModel';
+import type { HeaderModel } from '@/models/HeaderModel';
+import type { StoreModel } from '@/models/StoreModel';
+import { BuildConfig } from '@/utils/build-config';
+import type { Locale } from '@/utils/locale';
+import { NextLocaleToCurrency } from '@/utils/locale';
+import { asHTML } from '@prismicio/client';
+import dynamic from 'next/dynamic';
+import type { FunctionComponent, ReactNode } from 'react';
 import { useState } from 'react';
+import styled from 'styled-components';
+import styles from './page-provider.module.css';
 
-const Header = dynamic(() => import('@/components/Header'));
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
 const Footer = dynamic(() => import('@/components/Footer'));
 
@@ -62,25 +57,6 @@ const Announcements = styled.div`
     width: 100%;
 `;
 
-const Container = styled.div`
-    overscroll-behavior-x: none;
-
-    // TODO: Move this to a prop.
-    &.SideBar-Open {
-        @media (max-width: 950px) {
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-        }
-    }
-`;
-
-const HeaderContainer = styled.div`
-    position: sticky;
-    z-index: 99999999;
-    top: -1px;
-`;
-
 interface PageProviderProps {
     store: StoreModel;
     locale: Locale;
@@ -90,42 +66,15 @@ interface PageProviderProps {
         header?: HeaderModel;
         footer?: FooterModel;
     };
-    children: any;
+    children: ReactNode;
+    header: ReactNode;
     className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const { store, locale, pagePropsAnalyticsData, data } = props;
+    const { store, locale, pagePropsAnalyticsData, data, header: headerComponent } = props;
+    const { navigation, header } = data as any;
 
-    const route = usePathname();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
-    const { data: navigation } = useSWR(
-        [
-            'NavigationApi',
-            {
-                locale: locale,
-                client: usePrismicClient()
-            }
-        ],
-        ([, props]) => NavigationApi(props),
-        {
-            fallbackData: data?.navigation
-        }
-    );
-
-    const { data: header } = useSWR(
-        [
-            'HeaderApi',
-            {
-                locale: locale,
-                client: usePrismicClient()
-            }
-        ],
-        ([, props]) => HeaderApi(props),
-        {
-            fallbackData: data?.header
-        }
-    );
 
     const { country } = locale;
     useAnalytics({
@@ -144,15 +93,11 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         } as Locale
     });
 
-    const above = header?.announcements?.filter((item) => item.location === 'above') || [];
-    const bellow = header?.announcements?.filter((item) => item.location === 'bellow') || [];
-
-    // TODO: Handle this properly.
-    const isSliceSimulator = route === '/slice-simulator/';
-    if (isSliceSimulator) return <>{props.children}</>;
+    const above: any[] = header?.announcements?.filter((item: any) => item.location === 'above') || [];
+    const bellow: any[] = header?.announcements?.filter((item: any) => item.location === 'bellow') || [];
 
     return (
-        <Container className={`PageProvider ${props.className || ''} ${(sidebarOpen && 'SideBar-Open') || ''}`}>
+        <div className={`${styles.container} ${props.className || ''} ${(sidebarOpen && 'SideBar-Open') || ''}`}>
             {above.length > 0 && (
                 <Announcements>
                     {above.map((item, index) => (
@@ -166,19 +111,14 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     ))}
                 </Announcements>
             )}
-            <HeaderContainer>
-                <Header
-                    store={props?.store}
-                    navigation={navigation}
-                    sidebarToggle={() => setSidebarOpen(!sidebarOpen)}
-                    sidebarOpen={sidebarOpen}
-                />
+            <div className={styles.header}>
+                {headerComponent}
                 <HeaderNavigation
                     navigation={navigation}
                     open={sidebarOpen}
                     toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
                 />
-            </HeaderContainer>
+            </div>
             {bellow.length > 0 && (
                 <Announcements>
                     {bellow.map((item, index) => (
@@ -197,7 +137,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
 
             {props.children}
             <Footer store={props?.store} locale={locale} data={data?.footer} />
-        </Container>
+        </div>
     );
 };
 

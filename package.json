@@ -81,5 +81,8 @@
         "minimumChangeThreshold": 0,
         "showDetails": false,
         "buildOutputDirectory": "apps/web/.next"
+    },
+    "dependencies": {
+        "critters": "0.0.20"
     }
 }

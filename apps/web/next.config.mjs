@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,
-    reactStrictMode: false, // FIXME: this should be true.
+    reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
     productionBrowserSourceMaps: true,
@@ -17,7 +17,8 @@ const config = {
             'react-icons',
         ],
         scrollRestoration: true,
-        webVitalsAttribution: ['CLS', 'LCP', 'INP']
+        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        optimizeCss: true
     },
     images: {
         remotePatterns: [

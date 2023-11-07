@@ -1,7 +1,8 @@
-import type { FunctionComponent } from 'react';
+'use client';
 import Image from 'next/image';
-import styled from 'styled-components';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
     overflow: hidden;

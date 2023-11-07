@@ -1,7 +1,7 @@
 import type { HTMLProps, ReactNode } from 'react';
 
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import styles from '@/components/Header/header.module.scss';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 
 type HeaderContainerProps = {
     children?: ReactNode;

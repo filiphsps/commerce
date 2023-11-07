@@ -24,7 +24,7 @@ const Content = styled.div`
         padding: var(--block-padding-large) 0;
         padding-right: var(--block-spacer-large);
         margin: calc(var(--block-padding-large) * -1) 0;
-        column: none;
+        columns: none;
         display: grid;
         overflow-x: auto;
         grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
@@ -78,32 +78,32 @@ type CollectionBlockProps = {
 const CollectionBlock = ({ data: collection, limit, isHorizontal, store, locale, i18n }: CollectionBlockProps) => {
     const products = collection?.products?.edges || [];
 
-    const items = products.map((edge, index) => {
-        if (limit && index >= limit) return null;
-        if (!edge?.node) return null;
-
-        const product = edge.node;
-
-        return (
-            <ProductProvider
-                key={product?.id}
-                data={product}
-                initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
-            >
-                <ProductCard
-                    handle={product?.handle}
-                    store={store}
-                    locale={locale}
-                    className={(index === 0 && 'First') || ''}
-                    i18n={i18n}
-                />
-            </ProductProvider>
-        );
-    });
-
     return (
         <Container className={(isHorizontal && 'Horizontal') || 'Vertical'}>
-            <Content className={(isHorizontal && 'Horizontal') || 'Vertical'}>{items}</Content>
+            <Content className={(isHorizontal && 'Horizontal') || 'Vertical'}>
+                {products.map((edge, index) => {
+                    if (limit && index >= limit) return null;
+                    if (!edge?.node) return null;
+
+                    const product = edge.node;
+
+                    return (
+                        <ProductProvider
+                            key={product?.id}
+                            data={product}
+                            initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
+                        >
+                            <ProductCard
+                                handle={product?.handle}
+                                store={store}
+                                locale={locale}
+                                className={(index === 0 && 'First') || ''}
+                                i18n={i18n}
+                            />
+                        </ProductProvider>
+                    );
+                })}
+            </Content>
         </Container>
     );
 };

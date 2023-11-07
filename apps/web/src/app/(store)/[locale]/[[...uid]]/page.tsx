@@ -1,19 +1,19 @@
-import { BuildConfig } from '@/utils/build-config';
-import type { Metadata } from 'next';
-import { NextLocaleToLocale } from '@/utils/locale';
-import Page from '@/components/Page';
 import { PageApi } from '@/api/page';
-import PageContent from '@/components/PageContent';
-import { Prefetch } from '@/utils/prefetch';
-import PrismicPage from '@/components/prismic-page';
-import { RedirectToLocale } from '../util';
-import { StoreApi } from '@/api/store';
 import { StorefrontApiClient } from '@/api/shopify';
-import { Suspense } from 'react';
+import { StoreApi } from '@/api/store';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { Prefetch } from '@/utils/prefetch';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../not-found';
+import { RedirectToLocale } from '../util';
 
 export async function generateMetadata({
     params
@@ -59,7 +59,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
             <Page>
                 <PageContent primary>
                     <Suspense>
-                        {page && (
+                        {page?.slices && page?.slices.length >= 0 && (
                             <PrismicPage
                                 store={store}
                                 locale={locale}
