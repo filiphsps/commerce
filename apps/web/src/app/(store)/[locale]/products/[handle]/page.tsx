@@ -17,7 +17,6 @@ import { Prefetch } from '@/utils/prefetch';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import styles from './page.module.scss';
 
 export type ProductPageParams = { locale: string; handle: string };
@@ -69,22 +68,23 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                 aside={<Gallery selected={product.images.edges?.[0].node.id} images={product.images} />}
                 padding
             >
-                <SplitView
-                    primaryDesktopWidth={0.8}
-                    asideDesktopWidth={0.2}
-                    asideClassName={styles.headingAside}
-                    aside={
-                        <Pricing
-                            price={product.variants.edges[0].node.price}
-                            compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
-                        />
-                    }
-                    reverse
-                >
-                    <Heading title={product.title} subtitle={product.vendor} reverse bold />
-                </SplitView>
+                <div className={styles.content}>
+                    <SplitView
+                        primaryDesktopWidth={0.8}
+                        asideDesktopWidth={0.2}
+                        asideClassName={styles.headingAside}
+                        aside={
+                            <Pricing
+                                price={product.variants.edges[0].node.price}
+                                compareAtPrice={product.variants.edges[0].node.compareAtPrice as MoneyV2 | undefined}
+                            />
+                        }
+                        style={{}}
+                        reverse
+                    >
+                        <Heading title={product.title} subtitle={product.vendor} reverse bold />
+                    </SplitView>
 
-                <Suspense>
                     {page?.slices && page?.slices.length >= 0 && (
                         <PrismicPage
                             store={store}
@@ -96,7 +96,7 @@ export default async function ProductPage({ params }: { params: ProductPageParam
                             type={'product_page'}
                         />
                     )}
-                </Suspense>
+                </div>
             </SplitView>
         </Page>
     );
