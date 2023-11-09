@@ -33,7 +33,6 @@
     padding: var(--block-padding) var(--block-spacer-large);
     margin: 0 auto;
     user-select: none;
-    -webkit-user-select: none;
 
     .logo {
         display: flex;
@@ -44,7 +43,6 @@
         background: var(--accent-primary);
         border-radius: var(--block-border-radius);
         user-select: none;
-        -webkit-user-select: none;
         outline: none;
 
         a {

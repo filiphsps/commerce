@@ -11,8 +11,8 @@ coverage/
 next.lock/
 out/
 dist/
-public/sitemap*.xml*
-public/robots.txt*
+*/public/sitemap*.xml*
+*/public/robots.txt*
 
 # production
 build/

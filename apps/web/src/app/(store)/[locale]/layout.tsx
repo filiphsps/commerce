@@ -55,9 +55,9 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             template: `%s · ${store.name}`
         },
         icons: {
-            icon: store.favicon.src,
-            shortcut: store.favicon.src,
-            apple: store.favicon.src
+            icon: ['/favicon.png', '/favicon.ico', store.favicon.src], // TODO: store.favicon.src,
+            shortcut: ['/favicon.png', store.favicon.src],
+            apple: ['/favicon.png', store.favicon.src]
         },
         robots: {
             follow: true,
