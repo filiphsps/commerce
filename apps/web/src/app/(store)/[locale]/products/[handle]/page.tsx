@@ -142,7 +142,7 @@ export default async function ProductPage({
                 asideDesktopWidth={0.56}
                 aside={
                     <Gallery
-                        initialImageId={product.images.edges?.[0].node.id}
+                        initialImageId={variant.image?.id || product.images.edges?.[0].node.id}
                         images={product.images}
                         className={styles.gallery}
                     />
