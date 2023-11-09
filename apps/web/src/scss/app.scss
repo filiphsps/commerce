@@ -19,7 +19,7 @@ body {
 
     // Touch actions
     touch-action: pan-y;
-    overscroll-behavior: auto none;
+    overscroll-behavior: none auto;
 
     // Deal with font rendering
     -moz-osx-font-smoothing: auto;
