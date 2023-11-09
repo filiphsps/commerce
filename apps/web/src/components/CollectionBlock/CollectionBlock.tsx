@@ -24,7 +24,7 @@ const Content = styled.div`
 
     &.horizontal {
         touch-action: pan-x pan-y;
-        overscroll-behavior: none auto;
+        overscroll-behavior: auto auto;
         padding: var(--block-padding-large) 0;
         padding-right: var(--block-spacer-large);
         margin: calc(var(--block-padding-large) * -1) 0;
