@@ -7,7 +7,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { notFound } from 'next/navigation';
@@ -15,9 +14,6 @@ import LocaleSelector from './locale-selector';
 
 export type CountriesPageParams = { locale: string };
 
-export async function generateStaticParams() {
-    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
-}
 export default async function CountriesPage({ params }: { params: CountriesPageParams }) {
     const { locale: localeData } = params;
     const handle = 'countries';

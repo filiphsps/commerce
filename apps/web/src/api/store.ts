@@ -32,7 +32,7 @@ export const CountriesApi = async ({ client }: { client: AbstractApi }): Promise
             `);
 
             // FIXME: Handle errors or missing data.
-            return resolve(localData?.localization?.availableCountries!);
+            return resolve(localData?.localization?.availableCountries! || []);
         } catch (error) {
             console.error(error);
             return reject(error);
@@ -153,16 +153,16 @@ export const StoreApi = async ({
                     wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || []
                 }
             });
-        } catch (error: any) {
+        } catch (error: any) /* TODO: FRO-14 proper error type. */ {
             if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
-                console.warn(error);
                 return resolve(
+                    // Try again with default locale.
                     await StoreApi({
                         locale: DefaultLocale(),
                         client: _client,
                         shopify
                     })
-                ); // Try again with default locale
+                );
             }
 
             console.error(error);

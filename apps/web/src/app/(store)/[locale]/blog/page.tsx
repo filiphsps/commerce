@@ -58,11 +58,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export async function generateStaticParams() {
-    // TODO: Use list of locales to pre-generate pages for as it's expensive to do during the build.
-    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
-}
-
 export type BlogPageParams = { locale: string };
 export default async function SearchPage({ params }: { params: BlogPageParams }) {
     const locale = NextLocaleToLocale(params.locale);

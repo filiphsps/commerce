@@ -1,5 +1,5 @@
-import { ProductApi, ProductsApi } from '@/api/shopify/product';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { ProductApi } from '@/api/shopify/product';
+import { NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
@@ -27,15 +27,6 @@ import styles from './page.module.scss';
 
 export type ProductPageParams = { locale: string; handle: string };
 export type ProductPageQueryParams = { variant?: string };
-
-export async function generateStaticParams() {
-    // FIXME: Pagination.
-    const { products } = await ProductsApi({ client: StorefrontApiClient({ locale: DefaultLocale() }) });
-
-    return products
-        .map(({ node }) => BuildConfig.i18n.locales.map((locale) => ({ locale, handle: node.handle })))
-        .flat();
-}
 
 export async function generateMetadata({
     params,

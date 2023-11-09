@@ -1,5 +1,5 @@
-import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { CollectionApi } from '@/api/shopify/collection';
+import { NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
@@ -11,7 +11,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -20,15 +19,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export type CollectionPageParams = { locale: string; handle: string };
-
-export async function generateStaticParams() {
-    // FIXME: Pagination.
-    const collections = await CollectionsApi({ client: StorefrontApiClient({ locale: DefaultLocale() }) });
-
-    return collections
-        .map(({ handle }) => BuildConfig.i18n.locales.map((locale) => ({ locale: locale, handle })))
-        .flat();
-}
 
 export async function generateMetadata({ params }: { params: CollectionPageParams }): Promise<Metadata | null> {
     const { locale: localeData, handle } = params;

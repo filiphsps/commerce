@@ -2,11 +2,11 @@
 
 import styled, { css } from 'styled-components';
 
-import type { Content } from '@prismicio/client';
 import Link from '@/components/link';
-import { PrismicRichText } from '@prismicio/react';
-import type { SliceComponentProps } from '@prismicio/react';
+import type { Content } from '@prismicio/client';
 import { asLink } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
+import { PrismicRichText } from '@prismicio/react';
 import color from 'color';
 
 const Contents = styled.div`
@@ -231,7 +231,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                         <Action
                             key={index}
                             $primary={cta.type}
-                            href={((cta.target && asLink(cta.target)?.toString()!) || {})!}
+                            href={((cta.target && asLink(cta.target)?.toString()!) || '')!} // FIXME: Handle this correctly.
                         >
                             <PrismicRichText field={cta.title} />
                         </Action>

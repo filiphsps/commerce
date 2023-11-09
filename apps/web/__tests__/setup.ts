@@ -35,6 +35,14 @@ vi.mock('@/prismic', () => ({
     })
 }));
 
+// Mock `next/navigation`.
+vi.mock('next/navigation', async () => {
+    return {
+        ...((await vi.importActual('next/navigation')) || {}),
+        usePathname: vi.fn().mockReturnValue('/en-US/hello-testing-env')
+    };
+});
+
 // Thanks to https://github.com/akiran/react-slick/issues/742#issuecomment-298992238
 window.matchMedia =
     window.matchMedia ||

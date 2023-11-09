@@ -9,7 +9,6 @@ const Container = styled.div`
     position: relative;
     height: 2.5rem;
     aspect-ratio: 3 / 2;
-    border: var(--block-border-width-small) solid var(--accent-secondary-text);
 
     img {
         width: 100%;
