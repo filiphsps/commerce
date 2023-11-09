@@ -11,9 +11,7 @@
     font-weight: 600;
     user-select: none;
 
-    &:has(input:active, input:focus):not(:disabled),
-    &:focus:not(:disabled),
-    &:hover:not(:disabled) {
+    &:is(:hover, :focus, :focus-within, :has(input:active, input:focus)):not(:disabled) {
         border-color: var(--color-block-dark);
     }
 
@@ -36,12 +34,15 @@
     .button {
         height: 100%;
         aspect-ratio: 1.1 / 1;
-        cursor: pointer;
         line-height: 1;
 
         svg {
             font-size: 2rem;
             stroke-width: 2.75;
+        }
+
+        &:is(:not(:disabled)) {
+            cursor: pointer;
         }
 
         &:active:not(:disabled) {

@@ -1,7 +1,8 @@
 'use client';
 
 import styles from '@/components/products/quantity-selector.module.scss';
-import { Locale, LocaleDictionary, useTranslation } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { useTranslation } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 import { TbMinus, TbPlus } from 'react-icons/tb';
@@ -60,6 +61,7 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
                 className={`${styles.button} ${styles.add}`}
                 disabled={quantity <= 1}
                 onClick={() => quantity > 1 && updateQuantity(quantity - 1)}
+                title="Decrease quantity" // TODO: i18n.
             >
                 <TbMinus />
             </button>
@@ -91,6 +93,7 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
                 type="button"
                 className={`${styles.button} ${styles.remove}`}
                 onClick={() => updateQuantity(quantity + 1)}
+                title="Increase quantity" // TODO: i18n.
             >
                 <TbPlus />
             </button>
