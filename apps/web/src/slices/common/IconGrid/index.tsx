@@ -1,9 +1,9 @@
 'use client';
 
-import type { Content } from '@prismicio/client';
-import Image from 'next/legacy/image';
 import PageContent from '@/components/PageContent';
+import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import Image from 'next/legacy/image';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -40,8 +40,12 @@ const Item = styled.div`
     grid-template-columns: calc(var(--block-padding-large) * 2) auto;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-large);
+    gap: calc(var(--block-spacer-large) * 1.5);
     padding: var(--block-padding-small);
+
+    @media (min-width: 960px) {
+        gap: var(--block-spacer-large);
+    }
 `;
 const ItemIcon = styled.div`
     position: relative;
@@ -50,10 +54,16 @@ const ItemIcon = styled.div`
     height: calc(var(--block-padding-large) * 2);
 `;
 const ItemContent = styled.h3`
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
+    line-height: 1.35;
     text-transform: uppercase;
     text-align: left;
+
+    @media (min-width: 960px) {
+        font-size: 1.25rem;
+        line-height: normal;
+    }
 `;
 
 /**

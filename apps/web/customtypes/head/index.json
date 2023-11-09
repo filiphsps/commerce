@@ -40,6 +40,22 @@
                         }
                     }
                 }
+            },
+            "navigation": {
+                "type": "Group",
+                "config": {
+                    "label": "Navigation",
+                    "fields": {
+                        "menu": {
+                            "type": "Link",
+                            "config": {
+                                "label": "Menu",
+                                "select": "document",
+                                "customtypes": ["menu_item"]
+                            }
+                        }
+                    }
+                }
             }
         }
     }

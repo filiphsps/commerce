@@ -5,10 +5,10 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
+import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
@@ -22,16 +22,15 @@ export async function generateMetadata({
     const { locale: localeData, uid } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
-    const locales = BuildConfig.i18n.locales;
 
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
     if (!page) return notFoundMetadata;
 
     return {
-        title: page.meta_title || page.title
+        title: page.meta_title || page.title,
+        description: asText(page.meta_description) || page.description || ''
         // TODO: Metadata.
     };
 }
@@ -57,7 +56,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return (
             <Page>
                 <PageContent primary>
-                    {page?.slices && page?.slices.length >= 0 && (
+                    {page?.slices && page?.slices.length > 0 && (
                         <PrismicPage
                             store={store}
                             locale={locale}

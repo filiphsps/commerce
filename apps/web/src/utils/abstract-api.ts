@@ -18,7 +18,6 @@ export type AbstractApiBuilder<K, Q> = ({
     api: K;
     locale: Locale;
     fetchPolicy?: FetchPolicy;
-    tags?: string[];
 }) => AbstractApi<Q>;
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;

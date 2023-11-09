@@ -1,11 +1,14 @@
 'use client';
 
+import '@/style/currency.scss';
+
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import { CartLineProvider } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
 import PageLoader from '@/components/PageLoader';
-import type { Locale } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
 const Container = styled.table`
@@ -41,26 +44,36 @@ const Container = styled.table`
     }
 `;
 
+const NoItems = styled.p`
+    font-size: 2rem;
+`;
+
 type CartContentProps = {
     cart: CartWithActions;
     locale: Locale;
+    i18n: LocaleDictionary;
 };
-export default function CartLines({ cart, locale }: CartContentProps) {
-    if (!cart.lines || cart.lines.length <= 0) return <PageLoader />;
+export default function CartLines({ cart, locale, i18n }: CartContentProps) {
+    const { status, lines } = cart;
+    if (!['idle', 'uninitialized'].includes(status)) return <PageLoader />;
+
+    if (!lines || lines.length <= 0) return <NoItems>There are no items in your cart.</NoItems>;
 
     return (
         <Container>
-            <tbody>
-                {cart.lines?.map((item) => {
-                    if (!item) return null;
+            <Suspense>
+                <tbody>
+                    {lines?.map((item) => {
+                        if (!item) return null;
 
-                    return (
-                        <CartLineProvider key={item.id} line={item}>
-                            <CartItem locale={locale} />
-                        </CartLineProvider>
-                    );
-                })}
-            </tbody>
+                        return (
+                            <CartLineProvider key={item.id} line={item}>
+                                <CartItem locale={locale} i18n={i18n} />
+                            </CartLineProvider>
+                        );
+                    })}
+                </tbody>
+            </Suspense>
         </Container>
     );
 }

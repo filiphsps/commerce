@@ -1,4 +1,4 @@
-import Content from './Content';
+import Content from '@/components/Content';
 import type { FunctionComponent } from 'react';
 import { PiInfoBold } from 'react-icons/pi';
 import styled from 'styled-components';

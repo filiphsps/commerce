@@ -40,7 +40,7 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                     <LocaleSelector countries={countries} store={store} locale={locale} />
                 </PageContent>
 
-                {page?.slices && page?.slices.length >= 0 && (
+                {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage
                         store={store}
                         locale={locale}

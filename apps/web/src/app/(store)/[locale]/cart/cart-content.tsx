@@ -44,25 +44,28 @@ const Sidebar = styled.article`
 
 type CartContentProps = {
     locale: Locale;
-    slices: ReactNode;
     i18n: LocaleDictionary;
+    header: ReactNode;
+    slices: ReactNode;
 };
-export default function CartContent({ locale, slices, i18n }: CartContentProps) {
+export default function CartContent({ locale, i18n, header, slices }: CartContentProps) {
     const cart = useCart();
+    const { status } = cart;
 
     return (
         <Container>
             <Primary>
                 <Content>
-                    <CartLines cart={cart} locale={locale} />
+                    {header}
+                    <CartLines cart={cart} locale={locale} i18n={i18n} />
                 </Content>
                 <Sidebar>
                     <CartSummary
-                        showLoader={false}
+                        showLoader={['fetching', 'updating', 'creating'].includes(status)}
                         freeShipping={false}
                         onCheckout={async () => {
                             // FIXME: User-feedback here.
-                            if (cart.status !== 'idle' && cart.status !== 'uninitialized') return;
+                            if (!['idle', 'uninitialized'].includes(status)) return;
 
                             try {
                                 await Checkout({

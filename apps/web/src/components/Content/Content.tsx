@@ -9,6 +9,13 @@ const Content = styled.div`
     font-weight: 400;
     line-height: 2rem;
 
+    & :is(a, p, ul, li) :is(b, strong) {
+        font-weight: 700;
+    }
+    & :is(h1, h2, h3, h4) :is(b, strong) {
+        font-weight: 800;
+    }
+
     a {
         color: var(--accent-primary-dark);
         font-weight: 600;

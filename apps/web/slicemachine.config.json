@@ -1,6 +1,13 @@
 {
-    "adapter": "@slicemachine/adapter-next",
-    "libraries": ["./src/slices"],
+    "adapter": {
+        "resolve": "@slicemachine/adapter-next",
+        "options": {
+            "format": true,
+            "lazyLoadSlices": false,
+            "typescript": true
+        }
+    },
+    "libraries": ["./src/slices/common", "./src/slices/navigation"],
     "localSliceSimulatorURL": "http://localhost:3000/slice-simulator",
     "repositoryName": "candy-by-sweden"
 }

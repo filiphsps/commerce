@@ -108,6 +108,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 isHorizontal={slice.primary.direction === 'horizontal'}
                                 limit={slice.primary.limit || 16}
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
+                                showViewAll={true}
                                 store={context?.store}
                                 locale={context.locale}
                                 i18n={context.i18n}

@@ -1,4 +1,4 @@
-import { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 
 /***
  * Find the first available and most expensive variant for a product.

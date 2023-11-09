@@ -1,6 +1,7 @@
 'use client';
 
 import type { NavigationItem } from '@/api/navigation';
+import styles from '@/components/PageProvider/page-provider.module.css';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { FooterModel } from '@/models/FooterModel';
@@ -14,7 +15,6 @@ import dynamic from 'next/dynamic';
 import type { FunctionComponent, ReactNode } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-import styles from './page-provider.module.css';
 
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
 const Footer = dynamic(() => import('@/components/Footer'));
@@ -27,9 +27,9 @@ const Announcement = styled.div`
     height: 100%;
     padding: var(--block-padding-large);
     text-transform: uppercase;
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    font-weight: 600;
     text-align: center;
 
     &.primary {

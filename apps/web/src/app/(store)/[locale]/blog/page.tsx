@@ -80,7 +80,7 @@ export default async function SearchPage({ params }: { params: BlogPageParams })
             <PageContent primary>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                {page?.slices && page?.slices.length >= 0 && (
+                {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage
                         store={store}
                         locale={locale}

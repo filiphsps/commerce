@@ -1,14 +1,15 @@
-import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { FooterApi } from '@/api/footer';
-import type { FooterModel } from '@/models/FooterModel';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
+import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
-import type { Locale } from '@/utils/locale';
+import type { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
+import type { Locale } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
-import styled from 'styled-components';
 import { usePrismicClient } from '@prismicio/react';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Logo = styled.div`
@@ -279,6 +280,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                                         />
                                     </Social>
                                 ))}
+                            <CurrentLocaleFlag />
                         </Socials>
                         <LegalAndCopyright>
                             <Copyright>

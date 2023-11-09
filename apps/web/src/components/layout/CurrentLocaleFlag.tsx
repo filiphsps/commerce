@@ -7,16 +7,9 @@ import styled from 'styled-components';
 const Container = styled.div`
     overflow: hidden;
     position: relative;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 100%;
-    border: calc(var(--block-border-width) / 1.25) solid var(--accent-secondary-text);
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            border-color: var(--accent-primary);
-        }
-    }
+    height: 2.5rem;
+    aspect-ratio: 3 / 2;
+    border: var(--block-border-width-small) solid var(--accent-secondary-text);
 
     img {
         width: 100%;

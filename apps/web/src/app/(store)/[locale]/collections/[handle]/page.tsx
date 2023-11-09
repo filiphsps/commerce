@@ -4,6 +4,7 @@ import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
+import CollectionBlock from '@/components/CollectionBlock';
 import Content from '@/components/Content';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
@@ -61,7 +62,15 @@ export default async function CollectionPage({ params }: { params: CollectionPag
     const collection = await CollectionApi({ client, handle });
 
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
-    const prefetch = (page && (await Prefetch({ client, page }))) || null;
+    const prefetch = await Prefetch({
+        client,
+        page,
+        initialData: {
+            collections: {
+                [handle]: collection
+            }
+        }
+    });
 
     const subtitle =
         ((collection as any)?.shortDescription?.value && (
@@ -81,8 +90,18 @@ export default async function CollectionPage({ params }: { params: CollectionPag
     return (
         <Page>
             <PageContent primary>
-                {(!page || page.enable_header) && <Heading title={collection.title} subtitle={subtitle} />}
-                {page?.slices && page?.slices.length >= 0 && (
+                {(!page || page.enable_header) && (
+                    <div>
+                        <Heading title={collection.title} subtitle={subtitle} />
+                    </div>
+                )}
+                {(!page || page.enable_collection === undefined || page.enable_collection) && (
+                    <>
+                        <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
+                    </>
+                )}
+
+                {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage
                         store={store}
                         locale={locale}
