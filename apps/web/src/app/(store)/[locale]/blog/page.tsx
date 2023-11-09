@@ -12,7 +12,6 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
@@ -81,19 +80,17 @@ export default async function SearchPage({ params }: { params: BlogPageParams })
             <PageContent primary>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                <Suspense>
-                    {page?.slices && page?.slices.length >= 0 && (
-                        <PrismicPage
-                            store={store}
-                            locale={locale}
-                            page={page}
-                            prefetch={prefetch}
-                            i18n={i18n}
-                            handle={handle}
-                            type={'custom_page'}
-                        />
-                    )}
-                </Suspense>
+                {page?.slices && page?.slices.length >= 0 && (
+                    <PrismicPage
+                        store={store}
+                        locale={locale}
+                        page={page}
+                        prefetch={prefetch}
+                        i18n={i18n}
+                        handle={handle}
+                        type={'custom_page'}
+                    />
+                )}
             </PageContent>
         </Page>
     );

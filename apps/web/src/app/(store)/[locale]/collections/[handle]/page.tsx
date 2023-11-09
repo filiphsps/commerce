@@ -17,7 +17,6 @@ import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 export type CollectionPageParams = { locale: string; handle: string };
 
@@ -83,19 +82,17 @@ export default async function CollectionPage({ params }: { params: CollectionPag
         <Page>
             <PageContent primary>
                 {(!page || page.enable_header) && <Heading title={collection.title} subtitle={subtitle} />}
-                <Suspense>
-                    {page?.slices && page?.slices.length >= 0 && (
-                        <PrismicPage
-                            store={store}
-                            locale={locale}
-                            page={page}
-                            prefetch={prefetch}
-                            i18n={i18n}
-                            handle={handle}
-                            type={'collection_page'}
-                        />
-                    )}
-                </Suspense>
+                {page?.slices && page?.slices.length >= 0 && (
+                    <PrismicPage
+                        store={store}
+                        locale={locale}
+                        page={page}
+                        prefetch={prefetch}
+                        i18n={i18n}
+                        handle={handle}
+                        type={'collection_page'}
+                    />
+                )}
             </PageContent>
         </Page>
     );

@@ -11,7 +11,6 @@ import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../not-found';
 import { RedirectToLocale } from '../util';
 
@@ -58,19 +57,17 @@ export default async function CustomPage({ params }: { params: { locale: string;
         return (
             <Page>
                 <PageContent primary>
-                    <Suspense>
-                        {page?.slices && page?.slices.length >= 0 && (
-                            <PrismicPage
-                                store={store}
-                                locale={locale}
-                                page={page}
-                                prefetch={prefetch}
-                                i18n={i18n}
-                                handle={handle}
-                                type={'custom_page'}
-                            />
-                        )}
-                    </Suspense>
+                    {page?.slices && page?.slices.length >= 0 && (
+                        <PrismicPage
+                            store={store}
+                            locale={locale}
+                            page={page}
+                            prefetch={prefetch}
+                            i18n={i18n}
+                            handle={handle}
+                            type={'custom_page'}
+                        />
+                    )}
                 </PageContent>
             </Page>
         );

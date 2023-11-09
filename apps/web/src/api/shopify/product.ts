@@ -1,4 +1,10 @@
-import type { Product, ProductConnection, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
+import type {
+    Product,
+    ProductConnection,
+    ProductEdge,
+    ProductSortKeys,
+    WeightUnit
+} from '@shopify/hydrogen-react/storefront-api-types';
 
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
@@ -219,8 +225,7 @@ export const ProductApi = async ({ client, handle }: { client: AbstractApi; hand
                         ${PRODUCT_FRAGMENT}
                     }
 
-                    query product($handle: String!, $language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
+                    query product($handle: String!) {
                         productByHandle(handle: $handle) {
                             ...product
                         }
@@ -288,10 +293,12 @@ export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Pro
 export const ProductsApi = async ({
     client,
     limit = 250,
+    sorting = 'BEST_SELLING',
     cursor
 }: {
     client: AbstractApi;
     limit?: number;
+    sorting?: ProductSortKeys;
     cursor?: string;
 }): Promise<{
     products: ProductEdge[];
@@ -309,12 +316,12 @@ export const ProductsApi = async ({
                         ${PRODUCT_FRAGMENT}
                     }
 
-                    query products($limit: Int!, $language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
+                    query products($limit: Int!, $sorting: ProductSortKeys, $cursor: String) {
                         products(
                             first: $limit,
-                            sortKey: BEST_SELLING
-                            ${cursor ? `, after: "${cursor}"` : ''})
+                            sortKey: $sorting,
+                            after: $cursor
+                        )
                         {
                             edges {
                                 cursor
@@ -330,7 +337,9 @@ export const ProductsApi = async ({
                     }
                 `,
                 {
-                    limit
+                    limit,
+                    sorting: sorting || null,
+                    cursor: cursor || null
                 }
             );
 
@@ -355,18 +364,30 @@ export const ProductsApi = async ({
     });
 };
 
+/***
+ * Fetches products from the Shopify API.
+ *
+ * @param {Object} options - The options.
+ * @param {AbstractApi} options.client - The AbstractApi to use.
+ * @param {number} [options.limit=35] - The limit of products to fetch.
+ * @param {ProductSortKeys} [options.sorting=BEST_SELLING] - The sorting to use.
+ * @param {string} [options.vendor] - The vendor to use.
+ * @param {string} [options.before] - The cursor to use for pagination.
+ * @param {string} [options.after] - The cursor to use for pagination.
+ * @returns {Promise<ProductEdge[]>} The products.
+ */
 export const ProductsPaginationApi = async ({
     client,
-    limit,
+    limit = 35,
+    sorting = 'BEST_SELLING',
     vendor,
-    sorting,
     before,
     after
 }: {
     client: AbstractApi;
     limit?: number;
     vendor?: string;
-    sorting?: 'BEST_SELLING' | 'CREATED_AT' | 'PRICE' | 'RELEVANCE' | 'TITLE' | 'VENDOR';
+    sorting?: ProductSortKeys;
     before?: string;
     after?: string;
 }): Promise<{
@@ -378,9 +399,6 @@ export const ProductsPaginationApi = async ({
     };
     products: ProductEdge[];
 }> => {
-    const limit_n = limit || 35;
-    const sort_key = sorting || 'BEST_SELLING';
-
     return new Promise(async (resolve, reject) => {
         try {
             const { data } = await client.query<{ products: ProductConnection }>(
@@ -389,12 +407,11 @@ export const ProductsPaginationApi = async ({
                         ${PRODUCT_FRAGMENT}
                     }
 
-                    query products($language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
+                    query products($limit: Int!, $sorting: ProductSortKeys, $query: String) {
                         products(
-                            first: ${limit_n},
-                            sortKey: ${sort_key}
-                            ${vendor ? `,query:"vendor:${vendor}"` : ''}
+                            first: $limit,
+                            sortKey: $sorting,
+                            query: $query,
                             ${before ? `,before:"${before}"` : ''}
                             ${after ? `,after:"${after}"` : ''}
                         )
@@ -413,7 +430,12 @@ export const ProductsPaginationApi = async ({
                             }
                         }
                     }
-                `
+                `,
+                {
+                    limit,
+                    query: (vendor && `query:"vendor:${vendor}"`) || null,
+                    sorting: sorting || null
+                }
             );
 
             const page_info = data?.products.pageInfo;
