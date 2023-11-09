@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
+import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { BuildConfig } from '@/utils/build-config';
-import { Locale } from '@/utils/locale';
+import { Locale, NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import { styled } from 'styled-components';
@@ -20,7 +20,7 @@ const List = styled.article`
     }
 `;
 
-const Locale = styled.div<{ $selected?: boolean }>`
+const Locale = styled(Link)`
     display: grid;
     grid-template-columns: auto 1fr auto;
     justify-content: stretch;
@@ -34,7 +34,7 @@ const Locale = styled.div<{ $selected?: boolean }>`
     transition: 150ms ease-in-out;
     cursor: pointer;
 
-    &.Active {
+    &.active {
         color: var(--accent-primary);
         border-color: var(--accent-primary);
     }
@@ -90,18 +90,15 @@ type LocaleSelectorProps = {
 };
 export default function LocaleSelector({ countries, locale }: LocaleSelectorProps) {
     const router = useRouter();
-    const locales = BuildConfig.i18n.locales;
 
     const markets = (
         countries?.map((country) =>
-            country.availableLanguages
-                .map((language) => ({
-                    locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
-                    country: country.name,
-                    language: language.name,
-                    currency: country.currency.isoCode
-                }))
-                .filter((locale) => locales && locales.includes(locale.locale))
+            country.availableLanguages.map((language) => ({
+                locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
+                country: country.name,
+                language: language.name,
+                currency: country.currency.isoCode
+            }))
         ) || []
     ).filter((i) => i && i.length > 0);
 
@@ -113,12 +110,13 @@ export default function LocaleSelector({ countries, locale }: LocaleSelectorProp
                         return (
                             <Locale
                                 key={country.locale}
+                                href={`/countries/`} // TODO: Go to the previous route
+                                locale={NextLocaleToLocale(country.locale)!}
                                 title={`${country.country} (${country.language})`}
-                                className={(country.locale === locale.locale && 'Active') || ''}
-                                onClick={async () => {
-                                    // TODO: Do this properly.
-                                    await router.push(`/${country.locale}/countries/`);
-                                }}
+                                className={(country.locale === locale.locale && 'active') || ''}
+                                scroll={false}
+                                prefetch={false}
+                                replace={true}
                             >
                                 <Flag>
                                     <Image

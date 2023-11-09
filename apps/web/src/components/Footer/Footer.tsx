@@ -280,7 +280,12 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                                         />
                                     </Social>
                                 ))}
-                            <CurrentLocaleFlag />
+                            <Link
+                                href="/countries/"
+                                title="Select language and region." // FIXME: i18n.
+                            >
+                                <CurrentLocaleFlag />
+                            </Link>
                         </Socials>
                         <LegalAndCopyright>
                             <Copyright>

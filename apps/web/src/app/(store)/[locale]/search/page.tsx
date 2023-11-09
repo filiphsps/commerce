@@ -59,10 +59,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export async function generateStaticParams() {
-    return BuildConfig.i18n.locales.map((locale) => ({ locale }));
-}
-
 export type SearchPageParams = { locale: string };
 export default async function SearchPage({ params }: { params: SearchPageParams }) {
     const { locale: localeData } = params;
