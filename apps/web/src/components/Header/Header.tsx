@@ -55,7 +55,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                     </Link>
                 </div>
                 <div className={`${styles.action} ${(0 > 0 && styles.active) || ''}`}>
-                    <Link href={'/cart/'} prefetch={false}>
+                    <Link
+                        title="View your shopping cart" // TODO: i18n.
+                        href={'/cart/'}
+                        prefetch={false}
+                    >
                         <FiShoppingBag />
                     </Link>
                 </div>

@@ -483,10 +483,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         params: (product as any).trackingParameters
     });
 
+    const linkTitle = `${product.vendor} ${product.title}`;
     return (
         <Container className={className} $available={selectedVariant.availableForSale}>
             <ProductImage>
-                <Link href={href} prefetch={false}>
+                <Link title={linkTitle} href={href} prefetch={false}>
                     <ProductImageWrapper>
                         <VariantImage image={image} />
                     </ProductImageWrapper>
@@ -511,8 +512,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         </Link>
                     </Brand>
                 )}
-                <Title title={description}>
-                    <Link href={href || ''} prefetch={false}>
+                <Title title={linkTitle}>
+                    <Link href={href} prefetch={false}>
                         {product.title}
                     </Link>
                 </Title>
@@ -628,6 +629,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         pattern="[0-9]"
                         value={quantityValue}
                         placeholder="Quantity"
+                        name="quantity"
                         onBlur={(_) => {
                             if (!quantityValue) setQuantityValue('1');
                         }}
