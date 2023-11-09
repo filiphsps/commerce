@@ -1,5 +1,5 @@
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/storefront-api-types';
-import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 
 import type { AbstractApi } from '@/utils/abstract-api';
 import { gql } from 'graphql-tag';

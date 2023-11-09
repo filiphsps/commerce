@@ -1,10 +1,10 @@
+import { SubTitle, Title } from '@/components/typography/heading';
 import { Image, ProductPrice } from '@shopify/hydrogen-react';
-import { SubTitle, Title } from './typography/heading';
 
 import { AppendShopifyParameters } from '@/components/ProductCard/ProductCard';
-import type { FunctionComponent } from 'react';
 import Link from '@/components/link';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`

@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
@@ -90,7 +90,6 @@ type LocaleSelectorProps = {
 };
 export default function LocaleSelector({ countries, locale }: LocaleSelectorProps) {
     const router = useRouter();
-    const route = usePathname();
     const locales = BuildConfig.i18n.locales;
 
     const markets = (

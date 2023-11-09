@@ -1,5 +1,6 @@
 'use client';
 
+import addToCartStyles from '@/components/products/add-to-cart.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
@@ -8,14 +9,13 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
-import { Button } from '@/components/Button';
 import Link from '@/components/link';
+import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import type { StoreModel } from '@/models/StoreModel';
 import { useTranslation } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
 import type { FunctionComponent } from 'react';
-import { QuantityInputFilter } from '../products/quantity-selector';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -29,10 +29,12 @@ export const ProductImage = styled.div`
     user-select: none;
     background: var(--color-bright);
     height: 13rem;
+    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
     @media (min-width: 950px) {
         height: 16rem;
         padding: var(--block-padding) var(--block-padding-large);
+        margin-bottom: var(--block-spacer-tiny);
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -70,12 +72,12 @@ const Details = styled.div`
     min-height: 10rem;
 `;
 const Brand = styled.div`
-    font-size: 1.5rem;
-    line-height: 1;
+    font-size: 1.75rem;
+    line-height: normal;
     font-weight: 500;
 
     @media (min-width: 950px) {
-        font-size: 1.65rem;
+        font-size: 1.5rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -94,14 +96,14 @@ const Title = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    font-size: 2rem;
-    line-height: 1.1;
+    font-size: 2.25rem;
+    line-height: 1;
     font-weight: 700;
     hyphens: auto;
     -webkit-hyphens: auto;
 
     @media (min-width: 950px) {
-        font-size: 2.25rem;
+        font-size: 2rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -134,6 +136,10 @@ const Variants = styled.div`
     justify-content: start;
     width: 100%;
     height: 100%;
+
+    @media (min-width: 920px) {
+        gap: var(--block-spacer-tiny);
+    }
 `;
 
 /* width: 5rem;
@@ -146,7 +152,7 @@ const Variant = styled.div`
     justify-content: flex-end;
     align-items: flex-end;
     padding: var(--block-spacer-tiny) var(--block-spacer-tiny) 0 var(--block-spacer-tiny);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 1.75rem;
     line-height: normal;
     text-align: right;
@@ -154,20 +160,25 @@ const Variant = styled.div`
     opacity: 0.85;
     transition: 150ms ease-in-out all;
 
-    &.Active {
+    &.active {
         opacity: 1;
-        font-weight: 700;
-        /*font-size: 1.75rem;*/
         color: var(--accent-primary);
+
+        @media (min-width: 920px) {
+            text-decoration: underline;
+        }
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        &.Active,
-        &:hover,
-        &:active,
-        &:focus {
-            opacity: 1;
-        }
+    &.active,
+    &:hover,
+    &:active,
+    &:focus {
+        opacity: 1;
+    }
+
+    @media (min-width: 920px) {
+        padding: 0;
+        font-size: 1.5rem;
     }
 `;
 
@@ -179,42 +190,16 @@ const Actions = styled.div`
     align-items: end;
     gap: var(--block-spacer-small);
 `;
-const AddButton = styled(Button)<{ $added?: boolean }>`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    padding: var(--block-padding-small);
-    border-radius: var(--block-border-radius-small);
-    border: var(--block-border-width) solid var(--accent-primary);
-    color: var(--accent-primary-text);
-    background: var(--accent-primary);
-    line-height: 1;
+const AddButton = styled.button`
+    min-height: 3.5rem;
+    border: none;
+    padding: calc(var(--block-padding-small) / 2) var(--block-padding-large);
     font-size: 1.5rem;
-    font-weight: 500;
-    transition: 150ms ease-in-out;
 
-    @media (hover: hover) and (pointer: fine) {
-        &:enabled:hover {
-            background: var(--accent-secondary);
-            border-color: var(--accent-secondary);
-            color: var(--accent-secondary-text);
-        }
-    }
-
-    &:enabled:active {
-        background: var(--accent-secondary);
-        border-color: var(--accent-secondary);
-        color: var(--accent-secondary-text);
-    }
-
-    &.Added,
-    &.Added:enabled:active,
-    &.Added:enabled:hover {
-        background: var(--accent-secondary-dark) !important;
-        border-color: var(--accent-secondary-dark) !important;
-        color: var(--accent-secondary-text) !important;
+    @media (min-width: 920px) {
+        min-height: 3rem;
+        padding: calc(var(--block-padding-small) / 2) var(--block-padding);
+        font-size: 1.25rem;
     }
 `;
 const Quantity = styled.div`
@@ -259,8 +244,8 @@ const QuantityAction = styled.div`
     }
 
     &.Inactive {
-        width: 0;
-        opacity: 0;
+        width: 0.5rem;
+        color: transparent;
         pointer-events: none;
     }
 
@@ -282,7 +267,9 @@ const QuantityValue = styled.input`
     display: block;
     width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
+    height: 100%;
     font-size: 1.75rem;
+    line-height: 1;
     text-align: center;
     outline: none;
     transition: 150ms all ease-in-out;
@@ -340,7 +327,7 @@ const DiscountBadge = styled.div`
     box-shadow: 0 0 0.5rem 0 var(--color-block-shadow);
 
     b {
-        font-weight: 900;
+        font-weight: 700;
         font-size: 1.45rem;
         margin-right: var(--block-spacer-tiny);
     }
@@ -391,9 +378,9 @@ const Container = styled.section<{ $available?: boolean }>`
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
-    gap: var(--block-spacer-small);
+    gap: var(--block-spacer);
     min-width: var(--component-product-card-width);
-    min-height: 30rem;
+    min-height: 36rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
@@ -401,7 +388,8 @@ const Container = styled.section<{ $available?: boolean }>`
     color: var(--accent-secondary-text);
 
     @media (min-width: 950px) {
-        min-height: 36rem;
+        gap: var(--block-spacer-small);
+        min-height: 38rem;
     }
 
     ${({ $available }) =>
@@ -458,7 +446,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
 
         if (!quantityRef.current) return; // TODO: Handle this properly.
         const length = quantityValue.split('').length;
-        quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
+        if (length <= 1) quantityRef.current.style.removeProperty('width');
+        else quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
     }, [quantityValue]);
 
     // TODO: Placeholder animation.
@@ -581,7 +570,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                                         key={variant.id}
                                         title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
-                                        className={selectedVariant.id === variant.id ? 'Active' : ''}
+                                        className={selectedVariant.id === variant.id ? 'active' : ''}
                                     >
                                         {title}
                                     </Variant>
@@ -594,8 +583,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                 <AddButton
                     type="button"
                     title={t('add-to-cart')}
-                    className={(addedToCart && 'Added') || ''}
-                    $added={addedToCart}
+                    className={`${addToCartStyles.button} ${addToCartStyles.addToCart} ${
+                        (addedToCart && addToCartStyles.success) || ''
+                    }`}
                     onClick={() => {
                         if ((cart.status !== 'idle' && cart.status !== 'uninitialized') || !product || !selectedVariant)
                             return;
@@ -613,9 +603,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         }, 3000);
                     }}
                     disabled={
+                        !['uninitialized', 'idle'].includes(cart.status) ||
                         quantity < 1 ||
-                        !selectedVariant.availableForSale ||
-                        (cart.status !== 'idle' && cart.status !== 'uninitialized')
+                        !selectedVariant?.availableForSale
                     }
                 >
                     {(!selectedVariant.availableForSale && t('out-of-stock')) ||
@@ -625,7 +615,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}
-                        onClick={() => quantity <= 0 && setQuantityValue(`${quantity - 1}`)}
+                        onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
                     >
                         <FiMinus />
                     </QuantityAction>

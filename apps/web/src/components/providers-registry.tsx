@@ -7,14 +7,14 @@ import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
 import { CartFragment } from '@/api/cart';
 import type { ApiConfig } from '@/api/client';
+import { HeaderProvider } from '@/components/Header/header-provider';
+import ApiProvider from '@/components/api-provider';
+import StyledComponentsRegistry from '@/components/styled-components-registry';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { PrismicPreview } from '@prismicio/next';
 import { PrismicProvider } from '@prismicio/react';
 import type { ReactNode } from 'react';
-import { HeaderProvider } from './Header/header-provider';
-import ApiProvider from './api-provider';
-import StyledComponentsRegistry from './styled-components-registry';
 
 export default function ProvidersRegistry({
     children,

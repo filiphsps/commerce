@@ -79,10 +79,13 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
     return (
         <Page>
             <PageContent primary>
-                <Heading title={page?.title} subtitle={page?.description} />
-
                 <CartContent
                     locale={locale}
+                    header={
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--block-spacer-small)' }}>
+                            <Heading title={page?.title} subtitle={page?.description} />
+                        </div>
+                    }
                     slices={
                         page && (
                             <PrismicPage

@@ -245,7 +245,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
         setShowNote(showNote);
     }, [note]);
 
-    if (status === 'creating') {
+    if (['creating', 'fetching'].includes(status)) {
         return (
             <Container>
                 <Block>
@@ -276,9 +276,11 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
             <Block>
                 <Header>
                     <Label>{t('order-summary')}</Label>
-                    <BreakdownItemLabel>
-                        {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
-                    </BreakdownItemLabel>
+                    {!['idle', 'uninitialized'].includes(status) && !(!totalQuantity || totalQuantity <= 0) ? (
+                        <BreakdownItemLabel>
+                            {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
+                        </BreakdownItemLabel>
+                    ) : null}
                 </Header>
 
                 <CartCoupons />
@@ -301,7 +303,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
             )) ||
                 null}
 
-            {(totalQuantity && status !== 'uninitialized' && (
+            {(totalQuantity && !['idle', 'uninitialized'].includes(status) && (
                 <Block>
                     <Breakdown>
                         <BreakdownItem>

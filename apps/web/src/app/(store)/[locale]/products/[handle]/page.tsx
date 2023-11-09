@@ -127,10 +127,12 @@ export default async function ProductPage({
     };
 
     const initialVariant = FirstAvailableVariant(product);
-    const selectedVariant = searchParams?.variant
-        ? product.variants.edges.find(({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`)
-              ?.node
-        : undefined;
+    const selectedVariant =
+        (searchParams?.variant &&
+            product.variants.edges.find(
+                ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
+            )?.node) ||
+        undefined;
 
     if ((searchParams?.variant && !selectedVariant) || !initialVariant) {
         console.error(
@@ -144,9 +146,9 @@ export default async function ProductPage({
     return (
         <Page className={styles.container}>
             <SplitView
-                primaryDesktopWidth={0.42}
+                primaryDesktopWidth={0.44}
                 primaryClassName={styles.headingPrimary}
-                asideDesktopWidth={0.58}
+                asideDesktopWidth={0.56}
                 aside={
                     <Gallery
                         initialImageId={product.images.edges?.[0].node.id}
@@ -167,7 +169,7 @@ export default async function ProductPage({
                                 compareAtPrice={variant.compareAtPrice as MoneyV2 | undefined}
                             />
                         }
-                        style={{ gap: '0' }}
+                        style={{ gap: '0', paddingBottom: 'var(--block-spacer-large)' }}
                         reverse
                     >
                         <Heading
@@ -189,15 +191,17 @@ export default async function ProductPage({
                         selectedVariant={selectedVariant}
                     />
 
+                    <div className={styles.contentDivider} />
+
                     <Content
                         dangerouslySetInnerHTML={{
                             __html: todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || ''
                         }}
                     />
 
-                    <div className={styles.prismicDivider} />
+                    <div className={styles.contentDivider} />
 
-                    {page?.slices && page?.slices.length >= 0 && (
+                    {page?.slices && page?.slices.length > 0 && (
                         <PrismicPage
                             store={store}
                             locale={locale}

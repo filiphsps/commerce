@@ -3,19 +3,15 @@
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
 import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
-import type { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
-import Link from '@/components/link';
 import Loader from '@/components/Loader';
-import type { Locale } from '@/utils/locale';
-import { ProductApi } from '@/api/shopify/product';
-import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import Link from '@/components/link';
+import type { LocaleDictionary } from '@/utils/locale';
+import { useTranslation, type Locale } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
-import { useApolloClient } from '@apollo/client';
-import useSWR from 'swr';
+import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import Image from 'next/legacy/image';
+import type { FunctionComponent } from 'react';
 
 const Section = styled.td``;
 const SectionContent = styled.div`
@@ -287,32 +283,16 @@ const Content = styled.tr`
 
 interface CartItemProps {
     locale: Locale;
+    i18n: LocaleDictionary;
 }
-const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
-    const cart = useCart();
+const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
+    const { t } = useTranslation('common', i18n);
+
+    const { linesRemove, linesUpdate, status } = useCart();
     const line = useCartLine();
     const TempImage = Image as any;
 
-    const { data: product } = useSWR(
-        [
-            'ProductApi',
-            {
-                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
-                handle: line?.merchandise?.product?.handle!
-            }
-        ],
-        ([, props]) => ProductApi(props)
-    );
-
-    const [variant, setVariant] = useState<ProductVariant | null>(null);
-
-    useEffect(() => {
-        if (!product) return;
-
-        setVariant(product?.variants.edges.find?.((edge) => edge.node.id === line.merchandise?.id)?.node || null);
-    }, [product]);
-
-    if (!line || !product || !variant) {
+    if (status === 'fetching') {
         return (
             <Content>
                 <ProductImage>
@@ -327,10 +307,20 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
         );
     }
 
+    const product: Required<Product> = line.merchandise?.product! as any;
+    if (!product) {
+        console.error(`Product not found for line ${line.id}`);
+        return null;
+    }
+    const variant: Required<ProductVariant> = line.merchandise! as any;
+    if (!variant) {
+        console.error(`Product variant not found for line ${line.id}`);
+        return null;
+    }
+
     let discount =
         (variant.compareAtPrice?.amount &&
-            Number.parseFloat(variant?.compareAtPrice?.amount || '') -
-                Number.parseFloat(variant?.price.amount || '')) ||
+            Number.parseFloat(variant.compareAtPrice?.amount || '') - Number.parseFloat(variant.price.amount || '')) ||
         0;
     return (
         <Content className={(discount > 0 && 'Sale') || ''}>
@@ -338,9 +328,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                 <ImageWrapper>
                     <Link href={`/products/${product?.handle}/`} prefetch={false}>
                         <TempImage
-                            src={
-                                product.images.edges.find((edge) => edge.node.id === variant.image?.id)?.node.url || ''
-                            }
+                            src={variant.image!.url || ''}
                             layout="responsive"
                             width="6rem"
                             height="6rem"
@@ -354,12 +342,12 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                 <Details>
                     <DetailsBrand>
                         <Link href={`/collections/${TitleToHandle(product?.vendor)}/`} prefetch={false}>
-                            {product?.vendor}
+                            {product.vendor}
                         </Link>
                     </DetailsBrand>
                     <DetailsTitle>
                         <Link href={`/products/${product?.handle}/`} prefetch={false}>
-                            {product?.title}
+                            {product.title}
                         </Link>
                     </DetailsTitle>
                 </Details>
@@ -384,8 +372,11 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                 null}
 
             <QuantitySection className="QuantitySection">
-                <Quantity disabled={cart.status !== 'idle'}>
-                    <CartLineQuantityAdjustButton adjust="decrease">
+                <Quantity disabled={status !== 'idle'}>
+                    <CartLineQuantityAdjustButton
+                        title="Decrease" // TODO: i18n.
+                        adjust="decrease"
+                    >
                         <FiMinus />
                     </CartLineQuantityAdjustButton>
                     <CartLineQuantity
@@ -393,7 +384,13 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                             ((props: any) => {
                                 return (
                                     <input
-                                        disabled={cart.status !== 'idle'}
+                                        type="number"
+                                        min={1}
+                                        max={999}
+                                        step={1}
+                                        pattern="[0-9]"
+                                        placeholder={t('quantity')}
+                                        disabled={status !== 'idle'}
                                         value={props.children}
                                         onInput={(event) => {
                                             event.currentTarget.value = event.currentTarget.value
@@ -401,14 +398,14 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                                                 .replace(/(\..*?)\..*/g, '$1');
 
                                             if (event.currentTarget.value === '') {
-                                                cart.linesRemove([line.id!]);
+                                                linesRemove([line.id!]);
                                                 return;
                                             }
 
                                             const quantity = Number.parseInt(event.currentTarget.value);
                                             if (quantity === line.quantity) return;
 
-                                            cart.linesUpdate([
+                                            linesUpdate([
                                                 {
                                                     id: line.id!,
                                                     quantity: quantity
@@ -420,12 +417,18 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale }) => {
                             }) as any
                         }
                     />
-                    <CartLineQuantityAdjustButton adjust="increase">
+                    <CartLineQuantityAdjustButton
+                        title="Increase" // TODO: i18n.
+                        adjust="increase"
+                    >
                         <FiPlus />
                     </CartLineQuantityAdjustButton>
                 </Quantity>
 
-                <RemoveButton onClick={() => cart.linesRemove([line.id!])}>
+                <RemoveButton
+                    title={`Remove "${product.vendor} ${product.title} - ${variant.title}" from the cart`} // TODO: i18n.
+                    onClick={() => linesRemove([line.id!])}
+                >
                     <FiTrash />
                 </RemoveButton>
             </QuantitySection>

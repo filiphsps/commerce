@@ -2,8 +2,8 @@ import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDoc
 
 import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
+import type { AbstractApi } from '@/utils/abstract-api';
 import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
-import type { AbstractApi } from './abstract-api';
 
 const Prefetch = ({
     client,
@@ -11,7 +11,7 @@ const Prefetch = ({
     initialData
 }: {
     client: AbstractApi;
-    page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData;
+    page?: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData | null;
     initialData?: any;
 }) => {
     return new Promise<{
@@ -20,7 +20,10 @@ const Prefetch = ({
         shop?: any;
         vendors?: any;
     }>(async (resolve, reject) => {
-        if (!page) return reject(new Error(`400: Invalid page`));
+        if (!page) {
+            console.warn('No page data was supplied to prefetch.');
+            return resolve({});
+        }
 
         const slices = page?.slices;
         let collections = initialData?.collections || {},
@@ -117,7 +120,7 @@ const Prefetch = ({
                         break;
                 }
             } catch (error) {
-                console.error(error);
+                reject(error);
             }
         }
 

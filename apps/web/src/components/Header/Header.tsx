@@ -4,7 +4,6 @@ import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
 import { HeaderNavigation } from '@/components/Header/header-navigation';
 import styles from '@/components/Header/header.module.scss';
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale } from '@/utils/locale';
@@ -53,11 +52,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         prefetch={false}
                     >
                         <FiSearch />
-                    </Link>
-                </div>
-                <div className={styles.action}>
-                    <Link title="Language and Region settings" href="/countries/" prefetch={false}>
-                        <CurrentLocaleFlag />
                     </Link>
                 </div>
                 <div className={`${styles.action} ${(0 > 0 && styles.active) || ''}`}>

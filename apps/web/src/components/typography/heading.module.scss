@@ -1,19 +1,33 @@
 .title {
-    font-size: 3.25rem;
-    line-height: 1.2;
-    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: normal;
+    font-weight: 600;
 
     &.bold {
+        font-size: 3.25rem;
+        line-height: 1.2;
         font-weight: 700;
         color: var(--accent-primary);
     }
 }
 .subtitle {
-    font-size: 2.5rem;
-    line-height: 1;
-    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1.15;
+    font-weight: 400;
 
     &.bold {
+        font-size: 2.5rem;
+        line-height: 1;
         font-weight: 500;
+    }
+}
+
+.title,
+.subtitle {
+    &:is(:hover, :focus, :focus-within) a {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        color: var(--accent-primary);
     }
 }

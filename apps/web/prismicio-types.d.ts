@@ -65,8 +65,7 @@ interface CollectionPageDocumentData {
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
-    slices: prismic.SliceZone<CollectionPageDocumentDataSlicesSlice>
-    /**
+    slices: prismic.SliceZone<CollectionPageDocumentDataSlicesSlice> /**
      * Meta Description field in *Collection Page*
      *
      * - **Field Type**: Rich Text
@@ -175,8 +174,7 @@ interface CustomPageDocumentData {
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
-    slices: prismic.SliceZone<CustomPageDocumentDataSlicesSlice>
-    /**
+    slices: prismic.SliceZone<CustomPageDocumentDataSlicesSlice> /**
      * Meta Description field in *Custom Page*
      *
      * - **Field Type**: Rich Text
@@ -367,6 +365,21 @@ export interface HeadDocumentDataAnnouncementsItem {
 }
 
 /**
+ * Item in *Header → Navigation*
+ */
+export interface HeadDocumentDataNavigationItem {
+    /**
+     * Menu field in *Header → Navigation*
+     *
+     * - **Field Type**: Content Relationship
+     * - **Placeholder**: *None*
+     * - **API ID Path**: head.navigation[].menu
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    menu: prismic.ContentRelationshipField<'menu_item'>;
+}
+
+/**
  * Content for Header documents
  */
 interface HeadDocumentData {
@@ -380,6 +393,17 @@ interface HeadDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#group
      */
     announcements: prismic.GroupField<Simplify<HeadDocumentDataAnnouncementsItem>>;
+
+    /**
+     * Navigation field in *Header*
+     *
+     * - **Field Type**: Group
+     * - **Placeholder**: *None*
+     * - **API ID Path**: head.navigation[]
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#group
+     */
+    navigation: prismic.GroupField<Simplify<HeadDocumentDataNavigationItem>>;
 }
 
 /**
@@ -394,6 +418,50 @@ interface HeadDocumentData {
 export type HeadDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
     Simplify<HeadDocumentData>,
     'head',
+    Lang
+>;
+
+type MenuItemDocumentDataSlicesSlice = NavigationItemSlice;
+
+/**
+ * Content for MenuItem documents
+ */
+interface MenuItemDocumentData {
+    /**
+     * Title field in *MenuItem*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: The name/title of the menu
+     * - **API ID Path**: menu_item.title
+     * - **Tab**: MenuItem
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Slice Zone field in *MenuItem*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: menu_item.slices[]
+     * - **Tab**: MenuItem
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */
+    slices: prismic.SliceZone<MenuItemDocumentDataSlicesSlice>;
+}
+
+/**
+ * MenuItem document from Prismic
+ *
+ * - **API ID**: `menu_item`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type MenuItemDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
+    Simplify<MenuItemDocumentData>,
+    'menu_item',
     Lang
 >;
 
@@ -533,8 +601,7 @@ interface ProductPageDocumentData {
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
-    slices: prismic.SliceZone<ProductPageDocumentDataSlicesSlice>
-    /**
+    slices: prismic.SliceZone<ProductPageDocumentDataSlicesSlice> /**
      * Meta Description field in *Product Page*
      *
      * - **Field Type**: Rich Text
@@ -565,8 +632,7 @@ interface ProductPageDocumentData {
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
-    meta_title: prismic.KeyTextField
-    /**
+    meta_title: prismic.KeyTextField /**
      * Slice Zone field in *Product Page*
      *
      * - **Field Type**: Slice Zone
@@ -767,6 +833,7 @@ export type AllDocumentTypes =
     | CustomPageDocument
     | FooterDocument
     | HeadDocument
+    | MenuItemDocument
     | NavigationDocument
     | ProductPageDocument
     | StoreDocument;
@@ -1606,6 +1673,68 @@ type VendorsSliceVariation = VendorsSliceDefault;
  */
 export type VendorsSlice = prismic.SharedSlice<'vendors', VendorsSliceVariation>;
 
+/**
+ * Primary content in *NavigationItem → Primary*
+ */
+export interface NavigationItemSliceDefaultPrimary {
+    /**
+     * Title field in *NavigationItem → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: The title/name of the link
+     * - **API ID Path**: navigation_item.primary.title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Link field in *NavigationItem → Primary*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: The target link
+     * - **API ID Path**: navigation_item.primary.link
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    link: prismic.LinkField;
+
+    /**
+     * Child Menu field in *NavigationItem → Primary*
+     *
+     * - **Field Type**: Content Relationship
+     * - **Placeholder**: *None*
+     * - **API ID Path**: navigation_item.primary.child_menu
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    child_menu: prismic.ContentRelationshipField<'menu_item'>;
+}
+
+/**
+ * Default variation for NavigationItem Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationItemSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<NavigationItemSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *NavigationItem*
+ */
+type NavigationItemSliceVariation = NavigationItemSliceDefault;
+
+/**
+ * NavigationItem Shared Slice
+ *
+ * - **API ID**: `navigation_item`
+ * - **Description**: NavigationItem
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type NavigationItemSlice = prismic.SharedSlice<'navigation_item', NavigationItemSliceVariation>;
+
 declare module '@prismicio/client' {
     interface CreateClient {
         (repositoryNameOrEndpoint: string, options?: prismic.ClientConfig): prismic.Client<AllDocumentTypes>;
@@ -1626,6 +1755,11 @@ declare module '@prismicio/client' {
             FooterDocumentDataBodySlice,
             HeadDocument,
             HeadDocumentData,
+            HeadDocumentDataAnnouncementsItem,
+            HeadDocumentDataNavigationItem,
+            MenuItemDocument,
+            MenuItemDocumentData,
+            MenuItemDocumentDataSlicesSlice,
             NavigationDocument,
             NavigationDocumentData,
             NavigationDocumentDataBodyLinkSlicePrimary,
@@ -1637,6 +1771,8 @@ declare module '@prismicio/client' {
             ProductPageDocumentDataSlices2Slice,
             StoreDocument,
             StoreDocumentData,
+            StoreDocumentDataCurrenciesItem,
+            StoreDocumentDataSocialItem,
             AllDocumentTypes,
             AlertSlice,
             AlertSliceDefaultPrimary,
@@ -1690,7 +1826,11 @@ declare module '@prismicio/client' {
             TitleSliceDefault,
             VendorsSlice,
             VendorsSliceVariation,
-            VendorsSliceDefault
+            VendorsSliceDefault,
+            NavigationItemSlice,
+            NavigationItemSliceDefaultPrimary,
+            NavigationItemSliceVariation,
+            NavigationItemSliceDefault
         };
     }
 }

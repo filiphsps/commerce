@@ -8,14 +8,8 @@ body {
     max-width: 100vw;
     padding: 0;
     margin: 0;
-    -moz-osx-font-smoothing: always;
-    -webkit-font-smoothing: always;
-    font-smooth: always;
-    overscroll-behavior-x: none;
     font-size: 11px;
     font-family: var(--font-primary);
-    touch-action: manipulation;
-    text-size-adjust: auto;
     color: var(--color-dark);
     background: var(--color-bright);
 
@@ -23,21 +17,16 @@ body {
         font-size: 10px;
     }
 
-    .zEWidget-launcher {
-        z-index: 1 !important;
-        margin: 2rem !important;
-    }
+    // Touch actions
+    touch-action: pan-y;
+    overscroll-behavior: auto none;
 
-    // TODO: Figure out a way to stop this from blocking elements.
-    #dummy-chat-button-iframe {
-        right: 2rem !important;
-        bottom: 2rem !important;
-
-        @media screen and (max-width: 950px) {
-            right: 1.75rem !important;
-            bottom: 3rem !important;
-        }
-    }
+    // Deal with font rendering
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-smooth: always;
+    text-rendering: optimizeLegibility;
+    text-size-adjust: none;
 }
 
 :root {
@@ -99,6 +88,8 @@ body {
     --block-spacer-huge: 2rem;
 
     @media (max-width: 950px) {
+        --component-product-card-width: 22rem;
+
         --block-border-width: 0.3rem;
 
         --block-padding: 1rem;
@@ -108,6 +99,15 @@ body {
         --block-spacer: 0.75rem;
         --block-spacer-small: 0.5rem;
         --block-spacer-large: 1rem;
+    }
+}
+
+input[type='number'] {
+    -moz-appearance: textfield !important;
+    &::-webkit-inner-spin-button {
+        /*For Webkits like Chrome and Safari*/
+        -webkit-appearance: none;
+        margin: 0;
     }
 }
 

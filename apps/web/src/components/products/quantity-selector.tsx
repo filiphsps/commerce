@@ -79,8 +79,13 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
                     updateQuantity(quantityValue);
                 }}
                 onKeyDown={({ key, preventDefault }) => {
-                    if (key === 'Enter') return updateQuantity(quantityValue);
-                    else if (['.', ',', '-', '+'].includes(key)) return preventDefault();
+                    if (key === 'Enter') {
+                        updateQuantity(quantityValue);
+                        return;
+                    } else if (['.', ',', '-', '+'].includes(key)) {
+                        preventDefault();
+                        return;
+                    }
                 }}
                 onChange={(e) => {
                     const value = QuantityInputFilter(e?.target?.value, quantityValue);

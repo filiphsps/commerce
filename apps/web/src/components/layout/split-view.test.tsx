@@ -1,7 +1,7 @@
-import { describe, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, it } from 'vitest';
 
-import SplitView from './split-view';
+import SplitView from '@/components/layout/split-view';
 
 describe('SplitView', () => {
     it('renders aside and primary content', async () => {
