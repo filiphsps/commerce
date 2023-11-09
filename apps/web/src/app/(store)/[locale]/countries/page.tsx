@@ -11,7 +11,6 @@ import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import LocaleSelector from './locale-selector';
 
 export type CountriesPageParams = { locale: string };
@@ -41,19 +40,17 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                     <LocaleSelector countries={countries} store={store} locale={locale} />
                 </PageContent>
 
-                <Suspense>
-                    {page?.slices && page?.slices.length >= 0 && (
-                        <PrismicPage
-                            store={store}
-                            locale={locale}
-                            page={page}
-                            prefetch={prefetch}
-                            i18n={i18n}
-                            handle={handle}
-                            type={'custom_page'}
-                        />
-                    )}
-                </Suspense>
+                {page?.slices && page?.slices.length >= 0 && (
+                    <PrismicPage
+                        store={store}
+                        locale={locale}
+                        page={page}
+                        prefetch={prefetch}
+                        i18n={i18n}
+                        handle={handle}
+                        type={'custom_page'}
+                    />
+                )}
             </PageContent>
         </Page>
     );

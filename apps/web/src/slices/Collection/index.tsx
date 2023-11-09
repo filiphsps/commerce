@@ -22,7 +22,7 @@ const Content = styled.div`
     gap: var(--block-spacer-large);
 
     padding: var(--block-padding-large);
-    background: color-mix(in srgb, var(--accent-primary-light) 30%, var(--color-bright));
+    background: var(--color-block);
     border-radius: var(--block-border-radius);
     color: var(--foreground);
 `;
@@ -88,7 +88,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 <Header $alignment={slice.primary.alignment}>
                                     <Link
                                         href={`/collections/${slice.primary.handle!}`}
-                                        title={`View all products in "${asText(slice.primary.title)}"`}
+                                        title={`View all products in "${asText(slice.primary.title)}"`} // TODO: i18n.
                                         prefetch={false}
                                     >
                                         <CollectionTitle

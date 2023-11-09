@@ -151,5 +151,12 @@ const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<{ [key: string
     zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */
 };
 
+/***
+ * Get dictionary for locale.
+ * @todo Handle templates.
+ *
+ * @param {Locale} locale - Locale to get dictionary for.
+ * @returns {Promise<LocaleDictionary>} Promise with dictionary.
+ */
 export const getDictionary = async (locale: Locale): Promise<LocaleDictionary> =>
     (dictionaries[locale.language.toLowerCase() as keyof typeof dictionaries]?.() ?? {}) as LocaleDictionary;
