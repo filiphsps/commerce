@@ -1,10 +1,12 @@
 'use client';
 
 import styles from '@/components/products/add-to-cart.module.scss';
-import { Locale, LocaleDictionary, useTranslation } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { useTranslation } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
-import { ReactNode, useState, type HTMLProps } from 'react';
+import type { ReactNode } from 'react';
+import { useState, type HTMLProps } from 'react';
 import { TbShoppingBagCheck, TbShoppingBagPlus } from 'react-icons/tb';
 
 export type AddToCartProps = {
@@ -48,7 +50,7 @@ export const AddToCart = (props: AddToCartProps) => {
         <button
             {...RemoveInvalidProps({ ...props, children: undefined, type: (props.type as any) || 'button' })}
             className={`${styles.button} ${styles.addToCart} ${(animation && styles.success) || ''} ${className || ''}`}
-            disabled={!selectedVariant!.availableForSale || !ready || quantity < 1}
+            disabled={!selectedVariant!.availableForSale || quantity < 1}
             onClick={() => {
                 clearTimeout(animation);
                 setAnimation(
@@ -65,6 +67,7 @@ export const AddToCart = (props: AddToCartProps) => {
                     }
                 ]);
             }}
+            title={`Add ${quantity} to your cart`} // TODO: i18n.
         >
             {icon} {label}
         </button>
