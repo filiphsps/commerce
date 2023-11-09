@@ -1,10 +1,12 @@
 'use client';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
+import Link from '@/components/link';
 import styles from '@/components/products/product-actions-container.module.scss';
 import type { Locale } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
-import { useProduct } from '@shopify/hydrogen-react';
+import { parseGid, useProduct } from '@shopify/hydrogen-react';
+import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
 import styled from 'styled-components';
 
@@ -17,7 +19,7 @@ const OptionValues = styled.div`
     height: 100%;
 `;
 
-const OptionValue = styled.div`
+const OptionValue = styled(Link)`
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer-small);
@@ -31,21 +33,22 @@ const OptionValue = styled.div`
     font-weight: 600;
     transition: 150ms ease-in-out;
     user-select: none;
-    cursor: pointer;
 
-    &:hover:not(.Selected),
-    &:active,
-    &:focus {
+    &.clickable {
+        cursor: pointer;
+    }
+
+    &:is(:active, :focus, :focus-within, :hover:not(.selected)) {
         border-color: var(--color-block-dark);
     }
 
-    &.Selected {
+    &.selected {
         border-color: var(--accent-primary);
         color: var(--accent-primary);
         font-weight: 800;
     }
 
-    &.Disabled,
+    &.disabled,
     &:disabled {
         opacity: 0.5;
         pointer-events: none;
@@ -64,26 +67,34 @@ const OptionValue = styled.div`
 
 export type ProductOptionProps = {
     locale: Locale;
+    initialVariant: ProductVariant;
+    selectedVariant: ProductVariant;
 } & HTMLProps<HTMLDivElement>;
 export const ProductOptions = (props: ProductOptionProps) => {
-    const { locale } = props;
-    const { options, selectedOptions, setSelectedOptions, isOptionInStock } = useProduct();
+    const { locale, initialVariant, selectedVariant } = props;
+    const { options, variants, selectedOptions, setSelectedOptions, isOptionInStock, product } = useProduct();
+
+    if (!product) {
+        console.error('No product found. Have you wrapped your component in a `<ProductProvider>`?');
+        return null;
+    }
+    const { handle } = product;
 
     return (
         <>
             <div style={{ gridArea: 'option-labels' }}>
-                {options?.map((option) =>
+                {options?.map((option, index) =>
                     option?.values ? (
                         <label key={option.name} className={styles.label}>
                             {option.name}
                         </label>
                     ) : (
-                        <div /> // Empty div to keep the grid layout
+                        <div key={option?.name || index} /> // Empty div to keep the grid layout.
                     )
                 )}
             </div>
             <div {...RemoveInvalidProps(props)}>
-                {options?.map((option) =>
+                {options?.map((option, index) =>
                     option?.values ? (
                         <OptionValues key={option.name}>
                             {option.values.map((value) => {
@@ -100,19 +111,56 @@ export const ProductOptions = (props: ProductOptionProps) => {
                                     });
                                 }
 
-                                // TODO: Disable options that aren't purchasable available, ie out of stock.
-                                return (
-                                    <OptionValue
-                                        key={value}
-                                        className={`${
-                                            (selectedOptions?.[option.name!] === value && 'Selected') || ''
-                                        } ${(!isOptionInStock(option.name!, value!) && 'Disabled') || ''}`}
-                                        onClick={() =>
+                                // FIXME: Handle options to variant properly.
+                                // FIXME: Handle options to variant properly.
+                                const matchingVariant =
+                                    (value &&
+                                        title &&
+                                        variants
+                                            ?.filter((variant) => variant)
+                                            ?.find(
+                                                (variant) =>
+                                                    variant!.title?.toLowerCase()?.includes(value!.toLowerCase()) ||
+                                                    variant!.title?.toLowerCase()?.includes(title!.toLowerCase())
+                                            )) ||
+                                    undefined;
+                                let href = `/products/${handle}/`;
+                                let asComponent: any = Link;
+
+                                if (matchingVariant) {
+                                    if (matchingVariant.id !== initialVariant.id)
+                                        href = `${href}?variant=${parseGid(matchingVariant?.id).id}`;
+
+                                    if (selectedVariant && selectedVariant.id === matchingVariant.id)
+                                        asComponent = 'div';
+                                }
+
+                                const extraProps =
+                                    (asComponent !== 'div' && {
+                                        locale: locale,
+                                        href: href,
+                                        replace: true,
+                                        onClick: () =>
                                             setSelectedOptions({
                                                 ...(selectedOptions as any),
                                                 [option.name!]: value!
                                             })
-                                        }
+                                    }) ||
+                                    {};
+
+                                return (
+                                    <OptionValue
+                                        key={value}
+                                        as={asComponent}
+                                        title={`${product?.vendor} ${product?.title} - ${
+                                            title || matchingVariant?.title
+                                        }`}
+                                        className={`${
+                                            (selectedOptions?.[option.name!] === value && 'selected') || ''
+                                        } ${(!isOptionInStock(option.name!, value!) && 'disabled') || ''} ${
+                                            (asComponent !== 'div' && 'clickable') || ''
+                                        }`}
+                                        {...extraProps}
                                     >
                                         {title}
                                     </OptionValue>
@@ -120,7 +168,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
                             })}
                         </OptionValues>
                     ) : (
-                        <div /> // Empty div to keep the grid layout
+                        <div key={option?.name || index} /> // Empty div to keep the grid layout
                     )
                 )}
             </div>

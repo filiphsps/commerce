@@ -6,7 +6,8 @@ export type AbstractApi<Q = any> = {
     locale: () => Locale;
     query: <T>(
         query: Q,
-        variables?: Record<string, string | number | null>
+        variables?: Record<string, string | number | object | Array<string | number | object> | null>,
+        tags?: string[]
     ) => Promise<{ data: T | null; errors: readonly any[] | undefined }>;
 };
 export type AbstractApiBuilder<K, Q> = ({
@@ -35,17 +36,22 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
 export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNode | TypedDocumentNode<any, any>> = ({
     api,
     locale,
-    fetchPolicy = 'no-cache',
-    tags = []
+    fetchPolicy = 'no-cache'
 }) => ({
     locale: () => locale,
-    query: async (query, variables = {}) => {
+    query: async (query, variables = {}, tags = []) => {
         const { data, errors } = await api.query({
             query,
             fetchPolicy,
             context: {
                 language: locale.country,
-                locale: locale.country
+                locale: locale.country,
+                fetchOptions: {
+                    cache: fetchPolicy,
+                    next: {
+                        tags: ['shopify', ...tags]
+                    }
+                }
             },
             variables: {
                 language: locale.language,

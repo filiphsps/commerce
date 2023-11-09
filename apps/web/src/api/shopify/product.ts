@@ -221,13 +221,13 @@ export const ProductApi = async ({ client, handle }: { client: AbstractApi; hand
         try {
             const { data, errors } = await client.query<{ productByHandle: Product }>(
                 gql`
-                    fragment product on Product {
+                    fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
                     }
 
                     query product($handle: String!) {
                         productByHandle(handle: $handle) {
-                            ...product
+                            ...ProductFragment
                         }
                     }
                 `,
@@ -312,7 +312,7 @@ export const ProductsApi = async ({
         try {
             const { data, errors } = await client.query<{ products: ProductConnection }>(
                 gql`
-                    fragment product on Product {
+                    fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
                     }
 
@@ -326,7 +326,7 @@ export const ProductsApi = async ({
                             edges {
                                 cursor
                                 node {
-                                    ...product
+                                    ...ProductFragment
                                 }
                             }
                             pageInfo {
@@ -403,7 +403,7 @@ export const ProductsPaginationApi = async ({
         try {
             const { data } = await client.query<{ products: ProductConnection }>(
                 gql`
-                    fragment product on Product {
+                    fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
                     }
 
@@ -419,7 +419,7 @@ export const ProductsPaginationApi = async ({
                             edges {
                                 cursor
                                 node {
-                                    ...product
+                                    ...ProductFragment
                                 }
                             }
                             pageInfo {

@@ -75,7 +75,7 @@ export const createClient = (config: CreateClientConfig & { locale?: Locale } = 
         routes,
         accessToken: accessToken || undefined,
         fetchOptions: {
-            cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'no-store',
+            cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'default',
             next: { tags: ['prismic'] }
         },
         defaultParams: {

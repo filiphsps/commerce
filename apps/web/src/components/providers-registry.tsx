@@ -25,14 +25,22 @@ export default function ProvidersRegistry({
     locale: Locale;
     apiConfig: ApiConfig;
 }) {
+    const {
+        storefront_id: storefrontId,
+        token: storefrontToken,
+        checkout_domain: storeDomain,
+        api: storefrontVersion
+    } = BuildConfig.shopify;
+    const toolbar = (BuildConfig.prismic.toolbar && <PrismicPreview repositoryName={Prismic.repositoryName} />) || null;
+
     return (
         <StyledComponentsRegistry>
             <PrismicProvider client={createClient({ locale })} linkResolver={linkResolver}>
                 <ShopifyProvider
-                    storefrontId={BuildConfig.shopify.storefront_id}
-                    storeDomain={`https://${BuildConfig.shopify.checkout_domain}`}
-                    storefrontApiVersion={BuildConfig.shopify.api}
-                    storefrontToken={BuildConfig.shopify.token}
+                    storefrontId={storefrontId}
+                    storeDomain={`https://${storeDomain}`}
+                    storefrontApiVersion={storefrontVersion}
+                    storefrontToken={storefrontToken}
                     countryIsoCode={locale.country}
                     languageIsoCode={locale.language}
                 >
@@ -40,9 +48,7 @@ export default function ProvidersRegistry({
                         <ApiProvider apiConfig={apiConfig}>
                             <HeaderProvider>
                                 {children}
-                                {BuildConfig.prismic.toolbar ? (
-                                    <PrismicPreview repositoryName={Prismic.repositoryName} />
-                                ) : null}
+                                {toolbar}
                             </HeaderProvider>
                         </ApiProvider>
                     </CartProvider>
