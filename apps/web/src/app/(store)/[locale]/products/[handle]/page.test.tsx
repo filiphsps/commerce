@@ -30,21 +30,19 @@ describe('Pages', () => {
 
     // Mock `@shopify/hydrogen-react`.
     vi.mock('@shopify/hydrogen-react', async () => {
-        const module: any = await vi.importActual('@shopify/hydrogen-react');
-
         return {
-            ...module,
+            ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+            flattenConnection: vi.fn().mockImplementation((data) => data),
             useProduct: vi.fn().mockReturnValue({
                 selectedVariant: {
                     availableForSale: true
                 },
-                variants: {
-                    edges: [
-                        {
-                            availableForSale: true
-                        }
-                    ]
-                }
+                product: {},
+                variants: [
+                    {
+                        availableForSale: true
+                    }
+                ]
             }),
             useCart: vi.fn().mockReturnValue({
                 status: 'uninitialized'

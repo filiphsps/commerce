@@ -20,7 +20,13 @@ export const PagesApi = async ({
         try {
             const client = _client || createClient({ locale });
             const pages = await client.getAllByType('custom_page', {
-                lang: locale.locale
+                lang: locale.locale,
+                fetchOptions: {
+                    cache: undefined,
+                    next: {
+                        revalidate: 120
+                    }
+                }
             });
 
             if (!pages) return reject();
@@ -70,6 +76,7 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
             const { data: page } = await client.getByUID(type, handle, {
                 lang: locale.locale,
                 fetchOptions: {
+                    cache: undefined,
                     next: {
                         revalidate: 120
                     }

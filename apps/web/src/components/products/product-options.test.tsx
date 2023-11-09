@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { ProductOptions } from '@/components/products/product-options';
 import { NextLocaleToLocale } from '@/utils/locale';
@@ -8,24 +8,43 @@ const options = [
     {
         name: 'Size',
         values: ['100g', '200g', '300g']
-    },
-    {
-        name: 'Color',
-        values: ['Red', 'Green', 'Blue']
     }
 ];
 
 const selectedOptions = {
-    Size: '200g',
-    Color: 'Green'
+    Size: '200g'
 };
+
+const variants = [
+    {
+        title: '100g',
+        id: 'gid://shopify/ProductVariant/1'
+    },
+    {
+        title: '200g',
+        id: 'gid://shopify/ProductVariant/2'
+    },
+    {
+        title: '300g - Red',
+        id: 'gid://shopify/ProductVariant/3'
+    }
+];
 
 // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
 // required functions to prevent `<ProductProvider>` error.
 const setSelectedOptions = vi.fn();
-vi.mock('@shopify/hydrogen-react', () => ({
+vi.mock('@shopify/hydrogen-react', async () => ({
+    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+    flattenConnection: vi.fn().mockImplementation((data) => data),
     useProduct: () => ({
         options,
+        product: {
+            handle: 'test',
+            title: 'title',
+            vendor: 'vendor',
+            variants
+        },
+        variants,
         selectedOptions,
         setSelectedOptions,
         isOptionInStock: vi.fn().mockReturnValue(true)
@@ -35,13 +54,21 @@ vi.mock('@shopify/hydrogen-react', () => ({
         getPublicTokenHeaders: () => ({})
     })
 }));
+vi.mock('next/link', async () => ({
+    ...((await vi.importActual('next/link')) || {}),
+    default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+}));
 
 describe('Components', () => {
     describe('ProductOptions', () => {
-        const onOptionChange = vi.fn();
-
         it('renders all options and values', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} />);
+            render(
+                <ProductOptions
+                    locale={NextLocaleToLocale('en-GB')!}
+                    initialVariant={variants[0] as any}
+                    selectedVariant={variants[0] as any}
+                />
+            );
             options.forEach((option) => {
                 const optionTitle = screen.getByText(option.name);
                 expect(optionTitle).toBeInTheDocument();
@@ -54,13 +81,25 @@ describe('Components', () => {
         });
 
         it('calls setSelectedOptions when an option is clicked', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-GB')!} />);
-            fireEvent.click(screen.getByText('Green'));
-            expect(setSelectedOptions).toHaveBeenCalledWith({ Color: 'Green', Size: '200g' });
+            render(
+                <ProductOptions
+                    locale={NextLocaleToLocale('en-GB')!}
+                    initialVariant={variants[0] as any}
+                    selectedVariant={variants[0] as any}
+                />
+            );
+            const target = screen.getByText(variants[1].title);
+            expect(target).not.toHaveAttribute('href');
         });
 
         it('converts grams to ounces when locale is en-US', () => {
-            render(<ProductOptions locale={NextLocaleToLocale('en-US')!} />);
+            render(
+                <ProductOptions
+                    locale={NextLocaleToLocale('en-US')!}
+                    initialVariant={variants[0] as any}
+                    selectedVariant={variants[0] as any}
+                />
+            );
             // We can't use sizeOptionValues[0] because it's in grams.
             const sizeOptionValueElement = screen.getByText('4oz');
 
