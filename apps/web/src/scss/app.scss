@@ -52,7 +52,7 @@ body {
 
     --color-lights-out: #051821;
 
-    --color-block: #e6e6e6;
+    --color-block: #ececec;
     --color-block-dark: #bebebe;
     --color-block-black: #7c7c7c;
     --color-block-shadow: rgba(0, 0, 0, 0.35);
@@ -88,7 +88,7 @@ body {
     --block-spacer-huge: 2rem;
 
     @media (max-width: 950px) {
-        --component-product-card-width: 22rem;
+        --component-product-card-width: 21.75rem;
 
         --block-border-width: 0.3rem;
 
@@ -116,4 +116,12 @@ input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-results-button,
 input[type='search']::-webkit-search-results-decoration {
     -webkit-appearance: none;
+}
+
+@media (max-width: 950px) {
+    body[data-menu-open='true'] {
+        height: 100vh;
+        overflow: hidden;
+        overscroll-behavior: none none;
+    }
 }

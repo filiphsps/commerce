@@ -2,32 +2,39 @@
     font-size: 2.5rem;
     line-height: normal;
     font-weight: 600;
+    color: var(--color-dark);
+    transition: 150ms ease-in-out color;
 
     &.bold {
-        font-size: 3.25rem;
+        font-size: 3.45rem;
         line-height: 1.2;
         font-weight: 700;
         color: var(--accent-primary);
     }
+
+    &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {
+        text-decoration: underline;
+        text-decoration-thickness: 0.2rem;
+        color: var(--accent-primary-light);
+    }
 }
+
 .subtitle {
     font-size: 1.75rem;
     line-height: 1.15;
     font-weight: 400;
+    color: var(--color-dark);
+    transition: 150ms ease-in-out all;
 
     &.bold {
         font-size: 2.5rem;
         line-height: 1;
         font-weight: 500;
     }
-}
 
-.title,
-.subtitle {
-    &:is(:hover, :focus, :focus-within) a {
+    &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {
         text-decoration: underline;
-        text-decoration-style: dotted;
         text-decoration-thickness: 0.2rem;
-        color: var(--accent-primary);
+        color: var(--accent-secondary);
     }
 }

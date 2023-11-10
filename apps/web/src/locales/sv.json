@@ -18,9 +18,7 @@
         "cart-not-ready": "En sekund...",
         "out-of-stock": "Slutsåld",
         "too-low-quantity": "För lågt antal",
-        "quantity": "Antal"
-    },
-    "header": {
+        "quantity": "Antal",
         "language-and-region-settings": "Språk- och regioninställningar"
     }
 }

@@ -1,13 +1,13 @@
 'use client';
+import type { Locale } from '@/utils/locale';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
     overflow: hidden;
     position: relative;
     height: 2.5rem;
+    width: auto;
     aspect-ratio: 3 / 2;
 
     img {
@@ -18,23 +18,18 @@ const Container = styled.div`
     }
 `;
 
-interface CurrentLocaleFlagProps {}
-export const CurrentLocaleFlag: FunctionComponent<CurrentLocaleFlagProps> = ({}) => {
-    const route = usePathname();
-
-    if (!route) return null;
-    const locale = route.split('/').at(1); // FIXME: Handle this properly.
-
-    if (!locale || locale === 'x-default') return null;
-
+type CurrentLocaleFlagProps = {
+    locale: Locale;
+};
+export const CurrentLocaleFlag = ({ locale }: CurrentLocaleFlagProps) => {
     return (
         <Container>
             <Image
-                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.split('-').at(-1)}.svg`}
-                alt={locale}
+                src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
+                alt={locale.locale}
                 width="25"
                 height="25"
-                aria-label={locale}
+                aria-label={locale.locale}
                 priority
             />
         </Container>

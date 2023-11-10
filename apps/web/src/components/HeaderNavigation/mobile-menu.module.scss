@@ -1,0 +1,24 @@
+@import '@/style/variables.scss';
+
+.container {
+    position: absolute;
+    inset: 6rem 0 0 -100vw;
+    padding-top: var(--block-padding);
+    z-index: 0;
+    width: 85vw;
+    height: calc(100vh - 6rem);
+    background: var(--accent-secondary-light);
+    color: var(--color-dark);
+    transition: 150ms ease-in-out all;
+    box-shadow: 1rem 1rem 1rem -0.75rem var(--color-block-shadow);
+
+    @media (min-width: 1150px) {
+        display: none;
+    }
+}
+
+[data-menu-open='true'] {
+    .container {
+        left: 0;
+    }
+}

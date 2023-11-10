@@ -18,9 +18,7 @@
         "cart-not-ready": "Hang on...",
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
-        "quantity": "Quantity"
-    },
-    "header": {
+        "quantity": "Quantity",
         "language-and-region-settings": "Language and Region settings"
     }
 }

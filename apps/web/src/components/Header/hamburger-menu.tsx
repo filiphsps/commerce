@@ -1,19 +1,33 @@
-import { FiAlignLeft, FiX } from 'react-icons/fi';
-import type { HTMLProps, ReactNode } from 'react';
+'use client';
 
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
+import { useState, type HTMLProps, type ReactNode } from 'react';
+import { TbMenuDeep, TbX } from 'react-icons/tb';
+
 import styles from '@/components/Header/hamburger-menu.module.scss';
+import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 
 type HamburgerMenuProps = {
     children?: ReactNode;
-    open?: boolean;
 } & HTMLProps<HTMLDivElement>;
 export const HamburgerMenu = (props: HamburgerMenuProps) => {
-    const { open } = props;
+    const [open, setOpen] = useState(false);
 
     return (
-        <div {...RemoveInvalidProps(props)} className={`${styles.container} ${props.className || ''}`}>
-            {open ? <FiX className={styles.icon} /> : <FiAlignLeft className={styles.icon} />}
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div
+            {...RemoveInvalidProps(props)}
+            onClick={() => {
+                if (document.body.hasAttribute('data-menu-open')) {
+                    document.body.removeAttribute('data-menu-open');
+                    setOpen(false);
+                } else {
+                    document.body.setAttribute('data-menu-open', 'true');
+                    setOpen(true);
+                }
+            }}
+            className={`${styles.container} ${(open && styles.open) || ''} ${props.className || ''}`}
+        >
+            {open ? <TbX className={styles.icon} /> : <TbMenuDeep className={styles.icon} />}
         </div>
     );
 };

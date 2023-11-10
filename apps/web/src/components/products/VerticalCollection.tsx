@@ -46,6 +46,7 @@ const Content = styled.div<{ $short?: boolean }>`
 
     @media (min-width: 385px) {
         grid-template-columns: 1fr 1fr;
+        gap: var(--block-spacer-large);
     }
 
     @media (min-width: 625px) {

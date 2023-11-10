@@ -1,16 +1,14 @@
-import { FooterApi } from '@/api/footer';
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
 import type { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
-import type { Locale } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { useTranslation } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
-import { usePrismicClient } from '@prismicio/react';
 import Image from 'next/image';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import useSWR from 'swr';
 
 const Logo = styled.div`
     position: relative;
@@ -193,23 +191,12 @@ const Social = styled(Link)`
 
 interface FooterProps {
     store?: StoreModel;
-    locale: Locale;
     data?: FooterModel;
+    locale: Locale;
+    i18n: LocaleDictionary;
 }
-const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
-    const { data: footer } = useSWR(
-        [
-            'FooterApi',
-            {
-                locale: locale,
-                client: usePrismicClient()
-            }
-        ],
-        ([, props]) => FooterApi(props),
-        {
-            fallbackData: data
-        }
-    );
+const Footer: FunctionComponent<FooterProps> = ({ store, data: footer, locale, i18n }) => {
+    const { t } = useTranslation('common', i18n);
 
     // TODO: Dynamic copyright copy and content.
     return (
@@ -280,11 +267,8 @@ const Footer: FunctionComponent<FooterProps> = ({ store, locale, data }) => {
                                         />
                                     </Social>
                                 ))}
-                            <Link
-                                href="/countries/"
-                                title="Select language and region." // FIXME: i18n.
-                            >
-                                <CurrentLocaleFlag />
+                            <Link href="/countries/" title={t('language-and-region-settings')}>
+                                <CurrentLocaleFlag locale={locale} />
                             </Link>
                         </Socials>
                         <LegalAndCopyright>

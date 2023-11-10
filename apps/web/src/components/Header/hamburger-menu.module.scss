@@ -7,13 +7,20 @@
     height: 100%;
     width: 5rem;
     cursor: pointer;
-    background: var(--accent-primary);
+    background: transparent;
     border-radius: var(--block-border-radius);
-    color: var(--accent-primary-text);
+    color: var(--accent-secondary-text);
+    transition: 150ms ease-in-out;
+
+    &.open {
+        background: var(--accent-primary);
+        color: var(--accent-primary-text);
+    }
 
     svg.icon {
         font-size: 3rem;
         line-height: 3rem;
+        transform: scaleX(-1);
     }
 
     @media (min-width: $breakpoint-tablet-medium) {

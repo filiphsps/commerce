@@ -133,6 +133,7 @@ export default async function ProductPage({
     }
 
     const variant = selectedVariant || initialVariant;
+    const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
     return (
         <Page className={styles.container}>
@@ -182,13 +183,17 @@ export default async function ProductPage({
                         selectedVariant={selectedVariant}
                     />
 
-                    <div className={styles.contentDivider} />
+                    {content ? (
+                        <>
+                            <div className={styles.contentDivider} />
 
-                    <Content
-                        dangerouslySetInnerHTML={{
-                            __html: todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || ''
-                        }}
-                    />
+                            <Content
+                                dangerouslySetInnerHTML={{
+                                    __html: content
+                                }}
+                            />
+                        </>
+                    ) : null}
 
                     <div className={styles.contentDivider} />
 

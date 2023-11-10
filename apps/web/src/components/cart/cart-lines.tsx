@@ -61,8 +61,14 @@ export default function CartLines({ cart, locale, i18n }: CartContentProps) {
 
     return (
         <Container>
-            <Suspense>
-                <tbody>
+            <tbody>
+                <Suspense
+                    fallback={
+                        <>
+                            <CartItem locale={locale} i18n={i18n} />
+                        </>
+                    }
+                >
                     {lines?.map((item) => {
                         if (!item) return null;
 
@@ -72,8 +78,8 @@ export default function CartLines({ cart, locale, i18n }: CartContentProps) {
                             </CartLineProvider>
                         );
                     })}
-                </tbody>
-            </Suspense>
+                </Suspense>
+            </tbody>
         </Container>
     );
 }

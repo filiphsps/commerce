@@ -1,4 +1,4 @@
-import { FiSearch, FiShoppingBag } from 'react-icons/fi';
+import { TbSearch, TbShoppingBag } from 'react-icons/tb';
 
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
@@ -13,20 +13,13 @@ import type { FunctionComponent } from 'react';
 interface HeaderProps {
     store?: StoreModel;
     navigation?: any;
-    sidebarToggle?: any;
-    sidebarOpen?: boolean;
     locale: Locale;
 }
-const HeaderComponent: FunctionComponent<HeaderProps> = ({
-    store,
-    navigation,
-    /*sidebarToggle,*/ sidebarOpen,
-    locale
-}) => {
+const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, locale }) => {
     //onClick={() => sidebarToggle?.()}
     return (
         <HeaderContainer>
-            <HamburgerMenu open={sidebarOpen} />
+            <HamburgerMenu />
 
             <div className={styles.logo}>
                 <Link href={'/'} prefetch={false}>
@@ -51,7 +44,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         title="Search for products, collections and pages across the whole store"
                         prefetch={false}
                     >
-                        <FiSearch />
+                        <TbSearch />
                     </Link>
                 </div>
                 <div className={`${styles.action} ${(0 > 0 && styles.active) || ''}`}>
@@ -60,7 +53,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({
                         href={'/cart/'}
                         prefetch={false}
                     >
-                        <FiShoppingBag />
+                        <TbShoppingBag />
                     </Link>
                 </div>
             </div>

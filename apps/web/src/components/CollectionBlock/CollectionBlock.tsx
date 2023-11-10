@@ -6,6 +6,7 @@ import styles from '@/components/CollectionBlock/collection-block.module.scss';
 import ProductCard from '@/components/ProductCard';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -104,7 +105,7 @@ const CollectionBlock = ({
                         <ProductProvider
                             key={product?.id}
                             data={product}
-                            initialVariantId={product.variants.edges.at(-1)?.node.id || undefined}
+                            initialVariantId={FirstAvailableVariant(product)?.id}
                         >
                             <ProductCard
                                 handle={product?.handle}
@@ -123,11 +124,10 @@ const CollectionBlock = ({
                             href={`/collections/${handle}/`}
                             className={styles.viewAll}
                             locale={locale}
+                            title="Browse all products"
                             prefetch={false}
                         >
-                            View all the
-                            <br />
-                            items
+                            Browse all products
                         </Link>
                     )
                 }
