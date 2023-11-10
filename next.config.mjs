@@ -8,6 +8,7 @@ let config = {
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
+    skipTrailingSlashRedirect: true,
     swcMinify: true,
     i18n,
     productionBrowserSourceMaps: false,
