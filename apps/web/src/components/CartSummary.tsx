@@ -303,7 +303,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
             )) ||
                 null}
 
-            {(totalQuantity && !['idle', 'uninitialized'].includes(status) && (
+            {(totalQuantity > 0 && ['idle', 'uninitialized'].includes(status) && (
                 <Block>
                     <Breakdown>
                         <BreakdownItem>
