@@ -51,16 +51,16 @@ export default function middleware(req: NextRequest) {
         }
     }
 
-    // Make sure we end with a slash.
-    if (!newUrl.pathname.endsWith('/')) {
-        newUrl.pathname += '/';
-    }
-
     // Remove `x-default` if it's still there.
     newUrl.pathname = newUrl.pathname.replaceAll('x-default/', '');
 
     // Make sure we don't have any double slashes.
     newUrl.pathname = newUrl.pathname.replaceAll(/\/\//g, '/');
+
+    // Make sure we end with a slash.
+    if (!newUrl.pathname.endsWith('/')) {
+        newUrl.pathname += '/';
+    }
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
@@ -70,6 +70,7 @@ export default function middleware(req: NextRequest) {
     return undefined;
 }
 export const config = {
-    matcher: ['/:path*']
+    matcher: ['/:path*'],
+    skipTrailingSlashRedirect: true
     //matcher: '/((?!api|_next/static|_next/image|favicon).*)'
 };
