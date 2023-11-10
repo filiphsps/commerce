@@ -1,9 +1,12 @@
+import type { StoreModel } from '@/models/StoreModel';
+import { AppProgressBar } from 'next-nprogress-bar';
 import { useEffect, type ReactNode } from 'react';
 
 type HeaderProviderProps = {
-    children?: ReactNode;
+    children: ReactNode;
+    store: StoreModel;
 };
-export const HeaderProvider = ({ children }: HeaderProviderProps) => {
+export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     useEffect(() => {
         const onScroll = () => {
             const scroll = Math.floor(window.scrollY);
@@ -18,5 +21,15 @@ export const HeaderProvider = ({ children }: HeaderProviderProps) => {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    return <>{children}</>;
+    return (
+        <>
+            {children}
+            <AppProgressBar
+                height="4px"
+                color={store.accent.primary}
+                options={{ showSpinner: true }}
+                shallowRouting={false}
+            />
+        </>
+    );
 };

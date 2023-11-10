@@ -69,6 +69,7 @@
         "convert-units": "2.3.4",
         "destyle.css": "4.0.0",
         "next": "14.0.2",
+        "next-nprogress-bar": "2.1.2",
         "next-seo": "6.4.0",
         "react": "18.2.0",
         "react-dom": "18.2.0",

@@ -10,6 +10,7 @@ import type { ApiConfig } from '@/api/client';
 import { HeaderProvider } from '@/components/Header/header-provider';
 import ApiProvider from '@/components/api-provider';
 import StyledComponentsRegistry from '@/components/styled-components-registry';
+import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { PrismicPreview } from '@prismicio/next';
@@ -19,11 +20,13 @@ import type { ReactNode } from 'react';
 export default function ProvidersRegistry({
     children,
     locale,
-    apiConfig
+    apiConfig,
+    store
 }: {
     children: ReactNode;
     locale: Locale;
     apiConfig: ApiConfig;
+    store: StoreModel;
 }) {
     const {
         storefront_id: storefrontId,
@@ -46,7 +49,7 @@ export default function ProvidersRegistry({
                 >
                     <CartProvider cartFragment={CartFragment}>
                         <ApiProvider apiConfig={apiConfig}>
-                            <HeaderProvider>
+                            <HeaderProvider store={store}>
                                 {children}
                                 {toolbar}
                             </HeaderProvider>

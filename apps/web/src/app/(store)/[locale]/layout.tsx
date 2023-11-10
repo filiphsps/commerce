@@ -173,7 +173,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                     ]}
                 />
 
-                <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()}>
+                <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()} store={store}>
                     <PageProvider
                         store={store}
                         locale={locale}
