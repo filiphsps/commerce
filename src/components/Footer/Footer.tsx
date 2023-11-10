@@ -1,15 +1,14 @@
-import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { FooterApi } from '@/api/footer';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
-import Link from 'next/link';
+import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import type { StoreModel } from '@/models/StoreModel';
-import { asText } from '@prismicio/client';
-import preval from '../../data.preval';
-import styled from 'styled-components';
+import { asHTML } from '@prismicio/client';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
+import preval from '../../data.preval';
 
 const Logo = styled.div`
     position: relative;
@@ -23,7 +22,7 @@ const Logo = styled.div`
         height: 100%;
         width: 100%;
         object-fit: contain;
-        object-position: center;
+        object-position: left;
 
         @media (min-width: 950px) {
             object-position: 0px;
@@ -224,16 +223,16 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                 <Image
                                     src={store?.logo.src}
                                     alt="Logo"
-                                    fill
-                                    sizes="(max-width: 950px) 75px, 250px"
-                                    loader={ImageLoader}
+                                    sizes="(max-width: 950px) 75px, 100px"
+                                    height={40}
+                                    width={75}
                                 />
                             )}
                         </Logo>
 
                         <Address
                             dangerouslySetInnerHTML={{
-                                __html: asText(footer?.address, '<br />') || ''
+                                __html: asHTML(footer?.address) || ''
                             }}
                         />
                     </FooterBlock>
@@ -261,7 +260,6 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                         <AcceptedPaymentMethods store={store!} />
                         <LegalAndCopyright>
                             <ImportantLinks>
-                                <Policy href="mailto:hello@sweetsideofsweden.com">Contact Us</Policy>
                                 <Policy href="/about/" prefetch={false}>
                                     About
                                 </Policy>

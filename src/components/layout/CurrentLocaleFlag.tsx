@@ -9,12 +9,10 @@ const Container = styled.div`
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 100%;
-    border: calc(var(--block-border-width) / 1.25) solid var(--accent-secondary-text);
+    border: calc(var(--block-border-width) / 1.5) solid var(--accent-secondary-text);
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            border-color: var(--accent-primary);
-        }
+    &:hover {
+        border-color: var(--accent-primary);
     }
 
     img {

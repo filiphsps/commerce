@@ -1,5 +1,4 @@
 import { Content } from '@prismicio/client';
-import { ImageLoader } from '@/utils/ImageLoader';
 import Link from 'next/link';
 import PageContent from '@/components/PageContent';
 import { PrismicNextImage } from '@prismicio/next';
@@ -106,9 +105,8 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                             <Banner
                                 field={image}
                                 width={300}
-                                height={300}
-                                sizes="(max-width: 950px) 250px, 25vw"
-                                loader={ImageLoader}
+                                height={200}
+                                sizes="(max-width: 950px) 150px, 300px"
                             />
                             <TitleContainer>
                                 <Title>{title}</Title>

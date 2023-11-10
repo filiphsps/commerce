@@ -429,6 +429,11 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
 
                 <Actions>
                     <Action>
+                        <Link title="Language and Region settings" href="/countries/" prefetch={false}>
+                            <CurrentLocaleFlag />
+                        </Link>
+                    </Action>
+                    <Action>
                         <Link
                             href={'/search/'}
                             className="Wrapper"
@@ -436,11 +441,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                             prefetch={false}
                         >
                             <FiSearch />
-                        </Link>
-                    </Action>
-                    <Action>
-                        <Link title="Language and Region settings" href="/countries/" prefetch={false}>
-                            <CurrentLocaleFlag />
                         </Link>
                     </Action>
                     <Action $active={(cart?.totalQuantity || 0) > 0}>

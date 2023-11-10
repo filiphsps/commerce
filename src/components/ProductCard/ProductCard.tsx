@@ -1,21 +1,20 @@
-import { ConvertToLocalMeasurementSystem, ProductApi, ProductVisualsApi } from '@/api/product';
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import { ConvertToLocalMeasurementSystem, ProductApi } from '@/api/product';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import styled, { css } from 'styled-components';
 
-import { Button } from '@/components/Button';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
-import Link from 'next/link';
 import type { ProductVisuals } from '@/api/product';
+import { Button } from '@/components/Button';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import useSWR from 'swr';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -371,7 +370,7 @@ const Container = styled.section<{ $available?: boolean }>`
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
     background: #f8efd3; // TODO: replace this.
-    color: #101418;  // TODO: replace this.
+    color: #101418; // TODO: replace this.
     border: var(--block-border-width) solid #f8efd3;
 
     &.Sale {
@@ -401,7 +400,7 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             title={image.altText || undefined}
             height={100}
             width={100}
-            loader={ImageLoader}
+            sizes="(max-width: 950px) 75px, 150px"
         />
     );
 };
@@ -418,7 +417,7 @@ interface ProductCardProps {
     store: StoreModel;
     className?: string;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: visualsData }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     const router = useRouter();
     const { t } = useTranslation('common');
     const [quantity, setQuantity] = useState(1);
@@ -437,20 +436,6 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, visuals: 
         ([, props]) => ProductApi(props),
         {
             fallbackData: productData as Product
-        }
-    );
-
-    const { data: visuals } = useSWR(
-        [
-            'ProductVisualsApi',
-            {
-                id: (product as any).visuals?.value,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ProductVisualsApi(props),
-        {
-            fallbackData: (visualsData || (product as any).visualsData) as ProductVisuals | undefined
         }
     );
 
