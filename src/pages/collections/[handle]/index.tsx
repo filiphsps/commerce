@@ -1,4 +1,4 @@
-import { CollectionApi, CollectionsApi } from '@/api/collection';
+import { CollectionApi } from '@/api/collection';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 
 import { RedirectCollectionApi } from '@/api/redirects';
@@ -187,24 +187,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
 };
 
 export const getStaticPaths: GetStaticPaths = async ({}) => {
-    const collections = await CollectionsApi();
-
-    let paths = [
-        ...collections
-            ?.map((collection) => [
-                {
-                    params: { handle: collection?.handle }
-                },
-                ...(['en-US'].map((locale) => ({
-                    params: { handle: collection?.handle },
-                    locale: locale
-                })) || [])
-            ])
-            .flat()
-            .filter((a) => a?.params?.handle)
-    ];
-
-    return { paths, fallback: 'blocking' };
+    return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<{

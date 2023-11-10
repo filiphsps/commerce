@@ -1,11 +1,10 @@
-import { ProductApi, ProductsApi } from '@/api/product';
+import { ProductApi } from '@/api/product';
 import { Badge, BadgeContainer } from '@/components/Badges';
 import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
 import type {
     Collection,
     Product,
-    ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
@@ -926,26 +925,7 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
 };
 
 export const getStaticPaths: GetStaticPaths = async ({}) => {
-    const data = await ProductsApi();
-
-    let paths = [
-        ...data.products
-            ?.map(({ node: product }: ProductEdge) => [
-                {
-                    params: { handle: product?.handle }
-                },
-                ...(['en-US'].map((locale) => ({
-                    // FIXME: Don't limit.
-                    params: { handle: product?.handle },
-                    locale: locale
-                })) || [])
-            ])
-            .flat()
-            .filter((a) => a?.params?.handle)
-            .filter((_, index) => index <= 50)
-    ];
-
-    return { paths, fallback: 'blocking' };
+    return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<{

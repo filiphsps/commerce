@@ -1,24 +1,23 @@
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '@/utils/Config';
-import type { CustomPageDocument } from '@/prismic/types';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { NextSeo } from 'next-seo';
-import { PagesApi } from '@/api/page';
-import { Prefetch } from '@/utils/Prefetch';
-import type { SSRConfig } from 'next-i18next';
-import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '@/models/StoreModel';
-import { asText } from '@prismicio/client';
-import { components } from '@/slices';
 import { createClient } from '@/prismic';
-import dynamic from 'next/dynamic';
+import type { CustomPageDocument } from '@/prismic/types';
+import { components } from '@/slices';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import { Prefetch } from '@/utils/Prefetch';
 import { getServerTranslations } from '@/utils/getServerTranslations';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { SSRConfig } from 'next-i18next';
+import { NextSeo } from 'next-seo';
+import dynamic from 'next/dynamic';
+import Error from 'next/error';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
 
 const Page = dynamic(() => import('@/components/Page'));
 const PageContent = dynamic(() => import('@/components/PageContent'));
@@ -111,18 +110,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
 };
 
 export const getStaticPaths: GetStaticPaths = async ({}) => {
-    const pages = await PagesApi({});
-
-    const paths = pages.paths.flatMap((path) => [
-        ...(['en-US'].map((locale) => ({
-            params: {
-                uid: (path !== '/' && path.split('/').filter((i) => i)) || undefined
-            },
-            locale
-        })) || [])
-    ]);
-
-    return { paths: paths, fallback: 'blocking' };
+    return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: localeData, previewData }) => {
@@ -189,7 +177,7 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
         console.error(error);
         return {
             props: {},
-            revalidate: 1
+            revalidate: 15
         };
     }
 };
