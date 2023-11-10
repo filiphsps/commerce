@@ -79,17 +79,12 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-// FIXME: We need to enable this to support dynamic locales.
 export const dynamicParams = true;
-export async function generateStaticParams() {
-    return [BuildConfig.i18n.default];
-    // TODO: return BuildConfig.i18n.locales.map((locale) => ({ locale }));
-}
-
 export default async function RootLayout(props: { children: ReactNode; params: { locale: string } }) {
     const { children, params } = props;
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
+    const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
     const shopifyApi = shopifyApiConfig();
