@@ -92,6 +92,9 @@ const Prefetch = ({
                                                         price,
                                                         compareAtPrice,
                                                         availableForSale,
+
+                                                        weight,
+                                                        weightUnit,
                                                         image,
                                                         selectedOptions
                                                     }
@@ -103,6 +106,8 @@ const Prefetch = ({
                                                         price,
                                                         compareAtPrice,
                                                         availableForSale,
+                                                        weight,
+                                                        weightUnit,
                                                         image,
                                                         selectedOptions
                                                     }

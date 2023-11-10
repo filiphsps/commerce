@@ -12,6 +12,7 @@ import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { StoreApi } from '@/api/store';
 import Header from '@/components/Header';
+import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
 import PageContent from '@/components/PageContent';
 import PageProvider from '@/components/PageProvider';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -19,6 +20,7 @@ import ProvidersRegistry from '@/components/providers-registry';
 import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { getDictionary } from './dictionary';
 
 const font = Lexend_Deca({
     weight: 'variable',
@@ -88,6 +90,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
     const { children, params } = props;
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData) || DefaultLocale();
+    const i18n = await getDictionary(locale);
 
     const shopifyApi = shopifyApiConfig();
 
@@ -96,7 +99,12 @@ export default async function RootLayout(props: { children: ReactNode; params: {
     const header = await HeaderApi({ locale });
     const footer = await FooterApi({ locale });
 
-    const headerComponent = <Header store={store} navigation={navigation} locale={locale} />;
+    const headerComponents = (
+        <>
+            <Header store={store} navigation={navigation} locale={locale} />
+            <MobileMenu navigation={navigation} />
+        </>
+    );
 
     return (
         <html
@@ -173,9 +181,10 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                     <PageProvider
                         store={store}
                         locale={locale}
+                        i18n={i18n}
                         pagePropsAnalyticsData={{}}
                         data={{ navigation, header, footer }}
-                        header={headerComponent}
+                        header={headerComponents}
                     >
                         {children}
 

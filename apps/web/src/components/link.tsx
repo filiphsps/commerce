@@ -5,7 +5,7 @@ import type { Locale } from '@/utils/locale';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import BaseLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo, type ComponentProps } from 'react';
+import { type ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
     locale?: Locale;
@@ -39,7 +39,5 @@ export default function Link({ locale, ...props }: Props) {
     }
 
     if (props.href || href) props.href = href;
-    const component = useMemo(() => <BaseLink {...props} />, [props.href]);
-
-    return component;
+    return <BaseLink {...props} />;
 }

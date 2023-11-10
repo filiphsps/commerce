@@ -8,7 +8,7 @@
         ],
         "strictNullChecks": true,
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "../../",
         "paths": {
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],
@@ -16,11 +16,9 @@
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/style/*": ["./src/scss/*"],
-
             // i18n
             "@/i18n/*": ["./src/locales/*"],
             "@/i18n/dictionary": ["./src/app/(store)/[locale]/dictionary.ts"],
-
             // Prismic
             "@/slices/*": ["./src/slices/*"],
             "@/slices": ["./src/slices/index"],
@@ -30,11 +28,12 @@
     },
     "exclude": ["node_modules"],
     "include": [
-        "next-env.d.ts",
-        ".next/types/**/*.ts",
-        "prismicio-types.d.ts",
-        "./src/@types",
-        "./src/**/*.ts",
-        "./src/**/*.tsx"
+        "**/next-env.d.ts",
+        "**/.next/types/**/*.ts",
+        "**/prismicio-types.d.ts",
+        "**/src/@types",
+        "**/src/**/*.ts",
+        "**/src/**/*.tsx",
+        ".next/types/**/*.ts"
     ]
 }

@@ -17,9 +17,7 @@
         "added-to-cart": "Hinzugefügt!",
         "cart-not-ready": "Einen augenblick...",
         "out-of-stock": "Ausverkauft",
-        "quantity": "Menge"
-    },
-    "header": {
+        "quantity": "Menge",
         "language-and-region-settings": "Einstellungen für Sprache und Region"
     }
 }

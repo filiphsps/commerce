@@ -1,23 +1,19 @@
 'use client';
 
 import type { NavigationItem } from '@/api/navigation';
-import styles from '@/components/PageProvider/page-provider.module.css';
+import Footer from '@/components/Footer';
+import styles from '@/components/PageProvider/page-provider.module.scss';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { FooterModel } from '@/models/FooterModel';
 import type { HeaderModel } from '@/models/HeaderModel';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { NextLocaleToCurrency } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
-import dynamic from 'next/dynamic';
 import type { FunctionComponent, ReactNode } from 'react';
-import { useState } from 'react';
 import styled from 'styled-components';
-
-const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
-const Footer = dynamic(() => import('@/components/Footer'));
 
 const Announcement = styled.div`
     display: flex;
@@ -60,6 +56,7 @@ const Announcements = styled.div`
 interface PageProviderProps {
     store: StoreModel;
     locale: Locale;
+    i18n: LocaleDictionary;
     pagePropsAnalyticsData: any;
     data?: {
         navigation?: NavigationItem[];
@@ -71,10 +68,8 @@ interface PageProviderProps {
     className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const { store, locale, pagePropsAnalyticsData, data, header: headerComponent } = props;
-    const { navigation, header } = data as any;
-
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { store, locale, i18n, pagePropsAnalyticsData, data, header: headerComponent } = props;
+    const { header } = data as any;
 
     const { country } = locale;
     useAnalytics({
@@ -97,7 +92,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const bellow: any[] = header?.announcements?.filter((item: any) => item.location === 'bellow') || [];
 
     return (
-        <div className={`${styles.container} ${props.className || ''} ${(sidebarOpen && 'SideBar-Open') || ''}`}>
+        <div className={`${styles.container} ${props.className || ''}`}>
             {above.length > 0 && (
                 <Announcements>
                     {above.map((item, index) => (
@@ -111,14 +106,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                     ))}
                 </Announcements>
             )}
-            <div className={styles.header}>
-                {headerComponent}
-                <HeaderNavigation
-                    navigation={navigation}
-                    open={sidebarOpen}
-                    toggle={(open = !sidebarOpen) => setSidebarOpen(open)}
-                />
-            </div>
+            <div className={styles.header}>{headerComponent}</div>
             {bellow.length > 0 && (
                 <Announcements>
                     {bellow.map((item, index) => (
@@ -136,7 +124,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             )}
 
             {props.children}
-            <Footer store={props?.store} locale={locale} data={data?.footer} />
+            <Footer store={props?.store} data={data?.footer} locale={locale} i18n={i18n} />
         </div>
     );
 };

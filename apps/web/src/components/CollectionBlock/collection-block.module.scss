@@ -11,21 +11,22 @@
     padding: var(--block-padding) var(--block-padding-large);
     scroll-snap-align: start;
     border-radius: var(--block-border-radius);
-    background: var(--accent-primary);
-    color: var(--accent-primary-text);
-    border-color: var(--accent-primary);
+    background: var(--accent-secondary);
+    color: var(--accent-primary-dark);
+    border: calc(var(--block-border-width) * 1.5) solid var(--accent-secondary);
     transition:
+        150ms ease-in-out color,
         150ms ease-in-out background-color,
-        150ms ease-in-out border-width;
+        150ms ease-in-out border;
 
     font-size: 2.75rem;
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
-    text-transform: capitalize;
+    text-transform: uppercase;
 
     &:is(:hover, :active, :focus, :focus-within) {
-        background: var(--accent-secondary);
-        color: var(--accent-primary-dark);
-        border: calc(var(--block-border-width) * 1.5) solid var(--accent-primary);
+        background: var(--accent-primary);
+        color: var(--accent-primary-text);
+        border-color: var(--accent-primary-dark);
     }
 }

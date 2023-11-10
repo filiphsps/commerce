@@ -100,10 +100,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
                             {option.values.map((value) => {
                                 let title = value;
 
-                                // Handle variants that should have their weight as their actual title
-                                // FIXME: Remove `Size` when we've migrated to using Weight.
-                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
-                                if (['Size', 'Weight', 'Größe', 'Storlek'].includes(option.name!)) {
+                                if (option.name === 'Size') {
                                     title = ConvertToLocalMeasurementSystem({
                                         locale,
                                         weight: Number.parseFloat(value!.slice(0, -1)),
@@ -111,7 +108,6 @@ export const ProductOptions = (props: ProductOptionProps) => {
                                     });
                                 }
 
-                                // FIXME: Handle options to variant properly.
                                 // FIXME: Handle options to variant properly.
                                 const matchingVariant =
                                     (value &&

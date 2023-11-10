@@ -1,29 +1,9 @@
-import type { FunctionComponent } from 'react';
+'use client';
+
 import Link from '@/components/link';
-import styled from 'styled-components';
 import { usePathname } from 'next/navigation';
-
-const Container = styled.div`
-    position: absolute;
-    top: 6.5rem;
-    z-index: 99999;
-    width: 80vw;
-    width: 80dvw;
-    height: calc(100vh - 12.5rem);
-    height: calc(100dvh - 12.5rem);
-    background: var(--accent-secondary-light);
-    color: var(--color-dark);
-    transition: 150ms ease-in-out;
-
-    left: -100vw;
-    &.Open {
-        left: 0;
-    }
-
-    @media (min-width: 1150px) {
-        display: none;
-    }
-`;
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const Navigation = styled.div`
     overflow-y: scroll;
@@ -33,7 +13,8 @@ const Navigation = styled.div`
     gap: calc(var(--block-spacer-large) * 2);
     height: 100%;
     width: 100%;
-    padding: 2rem;
+    width: 100vw;
+    padding: 2rem 3rem 4rem 3rem;
 `;
 const NavigationItem = styled.div`
     display: flex;
@@ -77,64 +58,51 @@ const NavigationSubItemDescription = styled.div`
 
 interface HeaderNavigationProps {
     navigation: any;
-    open: boolean;
-    toggle: any;
 }
-const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation, open, toggle }) => {
+const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation }) => {
     const route = usePathname();
 
     return (
-        <Container
-            className={`${open ? 'Open' : ''} Modern`}
-            onClick={(e) => {
-                e.stopPropagation();
-            }}
-        >
-            <Navigation>
-                {navigation?.map((item: any, index: number) => {
-                    return (
-                        <NavigationItem key={item.handle + `_${index}`}>
-                            <Link
-                                href={`/${item.handle || ''}`}
-                                title={item.title}
-                                className={
-                                    (route === '/' && item?.handle === null) || `/${item?.handle}` === route
-                                        ? 'Active'
-                                        : ''
-                                }
-                                onClick={() => toggle(false)}
-                                prefetch={false}
-                            >
-                                {item.title}
-                            </Link>
-                            {item.children.map((item: any, index: number) => (
-                                <NavigationSubItem key={item.handle + `_${index}`}>
-                                    <Link
-                                        href={`/${item.handle || ''}`}
-                                        title={item.title}
-                                        className={
-                                            (route === '/' && item?.handle === null) || `/${item?.handle}` === route
-                                                ? 'Active'
-                                                : ''
-                                        }
-                                        onClick={() => toggle(false)}
-                                        prefetch={false}
-                                    >
-                                        <NavigationSubItemTitle>{item.title}</NavigationSubItemTitle>
+        <Navigation>
+            {navigation?.map((item: any, index: number) => {
+                return (
+                    <NavigationItem key={item.handle + `_${index}`}>
+                        <Link
+                            href={`/${item.handle || ''}`}
+                            title={item.title}
+                            className={
+                                (route === '/' && item?.handle === null) || `/${item?.handle}` === route ? 'Active' : ''
+                            }
+                            onClick={() => document.body.removeAttribute('data-menu-open')}
+                            prefetch={false}
+                        >
+                            {item.title}
+                        </Link>
+                        {item.children.map((item: any, index: number) => (
+                            <NavigationSubItem key={item.handle + `_${index}`}>
+                                <Link
+                                    href={`/${item.handle || ''}`}
+                                    title={item.title}
+                                    className={
+                                        (route === '/' && item?.handle === null) || `/${item?.handle}` === route
+                                            ? 'Active'
+                                            : ''
+                                    }
+                                    onClick={() => document.body.removeAttribute('data-menu-open')}
+                                    prefetch={false}
+                                >
+                                    <NavigationSubItemTitle>{item.title}</NavigationSubItemTitle>
 
-                                        {item.description && (
-                                            <NavigationSubItemDescription>
-                                                {item.description}
-                                            </NavigationSubItemDescription>
-                                        )}
-                                    </Link>
-                                </NavigationSubItem>
-                            ))}
-                        </NavigationItem>
-                    );
-                })}
-            </Navigation>
-        </Container>
+                                    {item.description && (
+                                        <NavigationSubItemDescription>{item.description}</NavigationSubItemDescription>
+                                    )}
+                                </Link>
+                            </NavigationSubItem>
+                        ))}
+                    </NavigationItem>
+                );
+            })}
+        </Navigation>
     );
 };
 

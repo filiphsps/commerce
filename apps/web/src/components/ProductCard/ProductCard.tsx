@@ -12,6 +12,7 @@ import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import Link from '@/components/link';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import type { StoreModel } from '@/models/StoreModel';
+import { ImageLoader } from '@/utils/image-loader';
 import { useTranslation } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
@@ -23,12 +24,12 @@ export const ProductImage = styled.div`
     position: relative;
     height: auto;
     width: 100%;
-    padding: var(--block-padding-small) var(--block-padding);
+    padding: var(--block-padding) var(--block-padding);
     border-radius: var(--block-border-radius-small);
     transition: 150ms ease-in-out;
     user-select: none;
     background: var(--color-bright);
-    height: 13rem;
+    height: 14rem;
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
     @media (min-width: 950px) {
@@ -37,10 +38,8 @@ export const ProductImage = styled.div`
         margin-bottom: var(--block-spacer-tiny);
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            padding: var(--block-padding-small);
-        }
+    &:is(:hover, :active, :focus) {
+        padding: var(--block-padding-small);
     }
 `;
 
@@ -54,22 +53,20 @@ const ProductImageWrapper = styled.div`
     width: 100%;
 
     img {
+        position: relative;
         object-fit: contain;
         object-position: center;
-        width: 100% !important;
-        position: relative !important;
-        height: 100% !important;
+        width: 100%;
+        height: 100%;
     }
 `;
 
 const Details = styled.div`
     grid-area: product-details;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    justify-self: stretch;
+    width: 100%;
     min-height: 10rem;
+    flex-direction: column;
 `;
 const Brand = styled.div`
     font-size: 1.75rem;
@@ -120,20 +117,21 @@ const Title = styled.div`
 
 const CardFooter = styled.div`
     display: grid;
-    grid-template-columns: 1fr auto;
-    justify-content: flex-end;
+    grid-template-columns: 6.5rem auto;
+    justify-content: space-between;
     align-items: flex-end;
     gap: var(--block-spacer);
     width: 100%;
     max-height: 100%;
+    height: 100%;
     margin-top: var(--block-spacer-tiny);
 `;
 
-/*gap: var(--block-spacer-tiny);*/
 const Variants = styled.div`
+    overflow: hidden;
     display: flex;
-    align-items: end;
-    justify-content: start;
+    align-items: flex-end;
+    justify-content: flex-end;
     width: 100%;
     height: 100%;
 
@@ -142,10 +140,6 @@ const Variants = styled.div`
     }
 `;
 
-/* width: 5rem;
-height: 3rem;
-padding: var(--block-spacer-tiny) 0 0 0;
-font-size: 1.5rem; */
 const Variant = styled.div`
     display: flex;
     flex-direction: column;
@@ -166,6 +160,7 @@ const Variant = styled.div`
 
         @media (min-width: 920px) {
             text-decoration: underline;
+            text-decoration-thickness: 0.2rem;
         }
     }
 
@@ -209,7 +204,7 @@ const Quantity = styled.div`
     justify-content: center;
     justify-self: end;
     height: 100%;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     line-height: 1.75rem;
     font-weight: 500;
     text-align: center;
@@ -221,7 +216,7 @@ const Quantity = styled.div`
 
     svg {
         font-weight: 700;
-        stroke-width: 0.4ex;
+        stroke-width: 2.25;
     }
 `;
 const QuantityAction = styled.div`
@@ -231,16 +226,15 @@ const QuantityAction = styled.div`
     justify-content: center;
     width: 2.25rem;
     height: 100%;
-    border-radius: 0 0 0 var(--block-border-radius) 0;
-    border-radius: var(--block-border-radius-small);
+    padding-right: 0.05rem;
     cursor: pointer;
     transition: 150ms ease-in-out;
     text-align: center;
 
     &:first-child {
         justify-content: center;
-        border-radius: 0 0 var(--block-border-radius) 0 0;
-        border-radius: var(--block-border-radius-small);
+        padding-right: 0;
+        padding-left: 0.05rem;
     }
 
     &.Inactive {
@@ -268,7 +262,7 @@ const QuantityValue = styled.input`
     width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
     height: 100%;
-    font-size: 1.75rem;
+    font-size: 1.85rem;
     line-height: 1;
     text-align: center;
     outline: none;
@@ -386,6 +380,7 @@ const Container = styled.section<{ $available?: boolean }>`
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary-light);
     color: var(--accent-secondary-text);
+    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
     @media (min-width: 950px) {
         gap: var(--block-spacer-small);
@@ -401,17 +396,6 @@ const Container = styled.section<{ $available?: boolean }>`
             color: var(--color-dark);
         `}
 `;
-
-interface VariantImageProps {
-    image?: ShopifyImage;
-}
-const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
-    if (!image) return null;
-
-    return (
-        <Image src={image.url} alt={image.altText || ''} title={image.altText || undefined} height={200} width={200} />
-    );
-};
 
 export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
     if (!params) return url;
@@ -430,7 +414,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
-    const [addedToCart, setAddedToCart] = useState(false);
+    const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     const cart = useCart();
     const { product, selectedVariant, setSelectedVariant } = useProduct();
     const quantityRef = useRef<HTMLInputElement>();
@@ -466,16 +450,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         discount = Math.round((100 * (compare - current)) / compare);
     }
 
-    let shortDesc = (product.seo?.description || product.description || '').substring(0, 100);
-    // Remove whitespace if it's the last character
-    if (shortDesc[shortDesc.length - 1] === ' ') shortDesc = shortDesc.substring(0, shortDesc.length - 1);
-
-    const image = product?.images?.edges?.find((edge) => edge?.node?.id === selectedVariant?.image?.id)
-        ?.node as ShopifyImage;
-
-    const description =
-        (product.seo?.description || product.description) &&
-        (product.seo?.description || product.description)?.substring(0, 72) + '\u2026';
+    const linkTitle = `${product.vendor} ${product.title}`;
 
     // TODO: Hotlink to variant.
     const href = AppendShopifyParameters({
@@ -483,17 +458,35 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         params: (product as any).trackingParameters
     });
 
-    const linkTitle = `${product.vendor} ${product.title}`;
+    let image: ShopifyImage | undefined = ((selectedVariant?.image &&
+        product.images?.edges?.find((i) => i?.node?.id === selectedVariant?.image!.id)?.node) ||
+        product.images?.edges?.[0]?.node) as ShopifyImage | undefined;
+    if (image) image.altText = image.altText || linkTitle;
+
     return (
         <Container className={className} $available={selectedVariant.availableForSale}>
             <ProductImage>
-                <Link title={linkTitle} href={href} prefetch={false}>
-                    <ProductImageWrapper>
-                        <VariantImage image={image} />
-                    </ProductImageWrapper>
-                </Link>
+                {image ? (
+                    <Link title={linkTitle} href={href} prefetch={false}>
+                        <ProductImageWrapper>
+                            <Image
+                                key={image.id}
+                                id={image.id!}
+                                loader={ImageLoader}
+                                src={image.url}
+                                alt={image?.altText!}
+                                title={image?.altText!}
+                                width={200}
+                                height={200}
+                                sizes="(max-width: 950px) 75px, 200px"
+                            />
+                        </ProductImageWrapper>
+                    </Link>
+                ) : (
+                    <div></div>
+                )}
 
-                {discount > 1 && ( // Handle rounding-errors
+                {discount > 1 && ( // Handle rounding-errors.
                     <DiscountBadge>
                         <b>{discount}%</b> OFF
                     </DiscountBadge>
@@ -507,7 +500,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${TitleToHandle(product.vendor)}/`} prefetch={false}>
+                        <Link
+                            title={product.vendor}
+                            href={`/collections/${TitleToHandle(product.vendor)}/`}
+                            prefetch={false}
+                        >
                             {product.vendor}
                         </Link>
                     </Brand>
@@ -543,19 +540,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     <Variants>
                         {product.variants?.edges &&
                             product.variants.edges.length > 1 &&
-                            product.variants.edges.map((edge) => {
-                                if (!edge?.node) return null;
+                            product.variants.edges.map((edge, index) => {
+                                if (!edge?.node || index >= 2) return null; //TODO: handle more than two variants on the card
                                 const variant = edge.node! as ProductVariant;
                                 let title = variant.title;
 
-                                // Handle variants that should have their weight as their actual title
-                                // FIXME: Remove `Size` when we've migrated to using Weight.
-                                // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
                                 if (
                                     variant.selectedOptions.length === 1 &&
-                                    ['Size', 'Weight', 'Größe', 'Storlek'].includes(
-                                        variant.selectedOptions.at(0)!.name
-                                    ) &&
+                                    variant.selectedOptions[0]!.name === 'Size' &&
                                     variant.weight &&
                                     variant.weightUnit
                                 ) {
@@ -585,32 +577,32 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     type="button"
                     title={t('add-to-cart')}
                     className={`${addToCartStyles.button} ${addToCartStyles.addToCart} ${
-                        (addedToCart && addToCartStyles.success) || ''
+                        (animation && addToCartStyles.success) || ''
                     }`}
                     onClick={() => {
                         if ((cart.status !== 'idle' && cart.status !== 'uninitialized') || !product || !selectedVariant)
                             return;
 
-                        setAddedToCart(true);
+                        clearTimeout(animation);
+                        setAnimation(
+                            setTimeout(() => {
+                                clearTimeout(animation);
+                                setAnimation(() => undefined);
+                            }, 3000)
+                        );
+
                         cart.linesAdd([
                             {
                                 merchandiseId: selectedVariant.id as string,
                                 quantity
                             }
                         ]);
-
-                        setTimeout(() => {
-                            setAddedToCart(false);
-                        }, 3000);
                     }}
-                    disabled={
-                        !['uninitialized', 'idle'].includes(cart.status) ||
-                        quantity < 1 ||
-                        !selectedVariant?.availableForSale
-                    }
+                    disabled={quantity < 1 || !selectedVariant?.availableForSale}
                 >
-                    {(!selectedVariant.availableForSale && t('out-of-stock')) ||
-                        (addedToCart && t('added-to-cart')) ||
+                    {(!['idle', 'uninitialized', 'updating'].includes(cart.status) && t('cart-not-ready')) ||
+                        (!selectedVariant.availableForSale && t('out-of-stock')) ||
+                        (animation && t('added-to-cart')) ||
                         t('add-to-cart')}
                 </AddButton>
                 <Quantity>
