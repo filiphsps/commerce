@@ -945,6 +945,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
             ])
             .flat()
             .filter((a) => a?.params?.handle)
+            .filter((_, index) => index <= 50)
     ];
 
     return { paths, fallback: 'blocking' };

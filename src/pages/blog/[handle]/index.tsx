@@ -2,21 +2,21 @@ import { ArticleApi, BlogApi } from '@/api/blog';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import { NewsArticleJsonLd, NextSeo } from 'next-seo';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '@/utils/Config';
 import ContentComponent from '@/components/Content';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import Image from 'next/legacy/image';
-import Link from 'next/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
 import { isValidHandle } from '@/utils/handle';
-import styled from 'styled-components';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import Error from 'next/error';
+import Image from 'next/legacy/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const ContentWrapper = styled.div`
     display: grid;
@@ -253,25 +253,8 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({ }) => {
-    const blog: any = await BlogApi({ handle: 'news' });
-
-    let paths = [
-        ...blog.articles
-            ?.map((article: any) => [
-                {
-                    params: { handle: article?.handle }
-                },
-                ...(['en-US'].map((locale) => ({
-                    params: { handle: article?.handle },
-                    locale: locale
-                })) || [])
-            ])
-            .flat()
-            .filter((a: any) => a?.params?.handle)
-    ];
-
-    return { paths, fallback: 'blocking' };
+export const getStaticPaths: GetStaticPaths = async ({}) => {
+    return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params, locale: localeData }) => {
