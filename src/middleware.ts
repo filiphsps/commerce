@@ -58,7 +58,7 @@ export default function middleware(req: NextRequest) {
     newUrl.pathname = newUrl.pathname.replaceAll(/\/\//g, '/');
 
     // Make sure we end with a slash.
-    if (!newUrl.pathname.endsWith('/')) {
+    if (!newUrl.pathname.endsWith('/') && !newUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)) {
         newUrl.pathname += '/';
     }
 
@@ -70,7 +70,6 @@ export default function middleware(req: NextRequest) {
     return undefined;
 }
 export const config = {
-    matcher: ['/:path*'],
-    skipTrailingSlashRedirect: true
+    matcher: ['/:path*']
     //matcher: '/((?!api|_next/static|_next/image|favicon).*)'
 };
