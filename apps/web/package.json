@@ -113,7 +113,7 @@
         "prettier": "3.0.3",
         "pretty-xml": "1.2.1",
         "server-only": "0.0.1",
-        "slice-machine-ui": "1.19.1",
+        "slice-machine-ui": "1.19.2",
         "typescript": "5.2.2",
         "vitest": "0.34.6"
     }
