@@ -181,7 +181,8 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
         if (error.message?.includes('No documents')) {
             console.warn(error);
             return {
-                notFound: true
+                notFound: true,
+                revalidate: false
             };
         }
 

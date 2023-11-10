@@ -1,46 +1,46 @@
-import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
+import { ProductApi, ProductsApi } from '@/api/product';
 import { Badge, BadgeContainer } from '@/components/Badges';
+import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
 import type {
     Collection,
     Product,
     ProductEdge,
     ProductVariantEdge
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductsApi } from '@/api/product';
-import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import styled, { css } from 'styled-components';
 import { useCallback, useRef, useState } from 'react';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
+import styled, { css } from 'styled-components';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { Button } from '@/components/Button';
-import { Config } from '@/utils/Config';
-import Content from '@/components/Content';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import { Input } from '@/components/Input';
-import Link from 'next/link';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import type { ProductPageDocument } from '@/prismic/types';
-import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { RecommendationApi } from '@/api/recommendation';
 import { RedirectProductApi } from '@/api/redirects';
-import type { SSRConfig } from 'next-i18next';
-import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '@/models/StoreModel';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { Button } from '@/components/Button';
+import Content from '@/components/Content';
+import { Input } from '@/components/Input';
 import { Subtitle } from '@/components/PageHeader/PageHeader';
-import { asText } from '@prismicio/client';
-import { components } from '@/slices';
+import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
-import dynamic from 'next/dynamic';
+import type { ProductPageDocument } from '@/prismic/types';
+import { components } from '@/slices';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import { titleToHandle } from '@/utils/TitleToHandle';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import { isValidHandle } from '@/utils/handle';
-import { titleToHandle } from '@/utils/TitleToHandle';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import type { SSRConfig } from 'next-i18next';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import Error from 'next/error';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import useSWR from 'swr';
 
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 const ProductOptions = dynamic(() => import('@/components/ProductOptions').then((c) => c.ProductOptions));
@@ -639,9 +639,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     );
 
     return (
-        <Container
-            className={`ProductPage`}
-        >
+        <Container className={`ProductPage`}>
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
                 description={product?.seo?.description || product?.description || ''}
@@ -777,9 +775,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 />
             ))}
 
-            <ProductPageContent
-                primary
-            >
+            <ProductPageContent primary>
                 <ProductContainerWrapper>
                     <ProductContainer>
                         <Assets>
@@ -938,7 +934,8 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
                 {
                     params: { handle: product?.handle }
                 },
-                ...(['en-US'].map((locale) => ({ // FIXME: Don't limit.
+                ...(['en-US'].map((locale) => ({
+                    // FIXME: Don't limit.
                     params: { handle: product?.handle },
                     locale: locale
                 })) || [])
@@ -1003,7 +1000,8 @@ export const getStaticProps: GetStaticProps<{
     } catch (error: any) {
         if (error?.message?.includes('404')) {
             return {
-                notFound: true
+                notFound: true,
+                revalidate: false
             };
         }
 

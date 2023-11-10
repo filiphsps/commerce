@@ -1,24 +1,24 @@
 import styled, { css } from 'styled-components';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '@/utils/Config';
 import { CountriesApi } from '@/api/store';
-import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import type { CustomPageDocument } from '@/prismic/types';
-import type { FunctionComponent } from 'react';
-import type { GetStaticProps } from 'next';
-import Image from 'next/image';
-import { NextSeo } from 'next-seo';
-import { SliceZone } from '@prismicio/react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import type { StoreModel } from '@/models/StoreModel';
-import { asText } from '@prismicio/client';
-import { components } from '@/slices';
 import { createClient } from '@/prismic';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import type { CustomPageDocument } from '@/prismic/types';
+import { components } from '@/slices';
+import { Config } from '@/utils/Config';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
+import type { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
+import { NextSeo } from 'next-seo';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import useSWR from 'swr';
 
 const Page = dynamic(() => import('@/components/Page'));
 const PageContent = dynamic(() => import('@/components/PageContent'));
@@ -263,7 +263,8 @@ export const getStaticProps: GetStaticProps = async ({ locale, previewData }) =>
     } catch (error: any) {
         if (error.message?.includes('No documents')) {
             return {
-                notFound: true
+                notFound: true,
+                revalidate: false
             };
         }
 

@@ -1,33 +1,33 @@
 import { CollectionApi, CollectionsApi } from '@/api/collection';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import type { CollectionPageDocument } from '@/prismic/types';
-import { Config } from '@/utils/Config';
-import Content from '@/components/Content';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
-import type { GetStaticPaths } from 'next';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { NextSeo } from 'next-seo';
-import { Prefetch } from '@/utils/Prefetch';
 import { RedirectCollectionApi } from '@/api/redirects';
-import type { SSRConfig } from 'next-i18next';
-import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { SliceZone } from '@prismicio/react';
-import type { StoreModel } from '@/models/StoreModel';
 import { VendorsApi } from '@/api/vendor';
-import { asText } from '@prismicio/client';
-import { components } from '@/slices';
-import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import Content from '@/components/Content';
+import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
-import dynamic from 'next/dynamic';
+import type { CollectionPageDocument } from '@/prismic/types';
+import { components } from '@/slices';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import { Prefetch } from '@/utils/Prefetch';
 import { getServerTranslations } from '@/utils/getServerTranslations';
 import { isValidHandle } from '@/utils/handle';
-import styled from 'styled-components';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
+import type { GetStaticPaths } from 'next';
+import type { SSRConfig } from 'next-i18next';
+import { NextSeo } from 'next-seo';
+import dynamic from 'next/dynamic';
+import Error from 'next/error';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
@@ -255,7 +255,8 @@ export const getStaticProps: GetStaticProps<{
     } catch (error: any) {
         if (error?.message?.includes('404')) {
             return {
-                notFound: true
+                notFound: true,
+                revalidate: false
             };
         }
 

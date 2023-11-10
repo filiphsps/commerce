@@ -1,26 +1,26 @@
-import { AnalyticsPageType, CartLineProvider, useCart } from '@shopify/hydrogen-react';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { AnalyticsPageType, CartLineProvider, useCart } from '@shopify/hydrogen-react';
 import { useEffect, useState } from 'react';
 
+import { RecommendationApi } from '@/api/recommendation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { Config } from '@/utils/Config';
-import type { CustomPageDocument } from '@/prismic/types';
-import type { FunctionComponent } from 'react';
-import type { GetStaticProps } from 'next';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { NextSeo } from 'next-seo';
-import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
-import { RecommendationApi } from '@/api/recommendation';
-import type { SSRConfig } from 'next-i18next';
 import type { StoreModel } from '@/models/StoreModel';
-import { asText } from '@prismicio/client';
 import { createClient } from '@/prismic';
-import dynamic from 'next/dynamic';
+import type { CustomPageDocument } from '@/prismic/types';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { getServerTranslations } from '@/utils/getServerTranslations';
-import styled from 'styled-components';
+import { asText } from '@prismicio/client';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { GetStaticProps } from 'next';
+import type { SSRConfig } from 'next-i18next';
+import { NextSeo } from 'next-seo';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
@@ -485,7 +485,8 @@ export const getStaticProps: GetStaticProps<{
     } catch (error: any) {
         if (error.message?.includes('No documents')) {
             return {
-                notFound: true
+                notFound: true,
+                revalidate: false
             };
         }
 

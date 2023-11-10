@@ -1,8 +1,12 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
+    "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
+    "buildCommand": "npm run build",
+    "devCommand": "npm run dev",
+    "outputDirectory": ".next",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
