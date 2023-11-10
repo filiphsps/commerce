@@ -110,11 +110,11 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+export const getStaticPaths: GetStaticPaths = async ({}) => {
     const pages = await PagesApi({});
 
     const paths = pages.paths.flatMap((path) => [
-        ...(locales?.map((locale) => ({
+        ...(['en-US'].map((locale) => ({
             params: {
                 uid: (path !== '/' && path.split('/').filter((i) => i)) || undefined
             },

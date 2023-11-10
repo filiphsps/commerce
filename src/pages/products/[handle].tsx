@@ -9,10 +9,10 @@ import type {
 import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { ProductApi, ProductVisualsApi, ProductsApi } from '@/api/product';
+import { ProductApi, ProductsApi } from '@/api/product';
 import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
@@ -25,7 +25,6 @@ import Link from 'next/link';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import type { ProductPageDocument } from '@/prismic/types';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
-import type { ProductVisuals } from '@/api/product';
 import { RecommendationApi } from '@/api/recommendation';
 import { RedirectProductApi } from '@/api/redirects';
 import type { SSRConfig } from 'next-i18next';
@@ -462,26 +461,10 @@ const ProductPageContent = styled(PageContent)<{ background?: string }>`
     }
 `;
 
-const Container = styled(Page)`
-    &.Pastel {
-        ${ProductPageContent} {
-            &::before {
-                inset: 0;
-                height: 40vh;
-
-                @media (min-width: 1260px) {
-                    left: -50vw;
-                    right: calc(52rem + var(--block-padding-large) * 2);
-                    height: 100%;
-                }
-            }
-        }
-    }
-`;
+const Container = styled(Page)``;
 
 const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProps>> = ({
     page,
-    visuals: visualsData,
     recommendations: recommendationsData,
     store
 }) => {
@@ -489,7 +472,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
     const { t } = useTranslation('common');
     const cart = useCart();
     const { product: productData, setSelectedOption, selectedVariant } = useProduct();
-    const [pastel, setPastel] = useState(false);
 
     const addedTimeout = useRef<ReturnType<typeof setTimeout>>();
 
@@ -511,20 +493,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         }
     );
 
-    const { data: visuals } = useSWR(
-        [
-            'ProductVisualsApi',
-            {
-                id: (product as any).visuals?.value,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ProductVisualsApi(props),
-        {
-            fallbackData: visualsData as ProductVisuals | undefined
-        }
-    );
-
     const { data: recommendations } = useSWR(
         [
             'RecommendationApi',
@@ -538,13 +506,6 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             fallbackData: recommendationsData || undefined
         }
     );
-
-    useEffect(() => {
-        if (!visuals?.transparentBackgrounds || pastel) return;
-        setTimeout(() => {
-            setPastel(true);
-        }, 250);
-    }, [visuals]);
 
     const setProductOption = useCallback(
         ({ name, value }: { name: string; value: string }) => {
@@ -679,25 +640,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
     return (
         <Container
-            className={`ProductPage ${(pastel && 'Pastel') || ''}`}
-            style={
-                (visuals &&
-                    ({
-                        '--accent-primary': visuals?.primaryAccent || '#F9EFD2',
-                        '--accent-primary-text':
-                            (visuals.primaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
-
-                        '--accent-secondary': visuals?.secondaryAccent || '#E8A0BF',
-                        '--accent-secondary-text':
-                            (visuals.secondaryAccentDark && 'var(--color-bright)') || 'var(--color-dark)',
-                        '--accent-primary-light': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-bright))',
-                        '--accent-primary-dark': 'color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))',
-                        '--accent-secondary-light':
-                            'color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright))',
-                        '--accent-secondary-dark': 'color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark))'
-                    } as React.CSSProperties)) ||
-                {}
-            }
+            className={`ProductPage`}
         >
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
@@ -836,17 +779,11 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
 
             <ProductPageContent
                 primary
-                background={(visuals?.transparentBackgrounds && 'var(--accent-primary-light)') || undefined}
             >
                 <ProductContainerWrapper>
                     <ProductContainer>
                         <Assets>
                             <Gallery
-                                pastel={visuals?.transparentBackgrounds}
-                                background={(visuals?.transparentBackgrounds && 'transparent') || undefined}
-                                previewBackground={
-                                    (visuals?.transparentBackgrounds && 'var(--accent-secondary-light)') || undefined
-                                }
                                 selected={selectedVariant?.image?.id || null}
                                 images={(product as any).images || null}
                             />
@@ -1001,7 +938,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
                 {
                     params: { handle: product?.handle }
                 },
-                ...(['en-US','en-GB', 'de-DE'].map((locale) => ({ // FIXME: Don't limit.
+                ...(['en-US'].map((locale) => ({ // FIXME: Don't limit.
                     params: { handle: product?.handle },
                     locale: locale
                 })) || [])
@@ -1016,7 +953,6 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
 export const getStaticProps: GetStaticProps<{
     page?: ProductPageDocument<string> | null;
     product?: Product | null;
-    visuals?: ProductVisuals | null;
     recommendations?: Product[] | null;
     analytics?: Partial<ShopifyPageViewPayload>;
     store?: StoreModel;
@@ -1053,7 +989,6 @@ export const getStaticProps: GetStaticProps<{
     const client = createClient({ previewData });
 
     let product: Product | null = null;
-    let visuals: ProductVisuals | null = null;
     let analyticsProducts: ShopifyAnalyticsProduct[] = [];
     let recommendations: Product[] | null = null;
     let page: ProductPageDocument<string> | null = null;
@@ -1096,16 +1031,6 @@ export const getStaticProps: GetStaticProps<{
             quantity: 1
         });
 
-        if ((product as any)?.visuals?.value)
-            try {
-                visuals = await ProductVisualsApi({
-                    id: (product as any)?.visuals?.value,
-                    locale: locale.locale
-                });
-            } catch (error: any) {
-                console.error(error);
-            }
-
         try {
             page = await client.getByUID('product_page', handle, {
                 lang: locale.locale
@@ -1130,7 +1055,6 @@ export const getStaticProps: GetStaticProps<{
         props: {
             ...translations,
             product,
-            visuals,
             page,
             recommendations,
             analytics: {

@@ -1,10 +1,10 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
 import type { Product, ProductEdge, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 
+import { storefrontClient } from '@/api/shopify';
 import { Config } from '@/utils/Config';
 import ConvertUnits from 'convert-units';
 import { gql } from 'graphql-tag';
-import { storefrontClient } from '@/api/shopify';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id
@@ -76,9 +76,6 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                 width
             }
         }
-    }
-    visuals: metafield(namespace: "store", key: "visuals") {
-        value
     }
 `;
 
@@ -170,9 +167,6 @@ export const PRODUCT_FRAGMENT = `
         value
     }
     keywords: metafield(namespace: "store", key: "keywords") {
-        value
-    }
-    visuals: metafield(namespace: "store", key: "visuals") {
         value
     }
 `;
@@ -416,68 +410,6 @@ export const ProductsPaginationApi = async ({
         } catch (error) {
             console.error(error);
             reject(error);
-        }
-    });
-};
-
-export type ProductVisuals = {
-    primaryAccent: string;
-    primaryAccentDark: boolean;
-    secondaryAccent: string;
-    secondaryAccentDark: boolean;
-    transparentBackgrounds: boolean;
-};
-export const ProductVisualsApi = async ({ id, locale }: { id: string; locale?: string }): Promise<ProductVisuals> => {
-    return new Promise(async (resolve, reject) => {
-        if (!id) return reject(new Error('400: Invalid id'));
-        if (!locale || locale === 'x-default') locale = Config.i18n.default;
-
-        const country = NextLocaleToCountry(locale);
-        const language = NextLocaleToLanguage(locale);
-
-        try {
-            const { data, errors } = await storefrontClient.query({
-                query: gql`
-                    query metaobject($id: ID!) @inContext(language: ${language}, country: ${country}) {
-                        metaobject(id: $id) {
-                            primaryAccent: field(key: "primary_accent") {
-                                value
-                            }
-                            primaryAccentDark: field(key: "primary_accent_dark") {
-                                value
-                            }
-                            secondaryAccent: field(key: "secondary_accent") {
-                                value
-                            }
-                            secondaryAccentDark: field(key: "secondary_accent_dark") {
-                                value
-                            }
-                            transparentBackgrounds: field(key: "transparent_backgrounds") {
-                                value
-                            }
-                        }
-                    }
-                `,
-                variables: {
-                    id
-                }
-            });
-
-            if (errors) return reject(new Error(`500: Something wen't wrong on our end`));
-            try {
-                return resolve({
-                    primaryAccent: data.metaobject.primaryAccent.value,
-                    primaryAccentDark: data.metaobject.primaryAccentDark?.value === 'true',
-                    secondaryAccent: data.metaobject.secondaryAccent.value,
-                    secondaryAccentDark: data.metaobject.secondaryAccentDark?.value === 'true',
-                    transparentBackgrounds: data.metaobject.transparentBackgrounds.value === 'true'
-                });
-            } catch (error) {
-                return reject(new Error(`404: The requested document cannot be found`));
-            }
-        } catch (error) {
-            console.error(error);
-            return reject(error);
         }
     });
 };

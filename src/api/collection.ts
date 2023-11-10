@@ -1,5 +1,5 @@
 import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
-import { PRODUCT_FRAGMENT_MINIMAL, ProductVisualsApi } from './product';
+import { PRODUCT_FRAGMENT_MINIMAL } from './product';
 
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { Config } from '@/utils/Config';
@@ -71,20 +71,6 @@ export const CollectionApi = async ({
 
             if (errors) return reject(new Error(errors.join('\n')));
             if (!data?.collectionByHandle) return reject(new Error('404: The requested document cannot be found'));
-
-            data.collectionByHandle.products.edges = await Promise.all(
-                data.collectionByHandle.products.edges.map(async (edge: any) => {
-                    if (edge.node.visuals?.value) {
-                        edge.node.visualsData = await ProductVisualsApi({
-                            id: edge.node.visuals.value,
-                            locale
-                        });
-                        return edge;
-                    }
-
-                    return edge;
-                })
-            );
 
             data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml
                 .replaceAll(/ /g, ' ')

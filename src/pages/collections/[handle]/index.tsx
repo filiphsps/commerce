@@ -186,7 +186,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+export const getStaticPaths: GetStaticPaths = async ({}) => {
     const collections = await CollectionsApi();
 
     let paths = [
@@ -195,7 +195,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
                 {
                     params: { handle: collection?.handle }
                 },
-                ...(locales?.map((locale) => ({
+                ...(['en-US'].map((locale) => ({
                     params: { handle: collection?.handle },
                     locale: locale
                 })) || [])

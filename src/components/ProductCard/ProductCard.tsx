@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import type { ProductVisuals } from '@/api/product';
 import { Button } from '@/components/Button';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
@@ -412,7 +411,6 @@ export const AppendShopifyParameters = ({ params, url }: { params?: string | nul
 };
 
 interface ProductCardProps {
-    visuals?: ProductVisuals | null;
     handle?: string;
     store: StoreModel;
     className?: string;

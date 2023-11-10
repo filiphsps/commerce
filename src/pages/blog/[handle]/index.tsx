@@ -253,7 +253,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+export const getStaticPaths: GetStaticPaths = async ({ }) => {
     const blog: any = await BlogApi({ handle: 'news' });
 
     let paths = [
@@ -262,7 +262,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
                 {
                     params: { handle: article?.handle }
                 },
-                ...(locales?.map((locale) => ({
+                ...(['en-US'].map((locale) => ({
                     params: { handle: article?.handle },
                     locale: locale
                 })) || [])
