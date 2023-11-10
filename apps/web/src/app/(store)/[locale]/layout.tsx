@@ -5,6 +5,7 @@ import '@/style/app.scss';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
+import { notFound } from 'next/navigation';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 
 import { FooterApi } from '@/api/footer';
