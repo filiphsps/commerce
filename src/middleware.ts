@@ -15,12 +15,14 @@ export default function middleware(req: NextRequest) {
         req.nextUrl.pathname.startsWith('/assets') ||
         req.nextUrl.pathname.startsWith('/locales') ||
         req.nextUrl.pathname.startsWith('/monitoring') ||
+        req.nextUrl.pathname.startsWith('/admin') ||
         PUBLIC_FILE.test(req.nextUrl.pathname)
     ) {
         return null;
     }
 
     const newUrl = req.nextUrl.clone();
+    newUrl.host = req.headers.get('host') || newUrl.host;
 
     // Validate that we don't now have more than one locale in the path.
     // this can occur for numerous reasons. It's properly fixed in the
@@ -47,7 +49,6 @@ export default function middleware(req: NextRequest) {
 
         if (newLocale) {
             newUrl.locale = newLocale;
-            newUrl.host = req.headers.get('host')!;
         }
     }
 
@@ -67,7 +68,7 @@ export default function middleware(req: NextRequest) {
         return NextResponse.redirect(newUrl);
     }
 
-    return undefined;
+    return NextResponse.next();
 }
 export const config = {
     matcher: ['/:path*']
