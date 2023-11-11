@@ -191,13 +191,6 @@ const AddButton = styled.button`
     border: none;
     padding: var(--block-padding-small) var(--block-padding);
     font-size: 1.5rem;
-
-    @media (min-width: 920px) {
-        min-height: 3rem;
-        width: 1auto;
-        padding: calc(var(--block-padding-small) / 2) var(--block-padding);
-        font-size: 1.25rem;
-    }
 `;
 const Quantity = styled.div`
     overflow: hidden;
