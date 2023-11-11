@@ -14,46 +14,41 @@ export const config = {
          * 3. /_static (inside /public)
          * 4. all root files inside /public (e.g. /favicon.ico)
          */
-        '/((?!api/|_next/|_static/|_vercel|admin|monitoring|[\\w-]+\\.\\w+).*)'
+        '/((?!api/|_next/|_static/|_vercel|monitoring|[\\w-]+\\.\\w+).*)'
     ]
-    // Backup: matcher: ['/:path*']
 };
 
-const PUBLIC_FILE = /\.(.*)$/;
 export default function middleware(req: NextRequest) {
-    // TODO: Make this configurable.
-    if (
-        req.nextUrl.pathname.startsWith('/assets') ||
-        req.nextUrl.pathname.startsWith('/locales') ||
-        PUBLIC_FILE.test(req.nextUrl.pathname)
-    ) {
-        return null;
-    }
-
     // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000).
-    const hostname = req.headers.get('host')!.replace('.localhost:3000', '');
+    const host = req.headers.get('host')!.replace('.localhost:3000', '') || req.nextUrl.host;
 
     // If we're connecting via the nordcom domain show the admin dashboard
     // instead.
-    if (hostname.includes('shops.nordcom.io')) {
-        return NextResponse.rewrite(new URL(`/${hostname}${req.nextUrl.pathname}`, req.url));
+    if (host.includes('shops.nordcom.io')) {
+        // TODO: Allow for dashboard middleware (NextResponse supports this).
+        return NextResponse.rewrite(new URL(`/admin${req.nextUrl.pathname}`, req.url));
     }
+
+    // TODO: Multi-tenant, rewrite new URL(`/${hostname}${req.nextUrl.pathname}`, req.url)
 
     // Validate the store url.
     const newUrl = req.nextUrl.clone();
-    newUrl.host = req.headers.get('host') || newUrl.host;
+    newUrl.host = host;
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
     if (!newUrl.pathname.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi)) {
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
+        // FIXME: This should be dynamic, not based on a build-time configuration.
+        //        Maybe we can use edge config for this?..
         const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
 
-        const savedLocale = req.cookies.get('NEXT_LOCALE')?.value || req.cookies.get('LOCALE')?.value;
+        const savedLocale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
         const locale = savedLocale || userLang || locales.at(0);
 
-        if (!locale)
+        if (!locale) {
             throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
+        }
 
         // In a perfect world we'd just set `newUrl.locale` here but
         // since we want to support fully dynamic locales we need to
@@ -68,7 +63,6 @@ export default function middleware(req: NextRequest) {
     // of possible reasons.
     const localeRegex = /([a-zA-Z]{2}-[a-zA-Z]{2})\//gi;
     const trailingLocales = newUrl.pathname.match(localeRegex);
-
     if (trailingLocales && trailingLocales.length > 1) {
         for (const locale of trailingLocales.slice(1)) {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
@@ -77,6 +71,9 @@ export default function middleware(req: NextRequest) {
             console.warn(`Fixed locale duplication "${req.nextUrl.href}" -> "${newUrl.href}"`);
         }
     }
+
+    // Prevent access to `admin` on storefronts.
+    newUrl.pathname = newUrl.pathname.replaceAll('admin/', '');
 
     // Remove `x-default` if it's still there.
     newUrl.pathname = newUrl.pathname.replaceAll('x-default/', '');
