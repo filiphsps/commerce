@@ -66,11 +66,13 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             template: `%s - ${store.name}`
         },
         icons: {
-            icon: ['/favicon.png', '/favicon.ico', ...(store.favicon?.src || [])], // TODO: dynamic route for the favicon,
-            shortcut: ['/favicon.png', ...(store.favicon?.src || [])],
-            apple: ['/favicon.png', ...(store.favicon?.src || [])]
+            // TODO: dynamic route(s) for the icons and favicon.
+            icon: ['/favicon.png', '/favicon.ico', ...(store.favicon?.src && [store.favicon?.src] || [])],
+            shortcut: ['/favicon.png', ...(store.favicon?.src && [store.favicon?.src] || [])],
+            apple: ['/favicon.png', ...(store.favicon?.src && [store.favicon?.src] || [])]
         },
         robots: {
+            // FIXME: Disable this on staging and development domains.
             follow: true,
             index: true
         },
@@ -160,7 +162,6 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                 <SiteLinksSearchBoxJsonLd
                     useAppDir
                     name={store.name}
-                    alternateName={'sweetsideofsweden'}
                     url={`https://${BuildConfig.domain}/`}
                     potentialActions={[
                         {
