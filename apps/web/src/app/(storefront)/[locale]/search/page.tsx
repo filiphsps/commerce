@@ -1,26 +1,23 @@
-import { CountriesApi, StoreApi } from '@/api/store';
-
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { RedirectType, notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import { getDictionary } from 'src/app/(storefront)/[locale]/dictionary';
 import { metadata as notFoundMetadata } from '../not-found';
-import LocaleSelector from './locale-selector';
+import SearchContent from './search-content';
 
-export type CountriesPageParams = { locale: string };
-export async function generateMetadata({ params }: { params: CountriesPageParams }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
-    const handle = 'countries';
+    const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
@@ -28,26 +25,24 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
-    const description: string | undefined =
-        (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Countries', // TODO: Fallback should respect i18n.
-        description,
+        title: page?.meta_title || page?.title || 'Search', // TODO: Fallback should respect i18n.
+        description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/countries/`,
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/search/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/countries/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/search/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `/${locale.locale}/countries/`,
+            url: `/${locale.locale}/search/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
-            description,
+            description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
             siteName: store?.name,
             locale: locale.locale,
             images:
@@ -65,44 +60,24 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     };
 }
 
-export default async function CountriesPage({ params }: { params: CountriesPageParams }) {
+export type SearchPageParams = { locale: string };
+export default async function SearchPage({ params }: { params: SearchPageParams }) {
     const { locale: localeData } = params;
-    const handle = 'countries';
+    const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    const api = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api });
-    const countries = await CountriesApi({ api });
+    const client = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, api: client });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch({ client: api, page }))) || null;
+    const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     return (
         <Page>
             <PageContent primary>
-                <PageContent>
-                    <Heading title={page?.title} subtitle={page?.description} />
-                    <form
-                        action={async (formData: FormData) => {
-                            'use server';
-
-                            const locale = formData.get('locale') as string | null;
-
-                            // Make sure we got a locale.
-                            if (!locale) return { message: 'No locale provided.' };
-
-                            // Validate the locale.
-                            if (!NextLocaleToLocale(locale)) return { message: 'Invalid locale provided.' };
-
-                            cookies().set('LOCALE', locale);
-                            return redirect(`/${locale}/countries/`, RedirectType.replace);
-                        }}
-                    >
-                        <LocaleSelector countries={countries} store={store} locale={locale} />
-                    </form>
-                </PageContent>
+                <Heading title={page?.title} subtitle={page?.description} />
 
                 {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage
@@ -115,6 +90,8 @@ export default async function CountriesPage({ params }: { params: CountriesPageP
                         type={'custom_page'}
                     />
                 )}
+
+                <SearchContent store={store} locale={locale} />
             </PageContent>
         </Page>
     );

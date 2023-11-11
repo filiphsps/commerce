@@ -10,7 +10,6 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
@@ -18,6 +17,7 @@ import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getDictionary } from 'src/app/(storefront)/[locale]/dictionary';
 import { metadata as notFoundMetadata } from '../../not-found';
 
 export type CollectionPageParams = { locale: string; handle: string };

@@ -24,12 +24,11 @@ export default function middleware(req: NextRequest) {
 
     // If we're connecting via the nordcom domain show the admin dashboard
     // instead.
-    if (host.includes('shops.nordcom.io')) {
+    if (host.includes('shops.nordcom.io') || process.env.SHOPS_DEV) {
         // TODO: Allow for dashboard middleware (NextResponse supports this).
+        // TODO: Redirect files like favicon etc too.
         return NextResponse.rewrite(new URL(`/admin${req.nextUrl.pathname}`, req.url));
     }
-
-    // TODO: Multi-tenant, rewrite new URL(`/${hostname}${req.nextUrl.pathname}`, req.url)
 
     // Validate the store url.
     const newUrl = req.nextUrl.clone();
@@ -88,6 +87,9 @@ export default function middleware(req: NextRequest) {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
+        // TODO: Multi-tenant, rewrite
+        //       new URL(`/${hostname}${req.nextUrl.pathname}`, req.url)
+
         return NextResponse.redirect(newUrl);
     }
 

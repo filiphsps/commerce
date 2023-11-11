@@ -16,14 +16,21 @@
             "@/models/*": ["./src/models/*"],
             "@/utils/*": ["./src/utils/*"],
             "@/style/*": ["./src/scss/*"],
+
             // i18n
             "@/i18n/*": ["./src/locales/*"],
-            "@/i18n/dictionary": ["./src/app/[locale]/dictionary.ts"],
+            "@/i18n/dictionary": ["src/app/(storefront)/[locale]/dictionary.ts"],
+
             // Prismic
             "@/slices/*": ["./src/slices/*"],
             "@/slices": ["./src/slices/index"],
             "@/prismic/types": ["./prismicio-types.d.ts"],
-            "@/prismic": ["./prismicio.ts"]
+            "@/prismic": ["./prismicio.ts"],
+
+            // shops.nordcom.io
+            "#/components/*": ["src/app/(admin)/_components/*"],
+            "#/api/*": ["./src/app/(admin)/_api/*"],
+            "#/styles/*": ["./src/app/(admin)/_scss/*"]
         }
     },
     "exclude": ["node_modules"],

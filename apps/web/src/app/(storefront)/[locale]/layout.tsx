@@ -32,7 +32,7 @@ const font = Lexend_Deca({
     preload: true
 });
 
-export async function generateViewport({ params }: { params: { locale: string } }): Promise<Viewport | null> {
+export async function generateViewport({ params }: { params: { locale: string } }): Promise<Viewport> {
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return {};
@@ -48,7 +48,7 @@ export async function generateViewport({ params }: { params: { locale: string } 
     };
 }
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
     const { locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;

@@ -5,19 +5,20 @@ import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getDictionary } from 'src/app/(storefront)/[locale]/dictionary';
 import { metadata as notFoundMetadata } from '../not-found';
-import SearchContent from './search-content';
+import CartContent from './cart-content';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
+export type CartPageParams = { locale: string };
+export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
     const { locale: localeData } = params;
-    const handle = 'search';
+    const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
@@ -25,24 +26,26 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
+    const description: string | undefined =
+        (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Search', // TODO: Fallback should respect i18n.
-        description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
+        title: page?.meta_title || page?.title || 'Cart', // TODO: Fallback should respect i18n.
+        description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/search/`,
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/cart/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/search/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/cart/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `/${locale.locale}/search/`,
+            url: `/${locale.locale}/cart/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
-            description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
+            description,
             siteName: store?.name,
             locale: locale.locale,
             images:
@@ -60,38 +63,42 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export type SearchPageParams = { locale: string };
-export default async function SearchPage({ params }: { params: SearchPageParams }) {
-    const { locale: localeData } = params;
-    const handle = 'search';
-    const locale = NextLocaleToLocale(localeData);
+export default async function CartPage({ params }: { params: CartPageParams }) {
+    const locale = NextLocaleToLocale(params.locale);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
+    const handle = 'cart';
 
     const client = StorefrontApiClient({ locale });
     const store = await StoreApi({ locale, api: client });
-
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ client, page }))) || null;
 
     return (
         <Page>
             <PageContent primary>
-                <Heading title={page?.title} subtitle={page?.description} />
-
-                {page?.slices && page?.slices.length > 0 && (
-                    <PrismicPage
-                        store={store}
-                        locale={locale}
-                        page={page}
-                        prefetch={prefetch}
-                        i18n={i18n}
-                        handle={handle}
-                        type={'custom_page'}
-                    />
-                )}
-
-                <SearchContent store={store} locale={locale} />
+                <CartContent
+                    locale={locale}
+                    header={
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--block-spacer-small)' }}>
+                            <Heading title={page?.title} subtitle={page?.description} />
+                        </div>
+                    }
+                    slices={
+                        page && (
+                            <PrismicPage
+                                store={store}
+                                locale={locale}
+                                page={page}
+                                prefetch={prefetch}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'custom_page'}
+                            />
+                        )
+                    }
+                    i18n={i18n}
+                />
             </PageContent>
         </Page>
     );
