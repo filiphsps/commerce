@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 5rem;
     width: 5rem;
     cursor: pointer;
     background: transparent;
@@ -13,8 +13,8 @@
     transition: 150ms ease-in-out;
 
     &.open {
-        background: var(--accent-primary);
-        color: var(--accent-primary-text);
+        background: var(--accent-secondary-dark);
+        color: var(--accent-secondary-text);
     }
 
     svg.icon {

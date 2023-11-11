@@ -725,6 +725,17 @@ interface StoreDocumentData {
     store_name: prismic.KeyTextField;
 
     /**
+     * Description field in *Store*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: Description of the store
+     * - **API ID Path**: store.description
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    description: prismic.RichTextField;
+
+    /**
      * Logo field in *Store*
      *
      * - **Field Type**: Text
@@ -745,39 +756,6 @@ interface StoreDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     favicon: prismic.KeyTextField;
-
-    /**
-     * Primary field in *Store*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.primary
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    primary: prismic.ColorField;
-
-    /**
-     * Secondary field in *Store*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.secondary
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    secondary: prismic.ColorField;
-
-    /**
-     * Primary Text Color field in *Store*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.primary_text_color
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    primary_text_color: prismic.ColorField;
 
     /**
      * Corner radius field in *Store*
@@ -810,7 +788,80 @@ interface StoreDocumentData {
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#group
      */
-    social: prismic.GroupField<Simplify<StoreDocumentDataSocialItem>>;
+    social: prismic.GroupField<Simplify<StoreDocumentDataSocialItem>> /**
+     * Primary Logo field in *Store*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.logos_primary
+     * - **Tab**: Logos
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */;
+    logos_primary: prismic.ImageField<never>;
+
+    /**
+     * Alternative Logo field in *Store*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.logos_alternative
+     * - **Tab**: Logos
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */
+    logos_alternative: prismic.ImageField<never>;
+
+    /**
+     * Favicon field in *Store*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.logos_favicon
+     * - **Tab**: Logos
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */
+    logos_favicon: prismic.ImageField<never> /**
+     * Primary field in *Store*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: #cce2cb
+     * - **API ID Path**: store.colors_primary
+     * - **Tab**: Colors
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */;
+    colors_primary: prismic.ColorField;
+
+    /**
+     * Secondary field in *Store*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.colors_secondary
+     * - **Tab**: Colors
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    colors_secondary: prismic.ColorField;
+
+    /**
+     * Primary field in *Store*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.primary
+     * - **Tab**: Colors
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    primary: prismic.ColorField;
+
+    /**
+     * Secondary field in *Store*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: store.secondary
+     * - **Tab**: Colors
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    secondary: prismic.ColorField;
 }
 
 /**

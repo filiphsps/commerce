@@ -11,53 +11,88 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { metadata as notFoundMetadata } from '../../not-found';
 
 export type CollectionPageParams = { locale: string; handle: string };
-
-export async function generateMetadata({ params }: { params: CollectionPageParams }): Promise<Metadata | null> {
+export async function generateMetadata({ params }: { params: CollectionPageParams }): Promise<Metadata> {
     const { locale: localeData, handle } = params;
+    if (!isValidHandle(handle)) return notFoundMetadata;
+
     const locale = NextLocaleToLocale(localeData);
-    if (!locale) return null;
+    if (!locale) return notFoundMetadata;
 
-    const client = StorefrontApiClient({ locale });
-    const collection = await CollectionApi({ client, handle });
+    const api = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, api });
+    const collection = await CollectionApi({ api, handle });
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
+    const locales = store.i18n.locales;
 
+    const description: string | undefined =
+        (page?.meta_description && asText(page.meta_description)) ||
+        collection.seo.description ||
+        collection.description?.substring(0, 150) ||
+        undefined;
     return {
-        title: `${collection.title}`,
-        description:
-            (page?.meta_description && asText(page?.meta_description)) ||
-            collection?.seo?.description ||
-            collection?.description ||
-            undefined
+        title: page?.meta_title || collection.title,
+        description,
+        alternates: {
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/collections/${handle}/`,
+            languages: locales.reduce(
+                (prev, { locale }) => ({
+                    ...prev,
+                    [locale]: `https://${BuildConfig.domain}/${locale}/collections/${handle}/`
+                }),
+                {}
+            )
+        },
+        openGraph: {
+            url: `/${locale.locale}/collections/${handle}/`,
+            type: 'website',
+            title: page?.meta_title || collection.title,
+            description,
+            siteName: store?.name,
+            locale: locale.locale,
+            images:
+                (page?.meta_image && [
+                    {
+                        url: page?.meta_image!.url as string,
+                        width: page?.meta_image!.dimensions?.width || 0,
+                        height: page?.meta_image!.dimensions?.height || 0,
+                        alt: page?.meta_image!.alt || '',
+                        secureUrl: page?.meta_image!.url as string
+                    }
+                ]) ||
+                undefined
+        }
     };
 }
 
 export default async function CollectionPage({ params }: { params: CollectionPageParams }) {
     const { locale: localeData, handle } = params;
+    if (!isValidHandle(handle)) return notFound();
+
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    if (!isValidHandle(handle)) return notFound();
-
-    const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, shopify: client });
-    const collection = await CollectionApi({ client, handle });
+    const api = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, api });
+    const collection = await CollectionApi({ api, handle });
 
     const { page } = await PageApi({ locale, handle, type: 'collection_page' });
     const prefetch = await Prefetch({
-        client,
+        client: api,
         page,
         initialData: {
             collections: {
-                [handle]: collection
+                [collection.handle]: collection
             }
         }
     });

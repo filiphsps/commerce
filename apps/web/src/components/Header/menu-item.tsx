@@ -28,7 +28,6 @@ export const MenuItem = ({ data, locale, children }: MenuItemProps) => {
                 className={`${styles.top} ${
                     (route === '/' && data?.handle === null) || `/${data?.handle}` === route ? styles.active : ''
                 }`}
-                prefetch={false}
             >
                 {data?.title || null}
                 {(data?.children?.length > 0 && <FiChevronDown />) || null}
@@ -52,7 +51,7 @@ export const SubMenuItem = ({ children, data, locale }: SubMenuItemProps) => {
 
     return (
         <div className={`${styles.subitem} ${(target === route && styles.active) || ''}`}>
-            <Link href={`/${data?.handle || ''}`} title={data.title} prefetch={false}>
+            <Link href={`/${data?.handle || ''}`} title={data.title}>
                 <div className={styles.title}>{data.title}</div>
                 {data.description && <div className={styles.description}>{data.description}</div>}
             </Link>

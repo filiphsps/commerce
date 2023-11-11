@@ -12,25 +12,29 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { metadata as notFoundMetadata } from '../not-found';
 import CartContent from './cart-content';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
+export type CartPageParams = { locale: string };
+export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
     const { locale: localeData } = params;
-    const handle = 'cart';
+    const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
-    if (!locale) return null;
-    const locales = BuildConfig.i18n.locales;
+    if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const locales = store.i18n.locales;
 
+    const description: string | undefined =
+        (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
         title: page?.meta_title || page?.title || 'Cart', // TODO: Fallback should respect i18n.
-        description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
+        description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/cart/`,
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/cart/`,
             languages: locales.reduce(
-                (prev, locale) => ({
+                (prev, { locale }) => ({
                     ...prev,
                     [locale]: `https://${BuildConfig.domain}/${locale}/cart/`
                 }),
@@ -38,10 +42,10 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             )
         },
         openGraph: {
-            url: `https://${BuildConfig.domain}${locale.locale}/cart/`,
+            url: `/${locale.locale}/cart/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
-            description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
+            description,
             siteName: store?.name,
             locale: locale.locale,
             images:
@@ -59,7 +63,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export type CartPageParams = { locale: string };
 export default async function CartPage({ params }: { params: CartPageParams }) {
     const locale = NextLocaleToLocale(params.locale);
     if (!locale) return notFound();
@@ -67,7 +70,7 @@ export default async function CartPage({ params }: { params: CartPageParams }) {
     const handle = 'cart';
 
     const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, shopify: client });
+    const store = await StoreApi({ locale, api: client });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ client, page }))) || null;
 

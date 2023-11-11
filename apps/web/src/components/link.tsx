@@ -14,9 +14,7 @@ type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
 // FIXME: i18n provider?
 export default function Link({ locale, ...props }: Props) {
     if (typeof props.href !== 'string') {
-        console.error(`Link href must be a string. Received ${typeof props.href} instead.`);
-        // FIXME: Throw here when we have error boundaries.
-        return 'INVALID LINK';
+        throw new Error(`Link href must be a string. Received ${typeof props.href} instead.`);
     }
 
     const path = usePathname();
@@ -39,5 +37,5 @@ export default function Link({ locale, ...props }: Props) {
     }
 
     if (props.href || href) props.href = href;
-    return <BaseLink {...props} />;
+    return <BaseLink {...props} prefetch={props.prefetch || false} />;
 }

@@ -55,5 +55,5 @@
     "git.enableCommitSigning": true,
     "git.mergeEditor": false,
     "git-graph.graph.colours": ["#ED1E79", "#EDD382", "#274690"],
-    "cSpell.words": ["Nordcom", "Prismic"]
+    "cSpell.words": ["HSTS", "Nordcom", "Prismic"]
 }

@@ -1,16 +1,16 @@
 'use client';
 
-import { BuildConfig } from '@/utils/build-config';
-import type { FunctionComponent } from 'react';
-import Link from '@/components/link';
-import { NextLocaleToLocale } from '@/utils/locale';
-import PageLoader from '@/components/PageLoader';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
-import type { VendorModel } from '@/models/VendorModel';
 import { VendorsApi } from '@/api/shopify/vendor';
-import styled from 'styled-components';
+import PageLoader from '@/components/PageLoader';
+import Link from '@/components/link';
+import type { VendorModel } from '@/models/VendorModel';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import { BuildConfig } from '@/utils/build-config';
+import { NextLocaleToLocale } from '@/utils/locale';
 import { useApolloClient } from '@apollo/client';
 import { usePathname } from 'next/navigation';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Container = styled.div`
@@ -102,7 +102,6 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
                         className={`Vendors-Vendor ${
                             (route?.includes(`brands/${vendor?.handle}`) && 'Selected') || ''
                         }`}
-                        prefetch={false}
                     >
                         <Vendor>{vendor?.title}</Vendor>
                     </Link>

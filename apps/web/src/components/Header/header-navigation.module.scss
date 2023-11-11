@@ -7,11 +7,20 @@
     gap: calc(var(--block-spacer) * 2);
     margin-left: var(--block-spacer);
     height: 100%;
-    font-weight: 500;
-    font-size: 1.75rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
     color: var(--color-dark);
 
-    @media (max-width: $breakpoint-tablet-medium) {
+    &.centered {
+        gap: calc(var(--block-spacer-large) * 1.5);
+
+        @media (min-width: $breakpoint-tablet-medium) {
+            gap: calc(var(--block-spacer-large) * 1.75);
+        }
+    }
+
+    @media (max-width: $breakpoint-tablet) {
         display: none;
     }
 
@@ -26,21 +35,24 @@
 
     .item {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         gap: var(--block-spacer-small);
         height: 100%;
         cursor: pointer;
 
         svg {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
             height: 100%;
-            margin-bottom: -0.25rem;
-            font-size: 1.75rem;
+            margin: 0 -0.25rem -0.15rem 0;
+            font-size: 2rem;
             stroke-width: 2.25;
             vertical-align: middle;
             transform: rotate(-90deg);
-            transition: 150ms ease-in-out transform;
+            transition: 75ms ease-in-out transform;
+            text-align: right;
         }
 
         &:has(:is(:hover, :active, :focus, :focus-within)),
@@ -86,9 +98,9 @@
 
             max-height: 0;
             transition:
-                350ms ease-in-out max-height,
-                350ms ease-in-out height,
-                350ms ease-in-out border;
+                150ms ease-in-out max-height,
+                150ms ease-in-out height,
+                150ms ease-in-out border;
             // Make the hit-box larger, could've been a padding but it obscures the logo
             // e.g., let's not `padding-top: 0.75rem;`.
             border-bottom: 0 solid transparent;

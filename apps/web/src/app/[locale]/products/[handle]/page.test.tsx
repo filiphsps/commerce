@@ -4,26 +4,31 @@ import ProductPage, { generateMetadata } from './page';
 
 import type { ProductPageParams } from './page';
 
-vi.mock('@/utils/prefetch', () => ({
-    Prefetch: vi.fn().mockResolvedValue({})
-}));
-vi.mock('@/i18n/dictionary', () => ({
-    getDictionary: vi.fn().mockResolvedValue({})
-}));
-
 describe('Pages', () => {
-    // Mock the `StorefrontApiClient` function to prevent API calls.
+    vi.mock('@/utils/prefetch', () => ({
+        Prefetch: vi.fn().mockResolvedValue({})
+    }));
+    vi.mock('@/i18n/dictionary', () => ({
+        getDictionary: vi.fn().mockResolvedValue({})
+    }));
+
+    // Mock various API functions.
     vi.mock('@/api/shopify', () => ({
         StorefrontApiClient: vi.fn().mockReturnValue({
             query: vi.fn().mockResolvedValue({})
         })
     }));
-
-    // Mock the `PageApi` function to prevent API calls.
     vi.mock('@/api/page', () => ({
         PageApi: vi.fn().mockResolvedValue({
             page: {
                 slices: []
+            }
+        })
+    }));
+    vi.mock('@/api/store', () => ({
+        StoreApi: vi.fn().mockResolvedValue({
+            i18n: {
+                locales: ['en-US', 'de-DE', 'en-GB']
             }
         })
     }));

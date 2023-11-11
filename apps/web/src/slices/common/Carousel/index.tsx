@@ -90,8 +90,10 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                     <Content>
                         <Slider {...settings}>
                             {slice.items.map((slide, index) => {
+                                const AsComponent = (slide.href ? Link : 'div') as any;
+
                                 return (
-                                    <Link key={index} href={slide.href! || ''} prefetch={false}>
+                                    <AsComponent key={index} {...((slide.href && { href: slide.href }) || {})}>
                                         <ImageContainer>
                                             {slide.image?.url && slide.mobile_image?.url && (
                                                 <>
@@ -100,25 +102,26 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
                                                         className="Image Mobile"
                                                         width={250}
                                                         height={100}
-                                                        sizes="(max-width: 500px) 200px, 300px"
+                                                        sizes="(max-width: 500px) 175px, 265px"
+                                                        fallbackAlt=""
                                                         loading={slide.defer ? 'lazy' : 'eager'}
                                                         priority={slide.defer ? false : true}
                                                         imgixParams={{ q: 65 }}
                                                         loader={undefined}
-                                                        fallbackAlt=""
                                                     />
                                                     <PrismicNextImage
                                                         field={slide.image}
                                                         className="Image Desktop"
+                                                        fallbackAlt=""
                                                         loading={slide.defer ? 'lazy' : 'eager'}
                                                         priority={slide.defer ? false : true}
+                                                        imgixParams={{ q: 65 }}
                                                         loader={undefined}
-                                                        fallbackAlt=""
                                                     />
                                                 </>
                                             )}
                                         </ImageContainer>
-                                    </Link>
+                                    </AsComponent>
                                 );
                             })}
                         </Slider>

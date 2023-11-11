@@ -6,7 +6,7 @@ type MobileMenuProps = {
 };
 export const MobileMenu = ({ navigation }: MobileMenuProps) => {
     return (
-        <div className={`${styles.container} || ''}`}>
+        <div className={`${styles.container || ''}`}>
             <HeaderNavigation navigation={navigation} />
         </div>
     );

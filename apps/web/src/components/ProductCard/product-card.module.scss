@@ -1,0 +1,11 @@
+@import '@/style/variables.scss';
+.ProductCard {
+}
+
+.horizontal .ProductCard {
+    max-width: var(--component-product-card-width);
+
+    @media (min-width: $breakpoint-mobile) {
+        max-width: unset;
+    }
+}

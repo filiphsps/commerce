@@ -1,18 +1,18 @@
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
+import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
-import { DefaultLocale, type Locale } from '@/utils/locale';
-import type { Client as PrismicClient } from '@prismicio/client';
+import { DefaultLocale, NextLocaleToLocale, type Locale } from '@/utils/locale';
+import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-export const CountriesApi = async ({ client }: { client: AbstractApi }): Promise<Country[]> => {
+export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data: localData } = await client.query<{ localization: Localization }>(gql`
-                query localization($language: LanguageCode!, $country: CountryCode!)
-                @inContext(language: $language, country: $country) {
+            const { data: localData } = await api.query<{ localization: Localization }>(gql`
+                query localization {
                     localization {
                         availableCountries {
                             availableLanguages {
@@ -40,15 +40,22 @@ export const CountriesApi = async ({ client }: { client: AbstractApi }): Promise
     });
 };
 
-export const LocalesApi = async ({ client }: { client: AbstractApi }): Promise<string[]> => {
+export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const countries = await CountriesApi({ client });
+            const countries = await CountriesApi({ api });
             const locales = countries.flatMap((country) =>
-                country.availableLanguages.map(
-                    (language) => `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`
-                )
-            );
+                country.availableLanguages
+                    .map((language) =>
+                        NextLocaleToLocale(`${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`)
+                    )
+                    .filter((_) => _)
+            ) as Locale[];
+
+            if (!locales || locales.length <= 0)
+                throw new Error(
+                    'No locales found. Please check if you have enabled at least one language and country in your Shopify store.'
+                );
 
             return resolve(locales);
         } catch (error) {
@@ -61,96 +68,158 @@ export const LocalesApi = async ({ client }: { client: AbstractApi }): Promise<s
 export const StoreApi = async ({
     locale,
     client: _client,
-    shopify // TODO: Separate this from prismic.
+    api
 }: {
     locale: Locale;
     client?: PrismicClient;
-    shopify: AbstractApi;
+    api: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const client = _client || createClient({ locale });
 
         try {
-            const { data: shopData } = await shopify.query<{ shop: Shop }>(
-                gql`
-                    query store($language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
-                        shop {
-                            id
-                            brand {
-                                logo {
-                                    image {
-                                        url
-                                    }
-                                }
-
-                                squareLogo {
-                                    image {
-                                        url
-                                    }
-                                }
-
-                                colors {
-                                    primary {
-                                        background
-                                        foreground
-                                    }
-                                    secondary {
-                                        background
-                                        foreground
-                                    }
+            const { data: shopData } = await api.query<{ shop: Shop }>(gql`
+                query store {
+                    shop {
+                        id
+                        brand {
+                            logo {
+                                image {
+                                    url
                                 }
                             }
 
-                            paymentSettings {
-                                acceptedCardBrands
-                                enabledPresentmentCurrencies
-                                supportedDigitalWallets
+                            squareLogo {
+                                image {
+                                    url
+                                }
+                            }
+
+                            colors {
+                                primary {
+                                    background
+                                    foreground
+                                }
+                                secondary {
+                                    background
+                                    foreground
+                                }
                             }
                         }
+
+                        paymentSettings {
+                            acceptedCardBrands
+                            enabledPresentmentCurrencies
+                            supportedDigitalWallets
+                        }
                     }
-                `,
-                {
-                    language: locale.language,
-                    country: locale.country
                 }
-            );
+            `);
 
-            let res: Record<string, any>;
+            const { data: store }: StoreDocument = await (async () => {
+                try {
+                    return await client.getSingle('store', {
+                        lang: locale.locale,
+                        fetchOptions: {
+                            cache: undefined,
+                            next: {
+                                revalidate: 3600
+                            }
+                        },
+                        fetchLinks: []
+                    });
+                } catch {
+                    return await client.getSingle('store', {
+                        fetchOptions: {
+                            cache: undefined,
+                            next: {
+                                revalidate: 3600
+                            }
+                        },
+                        fetchLinks: []
+                    });
+                }
+            })();
 
-            try {
-                res = (
-                    await client.getSingle('store', {
-                        lang: locale.locale
-                    })
-                ).data;
-            } catch {
-                res = (await client.getSingle('store')).data;
-            }
+            const extraStoreDetails = shopData?.shop;
+            const currencies: string[] = store.currencies?.map((item: any) => item.currency) || [];
 
-            const currencies: string[] = res.currencies?.map((item: any) => item.currency) || [];
             return resolve({
-                id: shopData?.shop?.id || '',
-                name: res.store_name,
-                logo: {
-                    src: shopData?.shop?.brand?.logo?.image?.url || res.logo
+                id: extraStoreDetails?.id || '',
+                name: store.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
+                description:
+                    (store.description && asText(store.description)) || extraStoreDetails?.description || undefined,
+                i18n: {
+                    locales: await LocalesApi({ api })
                 },
-                favicon: {
-                    src: shopData?.shop?.brand?.squareLogo?.image?.url || res.favicon || res.logo
+                logos: {
+                    primary: (() => {
+                        const logo = {
+                            src:
+                                store.logos_primary?.url ||
+                                store.logo ||
+                                extraStoreDetails?.brand?.logo?.image?.url ||
+                                undefined,
+                            alt:
+                                store.logos_primary?.alt || extraStoreDetails?.brand?.logo?.image?.altText || undefined,
+                            height:
+                                store.logos_primary?.dimensions?.height ||
+                                extraStoreDetails?.brand?.logo?.image?.height ||
+                                undefined,
+                            width:
+                                store.logos_primary?.dimensions?.width ||
+                                extraStoreDetails?.brand?.logo?.image?.width ||
+                                undefined
+                        };
+
+                        return logo.src ? logo : undefined;
+                    })(),
+                    alternative: (() => {
+                        const logo = {
+                            src: store.logos_alternative?.url || undefined,
+                            alt: store.logos_alternative?.alt || undefined,
+                            height: store.logos_alternative?.dimensions?.height || undefined,
+                            width: store.logos_alternative?.dimensions?.height || undefined
+                        };
+
+                        return logo.src ? logo : undefined;
+                    })()
                 },
+                favicon: (() => {
+                    const logo = {
+                        src:
+                            store.logos_favicon?.url ||
+                            store.favicon ||
+                            extraStoreDetails?.brand?.squareLogo?.image?.url ||
+                            undefined,
+                        alt: store.logos_alternative?.alt || undefined,
+                        height: store.logos_alternative?.dimensions?.height || undefined,
+                        width: store.logos_alternative?.dimensions?.height || undefined
+                    };
+
+                    return logo.src ? logo : undefined;
+                })(),
                 accent: {
-                    primary: shopData?.shop?.brand?.colors.primary?.[0]?.background || res.primary,
-                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.background || res.secondary
+                    primary:
+                        store.colors_primary ||
+                        store.primary ||
+                        extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
+                        '', // FIXME: Throw error instead of empty string.
+                    secondary:
+                        store.colors_secondary ||
+                        store.secondary ||
+                        extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
+                        '' // FIXME: Throw error instead of empty string.
                 },
                 color: {
-                    primary: shopData?.shop?.brand?.colors.primary?.[0]?.foreground || res.primary_text_color,
-                    secondary: shopData?.shop?.brand?.colors.secondary?.[0]?.foreground || res.primary_text_color
+                    primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.
+                    secondary: extraStoreDetails?.brand?.colors.secondary?.[0]?.foreground || '' // FIXME: Throw error instead of empty string.
                 },
-                currencies: shopData?.shop?.paymentSettings?.enabledPresentmentCurrencies || currencies,
-                social: res.social,
+                currencies: extraStoreDetails?.paymentSettings?.enabledPresentmentCurrencies || currencies,
+                social: (store.social as any) || [],
                 payment: {
-                    methods: shopData?.shop?.paymentSettings?.acceptedCardBrands || [],
-                    wallets: shopData?.shop?.paymentSettings?.supportedDigitalWallets || []
+                    methods: extraStoreDetails?.paymentSettings?.acceptedCardBrands || [],
+                    wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
                 }
             });
         } catch (error: any) /* TODO: FRO-14 proper error type. */ {
@@ -159,8 +228,8 @@ export const StoreApi = async ({
                     // Try again with default locale.
                     await StoreApi({
                         locale: DefaultLocale(),
-                        client: _client,
-                        shopify
+                        client,
+                        api
                     })
                 );
             }

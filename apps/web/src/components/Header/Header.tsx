@@ -11,26 +11,32 @@ import Image from 'next/image';
 import type { FunctionComponent } from 'react';
 
 interface HeaderProps {
-    store?: StoreModel;
-    navigation?: any;
+    store: StoreModel;
+    navigation: any;
     locale: Locale;
 }
 const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, locale }) => {
-    //onClick={() => sidebarToggle?.()}
+    const { logos } = store;
+
+    const logo = logos.alternative || logos.primary;
+
     return (
         <HeaderContainer>
             <HamburgerMenu />
 
             <div className={styles.logo}>
-                <Link href={'/'} prefetch={false}>
-                    <Image
-                        src={store?.logo?.src!}
-                        width={250}
-                        height={150}
-                        alt={`Store logo`}
-                        priority
-                        sizes="(max-width: 1150px) 75px, 200px"
-                    />
+                <Link href={'/'}>
+                    {logo?.src ? (
+                        <Image
+                            src={logo.src}
+                            width={175}
+                            height={50}
+                            alt={logo.alt || `Store logo`}
+                            sizes="(max-width: 1024px) 165px, 175px"
+                            loading="eager"
+                            priority={true}
+                        />
+                    ) : null}
                 </Link>
             </div>
 
@@ -42,7 +48,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, lo
                         href={'/search/'}
                         className="Wrapper"
                         title="Search for products, collections and pages across the whole store"
-                        prefetch={false}
                     >
                         <TbSearch />
                     </Link>
@@ -51,7 +56,6 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, lo
                     <Link
                         title="View your shopping cart" // TODO: i18n.
                         href={'/cart/'}
-                        prefetch={false}
                     >
                         <TbShoppingBag />
                     </Link>

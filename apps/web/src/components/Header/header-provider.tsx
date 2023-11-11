@@ -8,16 +8,19 @@ type HeaderProviderProps = {
 };
 export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     useEffect(() => {
+        const threshold = 5;
+        document.body.setAttribute('data-scrolled', Math.floor(window.scrollY) >= threshold ? 'true' : 'false');
+
         const onScroll = () => {
             const scroll = Math.floor(window.scrollY);
 
             // document.body.style.setProperty('--scroll-y', `${scroll}px`);
 
-            if (scroll < 50) document.body.removeAttribute('data-scrolled');
-            else document.body.setAttribute('data-scrolled', 'true');
+            const scrolled = scroll >= threshold ? 'true' : 'false';
+            if (document.body.getAttribute('data-scrolled') !== scrolled)
+                document.body.setAttribute('data-scrolled', scrolled);
         };
         window.addEventListener('scroll', onScroll);
-
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
@@ -25,10 +28,14 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
         <>
             {children}
             <AppProgressBar
-                height="4px"
+                height="var(--block-padding)"
                 color={store.accent.primary}
-                options={{ showSpinner: true }}
-                shallowRouting={false}
+                options={{
+                    showSpinner: false
+                    //easing: 'ease-in-out',
+                    //speed: 500
+                }}
+                shallowRouting
             />
         </>
     );

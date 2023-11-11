@@ -2,15 +2,15 @@
 
 .container {
     position: absolute;
-    inset: 6rem 0 0 -100vw;
-    padding-top: var(--block-padding);
+    inset: 7rem 0 0 -100vw;
     z-index: 0;
     width: 85vw;
     height: calc(100vh - 6rem);
     background: var(--accent-secondary-light);
+    border-right: var(--block-border-width) solid var(--accent-secondary-dark);
     color: var(--color-dark);
     transition: 150ms ease-in-out all;
-    box-shadow: 1rem 1rem 1rem -0.75rem var(--color-block-shadow);
+    box-shadow: 1rem 1rem 1rem -0.5rem var(--color-block-shadow);
 
     @media (min-width: 1150px) {
         display: none;

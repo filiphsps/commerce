@@ -1,18 +1,30 @@
+import type { Locale } from '@/utils/locale';
 import type { CountryCode } from '@shopify/hydrogen-react/storefront-api-types';
+
+type StoreImageModel = {
+    src: string;
+    alt: string;
+    height: number;
+    width: number;
+};
 
 export interface StoreModel {
     id: string;
     name: string;
     description?: string;
-    logo: {
-        src: string;
+
+    i18n: {
+        locales: Locale[];
+    };
+
+    logos: {
+        primary?: Partial<StoreImageModel>;
+        alternative?: Partial<StoreImageModel>;
     };
 
     currencies?: Array<string>;
 
-    favicon: {
-        src: string;
-    };
+    favicon?: Partial<StoreImageModel>;
     accent: {
         primary: string;
         secondary: string;

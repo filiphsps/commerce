@@ -10,11 +10,11 @@ import { gql } from 'graphql-tag';
  *       and replace them with normal spaces.
  */
 export const CollectionApi = async ({
-    client,
+    api,
     handle,
     limit
 }: {
-    client: AbstractApi;
+    api: AbstractApi;
     handle: string;
     limit?: number;
 }): Promise<Collection> => {
@@ -22,10 +22,9 @@ export const CollectionApi = async ({
         if (!handle) return reject(new Error('400: Invalid handle'));
 
         try {
-            const { data, errors } = await client.query<{ collectionByHandle: Collection }>(
+            const { data, errors } = await api.query<{ collectionByHandle: Collection }>(
                 gql`
-                    query collection($handle: String!, $limit: Int!, $language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
+                    query collection($handle: String!, $limit: Int!) {
                         collectionByHandle(handle: $handle) {
                             id
                             handle

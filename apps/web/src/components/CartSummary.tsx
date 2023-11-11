@@ -395,12 +395,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                         <Notice>
                             <FiLock className="Lock" />
                             Safely complete your purchase through our secure and{' '}
-                            <Link
-                                href="https://www.shopify.com/security/pci-compliant"
-                                rel="nofollow"
-                                target="_blank"
-                                prefetch={false}
-                            >
+                            <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
                                 PCI DSS compliant
                             </Link>{' '}
                             checkout powered by Stripe & Shopify.

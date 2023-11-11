@@ -326,7 +326,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
         <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
-                    <Link href={`/products/${product?.handle}/`} prefetch={false}>
+                    <Link href={`/products/${product?.handle}/`}>
                         <TempImage
                             src={variant.image!.url || ''}
                             layout="responsive"
@@ -341,14 +341,10 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
             <MetaSection>
                 <Details>
                     <DetailsBrand>
-                        <Link href={`/collections/${TitleToHandle(product?.vendor)}/`} prefetch={false}>
-                            {product.vendor}
-                        </Link>
+                        <Link href={`/collections/${TitleToHandle(product?.vendor)}/`}>{product.vendor}</Link>
                     </DetailsBrand>
                     <DetailsTitle>
-                        <Link href={`/products/${product?.handle}/`} prefetch={false}>
-                            {product.title}
-                        </Link>
+                        <Link href={`/products/${product?.handle}/`}>{product.title}</Link>
                     </DetailsTitle>
                 </Details>
             </MetaSection>

@@ -5,14 +5,14 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import { TbMinus, TbPlus } from 'react-icons/tb';
 import styled, { css } from 'styled-components';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
+import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import type { StoreModel } from '@/models/StoreModel';
-import { ImageLoader } from '@/utils/image-loader';
 import { useTranslation } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
@@ -180,19 +180,21 @@ const Variant = styled.div`
 const Actions = styled.div`
     grid-area: product-actions;
     display: grid;
-    grid-template-columns: minmax(auto, auto) auto;
+    grid-template-columns: 1fr auto;
     justify-content: space-between;
     align-items: end;
     gap: var(--block-spacer-small);
 `;
 const AddButton = styled.button`
-    min-height: 3.5rem;
+    min-height: 4.25rem;
+    width: 100%;
     border: none;
-    padding: calc(var(--block-padding-small) / 2) var(--block-padding-large);
+    padding: var(--block-padding-small) var(--block-padding);
     font-size: 1.5rem;
 
     @media (min-width: 920px) {
         min-height: 3rem;
+        width: 1auto;
         padding: calc(var(--block-padding-small) / 2) var(--block-padding);
         font-size: 1.25rem;
     }
@@ -224,12 +226,18 @@ const QuantityAction = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
+    width: 2.5rem;
     height: 100%;
     padding-right: 0.05rem;
     cursor: pointer;
     transition: 150ms ease-in-out;
     text-align: center;
+    font-size: 2rem;
+
+    svg {
+        font-size: inherit;
+        stroke-width: 2.75;
+    }
 
     &:first-child {
         justify-content: center;
@@ -376,7 +384,7 @@ const Container = styled.section<{ $available?: boolean }>`
     min-width: var(--component-product-card-width);
     min-height: 36rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
-    scroll-snap-align: start;
+    scroll-snap-align: center;
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary-light);
     color: var(--accent-secondary-text);
@@ -435,7 +443,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
     }, [quantityValue]);
 
     // TODO: Placeholder animation.
-    if (!product || !selectedVariant) return <Container className={`${className || ''} Loading`} />;
+    if (!product || !selectedVariant)
+        return <Container className={`${styles.productCard} ${className || ''} Loading`} />;
 
     const isNewProduct =
         product?.createdAt &&
@@ -464,21 +473,20 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
     if (image) image.altText = image.altText || linkTitle;
 
     return (
-        <Container className={className} $available={selectedVariant.availableForSale}>
+        <Container className={`${styles.productCard} ${className || ''}`} $available={selectedVariant.availableForSale}>
             <ProductImage>
                 {image ? (
-                    <Link title={linkTitle} href={href} prefetch={false}>
+                    <Link title={linkTitle} href={href}>
                         <ProductImageWrapper>
                             <Image
                                 key={image.id}
                                 id={image.id!}
-                                loader={ImageLoader}
                                 src={image.url}
                                 alt={image?.altText!}
                                 title={image?.altText!}
-                                width={200}
-                                height={200}
-                                sizes="(max-width: 950px) 75px, 200px"
+                                width={195}
+                                height={155}
+                                sizes="(max-width: 950px) 155px, 200px"
                             />
                         </ProductImageWrapper>
                     </Link>
@@ -500,19 +508,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link
-                            title={product.vendor}
-                            href={`/collections/${TitleToHandle(product.vendor)}/`}
-                            prefetch={false}
-                        >
+                        <Link title={product.vendor} href={`/collections/${TitleToHandle(product.vendor)}/`}>
                             {product.vendor}
                         </Link>
                     </Brand>
                 )}
                 <Title title={linkTitle}>
-                    <Link href={href} prefetch={false}>
-                        {product.title}
-                    </Link>
+                    <Link href={href}>{product.title}</Link>
                 </Title>
 
                 <CardFooter>
@@ -610,7 +612,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         className={quantity > 1 ? '' : 'Inactive'}
                         onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
                     >
-                        <FiMinus />
+                        <TbMinus />
                     </QuantityAction>
                     <QuantityValue
                         ref={quantityRef as any}
@@ -630,7 +632,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         }}
                     />
                     <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>
-                        <FiPlus />
+                        <TbPlus />
                     </QuantityAction>
                 </Quantity>
             </Actions>

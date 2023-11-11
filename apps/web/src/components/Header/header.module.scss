@@ -5,70 +5,101 @@
     width: 100%;
     background: var(--accent-secondary-light);
     transition: 150ms ease-in-out background-color;
-    border-bottom: calc(var(--block-border-width) / 2) solid transparent;
+    border-bottom: var(--block-border-width) solid transparent;
 
     transition:
         150ms ease-in-out box-shadow,
         150ms ease-in-out border-color;
 
-    @media (min-width: $breakpoint-tablet-medium) {
-        height: calc(4.5rem + calc(var(--block-padding) * 2));
+    @media (min-width: $breakpoint-tablet) {
+        border-bottom-width: calc(var(--block-border-width) / 2);
     }
 }
 
 [data-scrolled='true'],
 [data-menu-open='true'] {
     .container {
-        border-bottom-color: var(--accent-secondary);
+        border-bottom-color: var(--accent-secondary-dark);
         box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
     }
 }
 
 .content {
+    --header-height: 7rem;
+    @media (min-width: $breakpoint-tablet) {
+        --header-height: 6.5rem;
+    }
+
     display: grid;
     grid-template-columns: 1fr auto 1fr;
+    //grid-template-columns: 5rem auto 1fr;
+    justify-content: space-between;
+    align-items: center;
     gap: var(--block-spacer);
     max-width: var(--page-width);
     width: 100%;
-    height: 100%;
-    padding: var(--block-padding);
+    height: var(--header-height);
+    padding: 0 var(--block-padding);
     margin: 0 auto;
     user-select: none;
 
-    @media (min-width: $breakpoint-tablet-medium) {
-        padding: var(--block-padding) var(--block-spacer-large);
-        grid-template-columns: 10rem 1fr auto;
+    @media (min-width: $breakpoint-tablet) {
+        padding: 0 var(--block-spacer-large);
+        //grid-template-columns: 12rem 1fr auto;
+        grid-template-columns: 1fr auto 1fr;
         gap: var(--block-spacer-large);
     }
 
     .logo {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        height: 5rem;
         width: 100%;
-        padding: var(--block-padding-small) var(--block-padding);
-        background: var(--accent-primary);
-        border-radius: var(--block-border-radius);
+        height: var(--header-height);
         user-select: none;
-        outline: none;
+        text-align: left;
 
-        a {
-            position: relative;
-            display: block;
-            height: 100%;
-            width: 100%;
-
-            img {
-                height: 100%;
-                width: 100%;
-                object-fit: contain;
-            }
+        .background {
+            height: 5.5rem;
+            padding: var(--block-padding-small) var(--block-padding);
+            background-color: var(--accent-primary);
+            border-radius: var(--block-border-radius);
+            //mix-blend-mode: difference;
         }
 
-        @media (min-width: $breakpoint-tablet-medium) {
-            padding: 0.25rem 0.75rem;
-            height: 100%;
+        a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            height: calc(var(--header-height) - calc(calc(var(--block-padding) - 0.25rem) * 2));
+            padding: calc(var(--block-padding) - 0.25rem);
+            outline: none;
+            border-radius: var(--block-border-radius);
+            transition: 150ms ease-in-out background-color;
+
+            @media (min-width: $breakpoint-tablet) {
+                &:is(:hover, :focus, :focus-within) {
+                    background-color: var(--accent-secondary);
+                    outline: none;
+                }
+            }
+
+            @media (min-width: $breakpoint-tablet) {
+                height: 4rem;
+                transform: translateX(calc(calc(var(--block-padding) - 0.25rem) * -1));
+                //transform-origin: left;
+                //transform: perspective(10rem)
+                //    translate3d(calc(calc(var(--block-padding) - 0.25rem) * -1), 0px, -3.75rem);
+            }
+
+            img {
+                backface-visibility: visible;
+                height: 100%;
+                width: auto;
+                object-fit: contain;
+                object-position: left;
+            }
         }
     }
 
@@ -89,7 +120,7 @@
 
         pointer-events: none;
 
-        @media (min-width: $breakpoint-tablet-medium) {
+        @media (min-width: $breakpoint-tablet) {
             right: calc(var(--block-spacer-small) * -0.5);
             top: calc(var(--block-spacer-small) * -0.5);
         }
@@ -101,7 +132,7 @@
         align-items: center;
         gap: 0;
 
-        @media (min-width: $breakpoint-tablet-medium) {
+        @media (min-width: $breakpoint-tablet) {
             gap: calc(var(--block-spacer) * 2);
         }
 
@@ -129,16 +160,17 @@
             cursor: pointer;
             transition: 150ms all ease-in-out;
 
-            font-weight: 600;
             line-height: 1.25rem;
-            font-size: 1.25rem;
+            font-weight: 600;
+            font-size: 3rem;
 
-            @media (min-width: $breakpoint-tablet-medium) {
+            @media (min-width: $breakpoint-tablet) {
                 aspect-ratio: unset;
+                font-size: 2.5rem;
             }
 
             svg {
-                font-size: 2.5rem;
+                font-size: inherit;
                 stroke-width: 2.25;
             }
 

@@ -45,7 +45,7 @@ export default async function CustomPage({ params }: { params: { locale: string;
     if (!isValidHandle(handle)) return notFound();
 
     const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, shopify: client });
+    const store = await StoreApi({ locale, api: client });
 
     try {
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });

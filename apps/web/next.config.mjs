@@ -18,7 +18,8 @@ const config = {
         ],
         scrollRestoration: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
-        optimizeCss: true
+        optimizeCss: true,
+        serverActions: true
     },
     images: {
         remotePatterns: [
@@ -82,18 +83,8 @@ const config = {
     async redirects() {
         return [
             {
-                source: '/x-default/:slug*',
-                destination: '/:slug',
-                permanent: true
-            },
-            {
                 source: '/blogs/news/:slug*',
                 destination: '/blog/:slug',
-                permanent: true
-            },
-            {
-                source: '/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: true
             },
             {
@@ -105,9 +96,28 @@ const config = {
                 source: '/shop/',
                 destination: '/collections/bestselling/',
                 permanent: false
-            }
+            },
+
+            // TODO: Point these to the multi-tenant admin app once that is built.
+            {
+                source: '/:locale/admin/',
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                permanent: true
+            },
+            {
+                source: '/:locale/admin/',
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                permanent: true
+            },
         ];
-    }
+    },
+
+    // While I wish we could use this we must handle it
+    // ourselves as a part of the locale redirection.
+    // This is due to the limited amount of redirects
+    // we're allowed to use if we want to be on the HSTS
+    // preload list.
+    skipTrailingSlashRedirect: true
 };
 
 export default config;

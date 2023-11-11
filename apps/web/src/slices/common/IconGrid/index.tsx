@@ -16,12 +16,12 @@ const ContentContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-large);
+    gap: calc(var(--block-spacer-large) * 2);
 
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--accent-secondary);
-    color: var(--accent-secondary-text);
+    background: var(--accent-primary);
+    color: var(--accent-primary-text);
 
     @media (min-width: 960px) {
         display: grid;
@@ -29,10 +29,11 @@ const ContentContainer = styled.div`
         justify-content: center;
         align-items: center;
     }
+
     @media (max-width: 1465px) {
         flex-direction: column;
 
-        gap: var(--block-spacer);
+        gap: var(--block-spacer-large);
     }
 `;
 const Item = styled.div`
@@ -40,8 +41,8 @@ const Item = styled.div`
     grid-template-columns: calc(var(--block-padding-large) * 2) auto;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--block-spacer-large) * 1.5);
-    padding: var(--block-padding-small);
+    gap: calc(var(--block-spacer-large) * 2);
+    padding: var(--block-padding);
 
     @media (min-width: 960px) {
         gap: var(--block-spacer-large);
@@ -49,20 +50,22 @@ const Item = styled.div`
 `;
 const ItemIcon = styled.div`
     position: relative;
-    height: 2rem;
+    height: 2.5rem;
     width: calc(var(--block-padding-large) * 2);
     height: calc(var(--block-padding-large) * 2);
+
+    // TODO: Remove this when the icons are fixed.
+    filter: invert(1);
 `;
 const ItemContent = styled.h3`
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1.35;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
     text-transform: uppercase;
     text-align: left;
 
     @media (min-width: 960px) {
         font-size: 1.25rem;
-        line-height: normal;
     }
 `;
 

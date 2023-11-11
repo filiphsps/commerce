@@ -1,9 +1,9 @@
 'use client';
 
-import { FiChevronRight } from 'react-icons/fi';
 import NextLink from '@/components/link';
-import styled from 'styled-components';
 import { usePathname } from 'next/navigation';
+import { FiChevronRight } from 'react-icons/fi';
+import styled from 'styled-components';
 
 const Container = styled.nav`
     z-index: 999;
@@ -92,7 +92,7 @@ const Breadcrumbs = ({ store }: BreadcrumbsProps) => {
         <Container className="Breadcrumbs">
             <Content itemScope itemType="https://schema.org/BreadcrumbList">
                 <Item itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                    <Link href="/" itemType="https://schema.org/Thing" itemProp="item" prefetch={false}>
+                    <Link href="/" itemType="https://schema.org/Thing" itemProp="item">
                         <span itemProp="name">{store?.name || store?.title}</span>
                     </Link>
                     <meta itemProp="position" content="1" />
@@ -106,7 +106,6 @@ const Breadcrumbs = ({ store }: BreadcrumbsProps) => {
                             href={`/${path.slice(0, index + 1).join('/')}`}
                             itemType="https://schema.org/Thing"
                             itemProp="item"
-                            prefetch={false}
                         >
                             <span itemProp="name">{entry}</span>
                         </Link>

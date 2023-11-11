@@ -1,13 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { Locale, NextLocaleToLocale } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
+import { NextLocaleToLocale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
+import { useRef } from 'react';
 import { styled } from 'styled-components';
+import styles from './countries.module.scss';
 
 const List = styled.article`
     display: grid;
@@ -17,34 +18,6 @@ const List = styled.article`
 
     @media (min-width: 950px) {
         grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
-    }
-`;
-
-const Locale = styled(Link)`
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    justify-content: stretch;
-    align-items: center;
-    gap: var(--block-spacer-large);
-    width: 100%;
-    padding: var(--block-padding);
-    border: var(--block-border-width) solid var(--color-block);
-    border-radius: var(--block-border-radius);
-    background: var(--color-block);
-    transition: 150ms ease-in-out;
-    cursor: pointer;
-
-    &.active {
-        color: var(--accent-primary);
-        border-color: var(--accent-primary);
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            border-color: var(--accent-secondary);
-            background: var(--accent-secondary-light);
-            color: var(--accent-secondary-text);
-        }
     }
 `;
 
@@ -89,7 +62,8 @@ type LocaleSelectorProps = {
     locale: Locale;
 };
 export default function LocaleSelector({ countries, locale }: LocaleSelectorProps) {
-    const router = useRouter();
+    const localeRef = useRef<HTMLInputElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const markets = (
         countries?.map((country) =>
@@ -104,19 +78,30 @@ export default function LocaleSelector({ countries, locale }: LocaleSelectorProp
 
     return (
         <List>
+            <input ref={localeRef} type="hidden" name="locale" />
+            <button ref={buttonRef} type="submit" style={{ display: 'none' }}>
+                Change locale
+            </button>
+
             {markets.flatMap(
                 (markets) =>
                     markets?.map((country) => {
                         return (
-                            <Locale
+                            <Link
                                 key={country.locale}
                                 href={`/countries/`} // TODO: Go to the previous route
                                 locale={NextLocaleToLocale(country.locale)!}
                                 title={`${country.country} (${country.language})`}
-                                className={(country.locale === locale.locale && 'active') || ''}
+                                className={`${styles.locale} ${
+                                    (country.locale === locale.locale && styles.active) || ''
+                                }`}
                                 scroll={false}
-                                prefetch={false}
                                 replace={true}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    localeRef.current!.value = country.locale;
+                                    buttonRef.current?.click();
+                                }}
                             >
                                 <Flag>
                                     <Image
@@ -132,7 +117,7 @@ export default function LocaleSelector({ countries, locale }: LocaleSelectorProp
                                     {country.country} ({country.language})
                                 </Label>
                                 <Currency>{country.currency}</Currency>
-                            </Locale>
+                            </Link>
                         );
                     })
             )}

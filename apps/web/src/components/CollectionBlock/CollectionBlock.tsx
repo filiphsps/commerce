@@ -8,8 +8,10 @@ import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { Pluralize } from '@/utils/pluralize';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import { useEffect, useRef } from 'react';
 
 const Content = styled.div`
     column-count: 2;
@@ -91,10 +93,20 @@ const CollectionBlock = ({
 }: CollectionBlockProps) => {
     const { handle } = collection || {};
     const products = collection?.products?.edges || [];
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    // Fix horizontal scroll that sometimes occurs on page load.
+    useEffect(() => {
+        if (!isHorizontal || !contentRef.current || contentRef.current.scrollLeft === 0) return;
+
+        contentRef.current.style.scrollBehavior = 'auto';
+        contentRef.current.scrollLeft = 0;
+        contentRef.current.removeAttribute('style');
+    }, []);
 
     return (
         <Container className={(isHorizontal && 'horizontal') || 'vertical'}>
-            <Content className={(isHorizontal && 'horizontal') || 'vertical'}>
+            <Content ref={contentRef} className={(isHorizontal && 'horizontal') || 'vertical'}>
                 {products.map((edge, index) => {
                     if (limit && index >= limit) return null;
                     if (!edge?.node) return null;
@@ -124,10 +136,10 @@ const CollectionBlock = ({
                             href={`/collections/${handle}/`}
                             className={styles.viewAll}
                             locale={locale}
-                            title="Browse all products"
-                            prefetch={false}
+                            title="Browse all products" // TODO: i18n.
                         >
-                            Browse all products
+                            View all {products.length} {Pluralize({ count: products.length, noun: 'product' })} in this
+                            collection
                         </Link>
                     )
                 }

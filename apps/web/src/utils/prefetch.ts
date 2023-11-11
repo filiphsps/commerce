@@ -6,7 +6,7 @@ import type { AbstractApi } from '@/utils/abstract-api';
 import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 
 const Prefetch = ({
-    client,
+    client: api,
     page,
     initialData
 }: {
@@ -34,14 +34,13 @@ const Prefetch = ({
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
             const type = slice?.slice_type;
-            const handle: string | undefined = (slice?.primary as any)?.handle;
-
             try {
                 switch (type) {
-                    case 'collection':
+                    case 'collection': {
+                        const handle: string | undefined = (slice?.primary as any)?.handle;
                         if (handle && !collections[handle]) {
                             collections[handle] = await CollectionApi({
-                                client,
+                                api,
                                 handle,
                                 limit:
                                     (slice.variation !== 'full' && ((slice?.primary as any)?.limit || 16)) || undefined
@@ -120,9 +119,11 @@ const Prefetch = ({
                             );
                         }
                         break;
-                    case 'vendors':
-                        vendors = await VendorsApi({ client });
+                    }
+                    case 'vendors': {
+                        vendors = await VendorsApi({ client: api });
                         break;
+                    }
                 }
             } catch (error) {
                 reject(error);

@@ -105,8 +105,11 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                                 }}
                                 field={image}
                                 width={300}
-                                height={300}
+                                height={200}
                                 sizes="(max-width: 950px) 250px, 25vw"
+                                fallbackAlt=""
+                                imgixParams={{ q: 65 }}
+                                loader={undefined}
                             />
                             <TitleContainer>
                                 <Title>{title}</Title>

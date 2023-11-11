@@ -1,0 +1,27 @@
+.locale {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    justify-content: stretch;
+    align-items: center;
+    gap: var(--block-spacer-large);
+    width: 100%;
+    padding: var(--block-padding);
+    border: var(--block-border-width) solid var(--color-block);
+    border-radius: var(--block-border-radius);
+    background: var(--color-block);
+    transition: 150ms ease-in-out;
+    cursor: pointer;
+
+    &.active {
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            border-color: var(--accent-secondary);
+            background: var(--accent-secondary-light);
+            color: var(--accent-secondary-text);
+        }
+    }
+}

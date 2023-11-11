@@ -7,12 +7,16 @@ export default defineConfig({
     resolve: {
         alias: [
             {
-                find: '@/prismic',
-                replacement: path.resolve(__dirname, 'prismicio.ts')
+                find: '@/i18n/dictionary',
+                replacement: path.resolve(__dirname, './src/app/[locale]/dictionary.ts')
             },
             {
-                find: '@/i18n/dictionary',
-                replacement: path.resolve(__dirname, './src/app/(store)/[locale]/dictionary.ts')
+                find: '@/prismic',
+                replacement: path.resolve(__dirname, './prismicio.ts')
+            },
+            {
+                find: '@/slices',
+                replacement: path.resolve(__dirname, './src/slices')
             },
             {
                 find: '@',

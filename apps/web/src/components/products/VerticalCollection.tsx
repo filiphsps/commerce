@@ -2,17 +2,13 @@
 
 import styled, { css } from 'styled-components';
 
-import { CollectionApi } from '@/api/shopify/collection';
 import type { StoreModel } from '@/models/StoreModel';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { useApolloClient } from '@apollo/client';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import dynamic from 'next/dynamic';
 import type { FunctionComponent } from 'react';
-import useSWR from 'swr';
 
 const ProductCard = dynamic(() => import('@/components/ProductCard'));
 
@@ -67,32 +63,19 @@ const Container = styled.div`
 interface VerticalCollectionProps {
     store: StoreModel;
     locale: Locale;
-    handle?: string;
-    data?: Collection;
+    data: Collection;
     i18n: LocaleDictionary;
 }
 export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
     store,
     locale,
-    handle,
-    data: collectionData,
+    data: collection,
     i18n
 }) => {
-    const { data: collection } = useSWR(
-        [
-            'CollectionApi',
-            {
-                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
-                handle: handle || collectionData?.handle!
-            }
-        ],
-        ([, props]) => CollectionApi(props),
-        {
-            fallbackData: collectionData
-        }
-    );
+    if (!collection?.products) return null;
 
     const products = collection?.products?.edges || [];
+    if (products.length <= 0) return null; // TODO: Empty state.
 
     return (
         <Container>

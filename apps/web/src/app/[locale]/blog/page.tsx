@@ -12,24 +12,28 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { metadata as notFoundMetadata } from '../not-found';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
+export type BlogPageParams = { locale: string };
+export async function generateMetadata({ params }: { params: BlogPageParams }): Promise<Metadata | null> {
     const { locale: localeData } = params;
     const handle = 'blog';
     const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-    const locales = BuildConfig.i18n.locales;
+    if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const locales = store.i18n.locales;
 
+    const description: string | undefined =
+        (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
         title: page?.meta_title || page?.title || 'Blog', // TODO: Fallback should respect i18n.
-        description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
+        description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/blog/`,
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/blog/`,
             languages: locales.reduce(
-                (prev, locale) => ({
+                (prev, { locale }) => ({
                     ...prev,
                     [locale]: `https://${BuildConfig.domain}/${locale}/blog/`
                 }),
@@ -37,10 +41,10 @@ export async function generateMetadata({ params }: { params: { locale: string } 
             )
         },
         openGraph: {
-            url: `https://${BuildConfig.domain}${locale.locale}/blog/`,
+            url: `/${locale.locale}/blog/`,
             type: 'website',
             title: page?.meta_title || page?.title!,
-            description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
+            description,
             siteName: store?.name,
             locale: locale.locale,
             images:
@@ -58,7 +62,6 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export type BlogPageParams = { locale: string };
 export default async function SearchPage({ params }: { params: BlogPageParams }) {
     const locale = NextLocaleToLocale(params.locale);
     if (!locale) return notFound();
@@ -66,7 +69,7 @@ export default async function SearchPage({ params }: { params: BlogPageParams })
     const handle = 'blog';
 
     const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, shopify: client });
+    const store = await StoreApi({ locale, api: client });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ client, page }))) || null;
 

@@ -1,17 +1,18 @@
 import styled, { css } from 'styled-components';
 
 import ContentComponent from '@/components/Content';
-import type { FunctionComponent } from 'react';
 import { PrismicNextImage } from '@prismicio/next';
+import type { FunctionComponent } from 'react';
 
 const Container = styled.div<{ $layout?: 'left' | 'right' }>`
-    display: grid;
-    grid-template-areas: 'overview-banner' 'overview-content';
+    display: flex;
+    flex-direction: column;
     height: 100%;
     border-radius: var(--block-border-radius);
     gap: var(--block-spacer-large);
 
     @media (min-width: 765px) {
+        display: grid;
         justify-content: stretch;
         align-items: stretch;
         grid-template-areas: 'overview-banner overview-content';
@@ -27,11 +28,11 @@ const Container = styled.div<{ $layout?: 'left' | 'right' }>`
 `;
 
 const ImageWrapper = styled.div`
-    position: relative;
-    height: 100%;
+    //height: 100%;
     width: 100%;
 
     img {
+        display: block;
         height: 100%;
         width: 100%;
         object-fit: contain;
@@ -43,10 +44,14 @@ const ImageContainer = styled.div<{ $expand?: boolean }>`
     flex-basis: 40%;
     height: 100%;
     width: 100%;
-    aspect-ratio: 4 / 3;
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
+
+    @media (min-width: 765px) {
+        aspect-ratio: 4 / 3;
+        padding: var(--block-padding-large);
+    }
 
     ${({ $expand }) =>
         $expand &&
@@ -122,9 +127,10 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
                 <ImageWrapper>
                     <PrismicNextImage
                         field={image as any}
+                        sizes="(max-width: 1150px) 250px, 250px"
+                        fallbackAlt=""
                         imgixParams={{ q: 65 }}
                         loader={undefined}
-                        sizes="(max-width: 1150px) 75px, 200px"
                     />
                 </ImageWrapper>
             </ImageContainer>

@@ -3,10 +3,10 @@ import 'destyle.css';
 import '@/style/app.scss';
 
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
-import { notFound } from 'next/navigation';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import { notFound } from 'next/navigation';
 
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
@@ -22,6 +22,7 @@ import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { getDictionary } from './dictionary';
+import { metadata as notFoundMetadata } from './not-found';
 
 const font = Lexend_Deca({
     weight: 'variable',
@@ -33,8 +34,11 @@ const font = Lexend_Deca({
 
 export async function generateViewport({ params }: { params: { locale: string } }): Promise<Viewport | null> {
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const locale = NextLocaleToLocale(localeData);
+    if (!locale) return {};
+
+    const api = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, api });
 
     return {
         themeColor: store.accent.secondary,
@@ -46,35 +50,29 @@ export async function generateViewport({ params }: { params: { locale: string } 
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
     const { locale: localeData } = params;
-    const locale = NextLocaleToLocale(localeData) || DefaultLocale();
-    const locales = BuildConfig.i18n.locales;
+    const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const api = StorefrontApiClient({ locale });
+    const store = await StoreApi({ locale, api });
 
     return {
         metadataBase: new URL(`https://${BuildConfig.domain}/${locale.locale}/`),
         title: {
             default: store.name,
-            template: `%s · ${store.name}`
+            // Allow tenants to customize this.
+            // For example allow them to use other separators
+            // like `·`, `—` etc.
+            template: `%s - ${store.name}`
         },
         icons: {
-            icon: ['/favicon.png', '/favicon.ico', store.favicon.src], // TODO: store.favicon.src,
-            shortcut: ['/favicon.png', store.favicon.src],
-            apple: ['/favicon.png', store.favicon.src]
+            icon: ['/favicon.png', '/favicon.ico', ...(store.favicon?.src || [])], // TODO: dynamic route for the favicon,
+            shortcut: ['/favicon.png', ...(store.favicon?.src || [])],
+            apple: ['/favicon.png', ...(store.favicon?.src || [])]
         },
         robots: {
             follow: true,
             index: true
-        },
-        alternates: {
-            canonical: `https://${BuildConfig.domain}/`,
-            languages: locales.reduce(
-                (prev, locale) => ({
-                    ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/`
-                }),
-                {}
-            )
         },
         referrer: 'origin'
     };
@@ -90,7 +88,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
 
     const shopifyApi = shopifyApiConfig();
 
-    const store = await StoreApi({ locale, shopify: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
     const navigation = await NavigationApi({ locale });
     const header = await HeaderApi({ locale });
     const footer = await FooterApi({ locale });
@@ -112,7 +110,6 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                 } as React.CSSProperties
             }
         >
-            <head />
             <body className={font.variable}>
                 <SocialProfileJsonLd
                     useAppDir
@@ -120,7 +117,7 @@ export default async function RootLayout(props: { children: ReactNode; params: {
                     name={store.name}
                     description={store.description}
                     url={`https://${BuildConfig.domain}/`}
-                    logo={store.favicon.src}
+                    logo={store.favicon?.src || store.logos?.primary?.src}
                     foundingDate="2023"
                     founders={[
                         {

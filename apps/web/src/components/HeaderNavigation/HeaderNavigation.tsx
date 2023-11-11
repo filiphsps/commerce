@@ -74,7 +74,6 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
                                 (route === '/' && item?.handle === null) || `/${item?.handle}` === route ? 'Active' : ''
                             }
                             onClick={() => document.body.removeAttribute('data-menu-open')}
-                            prefetch={false}
                         >
                             {item.title}
                         </Link>
@@ -89,7 +88,6 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
                                             : ''
                                     }
                                     onClick={() => document.body.removeAttribute('data-menu-open')}
-                                    prefetch={false}
                                 >
                                     <NavigationSubItemTitle>{item.title}</NavigationSubItemTitle>
 

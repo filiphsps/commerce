@@ -93,13 +93,13 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                     >
                                         <CollectionTitle
                                             dangerouslySetInnerHTML={{
-                                                __html: asHTML(slice.primary.title)
+                                                __html: asHTML(slice.primary.title) || ''
                                             }}
                                         />
                                     </Link>
                                     <Body
                                         dangerouslySetInnerHTML={{
-                                            __html: asHTML(slice.primary.body)
+                                            __html: asHTML(slice.primary.body) || ''
                                         }}
                                     />
                                 </Header>

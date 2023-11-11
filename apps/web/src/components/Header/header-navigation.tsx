@@ -21,7 +21,10 @@ export const HeaderNavigation = (props: HeaderNavigationProps) => {
     const { menu, locale } = props;
 
     return (
-        <nav {...RemoveInvalidProps(props)} className={`${styles.container} ${props.className || ''}`}>
+        <nav
+            {...RemoveInvalidProps(props)}
+            className={`${styles.container} ${styles.centered} ${props.className || ''}`}
+        >
             {menu?.map?.((item: any, index: number) => {
                 return (
                     <MenuItem key={item.handle + `${index}`} data={item} locale={locale}>

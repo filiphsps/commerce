@@ -190,8 +190,8 @@ const Social = styled(Link)`
 `;
 
 interface FooterProps {
-    store?: StoreModel;
-    data?: FooterModel;
+    store: StoreModel;
+    data: FooterModel;
     locale: Locale;
     i18n: LocaleDictionary;
 }
@@ -205,19 +205,24 @@ const Footer: FunctionComponent<FooterProps> = ({ store, data: footer, locale, i
                 <FooterBlocksContainer>
                     <FooterBlock>
                         <Logo>
-                            {store?.logo?.src && (
-                                <Image src={store?.logo.src} alt="Logo" fill sizes="(max-width: 950px) 75px, 250px" />
+                            {store.logos?.primary?.src && (
+                                <Image
+                                    src={store.logos.primary.src}
+                                    alt={store.logos.primary.alt || 'Logo'}
+                                    fill
+                                    sizes="(max-width: 950px) 75px, 250px"
+                                />
                             )}
                         </Logo>
 
                         <Address
                             dangerouslySetInnerHTML={{
-                                __html: asHTML(footer?.address) || ''
+                                __html: asHTML(footer.address) || ''
                             }}
                         />
                     </FooterBlock>
 
-                    {footer?.blocks?.map?.((block) => (
+                    {footer.blocks?.map?.((block) => (
                         <FooterBlock key={block.title}>
                             <BlockTitle>{block.title}</BlockTitle>
                             {block?.items.map((item: any) => (
@@ -225,7 +230,6 @@ const Footer: FunctionComponent<FooterProps> = ({ store, data: footer, locale, i
                                     key={item.handle}
                                     href={item.handle || ''}
                                     target={item.handle.startsWith('http') ? '_blank' : ''}
-                                    prefetch={false}
                                 >
                                     {item.title}
                                 </Link>
@@ -244,9 +248,7 @@ const Footer: FunctionComponent<FooterProps> = ({ store, data: footer, locale, i
                                 <Policy href="https://nordcom.io/legal/terms-of-service/" target="_blank">
                                     Terms of Service
                                 </Policy>
-                                <Policy href="/privacy-policy/" prefetch={false}>
-                                    Privacy Policy
-                                </Policy>
+                                <Policy href="/privacy-policy/">Privacy Policy</Policy>
                             </ImportantLinks>
                         </LegalAndCopyright>
                     </FooterBottomSectionBlock>

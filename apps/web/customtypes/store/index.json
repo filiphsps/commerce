@@ -12,34 +12,25 @@
                     "label": "Store name"
                 }
             },
+            "description": {
+                "type": "StructuredText",
+                "config": {
+                    "label": "Description",
+                    "placeholder": "Description of the store",
+                    "allowTargetBlank": true,
+                    "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+            },
             "logo": {
                 "type": "Text",
                 "config": {
-                    "label": "Logo"
+                    "label": "DEPRECATED - Logo"
                 }
             },
             "favicon": {
                 "type": "Text",
                 "config": {
-                    "label": "Favicon"
-                }
-            },
-            "primary": {
-                "type": "Color",
-                "config": {
-                    "label": "Primary"
-                }
-            },
-            "secondary": {
-                "type": "Color",
-                "config": {
-                    "label": "Secondary"
-                }
-            },
-            "primary_text_color": {
-                "type": "Color",
-                "config": {
-                    "label": "Primary Text Color"
+                    "label": "DEPRECATED - Favicon"
                 }
             },
             "border_radius": {
@@ -59,7 +50,7 @@
                             }
                         }
                     },
-                    "label": "Currencies"
+                    "label": "DEPRECATED - Currencies"
                 }
             },
             "social": {
@@ -86,6 +77,59 @@
                         }
                     },
                     "label": "Social"
+                }
+            }
+        },
+        "Logos": {
+            "logos_primary": {
+                "type": "Image",
+                "config": {
+                    "label": "Primary Logo",
+                    "constraint": {},
+                    "thumbnails": []
+                }
+            },
+            "logos_alternative": {
+                "type": "Image",
+                "config": {
+                    "label": "Alternative Logo",
+                    "constraint": {},
+                    "thumbnails": []
+                }
+            },
+            "logos_favicon": {
+                "type": "Image",
+                "config": {
+                    "label": "Favicon",
+                    "constraint": {},
+                    "thumbnails": []
+                }
+            }
+        },
+        "Colors": {
+            "colors_primary": {
+                "type": "Color",
+                "config": {
+                    "label": "Primary",
+                    "placeholder": "#cce2cb"
+                }
+            },
+            "colors_secondary": {
+                "type": "Color",
+                "config": {
+                    "label": "Secondary"
+                }
+            },
+            "primary": {
+                "type": "Color",
+                "config": {
+                    "label": "DEPRECATED - Primary"
+                }
+            },
+            "secondary": {
+                "type": "Color",
+                "config": {
+                    "label": "DEPRECATED - Secondary"
                 }
             }
         }

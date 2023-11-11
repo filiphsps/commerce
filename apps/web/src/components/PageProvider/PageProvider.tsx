@@ -23,10 +23,15 @@ const Announcement = styled.div`
     height: 100%;
     padding: var(--block-padding-large);
     text-transform: uppercase;
-    font-size: 1.45rem;
-    line-height: 1.2;
+    font-size: 1.35rem;
+    line-height: default;
     font-weight: 600;
     text-align: center;
+
+    @media (min-width: 950px) {
+        font-size: 1.25rem;
+        line-height: 1.2;
+    }
 
     &.primary {
         background: var(--accent-primary-dark);
@@ -58,10 +63,10 @@ interface PageProviderProps {
     locale: Locale;
     i18n: LocaleDictionary;
     pagePropsAnalyticsData: any;
-    data?: {
-        navigation?: NavigationItem[];
-        header?: HeaderModel;
-        footer?: FooterModel;
+    data: {
+        navigation: NavigationItem[];
+        header: HeaderModel;
+        footer: FooterModel;
     };
     children: ReactNode;
     header: ReactNode;
@@ -124,7 +129,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             )}
 
             {props.children}
-            <Footer store={props?.store} data={data?.footer} locale={locale} i18n={i18n} />
+            <Footer store={props.store} data={data.footer} locale={locale} i18n={i18n} />
         </div>
     );
 };

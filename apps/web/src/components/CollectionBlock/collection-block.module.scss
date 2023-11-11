@@ -1,3 +1,4 @@
+@import '@/style/variables.scss';
 .viewAll {
     position: relative;
     flex: 1 auto;
@@ -9,7 +10,7 @@
     min-width: var(--component-product-card-width);
     height: 100%;
     padding: var(--block-padding) var(--block-padding-large);
-    scroll-snap-align: start;
+    scroll-snap-align: center;
     border-radius: var(--block-border-radius);
     background: var(--accent-secondary);
     color: var(--accent-primary-dark);
@@ -19,10 +20,18 @@
         150ms ease-in-out background-color,
         150ms ease-in-out border;
 
-    font-size: 2.75rem;
+    line-height: normal;
+    font-size: 2rem;
     font-weight: 600;
     text-align: center;
-    text-transform: uppercase;
+    text-decoration: underline 0.2rem dotted;
+    text-underline-offset: var(--block-border-width);
+
+    margin-right: calc(50vw - calc(var(--component-product-card-width) / 2 + calc(var(--block-spacer) * 2)));
+
+    @media (min-width: $breakpoint-mobile) {
+        margin-right: calc(($page-width / 2) + calc(var(--component-product-card-width) / 2));
+    }
 
     &:is(:hover, :active, :focus, :focus-within) {
         background: var(--accent-primary);
