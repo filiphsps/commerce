@@ -5,26 +5,46 @@ import AcceptLanguageParser from 'accept-language-parser';
 
 const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
 
+export const config = {
+    matcher: [
+        /*
+         * Match all paths except for:
+         * 1. /api routes
+         * 2. /_next (Next.js internals)
+         * 3. /_static (inside /public)
+         * 4. all root files inside /public (e.g. /favicon.ico)
+         */
+        '/((?!api/|_next/|_static/|_vercel|admin|monitoring|[\\w-]+\\.\\w+).*)'
+    ]
+    // Backup: matcher: ['/:path*']
+};
+
 const PUBLIC_FILE = /\.(.*)$/;
 export default function middleware(req: NextRequest) {
     // TODO: Make this configurable.
     if (
-        req.nextUrl.pathname.startsWith('/admin') ||
-        req.nextUrl.pathname.startsWith('/_next') ||
-        req.nextUrl.pathname.startsWith('/api') ||
         req.nextUrl.pathname.startsWith('/assets') ||
         req.nextUrl.pathname.startsWith('/locales') ||
-        req.nextUrl.pathname.startsWith('/monitoring') ||
         PUBLIC_FILE.test(req.nextUrl.pathname)
     ) {
         return null;
     }
 
+    // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000).
+    const hostname = req.headers.get('host')!.replace('.localhost:3000', '');
+
+    // If we're connecting via the nordcom domain show the admin dashboard
+    // instead.
+    if (hostname.includes('shops.nordcom.io')) {
+        return NextResponse.rewrite(new URL(`/${hostname}${req.nextUrl.pathname}`, req.url));
+    }
+
+    // Validate the store url.
     const newUrl = req.nextUrl.clone();
     newUrl.host = req.headers.get('host') || newUrl.host;
 
-    // Set the locale based on the user's accept-language header
-    // if no locale is provided (e.g. a bare url like `/`).
+    // Set the locale based on the user's accept-language header when no locale
+    // is provided (e.g. we get a bare url/path like `/`).
     if (!newUrl.pathname.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi)) {
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
         const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
@@ -76,7 +96,3 @@ export default function middleware(req: NextRequest) {
 
     return NextResponse.next();
 }
-export const config = {
-    matcher: ['/:path*']
-    //matcher: '/((?!api|_next/static|_next/image|favicon).*)'
-};
