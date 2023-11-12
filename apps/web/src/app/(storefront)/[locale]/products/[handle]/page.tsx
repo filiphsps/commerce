@@ -13,6 +13,7 @@ import PrismicPage from '@/components/prismic-page';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
+import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
@@ -22,7 +23,6 @@ import { asText } from '@prismicio/client';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
 import { RedirectType, notFound, redirect } from 'next/navigation';
-import { getDictionary } from 'src/app/(storefront)/[locale]/dictionary';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 

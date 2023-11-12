@@ -1,3 +1,5 @@
+import { withSentryConfig } from '@sentry/nextjs';
+
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,
@@ -70,7 +72,10 @@ const config = {
         SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
 
         // Prismic
-        PRISMIC_REPO: process.env.PRISMIC_REPO
+        PRISMIC_REPO: process.env.PRISMIC_REPO,
+
+        // Sentry
+        SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'preview',
     },
     serverRuntimeConfig: {
         // Shopify
@@ -119,4 +124,18 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default config;
+export default withSentryConfig(config, {
+    silent: true,
+    org: process.env.SENTRY_ORG || "nordcom",
+    project: process.env.SENTRY_PROJECT || "ecommerce-frontend",
+    authToken: process.env.SENTRY_AUTH_TOKEN || undefined,
+}, {
+    widenClientFileUpload: true,
+    transpileClientSDK: false, // We don't need IE11 support
+    // tunnelRoute: "/monitoring",
+    hideSourceMaps: true,
+    disableLogger: true,
+    excludeServerRoutes: [
+        "/slice-simulator"
+    ]
+});

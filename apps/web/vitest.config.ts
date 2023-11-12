@@ -8,7 +8,7 @@ export default defineConfig({
         alias: [
             {
                 find: '@/i18n/dictionary',
-                replacement: path.resolve(__dirname, './src/app/[locale]/dictionary.ts')
+                replacement: path.resolve(__dirname, './src/app/(storefront)/[locale]/dictionary.ts')
             },
             {
                 find: '@/prismic',
