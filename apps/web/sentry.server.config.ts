@@ -1,6 +1,7 @@
-import * as Sentry from '@sentry/nextjs';
+import { init } from '@sentry/nextjs';
 
-Sentry.init({
+init({
+    dsn: process.env.SENTRY_DSN,
     tracesSampleRate: (process.env.SENTRY_TRACES && Number.parseFloat(process.env.SENTRY_TRACES)) || 0.05,
     debug: process.env.SENTRY_DEBUG !== undefined || false
 });

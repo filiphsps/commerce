@@ -1,15 +1,7 @@
-import * as Sentry from '@sentry/nextjs';
+import { init } from '@sentry/nextjs';
 
-Sentry.init({
+init({
+    dsn: process.env.SENTRY_DSN,
     tracesSampleRate: (process.env.SENTRY_TRACES && Number.parseFloat(process.env.SENTRY_TRACES)) || 0.05,
-    debug: process.env.SENTRY_DEBUG !== undefined || false,
-    replaysOnErrorSampleRate: 1.0,
-    replaysSessionSampleRate: (process.env.NODE_ENV === 'development' && 1) || 0.05,
-    integrations: [
-        new Sentry.Replay({
-            maskAllText: false,
-            maskAllInputs: false,
-            blockAllMedia: false
-        })
-    ]
+    debug: process.env.SENTRY_DEBUG !== undefined || false
 });
