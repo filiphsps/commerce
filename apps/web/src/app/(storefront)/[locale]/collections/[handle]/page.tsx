@@ -28,50 +28,59 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const api = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api });
-    const collection = await CollectionApi({ api, handle });
-    const { page } = await PageApi({ locale, handle, type: 'collection_page' });
-    const locales = store.i18n.locales;
+    try {
+        const api = StorefrontApiClient({ locale });
+        const store = await StoreApi({ locale, api });
+        const collection = await CollectionApi({ api, handle });
+        const { page } = await PageApi({ locale, handle, type: 'collection_page' });
+        const locales = store.i18n.locales;
 
-    const description: string | undefined =
-        (page?.meta_description && asText(page.meta_description)) ||
-        collection.seo.description ||
-        collection.description?.substring(0, 150) ||
-        undefined;
-    return {
-        title: page?.meta_title || collection.title,
-        description,
-        alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/collections/${handle}/`,
-            languages: locales.reduce(
-                (prev, { locale }) => ({
-                    ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/collections/${handle}/`
-                }),
-                {}
-            )
-        },
-        openGraph: {
-            url: `/${locale.locale}/collections/${handle}/`,
-            type: 'website',
+        const description: string | undefined =
+            (page?.meta_description && asText(page.meta_description)) ||
+            collection.seo.description ||
+            collection.description?.substring(0, 150) ||
+            undefined;
+        return {
             title: page?.meta_title || collection.title,
             description,
-            siteName: store?.name,
-            locale: locale.locale,
-            images:
-                (page?.meta_image && [
-                    {
-                        url: page?.meta_image!.url as string,
-                        width: page?.meta_image!.dimensions?.width || 0,
-                        height: page?.meta_image!.dimensions?.height || 0,
-                        alt: page?.meta_image!.alt || '',
-                        secureUrl: page?.meta_image!.url as string
-                    }
-                ]) ||
-                undefined
+            alternates: {
+                canonical: `https://${BuildConfig.domain}/${locale.locale}/collections/${handle}/`,
+                languages: locales.reduce(
+                    (prev, { locale }) => ({
+                        ...prev,
+                        [locale]: `https://${BuildConfig.domain}/${locale}/collections/${handle}/`
+                    }),
+                    {}
+                )
+            },
+            openGraph: {
+                url: `/${locale.locale}/collections/${handle}/`,
+                type: 'website',
+                title: page?.meta_title || collection.title,
+                description,
+                siteName: store?.name,
+                locale: locale.locale,
+                images:
+                    (page?.meta_image && [
+                        {
+                            url: page?.meta_image!.url as string,
+                            width: page?.meta_image!.dimensions?.width || 0,
+                            height: page?.meta_image!.dimensions?.height || 0,
+                            alt: page?.meta_image!.alt || '',
+                            secureUrl: page?.meta_image!.url as string
+                        }
+                    ]) ||
+                    undefined
+            }
+        };
+    } catch (error: any) {
+        const message = (error.message as string) || '';
+        if (message.startsWith('404:')) {
+            return notFoundMetadata;
         }
-    };
+
+        throw error;
+    }
 }
 
 export default async function CollectionPage({ params }: { params: CollectionPageParams }) {
@@ -80,66 +89,73 @@ export default async function CollectionPage({ params }: { params: CollectionPag
 
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
-    const i18n = await getDictionary(locale);
 
-    const api = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api });
-    const collection = await CollectionApi({ api, handle });
+    try {
+        const i18n = await getDictionary(locale);
+        const api = StorefrontApiClient({ locale });
+        const store = await StoreApi({ locale, api });
+        const collection = await CollectionApi({ api, handle });
 
-    const { page } = await PageApi({ locale, handle, type: 'collection_page' });
-    const prefetch = await Prefetch({
-        client: api,
-        page,
-        initialData: {
-            collections: {
-                [collection.handle]: collection
+        const { page } = await PageApi({ locale, handle, type: 'collection_page' });
+        const prefetch = await Prefetch({
+            client: api,
+            page,
+            initialData: {
+                collections: {
+                    [collection.handle]: collection
+                }
             }
+        });
+
+        const subtitle =
+            ((collection as any)?.shortDescription?.value && (
+                <Content
+                    dangerouslySetInnerHTML={{
+                        __html:
+                            (
+                                convertSchemaToHtml((collection as any).shortDescription.value, false) as string
+                            )?.replaceAll(`="null"`, '') || ''
+                    }}
+                />
+            )) ||
+            null;
+
+        return (
+            <Page>
+                <PageContent primary>
+                    {(!page || page.enable_header) && (
+                        <div>
+                            <Heading title={collection.title} subtitle={subtitle} />
+                        </div>
+                    )}
+                    {(!page || page.enable_collection === undefined || page.enable_collection) && (
+                        <>
+                            <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
+                        </>
+                    )}
+
+                    {page?.slices && page?.slices.length > 0 && (
+                        <PrismicPage
+                            store={store}
+                            locale={locale}
+                            page={page}
+                            prefetch={prefetch}
+                            i18n={i18n}
+                            handle={handle}
+                            type={'collection_page'}
+                        />
+                    )}
+                </PageContent>
+            </Page>
+        );
+    } catch (error: any) {
+        const message = (error.message as string) || '';
+        if (message.startsWith('404:')) {
+            return notFoundMetadata;
         }
-    });
 
-    const subtitle =
-        ((collection as any)?.shortDescription?.value && (
-            <Content
-                dangerouslySetInnerHTML={{
-                    __html:
-                        (convertSchemaToHtml((collection as any).shortDescription.value, false) as string)?.replaceAll(
-                            `="null"`,
-                            ''
-                        ) || ''
-                }}
-            />
-        )) ||
-        null;
-
-    // FIXME: Legacy: `enable_header`, `enable_collection` etc.
-    return (
-        <Page>
-            <PageContent primary>
-                {(!page || page.enable_header) && (
-                    <div>
-                        <Heading title={collection.title} subtitle={subtitle} />
-                    </div>
-                )}
-                {(!page || page.enable_collection === undefined || page.enable_collection) && (
-                    <>
-                        <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
-                    </>
-                )}
-
-                {page?.slices && page?.slices.length > 0 && (
-                    <PrismicPage
-                        store={store}
-                        locale={locale}
-                        page={page}
-                        prefetch={prefetch}
-                        i18n={i18n}
-                        handle={handle}
-                        type={'collection_page'}
-                    />
-                )}
-            </PageContent>
-        </Page>
-    );
+        throw error;
+    }
 }
 
 export const revalidate = 120;

@@ -41,8 +41,12 @@ export const PagesApi = async ({
             // TODO: Error type.
         } catch (error: any) {
             // TODO: `isDefaultLocale` utility function.
-            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
-                return resolve(await PagesApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale.
+            if (error.message.includes('No documents')) {
+                if (locale.locale !== BuildConfig.i18n.default) {
+                    return resolve(await PagesApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale.
+                }
+
+                return reject('404: "Page" with handle "${handle}" cannot be found');
             }
 
             console.error(error);

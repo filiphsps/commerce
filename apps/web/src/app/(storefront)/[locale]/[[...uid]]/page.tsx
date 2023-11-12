@@ -16,19 +16,29 @@ import { RedirectToLocale } from '../util';
 
 export async function generateMetadata({ params }: { params: { locale: string; uid: string[] } }): Promise<Metadata> {
     const { locale: localeData, uid } = params;
+    if (!isValidHandle(uid)) return notFoundMetadata;
+
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    try {
+        const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
+        const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+        if (!page) return notFoundMetadata;
 
-    if (!page) return notFoundMetadata;
+        return {
+            title: page.meta_title || page.title,
+            description: asText(page.meta_description) || page.description || ''
+            // TODO: Metadata.
+        };
+    } catch (error: any) {
+        const message = (error.message as string) || '';
+        if (message.startsWith('404:')) {
+            return notFoundMetadata;
+        }
 
-    return {
-        title: page.meta_title || page.title,
-        description: asText(page.meta_description) || page.description || ''
-        // TODO: Metadata.
-    };
+        throw error;
+    }
 }
 
 export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
@@ -40,10 +50,10 @@ export default async function CustomPage({ params }: { params: { locale: string;
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
 
-    const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api: client });
-
     try {
+        const client = StorefrontApiClient({ locale });
+        const store = await StoreApi({ locale, api: client });
+
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.
