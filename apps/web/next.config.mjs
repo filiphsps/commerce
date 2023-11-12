@@ -76,13 +76,18 @@ const config = {
 
         // Sentry
         SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'preview',
+        SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+        SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     },
     serverRuntimeConfig: {
         // Shopify
         SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
 
         // Prismic
-        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN
+        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
+
+        // Sentry
+        SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     },
     async redirects() {
         return [
@@ -128,11 +133,10 @@ export default withSentryConfig(config, {
     silent: true,
     org: process.env.SENTRY_ORG || "nordcom",
     project: process.env.SENTRY_PROJECT || "ecommerce-frontend",
-    authToken: process.env.SENTRY_AUTH_TOKEN || undefined,
+    authToken: process.env.SENTRY_AUTH_TOKEN,
 }, {
     widenClientFileUpload: true,
     transpileClientSDK: false, // We don't need IE11 support
-    // tunnelRoute: "/monitoring",
     hideSourceMaps: true,
     disableLogger: true,
     excludeServerRoutes: [
