@@ -30,17 +30,23 @@ export default function middleware(req: NextRequest) {
     // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000).
     const host = req.headers.get('host')!.replace('.localhost:3000', '') || req.nextUrl.host;
 
+    // Validate the store url.
+    let newUrl = req.nextUrl.clone();
+    newUrl.host = host;
+
     // If we're connecting via the nordcom domain show the admin dashboard
     // instead.
     if (isAdminRequest(req)) {
+        // Make sure we end with a slash.
+        // TODO: Utility function.
+        if (!newUrl.pathname.endsWith('/') && !newUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)) {
+            newUrl.pathname += '/';
+        }
+        
         // TODO: Allow for dashboard middleware (NextResponse supports this).
         // TODO: Redirect files like favicon etc too.
-        return NextResponse.rewrite(new URL(`/admin${req.nextUrl.pathname}`, req.url));
+        return NextResponse.rewrite(new URL(`/admin${newUrl.pathname}`, req.url));
     }
-
-    // Validate the store url.
-    const newUrl = req.nextUrl.clone();
-    newUrl.host = host;
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
