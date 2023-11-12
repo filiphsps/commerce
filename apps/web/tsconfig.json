@@ -10,6 +10,7 @@
         "baseUrl": ".",
         "rootDir": "../../",
         "paths": {
+            "@/middleware/*": ["./src/middleware/*"],
             "@/components/*": ["./src/components/*"],
             "@/hooks/*": ["./src/hooks/*"],
             "@/api/*": ["./src/api/*"],
