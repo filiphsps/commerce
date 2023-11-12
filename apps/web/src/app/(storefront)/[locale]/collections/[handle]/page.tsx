@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
             }
         };
     } catch (error: any) {
-        const message = (error.message as string) || '';
+        const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFoundMetadata;
         }
@@ -149,7 +149,7 @@ export default async function CollectionPage({ params }: { params: CollectionPag
             </Page>
         );
     } catch (error: any) {
-        const message = (error.message as string) || '';
+        const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFoundMetadata;
         }

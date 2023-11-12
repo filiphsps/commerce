@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: { locale: string; u
             // TODO: Metadata.
         };
     } catch (error: any) {
-        const message = (error.message as string) || '';
+        const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFoundMetadata;
         }

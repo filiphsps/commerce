@@ -83,7 +83,7 @@ export async function generateMetadata({
             }
         };
     } catch (error: any) {
-        const message = (error.message as string) || '';
+        const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFoundMetadata;
         }
@@ -235,7 +235,7 @@ export default async function ProductPage({
             </Page>
         );
     } catch (error: any) {
-        const message = (error.message as string) || '';
+        const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
         }

@@ -1,4 +1,4 @@
-import { withSentryConfig } from '@sentry/nextjs';
+//import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -75,9 +75,8 @@ const config = {
         PRISMIC_REPO: process.env.PRISMIC_REPO,
 
         // Sentry
-        SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'preview',
-        SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-        SENTRY_RELEASE: process.env.SENTRY_RELEASE,
+        SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'unknown',
+        SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN || '',
     },
     serverRuntimeConfig: {
         // Shopify
@@ -94,12 +93,12 @@ const config = {
             {
                 source: '/blogs/news/:slug*',
                 destination: '/blog/:slug',
-                permanent: true
+                permanent: false
             },
             {
                 source: '/products/',
                 destination: '/shop/',
-                permanent: true
+                permanent: false
             },
             {
                 source: '/shop/',
@@ -111,12 +110,12 @@ const config = {
             {
                 source: '/:locale/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
-                permanent: true
+                permanent: false
             },
             {
-                source: '/:locale/admin/',
+                source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
-                permanent: true
+                permanent: false
             },
         ];
     },
@@ -129,12 +128,14 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withSentryConfig(config, {
+
+export default config; /*withSentryConfig(config, {
     silent: true,
     org: process.env.SENTRY_ORG || "nordcom",
     project: process.env.SENTRY_PROJECT || "ecommerce-frontend",
     authToken: process.env.SENTRY_AUTH_TOKEN,
 }, {
+    disableServerWebpackPlugin: true,
     widenClientFileUpload: true,
     transpileClientSDK: false, // We don't need IE11 support
     hideSourceMaps: true,
@@ -142,4 +143,4 @@ export default withSentryConfig(config, {
     excludeServerRoutes: [
         "/slice-simulator"
     ]
-});
+});*/

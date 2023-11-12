@@ -29,7 +29,7 @@ export const PagesApi = async ({
                 }
             });
 
-            if (!pages) return reject();
+            if (!pages) return reject(new Error('404: No pages found'));
 
             // TODO: Remove filter once we have migrated the shop page.
             const paths = pages

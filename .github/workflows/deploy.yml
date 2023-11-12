@@ -14,9 +14,6 @@ env:
     VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-    SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
 
 jobs:
     vercel:
@@ -40,11 +37,6 @@ jobs:
 
             #- name: 🚚 Push to Vercel
             #  run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: 🐛 Sentry
-              uses: getsentry/action-release@v1
-              with:
-                  environment: production
 
             - name: 🔥 Purge CloudFlare cache
               if: false
