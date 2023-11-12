@@ -3,6 +3,14 @@ import { NextResponse } from 'next/server';
 
 import AcceptLanguageParser from 'accept-language-parser';
 
+export const isAdminRequest = (req: NextRequest): boolean => {
+    if (req.nextUrl.host.includes('shops.nordcom.io') || process.env.SHOPS_DEV) {
+        return true;
+    }
+
+    return false;
+};
+
 const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
 
 export const config = {
@@ -24,7 +32,7 @@ export default function middleware(req: NextRequest) {
 
     // If we're connecting via the nordcom domain show the admin dashboard
     // instead.
-    if (host.includes('shops.nordcom.io') || process.env.SHOPS_DEV) {
+    if (isAdminRequest(req)) {
         // TODO: Allow for dashboard middleware (NextResponse supports this).
         // TODO: Redirect files like favicon etc too.
         return NextResponse.rewrite(new URL(`/admin${req.nextUrl.pathname}`, req.url));

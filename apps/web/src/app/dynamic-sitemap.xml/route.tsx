@@ -1,13 +1,20 @@
 import { BlogApi } from '@/api/blog';
-import { BuildConfig } from '@/utils/build-config';
-import { CollectionsApi } from '@/api/shopify/collection';
-import { DefaultLocale } from '@/utils/locale';
 import { PagesApi } from '@/api/page';
-import { ProductsApi } from '@/api/shopify/product';
 import { StorefrontApiClient } from '@/api/shopify';
+import { CollectionsApi } from '@/api/shopify/collection';
+import { ProductsApi } from '@/api/shopify/product';
+import { BuildConfig } from '@/utils/build-config';
+import { DefaultLocale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
+import { isAdminRequest } from '../../middleware';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    // Handle admin dashboard sitemaps.
+    if (isAdminRequest(req)) {
+        return getServerSideSitemap([]); // TODO: Handle admin sitemaps.
+    }
+
     const urls: any[] = [];
     const locales: string[] = BuildConfig.i18n?.locales || [];
     const locale = DefaultLocale();
