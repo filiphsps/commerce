@@ -11,7 +11,9 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "next dev",
+        "dev": "concurrently --raw npm:dev:storefront",
+        "dev:storefront": "next dev",
+        "dev:admin": "SHOPS_DEV=1 next dev -p 1337",
         "build": "next build",
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap",
