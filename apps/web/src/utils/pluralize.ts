@@ -1,4 +1,4 @@
-/***
+/**
  * Pluralize a noun based on a count
  *
  * @param {number} count - The count of the noun

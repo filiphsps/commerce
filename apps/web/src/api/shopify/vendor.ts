@@ -1,11 +1,11 @@
 import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
+import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { TitleToHandle } from '@/utils/title-to-handle';
-import type { VendorModel } from '@/models/VendorModel';
 import { gql } from 'graphql-tag';
 
-/***
+/**
  * Convert the Shopify product list to a list of vendors.
  * TODO: Remove this and use the standard layout.
  *
@@ -34,7 +34,7 @@ export const Convertor = (
     }));
 };
 
-/***
+/**
  * Get all vendors from Shopify.
  *
  * @param {AbstractApi} client - The client to use for the query.

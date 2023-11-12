@@ -1,6 +1,6 @@
 import { Pluralize } from '@/utils/pluralize';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('Pluralize', () => {
         it(`should pluralize the noun when count is greater than 1`, () => {
             const count = 2;

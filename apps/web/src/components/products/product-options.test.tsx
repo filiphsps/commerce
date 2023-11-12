@@ -59,7 +59,7 @@ vi.mock('next/link', async () => ({
     default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }));
 
-describe('Components', () => {
+describe('components', () => {
     describe('ProductOptions', () => {
         it('renders all options and values', () => {
             render(

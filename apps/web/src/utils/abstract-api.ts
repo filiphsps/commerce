@@ -22,7 +22,7 @@ export type AbstractApiBuilder<K, Q> = ({
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
-/***
+/**
  * Creates an AbstractApiBuilder for Shopify Apollo APIs.
  *
  * @param {Object} options - The api options.

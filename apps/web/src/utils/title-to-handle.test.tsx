@@ -1,18 +1,18 @@
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { describe, expect, it } from 'vitest';
 
-const example_titles = [
-    ['Title', 'title'],
-    ['Product Title', 'product-title'],
-    ['title.product', 'title-product'],
-    ['1.2kg Pack', '1-2kg-pack'],
-    ['Hello World!', 'hello-world'],
-    ["A'hoy", 'ahoy'],
-    ['Francén', 'francen'],
-    ['Another-Title', 'another-title']
-];
+describe('utils', () => {
+    const example_titles = [
+        ['Title', 'title'],
+        ['Product Title', 'product-title'],
+        ['title.product', 'title-product'],
+        ['1.2kg Pack', '1-2kg-pack'],
+        ['Hello World!', 'hello-world'],
+        ["A'hoy", 'ahoy'],
+        ['Francén', 'francen'],
+        ['Another-Title', 'another-title']
+    ];
 
-describe('Utils', () => {
     describe('TitleToHandle', () => {
         it('should convert titles to handles', () => {
             for (let i = 0; i < example_titles.length; i++) {

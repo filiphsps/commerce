@@ -397,7 +397,7 @@ export const ProductsApi = async ({
     });
 };
 
-/***
+/**
  * Fetches products from the Shopify API.
  *
  * @param {Object} options - The options.

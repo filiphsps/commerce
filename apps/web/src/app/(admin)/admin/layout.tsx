@@ -20,8 +20,8 @@ export async function generateMetadata({}): Promise<Metadata> {
     return {
         metadataBase: new URL(`https://shops.nordcom.io/`),
         title: {
-            default: 'nordcom commerce',
-            template: `%s· nordcom commerce`
+            absolute: 'nordcom commerce',
+            template: `%s · nordcom commerce`
         },
         icons: {
             icon: ['/favicon.png', '/favicon.ico'],

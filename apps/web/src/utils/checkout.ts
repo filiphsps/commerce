@@ -1,7 +1,7 @@
 import { BuildConfig } from '@/utils/build-config';
-import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import type { CartWithActions } from '@shopify/hydrogen-react';
 
 // Const hacky workaround for ga4 cross-domain
 // Ugly hack taken from StackOverflow

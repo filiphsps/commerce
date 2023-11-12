@@ -7,7 +7,9 @@ export type IndexAdminPageParams = {};
 
 export async function generateMetadata({}: { params: IndexAdminPageParams }): Promise<Metadata> {
     return {
-        title: 'dashboard'
+        title: {
+            absolute: 'nordcom commerce — the headless commerce solution'
+        }
     };
 }
 

@@ -11,7 +11,7 @@ const config = {
         href: (locale !== 'x-default' && `${url}/${locale}`) || url,
         hreflang: locale
     })),
-
+    outDir: './public/www.sweetsideofsweden.com',
     generateRobotsTxt: true,
     generateIndexSitemap: true,
     robotsTxtOptions: {

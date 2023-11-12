@@ -1,20 +1,20 @@
 'use client';
 
-import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
+import { SearchApi } from '@/api/shopify/search';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import type { Locale } from '@/utils/locale';
 import PageLoader from '@/components/PageLoader';
-import { SearchApi } from '@/api/shopify/search';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { StoreModel } from '@/models/StoreModel';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import type { Locale } from '@/utils/locale';
+import { useApolloClient } from '@apollo/client';
 import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
-import { useApolloClient } from '@apollo/client';
 import useSWR from 'swr';
 
 const ProductSearchFilters = dynamic(

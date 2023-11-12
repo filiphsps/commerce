@@ -1,11 +1,11 @@
 import 'server-only';
 
 import type { ApiConfig } from '@/api/client';
+import { setupApi } from '@/api/client';
+import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
-import { setupApi } from '@/api/client';
 
 export const shopifyApiConfig = (): {
     public: () => ApiConfig;

@@ -3,3 +3,7 @@
 exports[`Utils > MerchantsCenterId > should generate a Merchants Center product ID based on the product's Shopify GIDs 1`] = `"shopify_US_123_456"`;
 
 exports[`Utils > MerchantsCenterId > should generate a Merchants Center product ID based on the product's Shopify GIDs 2`] = `"shopify_CA_123_456"`;
+
+exports[`utils > MerchantsCenterId > should generate a Merchants Center product ID based on the product's Shopify GIDs 1`] = `"shopify_US_123_456"`;
+
+exports[`utils > MerchantsCenterId > should generate a Merchants Center product ID based on the product's Shopify GIDs 2`] = `"shopify_CA_123_456"`;
