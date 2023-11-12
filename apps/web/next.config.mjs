@@ -20,7 +20,8 @@ const config = {
         ],
         scrollRestoration: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
-        optimizeCss: true
+        optimizeCss: true,
+        ppr: true
     },
     images: {
         remotePatterns: [
