@@ -1,47 +1,49 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "baseUrl": ".",
         "plugins": [
             {
                 "name": "next"
             }
         ],
-        "strictNullChecks": true,
-        "baseUrl": ".",
         "rootDir": "../../",
         "paths": {
-            "@/middleware/*": ["./src/middleware/*"],
-            "@/components/*": ["./src/components/*"],
-            "@/hooks/*": ["./src/hooks/*"],
-            "@/api/*": ["./src/api/*"],
-            "@/models/*": ["./src/models/*"],
-            "@/utils/*": ["./src/utils/*"],
-            "@/style/*": ["./src/scss/*"],
+            "@/middleware/*": ["src/middleware/*"],
+            "@/components/*": ["src/components/*"],
+            "@/hooks/*": ["src/hooks/*"],
+            "@/api/*": ["src/api/*"],
+            "@/models/*": ["src/models/*"],
+            "@/utils/*": ["src/utils/*"],
+            "@/style/*": ["src/scss/*"],
 
             // i18n
-            "@/i18n/*": ["./src/locales/*"],
-            "@/i18n/dictionary": ["src/app/(storefront)/[locale]/dictionary.ts"],
+            "@/i18n/*": ["src/locales/*"],
+            "@/i18n/dictionary": ["src/utils/dictionary.ts"],
 
             // Prismic
-            "@/slices/*": ["./src/slices/*"],
-            "@/slices": ["./src/slices/index"],
-            "@/prismic/types": ["./prismicio-types.d.ts"],
-            "@/prismic": ["./prismicio.ts"],
+            "@/slices/*": ["src/slices/*"],
+            "@/slices": ["src/slices/index"],
+            "@/prismic/types": ["prismicio-types.d.ts"],
+            "@/prismic": ["prismicio.ts"],
 
-            // shops.nordcom.io
+            // Admin (shops.nordcom.io)
             "#/components/*": ["src/app/(admin)/_components/*"],
-            "#/api/*": ["./src/app/(admin)/_api/*"],
-            "#/styles/*": ["./src/app/(admin)/_scss/*"]
+            "#/api/*": ["src/app/(admin)/_api/*"],
+            "#/styles/*": ["src/app/(admin)/_scss/*"]
         }
     },
     "exclude": ["node_modules"],
     "include": [
-        "**/next-env.d.ts",
-        "**/.next/types/**/*.ts",
-        "**/prismicio-types.d.ts",
-        "**/src/@types",
-        "**/src/**/*.ts",
-        "**/src/**/*.tsx",
-        ".next/types/**/*.ts"
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "prismicio-types.d.ts",
+        "prismicio.ts",
+        "sentry.*.config.ts",
+        "src/@types",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/locales/**/*.json"
     ]
 }

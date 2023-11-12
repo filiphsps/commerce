@@ -8,7 +8,7 @@ import {
 
 import type { StoreModel } from '@/models/StoreModel';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('NextLocaleToLocale', () => {
         it('should convert an ISO 639-1 and ISO 3166-1 Alpha-2 string to a the Locale object', () => {
             const locales = [NextLocaleToLocale('en-US')!, NextLocaleToLocale('fr-CA')!, NextLocaleToLocale('es-MX')!];

@@ -1,7 +1,7 @@
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { describe, expect, it } from 'vitest';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('RemoveInvalidProps', () => {
         it(`should remove invalid props from an object`, () => {
             const props = {

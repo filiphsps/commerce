@@ -2,7 +2,7 @@ import { NextLocaleToLocale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { describe, expect, it } from 'vitest';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('MerchantsCenterId', () => {
         it(`should generate a Merchants Center product ID based on the product's Shopify GIDs`, () => {
             const product = {

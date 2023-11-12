@@ -1,4 +1,4 @@
-/***
+/**
  * Verifies if a handle is valid.
  *
  * @param {unknown} handle - The handle to verify.

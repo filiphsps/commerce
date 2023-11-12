@@ -4,7 +4,7 @@ import ProductPage, { generateMetadata } from './page';
 
 import type { ProductPageParams } from './page';
 
-describe('Pages', () => {
+describe('app', () => {
     vi.mock('@/utils/prefetch', () => ({
         Prefetch: vi.fn().mockResolvedValue({})
     }));

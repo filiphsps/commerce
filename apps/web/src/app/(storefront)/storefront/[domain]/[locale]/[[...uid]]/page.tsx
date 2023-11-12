@@ -12,17 +12,17 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
-import { RedirectToLocale } from '../util';
 
 export async function generateMetadata({ params }: { params: { locale: string; uid: string[] } }): Promise<Metadata> {
     const { locale: localeData, uid } = params;
-    if (!isValidHandle(uid)) return notFoundMetadata;
+
+    const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
+    if (!isValidHandle(handle)) return notFoundMetadata;
 
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
     try {
-        const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
         if (!page) return notFoundMetadata;
 
@@ -41,16 +41,19 @@ export async function generateMetadata({ params }: { params: { locale: string; u
     }
 }
 
-export default async function CustomPage({ params }: { params: { locale: string; uid: string[] } }) {
-    const { locale: localeData, uid } = params;
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return RedirectToLocale({ handle: [localeData, ...(uid || [])] });
-    const i18n = await getDictionary(locale);
-
+export default async function CustomPage({
+    params: { locale: localeData, uid }
+}: {
+    params: { locale: string; uid: string[] };
+}) {
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
 
+    const locale = NextLocaleToLocale(localeData);
+    if (!locale) return notFound();
+
     try {
+        const i18n = await getDictionary(locale);
         const client = StorefrontApiClient({ locale });
         const store = await StoreApi({ locale, api: client });
 
@@ -77,13 +80,12 @@ export default async function CustomPage({ params }: { params: { locale: string;
             </Page>
         );
     } catch (error: any) {
-        if (error.message?.includes('No documents')) {
-            console.warn(error);
+        const message = (error?.message as string) || '';
+        if (message.startsWith('404:')) {
             return notFound();
         }
 
-        console.error(error);
-        return notFound(); // FIXME: Return proper error.
+        throw error;
     }
 }
 

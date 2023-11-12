@@ -2,7 +2,7 @@ import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { describe, expect, it } from 'vitest';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('FirstAvailableVariant', () => {
         it(`should return undefined when given no product`, () => {
             const result = FirstAvailableVariant();

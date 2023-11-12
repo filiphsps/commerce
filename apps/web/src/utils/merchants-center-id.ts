@@ -2,7 +2,7 @@ import type { Locale } from '@/utils/locale';
 import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
 import { parseGid } from '@shopify/hydrogen-react';
 
-/***
+/**
  * This function is used to generate a unique ID for a product in the Merchants Center.
  *
  * @param {Locale} locale - The locale of the product.

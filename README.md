@@ -5,7 +5,7 @@
 
 A modern e-commerce platform that uses various integrations to handle everything from content management to payment to product/customer/etc data.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > The integrations are currently hard-coded. In the future we will support integrations as plugins.
 
 - Complete SSR-support

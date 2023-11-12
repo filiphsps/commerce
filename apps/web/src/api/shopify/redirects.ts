@@ -1,10 +1,10 @@
 import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
-import type { AbstractApi } from '@/utils/abstract-api';
 import type { RedirectModel } from '@/models/RedirectModel';
+import type { AbstractApi } from '@/utils/abstract-api';
 import { gql } from 'graphql-tag';
 
-/***
+/**
  * Convert the Shopify redirect list to a list of redirects.
  * TODO: Remove this and use the standard layout.
  *
@@ -24,7 +24,7 @@ export const Convertor = (redirects: UrlRedirect[]): Array<RedirectModel> => {
     }));
 };
 
-/***
+/**
  * Get all redirects from Shopify.
  *
  * @param {AbstractApi} client - The client to use for the query.
@@ -83,7 +83,7 @@ export const RedirectsApi = async ({
     });
 };
 
-/***
+/**
  * Get specific redirect from Shopify.
  *
  * @param {AbstractApi} client - The client to use for the query.

@@ -1,6 +1,6 @@
 import { isValidHandle } from '@/utils/handle';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('isValidHandle', () => {
         it(`should return false when handle is null`, () => {
             const handle = null;

@@ -1,6 +1,6 @@
 import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 
-/***
+/**
  * Find the first available and most expensive variant for a product.
  *
  * @param {Product} product - The product data.

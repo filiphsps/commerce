@@ -8,7 +8,7 @@ export default defineConfig({
         alias: [
             {
                 find: '@/i18n/dictionary',
-                replacement: path.resolve(__dirname, './src/app/(storefront)/[locale]/dictionary.ts')
+                replacement: path.resolve(__dirname, './src/utils/dictionary.ts')
             },
             {
                 find: '@/prismic',
@@ -25,12 +25,15 @@ export default defineConfig({
         ]
     },
     test: {
-        globals: true,
+        bail: 1,
         environment: 'jsdom',
+        globals: true,
+        maxConcurrency: 16,
+        passWithNoTests: true,
+        useAtomics: true,
 
         setupFiles: ['./__tests__/setup.ts'],
-
-        useAtomics: true,
+        reporters: ['verbose'],
 
         coverage: {
             all: true,

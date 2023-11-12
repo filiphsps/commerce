@@ -4,7 +4,7 @@ import type { Collection, CollectionConnection } from '@shopify/hydrogen-react/s
 import type { AbstractApi } from '@/utils/abstract-api';
 import { gql } from 'graphql-tag';
 
-/***
+/**
  * Get a collection from Shopify.
  * NOTE: We modify the descriptionHtml to remove all non-breaking spaces
  *       and replace them with normal spaces.

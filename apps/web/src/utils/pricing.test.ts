@@ -1,6 +1,6 @@
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 
-describe('Utils', () => {
+describe('utils', () => {
     describe('ShopifyPriceToNumber', () => {
         it('should return the parsed price if it is a valid number', () => {
             expect(ShopifyPriceToNumber(0, '10.99', '20.99')).toEqual(10.99);

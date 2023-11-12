@@ -151,7 +151,7 @@ const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<{ [key: string
     zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */
 };
 
-/***
+/**
  * Get dictionary for locale.
  * @todo Handle templates.
  *
