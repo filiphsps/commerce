@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { commonValidations } from '@/middleware/common-validations';
 import AcceptLanguageParser from 'accept-language-parser';
 
 export const isAdminRequest = (req: NextRequest): boolean => {
@@ -37,12 +38,9 @@ export default function middleware(req: NextRequest) {
     // If we're connecting via the nordcom domain show the admin dashboard
     // instead.
     if (isAdminRequest(req)) {
-        // Make sure we end with a slash.
-        // TODO: Utility function.
-        if (!newUrl.pathname.endsWith('/') && !newUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)) {
-            newUrl.pathname += '/';
-        }
-        
+        // Validate the url against our common issues.
+        newUrl = commonValidations(newUrl);
+
         // TODO: Allow for dashboard middleware (NextResponse supports this).
         // TODO: Redirect files like favicon etc too.
         return NextResponse.rewrite(new URL(`/admin${newUrl.pathname}`, req.url));
@@ -85,19 +83,8 @@ export default function middleware(req: NextRequest) {
         }
     }
 
-    // Prevent access to `admin` on storefronts.
-    newUrl.pathname = newUrl.pathname.replaceAll('admin/', '');
-
-    // Remove `x-default` if it's still there.
-    newUrl.pathname = newUrl.pathname.replaceAll('x-default/', '');
-
-    // Make sure we don't have any double slashes.
-    newUrl.pathname = newUrl.pathname.replaceAll(/\/\//g, '/');
-
-    // Make sure we end with a slash.
-    if (!newUrl.pathname.endsWith('/') && !newUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)) {
-        newUrl.pathname += '/';
-    }
+    // Validate the url against our common issues.
+    newUrl = commonValidations(newUrl);
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
