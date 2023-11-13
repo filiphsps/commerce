@@ -11,9 +11,7 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "concurrently --raw npm:dev:storefront",
-        "dev:storefront": "next dev",
-        "dev:admin": "SHOPS_DEV=1 next dev -p 1337",
+        "dev": "next dev",
         "build": "next build",
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap",
@@ -71,6 +69,7 @@
         "accept-language-parser": "1.5.0",
         "color": "4.2.3",
         "convert-units": "2.3.4",
+        "critters": "0.0.20",
         "destyle.css": "4.0.0",
         "geist": "1.1.0",
         "next": "14.0.2",
