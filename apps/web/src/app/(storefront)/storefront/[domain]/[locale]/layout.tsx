@@ -119,7 +119,7 @@ export default async function RootLayout({
                         type="Organization"
                         name={store.name}
                         description={store.description}
-                        url={`https://${BuildConfig.domain}/`}
+                        url={`https://${domain}/`}
                         logo={store.favicon?.src || store.logos?.primary?.src}
                         foundingDate="2023"
                         founders={[
@@ -155,7 +155,7 @@ export default async function RootLayout({
                             contactType: 'Customer relations and support',
                             email: 'hello@sweetsideofsweden.com',
                             telephone: '+1 866 502 5580',
-                            url: `https://${BuildConfig.domain}/about/`,
+                            url: `https://${domain}/about/`,
                             availableLanguage: ['English', 'Swedish']
                         }}
                         sameAs={store?.social?.map(({ url }) => url)}
@@ -163,10 +163,10 @@ export default async function RootLayout({
                     <SiteLinksSearchBoxJsonLd
                         useAppDir
                         name={store.name}
-                        url={`https://${BuildConfig.domain}/`}
+                        url={`https://${domain}/`}
                         potentialActions={[
                             {
-                                target: `https://${BuildConfig.domain}/search/?q`,
+                                target: `https://${domain}/search/?q`,
                                 queryInput: 'search_term_string'
                             }
                         ]}
@@ -175,6 +175,7 @@ export default async function RootLayout({
                     <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()} store={store}>
                         <PageProvider
                             store={store}
+                            domain={domain}
                             locale={locale}
                             i18n={i18n}
                             pagePropsAnalyticsData={{}}
