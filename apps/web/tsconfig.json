@@ -44,6 +44,6 @@
         "src/@types",
         "src/**/*.ts",
         "src/**/*.tsx",
-        "src/locales/**/*.json"
+        "src/**/*.json"
     ]
 }

@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged --allow-empty
+npm run lint
+npm run typecheck
+npm run test
