@@ -1,5 +1,3 @@
-import 'destyle.css';
-// Global style
 import '@/styles/app.scss';
 
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
