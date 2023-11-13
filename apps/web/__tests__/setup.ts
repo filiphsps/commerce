@@ -24,7 +24,7 @@ vi.mock('@/utils/build-config', () => ({
 }));
 
 // Mock the `prismic` module as it requires a valid Prismic repository,
-// which we don't have in our tests. It's up to pirsmic to test their
+// which we don't have in our tests. It's up to prismic to test their
 // service, not us. We would only cause unnecessary conflicts and
 // errors by trying to include it in our tests.
 vi.mock('@/prismic', () => ({

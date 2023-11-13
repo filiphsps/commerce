@@ -1,3 +1,8 @@
+*::selection {
+    background: var(--color-accent-primary);
+    color: var(--color-foreground);
+}
+
 h1 {
     font-size: 4.25rem;
     font-weight: 800;
@@ -33,13 +38,39 @@ h2 {
     }
 }
 
-p {
+h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: lowercase;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    b {
+        font-weight: 800;
+        color: var(--color-accent-primary);
+    }
+}
+
+p,
+a {
     font-size: 1.05rem;
     font-weight: 500;
     line-height: 1.35;
 
     @media (min-width: 950px) {
         font-size: 1.15rem;
+    }
+}
+
+a {
+    transition: 150ms ease-in-out color;
+
+    &:hover {
+        color: #ed1e79;
     }
 }
 
