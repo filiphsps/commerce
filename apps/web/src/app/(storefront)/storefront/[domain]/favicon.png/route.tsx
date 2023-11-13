@@ -35,15 +35,14 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     if (width && !height) height = width;
     else if (height && !width) width = height;
     else if (!width && !height) {
-        width = 64;
-        height = 64;
+        width = 256;
+        height = 256;
     }
 
     let src!: string;
 
     const locale = DefaultLocale();
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
     if (store.favicon?.src) {
         src = store.favicon.src;
     } else {
