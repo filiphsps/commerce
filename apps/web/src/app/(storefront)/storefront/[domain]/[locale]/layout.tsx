@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
         },
         robots: {
             follow: true,
-            index: domain.startsWith('staging.') ? false : true
+            index: BuildConfig.environment === 'production' ? true : false
         },
         referrer: 'origin'
     };

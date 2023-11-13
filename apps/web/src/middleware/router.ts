@@ -9,6 +9,8 @@ export const getHostname = (req: NextRequest): string => {
 
     if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
+    } else if (hostname.startsWith('staging.')) {
+        hostname = hostname.slice(8);
     }
 
     // Remove port from hostname.
