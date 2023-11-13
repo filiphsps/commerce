@@ -7,16 +7,14 @@ import type { Locale } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import { Fragment, type HTMLProps } from 'react';
 import styled from 'styled-components';
 
 const OptionValues = styled.div`
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fit, minmax(6rem, min-content));
-    grid-auto-rows: 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--block-spacer-small);
-    height: 100%;
+    padding-bottom: var(--block-spacer-small);
 `;
 
 const OptionValue = styled(Link)`
@@ -25,6 +23,8 @@ const OptionValue = styled(Link)`
     gap: var(--block-spacer-small);
     justify-content: center;
     align-items: center;
+    min-height: 4rem;
+    padding: var(--block-padding-small) var(--block-padding);
     border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
     color: var(--color-dark);
@@ -72,7 +72,14 @@ export type ProductOptionProps = {
 } & HTMLProps<HTMLDivElement>;
 export const ProductOptions = (props: ProductOptionProps) => {
     const { locale, initialVariant, selectedVariant } = props;
-    const { options, variants, selectedOptions, setSelectedOptions, isOptionInStock, product } = useProduct();
+    const {
+        options: productOptions,
+        variants,
+        selectedOptions,
+        setSelectedOptions,
+        isOptionInStock,
+        product
+    } = useProduct();
 
     if (!product) {
         console.error('No product found. Have you wrapped your component in a `<ProductProvider>`?');
@@ -80,89 +87,93 @@ export const ProductOptions = (props: ProductOptionProps) => {
     }
     const { handle } = product;
 
+    // Filter out options that have only one value and that value is "Default Title".
+    // This is a Shopify default value that is not useful to the user.
+    const options = productOptions?.filter(
+        (option) =>
+            option?.values && !(option.values.length === 1 && option.values[0]!.toLowerCase() === 'default title')
+    );
+
     return (
         <>
-            <div style={{ gridArea: 'option-labels' }}>
+            <div
+                {...RemoveInvalidProps(props)}
+                className={`${styles.productOptions} ${props.className || ''}`}
+                style={{ gridArea: 'options', ...(props.style || {}) }}
+            >
                 {options?.map((option, index) =>
                     option?.values ? (
-                        <label key={option.name} className={styles.label}>
-                            {option.name}
-                        </label>
-                    ) : (
-                        <div key={option?.name || index} /> // Empty div to keep the grid layout.
-                    )
-                )}
-            </div>
-            <div {...RemoveInvalidProps(props)}>
-                {options?.map((option, index) =>
-                    option?.values ? (
-                        <OptionValues key={option.name}>
-                            {option.values.map((value) => {
-                                let title = value;
+                        <Fragment key={option.name}>
+                            <label className={styles.label}>{option.name}</label>
+                            <OptionValues>
+                                {option.values.map((value) => {
+                                    if (!value) return null;
+                                    let title = value;
 
-                                if (option.name === 'Size') {
-                                    title = ConvertToLocalMeasurementSystem({
-                                        locale,
-                                        weight: Number.parseFloat(value!.slice(0, -1)),
-                                        weightUnit: 'GRAMS'
-                                    });
-                                }
+                                    if (option.name === 'Size' && value?.endsWith('g')) {
+                                        title = ConvertToLocalMeasurementSystem({
+                                            locale,
+                                            weight: Number.parseFloat(value!.slice(0, -1)),
+                                            weightUnit: 'GRAMS'
+                                        });
+                                    }
 
-                                // FIXME: Handle options to variant properly.
-                                const matchingVariant =
-                                    (value &&
-                                        title &&
-                                        variants
-                                            ?.filter((variant) => variant)
-                                            ?.find(
-                                                (variant) =>
-                                                    variant!.title?.toLowerCase()?.includes(value!.toLowerCase()) ||
-                                                    variant!.title?.toLowerCase()?.includes(title!.toLowerCase())
-                                            )) ||
-                                    undefined;
-                                let href = `/products/${handle}/`;
-                                let asComponent: any = Link;
+                                    // FIXME: Handle options to variant properly.
+                                    const matchingVariant =
+                                        (title &&
+                                            title &&
+                                            variants
+                                                ?.filter((variant) => variant)
+                                                ?.find(
+                                                    (variant) =>
+                                                        variant!.title?.toLowerCase()?.includes(value!.toLowerCase()) ||
+                                                        variant!.title?.toLowerCase()?.includes(title!.toLowerCase())
+                                                )) ||
+                                        undefined;
+                                    let href = `/products/${handle}/`;
+                                    let asComponent: any = Link;
 
-                                if (matchingVariant) {
-                                    if (matchingVariant.id !== initialVariant.id)
-                                        href = `${href}?variant=${parseGid(matchingVariant?.id).id}`;
+                                    if (matchingVariant) {
+                                        if (matchingVariant.id !== initialVariant.id)
+                                            href = `${href}?variant=${parseGid(matchingVariant?.id).id}`;
 
-                                    if (selectedVariant && selectedVariant.id === matchingVariant.id)
-                                        asComponent = 'div';
-                                }
+                                        if (selectedVariant && selectedVariant.id === matchingVariant.id)
+                                            asComponent = 'div';
+                                    }
 
-                                const extraProps =
-                                    (asComponent !== 'div' && {
-                                        locale: locale,
-                                        href: href,
-                                        replace: true,
-                                        onClick: () =>
-                                            setSelectedOptions({
-                                                ...(selectedOptions as any),
-                                                [option.name!]: value!
-                                            })
-                                    }) ||
-                                    {};
+                                    const extraProps =
+                                        (asComponent !== 'div' && {
+                                            locale: locale,
+                                            href: href,
+                                            replace: true,
+                                            onClick: () =>
+                                                setSelectedOptions({
+                                                    ...(selectedOptions as any),
+                                                    [option.name!]: value!
+                                                })
+                                        }) ||
+                                        {};
 
-                                return (
-                                    <OptionValue
-                                        key={value}
-                                        as={asComponent}
-                                        title={`${product?.vendor} ${product?.title} - ${
-                                            title || matchingVariant?.title
-                                        }`}
-                                        className={`${
-                                            (selectedOptions?.[option.name!] === value && 'selected') || ''
-                                        } ${(!isOptionInStock(option.name!, value!) && 'disabled') || ''} ${
-                                            (asComponent !== 'div' && 'clickable') || ''
-                                        }`}
-                                        {...extraProps}
-                                    >
-                                        {title}
-                                    </OptionValue>
-                                );
-                            })}
-                        </OptionValues>
+                                    return (
+                                        <OptionValue
+                                            key={value}
+                                            as={asComponent}
+                                            title={`${product?.vendor} ${product?.title} - ${
+                                                title || matchingVariant?.title
+                                            }`}
+                                            className={`${
+                                                (selectedOptions?.[option.name!] === value && 'selected') || ''
+                                            } ${(!isOptionInStock(option.name!, value!) && 'disabled') || ''} ${
+                                                (asComponent !== 'div' && 'clickable') || ''
+                                            }`}
+                                            {...extraProps}
+                                        >
+                                            {title}
+                                        </OptionValue>
+                                    );
+                                })}
+                            </OptionValues>
+                        </Fragment>
                     ) : (
                         <div key={option?.name || index} /> // Empty div to keep the grid layout
                     )

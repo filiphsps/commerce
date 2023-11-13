@@ -11,14 +11,19 @@ import styled from 'styled-components';
 const Previews = styled.div`
     position: relative;
     grid-area: previews;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
     flex-direction: column;
     gap: var(--block-spacer);
     width: 100%;
     height: 100%;
 
+    @media (max-width: 950px) {
+        overflow-y: auto;
+    }
+
     @media (min-width: 950px) {
-        display: flex;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
         position: relative;
         flex-direction: row;
         height: fit-content;
@@ -89,13 +94,14 @@ const Container = styled.div`
     grid-template-rows: 1fr;
     gap: var(--block-spacer);
     width: 100%;
-    max-height: 100%;
+    max-height: 30vh;
     transition: 150ms ease-in-out;
 
     @media (min-width: 950px) {
         grid-template-areas: 'primary' 'previews';
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
+        max-height: 100%;
     }
 
     img {

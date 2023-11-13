@@ -1,25 +1,36 @@
 @import '@/styles/variables.scss';
 
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-large);
-    @media (min-width: $breakpoint-mobile) {
-    }
+    display: contents;
 
     .options {
-        display: grid;
-        grid-template-columns: auto 1fr 1fr;
-        grid-template-rows: 1fr 5rem;
-        grid-template-areas: 'quantity-label option-labels option-labels' 'quantity options options';
+        display: flex;
+        flex-direction: column;
         gap: var(--block-spacer-large);
+        height: 100%;
 
         @media (min-width: $breakpoint-mobile) {
-            grid-template-columns: auto auto;
-            grid-template-rows: 1fr 4.25rem;
-            grid-template-areas: 'quantity-label option-labels' 'quantity options';
+            display: grid;
+            grid-template-areas: 'quantity-label options' 'quantity options' '. options';
+            grid-template-rows: 1.75rem 4rem 1fr;
             grid-template-columns: minmax(18rem, auto) 1fr;
             gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
+        }
+
+        .productOptions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--block-spacer-large);
+
+            @media (min-width: $breakpoint-mobile) {
+                gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
+            }
+
+            label,
+            .label,
+            label.label {
+                line-height: 1.15;
+            }
         }
     }
 }
