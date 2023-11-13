@@ -70,7 +70,7 @@ const routes: ClientConfig['routes'] = [
  * @param {CreateClientConfig} config - Configuration for the Prismic client.
  * @returns {Client} A Prismic client.
  */
-export const createClient = (config: CreateClientConfig & { locale?: Locale } = {}): Client => {
+export const createClient = (config: CreateClientConfig & { domain?: string; locale?: Locale } = {}): Client => {
     const client = prismicCreateClient(repositoryName, {
         routes,
         accessToken: accessToken || undefined,

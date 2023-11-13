@@ -3,7 +3,6 @@ import type {
     ProductConnection,
     ProductEdge,
     ProductSortKeys,
-    ProductVariant,
     WeightUnit
 } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -213,38 +212,6 @@ export const ConvertToLocalMeasurementSystem = ({
     const res = ConvertUnits(weight).from(unit).to(targetUnit);
     // TODO: Precision should be depending on unit.
     return `${Math.ceil(res)}${targetUnit}`;
-};
-
-const FixProduct = (product: Product): Product => {
-    // Handle variants that should have their weight as their actual title
-    // FIXME: Remove `Size` when we've migrated to using Weight.
-    // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
-    const variants = ((variants) =>
-        variants && {
-            ...product.variants,
-            edges: product.variants.edges.map(({ node, cursor }) => ({
-                cursor,
-                node: {
-                    ...(node as ProductVariant),
-                    selectedOptions: node.selectedOptions.map((option) => {
-                        if (['weight', 'größe', 'storlek'].includes(option.name)) {
-                            return {
-                                ...option,
-                                name: 'Size',
-                                value: option.value
-                            };
-                        }
-
-                        return option;
-                    })
-                }
-            }))
-        })(product.variants);
-
-    return {
-        ...product,
-        variants: variants
-    };
 };
 
 export const ProductApi = async ({ client, handle }: { client: AbstractApi; handle: string }): Promise<Product> => {
