@@ -79,6 +79,11 @@ export const storefront = (req: NextRequest): NextResponse => {
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 
+    // Rewrite index to use the `homepage` handle.
+    if (newUrl.pathname.split('/')[2] === '') {
+        newUrl.pathname = `${newUrl.pathname}homepage/`;
+    }
+
     const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
