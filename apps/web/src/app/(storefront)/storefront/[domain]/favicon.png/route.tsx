@@ -1,52 +1,12 @@
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import {
-    IconHeightNoFractionalError,
-    IconHeightOutOfBoundsError,
-    IconWidthNoFractionalError,
-    IconWidthOutOfBoundsError
-} from '@/utils/errors';
+
 import { DefaultLocale } from '@/utils/locale';
-import type { ApiError } from 'next/dist/server/api-utils';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
+import { validateSize } from './validate-size';
 
 // export const runtime = process.env.NODE_ENV === 'production' ? 'experimental-edge' : 'nodejs';
-
-/**
- * Validate invalid width/height, most likely by a malicious actor.
- * @param {object} size - The size object to validate.
- * @param {number=} size.width - The width of the icon.
- * @param {number=} size.height - The height of the icon.
- * @returns {ApiError[]} - An array of errors.
- */
-const validateSize = ({ width, height }: { width?: number | null; height?: number | null }): ApiError[] => {
-    let errors: ApiError[] = [];
-
-    if (width) {
-        if (!Number.isInteger(width)) {
-            errors.push(new IconWidthNoFractionalError());
-        }
-        if (width <= 0 || width > 1024) {
-            errors.push(new IconWidthOutOfBoundsError());
-        }
-    }
-
-    if (height) {
-        if (!Number.isInteger(height)) {
-            errors.push(new IconHeightNoFractionalError());
-        }
-
-        if (height <= 0 || height > 1024) {
-            errors.push(new IconHeightOutOfBoundsError());
-        }
-    }
-
-    return errors;
-};
-
-// TODO: Also add `image/x-icon`.
-/*export*/ const contentType = 'image/png';
 
 export type FaviconRouteParams = {
     domain: string;
@@ -105,7 +65,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     return new NextResponse(image.body, {
         headers: {
             ...image.headers,
-            'Content-Type': contentType
+            'Content-Type': 'image/png' // TODO: Also add `image/x-icon`.
         },
         status: 200
     });

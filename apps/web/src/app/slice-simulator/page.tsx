@@ -7,15 +7,12 @@ import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { SliceZone } from '@prismicio/react';
 import { SliceSimulator } from '@slicemachine/adapter-next/simulator';
 
-/**
- * You can probably ignore this page. It renders the Slice simulator
- * that appear in Slice Machine.
- */
 export default function SliceSimulatorPage() {
     const locale = DefaultLocale();
 
     return (
         <SliceSimulator
+            background="#000000"
             sliceZone={(props) => (
                 <SliceZone
                     {...RemoveInvalidProps(props)}

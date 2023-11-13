@@ -3,14 +3,24 @@ import { PagesApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { CollectionsApi } from '@/api/shopify/collection';
 import { ProductsApi } from '@/api/shopify/product';
-import { BuildConfig } from '@/utils/build-config';
+import { StoreApi } from '@/api/store';
+import type { Locale } from '@/utils/locale';
 import { DefaultLocale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
 
-export async function GET() {
-    const urls: any[] = [];
-    const locales: string[] = BuildConfig.i18n?.locales || [];
+export type DynamicSitemapRouteParams = {
+    domain: string;
+};
+export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
+    let urls: any[] = [],
+        locales: Locale[] = [];
     const locale = DefaultLocale();
+
+    // FIXME: This is a hack to fix the sitemap for the main domain.
+    if (domain === 'sweetsideofsweden.com') {
+        domain = `www.${domain}`;
+    }
 
     interface SitemapEntry {
         location: string;
@@ -19,15 +29,37 @@ export async function GET() {
 
     let pages: SitemapEntry[] = [];
     try {
+        const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+        locales = store.i18n.locales;
+
         pages = ((await PagesApi({ locale })) as any).paths
             .filter((i: any) => i !== '/')
-            .map(
-                (page: any) =>
-                    ({
-                        location: `${page.slice(1)}/`,
-                        priority: 0.8
-                    }) as SitemapEntry
-            );
+            .map((page: any) => {
+                let location = (page.split('/')[2] || '') as string;
+                if (location && !location.endsWith('/')) location = `${location}/`;
+
+                return {
+                    location,
+                    priority: ((location) => {
+                        // TODO: Make this configurable.
+                        if (location === '') {
+                            return 1;
+                        } else if (location === 'cart/') {
+                            return 0.1;
+                        } else if (location === 'search/') {
+                            return 0.1;
+                        } else if (location === 'countries/') {
+                            return 0.1;
+                        } else if (location === 'terms-of-service/') {
+                            return 0.1;
+                        } else if (location === 'about/') {
+                            return 0.1;
+                        }
+
+                        return 0.5;
+                    })(location)
+                } as SitemapEntry;
+            });
     } catch (error) {
         console.warn(error);
     }
@@ -41,7 +73,7 @@ export async function GET() {
                 priority: 1.0
             }) as SitemapEntry
     );
-    const products = (await ProductsApi({ client })).products.map(
+    const products = (await ProductsApi({ client, limit: 250 })).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
@@ -59,7 +91,7 @@ export async function GET() {
     );
 
     const objects: Array<SitemapEntry[]> = [pages, collections, products, blogs];
-    const url = `https://${BuildConfig.domain}`;
+    const url = `https://${domain}/`;
 
     urls.push(
         ...objects
@@ -68,19 +100,23 @@ export async function GET() {
                 // TODO: Add proper date support.
                 const modified = new Date().toISOString();
 
-                return locales?.map((locale) => ({
-                    loc: `https://${BuildConfig.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}${
-                        item.location
-                    }`,
+                return locales.map(({ locale }) => ({
+                    loc: `${url}${locale}/${item.location}`,
                     lastmod: modified,
-                    priority: item.priority || 0.7,
-                    alternateRefs: locales?.map((locale) => ({
-                        href:
-                            (locale !== 'x-default' && `${url}/${locale}/${item.location}`) ||
-                            `${url}/${item.location}`,
-                        hreflang: locale,
-                        hrefIsAbsolute: true
-                    }))
+                    priority: item.priority || 0.7
+
+                    // FIXME: `alternateRefs`.
+                    /*alternateRefs: locales
+                        ?.map(
+                            ({ locale: subLocale }) =>
+                                (locale !== subLocale && {
+                                    href: `${url}${subLocale}/${item.location}`,
+                                    hreflang: subLocale,
+                                    hrefIsAbsolute: true
+                                }) ||
+                                null
+                        )
+                        .filter((_) => _)*/
                 }));
             })
             .flat()

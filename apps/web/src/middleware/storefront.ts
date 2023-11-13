@@ -22,6 +22,10 @@ export const storefront = (req: NextRequest): NextResponse => {
             target = `/storefront/${hostname}${newUrl.pathname}`;
 
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
+        } else if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
+            target = `/storefront/${hostname}/dynamic-sitemap.xml`;
+
+            return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         }
 
         // FIXME: Don't hardcode `sweetsideofsweden.com`

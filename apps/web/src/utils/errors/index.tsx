@@ -23,7 +23,7 @@ export type ApiErrorKind =
     | 'ICON_WIDTH_OUT_OF_BOUNDS'
     | 'ICON_HEIGHT_NO_FRACTIONAL'
     | 'ICON_HEIGHT_OUT_OF_BOUNDS';
-class ApiError extends CommerceError<ApiErrorKind> {
+export class ApiError extends CommerceError<ApiErrorKind> {
     readonly statusCode: number = 400;
 }
 
