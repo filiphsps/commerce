@@ -74,7 +74,7 @@ const Vendors: FunctionComponent<VendorsProps> = (props) => {
         [
             'VendorsApi',
             {
-                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() })
+                api: ShopifyApolloApiBuilder({ locale, api: useApolloClient() })
             }
         ],
         ([, props]) => VendorsApi(props),

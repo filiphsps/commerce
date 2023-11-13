@@ -103,7 +103,7 @@ export default async function CollectionPage({
 
         const { page } = await PageApi({ locale, handle, type: 'collection_page' });
         const prefetch = await Prefetch({
-            client: api,
+            api,
             page,
             initialData: {
                 collections: {

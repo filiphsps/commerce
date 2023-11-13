@@ -2,24 +2,28 @@ import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDoc
 
 import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
+import type { StoreModel } from '@/models/StoreModel';
+import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
+import type { CollectionEdge, ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
+
+export type PrefetchData = {
+    collections?: { [key: string]: CollectionEdge['node'] };
+    products?: { [key: string]: ProductEdge };
+    shop?: StoreModel; // FIXME: This should be named `store`.
+    vendors?: VendorModel[];
+};
 
 const Prefetch = ({
-    client: api,
+    api,
     page,
     initialData
 }: {
-    client: AbstractApi;
+    api: AbstractApi;
     page?: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData | null;
-    initialData?: any;
+    initialData?: PrefetchData;
 }) => {
-    return new Promise<{
-        collections?: any;
-        products?: any;
-        shop?: any;
-        vendors?: any;
-    }>(async (resolve, reject) => {
+    return new Promise<PrefetchData>(async (resolve, reject) => {
         if (!page) {
             // No page data was supplied to prefetch.
             return resolve({});
@@ -28,101 +32,108 @@ const Prefetch = ({
         const slices = page?.slices;
         let collections = initialData?.collections || {},
             products = initialData?.products || {},
-            shop = initialData?.shop || {},
-            vendors = initialData?.vendors || {};
+            store = initialData?.shop || {},
+            vendors = initialData?.vendors || [];
 
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
             const type = slice?.slice_type;
+
             try {
                 switch (type) {
                     case 'collection': {
                         const handle: string | undefined = (slice?.primary as any)?.handle;
-                        if (handle && !collections[handle]) {
-                            collections[handle] = await CollectionApi({
-                                api,
-                                handle,
-                                limit:
-                                    (slice.variation !== 'full' && ((slice?.primary as any)?.limit || 16)) || undefined
-                            });
-                            if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
-                                collections[handle].products.edges = collections[handle].products.edges.slice(
-                                    0,
-                                    (slice?.primary as any)?.limit
-                                );
+                        const limit = (slice?.primary as any)?.limit || 16;
 
-                            // Only supply the used parameters
-                            // TODO: This should be a utility function.
-                            collections[handle].products.edges = (
-                                collections[handle].products.edges as Array<ProductEdge>
-                            ).map(
-                                ({
-                                    node: {
-                                        id,
-                                        handle,
-                                        availableForSale,
-                                        title,
-                                        description,
-                                        vendor,
-                                        tags,
-                                        seo,
-                                        variants,
-                                        images
-                                    }
-                                }) => ({
-                                    node: {
-                                        id,
-                                        handle,
-                                        availableForSale,
-                                        title,
-                                        description: (seo?.description || description).slice(0, 75),
-                                        vendor,
-                                        tags,
-                                        sellingPlanGroups: {
-                                            edges: []
-                                        },
-                                        variants: {
-                                            edges: variants.edges.map(
-                                                ({
-                                                    node: {
-                                                        id,
-                                                        sku,
-                                                        title,
-                                                        price,
-                                                        compareAtPrice,
-                                                        availableForSale,
+                        if (!handle || collections[handle]) continue;
 
-                                                        weight,
-                                                        weightUnit,
-                                                        image,
-                                                        selectedOptions
-                                                    }
-                                                }) => ({
-                                                    node: {
-                                                        id,
-                                                        sku,
-                                                        title,
-                                                        price,
-                                                        compareAtPrice,
-                                                        availableForSale,
-                                                        weight,
-                                                        weightUnit,
-                                                        image,
-                                                        selectedOptions
-                                                    }
-                                                })
-                                            )
-                                        },
-                                        images
-                                    }
-                                })
+                        let collection = await CollectionApi({
+                            api,
+                            handle,
+                            limit: slice.variation === 'full' ? undefined : limit
+                        });
+
+                        if (!collection?.products?.edges) continue; // TODO: Maybe error here?
+
+                        if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
+                            collection.products.edges = collection.products.edges.slice(
+                                0,
+                                (slice?.primary as any)?.limit
                             );
-                        }
-                        break;
+
+                        // Only supply the used parameters
+                        // TODO: This should be a utility function.
+                        collection.products.edges = (collection.products.edges as ProductEdge[]).map(
+                            ({
+                                node: {
+                                    id,
+                                    handle,
+                                    availableForSale,
+                                    title,
+                                    description,
+                                    vendor,
+                                    tags,
+                                    seo,
+                                    variants,
+                                    images
+                                }
+                            }) => ({
+                                node: {
+                                    id,
+                                    handle,
+                                    availableForSale,
+                                    title,
+                                    description: (seo?.description || description).slice(0, 75),
+                                    vendor,
+                                    tags,
+                                    sellingPlanGroups: {
+                                        edges: []
+                                    },
+                                    variants: {
+                                        edges: variants.edges.map(
+                                            ({
+                                                node: {
+                                                    id,
+                                                    sku,
+                                                    title,
+                                                    price,
+                                                    compareAtPrice,
+                                                    availableForSale,
+
+                                                    weight,
+                                                    weightUnit,
+                                                    image,
+                                                    selectedOptions
+                                                }
+                                            }) => ({
+                                                node: {
+                                                    id,
+                                                    sku,
+                                                    title,
+                                                    price,
+                                                    compareAtPrice,
+                                                    availableForSale,
+                                                    weight,
+                                                    weightUnit,
+                                                    image,
+                                                    selectedOptions
+                                                }
+                                            })
+                                        )
+                                    },
+                                    images
+                                }
+                            })
+                        ) as any;
+
+                        collections[handle] = collection;
+                        continue;
                     }
                     case 'vendors': {
-                        vendors = await VendorsApi({ client: api });
-                        break;
+                        if (vendors && vendors?.length > 0) continue;
+
+                        vendors = await VendorsApi({ api });
+                        continue;
                     }
                 }
             } catch (error) {
@@ -131,11 +142,11 @@ const Prefetch = ({
         }
 
         return resolve({
-            collections,
-            products,
-            shop,
+            collections: Object.keys(collections).length > 0 ? collections : undefined,
+            products: Object.keys(products).length > 0 ? products : undefined,
+            shop: store,
             vendors
-        });
+        } as any);
     });
 };
 export { Prefetch };

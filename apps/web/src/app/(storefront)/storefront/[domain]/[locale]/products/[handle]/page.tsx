@@ -115,12 +115,12 @@ export default async function ProductPage({
     }
 
     try {
-        const client = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api: client });
-        const product = await ProductApi({ client, handle });
+        const api = StorefrontApiClient({ domain, locale });
+        const store = await StoreApi({ locale, api });
+        const product = await ProductApi({ client: api, handle });
 
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
-        const prefetch = (page && (await Prefetch({ client, page }))) || null;
+        const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
