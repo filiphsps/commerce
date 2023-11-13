@@ -1,21 +1,27 @@
 import type { ImageLoader as ImageLoaderType } from 'next/image';
 
 export const ImageLoader: ImageLoaderType = ({ src, width, quality }) => {
+    const params = [];
+
+    // TODO: Refactor this!
     if (src.includes('images.prismic.io')) {
-        let res = `${src}${(src.includes('?') && '&') || '?'}`;
-
-        if (!res.includes('&q=') && !res.includes('?q=')) {
-            res += `q=${quality || 75}`;
+        if (width) {
+            params.push(`w=${width}`);
         }
-        if (!res.includes('&fm=') && !res.includes('?fm=')) {
-            res += `fm=avif`;
+        if (quality) {
+            params.push(`q=${quality}`);
         }
-        if (!res.includes('&w=') && !res.includes('?w=') && width) {
-            res += `w=${width}`;
+        if (!src.includes('fm=')) {
+            params.push(`fm=avif`);
         }
-
-        return res;
+    } else {
+        if (width) {
+            params.push(`width=${width}`);
+        }
+        if (quality) {
+            params.push(`quality=${quality}`);
+        }
     }
 
-    return `${src}${(src.includes('?') && '&') || '?'}width=${width}${(quality && `&quality=${quality}`) || ''}`;
+    return `${src}${params.length ? (src.includes('?') && '&') || '?' : ''}${params.join('&')}`;
 };
