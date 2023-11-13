@@ -25,7 +25,7 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
 /**
  * Creates an AbstractApiBuilder for Shopify Apollo APIs.
  *
- * @param {Object} options - The api options.
+ * @param {object} options - The api options.
  * @param {ApolloClient<any>} options.api - The Apollo client to use.
  * @param {Locale} options.locale - The locale to use.
  * @param {FetchPolicy | undefined} options.fetchPolicy - The fetch policy to use.

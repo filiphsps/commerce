@@ -400,7 +400,7 @@ export const ProductsApi = async ({
 /**
  * Fetches products from the Shopify API.
  *
- * @param {Object} options - The options.
+ * @param {object} options - The options.
  * @param {AbstractApi} options.client - The AbstractApi to use.
  * @param {number} [options.limit=35] - The limit of products to fetch.
  * @param {ProductSortKeys} [options.sorting=BEST_SELLING] - The sorting to use.
