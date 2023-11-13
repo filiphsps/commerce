@@ -8,7 +8,7 @@ export const unknown = (req: NextRequest): NextResponse => {
     // NOTE: We should use the admin dashboard assets here,
     //       even though we're in the `unknown` middleware.
     if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi)) {
-        const target = `/admin${newUrl.pathname}`;
+        const target = `/admin${newUrl.pathname}${newUrl.search}`;
         return NextResponse.rewrite(new URL(target, req.url));
     }
 
@@ -19,6 +19,6 @@ export const unknown = (req: NextRequest): NextResponse => {
         return NextResponse.redirect(newUrl, { status: 307 });
     }
 
-    const target = `/unknown/`;
+    const target = `/unknown/${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url), { status: 404 });
 };

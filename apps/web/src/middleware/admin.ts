@@ -7,7 +7,7 @@ export const admin = (req: NextRequest): NextResponse => {
 
     // Check if we're dealing with a file or a route.
     if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi)) {
-        const target = `/admin${newUrl.pathname}`;
+        const target = `/admin${newUrl.pathname}${newUrl.search}`;
         return NextResponse.rewrite(new URL(target, req.url));
     }
 
@@ -19,6 +19,6 @@ export const admin = (req: NextRequest): NextResponse => {
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 
-    const target = `/admin${newUrl.pathname}`;
+    const target = `/admin${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };

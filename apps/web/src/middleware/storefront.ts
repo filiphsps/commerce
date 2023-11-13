@@ -15,7 +15,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
     // Check if we're dealing with a file or a route.
     if (newUrl.pathname.match(FILE_TEST)) {
-        let target = newUrl.pathname;
+        let target = `${newUrl.pathname}${newUrl.search}`;
 
         // TODO: Handle Handle tenant-specific assets.
         if (newUrl.pathname.endsWith('favicon.png')) {
@@ -23,7 +23,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         } else if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
-            target = `/storefront/${hostname}/dynamic-sitemap.xml`;
+            target = `/storefront/${hostname}/dynamic-sitemap.xml${newUrl.search}`;
 
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         }
@@ -79,6 +79,6 @@ export const storefront = (req: NextRequest): NextResponse => {
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 
-    const target = `/storefront/${hostname}${newUrl.pathname}`;
+    const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
