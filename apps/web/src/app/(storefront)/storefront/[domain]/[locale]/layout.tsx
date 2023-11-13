@@ -66,10 +66,9 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
             template: `%s - ${store.name}`
         },
         icons: {
-            // TODO: dynamic route(s) for the icons and favicon.
-            icon: ['/favicon.png', '/favicon.ico', ...((store.favicon?.src && [store.favicon?.src]) || [])],
-            shortcut: ['/favicon.png', ...((store.favicon?.src && [store.favicon?.src]) || [])],
-            apple: ['/favicon.png', ...((store.favicon?.src && [store.favicon?.src]) || [])]
+            icon: ['/favicon.png', '/favicon.ico'],
+            shortcut: ['/favicon.png'],
+            apple: ['/favicon.png']
         },
         robots: {
             follow: true,
@@ -114,7 +113,7 @@ export default async function RootLayout({
                     } as React.CSSProperties
                 }
             >
-                <body className={font.variable}>
+                <body className={`${font.variable}`}>
                     <SocialProfileJsonLd
                         useAppDir
                         type="Organization"

@@ -30,24 +30,26 @@ export async function generateMetadata({
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
+    const title = page?.meta_title || page?.title || 'Search'; // TODO: Fallback should respect i18n.
+    const description = (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Search', // TODO: Fallback should respect i18n.
-        description: (page?.meta_description && asText(page?.meta_description)) || page?.description! || '',
+        title,
+        description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/search/`,
+            canonical: `https://${BuildConfig.domain}/${locale.locale}/${handle}/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/search/`
+                    [locale]: `https://${BuildConfig.domain}/${locale}/${handle}/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `/${locale.locale}/search/`,
+            url: `/${locale.locale}/${handle}/`,
             type: 'website',
-            title: page?.meta_title || page?.title!,
-            description: (page?.meta_description && asText(page.meta_description)) || page?.description || '',
+            title,
+            description,
             siteName: store?.name,
             locale: locale.locale,
             images:

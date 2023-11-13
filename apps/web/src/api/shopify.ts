@@ -15,6 +15,7 @@ export const shopifyApiConfig = ({
     public: () => ApiConfig;
     private: () => ApiConfig;
 } => {
+    //TODO: This shouldn't be hardcoded, instead we should figure it out from the domain.
     if (domain.endsWith('sweetsideofsweden.com')) domain = BuildConfig.shopify.checkout_domain;
     else if (domain === 'demo.nordcom.io') domain = 'mock.shop';
 

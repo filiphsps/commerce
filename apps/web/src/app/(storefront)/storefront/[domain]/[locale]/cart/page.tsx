@@ -6,7 +6,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -21,33 +20,34 @@ export async function generateMetadata({
 }: {
     params: CartPageParams;
 }): Promise<Metadata> {
-    const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
+    const handle = 'cart';
 
     const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
+    const title = page?.meta_title || page?.title || 'Cart'; // TODO: Fallback should respect i18n.
     const description: string | undefined =
         (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Cart', // TODO: Fallback should respect i18n.
+        title,
         description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/cart/`,
+            canonical: `https://${domain}/${locale.locale}/${handle}/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/cart/`
+                    [locale]: `https://${domain}/${locale}/${handle}/`
                 }),
                 {}
             )
         },
         openGraph: {
-            url: `/${locale.locale}/cart/`,
+            url: `/${locale.locale}/${handle}/`,
             type: 'website',
-            title: page?.meta_title || page?.title!,
+            title,
             description,
             siteName: store?.name,
             locale: locale.locale,
