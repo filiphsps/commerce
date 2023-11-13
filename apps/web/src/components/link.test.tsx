@@ -40,6 +40,7 @@ describe('Link', () => {
         const { container } = render(<Link href={href} locale={locale} />);
         const link = container.querySelector('a');
         expect(link?.getAttribute('href')).toBe(href);
+        expect(link).toMatchSnapshot();
     });
 
     it('should remove the current domain from the href', () => {
@@ -54,6 +55,7 @@ describe('Link', () => {
         const { container } = render(<Link href={href} />);
         const link = container.querySelector('a');
         expect(link?.getAttribute('href')).toBe('/en-US/some/path');
+        expect(link).toMatchSnapshot();
     });
 
     it('should pass through all other props to the underlying link', () => {
