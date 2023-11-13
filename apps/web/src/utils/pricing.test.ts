@@ -7,6 +7,8 @@ describe('utils', () => {
             expect(ShopifyPriceToNumber(0, '5.00')).toEqual(5.0);
             expect(ShopifyPriceToNumber(0, '0.99', '1.99', '2.99')).toEqual(0.99);
             expect(ShopifyPriceToNumber(0, '0.01')).toEqual(0.01);
+
+            expect(ShopifyPriceToNumber(0, '0.99', '1.99', '2.99')).toMatchSnapshot();
         });
 
         it('should return the fallback value if no valid price is found', () => {

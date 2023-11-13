@@ -10,6 +10,7 @@ describe('utils', () => {
             const result = Pluralize({ count, noun, suffix });
 
             expect(result).toBe('apples');
+            expect(result).toMatchSnapshot();
         });
 
         it(`should not pluralize the noun when count is 1`, () => {
@@ -20,6 +21,7 @@ describe('utils', () => {
             const result = Pluralize({ count, noun, suffix });
 
             expect(result).toBe('apple');
+            expect(result).toMatchSnapshot();
         });
 
         it(`should use the provided suffix when count is greater than 1`, () => {
@@ -30,6 +32,7 @@ describe('utils', () => {
             const result = Pluralize({ count, noun, suffix });
 
             expect(result).toBe('children');
+            expect(result).toMatchSnapshot();
         });
 
         it(`should not use the provided suffix when count is 1`, () => {
@@ -40,6 +43,7 @@ describe('utils', () => {
             const result = Pluralize({ count, noun, suffix });
 
             expect(result).toBe('child');
+            expect(result).toMatchSnapshot();
         });
     });
 });

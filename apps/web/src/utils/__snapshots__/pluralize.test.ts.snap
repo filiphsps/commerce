@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`utils > Pluralize > should not pluralize the noun when count is 1 1`] = `"apple"`;
+
+exports[`utils > Pluralize > should not use the provided suffix when count is 1 1`] = `"child"`;
+
+exports[`utils > Pluralize > should pluralize the noun when count is greater than 1 1`] = `"apples"`;
+
+exports[`utils > Pluralize > should use the provided suffix when count is greater than 1 1`] = `"children"`;
