@@ -24,7 +24,7 @@ export default function Link({ locale, ...props }: Props) {
 
     if ((!href.includes(':') && href.startsWith('/')) || href.includes(BuildConfig.domain)) {
         // Remove our own domain from the URL.
-        href = href.replaceAll(`https://${BuildConfig.domain}/`, '');
+        href = href.replaceAll(`https://${BuildConfig.domain}`, '');
 
         // Check if any lang (xx-YY) is already a part of the URL.
         if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) {
@@ -33,7 +33,7 @@ export default function Link({ locale, ...props }: Props) {
         }
 
         // Fix all occurrences of double slashes.
-        href = href.replaceAll('//', '');
+        href = href.replaceAll('//', '/');
     }
 
     if (props.href || href) props.href = href;

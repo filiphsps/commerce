@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Link > should throw an error if href is not a string 1`] = `"Link href must be a string. Received object instead."`;
