@@ -1,17 +1,15 @@
 import Container from '#/components/container';
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import styles from './page.module.scss';
+import styles from '../../(admin)/admin/page.module.scss';
 
-export type IndexAdminPageParams = {};
+export type IndexUnknownPageParams = {};
 
 export const metadata: Metadata = {
-    title: {
-        absolute: 'nordcom commerce — the headless commerce solution'
-    }
+    title: 'unknown or invalid storefront'
 };
 
-export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
+export default async function IndexUnknownPage({}: { params: IndexUnknownPageParams }) {
     return (
         <Container className={`${styles.container}`}>
             <header className={`${styles.header}`}>
@@ -26,14 +24,15 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
             </header>
 
             <div className={`${styles.heading}`}>
-                <h1>TODO</h1>
-                <h2>An admin interface for tenants</h2>
+                <h1>404</h1>
+                <h2>Unknown or invalid storefront</h2>
             </div>
 
             <article className={`${styles.content}`}>
                 <p>
-                    This currently serves as a placeholder to make sure domain routing works and continue to work
-                    through deployments and domain configuration changes.
+                    The specific page, resource or storefront you are looking for does not exist. If you believe this is
+                    an error, please contact the <code>Nordcom Group Inc.</code> support via{' '}
+                    <a href="mailto">hi@nordcom.io</a>.
                 </p>
             </article>
         </Container>

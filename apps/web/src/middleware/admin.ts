@@ -16,7 +16,7 @@ export const admin = (req: NextRequest): NextResponse => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
-        return NextResponse.redirect(newUrl);
+        return NextResponse.redirect(newUrl, { status: 302 });
     }
 
     const target = `/admin${newUrl.pathname}`;

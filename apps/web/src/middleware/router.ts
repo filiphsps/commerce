@@ -1,10 +1,15 @@
 import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
+import { unknown } from '@/middleware/unknown';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export const getHostname = (req: NextRequest): string => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
+
+    if (hostname.startsWith('www.')) {
+        hostname = hostname.slice(4);
+    }
 
     // Remove port from hostname.
     hostname = hostname.split(':')[0];
@@ -38,7 +43,7 @@ export const getRequestType = (req: NextRequest): RequestType => {
     const hostname = getHostname(req);
 
     // TODO: Dynamic list of storefronts.
-    const storefronts: string[] = ['www.sweetsideofsweden.com'];
+    const storefronts: string[] = ['sweetsideofsweden.com'];
     if (storefronts.includes(hostname)) {
         return 'storefront';
     }
@@ -51,7 +56,7 @@ export const getRequestType = (req: NextRequest): RequestType => {
 };
 
 export const router = (req: NextRequest): NextResponse | undefined => {
-    const type = getRequestType(req);
+    const type: RequestType = getRequestType(req);
 
     // Don't do anything if we're already on the admin or storefront,
     // as that would cause an infinite loop.
@@ -69,21 +74,7 @@ export const router = (req: NextRequest): NextResponse | undefined => {
             return admin(req);
         }
         case 'unknown': {
-            // TODO: Common `nordcom` error page (404).
-            return NextResponse.json(
-                {
-                    status: 404,
-                    data: null,
-                    errors: [
-                        {
-                            message: 'Not found',
-                            code: 'NOT_FOUND',
-                            path: req.nextUrl.pathname
-                        }
-                    ]
-                },
-                { status: 404 }
-            );
+            return unknown(req);
         }
     }
 
