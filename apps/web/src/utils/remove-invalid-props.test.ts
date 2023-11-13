@@ -11,6 +11,7 @@ describe('utils', () => {
 
             const result = RemoveInvalidProps(props);
             expect(result).toEqual({ title: props.title });
+            expect(result).toMatchSnapshot();
         });
 
         it(`should not modify an object with only valid props`, () => {
@@ -21,11 +22,13 @@ describe('utils', () => {
 
             const result = RemoveInvalidProps(props);
             expect(result).toEqual(props);
+            expect(result).toMatchSnapshot();
         });
 
         it(`should return an empty object when given an empty object`, () => {
             const result = RemoveInvalidProps({});
             expect(result).toEqual({});
+            expect(result).toMatchSnapshot();
         });
     });
 });
