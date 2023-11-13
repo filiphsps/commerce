@@ -11,8 +11,6 @@ on:
         branches:
             - master
             - staging
-            #- 'dev/*'
-            #- '**FRO-**'
         paths-ignore:
             - '**.md'
             - '**.txt'
@@ -25,43 +23,8 @@ env:
 
 jobs:
     build:
-        name: 🔨 Build
+        name: 📋 Lint, ✅ Typecheck, 🧪 Test, 🔨 Build
         timeout-minutes: 10
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: 🔨 Build
-              run: npm run build
-
-    test:
-        name: 🔬 Test
-        needs: [build]
-        timeout-minutes: 10
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
-            - name: 🧪 Test
-              run: npm run test
-
-            - name: 🦺 Codecov Coverage Reports
-              uses: codecov/codecov-action@v3
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    lint:
-        name: 📋 Lint
-        needs: [build]
-        timeout-minutes: 5
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
@@ -73,31 +36,97 @@ jobs:
             - name: 📋 Lint
               run: npm run lint
 
-    typecheck:
-        name: ✅ Typecheck
-        needs: [build]
-        timeout-minutes: 5
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🕶️ Checkout repository
-              uses: actions/checkout@v4
-
-            - name: 🚀 Bootstrap
-              uses: ./.github/common/bootstrap
-
             - name: 📋 Typecheck
               run: npm run typecheck
 
-    # dispatch:
-    #     name: 🗣️ Dispatch
-    #     needs: [test, lint, typecheck]
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #         - name: 🕶️ Checkout repository
-    #           uses: actions/checkout@v4
+            - name: 🧪 Test
+              run: npm run test
 
-    #         # Deliberately empty as this is just used
-    #         # to trigger other workflows when this one
-    #         # completes successfully. Otherwise we can't
-    #         # make sure that every test, lint and typecheck
-    #         # job has validated and completed successfully.
+            - name: 🦺 Codecov Coverage Reports
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: 🔨 Build
+              run: npm run build
+# NOTE: The following jobs are temporarily disabled as it's too expensive
+#       to run on every commit thanks to the startup cost and the fact
+#       that GitHub always charge for at least 1 minute of usage per job.
+
+# build:
+#     name: 🔨 Build
+#     timeout-minutes: 10
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: 🕶️ Checkout repository
+#           uses: actions/checkout@v4
+
+#         - name: 🚀 Bootstrap
+#           uses: ./.github/common/bootstrap
+
+#         - name: 🔨 Build
+#           run: npm run build
+
+# test:
+#     name: 🔬 Test
+#     needs: [build]
+#     timeout-minutes: 10
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: 🕶️ Checkout repository
+#           uses: actions/checkout@v4
+
+#         - name: 🚀 Bootstrap
+#           uses: ./.github/common/bootstrap
+
+#         - name: 🧪 Test
+#           run: npm run test
+
+#         - name: 🦺 Codecov Coverage Reports
+#           uses: codecov/codecov-action@v3
+#           env:
+#               CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+# lint:
+#     name: 📋 Lint
+#     needs: [build]
+#     timeout-minutes: 5
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: 🕶️ Checkout repository
+#           uses: actions/checkout@v4
+
+#         - name: 🚀 Bootstrap
+#           uses: ./.github/common/bootstrap
+
+#         - name: 📋 Lint
+#           run: npm run lint
+
+# typecheck:
+#     name: ✅ Typecheck
+#     needs: [build]
+#     timeout-minutes: 5
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: 🕶️ Checkout repository
+#           uses: actions/checkout@v4
+
+#         - name: 🚀 Bootstrap
+#           uses: ./.github/common/bootstrap
+
+#         - name: ✅ Typecheck
+#           run: npm run typecheck
+
+# dispatch:
+#     name: 🗣️ Dispatch
+#     needs: [test, lint, typecheck]
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: 🕶️ Checkout repository
+#           uses: actions/checkout@v4
+
+#         # Deliberately empty as this is just used
+#         # to trigger other workflows when this one
+#         # completes successfully. Otherwise we can't
+#         # make sure that every test, lint and typecheck
+#         # job has validated and completed successfully.
