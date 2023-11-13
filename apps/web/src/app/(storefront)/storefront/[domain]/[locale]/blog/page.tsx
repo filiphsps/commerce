@@ -71,10 +71,10 @@ export default async function SearchPage({ params: { domain, locale: localeData 
     const i18n = await getDictionary(locale);
     const handle = 'blog';
 
-    const client = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api: client });
+    const api = StorefrontApiClient({ domain, locale });
+    const store = await StoreApi({ locale, api });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch({ client, page }))) || null;
+    const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
     return (
         <Page>

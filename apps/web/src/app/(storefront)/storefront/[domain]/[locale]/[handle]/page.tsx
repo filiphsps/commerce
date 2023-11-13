@@ -81,7 +81,7 @@ export default async function CustomPage({
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.
-        const prefetch = (page && (await Prefetch({ client: api, page }))) || null;
+        const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
         return (
             <Page>

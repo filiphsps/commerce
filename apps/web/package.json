@@ -21,7 +21,7 @@
         "lint:prettier": "prettier src/**/*.* --check",
         "typecheck": "tsc -noEmit",
         "test": "concurrently --raw npm:test:*",
-        "test:vitest": "vitest run --coverage",
+        "test:vitest": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" vitest run --coverage",
         "slicemachine": "start-slicemachine"
     },
     "author": {

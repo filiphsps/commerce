@@ -37,13 +37,13 @@ export const Convertor = (
 /**
  * Get all vendors from Shopify.
  *
- * @param {AbstractApi} client - The client to use for the query.
+ * @param {AbstractApi} api - The client to use for the query.
  * @returns {Promise<VendorModel[]>} The list of vendors.
  */
-export const VendorsApi = async ({ client }: { client: AbstractApi }): Promise<VendorModel[]> => {
+export const VendorsApi = async ({ api }: { api: AbstractApi }): Promise<VendorModel[]> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data } = await client.query<{ products: ProductConnection }>(gql`
+            const { data } = await api.query<{ products: ProductConnection }>(gql`
                 query products($language: LanguageCode!, $country: CountryCode!)
                 @inContext(language: $language, country: $country) {
                     products(first: 250, sortKey: BEST_SELLING) {
