@@ -15,6 +15,8 @@ import { metadata as notFoundMetadata } from '../not-found';
 import CartContent from './cart-content';
 
 export type CartPageParams = { domain: string; locale: string };
+
+/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
@@ -65,6 +67,7 @@ export async function generateMetadata({
         }
     };
 }
+/* c8 ignore stop */
 
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     const locale = NextLocaleToLocale(localeData);

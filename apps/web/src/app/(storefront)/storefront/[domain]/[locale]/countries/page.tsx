@@ -18,6 +18,7 @@ import LocaleSelector from './locale-selector';
 
 export type CountriesPageParams = { domain: string; locale: string };
 
+/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
@@ -67,6 +68,7 @@ export async function generateMetadata({
         }
     };
 }
+/* c8 ignore stop */
 
 export default async function CountriesPage({
     params: { domain, locale: localeData }

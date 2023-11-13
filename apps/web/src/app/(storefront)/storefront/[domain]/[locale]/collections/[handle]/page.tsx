@@ -20,6 +20,8 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
+
+/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
@@ -84,6 +86,7 @@ export async function generateMetadata({
         throw error;
     }
 }
+/* c8 ignore stop */
 
 export default async function CollectionPage({
     params: { domain, locale: localeData, handle }

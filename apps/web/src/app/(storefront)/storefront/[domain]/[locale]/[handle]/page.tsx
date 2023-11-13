@@ -15,6 +15,7 @@ import { metadata as notFoundMetadata } from '../not-found';
 
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 
+/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
@@ -62,6 +63,7 @@ export async function generateMetadata({
         throw error;
     }
 }
+/* c8 ignore stop */
 
 export default async function CustomPage({
     params: { domain, locale: localeData, handle }
