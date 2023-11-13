@@ -1,6 +1,6 @@
 'use client';
 
-import '@/style/currency.scss';
+import '@/styles/currency.scss';
 
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import { CartLineProvider } from '@shopify/hydrogen-react';

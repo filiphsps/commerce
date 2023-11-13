@@ -16,7 +16,7 @@
             "@/api/*": ["src/api/*"],
             "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/utils/*"],
-            "@/style/*": ["src/scss/*"],
+            "@/styles/*": ["src/scss/*"],
 
             // i18n
             "@/i18n/*": ["src/locales/*"],
