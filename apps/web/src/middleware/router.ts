@@ -20,7 +20,7 @@ export const getHostname = (req: NextRequest): string => {
             return 'shops.nordcom.io';
         }
 
-        return 'www.sweetsideofsweden.com';
+        return 'sweetsideofsweden.com';
     }
 
     return hostname;
