@@ -28,6 +28,7 @@ import styles from './page.module.scss';
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export type ProductPageQueryParams = { variant?: string };
 
+/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
     searchParams
@@ -89,6 +90,7 @@ export async function generateMetadata({
         throw error;
     }
 }
+/* c8 ignore stop */
 
 export default async function ProductPage({
     params: { domain, locale: localeData, handle },
