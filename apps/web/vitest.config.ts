@@ -41,8 +41,18 @@ export default defineConfig({
 
         coverage: {
             all: true,
-            include: ['**/src/**/*.{js,ts,jsx,tsx}'],
-            exclude: ['**/*.d.ts', '**/*.test.{js,ts,jsx,tsx}', '**/*.test.{js,ts,jsx,tsx}']
+            include: ['**/src/**/*.{ts,tsx}'],
+            exclude: [
+                '**/*.d.ts',
+                '**/*.test.{js,ts,jsx,tsx}',
+                '**/*.test.{js,ts,jsx,tsx}',
+                '**/app/api/{draft,exit-preview,preview}.{ts,tsx}',
+                '**/app/slice-simulator/*.{ts,tsx}',
+                '**/build-config.ts',
+                '**/models/*Model.ts',
+                '**/src/**/index.{ts,tsx}',
+                '**/src/middleware.ts'
+            ]
         }
     }
 });
