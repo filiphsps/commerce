@@ -19,7 +19,7 @@
         "build": "NODE_OPTIONS=\"--no-deprecation\" turbo run build",
         "lint": "NODE_OPTIONS=\"--no-deprecation\" turbo run lint",
         "typecheck": "NODE_OPTIONS=\"--no-deprecation\" turbo run typecheck",
-        "test": "NODE_OPTIONS=\"--no-deprecation\" turbo run test",
+        "test": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run test",
         "slicemachine": "NODE_OPTIONS=\"--no-deprecation\" turbo run slicemachine"
     },
     "author": {

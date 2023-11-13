@@ -15,6 +15,10 @@ export default defineConfig({
                 replacement: path.resolve(__dirname, './prismicio.ts')
             },
             {
+                find: '@/i18n',
+                replacement: path.resolve(__dirname, './src/locales')
+            },
+            {
                 find: '@/slices',
                 replacement: path.resolve(__dirname, './src/slices')
             },
