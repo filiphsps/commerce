@@ -5,5 +5,9 @@ export type PageProps = {
     children: ReactNode;
 } & HTMLProps<HTMLDivElement>;
 export default function Container(props: PageProps) {
-    return <main {...props} className={`${styles.container} ${props.className || ''}`} />;
+    return (
+        <div className={`${styles.container}`}>
+            <main {...props} className={`${styles.content} ${props.className || ''}`} />
+        </div>
+    );
 }

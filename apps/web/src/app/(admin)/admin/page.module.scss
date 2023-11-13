@@ -1,20 +1,28 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 2rem;
+    .header {
+        @media (min-width: 950px) {
+            padding-bottom: var(--layout-section-spacing);
+        }
 
-    .logo {
-        height: 4rem;
-        width: auto;
+        .logo {
+            max-height: 6.5rem;
+            height: 100%;
+            width: auto;
+            max-width: min(100%, 80vw);
+        }
+    }
+
+    .heading {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: var(--layout-section-spacing) 0;
+        width: 52rem;
+        max-width: 100%;
     }
 
     .content {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        gap: 0.5rem;
+        width: 52rem;
+        max-width: 100%;
     }
 }

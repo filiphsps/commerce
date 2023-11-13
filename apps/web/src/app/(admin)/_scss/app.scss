@@ -3,7 +3,20 @@
 :root {
     --color-accent-primary: #ed1e79;
     --color-background: #000000;
+    --color-background-secondary: #828282;
     --color-foreground: #fefefe;
+
+    --layout-page-width: 1200px;
+    --layout-page-width-half: calc(var(--layout-page-width) / 2);
+    --layout-page-width-offset: calc((100vw - var(--layout-page-width)) / 2);
+    --layout-page-spacing: 1.25rem;
+
+    --layout-section-spacing: 1rem;
+    --layout-section-padding: 1.75rem;
+
+    @media (min-width: 950px) {
+        --layout-page-spacing: 1.75rem;
+    }
 }
 
 html,

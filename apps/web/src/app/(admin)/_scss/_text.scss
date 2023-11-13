@@ -1,12 +1,59 @@
 h1 {
-    line-height: 1;
-    font-size: 2.5rem;
+    font-size: 5.5rem;
     font-weight: 800;
+    line-height: 1;
     text-transform: uppercase;
+
+    @media (min-width: 950px) {
+        font-size: 4.75rem;
+    }
+
+    &:after {
+        content: '.';
+        font-size: 0.75em;
+    }
+}
+
+h2 {
+    font-size: 2.25rem;
+    font-weight: 400;
+    line-height: 1.075;
+    letter-spacing: 0.02rem;
+    text-transform: lowercase;
+    color: var(--color-background-secondary);
+
+    @media (min-width: 950px) {
+        font-size: 2.75rem;
+        line-height: 1.1;
+    }
+
+    &:after {
+        content: '.';
+    }
 }
 
 p {
-    line-height: normal;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 500;
+    line-height: 1.4;
+
+    @media (min-width: 950px) {
+        font-size: 1.15rem;
+    }
+}
+
+code {
+    padding: 0.05rem 0;
+    border-radius: 0.25rem;
+    color: var(--color-accent-primary);
+    font-family: var(--font-geist-mono);
+    font-weight: inherit;
+    font-size: 0.9em;
+    line-height: inherit;
+    background-color: #82828226;
+
+    &::before,
+    &::after {
+        content: '`';
+    }
 }
