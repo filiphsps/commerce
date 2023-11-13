@@ -3,42 +3,12 @@
 // @import '../components/Currency/Currency.scss';
 @import 'carousel.scss';
 
-html,
-body {
-    width: 100%;
-    max-width: 100vw;
-    padding: 0;
-    margin: 0;
-    font-size: 0.65rem;
-    font-family: var(--font-primary);
-    color: var(--color-dark);
-    background: var(--color-bright);
-
-    @media screen and (max-width: 950px) {
-        font-size: 0.55rem;
-    }
-
-    // Touch actions
-    touch-action: pan-y;
-    overscroll-behavior: none auto;
-
-    // Deal with font rendering
-    -moz-osx-font-smoothing: auto;
-    -webkit-font-smoothing: subpixel-antialiased;
-    font-smooth: always;
-    text-rendering: optimizeLegibility;
-    text-size-adjust: auto;
-    font-size-adjust: ex-height ch-width from-font;
-}
-
 :root {
     --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
     --accent-primary-light: color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright));
 
     --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark));
     --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 55%, var(--color-bright));
-
-    --text-test: #123;
 
     --accent-primary-text: #ececec;
     --accent-secondary-text: #101418;
@@ -69,40 +39,75 @@ body {
     --color-block-pastel-lime: #cce2cb;
     --color-block-pastel-lime-light: color-mix(in srgb, var(--color-block-pastel-lime) 65%, var(--color-bright));
     --color-block-pastel-lime-dark: color-mix(in srgb, var(--color-block-pastel-lime) 8%, var(--color-dark));
+}
 
-    --component-product-card-width: 20rem;
+html,
+body {
+    width: 100%;
+    max-width: 100vw;
+    padding: 0;
+    margin: 0;
+    font-size: 0.65rem;
+    font-family: var(--font-primary);
+    color: var(--color-dark);
+    background: var(--color-bright);
 
-    --page-width: 1465px;
+    @media screen and (max-width: 950px) {
+        font-size: 0.55rem;
+    }
 
-    --block-border-radius-large: 2rem;
-    --block-border-radius: 1.25rem;
-    --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
-    --block-border-radius-tiny: 0.65rem;
-    --block-border-width: 0.3rem;
-    --block-border-width-small: 0.18rem;
+    // Touch actions
+    touch-action: pan-y;
+    overscroll-behavior: none auto;
 
-    --block-padding: 1rem;
-    --block-padding-small: 0.5rem;
-    --block-padding-large: 1.5rem;
+    // Deal with font rendering
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-smooth: always;
+    text-rendering: optimizeLegibility;
+    text-size-adjust: auto;
+    font-size-adjust: ex-height ch-width from-font;
 
-    --block-spacer: 1rem;
-    --block-spacer-small: 0.75rem;
-    --block-spacer-tiny: 0.5rem;
-    --block-spacer-large: 1.5rem;
-    --block-spacer-huge: 2rem;
+    b,
+    strong {
+        font-weight: 800;
+    }
 
-    @media (max-width: 950px) {
+    &:root {
+        --component-product-card-width: 20rem;
+
+        --page-width: 1465px;
+
+        --block-border-radius-large: 2rem;
+        --block-border-radius: 1.25rem;
+        --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
+        --block-border-radius-tiny: 0.65rem;
         --block-border-width: 0.3rem;
+        --block-border-width-small: 0.18rem;
 
         --block-padding: 1rem;
-        --block-padding-small: 0.6rem;
+        --block-padding-small: 0.5rem;
         --block-padding-large: 1.5rem;
 
-        --block-spacer: 0.75rem;
-        --block-spacer-small: 0.5rem;
-        --block-spacer-large: 1rem;
+        --block-spacer: 1rem;
+        --block-spacer-small: 0.75rem;
+        --block-spacer-tiny: 0.5rem;
+        --block-spacer-large: 1.5rem;
+        --block-spacer-huge: 2rem;
 
-        --component-product-card-width: min(21.75rem, calc(calc(50vw) - var(--block-padding-large) * 2.25));
+        @media (max-width: 950px) {
+            --block-border-width: 0.3rem;
+
+            --block-padding: 1rem;
+            --block-padding-small: 0.6rem;
+            --block-padding-large: 1.5rem;
+
+            --block-spacer: 0.75rem;
+            --block-spacer-small: 0.5rem;
+            --block-spacer-large: 1rem;
+
+            --component-product-card-width: min(21.75rem, calc(calc(50vw) - var(--block-padding-large) * 2.25));
+        }
     }
 }
 

@@ -36,16 +36,16 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+        "url": "git+https://github.com/NordcomInc/ecommerce.git"
     },
     "keywords": [
         "nextjs",
         "react"
     ],
     "bugs": {
-        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+        "url": "https://github.com/NordcomInc/ecommerce/issues"
     },
-    "homepage": "https://www.sweetsideofsweden.com/",
+    "homepage": "https://shops.nordcom.io/",
     "browserslist": [
         ">0.5%",
         "defaults",
@@ -81,8 +81,5 @@
         "minimumChangeThreshold": 0,
         "showDetails": false,
         "buildOutputDirectory": "apps/web/.next"
-    },
-    "dependencies": {
-        "critters": "0.0.20"
     }
 }
