@@ -13,14 +13,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
-export type CustomPageParams = { domain: string; locale: string; uid: string[] };
+export type CustomPageParams = { domain: string; locale: string; handle: string };
 
 export async function generateMetadata({
-    params: { domain, locale: localeData, uid }
+    params: { domain, locale: localeData, handle }
 }: {
     params: CustomPageParams;
 }): Promise<Metadata> {
-    const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFoundMetadata;
 
     const locale = NextLocaleToLocale(localeData);
@@ -33,15 +32,21 @@ export async function generateMetadata({
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
         if (!page) return notFoundMetadata;
 
+        // If the page is the homepage we shouldn't add the handle to path.
+        // TODO: Deal with this in a better way.
+        const path = handle === 'homepage' ? '/' : `/${handle}`;
+        const title = page.meta_title || page.title || handle;
+        const description = (page.meta_description && asText(page.meta_description)) || page.description || undefined;
+
         return {
-            title: page.meta_title || page.title,
-            description: asText(page.meta_description) || page.description || '',
+            title,
+            description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}/${handle}/`,
+                canonical: `https://${domain}/${locale.locale}${path}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}/${handle}/`
+                        [locale]: `https://${domain}/${locale}${path}/`
                     }),
                     {}
                 )
@@ -59,11 +64,10 @@ export async function generateMetadata({
 }
 
 export default async function CustomPage({
-    params: { domain, locale: localeData, uid }
+    params: { domain, locale: localeData, handle }
 }: {
     params: CustomPageParams;
 }) {
-    const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
 
     const locale = NextLocaleToLocale(localeData);
@@ -71,13 +75,13 @@ export default async function CustomPage({
 
     try {
         const i18n = await getDictionary(locale);
-        const client = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api: client });
+        const api = StorefrontApiClient({ domain, locale });
+        const store = await StoreApi({ locale, api });
 
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.
-        const prefetch = (page && (await Prefetch({ client, page }))) || null;
+        const prefetch = (page && (await Prefetch({ client: api, page }))) || null;
 
         return (
             <Page>
