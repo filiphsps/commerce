@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
     const locale = DefaultLocale();
-    const shopifyApi = shopifyApiConfig();
+    const shopifyApi = shopifyApiConfig({});
     const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
 
     return (

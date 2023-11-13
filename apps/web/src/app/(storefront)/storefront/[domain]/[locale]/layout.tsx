@@ -33,11 +33,11 @@ const font = Lexend_Deca({
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
-    const { locale: localeData } = params;
+    const { domain, locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return {};
 
-    const api = StorefrontApiClient({ locale });
+    const api = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api });
 
     return {
@@ -49,11 +49,11 @@ export async function generateViewport({ params }: { params: LayoutParams }): Pr
 }
 
 export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
-    const { locale: localeData, domain } = params;
+    const { domain, locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const api = StorefrontApiClient({ locale });
+    const api = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api });
 
     return {
@@ -81,7 +81,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
 
 export default async function RootLayout({
     children,
-    params: { locale: localeData }
+    params: { domain, locale: localeData }
 }: {
     children: ReactNode;
     params: LayoutParams;
@@ -91,8 +91,8 @@ export default async function RootLayout({
 
     try {
         const i18n = await getDictionary(locale);
-        const shopifyApi = shopifyApiConfig();
-        const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+        const shopifyApi = shopifyApiConfig({ domain });
+        const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
         const navigation = await NavigationApi({ locale });
         const header = await HeaderApi({ locale });
         const footer = await FooterApi({ locale });

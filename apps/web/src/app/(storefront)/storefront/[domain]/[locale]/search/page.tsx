@@ -15,13 +15,18 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import SearchContent from './search-content';
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata | null> {
-    const { locale: localeData } = params;
+export type SearchPageParams = { domain: string; locale: string };
+
+export async function generateMetadata({
+    params: { domain, locale: localeData }
+}: {
+    params: SearchPageParams;
+}): Promise<Metadata> {
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
@@ -60,19 +65,17 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     };
 }
 
-export type SearchPageParams = { locale: string };
-export default async function SearchPage({ params }: { params: SearchPageParams }) {
-    const { locale: localeData } = params;
+export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     const handle = 'search';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    const client = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api: client });
+    const api = StorefrontApiClient({ domain, locale });
+    const store = await StoreApi({ locale, api });
 
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch({ client, page }))) || null;
+    const prefetch = (page && (await Prefetch({ client: api, page }))) || null;
 
     return (
         <Page>

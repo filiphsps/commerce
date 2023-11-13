@@ -15,14 +15,17 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import CartContent from './cart-content';
 
-export type CartPageParams = { locale: string };
-export async function generateMetadata({ params }: { params: CartPageParams }): Promise<Metadata> {
-    const { locale: localeData } = params;
+export type CartPageParams = { domain: string; locale: string };
+export async function generateMetadata({
+    params: { domain, locale: localeData }
+}: {
+    params: CartPageParams;
+}): Promise<Metadata> {
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
@@ -63,13 +66,13 @@ export async function generateMetadata({ params }: { params: CartPageParams }): 
     };
 }
 
-export default async function CartPage({ params }: { params: CartPageParams }) {
-    const locale = NextLocaleToLocale(params.locale);
+export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
+    const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
     const handle = 'cart';
 
-    const client = StorefrontApiClient({ locale });
+    const client = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api: client });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ client, page }))) || null;

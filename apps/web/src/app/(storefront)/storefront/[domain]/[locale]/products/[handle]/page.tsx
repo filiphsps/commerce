@@ -14,7 +14,6 @@ import { ProductActionsContainer } from '@/components/products/product-actions-c
 import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
@@ -26,22 +25,21 @@ import { RedirectType, notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
-export type ProductPageParams = { locale: string; handle: string };
+export type ProductPageParams = { domain: string; locale: string; handle: string };
 export type ProductPageQueryParams = { variant?: string };
 
 export async function generateMetadata({
-    params,
+    params: { domain, locale: localeData, handle },
     searchParams
 }: {
     params: ProductPageParams;
     searchParams?: ProductPageQueryParams;
 }): Promise<Metadata | null> {
-    const { locale: localeData, handle } = params;
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
     try {
-        const api = StorefrontApiClient({ locale });
+        const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api });
         const product = await ProductApi({ client: api, handle });
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
@@ -63,11 +61,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${BuildConfig.domain}/${locale.locale}/products/${handle}/`,
+                canonical: `https://${domain}/${locale.locale}/products/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
-                        [locale]: `https://${BuildConfig.domain}/${locale}/products/${handle}/`
+                        [locale]: `https://${domain}/${locale}/products/${handle}/`
                     }),
                     {}
                 )
@@ -93,14 +91,12 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({
-    params,
+    params: { domain, locale: localeData, handle },
     searchParams
 }: {
     params: ProductPageParams;
     searchParams?: ProductPageQueryParams;
 }) {
-    const { locale: localeData, handle } = params;
-
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
@@ -119,7 +115,7 @@ export default async function ProductPage({
     }
 
     try {
-        const client = StorefrontApiClient({ locale });
+        const client = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api: client });
         const product = await ProductApi({ client, handle });
 

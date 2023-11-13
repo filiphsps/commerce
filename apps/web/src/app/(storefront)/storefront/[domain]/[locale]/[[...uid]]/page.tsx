@@ -13,9 +13,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
-export async function generateMetadata({ params }: { params: { locale: string; uid: string[] } }): Promise<Metadata> {
-    const { locale: localeData, uid } = params;
+export type CustomPageParams = { domain: string; locale: string; uid: string[] };
 
+export async function generateMetadata({
+    params: { domain, locale: localeData, uid }
+}: {
+    params: CustomPageParams;
+}): Promise<Metadata> {
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFoundMetadata;
 
@@ -23,12 +27,25 @@ export async function generateMetadata({ params }: { params: { locale: string; u
     if (!locale) return notFoundMetadata;
 
     try {
+        const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+        const locales = store.i18n.locales;
+
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });
         if (!page) return notFoundMetadata;
 
         return {
             title: page.meta_title || page.title,
-            description: asText(page.meta_description) || page.description || ''
+            description: asText(page.meta_description) || page.description || '',
+            alternates: {
+                canonical: `https://${domain}/${locale.locale}/${handle}/`,
+                languages: locales.reduce(
+                    (prev, { locale }) => ({
+                        ...prev,
+                        [locale]: `https://${domain}/${locale}/${handle}/`
+                    }),
+                    {}
+                )
+            }
             // TODO: Metadata.
         };
     } catch (error: any) {
@@ -42,9 +59,9 @@ export async function generateMetadata({ params }: { params: { locale: string; u
 }
 
 export default async function CustomPage({
-    params: { locale: localeData, uid }
+    params: { domain, locale: localeData, uid }
 }: {
-    params: { locale: string; uid: string[] };
+    params: CustomPageParams;
 }) {
     const handle = (uid && Array.isArray(uid) && uid.join('/')) || 'homepage';
     if (!isValidHandle(handle)) return notFound();
@@ -54,7 +71,7 @@ export default async function CustomPage({
 
     try {
         const i18n = await getDictionary(locale);
-        const client = StorefrontApiClient({ locale });
+        const client = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api: client });
 
         const { page } = await PageApi({ locale, handle, type: 'custom_page' });

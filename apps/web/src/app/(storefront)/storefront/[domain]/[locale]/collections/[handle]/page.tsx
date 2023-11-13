@@ -11,7 +11,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -20,16 +19,19 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 
-export type CollectionPageParams = { locale: string; handle: string };
-export async function generateMetadata({ params }: { params: CollectionPageParams }): Promise<Metadata> {
-    const { locale: localeData, handle } = params;
+export type CollectionPageParams = { domain: string; locale: string; handle: string };
+export async function generateMetadata({
+    params: { domain, locale: localeData, handle }
+}: {
+    params: CollectionPageParams;
+}): Promise<Metadata> {
     if (!isValidHandle(handle)) return notFoundMetadata;
 
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
     try {
-        const api = StorefrontApiClient({ locale });
+        const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ locale, handle, type: 'collection_page' });
@@ -44,11 +46,11 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
             title: page?.meta_title || collection.title,
             description,
             alternates: {
-                canonical: `https://${BuildConfig.domain}/${locale.locale}/collections/${handle}/`,
+                canonical: `https://${domain}/${locale.locale}/collections/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
-                        [locale]: `https://${BuildConfig.domain}/${locale}/collections/${handle}/`
+                        [locale]: `https://${domain}/${locale}/collections/${handle}/`
                     }),
                     {}
                 )
@@ -83,8 +85,11 @@ export async function generateMetadata({ params }: { params: CollectionPageParam
     }
 }
 
-export default async function CollectionPage({ params }: { params: CollectionPageParams }) {
-    const { locale: localeData, handle } = params;
+export default async function CollectionPage({
+    params: { domain, locale: localeData, handle }
+}: {
+    params: CollectionPageParams;
+}) {
     if (!isValidHandle(handle)) return notFound();
 
     const locale = NextLocaleToLocale(localeData);
@@ -92,7 +97,7 @@ export default async function CollectionPage({ params }: { params: CollectionPag
 
     try {
         const i18n = await getDictionary(locale);
-        const api = StorefrontApiClient({ locale });
+        const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api });
         const collection = await CollectionApi({ api, handle });
 

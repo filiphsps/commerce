@@ -7,7 +7,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -17,14 +16,18 @@ import { RedirectType, notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import LocaleSelector from './locale-selector';
 
-export type CountriesPageParams = { locale: string };
-export async function generateMetadata({ params }: { params: CountriesPageParams }): Promise<Metadata> {
-    const { locale: localeData } = params;
+export type CountriesPageParams = { domain: string; locale: string };
+
+export async function generateMetadata({
+    params: { domain, locale: localeData }
+}: {
+    params: CountriesPageParams;
+}): Promise<Metadata> {
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
@@ -34,11 +37,11 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
         title: page?.meta_title || page?.title || 'Countries', // TODO: Fallback should respect i18n.
         description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/countries/`,
+            canonical: `https://${domain}/${locale.locale}/countries/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/countries/`
+                    [locale]: `https://${domain}/${locale}/countries/`
                 }),
                 {}
             )
@@ -65,14 +68,17 @@ export async function generateMetadata({ params }: { params: CountriesPageParams
     };
 }
 
-export default async function CountriesPage({ params }: { params: CountriesPageParams }) {
-    const { locale: localeData } = params;
+export default async function CountriesPage({
+    params: { domain, locale: localeData }
+}: {
+    params: CountriesPageParams;
+}) {
     const handle = 'countries';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    const api = StorefrontApiClient({ locale });
+    const api = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api });
     const countries = await CountriesApi({ api });
 

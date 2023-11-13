@@ -90,7 +90,11 @@ describe('app', () => {
                 }
             }
         }));
-        const params: ProductPageParams = { locale: 'en-US', handle: product.handle };
+        const params: ProductPageParams = {
+            domain: 'www.sweetsideofsweden.com',
+            locale: 'en-US',
+            handle: product.handle
+        };
 
         // Mock the `ProductApi` function to prevent API calls.
         vi.mock('@/api/shopify/product', () => ({
