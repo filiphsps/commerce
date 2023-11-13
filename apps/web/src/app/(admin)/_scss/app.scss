@@ -47,6 +47,15 @@ body {
     font-size-adjust: ex-height ch-width from-font;
 }
 
+* {
+    block-size: border-box;
+
+    &::selection {
+        background: var(--color-accent-primary);
+        color: #fff;
+    }
+}
+
 input[type='number'] {
     -moz-appearance: textfield !important;
 

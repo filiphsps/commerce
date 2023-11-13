@@ -1,7 +1,7 @@
 h1 {
-    font-size: 5.5rem;
+    font-size: 4.25rem;
     font-weight: 800;
-    line-height: 1;
+    line-height: 0.9;
     text-transform: uppercase;
 
     @media (min-width: 950px) {
@@ -11,6 +11,7 @@ h1 {
     &:after {
         content: '.';
         font-size: 0.75em;
+        line-height: 1;
     }
 }
 
@@ -35,15 +36,20 @@ h2 {
 p {
     font-size: 1.05rem;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.35;
 
     @media (min-width: 950px) {
         font-size: 1.15rem;
     }
 }
 
+b,
+strong {
+    font-weight: 700;
+}
+
 code {
-    padding: 0.05rem 0;
+    padding: 0.075rem 0;
     border-radius: 0.25rem;
     color: var(--color-accent-primary);
     font-family: var(--font-geist-mono);
