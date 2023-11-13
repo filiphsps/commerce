@@ -202,5 +202,5 @@ export default async function RootLayout({
     }
 }
 
-export const dynamicParams = true;
+//export const dynamicParams = true;
 export const revalidate = 120; // 2 minutes.

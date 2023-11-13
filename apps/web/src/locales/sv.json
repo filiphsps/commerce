@@ -14,6 +14,8 @@
     },
     "common": {
         "add-to-cart": "Lägg till",
+        "add": "Lägg till",
+        "buy": "Köp",
         "added-to-cart": "Tillagd!",
         "cart-not-ready": "En sekund...",
         "out-of-stock": "Slutsåld",

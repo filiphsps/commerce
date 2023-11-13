@@ -21,7 +21,7 @@ const Prefetch = ({
         vendors?: any;
     }>(async (resolve, reject) => {
         if (!page) {
-            console.warn('No page data was supplied to prefetch.');
+            // No page data was supplied to prefetch.
             return resolve({});
         }
 

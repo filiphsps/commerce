@@ -2,9 +2,11 @@ import 'server-only';
 
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
-const stub = { cart: {}, common: {}, header: {} };
+const stub = { cart: {}, common: {} };
 
-const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<{ [key: string]: string }>> = {
+type DictionaryGetter = () => Promise<LocaleDictionary>;
+
+const dictionaries: Record<Lowercase<LanguageCode>, DictionaryGetter> = {
     af: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     ak: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     am: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
@@ -151,6 +153,8 @@ const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<{ [key: string
     zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */
 };
 
+type DictionaryLanguageCode = keyof typeof dictionaries;
+
 /**
  * Get dictionary for locale.
  * @todo Handle templates.
@@ -159,4 +163,4 @@ const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<{ [key: string
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
 export const getDictionary = async (locale: Locale): Promise<LocaleDictionary> =>
-    (dictionaries[locale.language.toLowerCase() as keyof typeof dictionaries]?.() ?? {}) as LocaleDictionary;
+    dictionaries[locale.language.toLowerCase() as DictionaryLanguageCode]?.() ?? {};

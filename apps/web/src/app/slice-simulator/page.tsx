@@ -1,5 +1,6 @@
 'use client';
 
+import english from '@/i18n/en.json';
 import { components as slices } from '@/slices';
 import { DefaultLocale } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
@@ -15,9 +16,13 @@ export default function SliceSimulatorPage() {
 
     return (
         <SliceSimulator
-            // The "sliceZone" prop should be a function receiving Slices and
-            // rendering them using your "SliceZone" component.
-            sliceZone={(props) => <SliceZone {...RemoveInvalidProps(props)} components={slices} context={{ locale }} />}
+            sliceZone={(props) => (
+                <SliceZone
+                    {...RemoveInvalidProps(props)}
+                    components={slices}
+                    context={{ locale, i18n: english, prefetch: {} }}
+                />
+            )}
         />
     );
 }

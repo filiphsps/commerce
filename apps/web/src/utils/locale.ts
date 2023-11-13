@@ -1,5 +1,6 @@
 import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
 
+import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 
@@ -94,8 +95,16 @@ export const DefaultLocale = (): Locale => {
     return NextLocaleToLocale(defaultLocale)!;
 };
 
-// TODO: Somehow make this a proper type that reads from the dictionary files.
-export type LocaleDictionary = {} & any;
+export type DeepKeys<T> = T extends object
+    ? {
+          [K in keyof T]-?: K extends string | number ? `${T[K] extends object ? DeepKeys<T[K]> : K}` : never;
+      }[keyof T]
+    : never;
+
+// Use `english` to get type safety.
+export type LocaleDictionary = typeof english;
+export type LocaleDictionaryScope = Lowercase<keyof LocaleDictionary>;
+export type LocaleDictionaryKey = Lowercase<DeepKeys<LocaleDictionary>>;
 
 /**
  * Returns a translation function for a given scope and dictionary.
@@ -106,8 +115,25 @@ export type LocaleDictionary = {} & any;
  * @param {LocaleDictionary} dictionary - The dictionary to use for the translation.
  * @returns {({ t: (key: string) => string })} The translation function.
  */
-export const useTranslation = (scope: string, dictionary: LocaleDictionary) => {
+export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleDictionary) => {
     return {
-        t: (key: string): string => dictionary?.[scope]?.[key] || key
+        t: (key: LocaleDictionaryKey): string => (dictionary as any)?.[scope]?.[key] || key
     };
 };
+
+// https://stackoverflow.com/questions/47057649/typescript-string-dot-notation-of-nested-object
+/* type BreakDownObject<O, R = void> = {
+    [K in keyof O as string]: K extends string
+        ? R extends string
+            ? ObjectDotNotation<O[K], `${R}.${K}`>
+            : ObjectDotNotation<O[K], K>
+        : never;
+};
+
+type ObjectDotNotation<O, R = void> = O extends string
+    ? R extends string
+        ? R
+        : never
+    : BreakDownObject<O, R>[keyof BreakDownObject<O, R>]; */
+
+// ObjectDotNotation<typeof dictionary>

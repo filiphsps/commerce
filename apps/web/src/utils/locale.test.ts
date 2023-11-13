@@ -201,18 +201,18 @@ describe('utils', () => {
                     hello: 'Hello',
                     world: 'World'
                 },
-                home: {
+                cart: {
                     welcome: 'Welcome to the homepage'
                 }
-            };
+            } as any;
 
-            const { t: homeT } = useTranslation('home', dictionary);
-            const { t: commonT } = useTranslation('common', dictionary);
+            const { t: cartT }: any = useTranslation('cart', dictionary);
+            const { t: commonT }: any = useTranslation('common' as any, dictionary);
 
-            expect(homeT('welcome')).toEqual('Welcome to the homepage');
+            expect(cartT('welcome')).toEqual('Welcome to the homepage');
             expect(commonT('hello')).toEqual('Hello');
             expect(commonT('world')).toEqual('World');
-            expect(homeT('invalid.key')).toEqual('invalid.key');
+            expect(cartT('invalid.key')).toEqual('invalid.key');
         });
     });
 });

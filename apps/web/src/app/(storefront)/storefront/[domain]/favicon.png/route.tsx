@@ -18,7 +18,6 @@ import { NextResponse, type NextRequest } from 'next/server';
  * @param {object} size - The size object to validate.
  * @param {number=} size.width - The width of the icon.
  * @param {number=} size.height - The height of the icon.
- *
  * @returns {ApiError[]} - An array of errors.
  */
 const validateSize = ({ width, height }: { width?: number | null; height?: number | null }): ApiError[] => {

@@ -3,6 +3,7 @@ import { StoreApi } from '@/api/store';
 import ProvidersRegistry from '@/components/providers-registry';
 import { DefaultLocale } from '@/utils/locale';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
     robots: {
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     }
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
     const locale = DefaultLocale();
     const shopifyApi = shopifyApiConfig();
     const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
