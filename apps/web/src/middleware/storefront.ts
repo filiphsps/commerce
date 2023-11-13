@@ -6,21 +6,32 @@ import { NextResponse } from 'next/server';
 
 const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
 
+const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
+const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi;
+
 export const storefront = (req: NextRequest): NextResponse => {
+    const hostname = getHostname(req);
     let newUrl = req.nextUrl.clone();
 
     // Check if we're dealing with a file or a route.
-    if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi)) {
-        // TODO: Handle tenant-specific assets.
-        // const target = `/${getHostname(req)}${newUrl.pathname}`;
-        // FIXME: Don't hardcode `www.sweetsideofsweden.com`
-        const target = `/www.sweetsideofsweden.com${newUrl.pathname}`;
+    if (newUrl.pathname.match(FILE_TEST)) {
+        let target = newUrl.pathname;
+
+        // TODO: Handle Handle tenant-specific assets.
+        if (newUrl.pathname.endsWith('favicon.png')) {
+            target = `/storefront/${hostname}${newUrl.pathname}`;
+
+            return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
+        }
+
+        // FIXME: Don't hardcode `sweetsideofsweden.com`
+        target = `/sweetsideofsweden.com${target}`;
         return NextResponse.rewrite(new URL(target, req.url));
     }
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (!newUrl.pathname.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi)) {
+    if (!newUrl.pathname.match(LOCALE_TEST)) {
         // Make sure it's not a file
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
         // FIXME: This should be dynamic, not based on a build-time configuration.
@@ -64,6 +75,6 @@ export const storefront = (req: NextRequest): NextResponse => {
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 
-    const target = `/storefront/${getHostname(req)}${newUrl.pathname}`;
+    const target = `/storefront/${hostname}${newUrl.pathname}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };

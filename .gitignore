@@ -15,8 +15,8 @@ dist/
 # production
 build/
 .env.local
-apps/**/public/sitemap*.xml*
-apps/**/public/robots.txt*
+apps/**/public/**/sitemap*.xml*
+apps/**/public/**/robots.txt*
 
 # misc
 .DS_Store

@@ -15,7 +15,7 @@
         "build": "next build",
         "postbuild": "npm run sitemap",
         "sitemap": "next-sitemap",
-        "postsitemap": "for i in public/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
+        "postsitemap": "for i in public/sweetsideofsweden.com/*.xml; do cat $i | pretty-xml | tee $i > /dev/null; done",
         "lint": "concurrently --raw npm:lint:*",
         "lint:next": "next lint",
         "lint:prettier": "prettier src/**/*.* --check",
