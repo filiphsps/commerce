@@ -30,9 +30,9 @@ export default async function IndexUnknownPage({}: { params: IndexUnknownPagePar
 
             <article className={`${styles.content}`}>
                 <p>
-                    The specific page, resource or storefront you are looking for does not exist. If you believe this is
-                    an error, please contact the <code>Nordcom Group Inc.</code> support via{' '}
-                    <a href="mailto">hi@nordcom.io</a>.
+                    The specific page, resource or even storefront you are looking for does not exist. If you believe this
+                    to be an error, please get in contact with the <code>Nordcom Group Inc.</code> support through{' '}
+                    <a href="mailto:hi@nordcom.io">hi@nordcom.io</a>.
                 </p>
             </article>
         </Container>
