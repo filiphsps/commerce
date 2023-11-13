@@ -1,3 +1,15 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Link > should not add the locale to the href if it is already present 1`] = `
+<a
+  href="/sv-SE/some/path"
+/>
+`;
+
+exports[`Link > should remove double slashes from the href 1`] = `
+<a
+  href="/en-US/some/path"
+/>
+`;
+
 exports[`Link > should throw an error if href is not a string 1`] = `"Link href must be a string. Received object instead."`;
