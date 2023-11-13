@@ -4,9 +4,7 @@ import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
 const stub = { cart: {}, common: {} };
 
-type DictionaryGetter = () => Promise<LocaleDictionary>;
-
-const dictionaries: Record<Lowercase<LanguageCode>, DictionaryGetter> = {
+export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleDictionary>> = {
     af: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     ak: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     am: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
@@ -153,7 +151,7 @@ const dictionaries: Record<Lowercase<LanguageCode>, DictionaryGetter> = {
     zu: () => new Promise((resolve) => resolve(stub)) as any /* TODO */
 };
 
-type DictionaryLanguageCode = keyof typeof dictionaries;
+export type DictionaryLanguageCode = keyof typeof dictionaries;
 
 /**
  * Get dictionary for locale.
