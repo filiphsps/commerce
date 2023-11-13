@@ -6,7 +6,6 @@ import PageContent from '@/components/PageContent';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -36,11 +35,11 @@ export async function generateMetadata({
         title,
         description,
         alternates: {
-            canonical: `https://${BuildConfig.domain}/${locale.locale}/${handle}/`,
+            canonical: `https://${domain}/${locale.locale}/${handle}/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
-                    [locale]: `https://${BuildConfig.domain}/${locale}/${handle}/`
+                    [locale]: `https://${domain}/${locale}/${handle}/`
                 }),
                 {}
             )

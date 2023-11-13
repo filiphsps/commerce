@@ -8,7 +8,6 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import type { FooterModel } from '@/models/FooterModel';
 import type { HeaderModel } from '@/models/HeaderModel';
 import type { StoreModel } from '@/models/StoreModel';
-import { BuildConfig } from '@/utils/build-config';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { NextLocaleToCurrency } from '@/utils/locale';
 import { asHTML } from '@prismicio/client';
@@ -60,6 +59,7 @@ const Announcements = styled.div`
 
 interface PageProviderProps {
     store: StoreModel;
+    domain: string;
     locale: Locale;
     i18n: LocaleDictionary;
     pagePropsAnalyticsData: any;
@@ -73,7 +73,7 @@ interface PageProviderProps {
     className?: string;
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
-    const { store, locale, i18n, pagePropsAnalyticsData, data, header: headerComponent } = props;
+    const { store, domain, locale, i18n, pagePropsAnalyticsData, data, header: headerComponent } = props;
     const { header } = data as any;
 
     const { country } = locale;
@@ -82,7 +82,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             ...locale,
             currency: NextLocaleToCurrency({ country, store }) // FIXME: Remove this when `NextLocaleToCurrency` works.
         } as Locale,
-        domain: BuildConfig.domain,
+        domain,
         shopId: store?.id,
         pagePropsAnalyticsData
     });
