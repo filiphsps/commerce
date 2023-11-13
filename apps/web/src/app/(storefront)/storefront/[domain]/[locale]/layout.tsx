@@ -1,6 +1,6 @@
 import 'destyle.css';
 // Global style
-import '@/style/app.scss';
+import '@/styles/app.scss';
 
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { NextLocaleToLocale } from '@/utils/locale';
