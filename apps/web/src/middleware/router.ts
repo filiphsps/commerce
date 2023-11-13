@@ -7,9 +7,11 @@ import { NextResponse } from 'next/server';
 export const getHostname = (req: NextRequest): string => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
 
-    if (hostname.startsWith('www.')) {
+    // TODO: Make this configurable.
+    /*if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
-    } else if (hostname.startsWith('staging.')) {
+    }*/
+    if (hostname.startsWith('staging.')) {
         hostname = hostname.slice(8);
     }
 
@@ -45,7 +47,7 @@ export const getRequestType = (req: NextRequest): RequestType => {
     const hostname = getHostname(req);
 
     // TODO: Dynamic list of storefronts.
-    const storefronts: string[] = ['sweetsideofsweden.com'];
+    const storefronts: string[] = ['www.sweetsideofsweden.com', 'sweetsideofsweden.com', 'demo.nordcom.io'];
     if (storefronts.includes(hostname)) {
         return 'storefront';
     }
