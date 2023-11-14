@@ -161,4 +161,4 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
 export const getDictionary = async (locale: Locale): Promise<LocaleDictionary> =>
-    dictionaries[locale.language.toLowerCase() as DictionaryLanguageCode]?.() ?? {};
+    dictionaries[locale?.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? {};

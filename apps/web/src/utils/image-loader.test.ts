@@ -8,8 +8,12 @@ describe('ImageLoader', () => {
         const quality = 80;
 
         const result = ImageLoader({ src, width, quality } as any);
-
         expect(result).toBe(`${src}?w=${width}&q=${quality}&fm=avif`);
+    });
+    it('should return the correct URL when fm is set', () => {
+        const src = 'https://images.prismic.io/my-image.jpg?fm=avif';
+        const result = ImageLoader({ src } as any);
+        expect(result).toBe(src);
     });
 
     it('should return the correct URL for other images', () => {
@@ -18,7 +22,6 @@ describe('ImageLoader', () => {
         const quality = 80;
 
         const result = ImageLoader({ src, width, quality } as any);
-
         expect(result).toBe(`${src}?width=${width}&quality=${quality}`);
     });
 
@@ -27,7 +30,6 @@ describe('ImageLoader', () => {
         const width = 500;
 
         const result = ImageLoader({ src, width } as any);
-
         expect(result).toBe(`${src}?width=${width}`);
     });
 
@@ -36,7 +38,6 @@ describe('ImageLoader', () => {
         const quality = 80;
 
         const result = ImageLoader({ src, quality } as any);
-
         expect(result).toBe(`${src}?quality=${quality}`);
     });
 
@@ -44,7 +45,13 @@ describe('ImageLoader', () => {
         const src = 'https://example.com/my-image.jpg';
 
         const result = ImageLoader({ src } as any);
+        expect(result).toBe(src);
+    });
 
+    it('should return the correct URL for other images without width and quality and with a query string', () => {
+        const src = 'https://example.com/my-image.jpg?foo=bar';
+
+        const result = ImageLoader({ src } as any);
         expect(result).toBe(src);
     });
 });

@@ -48,6 +48,7 @@ export default defineConfig({
                 '**/*.test.{js,ts,jsx,tsx}',
                 '**/app/api/{draft,exit-preview,preview}/route.{ts,tsx}',
                 '**/app/slice-simulator/*.{ts,tsx}',
+                '**/app/**/layout.tsx',
                 '**/build-config.ts',
                 '**/models/*Model.ts',
                 '**/src/**/index.{ts,tsx}',
