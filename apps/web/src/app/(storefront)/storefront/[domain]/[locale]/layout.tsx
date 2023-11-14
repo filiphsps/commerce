@@ -112,6 +112,7 @@ export default async function RootLayout({
                         '--accent-secondary': store.accent.secondary
                     } as React.CSSProperties
                 }
+                suppressHydrationWarning
             >
                 <body className={`${font.variable}`}>
                     <SocialProfileJsonLd
