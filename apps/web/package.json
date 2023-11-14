@@ -22,7 +22,8 @@
         "typecheck": "tsc -noEmit",
         "test": "concurrently --raw npm:test:*",
         "test:vitest": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" vitest run --coverage",
-        "slicemachine": "start-slicemachine"
+        "slicemachine": "start-slicemachine",
+        "watch:test:vitest": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" vitest watch"
     },
     "author": {
         "name": "Nordcom Group Inc.",

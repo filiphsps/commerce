@@ -1,13 +1,33 @@
+import type { CommerceError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
-import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-interface useCartUtilsProps {
+// TODO: Implement discount code validation.
+const validateDiscountCode = (_code: string) => {
+    return true;
+};
+
+type useCartUtilsProps = {
     locale: Locale;
-}
-export function useCartUtils({ locale }: useCartUtilsProps) {
-    const query = {} as any; //useSearchParams() as any;
-    const { buyerIdentity, buyerIdentityUpdate, discountCodes, discountCodesUpdate, status, error } = useCart();
+};
+type useCartUtilsResult = {
+    error: CommerceError | undefined;
+};
+export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
+    const [error, setError] = useState<CommerceError | undefined>();
+    const query = useSearchParams() as any;
+
+    const {
+        buyerIdentity,
+        buyerIdentityUpdate,
+        discountCodes,
+        discountCodesUpdate,
+        status,
+        error: cartError,
+        cartCreate
+    } = useCart();
 
     // Handle country code change
     useEffect(() => {
@@ -17,30 +37,37 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
             ...(buyerIdentity as any),
             countryCode: locale.country
         });
-    }, [locale.locale]);
+    }, [locale.locale, buyerIdentity]);
 
     // Discount codes in url
     useEffect(() => {
-        // TODO: Create a cart if one doesn't exist.
-        if (!query || (!query.discount && status !== 'idle')) return;
-        const discount = query.discount?.toString();
+        // Create a cart if one doesn't exist.
+        if (locale && status === 'uninitialized') {
+            cartCreate({
+                buyerIdentity: {
+                    countryCode: locale.country
+                    // TODO: `email`, `phone` etc when accounts are implemented.
+                }
+            });
+        }
+
+        const discount = query?.discount?.toString();
         if (!discount) return;
 
         delete query.discount;
-        /*router.replace(
-            {
-                pathname: route!,
-                query: query
-            },
-            undefined,
-            //{ shallow: true }
-        );*/
 
-        // TODO: Notification?
-        discountCodesUpdate([...(discountCodes || ([] as any)), discount]);
+        // Notification?
+        // TODO: Implement notification here
 
-        if (error) console.warn(error);
+        // Check cart errors and validate that the code was actually valid.
+        if (validateDiscountCode(discount)) {
+            discountCodesUpdate([...(discountCodes || []), discount]);
+        }
 
-        // TODO: Check cart errors and validate that the code was actually valid.
+        if (cartError && error != cartError) {
+            setError(() => error);
+        }
     }, [query, status]);
-}
+
+    return { error };
+};

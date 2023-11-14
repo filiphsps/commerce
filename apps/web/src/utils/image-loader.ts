@@ -11,6 +11,7 @@ export const ImageLoader: ImageLoaderType = ({ src, width, quality }) => {
         if (quality) {
             params.push(`q=${quality}`);
         }
+
         if (!src.includes('fm=')) {
             params.push(`fm=avif`);
         }
@@ -23,5 +24,6 @@ export const ImageLoader: ImageLoaderType = ({ src, width, quality }) => {
         }
     }
 
-    return `${src}${params.length ? (src.includes('?') && '&') || '?' : ''}${params.join('&')}`;
+    const div = src.includes('?') ? '&' : '?';
+    return `${src}${params.length > 0 ? div : ''}${params.join('&')}`;
 };
