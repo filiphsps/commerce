@@ -1,12 +1,12 @@
 'use client';
 
+/* c8 ignore start */
 import Content from '@/components/Content/Content';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import Heading from '@/components/typography/heading';
 import { useEffect } from 'react';
 
-/* c8 ignore start */
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => console.error(error), [error]);
     return (

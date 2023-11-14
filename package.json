@@ -17,7 +17,7 @@
         "start": "NODE_OPTIONS=\"--no-deprecation\" turbo run start",
         "dev": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run dev --color",
         "build": "NODE_OPTIONS=\"--no-deprecation\" turbo run build",
-        "lint": "NODE_OPTIONS=\"--no-deprecation\" turbo run lint",
+        "lint": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run lint",
         "typecheck": "NODE_OPTIONS=\"--no-deprecation\" turbo run typecheck",
         "test": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run test",
         "slicemachine": "NODE_OPTIONS=\"--no-deprecation\" turbo run slicemachine"
@@ -69,10 +69,11 @@
         "eslint-plugin-prettier": "5.0.1",
         "eslint-plugin-unused-imports": "3.0.0",
         "gzip-size": "7.0.0",
-        "prettier": "3.0.3",
+        "prettier": "3.1.0",
         "turbo": "1.10.16",
         "typescript": "5.2.2"
     },
+    "dependencies": {},
     "packageManager": "npm@10.2.3",
     "nextBundleAnalysis": {
         "budget": 248400,

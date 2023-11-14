@@ -5,6 +5,7 @@ node_modules/
 
 # testing
 coverage/
+apps/**/coverage/
 
 # next.js
 .next

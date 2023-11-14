@@ -40,7 +40,6 @@
         ".next/types/**/*.ts",
         "prismicio-types.d.ts",
         "prismicio.ts",
-        "sentry.*.config.ts",
         "src/@types",
         "src/**/*.ts",
         "src/**/*.tsx",

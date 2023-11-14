@@ -1,5 +1,3 @@
-//import { withSentryConfig } from '@sentry/nextjs';
-
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,
@@ -8,6 +6,7 @@ const config = {
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
+    transpilePackages: [],
     experimental: {
         esmExternals: true,
         optimizePackageImports: [
@@ -16,10 +15,11 @@ const config = {
             '@prismicio/next',
             '@prismicio/react',
             '@shopify/hydrogen-react',
-            'react-icons',
+            'react-icons'
         ],
         scrollRestoration: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        webpackBuildWorker: true,
         optimizeCss: true
     },
     images: {
@@ -73,10 +73,6 @@ const config = {
 
         // Prismic
         PRISMIC_REPO: process.env.PRISMIC_REPO,
-
-        // Sentry
-        SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'unknown',
-        SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN || '',
     },
     serverRuntimeConfig: {
         // Shopify
@@ -84,9 +80,6 @@ const config = {
 
         // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
-
-        // Sentry
-        SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     },
     async redirects() {
         return [
@@ -116,7 +109,7 @@ const config = {
                 source: '/admin/',
                 destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
                 permanent: false
-            },
+            }
         ];
     },
 
@@ -125,22 +118,7 @@ const config = {
     // This is due to the limited amount of redirects
     // we're allowed to use if we want to be on the HSTS
     // preload list.
-    skipTrailingSlashRedirect: true
+    skipTrailingSlashRedirect: true,
 };
 
-
-export default config; /*withSentryConfig(config, {
-    silent: true,
-    org: process.env.SENTRY_ORG || "nordcom",
-    project: process.env.SENTRY_PROJECT || "ecommerce-frontend",
-    authToken: process.env.SENTRY_AUTH_TOKEN,
-}, {
-    disableServerWebpackPlugin: true,
-    widenClientFileUpload: true,
-    transpileClientSDK: false, // We don't need IE11 support
-    hideSourceMaps: true,
-    disableLogger: true,
-    excludeServerRoutes: [
-        "/slice-simulator"
-    ]
-});*/
+export default config;

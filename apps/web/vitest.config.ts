@@ -43,16 +43,18 @@ export default defineConfig({
             all: true,
             include: ['**/src/**/*.{ts,tsx}'],
             exclude: [
+                '**/__snapshots__/**/*.*',
                 '**/*.d.ts',
                 '**/*.test.{js,ts,jsx,tsx}',
                 '**/*.test.{js,ts,jsx,tsx}',
+                '**/app/**/{layout}.tsx',
                 '**/app/api/{draft,exit-preview,preview}/route.{ts,tsx}',
                 '**/app/slice-simulator/*.{ts,tsx}',
-                '**/app/**/layout.tsx',
                 '**/build-config.ts',
-                '**/models/*Model.ts',
                 '**/src/**/index.{ts,tsx}',
-                '**/src/middleware.ts'
+                '**/src/locales/*.*',
+                '**/src/middleware.ts',
+                '**/src/models/*.ts'
             ]
         }
     }
