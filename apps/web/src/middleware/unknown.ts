@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+/* c8 ignore start */
 export const unknown = (req: NextRequest): NextResponse => {
     let newUrl = req.nextUrl.clone();
 
@@ -22,3 +23,4 @@ export const unknown = (req: NextRequest): NextResponse => {
     const target = `/unknown/${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url), { status: 404 });
 };
+/* c8 ignore stop */

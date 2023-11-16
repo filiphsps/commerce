@@ -19,6 +19,9 @@ vi.mock('@/utils/build-config', () => ({
         i18n: {
             default: 'en-US',
             currencies: ['USD']
+        },
+        shopify: {
+            storefront_id: 'mock-id'
         }
     }
 }));

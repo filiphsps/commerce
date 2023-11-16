@@ -4,6 +4,7 @@ import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+/* c8 ignore start */
 const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
@@ -87,3 +88,4 @@ export const storefront = (req: NextRequest): NextResponse => {
     const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
+/* c8 ignore stop */

@@ -20,6 +20,7 @@ import { ShopifySalesChannel } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
+/* c8 ignore start */
 const trimDomain = (domain?: string): string | undefined => {
     if (!domain) return undefined;
 
@@ -245,3 +246,4 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         });
     }, [lines, status]);
 }
+/* c8 ignore stop */

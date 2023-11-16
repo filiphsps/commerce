@@ -77,5 +77,6 @@
         "Prismic",
         "prismicio",
         "Västra"
-    ]
+    ],
+    "vscord.enabled": true
 }

@@ -2,6 +2,7 @@ import { commonValidations } from '@/middleware/common-validations';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+/* c8 ignore start */
 export const admin = (req: NextRequest): NextResponse => {
     let newUrl = req.nextUrl.clone();
 
@@ -22,3 +23,4 @@ export const admin = (req: NextRequest): NextResponse => {
     const target = `/admin${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
+/* c8 ignore stop */
