@@ -299,12 +299,12 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                 </SmallBlock>
             ) : null}
 
-            {['idle', 'uninitialized'].includes(status) : (
+            {['idle', 'uninitialized'].includes(status) ? (
                 <Block>
                     <Breakdown>
                         <BreakdownItem>
                             <BreakdownItemLabel>{t('subtotal')}</BreakdownItemLabel>
-                            {(cost?.subtotalAmount && (
+                            {cost?.subtotalAmount ? (
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -315,11 +315,10 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                                             cost?.subtotalAmount?.amount
                                     }}
                                 />
-                            )) ||
-                                null}
+                            ) : null}
                         </BreakdownItem>
 
-                        {(sale && (
+                        {sale ? (
                             <BreakdownDiscountItem title={`${salePercentage}% OFF`}>
                                 <BreakdownItemLabel>{t('sale-discount')}</BreakdownItemLabel>
                                 <Money
@@ -330,10 +329,9 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                                     }}
                                 />
                             </BreakdownDiscountItem>
-                        )) ||
-                            null}
+                        ) : null}
 
-                        {(promos && (
+                        {promos ? (
                             <BreakdownDiscountItem>
                                 <BreakdownItemLabel>{t('promo-codes')}</BreakdownItemLabel>
                                 <Money
@@ -344,8 +342,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                                     }}
                                 />
                             </BreakdownDiscountItem>
-                        )) ||
-                            null}
+                        ) : null}
 
                         <BreakdownItem>
                             <BreakdownItemLabel>{t('shipping')}</BreakdownItemLabel>
@@ -366,12 +363,11 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                             <CartCost as={BreakdownItemMoney} />
                         </BreakdownTotalItem>
 
-                        {(!freeShipping && (
+                        {!freeShipping ? (
                             <BreakdownItem>
                                 <Notice>{`*${t('shipping-calculated-at-checkout')}`}</Notice>
                             </BreakdownItem>
-                        )) ||
-                            null}
+                        ) : null}
                     </Breakdown>
 
                     {(!loading && (
