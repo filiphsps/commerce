@@ -134,7 +134,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
                                     let href = `/products/${handle}/`;
                                     let asComponent: any = Link;
 
-                                    if (matchingVariant?.is) {
+                                    if (matchingVariant?.id) {
                                         if (matchingVariant.id !== initialVariant.id)
                                             href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
 
