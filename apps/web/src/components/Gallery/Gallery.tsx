@@ -11,8 +11,7 @@ import styled from 'styled-components';
 const Previews = styled.div`
     position: relative;
     grid-area: previews;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+    display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -25,7 +24,6 @@ const Previews = styled.div`
     }
 
     @media (min-width: 950px) {
-        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
         position: relative;
         flex-direction: row;
         height: fit-content;
@@ -116,8 +114,10 @@ const Container = styled.div`
         height: calc(30vh - var(--calculated));
         max-height: calc(100% - var(--calculated));
         padding: var(--padding);
+
+        /* TODO: Do this properly. */
         mix-blend-mode: multiply;
-        filter: brightness(110%);
+        filter: contrast(1);
 
         @media (min-width: 950px) {
             height: unset;
