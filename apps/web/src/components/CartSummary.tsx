@@ -299,7 +299,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                 </SmallBlock>
             ) : null}
 
-            {['idle', 'uninitialized'].includes(status) && (
+            {['idle', 'uninitialized'].includes(status) : (
                 <Block>
                     <Breakdown>
                         <BreakdownItem>
@@ -398,8 +398,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                         </Notice>
                     </BreakdownItem>
                 </Block>
-            )) ||
-                null}
+            ) ? null}
         </Container>
     );
 };
