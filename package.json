@@ -74,7 +74,7 @@
         "typescript": "5.2.2"
     },
     "dependencies": {},
-    "packageManager": "npm@10.2.3",
+    "packageManager": "npm@10.2.4",
     "nextBundleAnalysis": {
         "budget": 248400,
         "budgetPercentIncreaseRed": 20,
