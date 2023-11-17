@@ -66,14 +66,6 @@
         stroke-width: 2.25;
         height: 100%;
     }
-
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 1.75rem;
-
-        svg {
-            font-size: 1.6rem;
-        }
-    }
 }
 
 .button.addToCart {
