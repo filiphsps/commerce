@@ -59,8 +59,6 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
     const { cost, status } = useCart();
     const { t } = useTranslation('cart', props.i18n);
 
-    if (status !== 'idle' && status !== 'updating') return null;
-
     // TODO: Handle other currencies properly.
     let threshold = 95;
     switch (cost?.totalAmount?.currencyCode?.toUpperCase()) {
@@ -89,9 +87,6 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
     }
     const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) > threshold;
     const amountLeft = threshold - (Number.parseFloat(cost?.totalAmount?.amount!) || 0) || 0;
-
-    // TODO: Figure out if we should still display something here.
-    if (freeShipping) return null;
 
     const amountLeftComponent =
         (cost?.totalAmount && (

@@ -394,7 +394,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                         </Notice>
                     </BreakdownItem>
                 </Block>
-            ) ? null}
+            ) : null}
         </Container>
     );
 };
