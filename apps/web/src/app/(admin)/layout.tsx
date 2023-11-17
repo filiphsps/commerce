@@ -26,9 +26,14 @@ export const metadata: Metadata = {
     },
     robots: {
         follow: true,
-        index: false // TODO: Change to true when we have a landing page.
+        index: true
     },
-    referrer: 'origin'
+    referrer: 'origin',
+    formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+    }
 };
 
 const primaryFont = Montserrat({
