@@ -1,4 +1,5 @@
 import Container from '#/components/container';
+import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import styles from './page.module.scss';
@@ -26,8 +27,8 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
             </header>
 
             <div className={`${styles.heading}`}>
-                <h1>TODO</h1>
-                <h2>An admin interface for tenants</h2>
+                <Heading>TODO</Heading>
+                <Heading level="h2">An admin interface for tenants</Heading>
             </div>
 
             <article className={`${styles.content}`}>

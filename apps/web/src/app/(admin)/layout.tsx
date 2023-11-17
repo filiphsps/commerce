@@ -2,6 +2,7 @@ import '#/styles/app.scss';
 
 import type { Metadata, Viewport } from 'next';
 
+import { NordstarProvider } from '@nordcom/nordstar';
 import { GeistMono } from 'geist/font/mono';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     formatDetection: {
         email: false,
         address: false,
-        telephone: false,
+        telephone: false
     }
 };
 
@@ -47,7 +48,9 @@ const primaryFont = Montserrat({
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${primaryFont.variable} ${GeistMono.variable}`}>{children}</body>
+            <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
+                <NordstarProvider>{children}</NordstarProvider>
+            </body>
         </html>
     );
 }

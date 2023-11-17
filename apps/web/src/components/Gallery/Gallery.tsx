@@ -14,6 +14,8 @@ const Previews = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: var(--block-spacer);
     width: 100%;
     height: 100%;

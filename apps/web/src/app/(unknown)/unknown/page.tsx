@@ -1,4 +1,5 @@
 import Container from '#/components/container';
+import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import styles from '../../(admin)/admin/page.module.scss';
@@ -24,15 +25,15 @@ export default async function IndexUnknownPage({}: { params: IndexUnknownPagePar
             </header>
 
             <div className={`${styles.heading}`}>
-                <h1>404</h1>
-                <h2>Unknown or invalid storefront</h2>
+                <Heading>404</Heading>
+                <Heading level="h2">Unknown or invalid storefront</Heading>
             </div>
 
             <article className={`${styles.content}`}>
                 <p>
-                    The specific page, resource or storefront you are looking for does not exist or has been removed by the author.
-                    If you believe this to be an error, please get in contact with the <code>Nordcom Group Inc.</code> support
-                    via <a href="mailto:hi@nordcom.io">hi@nordcom.io</a>.
+                    The specific page, resource or storefront you are looking for does not exist or has been removed by
+                    the author. If you believe this to be an error, please get in contact with the{' '}
+                    <code>Nordcom Group Inc.</code> support via <a href="mailto:hi@nordcom.io">hi@nordcom.io</a>.
                 </p>
             </article>
         </Container>
