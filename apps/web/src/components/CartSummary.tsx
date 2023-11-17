@@ -276,34 +276,30 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
             <Block>
                 <Header>
                     <Label>{t('order-summary')}</Label>
-                    {!['idle', 'uninitialized'].includes(status) && !(!totalQuantity || totalQuantity <= 0) ? (
-                        <BreakdownItemLabel>
-                            {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
-                        </BreakdownItemLabel>
-                    ) : null}
+                    <BreakdownItemLabel>
+                        {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
+                    </BreakdownItemLabel>
                 </Header>
 
                 <CartCoupons />
 
                 <FreeShipping i18n={i18n} />
 
-                {(totalQuantity && !showNote && (
+                {!showNote ? (
                     <Action onClick={() => setShowNote(true)}>
                         <FiEdit />
                         {` ${t('add-order-note')}`}
                     </Action>
-                )) ||
-                    null}
+                ) : null}
             </Block>
 
-            {(totalQuantity && showNote && (
+            {showNote ? (
                 <SmallBlock>
                     <CartNote />
                 </SmallBlock>
-            )) ||
-                null}
+            ) : null}
 
-            {(totalQuantity && ['idle', 'uninitialized'].includes(status) && (
+            {['idle', 'uninitialized'].includes(status) && (
                 <Block>
                     <Breakdown>
                         <BreakdownItem>
