@@ -23,7 +23,7 @@ const OptionValue = styled(Link)`
     gap: var(--block-spacer-small);
     justify-content: center;
     align-items: center;
-    min-height: 4rem;
+    min-height: 5rem;
     padding: var(--block-padding-small) var(--block-padding);
     border: var(--block-border-width) solid var(--color-block);
     border-radius: var(--block-border-radius);
@@ -38,7 +38,7 @@ const OptionValue = styled(Link)`
         cursor: pointer;
     }
 
-    &:is(:active, :focus, :focus-within, :hover:not(.selected)) {
+    &:is(:active, :focus, :focus-within, :hover:not(.selected)):not(:disabled) {
         border-color: var(--color-block-dark);
     }
 
@@ -89,6 +89,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
 
     // Filter out options that have only one value and that value is "Default Title".
     // This is a Shopify default value that is not useful to the user.
+    // TODO: Figure out how to handle this properly.
     const options = productOptions?.filter(
         (option) =>
             option?.values && !(option.values.length === 1 && option.values[0]!.toLowerCase() === 'default title')
@@ -110,7 +111,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
                                     if (!value) return null;
                                     let title = value;
 
-                                    if (option.name === 'Size' && value?.endsWith('g')) {
+                                    if (option.name === 'Size' && value?.toLowerCase().endsWith('g')) {
                                         title = ConvertToLocalMeasurementSystem({
                                             locale,
                                             weight: Number.parseFloat(value!.slice(0, -1)),
@@ -120,7 +121,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
 
                                     // FIXME: Handle options to variant properly.
                                     const matchingVariant =
-                                        (title &&
+                                        (value &&
                                             title &&
                                             variants
                                                 ?.filter((variant) => variant)
@@ -133,9 +134,9 @@ export const ProductOptions = (props: ProductOptionProps) => {
                                     let href = `/products/${handle}/`;
                                     let asComponent: any = Link;
 
-                                    if (matchingVariant) {
+                                    if (matchingVariant?.is) {
                                         if (matchingVariant.id !== initialVariant.id)
-                                            href = `${href}?variant=${parseGid(matchingVariant?.id).id}`;
+                                            href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
 
                                         if (selectedVariant && selectedVariant.id === matchingVariant.id)
                                             asComponent = 'div';
