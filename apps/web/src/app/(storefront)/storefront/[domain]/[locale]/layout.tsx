@@ -74,7 +74,12 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
             follow: true,
             index: BuildConfig.environment === 'production' ? true : false
         },
-        referrer: 'origin'
+        referrer: 'origin',
+        formatDetection: {
+            email: false,
+            address: false,
+            telephone: false,
+        }
     };
 }
 
