@@ -84,7 +84,7 @@
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@slicemachine/adapter-next": "0.3.24",
+        "@slicemachine/adapter-next": "0.3.25",
         "@testing-library/jest-dom": "6.1.4",
         "@testing-library/react": "14.1.2",
         "@types/accept-language-parser": "1.5.6",
@@ -117,7 +117,7 @@
         "prettier": "3.0.3",
         "pretty-xml": "1.2.1",
         "server-only": "0.0.1",
-        "slice-machine-ui": "1.19.2",
+        "slice-machine-ui": "1.20.0",
         "typescript": "5.2.2",
         "vitest": "0.34.6"
     }
