@@ -158,9 +158,9 @@ export default async function ProductPage({
         return (
             <Page className={styles.container}>
                 <SplitView
-                    primaryDesktopWidth={0.44}
+                    primaryDesktopWidth={0.48}
                     primaryClassName={styles.headingPrimary}
-                    asideDesktopWidth={0.56}
+                    asideDesktopWidth={0.52}
                     aside={
                         <Gallery
                             initialImageId={variant.image?.id || product.images.edges?.[0].node.id}
