@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 export const getHostname = (req: NextRequest): string => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
 
-    // TODO: Make this configurable.
+    // TODO: Make these configurable.
     /*if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
     }*/
@@ -43,7 +43,7 @@ export type RequestType = 'admin' | 'storefront' | 'unknown';
  * @param {NextRequest} req - The incoming request.
  * @returns {RequestType} The type of request.
  */
-export const getRequestType = (req: NextRequest): RequestType => {
+export const getRequestType = async (req: NextRequest): Promise<RequestType> => {
     const hostname = getHostname(req);
 
     // TODO: Dynamic list of storefronts.
@@ -64,8 +64,8 @@ export const getRequestType = (req: NextRequest): RequestType => {
     return 'unknown';
 };
 
-export const router = (req: NextRequest): NextResponse | undefined => {
-    const type: RequestType = getRequestType(req);
+export const router = async (req: NextRequest): Promise<NextResponse | undefined> => {
+    const type: RequestType = await getRequestType(req);
 
     // Don't do anything if we're already on the admin or storefront,
     // as that would cause an infinite loop.
