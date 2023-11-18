@@ -1,27 +1,23 @@
 @import '@/styles/variables.scss';
 
 .container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: calc(var(--block-spacer) * 2);
-    margin-left: var(--block-spacer);
-    height: 100%;
-    font-weight: 600;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    color: var(--color-dark);
+    display: none;
 
-    &.centered {
-        gap: calc(var(--block-spacer-large) * 1.5);
+    @media (min-width: $breakpoint-tablet-medium) {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: calc(var(--block-spacer) * 2);
+        margin-left: var(--block-spacer);
+        height: 100%;
+        font-weight: 600;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        color: var(--color-dark);
 
-        @media (min-width: $breakpoint-tablet-medium) {
+        &.centered {
             gap: calc(var(--block-spacer-large) * 1.75);
         }
-    }
-
-    @media (max-width: $breakpoint-tablet-medium) {
-        display: none;
     }
 
     a {
