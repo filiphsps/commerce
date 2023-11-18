@@ -6,7 +6,7 @@ export const config = {
     matcher: ['/:path*']
 };
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
     if (
         req.nextUrl.pathname.startsWith('/_next') ||
         req.nextUrl.pathname.startsWith('/_static') ||
@@ -16,6 +16,5 @@ export default function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    // TODO: Redirect files like favicon etc too.
-    return router(req);
+    return await router(req);
 }
