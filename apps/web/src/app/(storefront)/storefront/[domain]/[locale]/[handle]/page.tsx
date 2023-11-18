@@ -80,7 +80,7 @@ export default async function CustomPage({
         const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ locale, api });
 
-        const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+        const { page } = await PageApi({ domain, locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
@@ -112,4 +112,4 @@ export default async function CustomPage({
     }
 }
 
-export const revalidate = 120;
+export const revalidate = 28_800; // 8hrs.
