@@ -64,9 +64,10 @@ const ProductImageWrapper = styled.div`
 const Details = styled.div`
     grid-area: product-details;
     display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     width: 100%;
     min-height: 10rem;
-    flex-direction: column;
 `;
 const Brand = styled.div`
     font-size: 1.75rem;
@@ -94,7 +95,7 @@ const Title = styled.div`
     width: 100%;
     height: 100%;
     font-size: 2.25rem;
-    line-height: 1;
+    line-height: normal;
     font-weight: 700;
     hyphens: auto;
     -webkit-hyphens: auto;
@@ -164,16 +165,8 @@ const Variant = styled.div`
         }
     }
 
-    &.active,
-    &:hover,
-    &:active,
-    &:focus {
+    &:is(.active, :hover, :active, :focus) {
         opacity: 1;
-    }
-
-    @media (min-width: 920px) {
-        padding: 0;
-        font-size: 1.5rem;
     }
 `;
 
@@ -291,7 +284,7 @@ const Price = styled.div`
     font-weight: 600;
 
     &.Sale {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
         font-weight: 900;
         color: var(--color-sale);
     }
@@ -374,8 +367,8 @@ const Container = styled.section<{ $available?: boolean }>`
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: var(--block-spacer);
-    min-width: var(--component-product-card-width);
-    min-height: 36rem;
+    min-width: calc(var(--component-product-card-width) + calc(var(--block-padding) + var(--block-border-width)) * 2);
+    min-height: 36.5rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: center;
     border-radius: var(--block-border-radius);
@@ -384,8 +377,7 @@ const Container = styled.section<{ $available?: boolean }>`
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
     @media (min-width: 950px) {
-        gap: var(--block-spacer-small);
-        min-height: 38rem;
+        min-height: 38.5rem;
     }
 
     ${({ $available }) =>
@@ -484,7 +476,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         </ProductImageWrapper>
                     </Link>
                 ) : (
-                    <div></div>
+                    <div/> // Dummy.
                 )}
 
                 {discount > 1 && ( // Handle rounding-errors.
@@ -531,12 +523,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                             null}
                     </Prices>
 
-                    {/* FIXME: Deal with options here */}
+                    {/* FIXME: Deal with options here. */}
                     <Variants>
                         {product.variants?.edges &&
                             product.variants.edges.length > 1 &&
                             product.variants.edges.map((edge, index) => {
-                                if (!edge?.node || index >= 2) return null; //TODO: handle more than two variants on the card
+                                if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
                                 const variant = edge.node! as ProductVariant;
                                 let title = variant.title;
 
