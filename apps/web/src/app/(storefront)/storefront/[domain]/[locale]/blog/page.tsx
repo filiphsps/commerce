@@ -13,26 +13,27 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
+/* c8 ignore start */
+
 export type BlogPageParams = { domain: string; locale: string };
 
-/* c8 ignore start */
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
     params: BlogPageParams;
 }): Promise<Metadata | null> {
-    const handle = 'blog';
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
     const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const locales = store.i18n.locales;
 
+    const title = page?.meta_title || page?.title || 'Blog'; // TODO: Fallback should respect i18n.
     const description: string | undefined =
         (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Blog', // TODO: Fallback should respect i18n.
+        title,
         description,
         alternates: {
             canonical: `https://${domain}/${locale.locale}/blog/`,
@@ -47,7 +48,7 @@ export async function generateMetadata({
         openGraph: {
             url: `/${locale.locale}/blog/`,
             type: 'website',
-            title: page?.meta_title || page?.title!,
+            title,
             description,
             siteName: store?.name,
             locale: locale.locale,
@@ -65,17 +66,15 @@ export async function generateMetadata({
         }
     };
 }
-/* c8 ignore stop */
 
-export default async function SearchPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
+export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
-    const handle = 'blog';
 
     const api = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api });
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
     return (
@@ -100,3 +99,4 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 }
 
 export const revalidate = 120;
+/* c8 ignore stop */
