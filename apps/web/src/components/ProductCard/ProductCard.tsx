@@ -5,7 +5,6 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
-import { TbMinus, TbPlus } from 'react-icons/tb';
 import styled, { css } from 'styled-components';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
@@ -218,11 +217,6 @@ const QuantityAction = styled.div`
     transition: 150ms ease-in-out;
     text-align: center;
     font-size: 2rem;
-
-    svg {
-        font-size: inherit;
-        stroke-width: 2.75;
-    }
 
     &:first-child {
         justify-content: center;
@@ -596,7 +590,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         className={quantity > 1 ? '' : 'Inactive'}
                         onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
                     >
-                        <TbMinus />
+                        -
                     </QuantityAction>
                     <QuantityValue
                         ref={quantityRef as any}
@@ -616,7 +610,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         }}
                     />
                     <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>
-                        <TbPlus />
+                        +
                     </QuantityAction>
                 </Quantity>
             </Actions>
