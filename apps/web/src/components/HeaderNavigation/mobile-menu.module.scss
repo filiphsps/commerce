@@ -2,7 +2,7 @@
 
 .container {
     position: absolute;
-    inset: 7rem 0 0 -100vw;
+    inset: 7rem 0 0 -105vw;
     z-index: 0;
     width: 85vw;
     height: calc(100vh - 6rem);
@@ -12,7 +12,7 @@
     transition: 150ms ease-in-out all;
     box-shadow: 1rem 1rem 1rem -0.5rem var(--color-block-shadow);
 
-    @media (min-width: 1150px) {
+    @media (min-width: $breakpoint-tablet-medium) {
         display: none;
     }
 }
