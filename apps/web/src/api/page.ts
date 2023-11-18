@@ -8,9 +8,11 @@ import { BuildConfig } from '@/utils/build-config';
 import { DefaultLocale, type Locale } from '@/utils/locale';
 
 export const PagesApi = async ({
+    domain,
     locale,
     client: _client
 }: {
+    domain?: string;
     locale: Locale;
     client?: PrismicClient;
 }): Promise<{
@@ -18,13 +20,14 @@ export const PagesApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const client = _client || createClient({ locale });
+            const client = _client || createClient({ domain, locale });
             const pages = await client.getAllByType('custom_page', {
                 lang: locale.locale,
                 fetchOptions: {
                     cache: undefined,
                     next: {
-                        revalidate: 120
+                        revalidate: 28_800, // 8hrs.
+                        tags: ['prismic']
                     }
                 }
             });
@@ -43,7 +46,7 @@ export const PagesApi = async ({
             // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents')) {
                 if (locale.locale !== BuildConfig.i18n.default) {
-                    return resolve(await PagesApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale.
+                    return resolve(await PagesApi({ locale: DefaultLocale(), client })); // Try again with default locale.
                 }
 
                 return reject('404: "Page" with handle "${handle}" cannot be found');
@@ -62,11 +65,13 @@ type PageType<T> = T extends 'collection_page'
     : CustomPageDocumentData;
 
 export const PageApi = async <T extends 'collection_page' | 'product_page' | 'custom_page'>({
+    domain,
     locale,
     type,
     client: _client,
     handle
 }: {
+    domain?: string;
     locale: Locale;
     handle: string;
     client?: PrismicClient;
@@ -76,13 +81,14 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const client = _client || createClient({ locale });
+            const client = _client || createClient({ domain, locale });
             const { data: page } = await client.getByUID(type, handle, {
                 lang: locale.locale,
                 fetchOptions: {
                     cache: undefined,
                     next: {
-                        revalidate: 120
+                        revalidate: 28_800, // 8hrs.
+                        tags: ['prismic']
                     }
                 },
                 fetchLinks: ['slices']
@@ -95,11 +101,15 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
             });
         } catch (error: any) {
             // TODO: `isDefaultLocale` utility function.
-            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
-                return resolve(await PageApi({ locale: DefaultLocale(), handle, type, client: _client })); // Try again with default locale
+            if (error.message.includes('No documents')) {
+                if (locale.locale !== BuildConfig.i18n.default) {
+                    return resolve(await PageApi({ locale: DefaultLocale(), handle, type, client })); // Try again with default locale.
+                }
+
+                return resolve({ page: null });
             }
 
-            return resolve({ page: null });
+            return reject(error);
         }
     });
 };
