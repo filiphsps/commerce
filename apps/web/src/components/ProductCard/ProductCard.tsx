@@ -78,15 +78,11 @@ const Brand = styled.div`
         font-size: 1.5rem;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover,
-        &:active,
-        &:focus {
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);
-        }
+    &:is(:hover, :active, :focus) {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        text-underline-offset: var(--block-border-width);
     }
 `;
 const Title = styled.div`
@@ -104,15 +100,11 @@ const Title = styled.div`
         font-size: 2rem;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover,
-        &:active,
-        &:focus {
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: var(--block-border-width);
-        }
+    &:is(:hover, :active, :focus) {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 0.2rem;
+        text-underline-offset: var(--block-border-width);
     }
 `;
 
@@ -155,6 +147,10 @@ const Variant = styled.div`
     opacity: 0.85;
     transition: 150ms ease-in-out all;
 
+    @media (min-width: 920px) {
+        padding: 0;
+    }
+
     &.active {
         opacity: 1;
         color: var(--accent-primary);
@@ -179,11 +175,14 @@ const Actions = styled.div`
     gap: var(--block-spacer-small);
 `;
 const AddButton = styled.button`
-    min-height: 4.25rem;
-    width: 100%;
-    border: none;
-    padding: var(--block-padding-small) var(--block-padding);
-    font-size: 1.5rem;
+    & {
+        min-height: 4rem;
+        width: 100%;
+        border: none;
+        padding: var(--block-padding-small) var(--block-padding);
+        font-size: 1.5rem;
+        border-radius: var(--block-border-radius);
+    }
 `;
 const Quantity = styled.div`
     overflow: hidden;
