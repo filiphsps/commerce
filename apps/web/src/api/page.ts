@@ -46,7 +46,7 @@ export const PagesApi = async ({
             // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents')) {
                 if (locale.locale !== BuildConfig.i18n.default) {
-                    return resolve(await PagesApi({ locale: DefaultLocale(), client })); // Try again with default locale.
+                    return resolve(await PagesApi({ domain, locale: DefaultLocale(), client: _client })); // Try again with default locale.
                 }
 
                 return reject('404: "Page" with handle "${handle}" cannot be found');
@@ -103,7 +103,7 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
             // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents')) {
                 if (locale.locale !== BuildConfig.i18n.default) {
-                    return resolve(await PageApi({ locale: DefaultLocale(), handle, type, client })); // Try again with default locale.
+                    return resolve(await PageApi({ domain, locale: DefaultLocale(), handle, type, client: _client })); // Try again with default locale.
                 }
 
                 return resolve({ page: null });
