@@ -70,8 +70,8 @@ export async function generateMetadata({
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
-    const i18n = await getDictionary(locale);
 
+    const i18n = await getDictionary(locale);
     const api = StorefrontApiClient({ domain, locale });
     const store = await StoreApi({ locale, api });
     const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
@@ -89,7 +89,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                         page={page}
                         prefetch={prefetch}
                         i18n={i18n}
-                        handle={handle}
+                        handle={'blog'}
                         type={'custom_page'}
                     />
                 )}
