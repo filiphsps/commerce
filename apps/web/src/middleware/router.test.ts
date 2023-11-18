@@ -16,24 +16,24 @@ describe('middleware', () => {
     };
 
     describe('getRequestType', () => {
-        it('should return "storefront" for a valid storefront hostname', () => {
+        it('should return "storefront" for a valid storefront hostname', async () => {
             const req = createFakeRequest('www.sweetsideofsweden.com');
 
-            const result = getRequestType(req);
+            const result = await getRequestType(req);
             expect(result).toBe('storefront');
         });
 
-        it('should return "admin" for the Nordcom admin hostname', () => {
+        it('should return "admin" for the Nordcom admin hostname', async () => {
             const req = createFakeRequest('shops.nordcom.io');
 
-            const result = getRequestType(req);
+            const result = await getRequestType(req);
             expect(result).toBe('admin');
         });
 
-        it('should return "unknown" for an unknown hostname', () => {
+        it('should return "unknown" for an unknown hostname', async () => {
             const req = createFakeRequest('example.com');
 
-            const result = getRequestType(req);
+            const result = await getRequestType(req);
             expect(result).toBe('unknown');
         });
     });
