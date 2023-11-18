@@ -66,16 +66,18 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 };
 
 export const StoreApi = async ({
+    domain,
     locale,
     client: _client,
     api
 }: {
+    domain?: string;
     locale: Locale;
     client?: PrismicClient;
     api: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ locale });
+        const client = _client || createClient({ domain, locale });
 
         try {
             const { data: shopData } = await api.query<{ shop: Shop }>(gql`
@@ -123,7 +125,8 @@ export const StoreApi = async ({
                         fetchOptions: {
                             cache: undefined,
                             next: {
-                                revalidate: 3600
+                                revalidate: 28_800, // 8hrs.
+                                tags: ['prismic']
                             }
                         },
                         fetchLinks: []
@@ -133,7 +136,8 @@ export const StoreApi = async ({
                         fetchOptions: {
                             cache: undefined,
                             next: {
-                                revalidate: 3600
+                                revalidate: 28_800, // 8hrs.
+                                tags: ['prismic']
                             }
                         },
                         fetchLinks: []
@@ -227,6 +231,7 @@ export const StoreApi = async ({
                 return resolve(
                     // Try again with default locale.
                     await StoreApi({
+                        domain,
                         locale: DefaultLocale(),
                         client,
                         api
