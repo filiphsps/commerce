@@ -35,9 +35,7 @@ describe('utils', () => {
                             description: 'Product Description',
                             vendor: 'Product Vendor',
                             tags: ['tag1', 'tag2'],
-                            seo: {
-                                description: 'Product SEO Description'
-                            },
+                            availableForSale: undefined,
                             variants: {
                                 edges: [
                                     {
@@ -123,7 +121,6 @@ describe('utils', () => {
                             {
                                 node: {
                                     ...mockCollection.products.edges[0].node,
-                                    description: 'Product SEO Description',
                                     sellingPlanGroups: {
                                         edges: []
                                     }
@@ -152,7 +149,6 @@ describe('utils', () => {
                             {
                                 node: {
                                     ...mockCollection.products.edges[0].node,
-                                    description: 'Product SEO Description',
                                     sellingPlanGroups: {
                                         edges: []
                                     }

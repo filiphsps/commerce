@@ -30,6 +30,8 @@ const font = Lexend_Deca({
     preload: true
 });
 
+export const runtime = 'experimental-edge';
+
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
@@ -78,7 +80,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
         formatDetection: {
             email: false,
             address: false,
-            telephone: false,
+            telephone: false
         }
     };
 }

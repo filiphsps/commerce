@@ -25,7 +25,7 @@ const Prefetch = ({
 }) => {
     return new Promise<PrefetchData>(async (resolve, reject) => {
         if (!page) {
-            // No page data was supplied to prefetch.
+            // No page data to go of was supplied to prefetch.
             return resolve({});
         }
 
@@ -53,80 +53,90 @@ const Prefetch = ({
                             limit: slice.variation === 'full' ? undefined : limit
                         });
 
-                        if (!collection?.products?.edges) continue; // TODO: Maybe error here?
+                        if (!collection?.products?.edges) continue; // TODO: Figure out if we should throw here.
 
-                        if ((slice?.primary as any)?.limit && (slice?.primary as any)?.limit > 0)
-                            collection.products.edges = collection.products.edges.slice(
-                                0,
-                                (slice?.primary as any)?.limit
-                            );
-
-                        // Only supply the used parameters
-                        // TODO: This should be a utility function.
-                        collection.products.edges = (collection.products.edges as ProductEdge[]).map(
-                            ({
-                                node: {
-                                    id,
-                                    handle,
-                                    availableForSale,
-                                    title,
-                                    description,
-                                    vendor,
-                                    tags,
-                                    seo,
-                                    variants,
-                                    images
-                                }
-                            }) => ({
-                                node: {
-                                    id,
-                                    handle,
-                                    availableForSale,
-                                    title,
-                                    description: (seo?.description || description).slice(0, 75),
-                                    vendor,
-                                    tags,
-                                    sellingPlanGroups: {
-                                        edges: []
-                                    },
-                                    variants: {
-                                        edges: variants.edges.map(
-                                            ({
+                        collections[handle] = {
+                            ...collection,
+                            products: {
+                                ...collection.products,
+                                edges: (collection.products.edges as ProductEdge[])
+                                    .map(
+                                        (
+                                            {
                                                 node: {
                                                     id,
-                                                    sku,
-                                                    title,
-                                                    price,
-                                                    compareAtPrice,
+                                                    handle,
                                                     availableForSale,
-
-                                                    weight,
-                                                    weightUnit,
-                                                    image,
-                                                    selectedOptions
+                                                    title,
+                                                    description,
+                                                    vendor,
+                                                    tags,
+                                                    seo,
+                                                    variants,
+                                                    images
                                                 }
-                                            }) => ({
+                                            },
+                                            index
+                                        ) => {
+                                            if (
+                                                (slice?.primary as any)?.limit &&
+                                                (slice?.primary as any)?.limit > 0 &&
+                                                (slice?.primary as any)?.limit >= index
+                                            )
+                                                return null;
+
+                                            return {
                                                 node: {
                                                     id,
-                                                    sku,
-                                                    title,
-                                                    price,
-                                                    compareAtPrice,
+                                                    handle,
                                                     availableForSale,
-                                                    weight,
-                                                    weightUnit,
-                                                    image,
-                                                    selectedOptions
-                                                }
-                                            })
-                                        )
-                                    },
-                                    images
-                                }
-                            })
-                        ) as any;
+                                                    title,
+                                                    description: (seo?.description || description).slice(0, 75),
+                                                    vendor,
+                                                    tags,
+                                                    sellingPlanGroups: {
+                                                        edges: []
+                                                    },
+                                                    variants: {
+                                                        edges: variants.edges.map(
+                                                            ({
+                                                                node: {
+                                                                    id,
+                                                                    sku,
+                                                                    title,
+                                                                    price,
+                                                                    compareAtPrice,
+                                                                    availableForSale,
 
-                        collections[handle] = collection;
+                                                                    weight,
+                                                                    weightUnit,
+                                                                    image,
+                                                                    selectedOptions
+                                                                }
+                                                            }) => ({
+                                                                node: {
+                                                                    id,
+                                                                    sku,
+                                                                    title,
+                                                                    price,
+                                                                    compareAtPrice,
+                                                                    availableForSale,
+                                                                    weight,
+                                                                    weightUnit,
+                                                                    image,
+                                                                    selectedOptions
+                                                                }
+                                                            })
+                                                        )
+                                                    },
+                                                    images
+                                                }
+                                            };
+                                        }
+                                    )
+                                    .filter((_) => _)
+                            }
+                        } as any;
                         continue;
                     }
                     case 'vendors': {
