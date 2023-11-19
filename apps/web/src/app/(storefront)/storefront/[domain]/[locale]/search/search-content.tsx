@@ -100,6 +100,7 @@ const SearchHeader = styled.section`
 
         svg {
             margin-top: -0.1rem;
+            vertical-align: middle;
         }
     }
 `;

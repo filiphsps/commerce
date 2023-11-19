@@ -40,6 +40,7 @@
         svg {
             font-size: 2rem;
             stroke-width: 2.25;
+            vertical-align: middle;
         }
 
         &:is(:not(:disabled)) {

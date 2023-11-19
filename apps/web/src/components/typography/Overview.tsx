@@ -40,6 +40,10 @@ const ImageWrapper = styled.div`
 `;
 const ImageContainer = styled.div<{ $expand?: boolean }>`
     grid-area: overview-banner;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
     flex-basis: 40%;
     height: 100%;

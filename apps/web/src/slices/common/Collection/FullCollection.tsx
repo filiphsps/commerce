@@ -5,6 +5,7 @@ import { VerticalCollection } from '@/components/products/VerticalCollection';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { PrefetchData } from '@/utils/prefetch';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
@@ -22,8 +23,8 @@ interface FullCollectionProps {
     } & CollectionSliceFull;
     store: StoreModel;
     locale: Locale;
-    prefetch?: any;
     i18n: LocaleDictionary;
+    prefetch?: PrefetchData;
 }
 export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, store, locale, prefetch, i18n }) => {
     const collection = prefetch?.collections?.[slice.primary.handle!];

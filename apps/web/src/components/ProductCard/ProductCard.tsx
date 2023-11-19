@@ -15,32 +15,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { useTranslation } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
-import type { FunctionComponent } from 'react';
-
-export const ProductImage = styled.div`
-    grid-area: product-image;
-    overflow: hidden;
-    position: relative;
-    height: auto;
-    width: 100%;
-    padding: var(--block-padding) var(--block-padding);
-    border-radius: var(--block-border-radius-small);
-    transition: 150ms ease-in-out;
-    user-select: none;
-    background: var(--color-bright);
-    height: 14rem;
-    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
-
-    @media (min-width: 950px) {
-        height: 16rem;
-        padding: var(--block-padding) var(--block-padding-large);
-        margin-bottom: var(--block-spacer-tiny);
-    }
-
-    &:is(:hover, :active, :focus) {
-        padding: var(--block-padding-small);
-    }
-`;
+import type { CSSProperties, FunctionComponent } from 'react';
 
 const ProductImageWrapper = styled.div`
     position: relative;
@@ -199,11 +174,6 @@ const Quantity = styled.div`
     background: var(--color-bright);
     border-radius: var(--block-border-radius-small);
     padding: 0;
-
-    svg {
-        font-weight: 700;
-        stroke-width: 2.25;
-    }
 `;
 const QuantityAction = styled.div`
     position: relative;
@@ -353,25 +323,8 @@ const Badge = styled.div`
 `;
 
 const Container = styled.section<{ $available?: boolean }>`
-    position: relative;
-    flex: 1 auto;
-    overflow: hidden;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas: 'product-image' 'product-details' 'product-actions';
-    gap: var(--block-spacer);
-    min-width: calc(var(--component-product-card-width) + calc(var(--block-padding) + var(--block-border-width)) * 2);
-    min-height: 36.5rem;
-    padding: calc(var(--block-padding) - var(--block-border-width));
-    scroll-snap-align: center;
-    border-radius: var(--block-border-radius);
     background: var(--accent-secondary-light);
     color: var(--accent-secondary-text);
-    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
-
-    @media (min-width: 950px) {
-        min-height: 38.5rem;
-    }
 
     ${({ $available }) =>
         !$available &&
@@ -395,8 +348,9 @@ interface ProductCardProps {
     handle?: string;
     className?: string;
     i18n: LocaleDictionary;
+    style?: CSSProperties;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n, style }) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
@@ -420,9 +374,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         else quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
     }, [quantityValue]);
 
-    // TODO: Placeholder animation.
-    if (!product || !selectedVariant)
-        return <Container className={`${styles.productCard} ${className || ''} Loading`} />;
+    if (!product || !selectedVariant) {
+        return <ProductCardSkeleton />;
+    }
 
     const isNewProduct =
         product?.createdAt &&
@@ -451,8 +405,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
     if (image) image.altText = image.altText || linkTitle;
 
     return (
-        <Container className={`${styles.productCard} ${className || ''}`} $available={selectedVariant.availableForSale}>
-            <ProductImage>
+        <Container
+            className={`${styles.container} ${className || ''}`}
+            $available={selectedVariant.availableForSale}
+            style={style}
+        >
+            <div className={styles.image}>
                 {image ? (
                     <Link title={linkTitle} href={href}>
                         <ProductImageWrapper>
@@ -469,7 +427,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                         </ProductImageWrapper>
                     </Link>
                 ) : (
-                    <div/> // Dummy.
+                    <div /> // Dummy.
                 )}
 
                 {discount > 1 && ( // Handle rounding-errors.
@@ -482,7 +440,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     {isNewProduct && <Badge className="New">New!</Badge>}
                     {isVegan && <Badge className="Vegan">Vegan</Badge>}
                 </Badges>
-            </ProductImage>
+            </div>
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
@@ -609,12 +567,20 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                             setQuantityValue(QuantityInputFilter(e?.target?.value, quantityValue));
                         }}
                     />
-                    <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>
-                        +
-                    </QuantityAction>
+                    <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>+</QuantityAction>
                 </Quantity>
             </Actions>
         </Container>
+    );
+};
+
+export const ProductCardSkeleton = () => {
+    return (
+        <div className={`${styles.container} ${styles.skeleton}`}>
+            <div className={styles.image}></div>
+            <div></div>
+            <div></div>
+        </div>
     );
 };
 
