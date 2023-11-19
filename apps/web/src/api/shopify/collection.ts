@@ -76,7 +76,7 @@ export const CollectionApi = async ({
 
             return resolve({
                 ...data.collectionByHandle,
-                descriptionHtml: (data.productByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+                descriptionHtml: (data.collectionByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
             });
         } catch (error) {
             console.error(error);
