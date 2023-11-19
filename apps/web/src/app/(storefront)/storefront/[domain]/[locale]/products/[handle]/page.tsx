@@ -35,7 +35,7 @@ export async function generateMetadata({
 }: {
     params: ProductPageParams;
     searchParams?: ProductPageQueryParams;
-}): Promise<Metadata | null> {
+}): Promise<Metadata> {
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
@@ -140,7 +140,7 @@ export default async function ProductPage({
         const initialVariant = FirstAvailableVariant(product);
         const selectedVariant =
             (searchParams?.variant &&
-                product.variants.edges.find(
+                product?.variants?.edges.find(
                     ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
                 )?.node) ||
             undefined;

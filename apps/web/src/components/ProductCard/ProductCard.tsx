@@ -476,7 +476,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
 
                     {/* FIXME: Deal with options here. */}
                     <Variants>
-                        {product.variants?.edges &&
+                        {product?.variants?.edges &&
                             product.variants.edges.length > 1 &&
                             product.variants.edges.map((edge, index) => {
                                 if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.

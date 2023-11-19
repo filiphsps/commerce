@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 import { router } from '@/middleware/router';
 
-export const runtime = 'experimental-edge';
+export const runtime = process.env.NODE_ENV === 'production' ? 'experimental-edge' : 'nodejs';
 export const config = {
     matcher: ['/:path*']
 };

@@ -30,7 +30,7 @@ const font = Lexend_Deca({
     preload: true
 });
 
-export const runtime = 'experimental-edge';
+export const runtime = process.env.NODE_ENV === 'production' ? 'experimental-edge' : 'nodejs';
 
 export type LayoutParams = { domain: string; locale: string };
 
