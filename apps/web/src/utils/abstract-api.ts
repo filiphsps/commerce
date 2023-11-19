@@ -35,7 +35,7 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
 export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNode | TypedDocumentNode<any, any>> = ({
     api,
     locale,
-    fetchPolicy = 'no-cache'
+    fetchPolicy = 'force-cache'
 }) => ({
     locale: () => locale,
     query: async (query, variables = {}, tags = []) => {
@@ -48,6 +48,7 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
                 fetchOptions: {
                     cache: fetchPolicy,
                     next: {
+                        // TODO: Allow setting revalidate etc here.
                         tags: ['shopify', ...tags]
                     }
                 }
