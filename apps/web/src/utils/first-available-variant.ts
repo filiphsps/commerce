@@ -8,7 +8,7 @@ import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront
  */
 export const FirstAvailableVariant = (product?: Product | null): ProductVariant | undefined => {
     // 1. Make sure we got a product passed to us.
-    if (!product) return undefined;
+    if (!product || !product?.variants?.edges) return undefined;
 
     // 2. Check if the last variant is available.
     if (product?.variants.edges.at(-1)?.node.availableForSale)
