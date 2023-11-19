@@ -27,7 +27,7 @@ export const setupApi = ({ uri, headers }: ApiConfig) =>
                         errorPolicy: 'ignore'
                     },
                     query: {
-                        fetchPolicy: 'force-cache',
+                        fetchPolicy: 'force-cache' as any,
                         errorPolicy: 'all'
                     },
                     mutate: {
