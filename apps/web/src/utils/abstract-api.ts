@@ -46,7 +46,7 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
                 language: locale.country,
                 locale: locale.country,
                 fetchOptions: {
-                    cache: fetchPolicy,
+                    cache: 'force-cache',
                     next: {
                         // TODO: Allow setting revalidate etc here.
                         tags: ['shopify', ...tags]
