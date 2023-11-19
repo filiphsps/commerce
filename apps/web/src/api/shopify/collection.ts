@@ -74,11 +74,10 @@ export const CollectionApi = async ({
             if (!data?.collectionByHandle)
                 return reject(new Error(`404: "Collection" with handle "${handle}" cannot be found`));
 
-            // TODO: Maybe turn into a generic utility function to handle every case like this.
-            data.collectionByHandle.descriptionHtml = data.collectionByHandle.descriptionHtml
-                .replaceAll(/ /g, ' ')
-                .replaceAll('\u00A0', ' ');
-            return resolve(/*flattenConnection(*/ data.collectionByHandle /*)*/);
+            return resolve({
+                ...data.collectionByHandle,
+                descriptionHtml: (data.productByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+            });
         } catch (error) {
             console.error(error);
             return reject(error);
