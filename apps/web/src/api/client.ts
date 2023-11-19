@@ -23,11 +23,11 @@ export const setupApi = ({ uri, headers }: ApiConfig) =>
                 }),
                 defaultOptions: {
                     watchQuery: {
-                        fetchPolicy: 'no-cache',
+                        fetchPolicy: 'cache-and-network',
                         errorPolicy: 'ignore'
                     },
                     query: {
-                        fetchPolicy: 'force-cache' as any,
+                        fetchPolicy: 'cache-first',
                         errorPolicy: 'all'
                     },
                     mutate: {
