@@ -240,13 +240,10 @@ export const ProductApi = async ({ client, handle }: { client: AbstractApi; hand
             if (!data?.productByHandle)
                 return reject(new Error(`404: "Product" with handle "${handle}" cannot be found`));
 
-            try {
-                data.productByHandle.descriptionHtml = data.productByHandle.descriptionHtml
-                    .replaceAll(/ /g, ' ')
-                    .replaceAll('\u00A0', ' ');
-            } catch {}
-
-            return resolve(data.productByHandle);
+            return resolve({
+                ...data.productByHandle,
+                descriptionHtml: (data.productByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+            });
         } catch (error: any) {
             console.error(error);
             return reject(error);
