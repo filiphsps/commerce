@@ -1,5 +1,3 @@
-'use client';
-
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';

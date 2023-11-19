@@ -1,11 +1,51 @@
 @import '@/styles/variables.scss';
-.ProductCard {
-}
+.container {
+    position: relative;
+    flex: 1 auto;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 'product-image' 'product-details' 'product-actions';
+    gap: var(--block-spacer);
+    height: 100%;
+    padding: calc(var(--block-padding) - var(--block-border-width));
+    scroll-snap-align: center;
+    background: var(--product-card-color-background);
+    border-radius: var(--block-border-radius);
+    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
-.horizontal .ProductCard {
-    max-width: var(--component-product-card-width);
+    .image {
+        grid-area: product-image;
+        overflow: hidden;
+        position: relative;
+        height: auto;
+        width: 100%;
+        padding: var(--block-padding) var(--block-padding);
+        border-radius: var(--block-border-radius-small);
+        transition: 150ms ease-in-out;
+        user-select: none;
+        background: var(--product-card-color-image-background, var(--color-bright));
+        height: 14rem;
+        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
-    @media (min-width: $breakpoint-mobile) {
-        max-width: unset;
+        @media (min-width: 950px) {
+            height: 16rem;
+            padding: var(--block-padding) var(--block-padding-large);
+            margin-bottom: var(--block-spacer-tiny);
+        }
+
+        &:is(:hover, :active, :focus) {
+            padding: var(--block-padding-small);
+        }
+    }
+
+    &.skeleton {
+        min-height: 32.5rem;
+        min-width: 21.1rem;
+        box-shadow: none;
+
+        .image {
+            box-shadow: none;
+        }
     }
 }

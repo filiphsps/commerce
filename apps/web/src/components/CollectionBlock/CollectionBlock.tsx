@@ -8,12 +8,18 @@ import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { Pluralize } from '@/utils/pluralize';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { useEffect, useRef } from 'react';
+import { Suspense, type ReactElement } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList } from 'react-window';
 
 const Content = styled.div`
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
+    );
     column-count: 2;
     column-gap: var(--block-spacer-large);
     gap: var(--block-spacer-large);
@@ -21,8 +27,14 @@ const Content = styled.div`
     scroll-behavior: smooth;
 
     @media (min-width: 950px) {
+        justify-content: start;
         column-gap: var(--block-spacer);
         gap: var(--block-spacer);
+    }
+
+    section {
+        width: 100%;
+        min-width: unset;
     }
 
     &.horizontal {
@@ -38,27 +50,6 @@ const Content = styled.div`
         grid-template-rows: 1fr;
         grid-auto-flow: column;
         scroll-padding-left: var(--block-padding-large);
-
-        .First {
-            margin-left: calc(var(--block-spacer-large));
-        }
-    }
-
-    &.vertical {
-        display: grid;
-        grid-template-columns: repeat(
-            auto-fit,
-            minmax(calc(var(--component-product-card-width) + var(--block-padding)), auto)
-        );
-
-        @media (min-width: 950px) {
-            justify-content: start;
-        }
-
-        section {
-            width: 100%;
-            min-width: unset;
-        }
     }
 `;
 
@@ -66,15 +57,12 @@ const Container = styled.div`
     position: relative;
     width: 100%;
     min-width: 100%;
-
-    &.horizontal {
-        width: calc(100% + var(--block-padding-large) * 2);
-        margin-left: calc(var(--block-padding-large) * -1);
-    }
+    min-height: 36.5rem;
 `;
 
 type CollectionBlockProps = {
     data?: Collection;
+    elements?: ReactElement[];
     limit?: number;
     isHorizontal?: boolean;
     showViewAll?: boolean;
@@ -84,6 +72,7 @@ type CollectionBlockProps = {
 };
 const CollectionBlock = ({
     data: collection,
+    elements,
     limit,
     isHorizontal,
     showViewAll,
@@ -93,59 +82,87 @@ const CollectionBlock = ({
 }: CollectionBlockProps) => {
     const { handle } = collection || {};
     const products = collection?.products?.edges || [];
-    const contentRef = useRef<HTMLDivElement>(null);
 
-    // Fix horizontal scroll that sometimes occurs on page load.
-    useEffect(() => {
-        if (!isHorizontal || !contentRef.current || contentRef.current.scrollLeft === 0) return;
+    let content = null;
 
-        contentRef.current.style.scrollBehavior = 'auto';
-        contentRef.current.scrollLeft = 0;
-        contentRef.current.removeAttribute('style');
-    }, []);
-
-    return (
-        <Container className={(isHorizontal && 'horizontal') || 'vertical'}>
-            <Content ref={contentRef} className={(isHorizontal && 'horizontal') || 'vertical'}>
-                {products.map((edge, index) => {
-                    if (limit && index >= limit) return null;
-                    if (!edge?.node) return null;
-
-                    const product = edge.node;
-
-                    return (
-                        <ProductProvider
-                            key={product?.id}
-                            data={product}
-                            initialVariantId={FirstAvailableVariant(product)?.id}
-                        >
-                            <ProductCard
-                                handle={product?.handle}
-                                store={store}
-                                locale={locale}
-                                className={(index === 0 && 'First') || ''}
-                                i18n={i18n}
-                            />
-                        </ProductProvider>
-                    );
-                })}
-                {
-                    // TODO: i18n.
-                    showViewAll && (
-                        <Link
-                            href={`/collections/${handle}/`}
-                            className={styles.viewAll}
-                            locale={locale}
-                            title="Browse all products" // TODO: i18n.
-                        >
-                            View all {products.length} {Pluralize({ count: products.length, noun: 'product' })} in this
-                            collection
-                        </Link>
-                    )
-                }
+    if (!isHorizontal) {
+        content = (
+            <Content>
+                {products.map(({ node: product }, index) => (
+                    <ProductProvider
+                        key={product?.id}
+                        data={product}
+                        initialVariantId={FirstAvailableVariant(product)?.id}
+                    >
+                        {elements ? (
+                            elements[index]
+                        ) : (
+                            <ProductCard handle={product?.handle} store={store} locale={locale} i18n={i18n} />
+                        )}
+                    </ProductProvider>
+                ))}
             </Content>
-        </Container>
-    );
+        );
+    } else {
+        content = (
+            <Suspense>
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <FixedSizeList
+                            // TODO: Switch to `react-virtualized`.
+                            layout="horizontal"
+                            height={height}
+                            width={width}
+                            itemSize={width <= 900 ? 205 : 230}
+                            itemCount={products.length + (showViewAll ? 1 : 0)}
+                            itemKey={(index) => products[index]?.node.id || index}
+                            children={({ index, style }) => {
+                                if (!limit || (limit && index < limit)) {
+                                    const product = products[index]?.node;
+
+                                    return (
+                                        <ProductProvider
+                                            key={product?.id}
+                                            data={product}
+                                            initialVariantId={FirstAvailableVariant(product)?.id}
+                                        >
+                                            <div style={{ ...style, paddingRight: 'var(--block-spacer)' }}>
+                                                {elements ? (
+                                                    elements[index]
+                                                ) : (
+                                                    <ProductCard
+                                                        handle={product?.handle}
+                                                        store={store}
+                                                        locale={locale}
+                                                        i18n={i18n}
+                                                    />
+                                                )}
+                                            </div>
+                                        </ProductProvider>
+                                    );
+                                }
+
+                                return (
+                                    <Link
+                                        style={style}
+                                        href={`/collections/${handle}/`}
+                                        className={styles.viewAll}
+                                        locale={locale}
+                                        title="Browse all products" // TODO: i18n.
+                                        // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
+                                    >
+                                        View all of the products in this collection
+                                    </Link>
+                                );
+                            }}
+                        />
+                    )}
+                </AutoSizer>
+            </Suspense>
+        );
+    }
+
+    return <Container className={isHorizontal ? 'horizontal' : 'vertical'}>{content}</Container>;
 };
 
 export default CollectionBlock;
