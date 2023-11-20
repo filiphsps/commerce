@@ -81,7 +81,7 @@ describe('app', () => {
                         }
                     },
                     openGraph: {
-                        url: `/${locale}/search/`,
+                        url: `/search/`,
                         type: 'website',
                         title: 'search',
                         description: undefined,

@@ -72,7 +72,7 @@ export async function generateMetadata({
                 )
             },
             openGraph: {
-                url: `/${locale.locale}/${url}`,
+                url: `${url}`,
                 type: 'website',
                 title,
                 description,
