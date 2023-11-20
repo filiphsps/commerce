@@ -121,7 +121,7 @@
         "pretty-xml": "1.2.1",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.20.0",
-        "typescript": "5.2.2",
+        "typescript": "5.3.2",
         "vitest": "0.34.6"
     }
 }
