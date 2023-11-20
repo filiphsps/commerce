@@ -36,6 +36,9 @@ jobs:
             - name: 📋 Lint
               run: npm run lint
 
+            - name: 🔨 Build
+              run: npm run build
+
             - name: 📋 Typecheck
               run: npm run typecheck
 
@@ -47,8 +50,6 @@ jobs:
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-            - name: 🔨 Build
-              run: npm run build
 # NOTE: The following jobs are temporarily disabled as it's too expensive
 #       to run on every commit thanks to the startup cost and the fact
 #       that GitHub always charge for at least 1 minute of usage per job.
