@@ -53,7 +53,7 @@ const Announcement = styled.div`
     }
 `;
 const Announcements = styled.div`
-    z-index: 9999;
+    z-index: 5;
     width: 100%;
 `;
 
