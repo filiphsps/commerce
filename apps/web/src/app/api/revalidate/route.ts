@@ -2,12 +2,13 @@ import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
 /* c8 ignore start */
-const revalidate = async (req: NextRequest) => {
+export type RevalidateApiRouteParams = {};
+const revalidate = async (req: NextRequest, {}: RevalidateApiRouteParams) => {
     // TODO: Detect if prismic or shopify request.
     revalidateTag('prismic');
 
-    const body = req.json();
-    console.warn(body);
+    const body = await req.json();
+    console.warn(body, params);
 
     // TODO: API response builder or similar.
     return NextResponse.json({
@@ -19,14 +20,14 @@ const revalidate = async (req: NextRequest) => {
         metrics: {
             now: Date.now()
         }
-    });
+    }, { status: 200 });
 };
 
-export async function POST(req: NextRequest) {
-    return await revalidate(req);
+export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
+    return await revalidate(req, params);
 }
 
-export async function GET(req: NextRequest) {
-    return await revalidate(req);
+export async function GET(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
+    return await revalidate(req, params);
 }
 /* c8 ignore stop */
