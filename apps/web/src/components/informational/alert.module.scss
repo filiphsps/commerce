@@ -1,3 +1,5 @@
+@import '@/styles/variables.scss';
+
 .container {
     display: grid;
     grid-template-columns: 4rem 1fr;
@@ -12,7 +14,7 @@
 
     // TODO: Actually respect `severity`.
 
-    @media (min-width: 950px) {
+    @media (min-width: $breakpoint-mobile) {
         grid-template-columns: auto auto;
         justify-content: center;
         align-items: center;
@@ -45,7 +47,7 @@
             text-underline-offset: var(--block-border-width);
         }
 
-        @media (min-width: 950px) {
+        @media (min-width: $breakpoint-mobile) {
             align-items: center;
         }
     }
