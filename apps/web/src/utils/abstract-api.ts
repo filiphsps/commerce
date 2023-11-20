@@ -8,7 +8,10 @@ export type AbstractApi<Q = any> = {
     query: <T>(
         query: Q,
         variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
-        tags?: string[]
+        options?: {
+            tags?: string[];
+            revalidate?: number;
+        }
     ) => Promise<{ data: T | null; errors: readonly any[] | undefined }>;
 };
 export type AbstractApiBuilder<K, Q> = ({
@@ -43,7 +46,7 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
 }) => ({
     locale: () => locale,
     domain: () => domain,
-    query: async (query, variables = {}, tags = []) => {
+    query: async (query, variables = {}, { tags = [], revalidate } = {}) => {
         const { data, errors } = await api.query({
             query,
             fetchPolicy,
@@ -51,9 +54,9 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
                 language: locale.country,
                 locale: locale.country,
                 fetchOptions: {
-                    cache: 'force-cache',
+                    cache: revalidate ? undefined : 'force-cache',
                     next: {
-                        // TODO: Allow setting revalidate etc here.
+                        revalidate,
                         tags: ['shopify', ...(domain ? [domain] : []), ...tags]
                     }
                 }

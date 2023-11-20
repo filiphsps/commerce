@@ -1,29 +1,6 @@
-'use client';
-
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
-
-const Container = styled.section`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: var(--block-spacer);
-    width: 100%;
-`;
-
-const Custom = styled.div<{ scaling?: number }>`
-    height: calc(var(--block-spacer) * ${({ scaling }) => scaling || 2});
-`;
-
-const Large = styled.div`
-    height: calc(var(--block-spacer) * 4);
-`;
-const Normal = styled.div`
-    height: calc(var(--block-spacer) * 2);
-`;
-const Small = styled.div`
-    height: calc(var(--block-spacer) * 1);
-`;
+import styles from './spacing.module.scss';
 
 /**
  * Props for `Spacing`.
@@ -35,23 +12,23 @@ export type SpacingProps = SliceComponentProps<Content.SpacingSlice>;
  */
 const Spacing = ({ slice }: SpacingProps): JSX.Element => {
     return (
-        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+        <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             {((slice) => {
                 switch (slice.variation) {
                     case 'custom':
-                        return <Custom scaling={slice.primary.scaling || undefined} />;
+                        return <div style={{ height: `calc(var(--block-spacer) * ${slice.primary.scaling || 2})` }} />;
                     case 'small':
-                        return <Small />;
+                        return <div style={{ height: 'var(--block-spacer)' }} />;
                     case 'large':
-                        return <Large />;
+                        return <div style={{ height: 'calc(var(--block-spacer) * 4)' }} />;
 
                     // TODO: Maybe we should throw on default.
                     default:
                     case 'normal':
-                        return <Normal />;
+                        return <div style={{ height: 'calc(var(--block-spacer) * 2)' }} />;
                 }
             })(slice)}
-        </Container>
+        </section>
     );
 };
 

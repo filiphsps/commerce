@@ -1,0 +1,52 @@
+@import '@/styles/variables.scss';
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: var(--block-spacer-large);
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: calc(var(--block-spacer-large) * 1.5);
+
+        padding: var(--block-padding-large);
+        border-radius: var(--block-border-radius);
+        background: var(--accent-primary);
+        color: var(--accent-primary-text);
+
+        @media (min-width: $breakpoint-mobile) {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            justify-content: center;
+            align-items: center;
+            gap: calc(var(--block-spacer-large) * 2);
+        }
+
+        .item {
+            display: grid;
+            grid-template-columns: calc(var(--block-padding-large) * 2) auto;
+            justify-content: center;
+            align-items: center;
+            gap: var(--block-spacer-large);
+
+            .icon {
+                position: relative;
+                width: calc(var(--block-padding-large) * 2);
+                height: calc(var(--block-padding-large) * 2);
+
+                // TODO: Remove this when the icons are fixed.
+                filter: invert(1);
+            }
+
+            .title {
+                font-size: 1.35rem;
+                font-weight: 500;
+                text-transform: uppercase;
+                text-align: left;
+            }
+        }
+    }
+}

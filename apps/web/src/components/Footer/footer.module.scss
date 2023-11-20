@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background: var(--accent-primary-dark);
+    color: var(--accent-primary-text);
+    padding-top: 1rem;
+
+    .content {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 1.5rem;
+        width: 1465px;
+        max-width: 100%;
+        padding: var(--block-padding-large);
+    }
+}
