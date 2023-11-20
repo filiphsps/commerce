@@ -7,17 +7,30 @@ export type RevalidateApiRouteParams = {
     domain: string;
 };
 const revalidate = async (req: NextRequest, params: RevalidateApiRouteParams) => {
-    const body = await req.json();
-    console.warn(body, params);
+    const errors: any[] = [];
+
+    try {
+        console.warn(params);
+
+        if (req.method === 'POST') {
+            const body = await req.json();
+            console.warn(body);
+        }
+    } catch (error: any) {
+        errors.push(error);
+    }
 
     // TODO: Detect if prismic or shopify request.
     revalidateTag('prismic');
+    revalidateTag('shopify');
+    // revalidateTag(domain);
 
     // TODO: API response builder or similar.
+    const status = errors.length > 0 ? 500 : 200;
     return NextResponse.json(
         {
-            status: 200,
-            errors: null,
+            status,
+            errors: errors.length > 0 ? errors : null,
             data: {
                 revalidated: true
             },
@@ -25,7 +38,7 @@ const revalidate = async (req: NextRequest, params: RevalidateApiRouteParams) =>
                 now: Date.now()
             }
         },
-        { status: 200 }
+        { status }
     );
 };
 
