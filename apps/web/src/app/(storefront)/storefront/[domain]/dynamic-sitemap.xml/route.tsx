@@ -44,7 +44,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     let pages: SitemapEntry[] = [];
     try {
-        const api = StorefrontApiClient({ domain, locale });
+        const api = StorefrontApiClient({ domain, locale, noHeaders: true });
         const store = await StoreApi({ domain, locale, api });
         locales = store.i18n.locales;
 
@@ -80,7 +80,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         console.warn(error);
     }
 
-    const api = StorefrontApiClient({ locale });
+    const api = StorefrontApiClient({ domain, locale, noHeaders: true });
 
     const collections = (await CollectionsApi({ client: api })).map(
         (collection) =>
