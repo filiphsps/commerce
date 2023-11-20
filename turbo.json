@@ -7,7 +7,7 @@
             "outputs": ["**/.next/**", "!**/.next/cache/**"]
         },
         "lint": { "cache": false },
-        "test": { "outputs": ["**/coverage/**"] },
+        "test": { "cache": false, "outputs": ["**/coverage/**"] },
         "typecheck": { "cache": false },
         "dev": {
             "cache": false,

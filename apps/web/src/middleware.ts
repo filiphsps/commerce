@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 import { router } from '@/middleware/router';
 
-export const runtime = 'experimental-edge';
+// export const runtime = 'experimental-edge';
 export const config = {
     matcher: ['/:path*']
 };

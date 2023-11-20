@@ -7,13 +7,7 @@ import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
 import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
-
-const Container = styled.section`
-    width: 100%;
-    padding: 0;
-    margin: 0;
-`;
+import styles from './collection.module.scss';
 
 interface FullCollectionProps {
     slice: {
@@ -34,10 +28,10 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
     }
 
     return (
-        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+        <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
                 <VerticalCollection locale={locale} data={collection} store={store} i18n={i18n} />
             </PageContent>
-        </Container>
+        </section>
     );
 };

@@ -1,0 +1,50 @@
+@import '@/styles/variables.scss';
+
+.container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--block-spacer-large);
+
+        padding: var(--block-padding-large);
+        background: var(--color-block);
+        border-radius: var(--block-border-radius);
+        color: var(--foreground);
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: var(--block-spacer-small);
+
+            &.align-left {
+                align-items: flex-start;
+                text-align: left;
+            }
+            &.align-center {
+                align-items: center;
+                text-align: center;
+            }
+            &.align-right {
+                align-items: flex-end;
+                text-align: right;
+            }
+
+            .title {
+                text-decoration: underline;
+                text-decoration-style: dotted;
+                text-decoration-thickness: 0.2em;
+                text-underline-offset: var(--block-border-width);
+            }
+
+            .body {
+                max-width: 64rem;
+            }
+        }
+    }
+}
