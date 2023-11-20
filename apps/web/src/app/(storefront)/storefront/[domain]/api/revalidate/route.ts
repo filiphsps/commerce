@@ -38,7 +38,7 @@ const revalidate = async (req: NextRequest, params: RevalidateApiRouteParams) =>
                 now: Date.now()
             }
         },
-        { status }
+        { status, headers: { 'Cache-Control': 'no-store' } }
     );
 };
 
