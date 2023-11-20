@@ -6,7 +6,7 @@ import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
-//import { headers } from 'next/headers';
+import { headers } from 'next/headers';
 
 export const shopifyApiConfig = ({
     domain = BuildConfig.shopify.checkout_domain
@@ -16,9 +16,8 @@ export const shopifyApiConfig = ({
     public: () => ApiConfig;
     private: () => ApiConfig;
 } => {
-    //TODO: This shouldn't be hardcoded, instead we should figure it out from the domain.
-    if (domain.endsWith('sweetsideofsweden.com')) domain = BuildConfig.shopify.checkout_domain;
-    else if (domain === 'demo.nordcom.io') domain = 'mock.shop';
+    let shopifyDomain = BuildConfig.shopify.checkout_domain;
+    if (domain === 'demo.nordcom.io') shopifyDomain = 'mock.shop';
 
     let publicToken = BuildConfig.shopify.token;
     if (domain === 'demo.nordcom.io') publicToken = 'mock-token';
@@ -29,18 +28,18 @@ export const shopifyApiConfig = ({
     const api = createStorefrontClient({
         publicStorefrontToken: publicToken,
         privateStorefrontToken: privateToken,
-        storeDomain: `https://${domain}`,
+        storeDomain: `https://${shopifyDomain}`,
         storefrontApiVersion: BuildConfig.shopify.api,
         contentType: 'json'
-        //contentType: 'graphql'
     });
 
-    /*const clientHeaders = headers();
+    // TODO: Configurable.
+    const clientHeaders = headers();
     const buyerIp =
         clientHeaders.get('cf-connecting-ip') ||
         clientHeaders.get('x-forwarded-for') ||
         clientHeaders.get('x-real-ip') ||
-        undefined;*/
+        undefined;
 
     return {
         public: () => ({
@@ -49,7 +48,7 @@ export const shopifyApiConfig = ({
         }),
         private: () => ({
             uri: api.getStorefrontApiUrl(),
-            headers: api.getPrivateTokenHeaders({ buyerIp: undefined })
+            headers: api.getPrivateTokenHeaders({ buyerIp })
         })
     };
 };
