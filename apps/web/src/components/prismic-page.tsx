@@ -4,6 +4,7 @@ import { SliceZone } from '@prismicio/react';
 
 import type { StoreModel } from '@/models/StoreModel';
 import { components as slices } from '@/slices';
+import { Suspense } from 'react';
 
 type PageParams = {
     store: StoreModel;
@@ -19,10 +20,12 @@ export default function PrismicPage({ store, locale, prefetch, i18n, page, handl
     if (!page || (page.slices && page.slices.length <= 0)) return null;
 
     return (
-        <SliceZone
-            slices={page.slices}
-            components={slices}
-            context={{ store, prefetch, i18n, locale, type, uid: handle }}
-        />
+        <Suspense>
+            <SliceZone
+                slices={page.slices}
+                components={slices}
+                context={{ store, prefetch, i18n, locale, type, uid: handle }}
+            />
+        </Suspense>
     );
 }
