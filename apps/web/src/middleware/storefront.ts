@@ -16,9 +16,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
     // Handle API requests.
     if (newUrl.pathname.startsWith('/api/')) {
-        return NextResponse.rewrite(new URL(`/storefront/${hostname}${newUrl.pathname}${newUrl.search}`, req.url), {
-            status: 200
-        });
+        return NextResponse.rewrite(new URL(`/storefront/${hostname}${newUrl.pathname}${newUrl.search}`, req.url));
     }
 
     // Check if we're dealing with a file or route.
