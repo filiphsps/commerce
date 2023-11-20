@@ -1,7 +1,6 @@
 import type { HeaderModel } from '@/models/HeaderModel';
 import { createClient } from '@/prismic';
-import { BuildConfig } from '@/utils/build-config';
-import { DefaultLocale, type Locale } from '@/utils/locale';
+import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
 import type { Client as PrismicClient } from '@prismicio/client';
 
 export const HeaderApi = async ({
@@ -19,9 +18,8 @@ export const HeaderApi = async ({
             });
             return resolve(res.data as any as HeaderModel);
         } catch (error: any) {
-            // TODO: `isDefaultLocale` utility function.
             if (error.message.includes('No documents')) {
-                if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
+                if (!isDefaultLocale(locale)) {
                     return resolve(await HeaderApi({ locale: DefaultLocale(), client: _client })); // Try again with default locale
                 }
 
