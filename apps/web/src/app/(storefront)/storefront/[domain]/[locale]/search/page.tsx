@@ -64,7 +64,7 @@ export async function generateMetadata({
             )
         },
         openGraph: {
-            url: `/${locale.locale}/${handle}/`,
+            url: `/${handle}/`,
             type: 'website',
             title,
             description,
@@ -116,7 +116,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                 )}
 
                 <Suspense>
-                    <SearchContent store={store} locale={locale} />
+                    <SearchContent store={store} locale={locale} domain={domain} />
                 </Suspense>
             </PageContent>
         </Page>

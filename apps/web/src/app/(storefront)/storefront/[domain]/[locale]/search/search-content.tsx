@@ -131,8 +131,9 @@ const ContentHeader = styled(SearchHeader)`
 type SearchContentProps = {
     store?: StoreModel;
     locale: Locale;
+    domain?: string;
 };
-export default function SearchContent({ locale }: SearchContentProps) {
+export default function SearchContent({ locale, domain }: SearchContentProps) {
     const router = useRouter();
     const query = useSearchParams()?.get('q') || '';
 
@@ -166,7 +167,7 @@ export default function SearchContent({ locale }: SearchContentProps) {
         (query.length > 0 && [
             'SearchApi',
             {
-                client: ShopifyApolloApiBuilder({ locale, api: useApolloClient() }),
+                client: ShopifyApolloApiBuilder({ locale, domain, api: useApolloClient() }),
                 query: query
             }
         ]) ||

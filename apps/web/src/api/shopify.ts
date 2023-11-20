@@ -55,6 +55,7 @@ export const shopifyApiConfig = ({
 
 export const StorefrontApiClient = ({ domain, locale }: { domain?: string; locale: Locale }) =>
     ShopifyApolloApiBuilder({
-        api: setupApi(shopifyApiConfig({ domain }).private()).getClient(),
-        locale
+        locale,
+        domain,
+        api: setupApi(shopifyApiConfig({ domain }).private()).getClient()
     });

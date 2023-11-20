@@ -60,7 +60,7 @@ export async function generateMetadata({
             )
         },
         openGraph: {
-            url: `/${locale.locale}/blog/`,
+            url: `/blog/`,
             type: 'website',
             title,
             description,
