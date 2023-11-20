@@ -42,7 +42,7 @@ export async function generateMetadata({
     try {
         const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ domain, locale, api });
-        const product = await ProductApi({ client: api, handle });
+        const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
         const locales = store.i18n.locales;
 
@@ -119,7 +119,7 @@ export default async function ProductPage({
     try {
         const api = StorefrontApiClient({ domain, locale });
         const store = await StoreApi({ domain, locale, api });
-        const product = await ProductApi({ client: api, handle });
+        const product = await ProductApi({ api, handle });
 
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
@@ -145,7 +145,7 @@ export default async function ProductPage({
                 )?.node) ||
             undefined;
 
-        if ((searchParams?.variant && !selectedVariant) || !initialVariant) {
+        if (searchParams?.variant && !selectedVariant && !initialVariant) {
             console.error(
                 `404: No variant found for product "${handle}" (variant: "${searchParams?.variant || 'default'}")`
             );
@@ -153,6 +153,10 @@ export default async function ProductPage({
         }
 
         const variant = selectedVariant || initialVariant;
+        if (!variant) {
+            return notFound();
+        }
+
         const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
 
         return (
@@ -163,7 +167,7 @@ export default async function ProductPage({
                     asideDesktopWidth={0.52}
                     aside={
                         <Gallery
-                            initialImageId={variant.image?.id || product.images.edges?.[0].node.id}
+                            initialImageId={variant?.image?.id || product.images?.edges?.[0].node.id}
                             images={product.images}
                             className={styles.gallery}
                         />
@@ -199,7 +203,7 @@ export default async function ProductPage({
                             i18n={i18n}
                             className={styles.actions}
                             product={product as any}
-                            initialVariant={initialVariant}
+                            initialVariant={initialVariant!}
                             selectedVariant={selectedVariant}
                         />
 

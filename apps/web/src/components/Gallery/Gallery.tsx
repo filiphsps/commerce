@@ -70,6 +70,7 @@ const Primary = styled.div`
     padding: var(--block-padding);
     border-radius: var(--block-border-radius-large);
     background: var(--color-block);
+    max-height: 100%;
 
     @media (min-width: 950px) {
         padding: calc(var(--block-padding-large) * 2);
@@ -78,29 +79,32 @@ const Primary = styled.div`
 `;
 
 const ImageWrapper = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
     flex-shrink: 1;
     max-height: 100%;
 `;
 
 const Container = styled.div`
     position: relative;
+    overflow: hidden;
     display: grid;
     grid-template-areas: 'primary previews';
     grid-template-columns: 1fr auto;
-    grid-template-rows: 1fr;
+    grid-template-rows: 100%;
     gap: var(--block-spacer);
     width: 100%;
-    max-height: 30vh;
+    height: 30vh;
+    max-height: 100%;
     transition: 150ms ease-in-out;
 
     @media (min-width: 950px) {
         grid-template-areas: 'primary' 'previews';
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
+        grid-template-rows: 100% 1fr;
+        height: 60vh;
         max-height: 100%;
     }
 
@@ -120,8 +124,8 @@ const Container = styled.div`
         filter: contrast(1);
 
         @media (min-width: 950px) {
-            height: unset;
-            max-height: 70vh;
+            height: 70vh;
+            max-height: 100%;
             max-width: 48rem;
             padding: var(--block-padding-large);
         }

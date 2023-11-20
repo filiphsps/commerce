@@ -30,7 +30,7 @@ const OptionValue = styled(Link)`
     color: var(--color-dark);
     text-align: center;
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     transition: 150ms ease-in-out;
     user-select: none;
 
@@ -45,7 +45,7 @@ const OptionValue = styled(Link)`
     &.selected {
         border-color: var(--accent-primary);
         color: var(--accent-primary);
-        font-weight: 800;
+        font-weight: 700;
     }
 
     &.disabled,

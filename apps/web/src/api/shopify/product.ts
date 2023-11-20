@@ -214,20 +214,16 @@ export const ConvertToLocalMeasurementSystem = ({
     return `${Math.ceil(res)}${targetUnit}`;
 };
 
-export const ProductApi = async ({ client, handle }: { client: AbstractApi; handle: string }): Promise<Product> => {
+export const ProductApi = async ({ api, handle }: { api: AbstractApi; handle: string }): Promise<Product> => {
     return new Promise(async (resolve, reject) => {
         if (!handle) return reject(new Error('400: Invalid handle'));
 
         try {
-            const { data, errors } = await client.query<{ productByHandle: Product }>(
+            const { data, errors } = await api.query<{ productByHandle: Product }>(
                 gql`
-                    fragment ProductFragment on Product {
-                        ${PRODUCT_FRAGMENT}
-                    }
-
                     query product($handle: String!) {
                         productByHandle(handle: $handle) {
-                            ...ProductFragment
+                            ${PRODUCT_FRAGMENT}
                         }
                     }
                 `,
@@ -237,14 +233,21 @@ export const ProductApi = async ({ client, handle }: { client: AbstractApi; hand
             );
 
             if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
-            if (!data?.productByHandle)
-                return reject(new Error(`404: "Product" with handle "${handle}" cannot be found`));
+            else if (!data?.productByHandle || !data.productByHandle?.handle)
+                return reject(new Error(`404: Product with handle "${handle}" cannot be found`));
+            else if (data.productByHandle?.handle !== handle)
+                return reject(
+                    new Error(
+                        `500: Product handle doesn't match requested handle ("${data.productByHandle?.handle}" !== "${handle}")`
+                    )
+                );
 
+            const product = data.productByHandle;
             return resolve({
-                ...data.productByHandle,
-                descriptionHtml: (data.productByHandle.descriptionHtml || '')
-                    .replaceAll(/ /g, ' ')
-                    .replaceAll('\u00A0', ' ')
+                ...product,
+                descriptionHtml: product.descriptionHtml
+                    ? product.descriptionHtml.replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+                    : ''
             });
         } catch (error: any) {
             console.error(error);

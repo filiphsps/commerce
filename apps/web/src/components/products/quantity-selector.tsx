@@ -5,7 +5,6 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
-import { TbMinus, TbPlus } from 'react-icons/tb';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
@@ -63,7 +62,7 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
                 onClick={() => quantity > 1 && updateQuantity(quantity - 1)}
                 title="Decrease quantity" // TODO: i18n.
             >
-                <TbMinus />
+                -
             </button>
             <input
                 type="number"
@@ -100,7 +99,7 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
                 onClick={() => updateQuantity(quantity + 1)}
                 title="Increase quantity" // TODO: i18n.
             >
-                <TbPlus />
+                +
             </button>
         </section>
     );
