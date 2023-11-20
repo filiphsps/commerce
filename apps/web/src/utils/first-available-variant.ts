@@ -10,9 +10,11 @@ export const FirstAvailableVariant = (product?: Product | null): ProductVariant 
     // 1. Make sure we got a product passed to us.
     if (!product || !product?.variants) return undefined;
 
-    const variants: ProductVariant[] = product.variants.edges
-        ? product.variants.edges.map(({ node: variant }) => variant)
-        : (product.variants as any);
+    const variants: ProductVariant[] | undefined = product?.variants?.edges
+        ? product?.variants?.edges?.map?.(({ node: variant }) => variant)
+        : (product?.variants as any);
+
+    if (!variants) throw new Error('No variants found.');
 
     // 2. Check if the last variant is available.
     if (variants.at(-1)?.availableForSale)

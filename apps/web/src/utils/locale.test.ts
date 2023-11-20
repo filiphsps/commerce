@@ -163,6 +163,7 @@ describe('utils', () => {
         beforeEach(() => {
             // Suppress console.warn output which occurs when an invalid locale is passed to NextLocaleToLocale
             vi.spyOn(console, 'warn').mockImplementation(() => {});
+            vi.spyOn(console, 'error').mockImplementation(() => {});
         });
 
         it('should convert a locale string to a Locale object', () => {

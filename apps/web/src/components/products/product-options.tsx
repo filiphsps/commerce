@@ -84,7 +84,7 @@ export const ProductOptions = (props: ProductOptionProps) => {
     if (!product) {
         console.error('No product found. Have you wrapped your component in a `<ProductProvider>`?');
         return null;
-    } else if (!product.variants) {
+    } else if (!product?.variants) {
         console.error('No product variants found. Something has gone really wrong.');
         return null;
     }

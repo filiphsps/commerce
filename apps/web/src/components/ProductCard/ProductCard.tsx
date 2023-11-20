@@ -373,7 +373,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         else quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
     }, [quantityValue]);
 
-    if (!product || !product.variants || !selectedVariant) {
+    if (!product || !product?.variants || !selectedVariant) {
         return <ProductCardSkeleton />;
     }
 

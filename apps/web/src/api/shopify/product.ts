@@ -242,7 +242,9 @@ export const ProductApi = async ({ client, handle }: { client: AbstractApi; hand
 
             return resolve({
                 ...data.productByHandle,
-                descriptionHtml: (data.productByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+                descriptionHtml: (data.productByHandle.descriptionHtml || '')
+                    .replaceAll(/ /g, ' ')
+                    .replaceAll('\u00A0', ' ')
             });
         } catch (error: any) {
             console.error(error);

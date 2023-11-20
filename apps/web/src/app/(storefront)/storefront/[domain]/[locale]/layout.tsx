@@ -30,7 +30,7 @@ const font = Lexend_Deca({
     preload: true
 });
 
-export const runtime = process.env.NODE_ENV === 'production' ? 'experimental-edge' : 'nodejs';
+// export const runtime = 'experimental-edge';
 
 export type LayoutParams = { domain: string; locale: string };
 
@@ -122,6 +122,7 @@ export default async function RootLayout({
                 }
                 suppressHydrationWarning
             >
+                <head />
                 <body className={`${font.variable}`}>
                     <SocialProfileJsonLd
                         useAppDir

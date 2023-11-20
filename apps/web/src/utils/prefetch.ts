@@ -53,7 +53,13 @@ const Prefetch = ({
                             limit: slice.variation === 'full' ? undefined : limit
                         });
 
-                        if (!collection?.products?.edges) continue; // TODO: Figure out if we should throw here.
+                        if (!collection) {
+                            console.warn(`Collection "${handle}" not found.`);
+                            continue; // TODO: Figure out if we should throw here.
+                        } else if (!collection?.products?.edges) {
+                            console.warn(`No products in collection "${collection.handle || handle}".`);
+                            continue; // TODO: Figure out if we should throw here.
+                        }
 
                         collections[handle] = {
                             ...collection,
@@ -81,9 +87,10 @@ const Prefetch = ({
                                             if (
                                                 (slice?.primary as any)?.limit &&
                                                 (slice?.primary as any)?.limit > 0 &&
-                                                (slice?.primary as any)?.limit >= index
-                                            )
+                                                (slice?.primary as any)?.limit <= index
+                                            ) {
                                                 return null;
+                                            }
 
                                             return {
                                                 node: {
