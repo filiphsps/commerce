@@ -4,7 +4,8 @@ import { router } from '@/middleware/router';
 
 // export const runtime = 'experimental-edge';
 export const config = {
-    matcher: ['/:path*']
+    //matcher: ['/:path*'],
+    matcher: ['/((?!api|_next))']
 };
 
 export default async function middleware(req: NextRequest) {
