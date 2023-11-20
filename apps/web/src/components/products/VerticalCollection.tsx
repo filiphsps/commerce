@@ -87,7 +87,7 @@ export const VerticalCollection: FunctionComponent<VerticalCollectionProps> = ({
                             data={product}
                             initialVariantId={FirstAvailableVariant(product)?.id}
                         >
-                            <ProductCard handle={product?.handle} store={store} locale={locale} i18n={i18n} />
+                            <ProductCard store={store} locale={locale} i18n={i18n} />
                         </ProductProvider>
                     );
                 })}

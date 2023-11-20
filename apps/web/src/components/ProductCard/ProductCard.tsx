@@ -345,7 +345,6 @@ export const AppendShopifyParameters = ({ params, url }: { params?: string | nul
 interface ProductCardProps {
     store: StoreModel;
     locale: Locale;
-    handle?: string;
     className?: string;
     i18n: LocaleDictionary;
     style?: CSSProperties;

@@ -94,11 +94,7 @@ const CollectionBlock = ({
                         data={product}
                         initialVariantId={FirstAvailableVariant(product)?.id}
                     >
-                        {elements ? (
-                            elements[index]
-                        ) : (
-                            <ProductCard handle={product?.handle} store={store} locale={locale} i18n={i18n} />
-                        )}
+                        {elements ? elements[index] : <ProductCard store={store} locale={locale} i18n={i18n} />}
                     </ProductProvider>
                 ))}
             </Content>
@@ -130,12 +126,7 @@ const CollectionBlock = ({
                                                 {elements ? (
                                                     elements[index]
                                                 ) : (
-                                                    <ProductCard
-                                                        handle={product?.handle}
-                                                        store={store}
-                                                        locale={locale}
-                                                        i18n={i18n}
-                                                    />
+                                                    <ProductCard store={store} locale={locale} i18n={i18n} />
                                                 )}
                                             </div>
                                         </ProductProvider>

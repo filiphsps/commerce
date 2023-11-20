@@ -47,12 +47,7 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
     const hostname = getHostname(req);
 
     // TODO: Dynamic list of storefronts.
-    const storefronts: string[] = [
-        'www.sweetsideofsweden.com',
-        'sweetsideofsweden.com',
-        'demo.nordcom.io',
-        'cleanring.se'
-    ];
+    const storefronts: string[] = ['www.sweetsideofsweden.com', 'sweetsideofsweden.com', 'demo.nordcom.io'];
     if (storefronts.includes(hostname)) {
         return 'storefront';
     }

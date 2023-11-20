@@ -4,6 +4,7 @@
 import Content from '@/components/Content/Content';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import buttonStyles from '@/components/products/add-to-cart.module.scss';
 import Heading from '@/components/typography/heading';
 import { useEffect } from 'react';
 
@@ -12,11 +13,13 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     return (
         <Page>
             <PageContent primary>
-                <Heading title={`Error: ${error?.name}`} subtitle={`${error.message}`} />
+                <Heading title={`Error: ${error?.name}`} subtitle={<code>{error.message}</code>} />
 
                 <Content>
                     <p>If this keeps happening please reach out to our support.</p>
-                    <button onClick={reset}>Are you ready to try again?</button>
+                    <button className={buttonStyles.button} onClick={reset}>
+                        Are you ready to try again?
+                    </button>
                 </Content>
             </PageContent>
         </Page>
