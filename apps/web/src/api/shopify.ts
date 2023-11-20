@@ -9,9 +9,11 @@ import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 
 export const shopifyApiConfig = ({
-    domain = BuildConfig.shopify.checkout_domain
+    domain = BuildConfig.shopify.checkout_domain,
+    noHeaders = false
 }: {
     domain?: string;
+    noHeaders?: boolean;
 }): {
     public: () => ApiConfig;
     private: () => ApiConfig;
@@ -33,13 +35,15 @@ export const shopifyApiConfig = ({
         contentType: 'json'
     });
 
-    // TODO: Configurable.
-    const clientHeaders = headers();
-    const buyerIp =
-        clientHeaders.get('cf-connecting-ip') ||
-        clientHeaders.get('x-forwarded-for') ||
-        clientHeaders.get('x-real-ip') ||
-        undefined;
+    let buyerIp: string | undefined = undefined;
+    if (!noHeaders) {
+        const clientHeaders = headers();
+        buyerIp =
+            clientHeaders.get('cf-connecting-ip') ||
+            clientHeaders.get('x-forwarded-for') ||
+            clientHeaders.get('x-real-ip') ||
+            undefined;
+    }
 
     return {
         public: () => ({

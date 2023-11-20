@@ -14,24 +14,28 @@ export const storefront = (req: NextRequest): NextResponse => {
     const hostname = getHostname(req);
     let newUrl = req.nextUrl.clone();
 
-    // Check if we're dealing with a file, api route or a "normal" route.
-    if (newUrl.pathname.match(FILE_TEST) || newUrl.pathname.startsWith('/api/')) {
+    // Handle API requests.
+    if (newUrl.pathname.startsWith('/api/')) {
+        return NextResponse.rewrite(new URL(`/storefront/${hostname}${newUrl.pathname}${newUrl.search}`, req.url), {
+            status: 200
+        });
+    }
+
+    // Check if we're dealing with a file or route.
+    if (newUrl.pathname.match(FILE_TEST)) {
         let target = `${newUrl.pathname}${newUrl.search}`;
-
         // TODO: Handle Handle tenant-specific assets.
+
+        // Favicon.
         if (newUrl.pathname.endsWith('favicon.png')) {
-            target = `/storefront/${hostname}${newUrl.pathname}`;
-
+            target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
-        } else if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
+        }
+
+        // Sitemap.
+        if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
             target = `/storefront/${hostname}/dynamic-sitemap.xml${newUrl.search}`;
-
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
-        } else if (newUrl.pathname.startsWith('/api/')) {
-            // TODO: Move this out of the file handling.
-            target = `/storefront/${hostname}/${newUrl.pathname}`;
-
-            return NextResponse.rewrite(new URL(target, req.url));
         }
 
         // FIXME: Don't hardcode `sweetsideofsweden.com`
@@ -41,16 +45,14 @@ export const storefront = (req: NextRequest): NextResponse => {
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (!newUrl.pathname.match(LOCALE_TEST)) {
+    if (!newUrl.pathname.match(LOCALE_TEST) && !newUrl.pathname.includes('/api/')) {
         // Make sure it's not a file
         const acceptLanguageHeader = req.headers.get('accept-language') || '';
         // FIXME: This should be dynamic, not based on a build-time configuration.
         //        Maybe we can use edge config for this?..
         const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
-
         const savedLocale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
         const locale = savedLocale || userLang || locales.at(0);
-
         if (!locale) {
             throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
         }
@@ -72,6 +74,8 @@ export const storefront = (req: NextRequest): NextResponse => {
         for (const locale of trailingLocales.slice(1)) {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
         }
+
+        // Check if we fixed an occurrence of this issue, if so log it.
         if (newUrl.pathname !== req.nextUrl.pathname) {
             console.warn(`Fixed locale duplication "${req.nextUrl.href}" -> "${newUrl.href}"`);
         }
