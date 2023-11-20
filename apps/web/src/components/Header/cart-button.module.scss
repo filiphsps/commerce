@@ -1,0 +1,59 @@
+@import '@/styles/variables.scss';
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    max-height: 3.5rem;
+    padding: var(--block-padding-small) 0;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    transition:
+        250ms ease-in-out all,
+        150ms ease-in-out color,
+        150ms ease-in-out background-color;
+
+    svg {
+        vertical-align: middle;
+        font-size: 1em;
+        line-height: 1;
+    }
+
+    .quantity {
+        width: 0;
+    }
+
+    &:is(:hover, :active) {
+        color: var(--accent-primary);
+    }
+
+    @media (min-width: $breakpoint-tablet-medium) {
+        font-size: 2.5rem;
+    }
+
+    &[data-items]:not([data-items='0']) {
+        gap: var(--block-padding);
+        padding: var(--block-padding-small) var(--block-padding);
+        background-color: var(--accent-primary);
+        color: var(--accent-primary-text);
+        border-radius: 5rem;
+        font-size: 2.65rem;
+
+        @media (min-width: $breakpoint-tablet-medium) {
+            font-size: 2.15rem;
+        }
+
+        .quantity {
+            font-size: 0.85em;
+            width: auto;
+        }
+
+        &:is(:hover, :active) {
+            background-color: var(--color-bright);
+            color: var(--color-dark);
+        }
+    }
+}

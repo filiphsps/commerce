@@ -43,8 +43,7 @@
             align-items: flex-end;
             height: 100%;
             margin: 0 -0.25rem -0.15rem 0;
-            font-size: 2rem;
-            stroke-width: 2.25;
+            font-size: 1.75rem;
             vertical-align: middle;
             transform: rotate(-90deg);
             transition: 75ms ease-in-out transform;
@@ -70,6 +69,7 @@
 
         // Firefox doesn't support `:is()`, so we have to do this.
         &:hover .submenu {
+            opacity: 1;
             max-height: 100vh !important;
         }
 
@@ -93,10 +93,12 @@
             inset: 5.45rem 0 auto 0;
 
             max-height: 0;
+            opacity: 0;
             transition:
-                150ms ease-in-out max-height,
-                150ms ease-in-out height,
-                150ms ease-in-out border;
+                75ms ease-in-out max-height,
+                75ms ease-in-out height,
+                150ms ease-in-out border,
+                250ms ease-in-out opacity;
             // Make the hit-box larger, could've been a padding but it obscures the logo
             // e.g., let's not `padding-top: 0.75rem;`.
             border-bottom: 0 solid transparent;

@@ -149,7 +149,7 @@ const Actions = styled.div`
     gap: var(--block-spacer-small);
 `;
 const AddButton = styled.button`
-    & {
+    && {
         min-height: 4rem;
         width: 100%;
         border: none;

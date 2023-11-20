@@ -1,7 +1,7 @@
 'use client';
 
 import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCartLine } from '@shopify/hydrogen-react';
-import { FiMinus, FiPlus, FiTrash } from 'react-icons/fi';
+import { FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
 import Loader from '@/components/Loader';
@@ -172,6 +172,11 @@ const MetaSection = styled(Section)`
 `;
 
 const RemoveButton = styled.button`
+    && {
+        height: 4rem;
+        font-size: 1.5rem;
+    }
+
     @media (hover: hover) and (pointer: fine) {
         &:hover {
             background: var(--color-danger);
@@ -205,6 +210,7 @@ const Quantity = styled.div<{ disabled?: boolean }>`
         border: none;
         border-radius: 0;
         font-size: 1.25rem;
+        font-weight: 500;
         text-align: center;
         outline: none;
     }
@@ -226,11 +232,12 @@ const QuantitySection = styled(Section)`
     padding-left: 1rem;
 
     button {
-        height: 3rem;
-        width: 3rem;
+        height: 100%;
+        min-width: 3rem;
         text-align: center;
-        font-size: 1.25rem;
-        line-height: 100%;
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1;
         border-radius: var(--block-border-radius);
     }
 
@@ -373,7 +380,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
                         title="Decrease" // TODO: i18n.
                         adjust="decrease"
                     >
-                        <FiMinus />
+                        -
                     </CartLineQuantityAdjustButton>
                     <CartLineQuantity
                         as={
@@ -417,7 +424,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
                         title="Increase" // TODO: i18n.
                         adjust="increase"
                     >
-                        <FiPlus />
+                        +
                     </CartLineQuantityAdjustButton>
                 </Quantity>
 

@@ -125,9 +125,10 @@
         justify-content: flex-end;
         align-items: center;
         gap: 0;
+        height: 100%;
 
         @media (min-width: $breakpoint-tablet-medium) {
-            gap: calc(var(--block-spacer) * 2);
+            gap: var(--block-spacer);
         }
 
         .SearchBar {

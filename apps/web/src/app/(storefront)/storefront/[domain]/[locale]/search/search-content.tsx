@@ -44,7 +44,6 @@ const SearchButton = styled(Button)`
 
     svg {
         font-size: 2rem;
-        stroke-width: 0.4ex;
     }
 `;
 

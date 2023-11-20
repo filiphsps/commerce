@@ -106,7 +106,7 @@ export default async function RootLayout({
 
         const headerComponents = (
             <>
-                <Header store={store} navigation={navigation} locale={locale} />
+                <Header store={store} navigation={navigation} locale={locale} i18n={i18n} />
                 <MobileMenu navigation={navigation} />
             </>
         );

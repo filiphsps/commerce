@@ -1,4 +1,4 @@
-import { TbSearch, TbShoppingBag } from 'react-icons/tb';
+import { TbSearch } from 'react-icons/tb';
 
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
@@ -6,16 +6,18 @@ import { HeaderNavigation } from '@/components/Header/header-navigation';
 import styles from '@/components/Header/header.module.scss';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import type { Locale } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
 import type { FunctionComponent } from 'react';
+import { CartButton } from './cart-button';
 
 interface HeaderProps {
     store: StoreModel;
     navigation: any;
     locale: Locale;
+    i18n: LocaleDictionary;
 }
-const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, locale }) => {
+const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, locale, i18n }) => {
     const { logos } = store;
 
     const logo = logos.alternative || logos.primary;
@@ -52,14 +54,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, lo
                         <TbSearch />
                     </Link>
                 </div>
-                <div className={`${styles.action} ${(0 > 0 && styles.active) || ''}`}>
-                    <Link
-                        title="View your shopping cart" // TODO: i18n.
-                        href={'/cart/'}
-                    >
-                        <TbShoppingBag />
-                    </Link>
-                </div>
+                <CartButton locale={locale} i18n={i18n} />
             </div>
         </HeaderContainer>
     );

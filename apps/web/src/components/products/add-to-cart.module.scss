@@ -13,7 +13,7 @@
         calc(calc(var(--block-padding-large) * 2) - var(--block-border-width));
     line-height: normal;
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 400;
     text-align: center;
     user-select: none;
     border: var(--block-border-width) solid var(--accent-primary);
@@ -63,7 +63,6 @@
 
     svg {
         font-size: 2rem;
-        stroke-width: 2.25;
         height: 100%;
         vertical-align: middle;
     }

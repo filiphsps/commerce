@@ -32,11 +32,11 @@ const Grid = styled.div`
 const Title = styled.div`
     text-align: center;
     font-size: 2rem;
+    font-weight: 600;
     line-height: 2rem;
-    color: var(--color-bright);
+    color: var(--accent-secondary-text);
 `;
 const TitleContainer = styled.div`
-    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,7 +46,7 @@ const TitleContainer = styled.div`
     border-radius: var(--block-border-radius);
     border-top-right-radius: 0;
     border-top-left-radius: 0;
-    background: var(--accent-primary);
+    background: var(--accent-secondary-light);
 
     @media (max-width: 950px) {
         align-items: center;
@@ -66,15 +66,13 @@ const Item = styled(Link)`
     grid-template-rows: auto 1fr;
     border-radius: var(--block-border-radius);
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    outline-color: var(--accent-secondary-light);
+    outline-width: 0;
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
-            background: var(--accent-secondary-light);
-
-            img {
-                transform: scale(1.1);
-            }
+            background: var(--accent-primary);
+            outline: var(--block-border-width) solid var(--accent-primary);
         }
     }
 `;
