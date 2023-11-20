@@ -71,23 +71,25 @@ const routes: ClientConfig['routes'] = [
  * @returns {Client} A Prismic client.
  */
 export const createClient = (config: CreateClientConfig & { domain?: string; locale?: Locale } = {}): Client => {
+    const { domain, locale, ...props } = config;
+    const defaultTags = ['prismic', ...(domain ? [domain] : [])];
+
     const client = prismicCreateClient(repositoryName, {
         routes,
         accessToken: accessToken || undefined,
         fetchOptions: {
             cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'default',
-            next: { tags: ['prismic'] }
+            next: { tags: defaultTags }
         },
         defaultParams: {
-            lang: config.locale?.locale
+            lang: locale?.locale || undefined
         },
         ...config
     });
 
     enableAutoPreviews({
         client,
-        previewData: config.previewData,
-        req: config.req
+        ...props
     });
 
     return client;
@@ -107,6 +109,8 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
     } else if (doc.type === 'product_page') {
         return `/${locale.locale}/products/${doc.uid}/`;
     } else if (doc.type === 'collection_page') {
+        return `/${locale.locale}/collection/${doc.uid}/`;
+    } else if (doc.type === 'article_page') {
         return `/${locale.locale}/collection/${doc.uid}/`;
     }
 

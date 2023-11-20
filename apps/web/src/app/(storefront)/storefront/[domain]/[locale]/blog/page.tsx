@@ -1,6 +1,6 @@
-import { BlogApi } from '@/api/blog';
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
+import { BlogApi } from '@/api/shopify/blog';
 import { StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';

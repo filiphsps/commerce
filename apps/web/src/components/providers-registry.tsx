@@ -3,8 +3,8 @@
 import { createClient, linkResolver } from '@/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
-import { CartFragment } from '@/api/cart';
 import type { ApiConfig } from '@/api/client';
+import { CartFragment } from '@/api/shopify/cart';
 import { HeaderProvider } from '@/components/Header/header-provider';
 import ApiProvider from '@/components/api-provider';
 import StyledComponentsProvider from '@/components/styled-components-provider';
