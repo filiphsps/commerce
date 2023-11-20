@@ -19,7 +19,8 @@ export const setupApi = ({ uri, headers }: ApiConfig) =>
                 }),
                 cache: new InMemoryCache({
                     canonizeResults: true,
-                    addTypename: false
+                    //addTypename: false,
+                    addTypename: true
                 }),
                 defaultOptions: {
                     watchQuery: {

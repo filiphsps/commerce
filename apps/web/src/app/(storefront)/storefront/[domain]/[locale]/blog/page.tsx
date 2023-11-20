@@ -90,14 +90,13 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     const store = await StoreApi({ domain, locale, api });
     const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
-    // FIXME: Don't limit to 5.
-    const blog = await BlogApi({ api, handle: 'news', limit: 5 });
+    const blog = await BlogApi({ api, handle: 'news' });
 
     return (
         <>
             <Heading title={page?.title} subtitle={page?.description} />
 
-            <BlogContent blog={blog} locale={locale} i18n={i18n} />
+            <BlogContent blog={blog} store={store} locale={locale} i18n={i18n} />
 
             {page?.slices && page?.slices.length > 0 && (
                 <PrismicPage

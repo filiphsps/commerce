@@ -5,5 +5,9 @@
     text-align: left;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 1.5rem;
+    }
 }

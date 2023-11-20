@@ -10,29 +10,44 @@
     }
 
     .content {
+        position: relative;
     }
 
-    .sidebar {
-        position: sticky;
-        top: 10rem;
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 1;
-        gap: calc(var(--block-spacer-large) * 2);
-
+    .sidebar-wrapper {
         @media (min-width: $breakpoint-mobile) {
-            width: 28rem;
+            padding-top: 6rem;
         }
 
-        .section {
+        .sidebar {
+            position: sticky;
+            top: 10rem;
             display: flex;
             flex-direction: column;
-            gap: var(--block-spacer-small);
+            flex-shrink: 1;
+            gap: calc(var(--block-spacer-large) * 2);
 
-            a {
-                display: block;
-                font-size: 1.5rem;
-                line-height: normal;
+            @media (min-width: $breakpoint-mobile) {
+                width: 28rem;
+            }
+
+            .section {
+                display: flex;
+                flex-direction: column;
+                gap: var(--block-spacer);
+
+                @media (min-width: $breakpoint-mobile) {
+                    gap: var(--block-spacer-small);
+                }
+
+                a {
+                    display: block;
+                    font-size: 1.75rem;
+                    line-height: 1.1;
+
+                    @media (min-width: $breakpoint-mobile) {
+                        font-size: 1.5rem;
+                    }
+                }
             }
         }
     }

@@ -1,8 +1,8 @@
 import { BlogApi } from '@/api/blog';
 import { StorefrontApiClient } from '@/api/shopify';
 import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';
 import { NextLocaleToLocale } from '@/utils/locale';
 import { notFound } from 'next/navigation';
@@ -40,9 +40,9 @@ export default async function BlogLayout({
     const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
         ({ node: article }) => article
     );
-    /*const popular = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'RELEVANCE' })).articles.edges.map(
+    const popular = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'RELEVANCE' })).articles.edges.map(
         ({ node: article }) => article
-    );*/
+    );
 
     return (
         <Page>
@@ -50,7 +50,7 @@ export default async function BlogLayout({
                 <div className={styles.container}>
                     <main className={styles.content}>{children}</main>
 
-                    <div>
+                    <div className={styles['sidebar-wrapper']}>
                         <aside className={styles.sidebar}>
                             <section className={styles.section}>
                                 <Label>Latest Articles</Label>
@@ -60,14 +60,14 @@ export default async function BlogLayout({
                                     </Link>
                                 ))}
                             </section>
-                            {/*<section className={styles.section}>
+                            <section className={styles.section}>
                                 <Label>Popular Posts</Label>
                                 {popular.map(({ id, handle, title }) => (
                                     <Link key={id} href={`/blog/${handle}/`}>
                                         {title}
                                     </Link>
                                 ))}
-                            </section>*/}
+                            </section>
                         </aside>
                     </div>
                 </div>

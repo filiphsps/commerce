@@ -73,7 +73,7 @@ const Header = styled.div`
 const Action = styled(Link)<{ $primary?: boolean }>`
     padding: var(--block-padding) calc(var(--block-padding-large) * 1.75);
     border-radius: calc(var(--block-border-radius-large) * 2);
-    border: var(--block-border-width) solid var(--heading-selected-color);
+    border: var(--block-border-width) solid var(--color-block-dark);
     color: var(--heading-selected-color);
     font-weight: 500;
     font-size: 1.5rem;

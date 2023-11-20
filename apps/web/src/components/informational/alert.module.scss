@@ -1,0 +1,52 @@
+.container {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    grid-template-rows: 1fr;
+    gap: var(--block-padding-large);
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    padding: var(--block-padding-large);
+    border-radius: var(--block-border-radius-large);
+    background: var(--color-block-pastel-lime);
+
+    // TODO: Actually respect `severity`.
+
+    @media (min-width: 950px) {
+        grid-template-columns: auto auto;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+    }
+
+    .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--icon-color, --color-dark);
+        font-size: 3.75rem;
+        text-align: center;
+    }
+
+    .content {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 1.5rem;
+        line-height: 1.75rem;
+        color: var(--color);
+
+        a {
+            color: var(--color);
+
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: var(--block-border-width);
+        }
+
+        @media (min-width: 950px) {
+            align-items: center;
+        }
+    }
+}

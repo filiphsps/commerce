@@ -1,7 +1,7 @@
 'use client';
 
-import PageContent from '@/components/PageContent';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import type { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';

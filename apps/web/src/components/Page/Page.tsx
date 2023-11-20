@@ -1,22 +1,14 @@
-'use client';
+import styles from '@/components/Page/page.module.scss';
+import type { HTMLProps, ReactNode } from 'react';
 
-import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
-
-const Container = styled.main`
-    min-height: calc(100vh - 26rem);
-`;
-
-interface PageProps {
-    className?: string;
-    children: any;
-    style?: any;
-}
-const Page: FunctionComponent<PageProps> = (props) => {
+export type PageProps = {
+    children: ReactNode;
+} & HTMLProps<HTMLDivElement>;
+const Page = ({ className, children, ...props }: PageProps) => {
     return (
-        <Container className={`Page ${props.className || ''}`} style={props.style}>
-            {props.children}
-        </Container>
+        <main {...props} className={`${styles.container} ${className || ''}`}>
+            {children}
+        </main>
     );
 };
 

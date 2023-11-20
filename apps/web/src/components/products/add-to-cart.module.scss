@@ -5,4 +5,8 @@
     font-size: 1.45rem;
     border-radius: var(--block-border-radius);
     text-transform: uppercase;
+
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 1.35rem;
+    }
 }

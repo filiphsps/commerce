@@ -98,8 +98,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     );
 
     // TODO: Handle multiple blogs.
-    // FIXME: Don't limit to 5.
-    const blogs = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
+    const blogs = (await BlogApi({ api, handle: 'news' })).articles.edges.map(
         ({ node: article }) =>
             ({
                 location: `blog/news/${article.handle}/`,

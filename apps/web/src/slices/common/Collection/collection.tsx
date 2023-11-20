@@ -1,7 +1,7 @@
 'use client';
 
-import PageContent from '@/components/PageContent';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import { Title } from '@/components/typography/heading';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceDefault } from '@/prismic/types';

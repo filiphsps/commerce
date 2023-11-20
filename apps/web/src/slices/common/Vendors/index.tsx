@@ -1,9 +1,9 @@
 'use client';
 
-import type { Content } from '@prismicio/client';
-import PageContent from '@/components/PageContent';
-import type { SliceComponentProps } from '@prismicio/react';
 import VendorsComponent from '@/components/Vendors';
+import PageContent from '@/components/page-content';
+import type { Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 import styled from 'styled-components';
 
 const Container = styled.section`

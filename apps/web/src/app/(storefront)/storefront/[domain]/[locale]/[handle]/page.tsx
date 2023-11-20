@@ -2,7 +2,7 @@ import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -103,7 +103,7 @@ export default async function CustomPage({
         return (
             <Page>
                 <PageContent primary>
-                    {page?.slices && page?.slices.length > 0 && (
+                    {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
                             store={store}
                             locale={locale}
@@ -113,7 +113,7 @@ export default async function CustomPage({
                             handle={handle}
                             type={'custom_page'}
                         />
-                    )}
+                    ) : null}
                 </PageContent>
             </Page>
         );

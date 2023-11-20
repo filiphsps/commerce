@@ -2,7 +2,7 @@
 
 import { Content } from '@prismicio/client';
 
-import PageContent from '@/components/PageContent';
+import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import type { SliceComponentProps } from '@prismicio/react';
 import { PrismicRichText } from '@prismicio/react';

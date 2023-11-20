@@ -103,10 +103,10 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
     return (
         <Container {...RemoveInvalidProps(props)} $active={freeShipping}>
             {
-                <Label>
+                <Label suppressHydrationWarning>
                     {amountLeftComponent}
                     {` ${t('away-from-getting')} `}
-                    <Target>{t('free-shipping')}</Target>.
+                    <Target suppressHydrationWarning>{t('free-shipping')}</Target>.
                 </Label>
             }
             <ProgressBar $full={freeShipping}>

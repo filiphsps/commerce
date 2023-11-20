@@ -3,7 +3,7 @@
 /* c8 ignore start */
 import Content from '@/components/Content/Content';
 import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
+import PageContent from '@/components/page-content';
 import buttonStyles from '@/components/products/add-to-cart.module.scss';
 import Heading from '@/components/typography/heading';
 import { useEffect } from 'react';

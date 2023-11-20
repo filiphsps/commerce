@@ -1,16 +1,18 @@
+@import '@/styles/variables.scss';
+
 .container {
     appearance: none;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-small);
+    gap: var(--block-spacer);
     width: auto;
     height: auto;
     max-height: 100%;
-    padding: calc(var(--block-padding) - var(--block-border-width))
+    padding: calc(var(--block-padding-large) - var(--block-border-width))
         calc(var(--block-padding) - var(--block-border-width));
     line-height: 1;
-    font-size: 1.45rem;
+    font-size: 1.5rem;
     font-weight: 500;
     text-align: center;
     user-select: none;
@@ -25,6 +27,13 @@
         250ms ease-in-out color,
         250ms ease-in-out font-weight;
     cursor: pointer;
+
+    @media (min-width: $breakpoint-mobile) {
+        gap: var(--block-spacer-small);
+        padding: calc(var(--block-padding) - var(--block-border-width))
+            calc(var(--block-padding) - var(--block-border-width));
+        font-size: 1.45rem;
+    }
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
         background-color: var(--color-success);

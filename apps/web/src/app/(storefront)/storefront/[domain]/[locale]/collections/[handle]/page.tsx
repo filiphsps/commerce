@@ -7,7 +7,7 @@ import { StoreApi } from '@/api/store';
 import CollectionBlock from '@/components/CollectionBlock';
 import Content from '@/components/Content';
 import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -131,18 +131,18 @@ export default async function CollectionPage({
         return (
             <Page>
                 <PageContent primary>
-                    {(!page || page.enable_header) && (
+                    {!page || page.enable_header ? (
                         <div>
                             <Heading title={collection.title} subtitle={subtitle} />
                         </div>
-                    )}
-                    {(!page || page.enable_collection === undefined || page.enable_collection) && (
+                    ) : null}
+                    {!page || page.enable_collection === undefined || page.enable_collection ? (
                         <>
                             <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
                         </>
-                    )}
+                    ) : null}
 
-                    {page?.slices && page?.slices.length > 0 && (
+                    {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
                             store={store}
                             locale={locale}
@@ -152,7 +152,7 @@ export default async function CollectionPage({
                             handle={handle}
                             type={'collection_page'}
                         />
-                    )}
+                    ) : null}
                 </PageContent>
             </Page>
         );

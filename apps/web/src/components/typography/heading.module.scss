@@ -1,15 +1,25 @@
+@import '@/styles/variables.scss';
+
 .title {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
     line-height: normal;
     font-weight: 600;
     color: var(--color-dark);
     transition: 150ms ease-in-out color;
 
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 2.5rem;
+    }
+
     &.bold {
-        font-size: 3.45rem;
+        font-size: 3.75rem;
         line-height: 1.2;
         font-weight: 700;
         color: var(--accent-primary);
+
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 3.45rem;
+        }
     }
 
     &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {
@@ -20,16 +30,24 @@
 }
 
 .subtitle {
-    font-size: 1.75rem;
+    font-size: 2rem;
     line-height: 1.15;
     font-weight: 400;
     color: var(--color-dark);
     transition: 150ms ease-in-out all;
 
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 1.75rem;
+    }
+
     &.bold {
-        font-size: 2.5rem;
+        font-size: 3rem;
         line-height: 1;
         font-weight: 500;
+
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 2.5rem;
+        }
     }
 
     &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {

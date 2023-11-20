@@ -8,6 +8,7 @@ import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import PageLoader from '@/components/PageLoader';
 import Link from '@/components/link';
+import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
 import type { FunctionComponent } from 'react';
@@ -33,19 +34,11 @@ const SmallBlock = styled(Block)`
     background: var(--color-block);
 `;
 
-const Label = styled.div`
-    font-size: 1.75rem;
-    line-height: 2rem;
-    font-weight: 500;
-`;
-
 const Notice = styled(Label)`
-    && {
-        font-size: 1.25rem;
-        line-height: 1.5rem;
-        font-weight: 500;
-        margin-top: calc(var(--block-spacer-large) * -0.25);
-    }
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: initial;
 
     .Lock {
         display: inline-block;
@@ -114,7 +107,7 @@ const CheckoutButton = styled(Button)`
         font-size: 1.5rem;
         line-height: 1.5rem;
 
-        &:hover {
+        &:not(:disabled):is(:hover, :active, :focus, :focus-within) {
             gap: var(--block-padding);
 
             ${CheckoutButtonIcon} {
@@ -136,25 +129,6 @@ const Center = styled.div`
     align-items: center;
 `;
 
-const Breakdown = styled.section`
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-large);
-
-    @media (min-width: 950px) {
-        gap: var(--block-spacer);
-    }
-`;
-
-const BreakdownItemLabel = styled.div`
-    display: flex;
-    align-items: stretch;
-    justify-content: start;
-    gap: var(--block-spacer-small);
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-`;
 const BreakdownItemMoney = styled.div`
     font-weight: 500;
     font-size: 1.5rem;
@@ -164,22 +138,18 @@ const BreakdownItemMoney = styled.div`
 const BreakdownItem = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
+    grid-auto-rows: 1fr;
     gap: var(--block-spacer);
     align-items: end;
     justify-content: stretch;
+    height: 100%;
     color: var(--color-dark);
 `;
 
 const BreakdownTotalItem = styled(BreakdownItem)`
     margin-top: var(--block-padding-small);
-    padding-top: var(--block-padding-small);
+    padding: var(--block-padding-small) 0;
     border-top: calc(var(--block-border-width) / 1.5) dotted var(--color-gray);
-
-    ${BreakdownItemLabel} {
-        font-weight: 600;
-        font-size: 2rem;
-        line-height: 2rem;
-    }
 
     ${BreakdownItemMoney} {
         font-weight: 700;
@@ -190,6 +160,7 @@ const BreakdownTotalItem = styled(BreakdownItem)`
 
 const BreakdownDiscountItem = styled(BreakdownItem)`
     --discount-prefix: '-';
+
     ${BreakdownItemMoney} {
         z-index: 1;
         position: relative;
@@ -213,31 +184,17 @@ const BreakdownDiscountItem = styled(BreakdownItem)`
     }
 `;
 
-const Header = styled(BreakdownItem)`
-    ${Label} {
-        font-size: 2rem;
-        line-height: 2.25rem;
-        font-weight: 700;
-    }
-
-    ${BreakdownItemLabel} {
-        font-size: 2rem;
-        line-height: 2.25rem;
-        font-weight: 500;
-    }
-`;
+const Header = styled(BreakdownItem)``;
 
 interface CartSummaryProps {
     onCheckout: any;
-    freeShipping?: boolean;
-    showLoader?: boolean;
     i18n: LocaleDictionary;
 }
-export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, freeShipping, showLoader, i18n }) => {
+export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i18n }) => {
     const { t } = useTranslation('cart', i18n);
     const { totalQuantity, status, lines, cost, note } = useCart();
     const [showNote, setShowNote] = useState(false);
-    const loading = showLoader || status !== 'idle';
+    const loading = status !== 'idle';
 
     useEffect(() => {
         if (!note || showNote) return;
@@ -271,14 +228,18 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
     const promos =
         Number.parseFloat(cost?.subtotalAmount?.amount!) - Number.parseFloat(cost?.totalAmount?.amount!) || 0;
 
+    // TODO: Configurable.
+    // TODO: Utility function.
+    const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) >= 95;
+
     return (
         <Container>
             <Block>
                 <Header>
                     <Label>{t('order-summary')}</Label>
-                    <BreakdownItemLabel>
+                    <Label>
                         {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
-                    </BreakdownItemLabel>
+                    </Label>
                 </Header>
 
                 <CartCoupons />
@@ -301,9 +262,9 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
 
             {['idle', 'uninitialized'].includes(status) ? (
                 <Block>
-                    <Breakdown>
+                    <div>
                         <BreakdownItem>
-                            <BreakdownItemLabel>{t('subtotal')}</BreakdownItemLabel>
+                            <Label>{t('subtotal')}</Label>
                             {cost?.subtotalAmount ? (
                                 <Money
                                     as={BreakdownItemMoney}
@@ -320,7 +281,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
 
                         {sale ? (
                             <BreakdownDiscountItem title={`${salePercentage}% OFF`}>
-                                <BreakdownItemLabel>{t('sale-discount')}</BreakdownItemLabel>
+                                <Label>{t('sale-discount')}</Label>
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -333,7 +294,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
 
                         {promos ? (
                             <BreakdownDiscountItem>
-                                <BreakdownItemLabel>{t('promo-codes')}</BreakdownItemLabel>
+                                <Label>{t('promo-codes')}</Label>
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -345,9 +306,9 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                         ) : null}
 
                         <BreakdownItem>
-                            <BreakdownItemLabel>{t('shipping')}</BreakdownItemLabel>
+                            <Label>{t('shipping')}</Label>
 
-                            {(freeShipping && (
+                            {freeShipping ? (
                                 <Money
                                     as={BreakdownItemMoney}
                                     data={{
@@ -355,35 +316,37 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, f
                                         amount: (0).toString()
                                     }}
                                 />
-                            )) || <BreakdownItemMoney>{'TBD*'}</BreakdownItemMoney>}
+                            ) : (
+                                <BreakdownItemMoney>{'TBD*'}</BreakdownItemMoney>
+                            )}
                         </BreakdownItem>
 
                         <BreakdownTotalItem>
-                            <BreakdownItemLabel>{t('estimated-total')}</BreakdownItemLabel>
+                            <Label>{t('estimated-total')}</Label>
                             <CartCost as={BreakdownItemMoney} />
                         </BreakdownTotalItem>
 
                         {!freeShipping ? (
-                            <BreakdownItem>
+                            <BreakdownItem style={{ display: 'flex' }}>
                                 <Notice>{`*${t('shipping-calculated-at-checkout')}`}</Notice>
                             </BreakdownItem>
                         ) : null}
-                    </Breakdown>
+                    </div>
 
-                    {(!loading && (
+                    {!loading ? (
                         <CheckoutButton disabled={(totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
                             <Label>{t('continue-to-checkout')}</Label>
                             <CheckoutButtonIcon>
                                 <FiChevronRight />
                             </CheckoutButtonIcon>
                         </CheckoutButton>
-                    )) || (
+                    ) : (
                         <Center>
                             <PageLoader />
                         </Center>
                     )}
 
-                    <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)' }}>
+                    <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
                         <Notice>
                             <FiLock className="Lock" />
                             Safely complete your purchase through our secure and{' '}

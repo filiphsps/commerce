@@ -1,21 +1,10 @@
-'use client';
-
 import type { SliceComponentProps } from '@prismicio/react';
-import { PrismicRichText } from '@prismicio/react';
 
-import type { Content } from '@prismicio/client';
+import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
-import PageContent from '@/components/PageContent';
-import styled from 'styled-components';
-
-const Container = styled.section`
-    width: 100%;
-    padding: 0;
-    margin: 0;
-`;
-const Components = styled(PageContent)`
-    gap: var(--block-spacer-large);
-`;
+import { PrismicText } from '@/components/typography/prismic-text';
+import type { Content } from '@prismicio/client';
+import styles from './overview.module.scss';
 
 /**
  * Props for `Overview`.
@@ -27,8 +16,8 @@ export type OverviewProps = SliceComponentProps<Content.TextBlockSlice>;
  */
 const OverviewSlice = ({ slice }: OverviewProps): JSX.Element => {
     return (
-        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-            <Components>
+        <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
+            <PageContent className={styles.content}>
                 {slice?.items?.map((item, index) => {
                     return (
                         <Overview
@@ -47,12 +36,12 @@ const OverviewSlice = ({ slice }: OverviewProps): JSX.Element => {
                             layout={item.layout}
                             image={(item.image?.url && (item.image as any)) || undefined}
                             imageStyle={item.image_style}
-                            body={<PrismicRichText field={item.text} />}
+                            body={<PrismicText data={item.text} />}
                         />
                     );
                 })}
-            </Components>
-        </Container>
+            </PageContent>
+        </section>
     );
 };
 
