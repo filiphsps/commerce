@@ -2,7 +2,7 @@ import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
 /* c8 ignore start */
-const revalidate = async (req: NextRequest) {
+const revalidate = async (req: NextRequest) => {
     // TODO: Detect if prismic or shopify request.
     revalidateTag('prismic');
 
