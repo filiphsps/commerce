@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 /* c8 ignore start */
 export type RevalidateApiRouteParams = {};
-const revalidate = async (req: NextRequest, {}: RevalidateApiRouteParams) => {
+const revalidate = async (req: NextRequest, params: RevalidateApiRouteParams) => {
     // TODO: Detect if prismic or shopify request.
     revalidateTag('prismic');
 
