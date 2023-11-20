@@ -27,7 +27,12 @@ export const storefront = (req: NextRequest): NextResponse => {
         // Favicon.
         if (newUrl.pathname.endsWith('favicon.png')) {
             target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
-            return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
+            return NextResponse.rewrite(new URL(target, req.url), {
+                status: 200,
+                headers: {
+                    'Cache-Control': 's-maxage=28800, stale-while-revalidate'
+                }
+            });
         }
 
         // Sitemap.
@@ -38,7 +43,11 @@ export const storefront = (req: NextRequest): NextResponse => {
 
         // FIXME: Don't hardcode `sweetsideofsweden.com`
         target = `/sweetsideofsweden.com${target}`;
-        return NextResponse.rewrite(new URL(target, req.url));
+        return NextResponse.rewrite(new URL(target, req.url), {
+            headers: {
+                'Cache-Control': 's-maxage=28800, stale-while-revalidate'
+            }
+        });
     }
 
     // Set the locale based on the user's accept-language header when no locale
@@ -93,6 +102,6 @@ export const storefront = (req: NextRequest): NextResponse => {
     }
 
     const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
-    return NextResponse.rewrite(new URL(target, req.url));
+    return NextResponse.rewrite(new URL(target, req.url), { headers: { 'Cache-Control': 's-maxage=28800, stale-while-revalidate' } });
 };
 /* c8 ignore stop */
