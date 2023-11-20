@@ -34,7 +34,7 @@ export async function generateMetadata({
 
     try {
         const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api });
+        const store = await StoreApi({ domain, locale, api });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ locale, handle, type: 'collection_page' });
         const locales = store.i18n.locales;
@@ -101,7 +101,7 @@ export default async function CollectionPage({
     try {
         const i18n = await getDictionary(locale);
         const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api });
+        const store = await StoreApi({ domain, locale, api });
         const collection = await CollectionApi({ api, handle });
 
         const { page } = await PageApi({ locale, handle, type: 'collection_page' });

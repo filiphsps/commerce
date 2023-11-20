@@ -41,7 +41,7 @@ export async function generateMetadata({
 
     try {
         const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api });
+        const store = await StoreApi({ domain, locale, api });
         const product = await ProductApi({ client: api, handle });
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
         const locales = store.i18n.locales;
@@ -118,7 +118,7 @@ export default async function ProductPage({
 
     try {
         const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api });
+        const store = await StoreApi({ domain, locale, api });
         const product = await ProductApi({ client: api, handle });
 
         const { page } = await PageApi({ locale, handle, type: 'product_page' });
@@ -140,7 +140,7 @@ export default async function ProductPage({
         const initialVariant = FirstAvailableVariant(product);
         const selectedVariant =
             (searchParams?.variant &&
-                product?.variants?.edges.find(
+                product?.variants?.edges?.find(
                     ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
                 )?.node) ||
             undefined;
@@ -153,7 +153,7 @@ export default async function ProductPage({
         }
 
         const variant = selectedVariant || initialVariant;
-        const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
+        const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
 
         return (
             <Page className={styles.container}>

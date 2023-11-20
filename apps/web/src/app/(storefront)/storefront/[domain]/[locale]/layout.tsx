@@ -40,7 +40,7 @@ export async function generateViewport({ params }: { params: LayoutParams }): Pr
     if (!locale) return {};
 
     const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api });
+    const store = await StoreApi({ domain, locale, api });
 
     return {
         themeColor: store.accent.secondary,
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: LayoutParams }): Pr
     if (!locale) return notFoundMetadata;
 
     const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api });
+    const store = await StoreApi({ domain, locale, api });
 
     return {
         metadataBase: new URL(`https://${domain}/${locale.locale}/`),
@@ -98,7 +98,8 @@ export default async function RootLayout({
     try {
         const i18n = await getDictionary(locale);
         const shopifyApi = shopifyApiConfig({ domain });
-        const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+        const api = StorefrontApiClient({ domain, locale });
+        const store = await StoreApi({ domain, locale, api });
         const navigation = await NavigationApi({ locale });
         const header = await HeaderApi({ locale });
         const footer = await FooterApi({ locale });

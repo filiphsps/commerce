@@ -98,36 +98,37 @@ const Prefetch = ({
                                                         edges: []
                                                     },
                                                     variants: {
-                                                        edges: variants.edges.map(
-                                                            ({
-                                                                node: {
-                                                                    id,
-                                                                    sku,
-                                                                    title,
-                                                                    price,
-                                                                    compareAtPrice,
-                                                                    availableForSale,
+                                                        edges:
+                                                            variants?.edges.map(
+                                                                ({
+                                                                    node: {
+                                                                        id,
+                                                                        sku,
+                                                                        title,
+                                                                        price,
+                                                                        compareAtPrice,
+                                                                        availableForSale,
 
-                                                                    weight,
-                                                                    weightUnit,
-                                                                    image,
-                                                                    selectedOptions
-                                                                }
-                                                            }) => ({
-                                                                node: {
-                                                                    id,
-                                                                    sku,
-                                                                    title,
-                                                                    price,
-                                                                    compareAtPrice,
-                                                                    availableForSale,
-                                                                    weight,
-                                                                    weightUnit,
-                                                                    image,
-                                                                    selectedOptions
-                                                                }
-                                                            })
-                                                        )
+                                                                        weight,
+                                                                        weightUnit,
+                                                                        image,
+                                                                        selectedOptions
+                                                                    }
+                                                                }) => ({
+                                                                    node: {
+                                                                        id,
+                                                                        sku,
+                                                                        title,
+                                                                        price,
+                                                                        compareAtPrice,
+                                                                        availableForSale,
+                                                                        weight,
+                                                                        weightUnit,
+                                                                        image,
+                                                                        selectedOptions
+                                                                    }
+                                                                })
+                                                            ) || []
                                                     },
                                                     images
                                                 }

@@ -42,7 +42,8 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     let src!: string;
 
     const locale = DefaultLocale();
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+    const api = StorefrontApiClient({ domain, locale });
+    const store = await StoreApi({ domain, locale, api });
     if (store.favicon?.src) {
         src = store.favicon.src;
     } else {

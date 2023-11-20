@@ -1,13 +1,16 @@
+import { BlogApi, BlogArticleApi } from '@/api/blog';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import Heading from '@/components/typography/heading';
 import { NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 
 /* c8 ignore start */
+export const revalidate = 120;
 
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
 
@@ -20,9 +23,9 @@ export async function generateMetadata({
     if (!locale) return notFoundMetadata;
 
     try {
-        const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+        const store = await StoreApi({ domain, locale, api: StorefrontApiClient({ domain, locale }) });
         const locales = store.i18n.locales;
-    
+
         const title = 'TODO';
         const description = 'TODO';
         return {
@@ -58,17 +61,24 @@ export async function generateMetadata({
     }
 }
 
-export default async function ArticlePage({ params: { domain, locale: localeData, handle } }: { params: ArticlePageParams }) {
+export default async function ArticlePage({
+    params: { domain, locale: localeData, handle }
+}: {
+    params: ArticlePageParams;
+}) {
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
 
     try {
         const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ locale, api });
+        const store = await StoreApi({ domain, locale, api });
+        const blog = await BlogApi({ api, handle: 'news' });
+        const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
             <Page>
                 <PageContent primary>
+                    <Heading title={article.title} subtitle={null} />
                 </PageContent>
             </Page>
         );
@@ -82,5 +92,4 @@ export default async function ArticlePage({ params: { domain, locale: localeData
     }
 }
 
-export const revalidate = 120;
 /* c8 ignore stop */

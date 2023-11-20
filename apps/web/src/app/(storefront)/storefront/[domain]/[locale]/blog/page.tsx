@@ -1,8 +1,10 @@
+import { BlogApi } from '@/api/blog';
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
+import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -14,18 +16,17 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
 /* c8 ignore start */
-
 export type BlogPageParams = { domain: string; locale: string };
 
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
     params: BlogPageParams;
-}): Promise<Metadata | null> {
+}): Promise<Metadata> {
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+    const store = await StoreApi({ domain, locale, api: StorefrontApiClient({ domain, locale }) });
     const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const locales = store.i18n.locales;
 
@@ -73,14 +74,23 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
 
     const i18n = await getDictionary(locale);
     const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api });
+    const store = await StoreApi({ domain, locale, api });
     const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
+    const blog = await BlogApi({ api, handle: 'news' });
 
     return (
         <Page>
             <PageContent primary>
                 <Heading title={page?.title} subtitle={page?.description} />
+
+                <div>
+                    {blog.articles.edges.map(({ node: article }) => (
+                        <Link key={article.id} href={`/blog/${article.handle}/`} locale={locale}>
+                            {article.title}
+                        </Link>
+                    ))}
+                </div>
 
                 {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage

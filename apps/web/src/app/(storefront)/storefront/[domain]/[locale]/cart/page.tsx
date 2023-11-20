@@ -26,7 +26,8 @@ export async function generateMetadata({
     if (!locale) return notFoundMetadata;
     const handle = 'cart';
 
-    const store = await StoreApi({ locale, api: StorefrontApiClient({ domain, locale }) });
+    const api = StorefrontApiClient({ domain, locale });
+    const store = await StoreApi({ domain, locale, api });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const locales = store.i18n.locales;
 
@@ -76,7 +77,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
     const handle = 'cart';
 
     const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ locale, api });
+    const store = await StoreApi({ domain, locale, api });
     const { page } = await PageApi({ locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
 

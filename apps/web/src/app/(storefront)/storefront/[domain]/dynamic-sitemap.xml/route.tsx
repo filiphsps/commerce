@@ -29,7 +29,8 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     let pages: SitemapEntry[] = [];
     try {
-        const store = await StoreApi({ locale, api: StorefrontApiClient({ locale }) });
+        const api = StorefrontApiClient({ domain, locale });
+        const store = await StoreApi({ domain, locale, api });
         locales = store.i18n.locales;
 
         pages = ((await PagesApi({ locale })) as any).paths
@@ -64,16 +65,16 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         console.warn(error);
     }
 
-    const client = StorefrontApiClient({ locale });
+    const api = StorefrontApiClient({ locale });
 
-    const collections = (await CollectionsApi({ client })).map(
+    const collections = (await CollectionsApi({ client: api })).map(
         (collection) =>
             ({
                 location: `collections/${collection.handle}/`,
                 priority: 1.0
             }) as SitemapEntry
     );
-    const products = (await ProductsApi({ client, limit: 250 })).products.map(
+    const products = (await ProductsApi({ client: api, limit: 250 })).products.map(
         (product) =>
             ({
                 location: `products/${product.node.handle!}/`,
@@ -82,7 +83,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     );
 
     // TODO: Handle multiple blogs.
-    const blogs = (await BlogApi({ client, handle: 'news' })).articles.edges.map(
+    const blogs = (await BlogApi({ api, handle: 'news' })).articles.edges.map(
         ({ node: article }) =>
             ({
                 location: `blog/news/${article.handle}/`,

@@ -78,6 +78,8 @@ export const sendPageViewEvent = ({
             if (!pageAnalytics.products || pageAnalytics.products.length <= 0) break;
 
             const product = pageAnalytics.products.at(0)!;
+            if (!product) throw new Error('Product is missing.');
+
             sendEcommerceEvent({
                 event: 'view_item',
                 payload: {

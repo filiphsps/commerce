@@ -83,7 +83,8 @@ describe('app', () => {
                                     amount: '15.00',
                                     currencyCode: 'USD'
                                 },
-                                selectedOptions: []
+                                selectedOptions: [],
+                                images: []
                             }
                         }
                     ]

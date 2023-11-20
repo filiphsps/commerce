@@ -23,7 +23,7 @@ export const AddToCart = (props: AddToCartProps) => {
     const { selectedVariant } = useProduct();
     const { status, linesAdd } = useCart();
 
-    const ready = ['idle', 'uninitialized'].includes(status);
+    const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
 
     let label: ReactNode = t('add-to-cart');
     let icon: ReactNode = <TbShoppingBagPlus />;
