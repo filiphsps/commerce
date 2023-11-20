@@ -2,7 +2,7 @@ import { CountriesApi, StoreApi } from '@/api/store';
 
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
-import Page from '@/components/Page';
+import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';

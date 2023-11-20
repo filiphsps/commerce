@@ -6,7 +6,7 @@ import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import Content from '@/components/Content';
 import Gallery from '@/components/Gallery';
-import Page from '@/components/Page';
+import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';

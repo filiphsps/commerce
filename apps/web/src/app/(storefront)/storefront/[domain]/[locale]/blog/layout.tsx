@@ -1,6 +1,6 @@
 import { BlogApi } from '@/api/blog';
 import { StorefrontApiClient } from '@/api/shopify';
-import Page from '@/components/Page';
+import { Page } from '@/components/layout/page';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';

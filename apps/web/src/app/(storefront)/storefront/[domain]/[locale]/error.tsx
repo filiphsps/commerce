@@ -2,9 +2,9 @@
 
 /* c8 ignore start */
 import Content from '@/components/Content/Content';
-import Page from '@/components/Page';
+import { Button } from '@/components/actionable/button';
+import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
-import buttonStyles from '@/components/products/add-to-cart.module.scss';
 import Heading from '@/components/typography/heading';
 import { useEffect } from 'react';
 
@@ -13,13 +13,13 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     return (
         <Page>
             <PageContent primary>
-                <Heading title={`Error: ${error?.name}`} subtitle={<code>{error.message}</code>} />
+                <Heading title={error?.name} subtitle={<code>{error.message}</code>} />
 
                 <Content>
                     <p>If this keeps happening please reach out to our support.</p>
-                    <button className={buttonStyles.button} onClick={reset}>
-                        Are you ready to try again?
-                    </button>
+                    <p>
+                        <Button onClick={reset}>Try again</Button>
+                    </p>
                 </Content>
             </PageContent>
         </Page>

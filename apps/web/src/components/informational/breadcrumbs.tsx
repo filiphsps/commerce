@@ -76,7 +76,7 @@ const Icon = styled.div`
         display: block;
         font-size: 1.5rem;
         margin-bottom: -0.05rem;
-                vertical-align: middle;
+        vertical-align: middle;
     }
 `;
 

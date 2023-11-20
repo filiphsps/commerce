@@ -1,5 +1,5 @@
 import Content from '@/components/Content';
-import Page from '@/components/Page';
+import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import type { Metadata } from 'next';
