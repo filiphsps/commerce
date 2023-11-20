@@ -102,6 +102,8 @@ export const storefront = (req: NextRequest): NextResponse => {
     }
 
     const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
-    return NextResponse.rewrite(new URL(target, req.url), { headers: { 'Cache-Control': 's-maxage=28800, stale-while-revalidate' } });
+    return NextResponse.rewrite(new URL(target, req.url), {
+        headers: { 'Cache-Control': 's-maxage=28800, stale-while-revalidate' }
+    });
 };
 /* c8 ignore stop */
