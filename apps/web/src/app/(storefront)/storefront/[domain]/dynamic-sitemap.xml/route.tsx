@@ -1,6 +1,6 @@
-import { BlogApi } from '@/api/blog';
 import { PagesApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
+import { BlogApi } from '@/api/shopify/blog';
 import { CollectionsApi } from '@/api/shopify/collection';
 import { ProductsApi } from '@/api/shopify/product';
 import { StoreApi } from '@/api/store';

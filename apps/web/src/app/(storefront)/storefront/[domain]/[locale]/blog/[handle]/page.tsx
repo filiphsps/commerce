@@ -1,5 +1,5 @@
-import { BlogArticleApi } from '@/api/blog';
 import { StorefrontApiClient } from '@/api/shopify';
+import { BlogArticleApi } from '@/api/shopify/blog';
 import { StoreApi } from '@/api/store';
 import Content from '@/components/Content';
 import { Page } from '@/components/layout/page';

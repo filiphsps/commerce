@@ -62,9 +62,9 @@ type PageType<T> = T extends 'collection_page'
     ? CollectionPageDocumentData
     : T extends 'product_page'
     ? ProductPageDocumentData
-    : CustomPageDocumentData;
+    : CustomPageDocumentData; // TODO: Add ArticlePageDocumentData.
 
-export const PageApi = async <T extends 'collection_page' | 'product_page' | 'custom_page'>({
+export const PageApi = async <T extends 'collection_page' | 'product_page' | 'custom_page' | 'article_page'>({
     domain,
     locale,
     type,
