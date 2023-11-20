@@ -14,8 +14,8 @@ export const storefront = (req: NextRequest): NextResponse => {
     const hostname = getHostname(req);
     let newUrl = req.nextUrl.clone();
 
-    // Check if we're dealing with a file or a route.
-    if (newUrl.pathname.match(FILE_TEST)) {
+    // Check if we're dealing with a file, api route or a "normal" route.
+    if (newUrl.pathname.match(FILE_TEST) || newUrl.pathname.startsWith('/api/')) {
         let target = `${newUrl.pathname}${newUrl.search}`;
 
         // TODO: Handle Handle tenant-specific assets.
@@ -28,6 +28,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         } else if (newUrl.pathname.startsWith('/api/')) {
+            // TODO: Move this out of the file handling.
             target = `/storefront/${hostname}/${newUrl.pathname}`;
 
             return NextResponse.rewrite(new URL(target, req.url));
