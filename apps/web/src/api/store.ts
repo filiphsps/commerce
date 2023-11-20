@@ -2,8 +2,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { BuildConfig } from '@/utils/build-config';
-import { DefaultLocale, NextLocaleToLocale, type Locale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale, isDefaultLocale, type Locale } from '@/utils/locale';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
@@ -227,7 +226,7 @@ export const StoreApi = async ({
                 }
             });
         } catch (error: any) /* TODO: FRO-14 proper error type. */ {
-            if (error.message.includes('No documents') && locale.locale !== BuildConfig.i18n.default) {
+            if (error.message.includes('No documents') && !isDefaultLocale(locale)) {
                 return resolve(
                     // Try again with default locale.
                     await StoreApi({

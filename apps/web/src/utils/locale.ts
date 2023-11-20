@@ -95,6 +95,16 @@ export const DefaultLocale = (): Locale => {
     return NextLocaleToLocale(defaultLocale)!;
 };
 
+/**
+ * Check if a locale is the default locale.
+ *
+ * @param {Locale} locale - The locale to check.
+ * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
+ */
+export const isDefaultLocale = (locale: Locale): boolean => {
+    return locale.locale === defaultLocale;
+};
+
 export type DeepKeys<T> = T extends object
     ? {
           [K in keyof T]-?: K extends string | number ? `${T[K] extends object ? DeepKeys<T[K]> : K}` : never;
