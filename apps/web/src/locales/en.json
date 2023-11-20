@@ -15,12 +15,14 @@
     "common": {
         "add-to-cart": "Add to Cart",
         "add": "Add",
-        "buy": "Buy",
         "added-to-cart": "Added!",
+        "buy": "Buy",
         "cart-not-ready": "Hang on...",
+        "cart": "Cart",
+        "language-and-region-settings": "Language and Region settings",
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
-        "language-and-region-settings": "Language and Region settings"
+        "search": "Search"
     }
 }

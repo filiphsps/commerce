@@ -5,6 +5,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
     describe('checkout', () => {
+        beforeEach(() => {
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
+            vi.spyOn(console, 'error').mockImplementation(() => {});
+        });
+
         vi.mock('@/utils/build-config', () => ({
             BuildConfig: {
                 shopify: {

@@ -1,8 +1,7 @@
 'use client';
 
-import addToCartStyles from '@/components/products/add-to-cart.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
+import { Money, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -10,9 +9,9 @@ import styled, { css } from 'styled-components';
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
+import { AddToCart } from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import type { StoreModel } from '@/models/StoreModel';
-import { useTranslation } from '@/utils/locale';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
@@ -148,16 +147,7 @@ const Actions = styled.div`
     align-items: end;
     gap: var(--block-spacer-small);
 `;
-const AddButton = styled.button`
-    && {
-        min-height: 4rem;
-        width: 100%;
-        border: none;
-        padding: var(--block-padding-small) var(--block-padding);
-        font-size: 1.5rem;
-        border-radius: var(--block-border-radius);
-    }
-`;
+
 const Quantity = styled.div`
     overflow: hidden;
     display: flex;
@@ -350,11 +340,8 @@ interface ProductCardProps {
     style?: CSSProperties;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n, style }) => {
-    const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
-    const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
-    const cart = useCart();
     const { product, selectedVariant, setSelectedVariant } = useProduct();
     const quantityRef = useRef<HTMLInputElement>();
 
@@ -510,38 +497,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                 </CardFooter>
             </Details>
             <Actions>
-                <AddButton
-                    type="button"
-                    title={t('add-to-cart')}
-                    className={`${addToCartStyles.button} ${addToCartStyles.addToCart} ${
-                        (animation && addToCartStyles.success) || ''
-                    }`}
-                    onClick={() => {
-                        if ((cart.status !== 'idle' && cart.status !== 'uninitialized') || !product || !selectedVariant)
-                            return;
-
-                        clearTimeout(animation);
-                        setAnimation(
-                            setTimeout(() => {
-                                clearTimeout(animation);
-                                setAnimation(() => undefined);
-                            }, 3000)
-                        );
-
-                        cart.linesAdd([
-                            {
-                                merchandiseId: selectedVariant.id as string,
-                                quantity
-                            }
-                        ]);
-                    }}
-                    disabled={quantity < 1 || !selectedVariant?.availableForSale}
-                >
-                    {(!['idle', 'uninitialized', 'updating'].includes(cart.status) && t('cart-not-ready')) ||
-                        (!selectedVariant.availableForSale && t('out-of-stock')) ||
-                        (animation && t('added-to-cart')) ||
-                        t('add-to-cart')}
-                </AddButton>
+                <AddToCart type="button" quantity={quantity} locale={locale} i18n={i18n} />
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}

@@ -13,9 +13,24 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
-export type CustomPageParams = { domain: string; locale: string; handle: string };
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+/*export const dynamicParams = true;
+export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com',
+            locale: 'en-US',
+            handle: 'homepage'
+        }
+    ];
+}*7
+/* c8 ignore stop */
 
 /* c8 ignore start */
+export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
@@ -111,5 +126,3 @@ export default async function CustomPage({
         throw error;
     }
 }
-
-export const revalidate = 28_800; // 8hrs.

@@ -56,7 +56,7 @@ interface FreeShippingProgressProps {
     i18n: LocaleDictionary;
 }
 export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = (props) => {
-    const { cost, status } = useCart();
+    const { cost } = useCart();
     const { t } = useTranslation('cart', props.i18n);
 
     // TODO: Handle other currencies properly.

@@ -39,9 +39,18 @@ const config = {
             {
                 protocol: 'https',
                 hostname: '**.github.io'
+            },
+            {
+                protocol: 'https',
+                hostname: 'gravatar.com'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.gravatar.com'
             }
         ],
-        formats: ['image/webp', 'image/avif']
+        formats: ['image/webp'] // CloudFlare doesn't support avif yet.
+        // formats: ['image/webp', 'image/avif']
     },
     compiler: {
         styledComponents: true,

@@ -1,13 +1,25 @@
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { Article, Blog } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Article, ArticleSortKeys, Blog } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
-export const BlogApi = async ({ api, handle = 'news' }: { api: AbstractApi; handle?: string }): Promise<Blog> => {
+export const BlogApi = async ({
+    api,
+    handle = 'news',
+    limit = 30,
+    sorting = 'PUBLISHED_AT',
+    reverseSorting = true
+}: {
+    api: AbstractApi;
+    handle?: string;
+    limit?: number;
+    sorting?: ArticleSortKeys;
+    reverseSorting?: boolean;
+}): Promise<Blog> => {
     return new Promise(async (resolve, reject) => {
         try {
             const { data, errors } = await api.query<{ blogByHandle: Blog }>(
                 gql`
-                    query blog($handle: String!) {
+                    query blog($handle: String!, $first: Int!, $sorting: ArticleSortKeys!, $reverseSorting: Boolean!) {
                         blogByHandle(handle: $handle) {
                             id
                             handle
@@ -17,21 +29,26 @@ export const BlogApi = async ({ api, handle = 'news' }: { api: AbstractApi; hand
                                 title
                                 description
                             }
-                            articles(first: 250, reverse: true, sortKey: PUBLISHED_AT) {
+                            articles(first: $first, sortKey: $sorting, reverse: $reverseSorting) {
                                 edges {
                                     node {
                                         id
                                         handle
+                                        publishedAt
 
                                         title
-                                        excerpt
-                                        publishedAt
+                                        excerptHtml
 
                                         image {
                                             url
                                             height
                                             width
                                             altText
+                                        }
+
+                                        authorV2 {
+                                            name
+                                            email
                                         }
                                     }
                                 }
@@ -40,7 +57,10 @@ export const BlogApi = async ({ api, handle = 'news' }: { api: AbstractApi; hand
                     }
                 `,
                 {
-                    handle
+                    handle,
+                    first: limit,
+                    sorting,
+                    reverseSorting
                 }
             );
 
@@ -76,16 +96,29 @@ export const BlogArticleApi = async ({
                             articleByHandle(handle: $handle) {
                                 id
                                 handle
+                                publishedAt
 
                                 title
-                                excerpt
-                                publishedAt
+                                contentHtml
+                                excerptHtml
+
+                                seo {
+                                    title
+                                    description
+                                }
 
                                 image {
                                     url
                                     height
                                     width
                                     altText
+                                }
+
+                                authorV2 {
+                                    firstName
+                                    lastName
+                                    email
+                                    bio
                                 }
                             }
                         }

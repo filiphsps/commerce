@@ -9,6 +9,21 @@ import { DefaultLocale } from '@/utils/locale';
 import { getServerSideSitemap } from 'next-sitemap';
 import type { NextRequest } from 'next/server';
 
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com'
+        }
+    ];
+}
+/* c8 ignore stop */
+
+/* c8 ignore start */
 export type DynamicSitemapRouteParams = {
     domain: string;
 };
@@ -83,7 +98,8 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     );
 
     // TODO: Handle multiple blogs.
-    const blogs = (await BlogApi({ api, handle: 'news' })).articles.edges.map(
+    // FIXME: Don't limit to 5.
+    const blogs = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
         ({ node: article }) =>
             ({
                 location: `blog/news/${article.handle}/`,
@@ -125,3 +141,4 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     return getServerSideSitemap(urls);
 }
+/* c8 ignore stop */

@@ -1,7 +1,7 @@
 import type { CommerceError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
-import { useSearchParams } from 'next/navigation';
+//import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 // TODO: Implement discount code validation.
@@ -17,7 +17,7 @@ type useCartUtilsResult = {
 };
 export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
     const [error, setError] = useState<CommerceError | undefined>();
-    const query = useSearchParams() as any;
+    const query = { discount: null } as any; //useSearchParams() as any;
 
     const {
         buyerIdentity,
@@ -25,13 +25,13 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
         discountCodes,
         discountCodesUpdate,
         status,
-        error: cartError,
-        cartCreate
+        error: cartError
     } = useCart();
 
     // Handle country code change
     useEffect(() => {
-        if (!buyerIdentity || locale.country === buyerIdentity?.countryCode) return;
+        if (status !== 'idle') return;
+        else if (!buyerIdentity || locale.country === buyerIdentity?.countryCode) return;
 
         buyerIdentityUpdate({
             ...(buyerIdentity as any),
@@ -41,15 +41,7 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Discount codes in url
     useEffect(() => {
-        // Create a cart if one doesn't exist.
-        if (locale && status === 'uninitialized') {
-            cartCreate({
-                buyerIdentity: {
-                    countryCode: locale.country
-                    // TODO: `email`, `phone` etc when accounts are implemented.
-                }
-            });
-        }
+        if (!locale || status !== 'idle') return;
 
         const discount = query?.discount?.toString();
         if (!discount) return;

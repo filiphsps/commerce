@@ -8,9 +8,9 @@ export const getHostname = (req: NextRequest): string => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
 
     // TODO: Make these configurable.
-    /*if (hostname.startsWith('www.')) {
+    if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
-    }*/
+    }
     if (hostname.startsWith('staging.')) {
         hostname = hostname.slice(8);
     }
@@ -47,7 +47,7 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
     const hostname = getHostname(req);
 
     // TODO: Dynamic list of storefronts.
-    const storefronts: string[] = ['www.sweetsideofsweden.com', 'sweetsideofsweden.com', 'demo.nordcom.io'];
+    const storefronts: string[] = ['sweetsideofsweden.com', 'demo.nordcom.io'];
     if (storefronts.includes(hostname)) {
         return 'storefront';
     }

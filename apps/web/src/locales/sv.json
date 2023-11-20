@@ -4,7 +4,7 @@
         "away-from-getting": "Kvar tills du får",
         "continue-to-checkout": "Gå till kassan",
         "estimated-total": "Est. Total",
-        "free-shipping": "FRI FRAKT",
+        "free-shipping": "FRI Frakt",
         "order-summary": "Ordersammanfattning",
         "promo-codes": "Rabattkoder",
         "sale-discount": "Kampanjrabatt",
@@ -15,12 +15,14 @@
     "common": {
         "add-to-cart": "Lägg till",
         "add": "Lägg till",
-        "buy": "Köp",
         "added-to-cart": "Tillagd!",
+        "buy": "Köp",
         "cart-not-ready": "En sekund...",
+        "cart": "Varukorgen",
+        "language-and-region-settings": "Språk- och regioninställningar",
         "out-of-stock": "Slutsåld",
-        "too-low-quantity": "För lågt antal",
+        "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
-        "language-and-region-settings": "Språk- och regioninställningar"
+        "search": "Sök"
     }
 }

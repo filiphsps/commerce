@@ -2,9 +2,6 @@ import { BlogApi } from '@/api/blog';
 import { PageApi } from '@/api/page';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import Page from '@/components/Page';
-import PageContent from '@/components/PageContent';
-import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -14,6 +11,22 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
+import BlogContent from './blog-content';
+
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+/*export const dynamicParams = true;
+export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com',
+            locale: 'en-US'
+        }
+    ];
+}*/
+/* c8 ignore stop */
 
 /* c8 ignore start */
 export type BlogPageParams = { domain: string; locale: string };
@@ -77,36 +90,27 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     const store = await StoreApi({ domain, locale, api });
     const { page } = await PageApi({ locale, handle: 'blog', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
-    const blog = await BlogApi({ api, handle: 'news' });
+    // FIXME: Don't limit to 5.
+    const blog = await BlogApi({ api, handle: 'news', limit: 5 });
 
     return (
-        <Page>
-            <PageContent primary>
-                <Heading title={page?.title} subtitle={page?.description} />
+        <>
+            <Heading title={page?.title} subtitle={page?.description} />
 
-                <div>
-                    {blog.articles.edges.map(({ node: article }) => (
-                        <Link key={article.id} href={`/blog/${article.handle}/`} locale={locale}>
-                            {article.title}
-                        </Link>
-                    ))}
-                </div>
+            <BlogContent blog={blog} locale={locale} i18n={i18n} />
 
-                {page?.slices && page?.slices.length > 0 && (
-                    <PrismicPage
-                        store={store}
-                        locale={locale}
-                        page={page}
-                        prefetch={prefetch}
-                        i18n={i18n}
-                        handle={'blog'}
-                        type={'custom_page'}
-                    />
-                )}
-            </PageContent>
-        </Page>
+            {page?.slices && page?.slices.length > 0 && (
+                <PrismicPage
+                    store={store}
+                    locale={locale}
+                    page={page}
+                    prefetch={prefetch}
+                    i18n={i18n}
+                    handle={'blog'}
+                    type={'custom_page'}
+                />
+            )}
+        </>
     );
 }
-
-export const revalidate = 120;
 /* c8 ignore stop */

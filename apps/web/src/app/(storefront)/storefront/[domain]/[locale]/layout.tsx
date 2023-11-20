@@ -19,7 +19,7 @@ import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
 const font = Lexend_Deca({
@@ -30,10 +30,23 @@ const font = Lexend_Deca({
     preload: true
 });
 
+/* c8 ignore start */
 // export const runtime = 'experimental-edge';
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+/*export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com',
+            locale: 'en-US'
+        }
+    ];
+}*/
+/* c8 ignore stop */
 
 export type LayoutParams = { domain: string; locale: string };
-
 export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
     const { domain, locale: localeData } = params;
     const locale = NextLocaleToLocale(localeData);
@@ -129,7 +142,7 @@ export default async function RootLayout({
                         type="Organization"
                         name={store.name}
                         description={store.description}
-                        url={`https://${domain}/`}
+                        url={`https://${domain}/${locale.locale}`}
                         logo={store.favicon?.src || store.logos?.primary?.src}
                         foundingDate="2023"
                         founders={[
@@ -165,7 +178,7 @@ export default async function RootLayout({
                             contactType: 'Customer relations and support',
                             email: 'hello@sweetsideofsweden.com',
                             telephone: '+1 866 502 5580',
-                            url: `https://${domain}/about/`,
+                            url: `https://${domain}/${locale.locale}about/`,
                             availableLanguage: ['English', 'Swedish']
                         }}
                         sameAs={store?.social?.map(({ url }) => url)}
@@ -176,7 +189,7 @@ export default async function RootLayout({
                         url={`https://${domain}/`}
                         potentialActions={[
                             {
-                                target: `https://${domain}/search/?q`,
+                                target: `https://${domain}/${locale.locale}/search/?q`,
                                 queryInput: 'search_term_string'
                             }
                         ]}
@@ -211,6 +224,3 @@ export default async function RootLayout({
         throw error;
     }
 }
-
-//export const dynamicParams = true;
-export const revalidate = 120; // 2 minutes.

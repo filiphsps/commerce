@@ -7,7 +7,7 @@ import { GeistMono } from 'geist/font/mono';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
 
-// export const runtime = 'experimental-edge';
+export const runtime = 'experimental-edge';
 
 export const viewport: Viewport = {
     themeColor: '#000000',

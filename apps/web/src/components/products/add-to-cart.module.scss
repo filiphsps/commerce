@@ -1,72 +1,8 @@
 @import '@/styles/variables.scss';
 
-/* TODO: Move into `button` component. */
-.button {
-    appearance: none;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--block-spacer);
-    width: auto;
-    min-height: 5.5rem;
-    padding: calc(var(--block-padding-large) - var(--block-border-width))
-        calc(calc(var(--block-padding-large) * 2) - var(--block-border-width));
-    line-height: normal;
-    font-size: 2rem;
-    font-weight: 400;
-    text-align: center;
-    user-select: none;
-    border: var(--block-border-width) solid var(--accent-primary);
-    border-radius: var(--block-border-radius-large);
-    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
-    background-color: var(--accent-primary);
-    color: var(--accent-primary-text);
-    transition:
-        250ms ease-in-out background-color,
-        250ms ease-in-out border-color,
-        250ms ease-in-out color,
-        250ms ease-in-out font-weight;
-    cursor: pointer;
-
-    &.success,
-    &.success:enabled:active,
-    &.success:enabled:active,
-    &.success:disabled:hover,
-    &.success:disabled:hover {
-        background-color: var(--color-success);
-        border-color: var(--color-success-dark);
-        color: var(--color-success-text);
-        font-weight: 600;
-    }
-
-    &:enabled:hover:not(.success) {
-        background-color: var(--accent-primary-light);
-    }
-    &:enabled:active:not(.success),
-    &:enabled:focus:not(.success) {
-        background-color: var(--accent-primary-dark);
-    }
-
-    &:disabled:not(.success),
-    &:disabled:active:not(.success),
-    &:disabled:hover:not(.success) {
-        border-color: var(--color-block);
-        background-color: var(--color-block);
-        color: var(--color-block-black);
-        box-shadow: none;
-        cursor: not-allowed;
-
-        svg {
-            display: none;
-        }
-    }
-
-    svg {
-        font-size: 2rem;
-        height: 100%;
-        vertical-align: middle;
-    }
-}
-
-.button.addToCart {
+.add-to-cart {
+    gap: calc(var(--block-spacer-small) / 2);
+    font-size: 1.45rem;
+    border-radius: var(--block-border-radius);
+    text-transform: uppercase;
 }

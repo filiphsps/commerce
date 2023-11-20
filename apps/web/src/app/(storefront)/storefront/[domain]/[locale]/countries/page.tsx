@@ -16,9 +16,23 @@ import { RedirectType, notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import LocaleSelector from './locale-selector';
 
-export type CountriesPageParams = { domain: string; locale: string };
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+/*export const dynamicParams = true;
+export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com',
+            locale: 'en-US'
+        }
+    ];
+}*/
+/* c8 ignore stop */
 
 /* c8 ignore start */
+export type CountriesPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {

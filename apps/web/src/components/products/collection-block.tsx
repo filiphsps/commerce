@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import { ProductCardSkeleton } from '@/components/ProductCard';
 import styles from '@/components/products/collection-block.module.scss';
 import type { StoreModel } from '@/models/StoreModel';

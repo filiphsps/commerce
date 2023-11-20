@@ -6,6 +6,7 @@
     z-index: 0;
     width: 85vw;
     height: calc(100vh - 6rem);
+    height: calc(100dvh - 6rem);
     background: var(--accent-secondary-light);
     border-right: var(--block-border-width) solid var(--accent-secondary-dark);
     color: var(--color-dark);

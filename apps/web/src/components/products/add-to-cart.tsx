@@ -1,9 +1,9 @@
 'use client';
 
+import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 import { useState, type HTMLProps } from 'react';
@@ -15,8 +15,8 @@ export type AddToCartProps = {
     quantity: number;
 } & HTMLProps<HTMLButtonElement>;
 
-export const AddToCart = (props: AddToCartProps) => {
-    const { i18n, className, quantity = 0 } = props;
+// eslint-disable-next-line unused-imports/no-unused-vars
+export const AddToCart = ({ locale, i18n, className, quantity = 0, type, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
@@ -47,10 +47,13 @@ export const AddToCart = (props: AddToCartProps) => {
     }
 
     return (
-        <button
-            {...RemoveInvalidProps({ ...props, children: undefined, type: (props.type as any) || 'button' })}
-            className={`${styles.button} ${styles.addToCart} ${(animation && styles.success) || ''} ${className || ''}`}
+        <Button
+            {...props}
+            className={`${styles['add-to-cart']} ${className || ''}`}
             disabled={!selectedVariant!.availableForSale || quantity < 1}
+            as="button"
+            type={type || ('button' as any)}
+            data-success={(animation && 'true') || undefined}
             onClick={() => {
                 clearTimeout(animation);
                 setAnimation(
@@ -70,6 +73,6 @@ export const AddToCart = (props: AddToCartProps) => {
             title={`Add ${quantity} to your cart`} // TODO: i18n.
         >
             {icon} {label}
-        </button>
+        </Button>
     );
 };

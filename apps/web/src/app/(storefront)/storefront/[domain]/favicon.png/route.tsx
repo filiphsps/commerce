@@ -6,8 +6,21 @@ import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
 
-// export const runtime = process.env.NODE_ENV === 'production' ? 'experimental-edge' : 'nodejs';
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+    // FIXME: Don't hardcode these.
+    // TODO: Figure out which sites to prioritize pre-rendering on.
+    return [
+        {
+            domain: 'sweetsideofsweden.com'
+        }
+    ];
+}
+/* c8 ignore stop */
 
+/* c8 ignore start */
 export type FaviconRouteParams = {
     domain: string;
 };
@@ -70,3 +83,4 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         status: 200
     });
 }
+/* c8 ignore stop */

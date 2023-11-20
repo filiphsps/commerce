@@ -18,6 +18,11 @@ const mockVendorsApi = VendorsApi as MockedFunction<typeof VendorsApi>;
 
 describe('utils', () => {
     describe('Prefetch', () => {
+        beforeEach(() => {
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
+            vi.spyOn(console, 'error').mockImplementation(() => {});
+        });
+
         const mockApi = {} as any as AbstractApi;
         const mockCollection: CollectionEdge['node'] = {
             id: '123',

@@ -6,6 +6,7 @@ import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
+//import { headers } from 'next/headers';
 
 export const shopifyApiConfig = ({
     domain = BuildConfig.shopify.checkout_domain
@@ -29,8 +30,17 @@ export const shopifyApiConfig = ({
         publicStorefrontToken: publicToken,
         privateStorefrontToken: privateToken,
         storeDomain: `https://${domain}`,
-        storefrontApiVersion: BuildConfig.shopify.api
+        storefrontApiVersion: BuildConfig.shopify.api,
+        contentType: 'json'
+        //contentType: 'graphql'
     });
+
+    /*const clientHeaders = headers();
+    const buyerIp =
+        clientHeaders.get('cf-connecting-ip') ||
+        clientHeaders.get('x-forwarded-for') ||
+        clientHeaders.get('x-real-ip') ||
+        undefined;*/
 
     return {
         public: () => ({
@@ -39,7 +49,7 @@ export const shopifyApiConfig = ({
         }),
         private: () => ({
             uri: api.getStorefrontApiUrl(),
-            headers: api.getPrivateTokenHeaders()
+            headers: api.getPrivateTokenHeaders({ buyerIp: undefined })
         })
     };
 };

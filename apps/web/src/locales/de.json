@@ -15,11 +15,14 @@
     "common": {
         "add-to-cart": "In den Warenkorb",
         "add": "Hinzufügen",
-        "buy": "Kaufen",
         "added-to-cart": "Hinzugefügt!",
+        "buy": "Kaufen",
         "cart-not-ready": "Einen augenblick...",
+        "cart": "Warenkorb",
+        "language-and-region-settings": "Einstellungen für Sprache und Region",
         "out-of-stock": "Ausverkauft",
+        "quantity-too-low": "Die Menge ist zu niedrig",
         "quantity": "Menge",
-        "language-and-region-settings": "Einstellungen für Sprache und Region"
+        "search": "Suche"
     }
 }

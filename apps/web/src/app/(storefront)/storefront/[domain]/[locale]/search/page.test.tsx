@@ -72,7 +72,7 @@ describe('app', () => {
             it('returns expected metadata when locale is valid', async () => {
                 const metadata = await generateMetadata({ params });
                 expect(metadata).toEqual({
-                    title: 'Search',
+                    title: 'search',
                     description: undefined,
                     alternates: {
                         canonical: `https://${domain}/${locale}/search/`,
@@ -83,7 +83,7 @@ describe('app', () => {
                     openGraph: {
                         url: `/${locale}/search/`,
                         type: 'website',
-                        title: 'Search',
+                        title: 'search',
                         description: undefined,
                         siteName: undefined,
                         locale: 'en-US',

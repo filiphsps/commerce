@@ -6,7 +6,7 @@ export type AbstractApi<Q = any> = {
     locale: () => Locale;
     query: <T>(
         query: Q,
-        variables?: Record<string, string | number | object | Array<string | number | object> | null>,
+        variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
         tags?: string[]
     ) => Promise<{ data: T | null; errors: readonly any[] | undefined }>;
 };

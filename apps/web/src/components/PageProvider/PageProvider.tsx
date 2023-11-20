@@ -1,6 +1,7 @@
 'use client';
 
 import type { NavigationItem } from '@/api/navigation';
+import Content from '@/components/Content';
 import Footer from '@/components/Footer';
 import styles from '@/components/PageProvider/page-provider.module.scss';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -22,7 +23,7 @@ const Announcement = styled.div`
     height: 100%;
     padding: var(--block-padding-large);
     text-transform: uppercase;
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     line-height: default;
     font-weight: 600;
     text-align: center;
@@ -30,6 +31,11 @@ const Announcement = styled.div`
     @media (min-width: 950px) {
         font-size: 1.25rem;
         line-height: 1.2;
+    }
+
+    & p {
+        font-size: inherit;
+        font-weight: inherit;
     }
 
     &.primary {
@@ -101,13 +107,13 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             {above.length > 0 && (
                 <Announcements>
                     {above.map((item, index) => (
-                        <Announcement
-                            key={index}
-                            className={item.background_color}
-                            dangerouslySetInnerHTML={{
-                                __html: asHTML(item.content) || ''
-                            }}
-                        />
+                        <Announcement key={index} className={item.background_color}>
+                            <Content
+                                dangerouslySetInnerHTML={{
+                                    __html: asHTML(item.content) || ''
+                                }}
+                            />
+                        </Announcement>
                     ))}
                 </Announcements>
             )}
@@ -116,13 +122,13 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 <Announcements>
                     {bellow.map((item, index) => (
                         <Announcement key={index} className={item.background_color}>
-                            <Announcement
-                                key={index}
-                                className={item.background_color}
-                                dangerouslySetInnerHTML={{
-                                    __html: asHTML(item.content) || ''
-                                }}
-                            />
+                            <Announcement key={index} className={item.background_color}>
+                                <Content
+                                    dangerouslySetInnerHTML={{
+                                        __html: asHTML(item.content) || ''
+                                    }}
+                                />
+                            </Announcement>
                         </Announcement>
                     ))}
                 </Announcements>
