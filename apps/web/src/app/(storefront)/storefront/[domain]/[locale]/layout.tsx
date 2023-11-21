@@ -34,7 +34,7 @@ const font = Lexend_Deca({
 // export const runtime = 'experimental-edge';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-/*export async function generateStaticParams() {
+export async function generateStaticParams() {
     // FIXME: Don't hardcode these.
     // TODO: Figure out which sites to prioritize pre-rendering on.
     return [
@@ -43,7 +43,7 @@ export const dynamicParams = true;
             locale: 'en-US'
         }
     ];
-}*/
+}
 /* c8 ignore stop */
 
 export type LayoutParams = { domain: string; locale: string };
@@ -142,7 +142,7 @@ export default async function RootLayout({
                         type="Organization"
                         name={store.name}
                         description={store.description}
-                        url={`https://${domain}/${locale.locale}`}
+                        url={`https://${domain}/${locale.locale}/`}
                         logo={store.favicon?.src || store.logos?.primary?.src}
                         foundingDate="2023"
                         founders={[
@@ -178,7 +178,7 @@ export default async function RootLayout({
                             contactType: 'Customer relations and support',
                             email: 'hello@sweetsideofsweden.com',
                             telephone: '+1 866 502 5580',
-                            url: `https://${domain}/${locale.locale}about/`,
+                            url: `https://${domain}/${locale.locale}/about/`,
                             availableLanguage: ['English', 'Swedish']
                         }}
                         sameAs={store?.social?.map(({ url }) => url)}
@@ -186,7 +186,7 @@ export default async function RootLayout({
                     <SiteLinksSearchBoxJsonLd
                         useAppDir
                         name={store.name}
-                        url={`https://${domain}/`}
+                        url={`https://${domain}/${locale.locale}/`}
                         potentialActions={[
                             {
                                 target: `https://${domain}/${locale.locale}/search/?q`,
