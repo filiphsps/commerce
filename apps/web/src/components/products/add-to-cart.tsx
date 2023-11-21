@@ -13,10 +13,11 @@ export type AddToCartProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     quantity: number;
+    showIcon?: boolean;
 } & HTMLProps<HTMLButtonElement>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-export const AddToCart = ({ locale, i18n, className, quantity = 0, type, ...props }: AddToCartProps) => {
+export const AddToCart = ({ locale, i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
@@ -26,7 +27,7 @@ export const AddToCart = ({ locale, i18n, className, quantity = 0, type, ...prop
     const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
 
     let label: ReactNode = t('add-to-cart');
-    let icon: ReactNode = <TbShoppingBagPlus />;
+    let icon: ReactNode = showIcon ? <TbShoppingBagPlus /> : null;
     if (animation) {
         // 1. Have we just successfully added to cart, if so, show a checkmark.
         label = t('added-to-cart');
