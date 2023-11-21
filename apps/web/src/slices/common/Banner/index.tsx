@@ -7,7 +7,6 @@ import type { Content } from '@prismicio/client';
 import { asLink } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { PrismicRichText } from '@prismicio/react';
-import color from 'color';
 
 const Contents = styled.div`
     display: grid;
@@ -197,8 +196,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
 
     --background: ${({ $background }) => $background};
 
-    --mixer-color: ${({ $background }) =>
-        (color($background).luminosity() > 0.35 && 'var(--color-dark)') || 'var(--color-bright)'};
+    --mixer-color: var(--color-dark);
     --heading-color: color-mix(in srgb, var(--background) 10%, var(--mixer-color));
     --heading-selected-color: color-mix(in srgb, var(--accent-primary) 85%, var(--mixer-color));
     --content-color: color-mix(in srgb, var(--background) 30%, var(--mixer-color));

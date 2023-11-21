@@ -3,7 +3,6 @@
 import styles from '@/components/products/quantity-selector.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
@@ -31,8 +30,14 @@ export type QuantitySelectorProps = {
     value: number;
 } & HTMLProps<HTMLDivElement>;
 
-export const QuantitySelector = (props: QuantitySelectorProps) => {
-    const { className, i18n, value: quantity, update } = props;
+export const QuantitySelector = ({
+    className,
+    i18n,
+    value: quantity,
+    update,
+    children,
+    ...props
+}: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
 
@@ -51,10 +56,7 @@ export const QuantitySelector = (props: QuantitySelectorProps) => {
     }, [quantity]);
 
     return (
-        <section
-            {...RemoveInvalidProps({ ...props, children: undefined })}
-            className={`${styles.container} ${className || ''}`}
-        >
+        <section {...props} className={`${styles.container} ${className || ''}`}>
             <button
                 type="button"
                 className={`${styles.button} ${styles.add}`}

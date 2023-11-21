@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import type { HTMLProps } from 'react';
@@ -140,8 +139,7 @@ type GalleryProps = {
     initialImageId?: string | null;
     images: ImageConnection | null;
 } & HTMLProps<HTMLDivElement>;
-const Gallery = (props: GalleryProps) => {
-    const { initialImageId, images } = props;
+const Gallery = ({ initialImageId, images, ...props }: GalleryProps) => {
     const [selected, setSelected] = useState(initialImageId || images?.edges[0].node.id);
 
     useEffect(() => {
@@ -155,7 +153,7 @@ const Gallery = (props: GalleryProps) => {
 
     const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
-        <Container {...RemoveInvalidProps(props)}>
+        <Container {...props}>
             <Primary>
                 <ImageWrapper>
                     <Image

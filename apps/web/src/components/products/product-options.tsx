@@ -4,7 +4,6 @@ import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import Link from '@/components/link';
 import styles from '@/components/products/product-actions-container.module.scss';
 import type { Locale } from '@/utils/locale';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { Fragment, type HTMLProps } from 'react';
@@ -70,8 +69,14 @@ export type ProductOptionProps = {
     initialVariant: ProductVariant;
     selectedVariant: ProductVariant;
 } & HTMLProps<HTMLDivElement>;
-export const ProductOptions = (props: ProductOptionProps) => {
-    const { locale, initialVariant, selectedVariant } = props;
+export const ProductOptions = ({
+    locale,
+    initialVariant,
+    selectedVariant,
+    style,
+    className,
+    ...props
+}: ProductOptionProps) => {
     const {
         options: productOptions,
         variants,
@@ -101,9 +106,9 @@ export const ProductOptions = (props: ProductOptionProps) => {
     return (
         <>
             <div
-                {...RemoveInvalidProps(props)}
-                className={`${styles.productOptions} ${props.className || ''}`}
-                style={{ gridArea: 'options', ...(props.style || {}) }}
+                {...props}
+                className={`${styles.productOptions} ${className || ''}`}
+                style={{ gridArea: 'options', ...(style || {}) }}
             >
                 {options?.map((option, index) =>
                     option?.values ? (

@@ -33,14 +33,8 @@
             }
         }
     }
-}
 
-/* TODO: Generic component. */
-.label {
-    grid-area: label;
-    display: block;
-    text-align: left;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 1.5rem;
+    .button {
+        min-height: 4rem;
+    }
 }

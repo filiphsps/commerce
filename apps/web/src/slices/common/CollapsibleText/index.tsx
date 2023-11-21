@@ -6,7 +6,6 @@ import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import type { SliceComponentProps } from '@prismicio/react';
 import { PrismicRichText } from '@prismicio/react';
-import Color from 'color';
 import { FiChevronUp } from 'react-icons/fi';
 import styled from 'styled-components';
 
@@ -82,15 +81,11 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
         <Container
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            style={
-                {
-                    '--background': slice.primary.accent || 'var(--color-block)',
-                    '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
-                    '--foreground':
-                        (slice.primary.accent && Color(slice.primary.accent).isDark() && 'var(--color-text-primary)') ||
-                        'var(--color-dark)'
-                } as React.CSSProperties
-            }
+            style={{
+                '--background': slice.primary.accent || 'var(--color-block)',
+                '--background-dark': slice.primary.accent_dark || 'var(--color-block)',
+                '--foreground': 'var(--color-text-primary)'
+            }}
         >
             <PageContent>
                 <Content>

@@ -2,7 +2,6 @@ import { Money, useCart } from '@shopify/hydrogen-react';
 import styled, { css } from 'styled-components';
 
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import type { FunctionComponent } from 'react';
 
 const Container = styled.section<{ $active?: boolean }>`
@@ -55,9 +54,9 @@ interface FreeShippingProgressProps {
     style?: React.CSSProperties;
     i18n: LocaleDictionary;
 }
-export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = (props) => {
+export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = ({ i18n, ...props }) => {
     const { cost } = useCart();
-    const { t } = useTranslation('cart', props.i18n);
+    const { t } = useTranslation('cart', i18n);
 
     // TODO: Handle other currencies properly.
     let threshold = 95;
@@ -101,7 +100,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         null;
 
     return (
-        <Container {...RemoveInvalidProps(props)} $active={freeShipping}>
+        <Container {...props} $active={freeShipping}>
             {
                 <Label suppressHydrationWarning>
                     {amountLeftComponent}

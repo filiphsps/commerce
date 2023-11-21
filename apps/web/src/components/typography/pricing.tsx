@@ -1,6 +1,5 @@
 'use client';
 
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
@@ -61,11 +60,9 @@ type PricingProps = {
     price: MoneyV2;
     compareAtPrice?: MoneyV2;
 } & HTMLProps<HTMLDivElement>;
-const Pricing = (props: PricingProps) => {
-    const { price, compareAtPrice } = props;
-
+const Pricing = ({ price, compareAtPrice, ...props }: PricingProps) => {
     return (
-        <Container {...RemoveInvalidProps(props)}>
+        <Container {...props}>
             <Price>
                 <Money data={price} as={Span} className={(compareAtPrice && 'Sale') || ''} />
             </Price>
