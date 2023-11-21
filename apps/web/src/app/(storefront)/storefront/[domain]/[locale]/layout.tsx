@@ -32,7 +32,7 @@ const font = Lexend_Deca({
 });
 
 /* c8 ignore start */
-/*export const revalidate = 28_800; // 8hrs.
+export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
     const locale = DefaultLocale()!;
@@ -40,9 +40,9 @@ export async function generateStaticParams() {
     const shops = await ShopsApi();
     return shops.map((shop) => ({
         domain: shop.domains.primary,
-        locale: locale.locale // FIXME: Don't hardcode locales.
+        locale: locale.locale
     }));
-}*/
+}
 /* c8 ignore stop */
 
 export type LayoutParams = { domain: string; locale: string };
