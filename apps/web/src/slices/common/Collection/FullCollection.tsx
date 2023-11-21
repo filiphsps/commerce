@@ -1,7 +1,5 @@
-'use client';
-
 import PageContent from '@/components/page-content';
-import { VerticalCollection } from '@/components/products/VerticalCollection';
+import { CollectionBlock } from '@/components/products/collection-block';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -30,7 +28,13 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
     return (
         <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
-                <VerticalCollection locale={locale} data={collection} store={store} i18n={i18n} />
+                <CollectionBlock
+                    locale={locale}
+                    data={collection as any}
+                    store={store}
+                    i18n={i18n}
+                    showViewAll={false}
+                />
             </PageContent>
         </section>
     );

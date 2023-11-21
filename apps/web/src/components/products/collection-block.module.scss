@@ -34,12 +34,11 @@
         width: calc(100% + var(--block-padding-large) * 2);
 
         .content {
-            display: flex;
-            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
-            grid-template-rows: 1fr;
-            grid-auto-flow: column;
-            columns: none;
+            display: grid;
             overflow-x: auto;
+            columns: none;
+            grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+            grid-auto-rows: 1fr;
             padding: var(--block-padding-large);
 
             scroll-padding-left: var(--block-padding-large);

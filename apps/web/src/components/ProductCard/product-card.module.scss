@@ -9,6 +9,7 @@
     gap: var(--block-spacer);
     height: 100%;
     min-height: 32.5rem;
+    min-width: 21.1rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: center;
     background: var(--product-card-color-background);
