@@ -1,6 +1,5 @@
 import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
-import type { StoreModel } from '@/models/StoreModel';
 import type { VendorModel } from '@/models/VendorModel';
 import type { CollectionPageDocumentData } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
@@ -68,10 +67,6 @@ describe('utils', () => {
         const mockVendor: VendorModel = {
             id: '123',
             name: 'Vendor Name'
-        } as any;
-        const mockStore: StoreModel = {
-            id: '123',
-            name: 'Store Name'
         } as any;
         const mockPage: CollectionPageDocumentData = {
             id: '123',
@@ -189,8 +184,7 @@ describe('utils', () => {
                     'collection-handle': mockCollection,
                     'second-collection-handle': mockCollection
                 },
-                vendors: [mockVendor],
-                shop: mockStore
+                vendors: [mockVendor]
             } as any;
 
             const result = await Prefetch({ api: mockApi, page: mockPage, initialData });
