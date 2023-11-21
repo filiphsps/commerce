@@ -5,17 +5,15 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import CollectionBlock from '@/components/CollectionBlock';
-import Content from '@/components/Content';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
+import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
-import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -113,31 +111,18 @@ export default async function CollectionPage({
             page
         });
 
-        const subtitle =
-            ((collection as any)?.shortDescription?.value && (
-                <Content
-                    dangerouslySetInnerHTML={{
-                        __html:
-                            (
-                                convertSchemaToHtml((collection as any).shortDescription.value, false) as string
-                            )?.replaceAll(`="null"`, '') || ''
-                    }}
-                />
-            )) ||
-            null;
-
         return (
             <Page>
                 <PageContent primary>
                     {!page || page.enable_header ? (
                         <div>
-                            <Heading title={collection.title} subtitle={subtitle} />
+                            <Heading title={collection.title} subtitle={null} />
                         </div>
                     ) : null}
                     {!page || page.enable_collection === undefined || page.enable_collection ? (
                         <>
-                            <Suspense>
-                                <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
+                            <Suspense fallback={<CollectionBlockSkeleton />}>
+                                <CollectionBlock data={collection as any} store={store} locale={locale} i18n={i18n} />
                             </Suspense>
                         </>
                     ) : null}

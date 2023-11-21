@@ -3,7 +3,6 @@ import type { HTMLProps, ReactNode } from 'react';
 import styles from '@/components/Header/header-navigation.module.scss';
 import { MenuItem, SubMenuItem } from '@/components/Header/menu-item';
 import type { Locale } from '@/utils/locale';
-import { RemoveInvalidProps } from '@/utils/remove-invalid-props';
 
 type HeaderNavigationChildItemsProps = {
     children?: ReactNode;
@@ -17,14 +16,9 @@ type HeaderNavigationProps = {
     menu: any;
     locale: Locale;
 } & HTMLProps<HTMLDivElement>;
-export const HeaderNavigation = (props: HeaderNavigationProps) => {
-    const { menu, locale } = props;
-
+export const HeaderNavigation = ({ locale, menu, className, ...props }: HeaderNavigationProps) => {
     return (
-        <nav
-            {...RemoveInvalidProps(props)}
-            className={`${styles.container} ${styles.centered} ${props.className || ''}`}
-        >
+        <nav {...props} className={`${styles.container} ${styles.centered} ${className || ''}`}>
             {menu?.map?.((item: any, index: number) => {
                 return (
                     <MenuItem key={item.handle + `${index}`} data={item} locale={locale}>

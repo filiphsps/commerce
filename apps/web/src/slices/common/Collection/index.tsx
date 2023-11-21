@@ -1,7 +1,6 @@
 import type { Content } from '@prismicio/client';
 
-import CollectionBlock from '@/components/CollectionBlock';
-import { CollectionBlockSkeleton } from '@/components/products/collection-block';
+import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/collection-block';
 import type { SliceComponentProps } from '@prismicio/react';
 import { Suspense } from 'react';
 import { FullCollection } from './FullCollection';
@@ -18,21 +17,6 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
     switch (slice.variation) {
         case 'default': {
-            const content = (
-                <Suspense
-                    fallback={<CollectionBlockSkeleton isHorizontal={slice.primary.direction === 'horizontal'} />}
-                >
-                    <CollectionBlock
-                        isHorizontal={slice.primary.direction === 'horizontal'}
-                        limit={slice.primary.limit || 16}
-                        data={context?.prefetch?.collections?.[slice.primary.handle!]}
-                        showViewAll={true}
-                        store={context?.store}
-                        locale={context.locale}
-                        i18n={context.i18n}
-                    />
-                </Suspense>
-            );
             return (
                 <CollectionContainer
                     slice={slice}
@@ -40,8 +24,21 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                     store={context.store}
                     locale={context.locale}
                     i18n={context.i18n}
-                    children={content}
-                />
+                >
+                    <Suspense
+                        fallback={<CollectionBlockSkeleton isHorizontal={slice.primary.direction === 'horizontal'} />}
+                    >
+                        <CollectionBlock
+                            isHorizontal={slice.primary.direction === 'horizontal'}
+                            limit={slice.primary.limit || 16}
+                            data={context?.prefetch?.collections?.[slice.primary.handle!]}
+                            showViewAll={true}
+                            store={context?.store}
+                            locale={context.locale}
+                            i18n={context.i18n}
+                        />
+                    </Suspense>
+                </CollectionContainer>
             );
         }
         case 'full': {
