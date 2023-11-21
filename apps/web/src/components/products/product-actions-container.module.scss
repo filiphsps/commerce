@@ -1,40 +1,41 @@
 @import '@/styles/variables.scss';
 
-.container {
-    display: contents;
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer);
+    height: 100%;
 
-    .options {
+    @media (min-width: $breakpoint-mobile) {
+        display: grid;
+        grid-template-areas: 'quantity-label options' 'quantity options' '. options';
+        grid-template-rows: 1.75rem 5rem 1fr;
+        grid-template-columns: minmax(18rem, auto) 1fr;
+        gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
+    }
+
+    .productOptions {
         display: flex;
         flex-direction: column;
         gap: var(--block-spacer);
-        height: 100%;
 
         @media (min-width: $breakpoint-mobile) {
-            display: grid;
-            grid-template-areas: 'quantity-label options' 'quantity options' '. options';
-            grid-template-rows: 1.75rem 5rem 1fr;
-            grid-template-columns: minmax(18rem, auto) 1fr;
             gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
         }
 
-        .productOptions {
-            display: flex;
-            flex-direction: column;
-            gap: var(--block-spacer);
-
-            @media (min-width: $breakpoint-mobile) {
-                gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
-            }
-
-            label,
-            .label,
-            label.label {
-                line-height: 1.15;
-            }
+        label,
+        .label,
+        label.label {
+            line-height: 1.15;
         }
     }
+}
 
-    .button {
-        min-height: 4rem;
+.button {
+    min-height: 5rem;
+    font-size: 1.5rem;
+
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 1.75rem;
     }
 }

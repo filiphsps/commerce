@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'react';
-import Loader from '@/components/Loader';
 import styled from 'styled-components';
+import { LoadingIndicator } from '../informational/loading-indicator';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +15,7 @@ interface PageLoaderProps {
 const PageLoader: FunctionComponent<PageLoaderProps> = ({ light }) => {
     return (
         <Wrapper className="PageLoader">
-            <Loader light={light} />
+            <LoadingIndicator />
         </Wrapper>
     );
 };

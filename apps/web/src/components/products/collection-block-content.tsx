@@ -1,8 +1,8 @@
 'use client';
 
-import { StoreModel } from '@/models/StoreModel';
+import type { StoreModel } from '@/models/StoreModel';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 import ProductCard from '../ProductCard';

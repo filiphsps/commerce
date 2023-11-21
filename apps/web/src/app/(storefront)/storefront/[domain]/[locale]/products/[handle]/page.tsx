@@ -5,13 +5,14 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import Content from '@/components/Content';
 import Gallery from '@/components/Gallery';
 import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
+import { InfoLines } from '@/components/products/info-lines';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
+import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
@@ -234,6 +235,7 @@ export default async function ProductPage({
                             initialVariant={initialVariant!}
                             selectedVariant={selectedVariant}
                         />
+                        {(product && <InfoLines product={product} />) || null}
 
                         {content ? (
                             <>

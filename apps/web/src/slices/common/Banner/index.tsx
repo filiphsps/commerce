@@ -196,7 +196,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
 
     --background: ${({ $background }) => $background};
 
-    --mixer-color: var(--color-dark);
+    --mixer-color: var(--color-bright);
     --heading-color: color-mix(in srgb, var(--background) 10%, var(--mixer-color));
     --heading-selected-color: color-mix(in srgb, var(--accent-primary) 85%, var(--mixer-color));
     --content-color: color-mix(in srgb, var(--background) 30%, var(--mixer-color));

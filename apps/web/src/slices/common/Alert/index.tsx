@@ -1,6 +1,6 @@
 import type { SliceComponentProps } from '@prismicio/react';
 
-import { Alert as AlertComponent } from '@/components/Alert';
+import { Alert as AlertComponent } from '@/components/informational/alert';
 import PageContent from '@/components/page-content';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { Content } from '@prismicio/client';

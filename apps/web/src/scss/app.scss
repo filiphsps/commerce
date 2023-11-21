@@ -19,11 +19,6 @@
     --color-dark-secondary: #555555;
 
     --color-sale: #b51200;
-
-    --color-success: #2dc653;
-    --color-success-dark: #25a244;
-    --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
-    --color-success-text: color-mix(in srgb, var(--color-success-dark) 45%, var(--color-dark));
     --color-danger: #a53d3a;
 
     --color-lights-out: #051821;
@@ -38,9 +33,12 @@
     --color-green-rgb: 27, 111, 27;
     --color-green-light: #e1faea;
 
-    --color-block-pastel-lime: #cce2cb;
-    --color-block-pastel-lime-light: color-mix(in srgb, var(--color-block-pastel-lime) 65%, var(--color-bright));
-    --color-block-pastel-lime-dark: color-mix(in srgb, var(--color-block-pastel-lime) 8%, var(--color-dark));
+    --color-block-success: #cce2cb;
+    --color-block-success-dark: #7c9c7c;
+    --color-block-success-text: var(--color-dark);
+    --color-block-info: #6dc0d5;
+    --color-block-info-dark: #1c5d99;
+    --color-block-info-text: var(--color-dark);
 }
 
 html,

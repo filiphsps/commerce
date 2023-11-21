@@ -2,7 +2,7 @@
 
 import styled, { css } from 'styled-components';
 
-import ContentComponent from '@/components/Content';
+import { Content as ContentComponent } from '@/components/typography/content';
 import { PrismicNextImage } from '@prismicio/next';
 import type { FunctionComponent } from 'react';
 
