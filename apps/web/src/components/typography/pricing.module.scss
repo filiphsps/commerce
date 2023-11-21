@@ -1,0 +1,58 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: end;
+    gap: var(--block-spacer-small);
+
+    @media (min-width: 920px) {
+        flex-direction: column-reverse;
+        gap: 0;
+    }
+
+    .price {
+        color: var(--color-dark);
+    }
+
+    .current {
+        position: relative;
+        display: inline-block;
+        font-size: 3rem;
+        line-height: 1;
+        font-weight: 700;
+
+        &.sale,
+        .sale {
+            color: var(--color-sale);
+        }
+    }
+
+    .previous {
+        position: relative;
+        display: inline-block;
+        font-size: 2rem;
+        font-weight: 400;
+        color: var(--color-gray);
+
+        // Optically balance.
+        padding-bottom: 0.15rem;
+    }
+
+    .dash {
+        position: relative;
+        text-decoration: none;
+
+        &::before {
+            content: '';
+            position: absolute;
+            display: block;
+            height: 0.25rem;
+            width: 95%;
+            inset: 48% 0 0 2.5%;
+            white-space: nowrap;
+            border-radius: 1rem;
+            transform: rotate(-15deg);
+            background: var(--color-gray);
+        }
+    }
+}

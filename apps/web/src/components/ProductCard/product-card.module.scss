@@ -8,13 +8,18 @@
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: var(--block-spacer);
     height: 100%;
-    min-height: 32.5rem;
-    min-width: 21.1rem;
+    min-height: 34rem;
+    width: 100%;
+    min-width: 20rem;
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: center;
     background: var(--product-card-color-background);
     border-radius: var(--block-border-radius);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+
+    .button {
+        height: 100%;
+    }
 
     .image {
         grid-area: product-image;

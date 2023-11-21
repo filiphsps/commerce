@@ -1,6 +1,5 @@
 'use client';
 
-import { InfoLines } from '@/components/products/InfoLines';
 import { AddToCart } from '@/components/products/add-to-cart';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { ProductOptions } from '@/components/products/product-options';
@@ -35,27 +34,25 @@ export const ProductActionsContainer = ({
 
     return (
         <ProductProvider data={product!} initialVariantId={selectedVariant?.id || initialVariant.id}>
-            <section {...props} className={`${styles.container} ${className || ''}`}>
-                <div className={styles.options}>
-                    <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
+            <section {...props} className={`${styles.options} ${className || ''}`}>
+                <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
 
-                    <QuantitySelector
-                        update={(n) => setQuantity(n)}
-                        value={quantity}
-                        locale={locale}
-                        i18n={i18n}
-                        style={{ gridArea: 'quantity' }}
-                    />
-                    <ProductOptions
-                        locale={locale}
-                        initialVariant={initialVariant}
-                        selectedVariant={selectedVariant || initialVariant}
-                        style={{ gridArea: 'options' }}
-                    />
-                </div>
-                <AddToCart className={styles.button} quantity={quantity} locale={locale} i18n={i18n} />
+                <QuantitySelector
+                    update={(n) => setQuantity(n)}
+                    value={quantity}
+                    locale={locale}
+                    i18n={i18n}
+                    style={{ gridArea: 'quantity' }}
+                />
+                <ProductOptions
+                    locale={locale}
+                    initialVariant={initialVariant}
+                    selectedVariant={selectedVariant || initialVariant}
+                    style={{ gridArea: 'options' }}
+                />
             </section>
-            {(product && <InfoLines product={product} />) || null}
+
+            <AddToCart className={styles.button} quantity={quantity} locale={locale} i18n={i18n} />
         </ProductProvider>
     );
 };

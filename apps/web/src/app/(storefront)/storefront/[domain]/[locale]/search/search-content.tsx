@@ -6,10 +6,10 @@ import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
 import { SearchApi } from '@/api/shopify/search';
-import { Button } from '@/components/Button';
+import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/Input';
-import { Label } from '@/components/Label';
 import PageLoader from '@/components/PageLoader';
+import { Label } from '@/components/typography/label';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { useApolloClient } from '@apollo/client';
@@ -90,18 +90,6 @@ const SearchHeader = styled.section`
         height: 100%;
         border: 0;
     }
-
-    ${Label} {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--block-spacer-small);
-
-        svg {
-            margin-top: -0.1rem;
-            vertical-align: middle;
-        }
-    }
 `;
 const ContentHeader = styled(SearchHeader)`
     grid-template-columns: auto auto;
@@ -112,20 +100,6 @@ const ContentHeader = styled(SearchHeader)`
     border-radius: var(--block-border-radius);
     background: var(--accent-primary);
     color: var(--accent-primary-text);
-
-    ${Label} {
-        height: 100%;
-        width: 100%;
-        text-align: right;
-        justify-content: end;
-        font-size: 1.5rem;
-        line-height: 1.5rem;
-
-        &:first-child {
-            text-align: left;
-            justify-content: start;
-        }
-    }
 `;
 
 type SearchContentProps = {

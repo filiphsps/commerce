@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 
-import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
-import { Label } from '@/components/Label';
+import { Label } from '@/components/typography/label';
+import type { FunctionComponent } from 'react';
 import { useState } from 'react';
 
 const Container = styled.div`

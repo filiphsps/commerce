@@ -1,6 +1,6 @@
-import Content from '@/components/Content';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
+import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceDefault } from '@/prismic/types';

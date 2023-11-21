@@ -4,7 +4,6 @@ import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCart
 import { FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import Loader from '@/components/Loader';
 import Link from '@/components/link';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation, type Locale } from '@/utils/locale';
@@ -12,6 +11,7 @@ import { TitleToHandle } from '@/utils/title-to-handle';
 import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/legacy/image';
 import type { FunctionComponent } from 'react';
+import { LoadingIndicator } from '../informational/loading-indicator';
 
 const Section = styled.td``;
 const SectionContent = styled.div`
@@ -307,7 +307,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
                 </ProductImage>
                 <Section />
                 <Section>
-                    <Loader light />
+                    <LoadingIndicator />
                 </Section>
                 <Section />
             </Content>

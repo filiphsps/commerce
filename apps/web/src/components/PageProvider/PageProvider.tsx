@@ -1,9 +1,9 @@
 'use client';
 
 import type { NavigationItem } from '@/api/navigation';
-import Content from '@/components/Content';
 import Footer from '@/components/Footer';
 import styles from '@/components/PageProvider/page-provider.module.scss';
+import { Content } from '@/components/typography/content';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { FooterModel } from '@/models/FooterModel';

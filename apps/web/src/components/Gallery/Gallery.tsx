@@ -38,26 +38,28 @@ const Preview = styled.div`
     cursor: pointer;
     transition: 150ms ease-in-out;
     user-select: none;
-    opacity: 0.5;
+    opacity: 0.75;
 
-    @media (min-width: 950px) {
-        width: 12rem;
-        height: fit-content;
-        padding: var(--block-padding);
-        border: var(--block-border-width) solid var(--color-block);
-        opacity: 1;
-    }
-
-    &.Selected,
-    &:hover,
-    &:active {
+    &:is(.Selected, :hover, :active, :focus):not(:disabled) {
         border-color: var(--accent-primary);
         opacity: 1;
     }
 
-    @media (max-width: 950px) {
+    imng {
+        width: auto;
+        height: 100%;
+    }
+
+    @media (min-width: 950px) {
+        overflow: unset;
+        width: 12rem;
+        height: 100%;
+        padding: var(--block-padding);
+        border: var(--block-border-width) solid var(--color-block);
+        opacity: 1;
+
         img {
-            width: auto;
+            width: 100%;
             height: 100%;
         }
     }
@@ -84,6 +86,7 @@ const ImageWrapper = styled.div`
     align-items: center;
     flex-shrink: 1;
     max-height: 100%;
+    max-width: 100%;
 `;
 
 const Container = styled.div`

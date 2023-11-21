@@ -1,6 +1,6 @@
-import Content from '@/components/Content';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
+import { Content } from '@/components/typography/content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 import gravatar from 'gravatar.js';

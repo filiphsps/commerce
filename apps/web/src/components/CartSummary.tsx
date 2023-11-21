@@ -2,11 +2,11 @@ import { CartCost, Money, useCart } from '@shopify/hydrogen-react';
 import { useEffect, useState } from 'react';
 import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 
-import { Button } from '@/components/Button';
 import { CartCoupons } from '@/components/CartCoupons';
 import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import PageLoader from '@/components/PageLoader';
+import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';

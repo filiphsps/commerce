@@ -52,33 +52,30 @@
 
     h1 {
         font-size: 3rem;
-        line-height: 3.5rem;
-        font-weight: 600;
+        line-height: 1.1;
+        font-weight: 700;
         padding-bottom: 1.5rem;
-
-        &:last-child {
-            padding-bottom: 0;
-        }
     }
     h2 {
         font-size: 2.75rem;
-        line-height: 3.25rem;
+        line-height: 1.25;
         font-weight: 600;
         padding-bottom: 1rem;
-
-        &:last-child {
-            padding-bottom: 0;
-        }
     }
     h3 {
         font-size: 2.25rem;
-        line-height: 2.75rem;
+        line-height: normal;
         font-weight: 500;
         padding-bottom: 1rem;
+    }
+    h4 {
+        font-size: 2rem;
+        line-height: normal;
+        padding-bottom: 1rem;
+    }
 
-        &:last-child {
-            padding-bottom: 0;
-        }
+    :is(h1, h2, h3, h4, h5, h6):is(:last-child) {
+        padding-bottom: 0;
     }
 
     img {
@@ -86,5 +83,6 @@
         max-width: 100% !important;
         object-fit: contain;
         margin-bottom: 1rem;
+        background: var(--color-block-dark);
     }
 }

@@ -146,6 +146,7 @@ const Actions = styled.div`
     justify-content: space-between;
     align-items: end;
     gap: var(--block-spacer-small);
+    min-height: 3.75rem;
 `;
 
 const Quantity = styled.div`
@@ -497,7 +498,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                 </CardFooter>
             </Details>
             <Actions>
-                <AddToCart type="button" quantity={quantity} locale={locale} i18n={i18n} />
+                <AddToCart className={styles.button} type="button" quantity={quantity} locale={locale} i18n={i18n} />
                 <Quantity>
                     <QuantityAction
                         className={quantity > 1 ? '' : 'Inactive'}

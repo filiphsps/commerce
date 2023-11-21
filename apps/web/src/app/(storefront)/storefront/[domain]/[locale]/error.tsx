@@ -1,10 +1,10 @@
 'use client';
 
 /* c8 ignore start */
-import Content from '@/components/Content/Content';
 import { Button } from '@/components/actionable/button';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
+import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { useEffect } from 'react';
 

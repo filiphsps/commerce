@@ -10,9 +10,8 @@
     max-width: 100%;
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius-large);
-    background: var(--color-block-pastel-lime);
-
-    // TODO: Actually respect `severity`.
+    background: var(--color-block);
+    color: var(--color-dark);
 
     @media (min-width: $breakpoint-mobile) {
         grid-template-columns: auto auto;
@@ -49,6 +48,22 @@
 
         @media (min-width: $breakpoint-mobile) {
             align-items: center;
+        }
+    }
+
+    // TODO: Actually respect `severity`.
+    [data-severity='success'] {
+        background: var(--color-block-success);
+
+        .icon {
+            color: var(--color-block-success-dark);
+        }
+    }
+    [data-severity='info'] {
+        background: var(--color-block-info);
+
+        .icon {
+            color: var(--color-block-info-dark);
         }
     }
 }

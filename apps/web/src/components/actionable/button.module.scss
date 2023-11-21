@@ -36,9 +36,9 @@
     }
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
-        background-color: var(--color-success);
-        border-color: var(--color-success-dark);
-        color: var(--color-success-text);
+        background-color: var(--color-block-success);
+        border-color: var(--color-block-success-dark);
+        color: var(--color-block-success-text);
         font-weight: 600;
     }
 
