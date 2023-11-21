@@ -15,7 +15,7 @@ import { metadata as notFoundMetadata } from '../not-found';
 
 /* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
-/*export const dynamicParams = true;
+export const dynamicParams = true;
 export async function generateStaticParams() {
     // FIXME: Don't hardcode these.
     // TODO: Figure out which sites to prioritize pre-rendering on.
@@ -24,9 +24,14 @@ export async function generateStaticParams() {
             domain: 'sweetsideofsweden.com',
             locale: 'en-US',
             handle: 'homepage'
+        },
+        {
+            domain: 'sweetsideofsweden.com',
+            locale: 'en-US',
+            handle: 'about'
         }
     ];
-}*7
+}
 /* c8 ignore stop */
 
 /* c8 ignore start */
@@ -71,7 +76,7 @@ export async function generateMetadata({
         };
     } catch (error: any) {
         const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+        if (message.includes('404:')) {
             return notFoundMetadata;
         }
 
@@ -119,7 +124,7 @@ export default async function CustomPage({
         );
     } catch (error: any) {
         const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+        if (message.includes('404:')) {
             return notFound();
         }
 
