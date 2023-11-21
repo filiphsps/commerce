@@ -1,5 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server';
-
+import type { NextRequest } from 'next/server';
 import { router } from '@/middleware/router';
 
 export const runtime = 'experimental-edge';
