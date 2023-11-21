@@ -20,7 +20,7 @@ import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
-import { type ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
 const font = Lexend_Deca({
@@ -30,20 +30,6 @@ const font = Lexend_Deca({
     variable: '--font-primary',
     preload: true
 });
-
-/* c8 ignore start */
-/*export const revalidate = 28_800; // 8hrs.
-export const dynamicParams = true;
-export async function generateStaticParams() {
-    const locale = DefaultLocale()!;
-
-    const shops = await ShopsApi();
-    return shops.map((shop) => ({
-        domain: shop.domains.primary,
-        locale: locale.locale // FIXME: Don't hardcode locales.
-    }));
-}*/
-/* c8 ignore stop */
 
 export type LayoutParams = { domain: string; locale: string };
 export async function generateViewport({
@@ -88,7 +74,7 @@ export async function generateMetadata({
             template: `%s - ${store.name}`
         },
         icons: {
-            icon: ['/favicon.png', '/favicon.ico'],
+            icon: ['/favicon.png'],
             shortcut: ['/favicon.png'],
             apple: ['/favicon.png']
         },
@@ -213,8 +199,9 @@ export default async function RootLayout({
                             data={{ navigation, header, footer }}
                             header={headerComponents}
                         >
-                            {children}
-
+                            <Suspense>
+                                {children}
+                            </Suspense>
                             <PageContent primary>
                                 <Breadcrumbs store={store} />
                             </PageContent>
