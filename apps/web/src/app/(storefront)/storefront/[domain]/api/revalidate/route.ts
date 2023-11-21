@@ -1,7 +1,7 @@
 import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export const dynamic = 'force-dynamic';
+export const runtime = 'experimental-edge';
 
 export type RevalidateApiRouteParams = {
     domain: string;
