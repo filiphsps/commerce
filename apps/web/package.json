@@ -93,7 +93,7 @@
         "@types/color": "3.0.6",
         "@types/convert-units": "2.3.9",
         "@types/node": "20.8.10",
-        "@types/react": "18.2.37",
+        "@types/react": "18.2.38",
         "@types/react-dom": "18.2.16",
         "@types/react-virtualized-auto-sizer": "1.0.3",
         "@types/react-window": "1.8.8",
