@@ -2,6 +2,7 @@ import { ProductApi } from '@/api/shopify/product';
 import { NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import Content from '@/components/Content';
@@ -25,10 +26,32 @@ import { RedirectType, notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
-export type ProductPageParams = { domain: string; locale: string; handle: string };
-export type ProductPageQueryParams = { variant?: string };
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+/*export async function generateStaticParams() {
+    const locale = DefaultLocale()!; // TODO: Don't hardcode locale.
+    const shops = await ShopsApi();
+
+    return await Promise.all(
+        shops.flatMap(async (shop) => {
+            const apiConfig = shopifyApiConfig({ shop, noHeaders: true });
+            const api = StorefrontApiClient({ shop, locale, apiConfig });
+            const { products } = await ProductsApi({ api });
+
+            return products.map(({ node: { handle } }) => ({
+                domain: shop.domains.primary,
+                locale: locale.locale,
+                handle
+            }));
+        })
+    );
+}*/
+/* c8 ignore stop */
 
 /* c8 ignore start */
+export type ProductPageParams = { domain: string; locale: string; handle: string };
+export type ProductPageQueryParams = { variant?: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
     searchParams
@@ -36,14 +59,15 @@ export async function generateMetadata({
     params: ProductPageParams;
     searchParams?: ProductPageQueryParams;
 }): Promise<Metadata> {
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFoundMetadata;
-
     try {
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFoundMetadata;
+
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const product = await ProductApi({ api, handle });
-        const { page } = await PageApi({ locale, handle, type: 'product_page' });
+        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = store.i18n.locales;
 
         const url = `/products/${handle}/${(searchParams?.variant && `?variant=${searchParams.variant}`) || ''}`; // TODO: remember existing query parameters.
@@ -99,29 +123,30 @@ export default async function ProductPage({
     params: ProductPageParams;
     searchParams?: ProductPageQueryParams;
 }) {
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-    const i18n = await getDictionary(locale);
+    try {
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFound();
+        const i18n = await getDictionary(locale);
 
-    if (!isValidHandle(handle)) return notFound();
-    if (searchParams?.variant && searchParams?.variant.match(/^(?![0-9]+$).*/)) {
-        const variant = searchParams?.variant.split('/').at(-1);
-        if (!variant) {
-            console.error(`404: Invalid variant "${searchParams?.variant}"`);
-            return notFound();
+        if (!isValidHandle(handle)) return notFound();
+        if (searchParams?.variant && searchParams?.variant.match(/^(?![0-9]+$).*/)) {
+            const variant = searchParams?.variant.split('/').at(-1);
+            if (!variant) {
+                console.error(`404: Invalid variant "${searchParams?.variant}"`);
+                return notFound();
+            }
+
+            // Remove `gid` from variant parameter.
+            // TODO: remember existing query parameters.
+            return redirect(`/products/${handle}?variant=${variant}`, RedirectType.replace);
         }
 
-        // Remove `gid` from variant parameter.
-        // TODO: remember existing query parameters.
-        return redirect(`/products/${handle}?variant=${variant}`, RedirectType.replace);
-    }
-
-    try {
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const product = await ProductApi({ api, handle });
 
-        const { page } = await PageApi({ locale, handle, type: 'product_page' });
+        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
@@ -137,13 +162,16 @@ export default async function ProductPage({
             return result;
         };
 
-        const initialVariant = FirstAvailableVariant(product);
+        const initialVariant =
+            product.variants.edges.length > 1 ? FirstAvailableVariant(product) : product.variants.edges[0]!.node!;
         const selectedVariant =
-            (searchParams?.variant &&
-                product?.variants?.edges?.find(
-                    ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
-                )?.node) ||
-            undefined;
+            product.variants.edges.length > 1
+                ? (searchParams?.variant &&
+                      product?.variants?.edges?.find(
+                          ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
+                      )?.node) ||
+                  undefined
+                : product.variants.edges[0]!.node!;
 
         if (searchParams?.variant && !selectedVariant && !initialVariant) {
             console.error(
@@ -223,6 +251,7 @@ export default async function ProductPage({
 
                         {page?.slices && page?.slices.length > 0 && (
                             <PrismicPage
+                                shop={shop}
                                 store={store}
                                 locale={locale}
                                 page={page}
@@ -237,6 +266,7 @@ export default async function ProductPage({
             </Page>
         );
     } catch (error: any) {
+        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
@@ -245,5 +275,3 @@ export default async function ProductPage({
         throw error;
     }
 }
-
-export const revalidate = 120;

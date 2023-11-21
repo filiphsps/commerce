@@ -1,4 +1,5 @@
 import { PageApi } from '@/api/page';
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
@@ -15,35 +16,21 @@ import { metadata as notFoundMetadata } from '../not-found';
 import CartContent from './cart-content';
 
 /* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
-/*export const dynamicParams = true;
-export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US'
-        }
-    ];
-}*/
-/* c8 ignore stop */
-
-/* c8 ignore start */
 export type CartPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
     params: CartPageParams;
 }): Promise<Metadata> {
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
     const handle = 'cart';
 
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
     const locales = store.i18n.locales;
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
     const i18n = await getDictionary(locale);
     const { t } = useTranslation('common', i18n);
 
@@ -87,14 +74,15 @@ export async function generateMetadata({
 /* c8 ignore stop */
 
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
     const handle = 'cart';
 
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
+    const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
     return (
@@ -110,6 +98,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                     slices={
                         page ? (
                             <PrismicPage
+                            shop={shop}
                                 store={store}
                                 locale={locale}
                                 page={page}

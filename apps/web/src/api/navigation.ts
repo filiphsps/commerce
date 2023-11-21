@@ -1,3 +1,4 @@
+import type { Shop } from '@/api/shop';
 import { createClient } from '@/prismic';
 import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
 import type { Client as PrismicClient } from '@prismicio/client';
@@ -13,14 +14,16 @@ export type NavigationItem = {
 };
 
 export const NavigationApi = async ({
+    shop,
     locale,
     client: _client
 }: {
+    shop: Shop;
     locale: Locale;
     client?: PrismicClient;
 }): Promise<NavigationItem[]> => {
     return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ locale });
+        const client = _client || createClient({ shop, locale });
 
         try {
             const navigation = await client.getSingle('navigation', {
@@ -35,8 +38,12 @@ export const NavigationApi = async ({
                 }))
             );
         } catch (error: any) {
-            if (error.message.includes('No documents') && !isDefaultLocale(locale)) {
-                return resolve(await NavigationApi({ locale: DefaultLocale(), client })); // Try again with default locale
+            if (error.message.includes('No documents')) {
+                if (!isDefaultLocale(locale)) {
+                    return resolve(await NavigationApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
+                }
+
+                return reject(new Error(`404: "Navigation" with the locale "${locale.locale}" cannot be found`));
             }
 
             console.error(error);

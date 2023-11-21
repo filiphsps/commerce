@@ -2,6 +2,7 @@ import { CollectionApi } from '@/api/shopify/collection';
 import { NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import CollectionBlock from '@/components/CollectionBlock';
@@ -17,26 +18,27 @@ import { asText } from '@prismicio/client';
 import { convertSchemaToHtml } from '@thebeyondgroup/shopify-rich-text-renderer';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
 
-export type CollectionPageParams = { domain: string; locale: string; handle: string };
-
 /* c8 ignore start */
+export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
     params: CollectionPageParams;
 }): Promise<Metadata> {
-    if (!isValidHandle(handle)) return notFoundMetadata;
-
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFoundMetadata;
-
     try {
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
+        const shop = await ShopApi({ domain });
+        if (!isValidHandle(handle)) return notFoundMetadata;
+
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFoundMetadata;
+
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const collection = await CollectionApi({ api, handle });
-        const { page } = await PageApi({ locale, handle, type: 'collection_page' });
+        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = store.i18n.locales;
 
         const description: string | undefined =
@@ -93,26 +95,22 @@ export default async function CollectionPage({
 }: {
     params: CollectionPageParams;
 }) {
-    if (!isValidHandle(handle)) return notFound();
-
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-
     try {
+        const shop = await ShopApi({ domain });
+        if (!isValidHandle(handle)) return notFound();
+
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFound();
+
         const i18n = await getDictionary(locale);
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const collection = await CollectionApi({ api, handle });
 
-        const { page } = await PageApi({ locale, handle, type: 'collection_page' });
+        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const prefetch = await Prefetch({
             api,
-            page,
-            initialData: {
-                collections: {
-                    [collection.handle]: collection
-                }
-            }
+            page
         });
 
         const subtitle =
@@ -138,12 +136,15 @@ export default async function CollectionPage({
                     ) : null}
                     {!page || page.enable_collection === undefined || page.enable_collection ? (
                         <>
-                            <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
+                            <Suspense>
+                                <CollectionBlock data={collection} store={store} locale={locale} i18n={i18n} />
+                            </Suspense>
                         </>
                     ) : null}
 
                     {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
+                            shop={shop}
                             store={store}
                             locale={locale}
                             page={page}
@@ -157,6 +158,7 @@ export default async function CollectionPage({
             </Page>
         );
     } catch (error: any) {
+        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFoundMetadata;

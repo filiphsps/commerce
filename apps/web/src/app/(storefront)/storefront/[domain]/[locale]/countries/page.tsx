@@ -1,13 +1,14 @@
 import { CountriesApi, StoreApi } from '@/api/store';
 
 import { PageApi } from '@/api/page';
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { NextLocaleToLocale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -17,39 +18,27 @@ import { metadata as notFoundMetadata } from '../not-found';
 import LocaleSelector from './locale-selector';
 
 /* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
-/*export const dynamicParams = true;
-export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US'
-        }
-    ];
-}*/
-/* c8 ignore stop */
-
-/* c8 ignore start */
 export type CountriesPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
     params: CountriesPageParams;
 }): Promise<Metadata> {
-    const handle = 'countries';
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const store = await StoreApi({ domain, locale, api: StorefrontApiClient({ domain, locale }) });
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const store = await StoreApi({ shop, locale, api: StorefrontApiClient({ shop, locale }) });
+    const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
     const locales = store.i18n.locales;
+    const i18n = await getDictionary(locale);
+    const { t } = useTranslation('common', i18n);
 
+    const title = page?.meta_title || page?.title || t('countries');
     const description: string | undefined =
         (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
     return {
-        title: page?.meta_title || page?.title || 'Countries', // TODO: Fallback should respect i18n.
+        title,
         description,
         alternates: {
             canonical: `https://${domain}/${locale.locale}/countries/`,
@@ -64,7 +53,7 @@ export async function generateMetadata({
         openGraph: {
             url: `/countries/`,
             type: 'website',
-            title: page?.meta_title || page?.title!,
+            title,
             description,
             siteName: store?.name,
             locale: locale.locale,
@@ -89,16 +78,16 @@ export default async function CountriesPage({
 }: {
     params: CountriesPageParams;
 }) {
-    const handle = 'countries';
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
     const countries = await CountriesApi({ api });
 
-    const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+    const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
 
     return (
@@ -128,12 +117,13 @@ export default async function CountriesPage({
 
                 {page?.slices && page?.slices.length > 0 && (
                     <PrismicPage
+                        shop={shop}
                         store={store}
                         locale={locale}
                         page={page}
                         prefetch={prefetch}
                         i18n={i18n}
-                        handle={handle}
+                        handle={'countries'}
                         type={'custom_page'}
                     />
                 )}

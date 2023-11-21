@@ -1,19 +1,12 @@
+import { ShopApi } from '@/api/shop';
 import { admin } from '@/middleware/admin';
 import { storefront } from '@/middleware/storefront';
 import { unknown } from '@/middleware/unknown';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const getHostname = (req: NextRequest): string => {
+export const getHostname = async (req: NextRequest): Promise<string> => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
-
-    // TODO: Make these configurable.
-    if (hostname.startsWith('www.')) {
-        hostname = hostname.slice(4);
-    }
-    if (hostname.startsWith('staging.')) {
-        hostname = hostname.slice(8);
-    }
 
     // Remove port from hostname.
     hostname = hostname.split(':')[0];
@@ -44,19 +37,19 @@ export type RequestType = 'admin' | 'storefront' | 'unknown';
  * @returns {RequestType} The type of request.
  */
 export const getRequestType = async (req: NextRequest): Promise<RequestType> => {
-    const hostname = getHostname(req);
-
-    // TODO: Dynamic list of storefronts.
-    const storefronts: string[] = ['sweetsideofsweden.com', 'demo.nordcom.io'];
-    if (storefronts.includes(hostname)) {
-        return 'storefront';
-    }
+    const hostname = await getHostname(req);
 
     if (hostname === 'shops.nordcom.io') {
         return 'admin';
     }
 
-    return 'unknown';
+    try {
+        await ShopApi({ domain: hostname });
+        return 'storefront';
+    } catch (error) {
+        console.warn(error);
+        return 'unknown';
+    }
 };
 
 export const router = async (req: NextRequest): Promise<NextResponse | undefined> => {
@@ -82,5 +75,5 @@ export const router = async (req: NextRequest): Promise<NextResponse | undefined
         }
     }
 
-    return undefined;
+    return NextResponse.next();
 };

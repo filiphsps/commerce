@@ -30,6 +30,7 @@ describe('utils', () => {
         } as Locale;
 
         const api = ShopifyApolloApiBuilder({
+            shop: {} as any,
             api: client,
             locale
         });

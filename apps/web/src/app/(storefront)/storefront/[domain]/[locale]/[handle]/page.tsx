@@ -1,4 +1,5 @@
 import { PageApi } from '@/api/page';
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
@@ -14,24 +15,24 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
 /* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
+/*export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US',
-            handle: 'homepage'
-        },
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US',
-            handle: 'about'
-        }
-    ];
-}
+    const locale = DefaultLocale()!; // TODO: Don't hardcode locale.
+    const shops = await ShopsApi();
+
+    return await Promise.all(
+        shops.flatMap(async (shop) => {
+            const pages = await PagesApi({ shop, locale });
+
+            return pages.map(({ uid: handle }) => ({
+                domain: shop.domains.primary,
+                locale: locale.locale,
+                handle
+            }));
+        })
+    );
+}*/
 /* c8 ignore stop */
 
 /* c8 ignore start */
@@ -41,21 +42,23 @@ export async function generateMetadata({
 }: {
     params: CustomPageParams;
 }): Promise<Metadata> {
-    if (!isValidHandle(handle)) return notFoundMetadata;
-
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFoundMetadata;
-
     try {
-        const store = await StoreApi({ domain, locale, api: StorefrontApiClient({ domain, locale }) });
+        if (!isValidHandle(handle)) return notFoundMetadata;
+
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFoundMetadata;
+
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const locales = store.i18n.locales;
 
-        const { page } = await PageApi({ locale, handle, type: 'custom_page' });
+        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
         if (!page) return notFoundMetadata;
 
         // If the page is the homepage we shouldn't add the handle to path.
         // TODO: Deal with this in a better way.
-        const path = handle === 'homepage' ? '/' : `/${handle}`;
+        const path = handle === 'homepage' ? '/' : `/${handle}/`;
         const title = page.meta_title || page.title || handle;
         const description = (page.meta_description && asText(page.meta_description)) || page.description || undefined;
 
@@ -63,11 +66,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}${path}/`,
+                canonical: `https://${domain}/${locale.locale}${path}`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}${path}/`
+                        [locale]: `https://${domain}/${locale}${path}`
                     }),
                     {}
                 )
@@ -76,7 +79,7 @@ export async function generateMetadata({
         };
     } catch (error: any) {
         const message = (error?.message as string) || '';
-        if (message.includes('404:')) {
+        if (message.startsWith('404:')) {
             return notFoundMetadata;
         }
 
@@ -90,17 +93,18 @@ export default async function CustomPage({
 }: {
     params: CustomPageParams;
 }) {
-    if (!isValidHandle(handle)) return notFound();
-
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-
     try {
-        const i18n = await getDictionary(locale);
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
+        if (!isValidHandle(handle)) return notFound();
 
-        const { page } = await PageApi({ domain, locale, handle, type: 'custom_page' });
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFound();
+
+        const i18n = await getDictionary(locale);
+        const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
+
+        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
@@ -110,6 +114,7 @@ export default async function CustomPage({
                 <PageContent primary>
                     {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
+                            shop={shop}
                             store={store}
                             locale={locale}
                             page={page}
@@ -123,8 +128,9 @@ export default async function CustomPage({
             </Page>
         );
     } catch (error: any) {
+        console.warn(error);
         const message = (error?.message as string) || '';
-        if (message.includes('404:')) {
+        if (message.startsWith('404:')) {
             return notFound();
         }
 

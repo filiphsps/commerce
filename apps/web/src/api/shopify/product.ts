@@ -232,7 +232,7 @@ export const ProductApi = async ({ api, handle }: { api: AbstractApi; handle: st
                 }
             );
 
-            if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
+            if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
             else if (!data?.productByHandle || !data.productByHandle?.handle)
                 return reject(new Error(`404: Product with handle "${handle}" cannot be found`));
             else if (data.productByHandle?.handle !== handle)
@@ -293,12 +293,12 @@ export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Pro
 };
 
 export const ProductsApi = async ({
-    client,
+    api,
     limit = 250,
     sorting = 'BEST_SELLING',
     cursor
 }: {
-    client: AbstractApi;
+    api: AbstractApi;
     limit?: number;
     sorting?: ProductSortKeys;
     cursor?: string;
@@ -312,7 +312,7 @@ export const ProductsApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data, errors } = await client.query<{ products: ProductConnection }>(
+            const { data, errors } = await api.query<{ products: ProductConnection }>(
                 gql`
                     fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}

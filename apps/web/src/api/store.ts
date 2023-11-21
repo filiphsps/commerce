@@ -1,10 +1,11 @@
+import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { DefaultLocale, NextLocaleToLocale, isDefaultLocale, type Locale } from '@/utils/locale';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
-import type { Country, Localization, Shop } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
@@ -65,21 +66,21 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 };
 
 export const StoreApi = async ({
-    domain,
+    shop,
     locale,
     client: _client,
     api
 }: {
-    domain?: string;
+    shop: Shop;
     locale: Locale;
     client?: PrismicClient;
     api: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ domain, locale });
+        const client = _client || createClient({ shop, locale });
 
         try {
-            const { data: shopData } = await api.query<{ shop: Shop }>(gql`
+            const { data: shopData } = await api.query<{ shop: ShopifyStore }>(gql`
                 query store {
                     shop {
                         id
@@ -230,7 +231,7 @@ export const StoreApi = async ({
                 return resolve(
                     // Try again with default locale.
                     await StoreApi({
-                        domain,
+                        shop,
                         locale: DefaultLocale(),
                         client,
                         api

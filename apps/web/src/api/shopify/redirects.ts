@@ -65,7 +65,7 @@ export const RedirectsApi = async ({
                 }
             );
 
-            if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
+            if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
             else if (!data?.urlRedirects?.edges || redirects.length <= 0)
                 return reject(new Error(`404: No redirects could be found`));
 

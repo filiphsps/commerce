@@ -1,53 +1,38 @@
-import type { Client as PrismicClient } from '@prismicio/client';
-import { asLink } from '@prismicio/client';
-
-import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
-
+import type { Shop } from '@/api/shop';
 import { createClient } from '@/prismic';
+import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
 
 export const PagesApi = async ({
-    domain,
+    shop,
     locale,
     client: _client
 }: {
-    domain?: string;
+    shop: Shop;
     locale: Locale;
     client?: PrismicClient;
-}): Promise<{
-    paths: string[];
-}> => {
+}): Promise<PrismicDocument[]> => {
     return new Promise(async (resolve, reject) => {
+        const client = _client || createClient({ shop, locale });
+
         try {
-            const client = _client || createClient({ domain, locale });
             const pages = await client.getAllByType('custom_page', {
-                lang: locale.locale,
-                fetchOptions: {
-                    cache: undefined,
-                    next: {
-                        revalidate: 28_800, // 8hrs.
-                        tags: ['prismic']
-                    }
-                }
+                lang: locale.locale
             });
 
             if (!pages) return reject(new Error('404: No pages found'));
 
-            // TODO: Remove filter once we have migrated the shop page.
-            const paths = pages
-                .map((page) => asLink(page))
-                .filter((i) => i && !['/shop', '/countries', '/search', '/cart'].includes(i));
-            return resolve({
-                paths: paths as any
-            });
-            // TODO: Error type.
+            // TODO: Remove filter once we've migrated away from "special" pages
+            const filtered = pages.filter(({ uid }) => !['shop', 'countries', 'search', 'cart'].includes(uid!));
+            return resolve(filtered);
         } catch (error: any) {
             if (error.message.includes('No documents')) {
                 if (!isDefaultLocale(locale)) {
-                    return resolve(await PagesApi({ domain, locale: DefaultLocale(), client: _client })); // Try again with default locale.
+                    return resolve(await PagesApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale.
                 }
 
-                return reject('404: "Page" with handle "${handle}" cannot be found');
+                return reject(new Error(`404: "Pages" for the locale "${locale.locale}" cannot be found`));
             }
 
             console.error(error);
@@ -60,16 +45,16 @@ type PageType<T> = T extends 'collection_page'
     ? CollectionPageDocumentData
     : T extends 'product_page'
     ? ProductPageDocumentData
-    : CustomPageDocumentData; // TODO: Add ArticlePageDocumentData.
+    : CustomPageDocumentData;
 
-export const PageApi = async <T extends 'collection_page' | 'product_page' | 'custom_page' | 'article_page'>({
-    domain,
+export const PageApi = async <T extends 'collection_page' | 'product_page' | 'custom_page'>({
+    shop,
     locale,
     type,
     client: _client,
     handle
 }: {
-    domain?: string;
+    shop: Shop;
     locale: Locale;
     handle: string;
     client?: PrismicClient;
@@ -78,21 +63,14 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
     page: PageType<T> | null;
 }> => {
     return new Promise(async (resolve, reject) => {
+        const client = _client || createClient({ shop, locale });
+
         try {
-            const client = _client || createClient({ domain, locale });
             const { data: page } = await client.getByUID(type, handle, {
-                lang: locale.locale,
-                fetchOptions: {
-                    cache: undefined,
-                    next: {
-                        revalidate: 28_800, // 8hrs.
-                        tags: ['prismic']
-                    }
-                },
-                fetchLinks: ['slices']
+                lang: locale.locale
             });
 
-            if (!page) return reject();
+            if (!page) return resolve({ page: null });
 
             return resolve({
                 page: page as any
@@ -100,9 +78,10 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
         } catch (error: any) {
             if (error.message.includes('No documents')) {
                 if (!isDefaultLocale(locale)) {
-                    return resolve(await PageApi({ domain, locale: DefaultLocale(), handle, type, client: _client })); // Try again with default locale.
+                    return resolve(await PageApi({ shop, locale: DefaultLocale(), handle, type, client })); // Try again with default locale.
                 }
 
+                // Don't throw on 404.
                 return resolve({ page: null });
             }
 

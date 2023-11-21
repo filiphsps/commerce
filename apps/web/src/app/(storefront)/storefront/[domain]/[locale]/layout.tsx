@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
+import { ShopApi } from '@/api/shop';
 import { StoreApi } from '@/api/store';
 import Header from '@/components/Header';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
@@ -31,29 +32,31 @@ const font = Lexend_Deca({
 });
 
 /* c8 ignore start */
-// export const runtime = 'experimental-edge';
-export const revalidate = 28_800; // 8hrs.
+/*export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US'
-        }
-    ];
-}
+    const locale = DefaultLocale()!;
+
+    const shops = await ShopsApi();
+    return shops.map((shop) => ({
+        domain: shop.domains.primary,
+        locale: locale.locale // FIXME: Don't hardcode locales.
+    }));
+}*/
 /* c8 ignore stop */
 
 export type LayoutParams = { domain: string; locale: string };
-export async function generateViewport({ params }: { params: LayoutParams }): Promise<Viewport> {
-    const { domain, locale: localeData } = params;
+export async function generateViewport({
+    params: { domain, locale: localeData }
+}: {
+    params: LayoutParams;
+}): Promise<Viewport> {
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return {};
 
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
 
     return {
         themeColor: store.accent.secondary,
@@ -63,13 +66,17 @@ export async function generateViewport({ params }: { params: LayoutParams }): Pr
     };
 }
 
-export async function generateMetadata({ params }: { params: LayoutParams }): Promise<Metadata> {
-    const { domain, locale: localeData } = params;
+export async function generateMetadata({
+    params: { domain, locale: localeData }
+}: {
+    params: LayoutParams;
+}): Promise<Metadata> {
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
 
     return {
         metadataBase: new URL(`https://${domain}/${locale.locale}/`),
@@ -105,17 +112,18 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-
     try {
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFound();
+
         const i18n = await getDictionary(locale);
-        const shopifyApi = shopifyApiConfig({ domain });
-        const api = StorefrontApiClient({ domain, locale });
-        const store = await StoreApi({ domain, locale, api });
-        const navigation = await NavigationApi({ locale });
-        const header = await HeaderApi({ locale });
-        const footer = await FooterApi({ locale });
+        const apiConfig = shopifyApiConfig({ shop });
+        const api = StorefrontApiClient({ shop, locale, apiConfig });
+        const store = await StoreApi({ shop, locale, api });
+        const navigation = await NavigationApi({ shop, locale });
+        const header = await HeaderApi({ shop, locale });
+        const footer = await FooterApi({ shop, locale });
 
         const headerComponents = (
             <>
@@ -195,7 +203,7 @@ export default async function RootLayout({
                         ]}
                     />
 
-                    <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()} store={store}>
+                    <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                         <PageProvider
                             store={store}
                             domain={domain}
@@ -216,6 +224,7 @@ export default async function RootLayout({
             </html>
         );
     } catch (error: any) {
+        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();

@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 /* c8 ignore start */
-export const admin = (req: NextRequest): NextResponse => {
+export const admin = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
 
     // Check if we're dealing with a file or a route.

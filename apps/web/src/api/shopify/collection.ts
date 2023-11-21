@@ -76,7 +76,9 @@ export const CollectionApi = async ({
 
             return resolve({
                 ...data.collectionByHandle,
-                descriptionHtml: (data.collectionByHandle.descriptionHtml || '').replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
+                descriptionHtml: (data.collectionByHandle.descriptionHtml || '')
+                    .replaceAll(/ /g, ' ')
+                    .replaceAll('\u00A0', ' ')
             });
         } catch (error) {
             console.error(error);
@@ -111,8 +113,8 @@ export const CollectionsApi = async ({
             }
         `);
 
-        if (errors) return reject(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`);
-        else if (!data?.collections) return reject(`404: No collections could be found`);
+        if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
+        else if (!data?.collections) return reject(new Error(`404: No collections could be found`));
 
         return resolve(data.collections.edges.map((item: any) => item.node));
     });

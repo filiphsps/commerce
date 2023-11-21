@@ -64,7 +64,7 @@ export const BlogApi = async ({
                 }
             );
 
-            if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
+            if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
             else if (!data?.blogByHandle)
                 return reject(new Error(`404: "Blog" with handle "${handle}" cannot be found`));
             else if (!data.blogByHandle.articles)
@@ -130,7 +130,7 @@ export const BlogArticleApi = async ({
                 }
             );
 
-            if (errors) return reject(new Error(`500: ${new Error(errors.map((e: any) => e.message).join('\n'))}`));
+            if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
             else if (!data?.blogByHandle)
                 return reject(new Error(`404: "Blog" with handle "${blogHandle}" cannot be found`));
             else if (!data.blogByHandle.articleByHandle)

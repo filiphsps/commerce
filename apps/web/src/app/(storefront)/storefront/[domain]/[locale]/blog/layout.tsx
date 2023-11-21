@@ -1,3 +1,4 @@
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { Page } from '@/components/layout/page';
@@ -10,21 +11,6 @@ import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
 
 /* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
-/*export const dynamicParams = true;
-export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com',
-            locale: 'en-US'
-        }
-    ];
-}*/
-/* c8 ignore stop */
-
-/* c8 ignore start */
 export type BlogLayoutParams = { domain: string; locale: string };
 export default async function BlogLayout({
     children,
@@ -33,10 +19,11 @@ export default async function BlogLayout({
     children: ReactNode;
     params: BlogLayoutParams;
 }) {
+    const shop = await ShopApi({ domain });
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
 
-    const api = StorefrontApiClient({ domain, locale });
+    const api = StorefrontApiClient({ shop, locale });
     const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
         ({ node: article }) => article
     );
