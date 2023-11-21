@@ -1,7 +1,7 @@
 import '@/styles/app.scss';
 
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { notFound } from 'next/navigation';
@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
-import { ShopApi } from '@/api/shop';
+import { ShopsApi, ShopApi } from '@/api/shop';
 import { StoreApi } from '@/api/store';
 import Header from '@/components/Header';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
@@ -18,7 +18,6 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
 import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
@@ -94,7 +93,7 @@ export async function generateMetadata({
         },
         robots: {
             follow: true,
-            index: BuildConfig.environment === 'production' ? true : false
+            index: true
         },
         referrer: 'origin',
         formatDetection: {
