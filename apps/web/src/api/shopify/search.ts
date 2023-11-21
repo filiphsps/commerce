@@ -20,7 +20,7 @@ export const SearchApi = async ({
     productFilters: SearchResultItemConnection['productFilters'];
 }> => {
     return new Promise(async (resolve, reject) => {
-        if (!query) return reject();
+        if (!query) return resolve({ products: [], productFilters: [] });
 
         const search = async ({ type }: { type: 'PRODUCT' }) => {
             const { data } = await client.query<{ search: SearchResultItemConnection }>(
@@ -90,7 +90,7 @@ export const SearchPredictionApi = async ({
     query: string;
 }): Promise<PredictiveSearchResult | {}> => {
     return new Promise(async (resolve, reject) => {
-        if (!query) return reject();
+        if (!query) return resolve({});
 
         const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
             gql`

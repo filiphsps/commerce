@@ -4,12 +4,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
+import type { Shop } from '@/api/shop';
 import { SearchApi } from '@/api/shopify/search';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
 import PageLoader from '@/components/PageLoader';
-import type { StoreModel } from '@/models/StoreModel';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { useApolloClient } from '@apollo/client';
@@ -129,11 +129,10 @@ const ContentHeader = styled(SearchHeader)`
 `;
 
 type SearchContentProps = {
-    store?: StoreModel;
+    shop: Shop;
     locale: Locale;
-    domain?: string;
 };
-export default function SearchContent({ locale, domain }: SearchContentProps) {
+export default function SearchContent({ shop, locale }: SearchContentProps) {
     const router = useRouter();
     const query = useSearchParams()?.get('q') || '';
 
@@ -167,7 +166,7 @@ export default function SearchContent({ locale, domain }: SearchContentProps) {
         (query.length > 0 && [
             'SearchApi',
             {
-                client: ShopifyApolloApiBuilder({ locale, domain, api: useApolloClient() }),
+                client: ShopifyApolloApiBuilder({ locale, shop, api: useApolloClient() }),
                 query: query
             }
         ]) ||

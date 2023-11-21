@@ -1,3 +1,4 @@
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
 import { StoreApi } from '@/api/store';
@@ -11,22 +12,21 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 
 /* c8 ignore start */
-export const revalidate = 120;
 
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
-
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
     params: ArticlePageParams;
 }): Promise<Metadata> {
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFoundMetadata;
-
     try {
-        const api = StorefrontApiClient({ domain, locale });
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFoundMetadata;
+
+        const api = StorefrontApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-        const store = await StoreApi({ domain, locale, api });
+        const store = await StoreApi({ shop, locale, api });
         const locales = store.i18n.locales;
 
         const title = article.seo?.title || article.title;
@@ -69,11 +69,12 @@ export default async function ArticlePage({
 }: {
     params: ArticlePageParams;
 }) {
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
-
     try {
-        const api = StorefrontApiClient({ domain, locale });
+        const shop = await ShopApi({ domain });
+        const locale = NextLocaleToLocale(localeData);
+        if (!locale) return notFound();
+
+        const api = StorefrontApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
@@ -86,6 +87,7 @@ export default async function ArticlePage({
             </Page>
         );
     } catch (error: any) {
+        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
@@ -94,5 +96,4 @@ export default async function ArticlePage({
         throw error;
     }
 }
-
 /* c8 ignore stop */

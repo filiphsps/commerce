@@ -2,7 +2,6 @@ import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDoc
 
 import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
-import type { StoreModel } from '@/models/StoreModel';
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { CollectionEdge, ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
@@ -10,7 +9,6 @@ import type { CollectionEdge, ProductEdge } from '@shopify/hydrogen-react/storef
 export type PrefetchData = {
     collections?: { [key: string]: CollectionEdge['node'] };
     products?: { [key: string]: ProductEdge };
-    shop?: StoreModel; // FIXME: This should be named `store`.
     vendors?: VendorModel[];
 };
 
@@ -32,7 +30,6 @@ const Prefetch = ({
         const slices = page?.slices;
         let collections = initialData?.collections || {},
             products = initialData?.products || {},
-            store = initialData?.shop || {},
             vendors = initialData?.vendors || [];
 
         for (let i = 0; i < slices?.length; i++) {
@@ -162,7 +159,6 @@ const Prefetch = ({
         return resolve({
             collections: Object.keys(collections).length > 0 ? collections : undefined,
             products: Object.keys(products).length > 0 ? products : undefined,
-            shop: store,
             vendors
         } as any);
     });

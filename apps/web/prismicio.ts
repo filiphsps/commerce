@@ -1,5 +1,6 @@
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
+import { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { NextLocaleToLocale } from '@/utils/locale';
@@ -70,9 +71,12 @@ const routes: ClientConfig['routes'] = [
  * @param {CreateClientConfig} config - Configuration for the Prismic client.
  * @returns {Client} A Prismic client.
  */
-export const createClient = (config: CreateClientConfig & { domain?: string; locale?: Locale } = {}): Client => {
-    const { domain, locale, ...props } = config;
-    const defaultTags = ['prismic', ...(domain ? [domain] : [])];
+export const createClient = ({
+    shop,
+    locale,
+    ...config
+}: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
+    const defaultTags = ['prismic', `prismic.${shop.id}`];
 
     const client = prismicCreateClient(repositoryName, {
         routes,
@@ -82,14 +86,14 @@ export const createClient = (config: CreateClientConfig & { domain?: string; loc
             next: { tags: defaultTags }
         },
         defaultParams: {
-            lang: locale?.locale || undefined
+            lang: locale.locale!
         },
         ...config
     });
 
     enableAutoPreviews({
         client,
-        ...props
+        ...config
     });
 
     return client;

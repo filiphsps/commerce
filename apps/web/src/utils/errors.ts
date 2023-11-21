@@ -1,3 +1,4 @@
+/* c8 ignore start */
 export class CommerceError<T = unknown> extends Error {
     readonly name!: string;
     readonly details!: string;
@@ -14,9 +15,10 @@ export class CommerceError<T = unknown> extends Error {
     }
 }
 
-/* c8 ignore start */
 export type ApiErrorKind =
     | 'UNKNOWN_ERROR'
+    | 'UNKNOWN_SHOP_DOMAIN'
+    | 'UNKNWON_COMMERCE_PROVIDER'
     | 'TOO_MANY_REQUESTS'
     | 'ICON_WIDTH_NO_FRACTIONAL'
     | 'ICON_WIDTH_OUT_OF_BOUNDS'
@@ -24,9 +26,21 @@ export type ApiErrorKind =
     | 'ICON_HEIGHT_OUT_OF_BOUNDS';
 export class ApiError extends CommerceError<ApiErrorKind> {
     statusCode: number = 400;
-    name = 'Unknown API Error';
+    name = 'Unknown APIError';
     details = 'An unknown error occurred';
     code = 'UNKNOWN_ERROR' as ApiErrorKind;
+}
+
+export class UnknownShopDomainError extends ApiError {
+    name = 'Uknown shop domain';
+    details = 'Could not find a shop with the given domain';
+    code = 'UNKNOWN_SHOP_DOMAIN' as const;
+}
+
+export class UnknownCommerceProviderError extends ApiError {
+    name = 'Uknown commerce provider';
+    details = 'Could not find a commerce provider with the given type';
+    code = 'UNKNWON_COMMERCE_PROVIDER' as const;
 }
 
 export class TooManyRequestsError extends ApiError {

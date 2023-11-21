@@ -1,9 +1,11 @@
+import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import ProvidersRegistry from '@/components/providers-registry';
 import { DefaultLocale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
     robots: {
@@ -13,17 +15,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+    const shop = await ShopApi({ domain: 'www.sweetsideofsweden.com' }); // TODO: Don't hardcode this.
     const locale = DefaultLocale();
-    const shopifyApi = shopifyApiConfig({});
-    const api = StorefrontApiClient({ locale });
-    const store = await StoreApi({ locale, api });
+    const shopifyApi = shopifyApiConfig({ shop });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
 
     return (
         <html lang={locale.locale}>
+            <head />
             <body>
-                <ProvidersRegistry locale={locale} apiConfig={shopifyApi.public()} store={store}>
-                    {children}
-                </ProvidersRegistry>
+                <Suspense>
+                    <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()} store={store}>
+                        {children}
+                    </ProvidersRegistry>
+                </Suspense>
             </body>
         </html>
     );

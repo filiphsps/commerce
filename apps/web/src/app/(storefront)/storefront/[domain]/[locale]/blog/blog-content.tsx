@@ -1,7 +1,6 @@
 import Content from '@/components/Content';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
-import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 import gravatar from 'gravatar.js';
@@ -12,9 +11,8 @@ type BlogContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     blog: Blog;
-    store: StoreModel;
 };
-export default async function BlogContent({ locale, blog, store }: BlogContentProps) {
+export default async function BlogContent({ locale, blog }: BlogContentProps) {
     return (
         <>
             <div className={styles.articles}>

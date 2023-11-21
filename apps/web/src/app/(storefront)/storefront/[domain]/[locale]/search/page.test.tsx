@@ -59,7 +59,7 @@ describe('app', () => {
             };
         });
 
-        const domain = 'example.com';
+        const domain = 'staging.demo.nordcom.io';
         const locale = 'en-US';
         const params: SearchPageParams = { domain, locale };
 
@@ -77,7 +77,7 @@ describe('app', () => {
                     alternates: {
                         canonical: `https://${domain}/${locale}/search/`,
                         languages: {
-                            'en-US': 'https://example.com/en-US/search/'
+                            'en-US': `https://${domain}/en-US/search/`
                         }
                     },
                     openGraph: {

@@ -4,44 +4,56 @@ import { createClient, linkResolver } from '@/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
 import type { ApiConfig } from '@/api/client';
+import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
 import { HeaderProvider } from '@/components/Header/header-provider';
 import ApiProvider from '@/components/api-provider';
 import StyledComponentsProvider from '@/components/styled-components-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
+import { UnknownCommerceProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { PrismicProvider } from '@prismicio/react';
 import type { ReactNode } from 'react';
 //import { PrismicPreview } from '@prismicio/next';
 
 export default function ProvidersRegistry({
-    children,
+    shop,
     locale,
     apiConfig,
-    store
+    store,
+    children
 }: {
-    children: ReactNode;
+    shop: Shop;
     locale: Locale;
     apiConfig: ApiConfig;
     store: StoreModel;
+    children: ReactNode;
 }) {
-    const {
-        storefront_id: storefrontId,
-        token: storefrontToken,
-        checkout_domain: storeDomain,
-        api: storefrontVersion
-    } = BuildConfig.shopify;
-    const toolbar = null; // TODO: (BuildConfig.prismic.toolbar && <PrismicPreview repositoryName={Prismic.repositoryName} />) || null;
+    let domain, token, id;
+    switch (shop.configuration.commerce.type) {
+        case 'shopify':
+            domain = shop.configuration.commerce.domain;
+            id = shop.configuration.commerce.storefrontId;
+            token = shop.configuration.commerce.authentication.publicToken;
+            break;
+        case 'dummy':
+            domain = 'mock.shop';
+            (id = 'hello-world'), (token = 'mock-token');
+            break;
+        default:
+            throw new UnknownCommerceProviderError();
+    }
+    const toolbar = null; // TODO: <PrismicPreview repositoryName={Prismic.repositoryName} />.
 
     return (
         <StyledComponentsProvider>
-            <PrismicProvider client={createClient({ locale })} linkResolver={linkResolver}>
+            <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
                 <ShopifyProvider
-                    storefrontId={storefrontId}
-                    storeDomain={`https://${storeDomain}`}
-                    storefrontApiVersion={storefrontVersion}
-                    storefrontToken={storefrontToken}
+                    storefrontId={id}
+                    storeDomain={`https://${domain}`}
+                    storefrontApiVersion={BuildConfig.shopify.api}
+                    storefrontToken={token}
                     countryIsoCode={locale.country}
                     languageIsoCode={locale.language}
                 >

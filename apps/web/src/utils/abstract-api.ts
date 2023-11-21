@@ -1,10 +1,11 @@
 /* eslint-disable unused-imports/no-unused-vars */
+import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import type { ApolloClient, DocumentNode, FetchPolicy, TypedDocumentNode } from '@apollo/client';
 
 export type AbstractApi<Q = any> = {
     locale: () => Locale;
-    domain: () => string | undefined;
+    shop: () => Shop;
     query: <T>(
         query: Q,
         variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
@@ -17,12 +18,12 @@ export type AbstractApi<Q = any> = {
 export type AbstractApiBuilder<K, Q> = ({
     api,
     locale,
-    domain,
+    shop,
     fetchPolicy
 }: {
     api: K;
     locale: Locale;
-    domain?: string;
+    shop: Shop;
     fetchPolicy?: FetchPolicy;
 }) => AbstractApi<Q>;
 
@@ -41,12 +42,12 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
 export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNode | TypedDocumentNode<any, any>> = ({
     api,
     locale,
-    domain,
+    shop,
     fetchPolicy = 'cache-first'
 }) => ({
     locale: () => locale,
-    domain: () => domain,
-    query: async (query, variables = {}, { tags = [], revalidate } = {}) => {
+    shop: () => shop,
+    query: async (query, variables = {}, { tags = [], revalidate = undefined } = {}) => {
         const { data, errors } = await api.query({
             query,
             fetchPolicy,
@@ -57,7 +58,7 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
                     cache: revalidate ? undefined : 'force-cache',
                     next: {
                         revalidate,
-                        tags: ['shopify', ...(domain ? [domain] : []), ...tags]
+                        tags: ['shopify', `shopify.${shop.id}`, ...tags]
                     }
                 }
             },

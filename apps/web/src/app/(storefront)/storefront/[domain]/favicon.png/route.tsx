@@ -1,24 +1,11 @@
 import { StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 
+import { ShopApi } from '@/api/shop';
 import { DefaultLocale } from '@/utils/locale';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
-
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
-export const dynamicParams = true;
-export async function generateStaticParams() {
-    // FIXME: Don't hardcode these.
-    // TODO: Figure out which sites to prioritize pre-rendering on.
-    return [
-        {
-            domain: 'sweetsideofsweden.com'
-        }
-    ];
-}
-/* c8 ignore stop */
 
 /* c8 ignore start */
 export type FaviconRouteParams = {
@@ -54,9 +41,10 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
 
     let src!: string;
 
+    const shop = await ShopApi({ domain });
     const locale = DefaultLocale();
-    const api = StorefrontApiClient({ domain, locale });
-    const store = await StoreApi({ domain, locale, api });
+    const api = StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ shop, locale, api });
     if (store.favicon?.src) {
         src = store.favicon.src;
     } else {

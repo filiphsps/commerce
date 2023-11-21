@@ -50,6 +50,43 @@ jobs:
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+            # The rest shouldn't actually be in this file.
+            - name: 🔬 Analyze bundle
+              run: node ./.github/common/scripts/bundle-analyze-report.js
+
+            - name: 🌎 Upload bundle
+              uses: actions/upload-artifact@v3
+              with:
+                  name: bundle
+                  path: apps/web/.next/analyze/__bundle_analysis.json
+
+            - name: 📦 Download base branch bundle stats
+              uses: dawidd6/action-download-artifact@v2
+              if: success() && github.event.number
+              with:
+                  workflow: nextjs_bundle_analysis.yml
+                  branch: ${{ github.event.pull_request.base.ref }}
+                  path: apps/web/.next/analyze/base
+                  if_no_artifact_found: warn
+
+            - name: 📃 Compare with base branch bundle
+              if: success() && github.event.number
+              run: ls -laR apps/web/.next/analyze/base && npx -p nextjs-bundle-analysis compare
+
+            - name: 💬 Get Comment Body
+              id: get-comment-body
+              if: success() && github.event.number
+              # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+              run: |
+                  echo "body<<EOF" >> $GITHUB_OUTPUT
+                  echo "$(cat apps/web/.next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
+                  echo EOF >> $GITHUB_OUTPUT
+
+            - name: 🗣️ Comment
+              uses: marocchino/sticky-pull-request-comment@v2
+              with:
+                  header: next-touched-pages
+                  message: ${{ steps.get-comment-body.outputs.body }}
 # NOTE: The following jobs are temporarily disabled as it's too expensive
 #       to run on every commit thanks to the startup cost and the fact
 #       that GitHub always charge for at least 1 minute of usage per job.

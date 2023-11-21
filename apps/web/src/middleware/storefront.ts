@@ -1,3 +1,4 @@
+import { ShopApi } from '@/api/shop';
 import { commonValidations } from '@/middleware/common-validations';
 import { getHostname } from '@/middleware/router';
 import AcceptLanguageParser from 'accept-language-parser';
@@ -10,13 +11,17 @@ const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.s
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi;
 
-export const storefront = (req: NextRequest): NextResponse => {
-    const hostname = getHostname(req);
+export const storefront = async (req: NextRequest): Promise<NextResponse> => {
+    const hostname = await getHostname(req);
+    const shop = await ShopApi({ domain: hostname });
+
     let newUrl = req.nextUrl.clone();
 
     // Handle API requests.
     if (newUrl.pathname.startsWith('/api/')) {
-        return NextResponse.rewrite(new URL(`/storefront/${hostname}${newUrl.pathname}${newUrl.search}`, req.url));
+        return NextResponse.rewrite(
+            new URL(`/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`, req.url)
+        );
     }
 
     // Check if we're dealing with a file or route.
@@ -26,7 +31,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
         // Favicon.
         if (newUrl.pathname.endsWith('favicon.png')) {
-            target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
+            target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
             return NextResponse.rewrite(new URL(target, req.url), {
                 status: 200,
                 headers: {
@@ -37,7 +42,7 @@ export const storefront = (req: NextRequest): NextResponse => {
 
         // Sitemap.
         if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
-            target = `/storefront/${hostname}/dynamic-sitemap.xml${newUrl.search}`;
+            target = `/storefront/${shop.domains.primary}/dynamic-sitemap.xml${newUrl.search}`;
             return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         }
 
@@ -101,7 +106,7 @@ export const storefront = (req: NextRequest): NextResponse => {
         newUrl.pathname = `${newUrl.pathname}homepage/`;
     }
 
-    const target = `/storefront/${hostname}${newUrl.pathname}${newUrl.search}`;
+    const target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url), {
         headers: { 'Cache-Control': 's-maxage=28800, stale-while-revalidate' }
     });
