@@ -18,8 +18,8 @@ const config = {
             'react-icons'
         ],
         scrollRestoration: true,
-        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
-        webpackBuildWorker: true,
+        //webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        //webpackBuildWorker: true,
         optimizeCss: true
     },
     images: {
@@ -92,22 +92,6 @@ const config = {
     },
     async redirects() {
         return [
-            {
-                source: '/blogs/news/:slug*',
-                destination: '/blog/:slug',
-                permanent: false
-            },
-            {
-                source: '/products/',
-                destination: '/shop/',
-                permanent: false
-            },
-            {
-                source: '/shop/',
-                destination: '/collections/bestselling/',
-                permanent: false
-            },
-
             // TODO: Point these to the multi-tenant admin app once that is built.
             {
                 source: '/:locale/admin/',
