@@ -1,7 +1,7 @@
 @import '_globals.scss';
 
 .articles {
-    --article-background: var(--color-block);
+    --article-background: var(--color-bright);
     --article-border: var(--color-block-dark);
 
     display: grid;
@@ -71,6 +71,9 @@
             }
 
             .action {
+                // TODO: Fix the design.
+                display: none;
+
                 width: 100%;
                 height: 4.5rem;
                 border-radius: var(--block-border-radius);

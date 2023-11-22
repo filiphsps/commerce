@@ -1,0 +1,27 @@
+@import '_globals.scss';
+
+.container {
+    max-width: 72rem;
+    margin: 0 auto;
+
+    .header {
+        padding-bottom: var(--block-padding-large);
+        margin-bottom: var(--block-padding-large);
+        border-bottom: var(--block-border-width) solid var(--color-block);
+
+        h1 {
+            line-height: 1.1;
+            font-size: 3.5rem;
+
+            @media (min-width: $breakpoint-mobile) {
+                max-width: 62rem;
+            }
+        }
+    }
+
+    .content {
+        img {
+            margin-bottom: 0;
+        }
+    }
+}

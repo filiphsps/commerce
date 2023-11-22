@@ -7,6 +7,7 @@ import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import PageLoader from '@/components/PageLoader';
 import { Button } from '@/components/actionable/button';
+import styles from '@/components/cart/cart-summary.module.scss';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
@@ -25,7 +26,8 @@ const Block = styled.section`
     gap: var(--block-spacer);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
-    background: var(--accent-secondary-light);
+    //background: var(--accent-secondary-light);
+    background: var(--color-block);
     color: var(--color-dark);
     transition: 150ms ease-in-out;
 `;
@@ -247,7 +249,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                 <FreeShipping i18n={i18n} />
 
                 {!showNote ? (
-                    <Action onClick={() => setShowNote(true)}>
+                    <Action onClick={() => setShowNote(true)} className={styles['add-note']}>
                         <FiEdit />
                         {` ${t('add-order-note')}`}
                     </Action>
