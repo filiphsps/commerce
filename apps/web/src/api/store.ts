@@ -1,4 +1,3 @@
-import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
@@ -66,17 +65,16 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
 };
 
 export const StoreApi = async ({
-    shop,
     locale,
     client: _client,
     api
 }: {
-    shop: Shop;
     locale: Locale;
     client?: PrismicClient;
     api: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
+        const shop = api.shop();
         const client = _client || createClient({ shop, locale });
 
         try {
@@ -231,7 +229,6 @@ export const StoreApi = async ({
                 return resolve(
                     // Try again with default locale.
                     await StoreApi({
-                        shop,
                         locale: DefaultLocale(),
                         client,
                         api

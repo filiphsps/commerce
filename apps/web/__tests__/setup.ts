@@ -46,6 +46,13 @@ vi.mock('next/navigation', async () => {
     };
 });
 
+vi.mock('@/api/product-reviews', () => ({
+    ProductReviewsApi: vi.fn().mockResolvedValue({
+        reviews: [],
+        averageRating: 5
+    })
+}));
+
 // Thanks to https://github.com/akiran/react-slick/issues/742#issuecomment-298992238
 window.matchMedia =
     window.matchMedia ||

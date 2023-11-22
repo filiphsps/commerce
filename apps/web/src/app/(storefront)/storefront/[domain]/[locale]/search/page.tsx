@@ -28,8 +28,8 @@ export async function generateMetadata({
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const api = StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ shop, locale, api });
+    const api = await StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
     const locales = store.i18n.locales;
     const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
     const i18n = await getDictionary(locale);
@@ -79,8 +79,8 @@ export default async function SearchPage({ params: { domain, locale: localeData 
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
 
-    const api = StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ shop, locale, api });
+    const api = await StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
 
     const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;

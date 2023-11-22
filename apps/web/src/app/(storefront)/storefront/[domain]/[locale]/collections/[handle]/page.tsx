@@ -33,8 +33,8 @@ export async function generateMetadata({
         const locale = NextLocaleToLocale(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ shop, locale, api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = store.i18n.locales;
@@ -101,8 +101,8 @@ export default async function CollectionPage({
         if (!locale) return notFound();
 
         const i18n = await getDictionary(locale);
-        const api = StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ shop, locale, api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
         const collection = await CollectionApi({ api, handle });
 
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });

@@ -2,44 +2,28 @@ import 'server-only';
 
 import type { ApiConfig } from '@/api/client';
 import { setupApi } from '@/api/client';
-import type { Shop } from '@/api/shop';
+import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
-import { UnknownCommerceProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 
-export const shopifyApiConfig = ({
+export const shopifyApiConfig = async ({
     shop,
     noHeaders = true
 }: {
     shop: Shop;
     noHeaders?: boolean;
-}): {
+}): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
-} => {
-    let domain, token, publicToken;
-    switch (shop.configuration.commerce.type) {
-        case 'shopify':
-            domain = shop.configuration.commerce.domain;
-            token = shop.configuration.commerce.authentication.token;
-            publicToken = shop.configuration.commerce.authentication.publicToken;
-            break;
-        case 'dummy':
-            domain = 'mock.shop';
-            token = 'mock-token';
-            publicToken = 'mock-token';
-            break;
-        default:
-            throw new UnknownCommerceProviderError();
-    }
-
+}> => {
+    const { token, publicToken } = await CommerceProviderAuthenticationApi({ shop });
     const api = createStorefrontClient({
         publicStorefrontToken: publicToken,
         privateStorefrontToken: token || undefined,
-        storeDomain: `https://${domain}`,
+        storeDomain: shop.configuration.commerce.domain,
         storefrontApiVersion: BuildConfig.shopify.api,
         contentType: 'json'
     });
@@ -66,17 +50,17 @@ export const shopifyApiConfig = ({
     };
 };
 
-export const StorefrontApiClient = ({
+export const StorefrontApiClient = async ({
     shop,
     locale,
     apiConfig
 }: {
     shop: Shop;
     locale: Locale;
-    apiConfig?: ReturnType<typeof shopifyApiConfig>;
+    apiConfig?: Awaited<ReturnType<typeof shopifyApiConfig>>;
 }) =>
     ShopifyApolloApiBuilder({
         shop,
         locale,
-        api: setupApi((apiConfig || shopifyApiConfig({ shop })).private()).getClient()
+        api: setupApi((apiConfig || (await shopifyApiConfig({ shop }))).private()).getClient()
     });

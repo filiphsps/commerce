@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     const shop = await ShopApi({ domain: 'www.sweetsideofsweden.com' }); // TODO: Don't hardcode this.
     const locale = DefaultLocale();
-    const shopifyApi = shopifyApiConfig({ shop });
-    const api = StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ shop, locale, api });
+    const shopifyApi = await shopifyApiConfig({ shop });
+    const api = await StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
 
     return (
         <html lang={locale.locale}>

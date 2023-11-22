@@ -20,8 +20,8 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     const shop = await ShopApi({ domain });
     const locale = DefaultLocale();
-    const apiConfig = shopifyApiConfig({ shop, noHeaders: true });
-    const api = StorefrontApiClient({ shop, locale, apiConfig });
+    const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+    const api = await StorefrontApiClient({ shop, locale, apiConfig });
 
     interface SitemapEntry {
         location: string;
@@ -30,7 +30,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     let pages: SitemapEntry[] = [];
     try {
-        const store = await StoreApi({ shop, locale, api });
+        const store = await StoreApi({ api, locale });
         locales = store.i18n.locales;
 
         pages = (await PagesApi({ shop, locale }))

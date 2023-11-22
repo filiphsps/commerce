@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { UnknownShopDomainError } from '@/utils/errors';
+import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
 import { env } from 'process';
 
 export type ShopifyCommerceProvider = {
@@ -15,6 +15,7 @@ export type ShopifyCommerceProvider = {
 };
 export type DummyCommerceProvider = {
     type: 'dummy';
+    domain: 'mock.shop';
 };
 export type CommerceProvider = ShopifyCommerceProvider | DummyCommerceProvider;
 
@@ -30,17 +31,6 @@ export type Shop = {
             googleTagManager?: string;
         };
     };
-};
-
-export const prepareShopForClient = (shop: Shop): Shop => {
-    // Remove sensitive data from the shop object.
-    const newShop = { ...shop };
-
-    if (newShop.configuration.commerce.type === 'shopify') {
-        newShop.configuration.commerce.authentication.token = null;
-    }
-
-    return newShop;
 };
 
 export const ShopsApi = async (): Promise<Shop[]> => {
@@ -61,7 +51,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com',
                     storefrontId: env.SHOPIFY_STOREFRONT_ID || '2130225',
                     authentication: {
-                        token: env.SHOPIFY_PRIVATE_TOKEN || null,
+                        token: null,
                         publicToken: env.SHOPIFY_TOKEN!
                     }
                 },
@@ -82,7 +72,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 
             configuration: {
                 commerce: {
-                    type: 'dummy' as const
+                    type: 'dummy' as const,
+                    domain: 'mock.shop' as const
                 }
             }
         }
@@ -106,4 +97,35 @@ export const ShopApi = async ({ domain }: { domain: string }): Promise<Shop> => 
     }
 
     return shop;
+};
+
+export const CommerceProviderAuthenticationApi = async ({
+    shop
+}: {
+    shop: Shop;
+}): Promise<ShopifyCommerceProvider['authentication']> => {
+    switch (shop.configuration.commerce.type) {
+        case 'dummy': {
+            return {
+                token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
+                publicToken: 'public-auth-token'
+            };
+        }
+        case 'shopify': {
+            switch (shop.id) {
+                case 'sweet-side-of-sweden': {
+                    return {
+                        ...shop.configuration.commerce.authentication,
+                        token: env.SHOPIFY_PRIVATE_TOKEN || null
+                    };
+                }
+                default: {
+                    throw new UnknownShopDomainError();
+                }
+            }
+        }
+        default: {
+            throw new UnknownCommerceProviderError();
+        }
+    }
 };

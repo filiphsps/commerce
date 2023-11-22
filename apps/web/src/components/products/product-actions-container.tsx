@@ -1,6 +1,7 @@
 'use client';
 
 import { AddToCart } from '@/components/products/add-to-cart';
+import { InfoLines } from '@/components/products/info-lines';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -53,6 +54,9 @@ export const ProductActionsContainer = ({
             </section>
 
             <AddToCart className={styles.button} quantity={quantity} locale={locale} i18n={i18n} />
+            {(product && <InfoLines product={product} />) || null}
+
+            {children}
         </ProductProvider>
     );
 };
