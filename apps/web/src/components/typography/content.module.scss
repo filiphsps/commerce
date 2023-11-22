@@ -6,16 +6,20 @@
     font-weight: 500;
     font-size: 1.75rem;
 
+    & :is(b, strong) {
+        font-weight: 700;
+    }
+
     & :is(h1, h2, h3, h4) {
         font-weight: 600;
 
         a {
             text-underline-offset: var(--block-border-width);
         }
-    }
 
-    & :is(h1, h2, h3, h4) :is(b, strong) {
-        font-weight: 800;
+        :is(b, strong) {
+            font-weight: 800;
+        }
     }
 
     & > * {
@@ -23,6 +27,12 @@
 
         &:is(:last-child) {
             margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        &:is(:first-child) {
+            margin-top: 0;
+            padding-top: 0;
         }
     }
 
@@ -30,7 +40,7 @@
         font-weight: 600;
 
         text-decoration: underline dotted 0.15rem;
-        //text-underline-offset: var(--block-border-width);
+        text-underline-offset: var(--block-border-width-small);
         text-underline-position: auto;
     }
 

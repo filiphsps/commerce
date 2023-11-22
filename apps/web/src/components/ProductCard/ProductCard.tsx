@@ -88,7 +88,6 @@ const Quantity = styled.div`
     justify-content: center;
     justify-self: end;
     height: 3.25rem;
-    width: 100%;
     font-size: 1.25rem;
     line-height: 1.75rem;
     font-weight: 500;

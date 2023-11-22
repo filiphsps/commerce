@@ -38,11 +38,9 @@ export const PageProvider = ({
             {above.length > 0 && (
                 <section className={styles.announcements}>
                     {above.map((item, index) => (
-                        <article key={index} className={`${styles.announcement} background-${item.background_color}`}>
-                            <Content>
-                                <PrismicText data={item.content} />
-                            </Content>
-                        </article>
+                        <Content key={index} className={`${styles.announcement} background-${item.background_color}`}>
+                            <PrismicText data={item.content} />
+                        </Content>
                     ))}
                 </section>
             )}
@@ -52,11 +50,9 @@ export const PageProvider = ({
             {bellow.length > 0 && (
                 <section className={styles.announcements}>
                     {bellow.map((item, index) => (
-                        <article key={index} className={`${styles.announcement} background-${item.background_color}`}>
-                            <Content>
-                                <PrismicText data={item.content} />
-                            </Content>
-                        </article>
+                        <Content key={index} className={`${styles.announcement} background-${item.background_color}`}>
+                            <PrismicText data={item.content} />
+                        </Content>
                     ))}
                 </section>
             )}
