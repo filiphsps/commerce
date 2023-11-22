@@ -89,6 +89,7 @@ export const PRODUCT_FRAGMENT = `
     handle
     availableForSale
     createdAt
+    updatedAt
     title
     description
     descriptionHtml
@@ -379,23 +380,23 @@ export const ProductsApi = async ({
  * @returns {Promise<ProductEdge[]>} The products.
  */
 export const ProductsPaginationApi = async ({
-    client,
+    api,
     limit = 35,
     sorting = 'BEST_SELLING',
     vendor,
     before,
     after
 }: {
-    client: AbstractApi;
+    api: AbstractApi;
     limit?: number;
     vendor?: string;
     sorting?: ProductSortKeys;
-    before?: string;
-    after?: string;
+    before?: string | null;
+    after?: string | null;
 }): Promise<{
     page_info: {
-        start_cursor: string;
-        end_cursor: string;
+        start_cursor: string | null;
+        end_cursor: string | null;
         has_next_page: boolean;
         has_prev_page: boolean;
     };
@@ -403,19 +404,19 @@ export const ProductsPaginationApi = async ({
 }> => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { data } = await client.query<{ products: ProductConnection }>(
+            const { data } = await api.query<{ products: ProductConnection }>(
                 gql`
                     fragment ProductFragment on Product {
                         ${PRODUCT_FRAGMENT}
                     }
 
-                    query products($limit: Int!, $sorting: ProductSortKeys, $query: String) {
+                    query products($limit: Int!, $sorting: ProductSortKeys, $query: String, $before: String, $after: String) {
                         products(
                             first: $limit,
                             sortKey: $sorting,
                             query: $query,
-                            ${before ? `,before:"${before}"` : ''}
-                            ${after ? `,after:"${after}"` : ''}
+                            before: $before,
+                            after: $after
                         )
                         {
                             edges {
@@ -436,7 +437,9 @@ export const ProductsPaginationApi = async ({
                 {
                     limit,
                     query: (vendor && `query:"vendor:${vendor}"`) || null,
-                    sorting: sorting || null
+                    sorting: sorting || null,
+                    before: before || null,
+                    after: after || null
                 }
             );
 
@@ -445,8 +448,8 @@ export const ProductsPaginationApi = async ({
 
             return resolve({
                 page_info: {
-                    start_cursor: page_info.startCursor || '', // TODO: Handle this properly.
-                    end_cursor: page_info.endCursor || '', // TODO: Handle this properly.
+                    start_cursor: page_info.startCursor || null,
+                    end_cursor: page_info.endCursor || null,
                     has_next_page: page_info.hasNextPage,
                     has_prev_page: page_info.hasPreviousPage
                 },

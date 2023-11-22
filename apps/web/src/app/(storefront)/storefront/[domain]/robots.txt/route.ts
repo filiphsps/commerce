@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 /* c8 ignore start */
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
 type Rule = Rules[number];
-export const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
+const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
     let output = '';
 
     const parseRule = ({ userAgent, crawlDelay, disallow, allow }: Rule): string => {
