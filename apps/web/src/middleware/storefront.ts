@@ -26,27 +26,15 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Check if we're dealing with a file or route.
     if (newUrl.pathname.match(FILE_TEST) && !newUrl.pathname.includes('/storefront/')) {
-        let target = `${newUrl.pathname}${newUrl.search}`;
-        // TODO: Handle Handle tenant-specific assets.
-
-        // Favicon and sitemaps.
-        if (newUrl.pathname.endsWith('.png') || newUrl.pathname.endsWith('.xml')) {
-            target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
-            return NextResponse.rewrite(new URL(target, req.url), {
-                status: 200,
-                headers: {
-                    'Cache-Control': 's-maxage=28800, stale-while-revalidate'
-                }
-            });
-        }
-
-        // FIXME: Don't hardcode `sweetsideofsweden.com`
-        target = `/sweetsideofsweden.com${target}`;
+        let target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
         return NextResponse.rewrite(new URL(target, req.url), {
+            status: 200,
             headers: {
                 'Cache-Control': 's-maxage=28800, stale-while-revalidate'
             }
         });
+
+        // TODO: Handle Handle tenant-specific files/assets.
     }
 
     // Set the locale based on the user's accept-language header when no locale
