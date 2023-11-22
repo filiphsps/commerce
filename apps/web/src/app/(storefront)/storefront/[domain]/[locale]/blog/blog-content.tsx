@@ -1,3 +1,4 @@
+import type { Shop } from '@/api/shop';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
@@ -8,11 +9,12 @@ import Image from 'next/image';
 import styles from './blog-content.module.scss';
 
 type BlogContentProps = {
+    shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
     blog: Blog;
 };
-export default async function BlogContent({ locale, blog }: BlogContentProps) {
+export default async function BlogContent({ shop, locale, blog }: BlogContentProps) {
     return (
         <>
             <div className={styles.articles}>
@@ -39,7 +41,7 @@ export default async function BlogContent({ locale, blog }: BlogContentProps) {
                                     })}
                                 </div>
                                 <div className={styles.title}>
-                                    <Link key={article.id} href={href} locale={locale}>
+                                    <Link key={article.id} href={href} shop={shop} locale={locale}>
                                         {article.title}
                                     </Link>
                                 </div>

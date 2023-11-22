@@ -1,19 +1,42 @@
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { NextLocaleToLocale, useTranslation } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import CartContent from './cart-content';
+
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+    const locale = DefaultLocale()!;
+    const shops = await ShopsApi();
+
+    return (
+        await Promise.all(
+            shops.map(async (shop) => {
+                const api = await StorefrontApiClient({ shop, locale });
+                const locales = await LocalesApi({ api });
+
+                return locales.map(({ locale }) => ({
+                    domain: shop.domains.primary,
+                    locale: locale
+                }));
+            })
+        )
+    ).flat(2);
+}
+/* c8 ignore stop */
 
 /* c8 ignore start */
 export type CartPageParams = { domain: string; locale: string };

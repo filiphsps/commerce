@@ -1,13 +1,13 @@
-import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
+import { PageApi, PagesApi } from '@/api/page';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -15,24 +15,33 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
 /* c8 ignore start */
-/*export const revalidate = 28_800; // 8hrs.
+export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = DefaultLocale()!; // TODO: Don't hardcode locale.
+    const locale = DefaultLocale()!;
     const shops = await ShopsApi();
 
-    return await Promise.all(
-        shops.flatMap(async (shop) => {
-            const pages = await PagesApi({ shop, locale });
+    return (
+        await Promise.all(
+            shops.map(async (shop) => {
+                const api = await StorefrontApiClient({ shop, locale });
+                const locales = await LocalesApi({ api });
 
-            return pages.map(({ uid: handle }) => ({
-                domain: shop.domains.primary,
-                locale: locale.locale,
-                handle
-            }));
-        })
-    );
-}*/
+                return await Promise.all(
+                    locales.map(async (locale) => {
+                        const pages = await PagesApi({ shop, locale });
+
+                        return pages.map(({ uid: handle }) => ({
+                            domain: shop.domains.primary,
+                            locale: locale.locale,
+                            handle
+                        }));
+                    })
+                );
+            })
+        )
+    ).flat(2);
+}
 /* c8 ignore stop */
 
 /* c8 ignore start */
@@ -128,12 +137,12 @@ export default async function CustomPage({
             </Page>
         );
     } catch (error: any) {
-        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

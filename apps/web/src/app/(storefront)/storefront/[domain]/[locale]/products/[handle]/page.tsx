@@ -32,24 +32,7 @@ import styles from './page.module.scss';
 /* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-/*export async function generateStaticParams() {
-    const locale = DefaultLocale()!; // TODO: Don't hardcode locale.
-    const shops = await ShopsApi();
-
-    return await Promise.all(
-        shops.flatMap(async (shop) => {
-            const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
-            const api = await StorefrontApiClient({ shop, locale, apiConfig });
-            const { products } = await ProductsApi({ api });
-
-            return products.map(({ node: { handle } }) => ({
-                domain: shop.domains.primary,
-                locale: locale.locale,
-                handle
-            }));
-        })
-    );
-}*/
+// TODO: Replace `searchParams` with subpath so we can server render this.
 /* c8 ignore stop */
 
 /* c8 ignore start */
@@ -384,12 +367,12 @@ export default async function ProductPage({
             </Page>
         );
     } catch (error: any) {
-        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

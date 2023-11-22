@@ -1,5 +1,6 @@
 'use client';
 
+import type { Shop } from '@/api/shop';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale } from '@/utils/locale';
@@ -57,11 +58,12 @@ const Currency = styled.div`
 `;
 
 type LocaleSelectorProps = {
+    shop: Shop;
     store?: StoreModel;
     countries: Country[];
     locale: Locale;
 };
-export default function LocaleSelector({ countries, locale }: LocaleSelectorProps) {
+export default function LocaleSelector({ shop, countries, locale }: LocaleSelectorProps) {
     const localeRef = useRef<HTMLInputElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -90,6 +92,7 @@ export default function LocaleSelector({ countries, locale }: LocaleSelectorProp
                             <Link
                                 key={country.locale}
                                 href={`/countries/`} // TODO: Go to the previous route
+                                shop={shop}
                                 locale={NextLocaleToLocale(country.locale)!}
                                 title={`${country.country} (${country.language})`}
                                 className={`${styles.locale} ${
