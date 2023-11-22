@@ -1,6 +1,7 @@
 import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { sendGTMEvent } from '@next/third-parties/google';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 
 // Const hacky workaround for ga4 cross-domain
@@ -44,36 +45,34 @@ export const Checkout = async ({ shop, locale, cart }: { shop: Shop; locale: Loc
 
     try {
         // Google Tracking
-        (window as any).dataLayer?.push(
-            {
-                ecommerce: null
-            },
-            {
-                event: 'begin_checkout',
-                ecommerce: {
-                    currency: cart.cost?.totalAmount?.currencyCode!,
-                    value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-                    items: cart.lines.map(
-                        (line) =>
-                            line && {
-                                item_id: ProductToMerchantsCenterId({
-                                    locale: locale,
-                                    product: {
-                                        productGid: line.merchandise!.product!.id,
-                                        variantGid: line.merchandise!.id
-                                    } as any
-                                }),
-                                item_name: line.merchandise?.product?.title,
-                                item_variant: line.merchandise?.title,
-                                item_brand: line.merchandise?.product?.vendor,
-                                currency: line.merchandise?.price?.currencyCode!,
-                                price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
-                                quantity: line.quantity
-                            }
-                    )
-                }
+        sendGTMEvent({
+            ecommerce: null
+        });
+        sendGTMEvent({
+            event: 'begin_checkout',
+            ecommerce: {
+                currency: cart.cost?.totalAmount?.currencyCode!,
+                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
+                items: cart.lines.map(
+                    (line) =>
+                        line && {
+                            item_id: ProductToMerchantsCenterId({
+                                locale: locale,
+                                product: {
+                                    productGid: line.merchandise!.product!.id,
+                                    variantGid: line.merchandise!.id
+                                } as any
+                            }),
+                            item_name: line.merchandise?.product?.title,
+                            item_variant: line.merchandise?.title,
+                            item_brand: line.merchandise?.product?.vendor,
+                            currency: line.merchandise?.price?.currencyCode!,
+                            price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                            quantity: line.quantity
+                        }
+                )
             }
-        );
+        });
 
         // Microsoft Ads tracking
         if ((window as any).uetq) {
