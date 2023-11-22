@@ -1,5 +1,9 @@
+'use client';
+
 import type { StoreModel } from '@/models/StoreModel';
-import { AppProgressBar } from 'next-nprogress-bar';
+import { usePathname, useRouter } from 'next/navigation';
+import NextTopLoader from 'nextjs-toploader';
+import * as NProgress from 'nprogress';
 import { useEffect, type ReactNode } from 'react';
 
 type HeaderProviderProps = {
@@ -7,6 +11,9 @@ type HeaderProviderProps = {
     store: StoreModel;
 };
 export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
+    const pathname = usePathname();
+    const router = useRouter();
+
     useEffect(() => {
         const threshold = 5;
         document.body.setAttribute('data-scrolled', Math.floor(window.scrollY) >= threshold ? 'true' : 'false');
@@ -24,19 +31,15 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
+    // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
+    useEffect(() => {
+        NProgress.done();
+    }, [pathname, router]);
+
     return (
         <>
+            <NextTopLoader color={store.accent.primary} showSpinner={true} crawl={true} />
             {children}
-            <AppProgressBar
-                height="var(--block-padding)"
-                color={store.accent.primary}
-                options={{
-                    showSpinner: false
-                    //easing: 'ease-in-out',
-                    //speed: 500
-                }}
-                shallowRouting
-            />
         </>
     );
 };
