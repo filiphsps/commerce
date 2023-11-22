@@ -1,18 +1,23 @@
 /* c8 ignore start */
 export class CommerceError<T = unknown> extends Error {
-    readonly name!: string;
-    readonly details!: string;
-    readonly code!: T;
+    public readonly name!: string;
+    public readonly details!: string;
+    public readonly code!: T;
 
-    constructor() {
+    public constructor() {
         super(...arguments);
 
         Object.setPrototypeOf(this, CommerceError.prototype);
+        Object.defineProperty(this, 'help', {
+            get: function () {
+                return `https://shops.nordcom.io/docs/errors/${this.code}/`;
+            },
+            enumerable: true,
+            configurable: false
+        });
     }
 
-    get help() {
-        return `https://shops.nordcom.io/docs/errors/${this.code}/`;
-    }
+    public help!: string; // Defined in the constructor using `Object.defineProperty`.
 }
 
 export type ApiErrorKind =
@@ -20,12 +25,13 @@ export type ApiErrorKind =
     | 'API_UNKNOWN_SHOP_DOMAIN'
     | 'API_UNKNOWN_COMMERCE_PROVIDER'
     | 'API_TOO_MANY_REQUESTS'
+    | 'API_METHOD_NOT_ALLOWED'
     | 'API_ICON_WIDTH_NO_FRACTIONAL'
     | 'API_ICON_WIDTH_OUT_OF_BOUNDS'
     | 'API_ICON_HEIGHT_NO_FRACTIONAL'
     | 'API_ICON_HEIGHT_OUT_OF_BOUNDS';
 export class ApiError extends CommerceError<ApiErrorKind> {
-    statusCode: number = 400;
+    public statusCode: number = 400;
     name = 'Unknown APIError';
     details = 'An unknown error occurred';
     code = 'API_UNKNOWN_ERROR' as ApiErrorKind;
@@ -52,6 +58,13 @@ export class TooManyRequestsError extends ApiError {
     code = 'API_TOO_MANY_REQUESTS' as const;
 }
 
+export class MethodNotAllowedError extends ApiError {
+    statusCode = 405;
+    name = 'Method not allowed';
+    details = 'The endpoint does not support the given method';
+    code = 'API_METHOD_NOT_ALLOWED' as const;
+}
+
 export class IconWidthNoFractionalError extends ApiError {
     name = 'Invalid width';
     details = '`width` must be an integer';
@@ -73,11 +86,13 @@ export class IconHeightOutOfBoundsError extends ApiError {
     code = 'API_ICON_HEIGHT_OUT_OF_BOUNDS' as const;
 }
 
-export type ApiErrorStatusCode = 400 | 429 | number;
+export type ApiErrorStatusCode = 400 | 405 | 429 | number;
 export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
     switch (statusCode) {
         case 400:
             return ApiError;
+        case 405:
+            return MethodNotAllowedError;
         case 429:
             return TooManyRequestsError;
     }

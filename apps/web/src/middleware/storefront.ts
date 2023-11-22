@@ -17,15 +17,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     let newUrl = req.nextUrl.clone();
 
-    // Handle API requests.
-    if (newUrl.pathname.startsWith('/api/')) {
-        return NextResponse.rewrite(
-            new URL(`/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`, req.url)
-        );
-    }
-
-    // Check if we're dealing with a file or route.
-    if (newUrl.pathname.match(FILE_TEST) && !newUrl.pathname.includes('/storefront/')) {
+    // Check if we're dealing with a file, api route, or other specially-handled resource.
+    if (
+        (newUrl.pathname.match(FILE_TEST) || newUrl.pathname.includes('/api/')) &&
+        !newUrl.pathname.includes('/storefront/')
+    ) {
         let target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
         return NextResponse.rewrite(new URL(target, req.url), {
             status: 200,

@@ -64,7 +64,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
             }
         );
 
-        return new NextResponse(image.body, {
+        return NextResponse.json(image.body, {
             headers: {
                 ...image.headers,
                 'Content-Type': 'image/png' // TODO: Also add `image/x-icon`.
