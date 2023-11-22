@@ -1,8 +1,9 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": ["**/.env.*local", "tsconfig.json"],
+    "globalDependencies": ["**/.env.*local", "tsconfig.json", "package.json"],
     "pipeline": {
         "build": {
+            "cache": true,
             "dependsOn": ["^build"],
             "outputs": ["**/.next/**", "!**/.next/cache/**"]
         },
