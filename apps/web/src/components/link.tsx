@@ -29,14 +29,15 @@ export default function Link({ shop, locale, href, prefetch, ...props }: Props) 
             ? window.location?.host
             : undefined
         : undefined;
-    let url =
-        !href.startsWith('/') && host
-            ? new URL(href, host.includes('://') ? host : `https://${host}`)
-            : {
-                  host: host, // TODO
-                  pathname: host && href.includes(host) ? href.split('?')[0].split(host)[1] : href.split('?')[0],
-                  searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
-              };
+
+    const isExternal = !href.startsWith('/') && (href.startsWith('http://') || href.startsWith('https://')) && host;
+    let url = isExternal
+        ? new URL(href, host.includes('://') ? host : `https://${host}`)
+        : {
+              host: host, // TODO
+              pathname: host && href.includes(host) ? href.split('?')[0].split(host)[1] : href.split('?')[0],
+              searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
+          };
 
     if (href.startsWith('/') || url.host === host) {
         // Check if any lang (xx-YY) is already a part of the URL.
