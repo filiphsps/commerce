@@ -1,3 +1,4 @@
+import type { Shop } from '@/api/shop';
 import { Checkout } from '@/utils/checkout';
 import type { Locale } from '@/utils/locale';
 import type { CartWithActions } from '@shopify/hydrogen-react';
@@ -72,6 +73,20 @@ describe('utils', () => {
             }
         } as any;
 
+        const shop: Shop = {
+            configuration: {
+                commerce: {
+                    type: 'shopify' as const,
+                    id: 'shopid',
+                    domain: 'checkout.sweetsideofsweden.com',
+                    storefrontId: 'Storefront Id',
+                    authentication: {
+                        token: null,
+                        publicToken: 'this-is-a-public-token'
+                    }
+                }
+            }
+        } as any;
         const locale: Locale = {
             locale: 'en-US',
             language: 'EN',
@@ -97,7 +112,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ cart: emptyCart, locale })).rejects.toThrow('Cart is empty!');
+            await expect(Checkout({ shop, locale, cart: emptyCart })).rejects.toThrow('Cart is empty!');
         });
 
         it(`should throw an error when cart is missing checkoutUrl`, async () => {
@@ -130,13 +145,13 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ cart: cartWithoutCheckoutUrl, locale })).rejects.toThrow(
+            await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl })).rejects.toThrow(
                 'Cart is missing checkoutUrl'
             );
         });
 
         it(`should track the begin_checkout event in Google Analytics`, async () => {
-            await Checkout({ cart, locale });
+            await Checkout({ shop, locale, cart });
 
             expect((window as any).dataLayer).toContainEqual({
                 event: 'begin_checkout',

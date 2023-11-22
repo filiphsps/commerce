@@ -11,16 +11,14 @@ import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { ShopApi } from '@/api/shop';
 import { StoreApi } from '@/api/store';
-import Header from '@/components/Header';
-import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
-import PageProvider from '@/components/PageProvider';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { PageProvider } from '@/components/layout/page-provider';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Lexend_Deca } from 'next/font/google';
-import { Suspense, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
 const font = Lexend_Deca({
@@ -111,16 +109,10 @@ export default async function RootLayout({
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });
 
-        const headerComponents = (
-            <>
-                <Header store={store} navigation={navigation} locale={locale} i18n={i18n} />
-                <MobileMenu navigation={navigation} />
-            </>
-        );
-
         return (
             <html
                 lang={locale.locale}
+                className={`${font.variable}`}
                 style={
                     {
                         '--accent-primary': store.accent.primary,
@@ -130,7 +122,7 @@ export default async function RootLayout({
                 suppressHydrationWarning
             >
                 <head />
-                <body className={`${font.variable}`}>
+                <body>
                     <SocialProfileJsonLd
                         useAppDir
                         type="Organization"
@@ -191,17 +183,14 @@ export default async function RootLayout({
 
                     <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                         <PageProvider
+                            shop={shop}
                             store={store}
-                            domain={domain}
                             locale={locale}
                             i18n={i18n}
-                            pagePropsAnalyticsData={{}}
                             data={{ navigation, header, footer }}
-                            header={headerComponents}
                         >
-                            <Suspense>
-                                {children}
-                            </Suspense>
+                            {children}
+
                             <PageContent primary>
                                 <Breadcrumbs store={store} />
                             </PageContent>

@@ -1,6 +1,6 @@
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { LoadingIndicator } from '../informational/loading-indicator';
 
 const Wrapper = styled.div`
     display: flex;

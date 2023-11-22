@@ -1,7 +1,7 @@
 import type { Shop } from '@/api/shop';
-import { createClient } from '@/prismic';
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
 
 export const PagesApi = async ({

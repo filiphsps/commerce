@@ -1,14 +1,15 @@
 import 'server-only';
 
-import { BuildConfig } from '@/utils/build-config';
 import { UnknownShopDomainError } from '@/utils/errors';
+import { env } from 'process';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
+    id: string;
     domain: string;
     storefrontId: string;
     authentication: {
-        token: string;
+        token: string | null;
         publicToken: string;
     };
 };
@@ -28,6 +29,17 @@ export type Shop = {
     };
 };
 
+export const prepareShopForClient = (shop: Shop): Shop => {
+    // Remove sensitive data from the shop object.
+    const newShop = { ...shop };
+
+    if (newShop.configuration.commerce.type === 'shopify') {
+        newShop.configuration.commerce.authentication.token = null;
+    }
+
+    return newShop;
+};
+
 export const ShopsApi = async (): Promise<Shop[]> => {
     // TODO: Don't hardcode this.
     return [
@@ -40,11 +52,12 @@ export const ShopsApi = async (): Promise<Shop[]> => {
             configuration: {
                 commerce: {
                     type: 'shopify' as const,
-                    domain: BuildConfig.shopify.domain!,
-                    storefrontId: BuildConfig.shopify.storefront_id!,
+                    id: process.env.SHOPIFY_SHOP_ID || '76188483889',
+                    domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com',
+                    storefrontId: env.SHOPIFY_STOREFRONT_ID || '2130225',
                     authentication: {
-                        token: BuildConfig.shopify.private_token!,
-                        publicToken: BuildConfig.shopify.token
+                        token: env.SHOPIFY_PRIVATE_TOKEN || null,
+                        publicToken: env.SHOPIFY_TOKEN!
                     }
                 }
             }

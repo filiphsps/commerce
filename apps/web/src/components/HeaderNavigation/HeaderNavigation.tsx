@@ -13,8 +13,7 @@ const Navigation = styled.div`
     gap: calc(var(--block-spacer-large) * 2);
     height: 100%;
     width: 100%;
-    width: 100vw;
-    padding: 2rem 3rem 4rem 3rem;
+    padding: var(--block-padding);
 `;
 const NavigationItem = styled.div`
     display: flex;

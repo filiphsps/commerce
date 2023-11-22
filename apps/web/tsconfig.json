@@ -26,7 +26,6 @@
             "@/slices/*": ["src/slices/*"],
             "@/slices": ["src/slices/index"],
             "@/prismic/types": ["prismicio-types.d.ts"],
-            "@/prismic": ["prismicio.ts"],
 
             // Admin (shops.nordcom.io)
             "#/components/*": ["src/app/(admin)/_components/*"],

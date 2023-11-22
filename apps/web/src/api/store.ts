@@ -1,9 +1,9 @@
 import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
-import { createClient } from '@/prismic';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { DefaultLocale, NextLocaleToLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';

@@ -1,7 +1,7 @@
 import type { Shop } from '@/api/shop';
 import type { HeaderModel } from '@/models/HeaderModel';
-import { createClient } from '@/prismic';
 import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
 
 export const HeaderApi = async ({

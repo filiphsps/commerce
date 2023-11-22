@@ -1,6 +1,6 @@
 import { ShopApi } from '@/api/shop';
-import { createClient } from '@/prismic';
 import { DefaultLocale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import { redirectToPreviewURL } from '@prismicio/next';
 import { draftMode } from 'next/headers';
 import type { NextRequest } from 'next/server';

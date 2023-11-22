@@ -11,8 +11,8 @@ import {
 } from '@shopify/hydrogen-react';
 import type { CartCost, CartLine, CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 
+import type { Shop } from '@/api/shop';
 import { usePrevious } from '@/hooks/usePrevious';
-import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
@@ -21,21 +21,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 /* c8 ignore start */
-const trimDomain = (domain?: string): string | undefined => {
-    if (!domain) return undefined;
-
-    let match,
-        result = '';
-    if ((match = domain.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im))) {
-        result = match[1];
-        if ((match = result.match(/^[^\.]+\.(.+\..+)$/))) {
-            result = match[1];
-        }
-    }
-
-    return result;
-};
-
 interface AnalyticsEcommercePayload {
     currency: CurrencyCode;
     value: number;
@@ -61,17 +46,22 @@ const sendEcommerceEvent = ({
 
 export const sendPageViewEvent = ({
     path,
-    domain,
+    shop,
     locale,
     pageAnalytics,
     cost
 }: {
     path: string;
-    domain: string;
+    shop: Shop;
     locale: Locale;
     pageAnalytics: ShopifyPageViewPayload;
     cost?: CartCost;
 }) => {
+    if (shop.configuration.commerce.type !== 'shopify') {
+        console.warn('Analytics are only supported for Shopify stores.');
+        return;
+    }
+
     switch (pageAnalytics.pageType) {
         // https://developers.google.com/analytics/devguides/collection/ga4/reference/events?client_type=gtm#view_item
         case AnalyticsPageType.product: {
@@ -108,8 +98,8 @@ export const sendPageViewEvent = ({
     const payload: ShopifyPageViewPayload = {
         ...getClientBrowserParameters(),
         ...pageAnalytics,
-        url: `https://${domain}${path}`,
-        canonicalUrl: `https://${domain}${path}`,
+        url: `https://${shop.domains.primary}${path}`,
+        canonicalUrl: `https://${shop.domains.primary}${path}`,
         path: path
     };
 
@@ -119,7 +109,7 @@ export const sendPageViewEvent = ({
                 eventName: AnalyticsEventName.PAGE_VIEW,
                 payload
             },
-            BuildConfig.shopify.checkout_domain
+            shop.configuration.commerce.domain
         );
     } catch (error) {
         console.warn(error);
@@ -127,21 +117,20 @@ export const sendPageViewEvent = ({
 };
 
 interface useAnalyticsProps {
-    shopId: string;
+    shop: Shop;
     locale: Locale;
-    domain: string;
     pagePropsAnalyticsData: any;
 }
-export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }: useAnalyticsProps) {
-    useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
-
-    if (process.env.NODE_ENV === 'development') return;
-
-    const path = usePathname();
-    if (!shopId || !domain) {
-        console.error(`Invalid shopId ("${shopId}") or domain ("${domain}") - on route: "${path}"`);
-        return;
+export function useAnalytics({ locale, shop, pagePropsAnalyticsData }: useAnalyticsProps) {
+    if (process.env.NODE_ENV !== 'production') {
+        return null;
     }
+    if (shop.configuration.commerce.type !== 'shopify') {
+        console.warn('Analytics are only supported for Shopify stores.');
+        return null;
+    }
+
+    useShopifyCookies({ hasUserConsent: true, domain: shop.configuration.commerce.domain });
 
     const { lines, id: cartId, cost, status, totalQuantity } = useCart();
     const previousStatus = usePrevious(status);
@@ -153,9 +142,9 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
 
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
-        shopId,
+        shopId: shop.configuration.commerce.id,
         shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
-        storefrontId: BuildConfig.shopify.storefront_id,
+        storefrontId: shop.configuration.commerce.storefrontId,
         currency: locale.currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true,
@@ -171,10 +160,15 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         if (!route) return;
 
         const handleRouteChange = (url: string) => {
+            if (shop.configuration.commerce.type !== 'shopify') {
+                console.warn('Analytics are only supported for Shopify stores.');
+                return;
+            }
+
             const path = `/${url.split('/').slice(2, -1).join('/')}/`.replace('//', '/');
             sendPageViewEvent({
                 path,
-                domain,
+                shop,
                 locale,
                 pageAnalytics,
                 cost: cost as any
@@ -209,13 +203,15 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         };
 
         try {
-            sendShopifyAnalytics(
-                {
-                    eventName: AnalyticsEventName.ADD_TO_CART,
-                    payload
-                },
-                BuildConfig.shopify.checkout_domain
-            );
+            if (shop.configuration.commerce.type === 'shopify') {
+                sendShopifyAnalytics(
+                    {
+                        eventName: AnalyticsEventName.ADD_TO_CART,
+                        payload
+                    },
+                    shop.configuration.commerce.domain
+                );
+            }
         } catch (error) {
             console.warn(error);
         }
@@ -247,5 +243,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             }
         });
     }, [lines, status]);
+
+    return {};
 }
 /* c8 ignore stop */

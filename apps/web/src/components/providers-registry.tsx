@@ -1,6 +1,6 @@
 'use client';
 
-import { createClient, linkResolver } from '@/prismic';
+import { createClient, linkResolver } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 
 import type { ApiConfig } from '@/api/client';
@@ -13,9 +13,11 @@ import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
+import * as Prismic from '@/utils/prismic';
+import { PrismicPreview } from '@prismicio/next';
 import { PrismicProvider } from '@prismicio/react';
-import type { ReactNode } from 'react';
-//import { PrismicPreview } from '@prismicio/next';
+import { useEffect, useState, type ReactNode } from 'react';
+import { AnalyticsProvider } from './analytics-provider';
 
 export default function ProvidersRegistry({
     shop,
@@ -30,6 +32,23 @@ export default function ProvidersRegistry({
     store: StoreModel;
     children: ReactNode;
 }) {
+    const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (afterLoad) return;
+
+            setAfterLoad(() => (
+                <>
+                    <PrismicPreview repositoryName={Prismic.repositoryName} />
+                </>
+            ));
+
+            // Wait 10 seconds to prevent the lighthouse score from being affected by the preview toolbar
+        }, 10_000);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
     let domain, token, id;
     switch (shop.configuration.commerce.type) {
         case 'shopify':
@@ -44,7 +63,6 @@ export default function ProvidersRegistry({
         default:
             throw new UnknownCommerceProviderError();
     }
-    const toolbar = null; // TODO: <PrismicPreview repositoryName={Prismic.repositoryName} />.
 
     return (
         <StyledComponentsProvider>
@@ -60,8 +78,11 @@ export default function ProvidersRegistry({
                     <CartProvider cartFragment={CartFragment}>
                         <ApiProvider apiConfig={apiConfig}>
                             <HeaderProvider store={store}>
-                                {children}
-                                {toolbar}
+                                <AnalyticsProvider shop={shop} locale={locale}>
+                                    {children}
+
+                                    {afterLoad}
+                                </AnalyticsProvider>
                             </HeaderProvider>
                         </ApiProvider>
                     </CartProvider>

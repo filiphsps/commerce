@@ -1,6 +1,5 @@
 'use client';
 
-import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import BaseLink from 'next/link';
@@ -22,9 +21,9 @@ export default function Link({ locale, ...props }: Props) {
     locale = locale || NextLocaleToLocale(path.split('/')[1]) || DefaultLocale();
     let href = props.href.toString();
 
-    if ((!href.includes(':') && href.startsWith('/')) || href.includes(BuildConfig.domain)) {
-        // Remove our own domain from the URL.
-        href = href.replaceAll(`https://${BuildConfig.domain}`, '');
+    if (!href.includes(':') && href.startsWith('/') /*|| href.includes(BuildConfig.domain)*/) {
+        // TODO: Remove our own domain from the URL.
+        // href = href.replaceAll(`https://${BuildConfig.domain}`, '');
 
         // Check if any lang (xx-YY) is already a part of the URL.
         if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) {

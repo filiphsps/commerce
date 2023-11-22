@@ -1,5 +1,6 @@
 'use client';
 
+import type { Shop } from '@/api/shop';
 import { CartSummary } from '@/components/CartSummary';
 import styles from '@/components/typography/label.module.scss';
 import { Checkout } from '@/utils/checkout';
@@ -8,10 +9,11 @@ import { useCart } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 
 export type CartSidebarProps = {
+    shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
 } & HTMLProps<HTMLDivElement>;
-export const CartSidebar = ({ i18n, locale, className, ...props }: CartSidebarProps) => {
+export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSidebarProps) => {
     const cart = useCart();
 
     return (
@@ -23,8 +25,9 @@ export const CartSidebar = ({ i18n, locale, className, ...props }: CartSidebarPr
 
                     try {
                         await Checkout({
-                            cart,
-                            locale
+                            shop,
+                            locale,
+                            cart
                         });
                     } catch (error: any) {
                         // FIXME: Also user-feedback here.

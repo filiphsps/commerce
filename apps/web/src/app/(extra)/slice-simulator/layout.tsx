@@ -25,11 +25,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <html lang={locale.locale}>
             <head />
             <body>
-                <Suspense>
-                    <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()} store={store}>
-                        {children}
-                    </ProvidersRegistry>
-                </Suspense>
+                <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()} store={store}>
+                    <Suspense>{children}</Suspense>
+                </ProvidersRegistry>
             </body>
         </html>
     );
