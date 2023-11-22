@@ -121,6 +121,9 @@ interface useAnalyticsProps {
     pagePropsAnalyticsData: any;
 }
 export function useAnalytics({ locale, shop, pagePropsAnalyticsData }: useAnalyticsProps) {
+    if (typeof window === 'undefined') {
+        return null;
+    }
     if (process.env.NODE_ENV !== 'production') {
         return null;
     }

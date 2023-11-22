@@ -53,13 +53,13 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
 };
 
 export const router = async (req: NextRequest): Promise<NextResponse | undefined> => {
-    const type: RequestType = await getRequestType(req);
-
     // Don't do anything if we're already on the admin or storefront,
     // as that would cause an infinite loop.
-    if (/\/(admin|storefront)\//.test(req.nextUrl.pathname)) {
+    if (/\/(admin|storefront|unknown)\//.test(req.nextUrl.pathname)) {
         return NextResponse.next();
     }
+
+    const type: RequestType = await getRequestType(req);
 
     // HACK: Mark it as RequestType | undefined to stop tsc from detecting
     //       the unreachable code path afterwards.

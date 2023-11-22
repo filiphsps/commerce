@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
-import { env } from 'process';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -49,15 +48,15 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     type: 'shopify' as const,
                     id: process.env.SHOPIFY_SHOP_ID || '76188483889',
                     domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com',
-                    storefrontId: env.SHOPIFY_STOREFRONT_ID || '2130225',
+                    storefrontId: process.env.SHOPIFY_STOREFRONT_ID || '2130225',
                     authentication: {
                         token: null,
-                        publicToken: env.SHOPIFY_TOKEN!
+                        publicToken: process.env.SHOPIFY_TOKEN!
                     }
                 },
 
                 thirdParty: {
-                    googleTagManager: env.GTM
+                    googleTagManager: process.env.GTM
                 }
             }
         },
@@ -116,7 +115,7 @@ export const CommerceProviderAuthenticationApi = async ({
                 case 'sweet-side-of-sweden': {
                     return {
                         ...shop.configuration.commerce.authentication,
-                        token: env.SHOPIFY_PRIVATE_TOKEN || null
+                        token: process.env.SHOPIFY_PRIVATE_TOKEN || null
                     };
                 }
                 default: {

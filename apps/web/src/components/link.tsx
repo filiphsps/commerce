@@ -24,14 +24,19 @@ export default function Link({ shop, locale, href, prefetch, ...props }: Props) 
     locale = locale || NextLocaleToLocale(path.split('/')[1]) || DefaultLocale();
 
     // FIXME: There has to be a better and simpler way to do this.
-    const host = typeof window !== 'undefined' ? shop?.domains.primary || window.location.host : undefined;
-    let url = !host
-        ? new URL(href, !href.includes(':') ? `https://${host}` : undefined)
-        : {
-              host: host, // TODO
-              pathname: host && href.includes(host) ? href.split('?')[0].split(host)[1] : href.split('?')[0],
-              searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
-          };
+    const host = !href.startsWith('/')
+        ? shop?.domains.primary || typeof window !== 'undefined'
+            ? window.location?.host
+            : undefined
+        : undefined;
+    let url =
+        !href.startsWith('/') && host
+            ? new URL(href, host.includes('://') ? host : `https://${host}`)
+            : {
+                  host: host, // TODO
+                  pathname: host && href.includes(host) ? href.split('?')[0].split(host)[1] : href.split('?')[0],
+                  searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
+              };
 
     if (href.startsWith('/') || url.host === host) {
         // Check if any lang (xx-YY) is already a part of the URL.

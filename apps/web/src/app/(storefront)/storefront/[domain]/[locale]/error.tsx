@@ -13,7 +13,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     return (
         <Page>
             <PageContent primary>
-                <Heading title={error?.name} subtitle={<code>{error.message}</code>} />
+                <Heading title={error?.name} subtitle={<code>{error?.message}</code>} />
 
                 <Content>
                     <p>If this keeps happening please reach out to our support.</p>

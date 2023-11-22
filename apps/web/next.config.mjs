@@ -6,8 +6,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 //import { createRequire } from 'node:module';
 //const require = createRequire(import.meta.url);
 
-console.log(__dirname, path.join(__dirname, 'src/scss'));
-
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,

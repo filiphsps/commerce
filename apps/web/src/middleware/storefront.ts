@@ -25,12 +25,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Check if we're dealing with a file or route.
-    if (newUrl.pathname.match(FILE_TEST)) {
+    if (newUrl.pathname.match(FILE_TEST) && !newUrl.pathname.includes('/storefront/')) {
         let target = `${newUrl.pathname}${newUrl.search}`;
         // TODO: Handle Handle tenant-specific assets.
 
-        // Favicon.
-        if (newUrl.pathname.endsWith('favicon.png')) {
+        // Favicon and sitemaps.
+        if (newUrl.pathname.endsWith('.png') || newUrl.pathname.endsWith('.xml')) {
             target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
             return NextResponse.rewrite(new URL(target, req.url), {
                 status: 200,
@@ -38,12 +38,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
                     'Cache-Control': 's-maxage=28800, stale-while-revalidate'
                 }
             });
-        }
-
-        // Sitemap.
-        if (newUrl.pathname.endsWith('dynamic-sitemap.xml')) {
-            target = `/storefront/${shop.domains.primary}/dynamic-sitemap.xml${newUrl.search}`;
-            return NextResponse.rewrite(new URL(target, req.url), { status: 200 });
         }
 
         // FIXME: Don't hardcode `sweetsideofsweden.com`

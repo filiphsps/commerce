@@ -292,7 +292,7 @@ interface CartItemProps {
     locale: Locale;
     i18n: LocaleDictionary;
 }
-const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
+const CartItem: FunctionComponent<CartItemProps> = ({ locale, i18n }) => {
     const { t } = useTranslation('common', i18n);
 
     const { linesRemove, linesUpdate, status } = useCart();
@@ -333,7 +333,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ i18n }) => {
         <Content className={(discount > 0 && 'Sale') || ''}>
             <ProductImage>
                 <ImageWrapper>
-                    <Link href={`/products/${product?.handle}/`}>
+                    <Link href={`/products/${product?.handle}/`} locale={locale}>
                         <TempImage
                             src={variant.image!.url || ''}
                             layout="responsive"

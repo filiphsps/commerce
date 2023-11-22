@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
     title: '404: Page Not Found',
     icons: {
-        icon: ['/favicon.png', '/favicon.ico'],
+        icon: ['/favicon.png'],
         shortcut: ['/favicon.png'],
         apple: ['/favicon.png']
     },

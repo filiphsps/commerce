@@ -17,7 +17,9 @@ type useCartUtilsResult = {
     error: CommerceError | undefined;
 };
 export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
-    if (typeof window === 'undefined') return { error: undefined };
+    if (typeof window === 'undefined') {
+        return { error: undefined };
+    }
 
     const [error, setError] = useState<CommerceError | undefined>();
     const query = useSearchParams() as any;
