@@ -16,6 +16,7 @@ import { usePrevious } from '@/hooks/usePrevious';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { ShopifySalesChannel } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -33,15 +34,13 @@ const sendEcommerceEvent = ({
     event: 'view_item' | 'add_to_cart';
     payload: AnalyticsEcommercePayload;
 }) => {
-    if (!(window as any)?.dataLayer) return;
+    if (window.dataLayer) return;
 
-    (window as any)?.dataLayer?.push(
-        { ecommerce: null },
-        {
-            event: event,
-            ecommerce: payload
-        }
-    );
+    sendGTMEvent({ ecommerce: null });
+    sendGTMEvent({
+        event: event,
+        ecommerce: payload
+    });
 };
 
 export const sendPageViewEvent = ({

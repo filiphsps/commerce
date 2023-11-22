@@ -26,6 +26,9 @@ export type Shop = {
     };
     configuration: {
         commerce: CommerceProvider;
+        thirdParty?: {
+            googleTagManager?: string;
+        };
     };
 };
 
@@ -45,10 +48,12 @@ export const ShopsApi = async (): Promise<Shop[]> => {
     return [
         {
             id: 'sweet-side-of-sweden',
+
             domains: {
                 primary: 'www.sweetsideofsweden.com',
                 alternate: ['sweetsideofsweden.com', 'staging.sweetsideofsweden.com']
             },
+
             configuration: {
                 commerce: {
                     type: 'shopify' as const,
@@ -59,15 +64,22 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         token: env.SHOPIFY_PRIVATE_TOKEN || null,
                         publicToken: env.SHOPIFY_TOKEN!
                     }
+                },
+
+                thirdParty: {
+                    googleTagManager: env.GTM
                 }
             }
         },
+
         {
             id: 'nordcom-commerce-demo',
+
             domains: {
                 primary: 'demo.nordcom.io',
                 alternate: ['staging.demo.nordcom.io']
             },
+
             configuration: {
                 commerce: {
                     type: 'dummy' as const

@@ -4,6 +4,7 @@ import type { Shop } from '@/api/shop';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { Locale } from '@/utils/locale';
+import { GoogleTagManager, sendGTMEvent } from '@next/third-parties/google';
 import { useReportWebVitals } from 'next/web-vitals';
 import { type ReactNode } from 'react';
 
@@ -24,7 +25,9 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
     });
 
     useReportWebVitals(({ id, name, value }) => {
-        (window as any)?.dataLayer?.push({
+        if (!window.dataLayer) return;
+
+        sendGTMEvent({
             event: 'web-vital',
             event_category: 'Web Vitals',
             event_action: name,
@@ -40,5 +43,12 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
         });
     });
 
-    return <>{children}</>;
+    return (
+        <>
+            {children}
+            {shop.configuration.thirdParty?.googleTagManager ? (
+                <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager} />
+            ) : null}
+        </>
+    );
 };
