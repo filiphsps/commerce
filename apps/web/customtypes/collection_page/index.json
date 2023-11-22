@@ -1,6 +1,6 @@
 {
     "id": "collection_page",
-    "label": "Collection Page",
+    "label": "Collection",
     "format": "page",
     "repeatable": true,
     "status": true,

@@ -1,6 +1,6 @@
 {
-    "id": "product_page",
-    "label": "Product",
+    "id": "article_page",
+    "label": "Article",
     "format": "page",
     "repeatable": true,
     "status": true,
@@ -17,7 +17,10 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
-                        "product_description": {
+                        "alert": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
                             "type": "SharedSlice"
                         }
                     }
@@ -30,7 +33,7 @@
                     "label": "Meta Description",
                     "placeholder": "A brief summary of the page"
                 },
-                "type": "StructuredText"
+                "type": "Text"
             },
             "meta_image": {
                 "config": {
@@ -49,37 +52,6 @@
                     "placeholder": "A title of the page used for social media and search engines"
                 },
                 "type": "Text"
-            }
-        },
-        "Secondary": {
-            "slices2": {
-                "type": "Slices",
-                "fieldset": "Slice Zone",
-                "config": {
-                    "choices": {
-                        "collection": {
-                            "type": "SharedSlice"
-                        },
-                        "carousel": {
-                            "type": "SharedSlice"
-                        },
-                        "text_block": {
-                            "type": "SharedSlice"
-                        },
-                        "image_grid": {
-                            "type": "SharedSlice"
-                        },
-                        "icon_grid": {
-                            "type": "SharedSlice"
-                        },
-                        "vendors": {
-                            "type": "SharedSlice"
-                        },
-                        "collapsible_text": {
-                            "type": "SharedSlice"
-                        }
-                    }
-                }
             }
         }
     }

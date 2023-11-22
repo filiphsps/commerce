@@ -1,16 +1,30 @@
 {
     "id": "custom_page",
-    "label": "Custom Page",
+    "label": "Page",
     "format": "page",
     "repeatable": true,
     "status": true,
     "json": {
         "Main": {
-            "uid": { "config": { "label": "UID" }, "type": "UID" },
-            "title": { "type": "Text", "config": { "label": "Title", "placeholder": "" } },
+            "uid": {
+                "config": {
+                    "label": "UID"
+                },
+                "type": "UID"
+            },
+            "title": {
+                "type": "Text",
+                "config": {
+                    "label": "Title",
+                    "placeholder": ""
+                }
+            },
             "description": {
                 "type": "Text",
-                "config": { "label": "Description", "placeholder": "" }
+                "config": {
+                    "label": "Description",
+                    "placeholder": ""
+                }
             },
             "enable_header": {
                 "type": "Boolean",
@@ -26,17 +40,39 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
-                        "carousel": { "type": "SharedSlice" },
-                        "collection": { "type": "SharedSlice" },
-                        "image_grid": { "type": "SharedSlice" },
-                        "text_block": { "type": "SharedSlice" },
-                        "collapsible_text": { "type": "SharedSlice" },
-                        "vendors": { "type": "SharedSlice" },
-                        "icon_grid": { "type": "SharedSlice" },
-                        "alert": { "type": "SharedSlice" },
-                        "banner": { "type": "SharedSlice" },
-                        "spacing": { "type": "SharedSlice" },
-                        "title": { "type": "SharedSlice" }
+                        "carousel": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "alert": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "spacing": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        }
                     }
                 }
             }
@@ -51,7 +87,10 @@
             },
             "meta_image": {
                 "config": {
-                    "constraint": { "height": 1260, "width": 2400 },
+                    "constraint": {
+                        "height": 1260,
+                        "width": 2400
+                    },
                     "label": "Meta Image",
                     "thumbnails": []
                 },
@@ -64,7 +103,13 @@
                 },
                 "type": "Text"
             },
-            "keywords": { "type": "Text", "config": { "label": "Keywords", "placeholder": "" } }
+            "keywords": {
+                "type": "Text",
+                "config": {
+                    "label": "Keywords",
+                    "placeholder": ""
+                }
+            }
         }
     }
 }

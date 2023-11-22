@@ -1,0 +1,16 @@
+{
+    "id": "product_description",
+    "type": "SharedSlice",
+    "name": "Description",
+    "description": "A component that automatically renders the description of the current product",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": ""
+        }
+    ]
+}
