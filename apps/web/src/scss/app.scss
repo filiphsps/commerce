@@ -1,19 +1,12 @@
 @import 'destyle.css';
-@import 'variables.scss';
+
+@import './globals.scss';
+//@use '_globals.scss' as *;
+
 // Components
-// @import '../components/Currency/Currency.scss';
-@import 'carousel.scss';
+@import './carousel.scss';
 
 :root {
-    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
-    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright));
-
-    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark));
-    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 55%, var(--color-bright));
-
-    --accent-primary-text: #ececec;
-    --accent-secondary-text: #101418;
-
     --color-bright: #fefefe;
     --color-dark: #101418;
     --color-dark-secondary: #555555;
@@ -39,6 +32,17 @@
     --color-block-info: #6dc0d5;
     --color-block-info-dark: #1c5d99;
     --color-block-info-text: var(--color-dark);
+
+    --accent-primary: #073b4c; // Gets replaced by the brand primary color in the layout.
+    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
+    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright));
+
+    --accent-secondary: #118ab2; // Gets replaced by the brand secondary color in the layout.
+    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark));
+    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright));
+
+    --accent-primary-text: var(--color-bright);
+    --accent-secondary-text: var(--color-dark);
 }
 
 html,
@@ -75,9 +79,10 @@ body {
     -moz-osx-font-smoothing: auto;
     -webkit-font-smoothing: subpixel-antialiased;
     font-smooth: always;
+    font-optical-sizing: auto;
+    font-size-adjust: ex-height ch-width from-font;
     text-rendering: optimizeLegibility;
     text-size-adjust: auto;
-    font-size-adjust: ex-height ch-width from-font;
 
     b,
     strong {
@@ -85,7 +90,7 @@ body {
     }
 
     &:root {
-        --component-product-card-width: 20rem;
+        --component-product-card-width: 22rem;
 
         --page-width: 1465px;
 
@@ -116,18 +121,19 @@ body {
             --block-spacer: 0.75rem;
             --block-spacer-small: 0.5rem;
             --block-spacer-large: 1rem;
-
-            --component-product-card-width: min(21.75rem, calc(calc(50vw) - var(--block-padding-large) * 2.25));
         }
     }
 }
 
 a:not(:disabled) {
     cursor: pointer;
-    transition: 150ms ease-in-out color;
+    transition:
+        150ms ease-in-out color,
+        150ms ease-in-out text-decoration;
 
     &:is(:hover, :active, :focus) {
-        color: var(--accent-primary);
+        color: var(--accent-primary-light);
+        text-decoration-color: var(--accent-primary-light);
     }
 }
 

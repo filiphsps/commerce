@@ -89,6 +89,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         <Page>
             <PageContent primary>
                 <CartContent
+                    shop={shop}
                     locale={locale}
                     header={
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--block-spacer-small)' }}>
@@ -98,7 +99,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                     slices={
                         page ? (
                             <PrismicPage
-                            shop={shop}
+                                shop={shop}
                                 store={store}
                                 locale={locale}
                                 page={page}

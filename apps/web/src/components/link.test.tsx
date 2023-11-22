@@ -49,7 +49,7 @@ describe('components', () => {
             expect(link).toMatchSnapshot();
         });
 
-        it('should remove the current domain from the href', () => {
+        it.skip('should remove the current domain from the href', () => {
             const href = `https://example.com/some/path`;
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');

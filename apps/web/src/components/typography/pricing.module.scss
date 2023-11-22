@@ -1,8 +1,8 @@
 .container {
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    align-items: end;
+    justify-content: flex-start;
+    align-items: flex-end;
     gap: var(--block-spacer-small);
 
     @media (min-width: 920px) {
@@ -17,11 +17,10 @@
     .current {
         position: relative;
         display: inline-block;
-        font-size: 3rem;
+        font-size: 3em;
         line-height: 1;
         font-weight: 700;
 
-        &.sale,
         .sale {
             color: var(--color-sale);
         }
@@ -30,9 +29,13 @@
     .previous {
         position: relative;
         display: inline-block;
-        font-size: 2rem;
-        font-weight: 400;
-        color: var(--color-gray);
+        font-size: 2.15em;
+        font-weight: 500;
+
+        &,
+        .price {
+            color: var(--color-block-black);
+        }
 
         // Optically balance.
         padding-bottom: 0.15rem;
@@ -46,13 +49,13 @@
             content: '';
             position: absolute;
             display: block;
-            height: 0.25rem;
+            height: 0.15rem;
             width: 95%;
             inset: 48% 0 0 2.5%;
             white-space: nowrap;
             border-radius: 1rem;
             transform: rotate(-15deg);
-            background: var(--color-gray);
+            background: var(--color-block-black);
         }
     }
 }

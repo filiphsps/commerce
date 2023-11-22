@@ -3,11 +3,11 @@
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
 import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import Link from '@/components/link';
+import { PrismicText } from '@/components/typography/prismic-text';
 import type { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
-import { asHTML } from '@prismicio/client';
 import Image from 'next/image';
 import styled from 'styled-components';
 
@@ -200,11 +200,9 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                         )}
                     </Logo>
 
-                    <Address
-                        dangerouslySetInnerHTML={{
-                            __html: asHTML(footer.address) || ''
-                        }}
-                    />
+                    <Address>
+                        <PrismicText data={footer.address} />
+                    </Address>
                 </FooterBlock>
 
                 {footer.blocks?.map?.((block) => (

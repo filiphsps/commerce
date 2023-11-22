@@ -1,3 +1,13 @@
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+//import { createRequire } from 'node:module';
+//const require = createRequire(import.meta.url);
+
+console.log(__dirname, path.join(__dirname, 'src/scss'));
+
 /** @type {import('next').NextConfig} */
 const config = {
     poweredByHeader: false,
@@ -8,7 +18,10 @@ const config = {
     compress: true,
     transpilePackages: [],
     experimental: {
+        appDocumentPreloading: true,
         esmExternals: true,
+        //fallbackNodePolyfills: false, // We rely on `process.env`.
+        optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
             '@prismicio/client',
@@ -17,10 +30,16 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
+        optimizeServerReact: true,
         scrollRestoration: true,
-        //webVitalsAttribution: ['CLS', 'LCP', 'INP'],
-        //webpackBuildWorker: true,
-        optimizeCss: true
+        turbo: {
+            resolveAlias: {
+                '@/styles/': './src/scss/'
+            }
+        },
+        webpackBuildWorker: true,
+        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        windowHistorySupport: true
     },
     images: {
         remotePatterns: [
@@ -42,15 +61,10 @@ const config = {
             },
             {
                 protocol: 'https',
-                hostname: 'gravatar.com'
-            },
-            {
-                protocol: 'https',
                 hostname: '**.gravatar.com'
             }
         ],
-        formats: ['image/webp'] // CloudFlare doesn't support avif yet.
-        // formats: ['image/webp', 'image/avif']
+        formats: ['image/webp', 'image/avif']
     },
     compiler: {
         styledComponents: true,
@@ -63,6 +77,9 @@ const config = {
     },
     eslint: {
         ignoreDuringBuilds: true
+    },
+    sassOptions: {
+        includePaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
     },
 
     env: {

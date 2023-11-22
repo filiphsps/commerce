@@ -38,7 +38,7 @@ export const shopifyApiConfig = ({
 
     const api = createStorefrontClient({
         publicStorefrontToken: publicToken,
-        privateStorefrontToken: token,
+        privateStorefrontToken: token || undefined,
         storeDomain: `https://${domain}`,
         storefrontApiVersion: BuildConfig.shopify.api,
         contentType: 'json'

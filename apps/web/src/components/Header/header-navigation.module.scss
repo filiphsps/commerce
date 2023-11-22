@@ -1,4 +1,4 @@
-@import '@/styles/variables.scss';
+@import '_globals.scss';
 
 .container {
     display: none;
@@ -11,7 +11,7 @@
         margin-left: var(--block-spacer);
         height: 100%;
         font-weight: 600;
-        font-size: 1.5rem;
+        font-size: 1.65rem;
         text-transform: uppercase;
         color: var(--color-dark);
 
@@ -22,6 +22,7 @@
 
     a {
         cursor: pointer;
+        height: 100%;
 
         &:is(:hover, :active, :focus, :focus-within, .active),
         &:hover {
@@ -80,7 +81,7 @@
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
-                text-transform: uppercase;
+                text-align: center;
                 text-transform: unset;
                 white-space: nowrap;
             }
@@ -146,9 +147,8 @@
 
 .active {
     color: var(--accent-primary);
-    text-decoration: underline;
-    text-decoration-style: solid;
-    text-decoration-thickness: 0.6em;
+    text-decoration: underline 0.2rem;
     text-underline-offset: var(--block-border-width);
+    text-underline-position: auto;
     font-weight: 700;
 }

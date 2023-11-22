@@ -1,4 +1,4 @@
-import { BuildConfig } from '@/utils/build-config';
+import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import type { CartWithActions } from '@shopify/hydrogen-react';
@@ -32,11 +32,15 @@ export const getCrossDomainLinkerParameter = () => {
     return null; // TODO: Maybe throw an error here.
 };
 
-export const Checkout = async ({ cart, locale }: { cart: CartWithActions; locale: Locale }) => {
+export const Checkout = async ({ shop, locale, cart }: { shop: Shop; locale: Locale; cart: CartWithActions }) => {
     if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
-    const url = cart.checkoutUrl.replace(BuildConfig.shopify.domain, BuildConfig.shopify.checkout_domain);
+    let url = cart.checkoutUrl;
+    if (shop.configuration.commerce.type === 'shopify') {
+        // Replace xxx.myshopify.com with `shop.configuration.commerce.domain` in an url
+        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, `${shop.configuration.commerce.domain}`);
+    }
 
     try {
         // Google Tracking

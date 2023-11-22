@@ -2,11 +2,12 @@ import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
+import { PrismicText } from '@/components/typography/prismic-text';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceDefault } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
-import { asHTML, asText } from '@prismicio/client';
+import { asText } from '@prismicio/client';
 import type { ReactNode } from 'react';
 import styles from './collection.module.scss';
 
@@ -35,22 +36,13 @@ export const CollectionContainer = ({ slice, locale, children }: CollectionConta
                                 locale={locale}
                                 prefetch={false}
                             >
-                                <Title
-                                    className={styles.title}
-                                    as={'div'}
-                                    dangerouslySetInnerHTML={{
-                                        // TODO: Use <PrismicText/>.
-                                        __html: asHTML(slice.primary.title) || ''
-                                    }}
-                                />
+                                <Title className={styles.title} as={'div'}>
+                                    <PrismicText data={slice.primary.title} />
+                                </Title>
                             </Link>
-                            <Content
-                                className={styles.body}
-                                dangerouslySetInnerHTML={{
-                                    // TODO: Use <PrismicText/>.
-                                    __html: asHTML(slice.primary.body) || ''
-                                }}
-                            />
+                            <Content className={styles.body}>
+                                <PrismicText data={slice.primary.body} />
+                            </Content>
                         </div>
                     )}
 

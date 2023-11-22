@@ -58,31 +58,25 @@ export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode;
  * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {Locale} `Locale` object.
  */
-export const NextLocaleToLocale = (locale?: string): Locale | null => {
-    if (
-        !locale ||
-        locale === 'x-default' ||
-        locale.length < 2 ||
-        locale.length > 5 ||
-        (locale.length > 2 && !locale.includes('-'))
-    ) {
+export const NextLocaleToLocale = (code: string): Locale | null => {
+    if (!code || code.length < 2 || code.length > 5 || (code.length > 2 && !code.includes('-'))) {
         // FIXME: Handle invalid locales in a better way.
         return null;
     }
 
-    if (locale.length === 2) {
+    if (code.length === 2) {
         // FIXME: Get default country for a given language.
         throw new Error('Not implemented');
     }
 
-    const country = NextLocaleToCountry(locale);
-    const language = NextLocaleToLanguage(locale);
+    const country = NextLocaleToCountry(code);
+    const language = NextLocaleToLanguage(code);
     return {
         locale: `${language.toLowerCase()}-${country}`,
         language,
         country,
         // TODO: Add currency.
-        currency: undefined
+        currency: undefined //NextLocaleToCurrency({ country, store })
     };
 };
 

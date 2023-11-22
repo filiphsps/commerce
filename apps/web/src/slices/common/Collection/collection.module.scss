@@ -1,4 +1,4 @@
-@import '@/styles/variables.scss';
+@import '_globals.scss';
 
 .container {
     width: 100%;
@@ -36,14 +36,23 @@
             }
 
             .title {
-                text-decoration: underline;
-                text-decoration-style: dotted;
-                text-decoration-thickness: 0.2em;
-                text-underline-offset: var(--block-border-width);
+                font-size: 2.5rem;
+                font-weight: 500;
+                //text-decoration: underline dotted 0.2rem;
+                //text-underline-offset: var(--block-border-width);
+
+                @media (min-width: $breakpoint-mobile) {
+                    font-size: 2.25rem;
+                }
             }
 
             .body {
                 max-width: 64rem;
+
+                &,
+                p {
+                    font-size: 1.5rem;
+                }
             }
         }
     }

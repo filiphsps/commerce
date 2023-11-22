@@ -1,6 +1,6 @@
 import type { Shop } from '@/api/shop';
-import { createClient } from '@/prismic';
 import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
 
 export type NavigationItem = {

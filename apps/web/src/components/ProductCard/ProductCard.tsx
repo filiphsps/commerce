@@ -1,7 +1,7 @@
 'use client';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { Money, useProduct } from '@shopify/hydrogen-react';
+import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -12,9 +12,9 @@ import Link from '@/components/link';
 import { AddToCart } from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import type { StoreModel } from '@/models/StoreModel';
-import { TitleToHandle } from '@/utils/title-to-handle';
 import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
+import Pricing from '../typography/pricing';
 
 const ProductImageWrapper = styled.div`
     position: relative;
@@ -34,104 +34,35 @@ const ProductImageWrapper = styled.div`
     }
 `;
 
-const Details = styled.div`
-    grid-area: product-details;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    width: 100%;
-    min-height: 10rem;
-`;
-const Brand = styled.div`
-    font-size: 1.75rem;
-    line-height: normal;
-    font-weight: 500;
-
-    @media (min-width: 950px) {
-        font-size: 1.5rem;
-    }
-
-    &:is(:hover, :active, :focus) {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
-        text-underline-offset: var(--block-border-width);
-    }
-`;
-const Title = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    font-size: 2.25rem;
-    line-height: normal;
-    font-weight: 700;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-
-    @media (min-width: 950px) {
-        font-size: 2rem;
-    }
-
-    &:is(:hover, :active, :focus) {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
-        text-underline-offset: var(--block-border-width);
-    }
-`;
-
-const CardFooter = styled.div`
-    display: grid;
-    grid-template-columns: 6.5rem auto;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: var(--block-spacer);
-    width: 100%;
-    max-height: 100%;
-    height: 100%;
-    margin-top: var(--block-spacer-tiny);
-`;
-
 const Variants = styled.div`
     overflow: hidden;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
+    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
-
-    @media (min-width: 920px) {
-        gap: var(--block-spacer-tiny);
-    }
+    font-size: 1.75rem;
 `;
 
 const Variant = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-end;
-    padding: var(--block-spacer-tiny) var(--block-spacer-tiny) 0 var(--block-spacer-tiny);
-    font-weight: 600;
-    font-size: 1.75rem;
-    line-height: normal;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1em;
+    line-height: 1;
     text-align: right;
     cursor: pointer;
-    opacity: 0.85;
+    opacity: 0.75;
     transition: 150ms ease-in-out all;
-
-    @media (min-width: 920px) {
-        padding: 0;
-    }
 
     &.active {
         opacity: 1;
         color: var(--accent-primary);
-
-        @media (min-width: 920px) {
-            text-decoration: underline;
-            text-decoration-thickness: 0.2rem;
-        }
+        text-decoration: underline;
+        text-decoration-thickness: 0.2rem;
     }
 
     &:is(.active, :hover, :active, :focus) {
@@ -142,11 +73,12 @@ const Variant = styled.div`
 const Actions = styled.div`
     grid-area: product-actions;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr minmax(4rem, 1fr);
+    grid-auto-flow: dense;
+    gap: var(--block-spacer);
     justify-content: space-between;
     align-items: end;
-    gap: var(--block-spacer-small);
-    min-height: 3.75rem;
 `;
 
 const Quantity = styled.div`
@@ -155,40 +87,33 @@ const Quantity = styled.div`
     align-items: center;
     justify-content: center;
     justify-self: end;
-    height: 100%;
+    height: 3.25rem;
+    width: 100%;
     font-size: 1.25rem;
     line-height: 1.75rem;
     font-weight: 500;
     text-align: center;
     user-select: none;
-
-    background: var(--color-bright);
-    border-radius: var(--block-border-radius-small);
-    padding: 0;
+    background-color: var(--color-bright);
+    border-radius: var(--block-border-radius);
 `;
 const QuantityAction = styled.div`
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
+    width: 3rem;
     height: 100%;
-    padding-right: 0.05rem;
+    padding: 0 0.5rem 0.25rem 0;
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 150ms ease-in-out all;
     text-align: center;
     font-size: 2rem;
 
     &:first-child {
         justify-content: center;
         padding-right: 0;
-        padding-left: 0.05rem;
-    }
-
-    &.Inactive {
-        width: 0.5rem;
-        color: transparent;
-        pointer-events: none;
+        padding-left: 0.5rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -198,10 +123,16 @@ const QuantityAction = styled.div`
         }
     }
 
-    &:active {
+    &:is(:active) {
         color: var(--accent-primary-dark);
         background: var(--accent-primary-text);
         border-color: var(--accent-primary);
+    }
+
+    &.Inactive {
+        width: 0.5rem;
+        color: transparent;
+        pointer-events: none;
     }
 `;
 const QuantityValue = styled.input`
@@ -210,12 +141,16 @@ const QuantityValue = styled.input`
     width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
     height: 100%;
+    padding: 0 0 0.25rem 0;
     font-size: 1.85rem;
-    line-height: 1;
     text-align: center;
     outline: none;
     transition: 150ms all ease-in-out;
     font-variant: common-ligatures tabular-nums slashed-zero;
+
+    @media (min-width: 950px) {
+        padding-bottom: 0.15rem;
+    }
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button,
@@ -223,32 +158,6 @@ const QuantityValue = styled.input`
         -webkit-appearance: none;
         margin: 0;
     }
-`;
-
-const Prices = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-`;
-const Price = styled.div`
-    font-size: 1.95rem;
-    line-height: 1;
-    font-weight: 600;
-
-    &.Sale {
-        font-size: 2.1rem;
-        font-weight: 900;
-        color: var(--color-sale);
-    }
-`;
-const PreviousPrice = styled.div`
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-    font-weight: 500;
-    text-decoration: line-through;
-    opacity: 0.75;
 `;
 
 const DiscountBadge = styled.div`
@@ -391,6 +300,11 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
         product.images?.edges?.[0]?.node) as ShopifyImage | undefined;
     if (image) image.altText = image.altText || linkTitle;
 
+    if (!selectedVariant) {
+        console.warn('No variant selected for product card.');
+        return null;
+    }
+
     return (
         <Container
             className={`${styles.container} ${className || ''}`}
@@ -428,103 +342,86 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     {isVegan && <Badge className="Vegan">Vegan</Badge>}
                 </Badges>
             </div>
-            <Details className="Details">
-                {product.vendor && (
-                    <Brand>
-                        <Link title={product.vendor} href={`/collections/${TitleToHandle(product.vendor)}/`}>
-                            {product.vendor}
-                        </Link>
-                    </Brand>
-                )}
-                <Title title={linkTitle}>
-                    <Link href={href}>{product.title}</Link>
-                </Title>
+            <div className={styles.details}>
+                <div title={linkTitle} className={styles.header}>
+                    <Link href={href}>
+                        <div className={styles.brand}>{product.vendor}</div>
+                        <div className={styles.title}>{product.title}</div>
+                    </Link>
+                </div>
 
-                <CardFooter>
-                    <Prices>
-                        {selectedVariant?.compareAtPrice && (
-                            <Money
-                                data={{
-                                    currencyCode: selectedVariant.price?.currencyCode!,
-                                    ...selectedVariant.compareAtPrice
-                                }}
-                                as={PreviousPrice}
-                            />
-                        )}
-                        {(selectedVariant?.price?.amount && (
-                            <Money
-                                data={selectedVariant.price}
-                                as={Price}
-                                className={(selectedVariant?.compareAtPrice && 'Sale') || ''}
-                            />
-                        )) ||
-                            null}
-                    </Prices>
+                {/* FIXME: Deal with options here. */}
+                <Variants>
+                    {product?.variants?.edges &&
+                        product?.variants.edges.length > 1 &&
+                        product?.variants.edges.map((edge, index) => {
+                            if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
+                            const variant = edge.node! as ProductVariant;
+                            let title = variant.title;
 
-                    {/* FIXME: Deal with options here. */}
-                    <Variants>
-                        {product?.variants?.edges &&
-                            product?.variants.edges.length > 1 &&
-                            product?.variants.edges.map((edge, index) => {
-                                if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
-                                const variant = edge.node! as ProductVariant;
-                                let title = variant.title;
+                            if (
+                                variant.selectedOptions.length === 1 &&
+                                variant.selectedOptions[0]!.name === 'Size' &&
+                                variant.weight &&
+                                variant.weightUnit
+                            ) {
+                                title = ConvertToLocalMeasurementSystem({
+                                    locale: locale,
+                                    weight: variant.weight,
+                                    weightUnit: variant.weightUnit
+                                });
+                            }
 
-                                if (
-                                    variant.selectedOptions.length === 1 &&
-                                    variant.selectedOptions[0]!.name === 'Size' &&
-                                    variant.weight &&
-                                    variant.weightUnit
-                                ) {
-                                    title = ConvertToLocalMeasurementSystem({
-                                        locale: locale,
-                                        weight: variant.weight,
-                                        weightUnit: variant.weightUnit
-                                    });
-                                }
-
-                                return (
-                                    <Variant
-                                        key={variant.id}
-                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                                        onClick={() => setSelectedVariant(variant)}
-                                        className={selectedVariant.id === variant.id ? 'active' : ''}
-                                    >
-                                        {title}
-                                    </Variant>
-                                );
-                            })}
-                    </Variants>
-                </CardFooter>
-            </Details>
+                            return (
+                                <Variant
+                                    key={variant.id}
+                                    title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                                    onClick={() => setSelectedVariant(variant)}
+                                    className={selectedVariant.id === variant.id ? 'active' : ''}
+                                >
+                                    {title}
+                                </Variant>
+                            );
+                        })}
+                </Variants>
+            </div>
             <Actions>
-                <AddToCart className={styles.button} type="button" quantity={quantity} locale={locale} i18n={i18n} />
-                <Quantity>
-                    <QuantityAction
-                        className={quantity > 1 ? '' : 'Inactive'}
-                        onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
-                    >
-                        -
-                    </QuantityAction>
-                    <QuantityValue
-                        ref={quantityRef as any}
-                        type="number"
-                        min={1}
-                        max={999}
-                        step={1}
-                        pattern="[0-9]"
-                        value={quantityValue}
-                        placeholder="Quantity"
-                        name="quantity"
-                        onBlur={(_) => {
-                            if (!quantityValue) setQuantityValue('1');
-                        }}
-                        onChange={(e) => {
-                            setQuantityValue(QuantityInputFilter(e?.target?.value, quantityValue));
-                        }}
+                <div className={styles['quantity-action']}>
+                    <Pricing
+                        className={styles.pricing}
+                        price={selectedVariant.price as any}
+                        compareAtPrice={selectedVariant?.compareAtPrice as any}
                     />
-                    <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>+</QuantityAction>
-                </Quantity>
+
+                    <Quantity>
+                        <QuantityAction
+                            className={quantity > 1 ? '' : 'Inactive'}
+                            onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
+                        >
+                            -
+                        </QuantityAction>
+                        <QuantityValue
+                            ref={quantityRef as any}
+                            type="number"
+                            min={1}
+                            max={999}
+                            step={1}
+                            pattern="[0-9]"
+                            value={quantityValue}
+                            placeholder="Quantity"
+                            name="quantity"
+                            onBlur={(_) => {
+                                if (!quantityValue) setQuantityValue('1');
+                            }}
+                            onChange={(e) => {
+                                setQuantityValue(QuantityInputFilter(e?.target?.value, quantityValue));
+                            }}
+                        />
+                        <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>+</QuantityAction>
+                    </Quantity>
+                </div>
+
+                <AddToCart className={styles.button} type="button" quantity={quantity} locale={locale} i18n={i18n} />
             </Actions>
         </Container>
     );

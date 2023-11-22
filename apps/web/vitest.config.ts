@@ -11,10 +11,6 @@ export default defineConfig({
                 replacement: path.resolve(__dirname, './src/utils/dictionary.ts')
             },
             {
-                find: '@/prismic',
-                replacement: path.resolve(__dirname, './prismicio.ts')
-            },
-            {
                 find: '@/i18n',
                 replacement: path.resolve(__dirname, './src/locales')
             },
@@ -54,7 +50,8 @@ export default defineConfig({
                 '**/src/**/index.{ts,tsx}',
                 '**/src/locales/*.*',
                 '**/src/middleware.ts',
-                '**/src/models/*.ts'
+                '**/src/models/*.ts',
+                '**/src/utils/prismic.ts'
             ]
         }
     }
