@@ -12,4 +12,4 @@ exports[`components > Link > should remove double slashes from the href 1`] = `
 />
 `;
 
-exports[`components > Link > should throw an error if href is not a string 1`] = `"Link href must be a string. Received object instead."`;
+exports[`components > Link > should throw an error if href is not a string 1`] = `"Link href must be of type string. Received object instead."`;

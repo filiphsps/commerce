@@ -218,6 +218,7 @@ export default async function ProductPage({
                             asideClassName={styles.headingAside}
                             aside={
                                 <Pricing
+                                    className={styles.pricing}
                                     price={variant.price}
                                     compareAtPrice={variant.compareAtPrice as MoneyV2 | undefined}
                                 />

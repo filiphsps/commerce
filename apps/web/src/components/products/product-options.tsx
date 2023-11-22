@@ -114,8 +114,10 @@ export const ProductOptions = ({
                 {options?.map((option, index) =>
                     option?.values ? (
                         <Fragment key={option.name}>
-                            <Label className={styles.label}>{option.name}</Label>
-                            <OptionValues>
+                            <Label className={styles.label} data-options={option.values.length}>
+                                {option.name}
+                            </Label>
+                            <OptionValues data-options={option.values.length}>
                                 {option.values.map((value) => {
                                     if (!value) return null;
                                     let title = value;
