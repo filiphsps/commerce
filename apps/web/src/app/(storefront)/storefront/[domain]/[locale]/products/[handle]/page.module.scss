@@ -1,6 +1,36 @@
 @import '_globals.scss';
 
 .container {
+    padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
+    @media (min-width: $breakpoint-mobile) {
+        padding: 0;
+    }
+
+    .pricing {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-end;
+        gap: var(--block-spacer-large);
+        height: 100%;
+        font-size: 1.25rem;
+
+        padding-top: var(--block-spacer-huge);
+        @media (min-width: $breakpoint-mobile) {
+            padding-top: 0;
+
+            flex-direction: column-reverse;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 0;
+            font-size: 1rem;
+        }
+
+        & > div {
+            display: contents;
+        }
+    }
+
     .gallery {
         position: sticky;
         top: 10rem;
@@ -9,8 +39,12 @@
     .content {
         display: flex;
         flex-direction: column;
-        gap: var(--block-spacer-huge);
+        gap: var(--block-spacer-large);
         height: 100%;
+
+        @media (min-width: $breakpoint-mobile) {
+            gap: var(--block-spacer-huge);
+        }
     }
 
     .contentDivider {
@@ -21,9 +55,20 @@
     }
 
     .description {
+        font-size: 1.95rem;
+
+        padding-top: var(--block-spacer-huge);
+        @media (min-width: $breakpoint-mobile) {
+            padding: 0;
+        }
+
         h2 {
             margin-bottom: var(--block-spacer-large);
-            font-size: 1.85em;
+            font-size: 2em;
+
+            @media (min-width: $breakpoint-mobile) {
+                font-size: 2em;
+            }
         }
     }
 

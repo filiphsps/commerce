@@ -49,7 +49,9 @@ describe('components', () => {
             expect(link).toMatchSnapshot();
         });
 
-        it.fails('should remove the current domain from the href', () => {
+        it('should remove the current domain from the href', () => {
+            vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'example.com' } as any);
+            window.location.host = 'example.com';
             const href = `https://example.com/some/path`;
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');

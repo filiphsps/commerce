@@ -6,6 +6,12 @@
     gap: var(--block-spacer);
     height: 100%;
 
+    @media (max-width: $breakpoint-mobile) {
+        [data-options='1'] {
+            display: none;
+        }
+    }
+
     @media (min-width: $breakpoint-mobile) {
         display: grid;
         grid-template-areas: 'quantity-label options' 'quantity options' '. options';
