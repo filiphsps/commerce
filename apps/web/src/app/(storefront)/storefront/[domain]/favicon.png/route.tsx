@@ -39,36 +39,52 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         height = 256;
     }
 
-    let src!: string;
+    try {
+        let src!: string;
 
-    const shop = await ShopApi({ domain });
-    const locale = DefaultLocale();
-    const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
-    if (store.favicon?.src) {
-        src = store.favicon.src;
-    } else {
-        src = req.url.replace('/favicon.png', '/icon.png');
-    }
-
-    // See https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image
-    const image = new ImageResponse(
-        (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img width={width!} height={height!} src={src} />
-        ),
-        {
-            width: width!,
-            height: height!
+        const shop = await ShopApi({ domain });
+        const locale = DefaultLocale();
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
+        if (store.favicon?.src) {
+            src = store.favicon.src;
+        } else {
+            src = req.url.replace('/favicon.png', '/icon.png');
         }
-    );
 
-    return new NextResponse(image.body, {
-        headers: {
-            ...image.headers,
-            'Content-Type': 'image/png' // TODO: Also add `image/x-icon`.
-        },
-        status: 200
-    });
+        // See https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image
+        const image = new ImageResponse(
+            (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img width={width!} height={height!} src={src} />
+            ),
+            {
+                width: width!,
+                height: height!
+            }
+        );
+
+        return new NextResponse(image.body, {
+            headers: {
+                ...image.headers,
+                'Content-Type': 'image/png' // TODO: Also add `image/x-icon`.
+            },
+            status: 200
+        });
+    } catch (error) {
+        console.error(error);
+
+        return NextResponse.json(
+            {
+                status: 500,
+                tenant: domain,
+                data: null,
+                errors: [error]
+            },
+            {
+                status: 500
+            }
+        );
+    }
 }
 /* c8 ignore stop */

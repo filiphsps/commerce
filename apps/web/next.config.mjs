@@ -19,6 +19,8 @@ const config = {
         appDocumentPreloading: true,
         esmExternals: true,
         //fallbackNodePolyfills: false, // We rely on `process.env`.
+        gzipSize: true,
+        optimisticClientCache: true,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',

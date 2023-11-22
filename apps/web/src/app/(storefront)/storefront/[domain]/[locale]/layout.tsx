@@ -19,6 +19,11 @@ import { Lexend_Deca } from 'next/font/google';
 import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+/* c8 ignore stop */
+
 const font = Lexend_Deca({
     weight: 'variable',
     subsets: ['latin'],
@@ -194,12 +199,12 @@ export default async function RootLayout({
             </html>
         );
     } catch (error: any) {
-        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }

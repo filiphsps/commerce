@@ -1,10 +1,10 @@
-import { CollectionApi } from '@/api/shopify/collection';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -18,6 +18,37 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
+
+/* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+    const locale = DefaultLocale()!;
+    const shops = await ShopsApi();
+
+    return (
+        await Promise.all(
+            shops.map(async (shop) => {
+                const api = await StorefrontApiClient({ shop, locale });
+                const locales = await LocalesApi({ api });
+
+                return await Promise.all(
+                    locales.map(async (locale) => {
+                        const api = await StorefrontApiClient({ shop, locale });
+                        const collections = await CollectionsApi({ client: api });
+
+                        return collections.map(({ handle }) => ({
+                            domain: shop.domains.primary,
+                            locale: locale.locale,
+                            handle
+                        }));
+                    })
+                );
+            })
+        )
+    ).flat(2);
+}
+/* c8 ignore stop */
 
 /* c8 ignore start */
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
@@ -143,14 +174,12 @@ export default async function CollectionPage({
             </Page>
         );
     } catch (error: any) {
-        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
-            return notFoundMetadata;
+            return notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
-
-export const revalidate = 120;

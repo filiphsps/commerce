@@ -62,7 +62,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                 } as SitemapEntry;
             });
     } catch (error) {
-        console.warn(error);
+        console.error(error);
     }
 
     const collections = (await CollectionsApi({ client: api })).map(

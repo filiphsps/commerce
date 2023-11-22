@@ -1,11 +1,11 @@
-import { ShopApi } from '@/api/shop';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
-import { BlogArticleApi } from '@/api/shopify/blog';
-import { StoreApi } from '@/api/store';
+import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
+import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import { NewsArticleJsonLd } from 'next-seo';
 import { notFound } from 'next/navigation';
@@ -13,7 +13,37 @@ import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
 /* c8 ignore start */
+export const revalidate = 28_800; // 8hrs.
+export const dynamicParams = true;
+export async function generateStaticParams() {
+    const locale = DefaultLocale()!;
+    const shops = await ShopsApi();
 
+    return (
+        await Promise.all(
+            shops.map(async (shop) => {
+                const api = await StorefrontApiClient({ shop, locale });
+                const locales = await LocalesApi({ api });
+
+                return await Promise.all(
+                    locales.map(async (locale) => {
+                        const api = await StorefrontApiClient({ shop, locale });
+                        const blog = await BlogApi({ api, handle: 'news' });
+
+                        return blog.articles.edges.map(({ node: { handle } }) => ({
+                            domain: shop.domains.primary,
+                            locale: locale.locale,
+                            handle
+                        }));
+                    })
+                );
+            })
+        )
+    ).flat(2);
+}
+/* c8 ignore stop */
+
+/* c8 ignore start */
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
@@ -105,12 +135,12 @@ export default async function ArticlePage({
             </Page>
         );
     } catch (error: any) {
-        console.warn(error);
         const message = (error?.message as string) || '';
         if (message.startsWith('404:')) {
             return notFound();
         }
 
+        console.error(error);
         throw error;
     }
 }
