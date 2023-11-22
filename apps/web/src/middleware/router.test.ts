@@ -31,6 +31,8 @@ describe('middleware', () => {
         });
 
         it('should return "unknown" for an unknown hostname', async () => {
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
+
             const req = createFakeRequest('example.com');
 
             const result = await getRequestType(req);

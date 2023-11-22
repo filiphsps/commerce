@@ -46,10 +46,22 @@ describe('app', () => {
                     selectedVariant: {
                         availableForSale: true
                     },
-                    product: {},
+                    product: {
+                        variants: {
+                            edges: []
+                        },
+                        sellingPlanGroups: {
+                            edges: []
+                        },
+                        images: {
+                            edges: []
+                        }
+                    },
+                    selectedOptions: [],
                     variants: [
                         {
-                            availableForSale: true
+                            availableForSale: true,
+                            selectedOptions: []
                         }
                     ]
                 }),

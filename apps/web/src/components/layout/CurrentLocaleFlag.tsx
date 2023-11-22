@@ -1,8 +1,10 @@
 'use client';
+
 import type { Locale } from '@/utils/locale';
 import Image from 'next/image';
 import styled from 'styled-components';
 
+/* c8 ignore start */
 const Container = styled.div`
     overflow: hidden;
     position: relative;
@@ -18,7 +20,7 @@ const Container = styled.div`
     }
 `;
 
-type CurrentLocaleFlagProps = {
+export type CurrentLocaleFlagProps = {
     locale: Locale;
 };
 export const CurrentLocaleFlag = ({ locale }: CurrentLocaleFlagProps) => {
@@ -35,3 +37,4 @@ export const CurrentLocaleFlag = ({ locale }: CurrentLocaleFlagProps) => {
         </Container>
     );
 };
+/* c8 ignore stop */

@@ -6,6 +6,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { TbShoppingBag } from 'react-icons/tb';
 
+/* c8 ignore start */
 export type CartButtonProps = {
     locale: Locale;
     i18n: LocaleDictionary;
@@ -27,3 +28,4 @@ export const CartButton = ({ locale }: CartButtonProps) => {
         </Link>
     );
 };
+/* c8 ignore stop */

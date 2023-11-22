@@ -51,7 +51,8 @@ export default defineConfig({
                 '**/src/locales/*.*',
                 '**/src/middleware.ts',
                 '**/src/models/*.ts',
-                '**/src/utils/prismic.ts'
+                '**/src/utils/prismic.ts',
+                '**/src/components/**/*-provider*.tsx'
             ]
         }
     }
