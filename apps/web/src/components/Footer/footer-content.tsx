@@ -1,7 +1,7 @@
 'use client';
 
 import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
+import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { FooterModel } from '@/models/FooterModel';
@@ -10,6 +10,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import Image from 'next/image';
 import styled from 'styled-components';
+import styles from './footer.module.scss';
 
 const Logo = styled.div`
     position: relative;
@@ -243,7 +244,7 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                                 ['instagram', 'facebook', 'twitter'].includes(social.name.toLowerCase())
                             )
                             .map((social) => (
-                                <Social key={social.url} href={social.url}>
+                                <Social className={styles['social-icon']} key={social.url} href={social.url}>
                                     <Image
                                         src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
                                         fill
@@ -252,7 +253,7 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                                     />
                                 </Social>
                             ))}
-                        <Link href="/countries/" title={t('language-and-region-settings')}>
+                        <Link className={styles.flag} href="/countries/" title={t('language-and-region-settings')}>
                             <CurrentLocaleFlag locale={locale} />
                         </Link>
                     </Socials>

@@ -30,14 +30,7 @@ export type QuantitySelectorProps = {
     value: number;
 } & HTMLProps<HTMLDivElement>;
 
-export const QuantitySelector = ({
-    className,
-    i18n,
-    value: quantity,
-    update,
-    children,
-    ...props
-}: QuantitySelectorProps) => {
+export const QuantitySelector = ({ className, i18n, value: quantity, update, ...props }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
 

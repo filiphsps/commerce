@@ -5,9 +5,9 @@ import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 import { CartCoupons } from '@/components/CartCoupons';
 import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
-import PageLoader from '@/components/PageLoader';
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/cart/cart-summary.module.scss';
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
@@ -208,7 +208,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
         return (
             <Container>
                 <Block>
-                    <PageLoader />
+                    <LoadingIndicator />
                 </Block>
             </Container>
         );
@@ -344,7 +344,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                         </CheckoutButton>
                     ) : (
                         <Center>
-                            <PageLoader />
+                            <LoadingIndicator />
                         </Center>
                     )}
 

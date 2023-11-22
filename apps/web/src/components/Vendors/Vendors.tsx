@@ -1,6 +1,6 @@
 'use client';
 
-import PageLoader from '@/components/PageLoader';
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
 import type { FunctionComponent } from 'react';
@@ -63,7 +63,7 @@ const Vendors: FunctionComponent<VendorsProps> = ({ data: vendors }) => {
     if (!vendors)
         return (
             <Container className="Vendors">
-                <PageLoader />
+                <LoadingIndicator />
             </Container>
         );
 
