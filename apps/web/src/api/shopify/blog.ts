@@ -100,7 +100,9 @@ export const BlogArticleApi = async ({
 
                                 title
                                 contentHtml
+                                excerpt
                                 excerptHtml
+                                tags
 
                                 seo {
                                     title
@@ -136,7 +138,10 @@ export const BlogArticleApi = async ({
             else if (!data.blogByHandle.articleByHandle)
                 return reject(new Error(`404: "articleByHandle" for blog "${handle}" cannot be found`));
 
-            return resolve(data.blogByHandle.articleByHandle);
+            return resolve({
+                ...data.blogByHandle.articleByHandle,
+                contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, '')
+            });
         } catch (error: any) {
             console.error(error);
             return reject(error);

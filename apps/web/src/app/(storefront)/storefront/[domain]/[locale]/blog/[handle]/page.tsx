@@ -3,13 +3,14 @@ import { StorefrontApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
 import { StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
-import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { NextLocaleToLocale } from '@/utils/locale';
 import type { Metadata } from 'next';
+import { NewsArticleJsonLd } from 'next-seo';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
+import styles from './page.module.scss';
 
 /* c8 ignore start */
 
@@ -75,15 +76,32 @@ export default async function ArticlePage({
         if (!locale) return notFound();
 
         const api = StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ shop, locale, api });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
-            <Page>
-                <PageContent primary>
+            <Page className={styles.container}>
+                <div className={styles.header}>
                     <Heading title={article.title} subtitle={null} />
+                </div>
 
-                    <Content dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
-                </PageContent>
+                <NewsArticleJsonLd
+                    useAppDir
+                    url={`https://${shop.domains.primary}/${locale.locale}/blog/${handle}/`}
+                    description={article.seo?.description || article.excerpt || ''}
+                    body={article.content}
+                    title={article.title}
+                    section="news"
+                    images={[article.image?.url!]}
+                    keywords={article.tags?.join(', ') || ''}
+                    dateCreated={article.publishedAt}
+                    datePublished={article.publishedAt}
+                    authorName={article.authorV2?.name!}
+                    publisherName={store.name}
+                    publisherLogo={store.favicon?.src!}
+                />
+
+                <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
             </Page>
         );
     } catch (error: any) {

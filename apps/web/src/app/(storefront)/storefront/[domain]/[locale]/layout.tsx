@@ -11,9 +11,7 @@ import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { ShopApi } from '@/api/shop';
 import { StoreApi } from '@/api/store';
-import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { PageProvider } from '@/components/layout/page-provider';
-import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
@@ -190,10 +188,6 @@ export default async function RootLayout({
                             data={{ navigation, header, footer }}
                         >
                             {children}
-
-                            <PageContent primary>
-                                <Breadcrumbs store={store} />
-                            </PageContent>
                         </PageProvider>
                     </ProvidersRegistry>
                 </body>

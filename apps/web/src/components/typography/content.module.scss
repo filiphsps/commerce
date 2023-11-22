@@ -1,33 +1,47 @@
+@import '_globals.scss';
+
 .container {
     max-width: 100%;
     height: auto;
     font-weight: 500;
+    font-size: 1.75rem;
 
-    & :is(a, p, ul, li) :is(b, strong) {
-        font-weight: 700;
+    & :is(h1, h2, h3, h4) {
+        font-weight: 600;
+
+        a {
+            text-underline-offset: var(--block-border-width);
+        }
     }
+
     & :is(h1, h2, h3, h4) :is(b, strong) {
         font-weight: 800;
     }
 
-    a {
-        color: var(--accent-primary-dark);
-        font-weight: 600;
+    & > * {
+        margin-bottom: var(--block-spacer);
 
-        &:is(:hover, :active):not(:disabled) {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
+        &:is(:last-child) {
+            margin-bottom: 0;
         }
     }
 
+    a {
+        font-weight: 600;
+
+        text-decoration: underline dotted 0.15rem;
+        //text-underline-offset: var(--block-border-width);
+        text-underline-position: auto;
+    }
+
     p {
-        margin-bottom: 1.5rem;
-        font-size: 1.75rem;
-        font-weight: 500;
+        font-size: 1em;
+        font-weight: 400;
         line-height: normal;
 
         &:last-child {
             margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         i,
@@ -51,19 +65,25 @@
     }
 
     h1 {
-        font-size: 3rem;
-        line-height: 1.1;
+        margin: 0;
+
+        font-size: 3em;
+        line-height: 1.05;
         font-weight: 600;
         padding-bottom: 1.5rem;
     }
     h2 {
-        font-size: 2.75rem;
-        line-height: 1.25;
+        margin: calc(var(--block-spacer-large) * 3) 0 0 0;
+
+        font-size: 2.25em;
+        line-height: 1.1;
         font-weight: 600;
         padding-bottom: 1rem;
     }
     h3 {
-        font-size: 2.25rem;
+        margin: calc(var(--block-spacer-large) * 2) 0 0 0;
+
+        font-size: 1.75em;
         line-height: normal;
         font-weight: 500;
         padding-bottom: 1rem;
@@ -74,15 +94,15 @@
         padding-bottom: 1rem;
     }
 
-    :is(h1, h2, h3, h4, h5, h6):is(:last-child) {
-        padding-bottom: 0;
+    img {
+        object-fit: contain;
     }
 
-    img {
-        width: 100%;
-        max-width: 100% !important;
-        object-fit: contain;
-        margin-bottom: 1rem;
-        background: var(--color-block-dark);
+    blockquote {
+        margin: calc(var(--block-spacer-large) * 2) 0;
+        font-size: 1em;
+        text-align: center;
+        font-style: italic;
+        letter-spacing: 0.025em;
     }
 }
