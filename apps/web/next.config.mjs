@@ -20,6 +20,7 @@ const config = {
         esmExternals: true,
         //fallbackNodePolyfills: false, // We rely on `process.env`.
         gzipSize: true,
+        instrumentationHook: true,
         optimisticClientCache: true,
         optimizeCss: true,
         optimizePackageImports: [
@@ -40,6 +41,7 @@ const config = {
         webpackBuildWorker: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
         windowHistorySupport: true
+
     },
     images: {
         remotePatterns: [
