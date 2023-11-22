@@ -1,3 +1,4 @@
+import withMarkdoc from '@markdoc/next.js';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
+    pageExtensions: ['ts', 'tsx', 'md'],
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
@@ -124,6 +126,21 @@ const config = {
             }
         ];
     },
+    webpack: (config, { isServer }) => {
+        if (!isServer) {
+            config.resolve = {
+                ...config.resolve,
+                fallback: {
+                    net: false,
+                    dns: false,
+                    tls: false,
+                    fs: false,
+                    request: false
+                }
+            };
+        }
+        return config;
+    },
 
     // While I wish we could use this we must handle it
     // ourselves as a part of the locale redirection.
@@ -133,4 +150,10 @@ const config = {
     skipTrailingSlashRedirect: true,
 };
 
-export default config;
+export default withMarkdoc({
+    mode: 'static',
+    schemaPath: './src/utils/markdoc',
+    tokenizerOptions: {
+        allowComments: true
+    }
+})(config);

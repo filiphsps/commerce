@@ -82,5 +82,9 @@
         "Västra",
         "webp"
     ],
-    "vscord.enabled": true
+    "vscord.enabled": true,
+    "markdownlint.config": {
+        "single-title": false,
+        "no-inline-html": false
+    }
 }

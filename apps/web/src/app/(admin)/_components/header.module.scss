@@ -1,0 +1,12 @@
+.container {
+    @media (min-width: 950px) {
+        padding-bottom: var(--layout-section-spacing);
+    }
+
+    .logo {
+        max-height: 6.5rem;
+        height: 100%;
+        width: auto;
+        max-width: min(100%, 80vw);
+    }
+}
