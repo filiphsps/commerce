@@ -2,6 +2,7 @@
 
 import styled, { css } from 'styled-components';
 
+import styles from '@/components/informational/image-with-text.module.scss';
 import { Content as ContentComponent } from '@/components/typography/content';
 import { PrismicNextImage } from '@prismicio/next';
 import type { FunctionComponent } from 'react';
@@ -30,7 +31,6 @@ const Container = styled.div<{ $layout?: 'left' | 'right' }>`
 `;
 
 const ImageWrapper = styled.div`
-    //height: 100%;
     width: 100%;
 
     img {
@@ -90,7 +90,7 @@ const Content = styled(ContentComponent)`
         height: 100%;
     }
 
-    &.Plain {
+    &.plain {
         max-width: 72rem;
         height: auto;
         padding: 0;
@@ -125,10 +125,10 @@ interface OverviewProps {
     style?: React.CSSProperties;
 }
 export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, style }) => {
-    if (!image) return <Content className="Plain">{body}</Content>;
+    if (!image) return <Content className="plain">{body}</Content>;
 
     return (
-        <Container style={style} className="TextBlock Block" $layout={layout}>
+        <Container style={style} className={`${styles.container} TextBlock Block`} $layout={layout}>
             <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
                     <PrismicNextImage
@@ -140,7 +140,7 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
                     />
                 </ImageWrapper>
             </ImageContainer>
-            <Content>{body}</Content>
+            <Content className={styles.content}>{body}</Content>
         </Container>
     );
 };

@@ -181,13 +181,14 @@ input[type='search']:is(
 
 #nprogress {
     pointer-events: none;
-}
-#nprogress .bar {
-    background: var(--accent-primary-light);
-    position: fixed;
-    z-index: 2147483647;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--block-padding-small);
+
+    .bar {
+        background: var(--accent-primary-light);
+        position: fixed;
+        z-index: 2147483647;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--block-padding-small) !important;
+    }
 }
