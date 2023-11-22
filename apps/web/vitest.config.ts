@@ -44,15 +44,27 @@ export default defineConfig({
                 '**/*.test.{js,ts,jsx,tsx}',
                 '**/*.test.{js,ts,jsx,tsx}',
                 '**/app/**/{layout}.tsx',
-                '**/app/api/{draft,exit-preview,preview}/route.{ts,tsx}',
-                '**/app/slice-simulator/*.{ts,tsx}',
+                '**/app/**/*slice-simulator*',
                 '**/build-config.ts',
                 '**/src/**/index.{ts,tsx}',
+
+                // TODO: Eh?
                 '**/src/locales/*.*',
                 '**/src/middleware.ts',
                 '**/src/models/*.ts',
                 '**/src/utils/prismic.ts',
-                '**/src/components/**/*-provider*.tsx'
+                '**/src/api/shopify/cart.ts',
+                '**/src/api/shopify.ts',
+                '**/src/api/client.ts',
+                '**/src/api/**/*product-reviews*.ts',
+                '**/src/api/shop.ts',
+                '**/src/app/**/route.ts*',
+                '**/src/app/**/layout.ts*',
+                '**/src/app/**/*favicon.png*',
+                '**/src/components/**/*-provider*.tsx',
+
+                // TODO: Remove these once we do some work on the admin dashboard.
+                '**/src/app/({unknown,admin,extra})/**/*.*'
             ]
         }
     }

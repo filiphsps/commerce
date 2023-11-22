@@ -1,9 +1,12 @@
+@import '_globals.scss';
+
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
     padding: 0;
-    margin-bottom: var(--block-padding);
+    margin-bottom: var(--block-spacer);
 
     &:empty {
         display: none;

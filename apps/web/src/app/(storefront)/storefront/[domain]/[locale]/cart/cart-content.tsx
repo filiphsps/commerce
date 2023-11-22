@@ -1,6 +1,6 @@
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
-import { prepareShopForClient, type Shop } from '@/api/shop';
+import { type Shop } from '@/api/shop';
 import CartLines from '@/components/cart/cart-lines';
 import type { ReactNode } from 'react';
 import styles from './cart-content.module.scss';
@@ -21,7 +21,7 @@ export default function CartContent({ shop, locale, i18n, header, slices }: Cart
                     {header}
                     <CartLines locale={locale} i18n={i18n} />
                 </div>
-                <CartSidebar shop={prepareShopForClient(shop)} locale={locale} i18n={i18n} className={styles.sidebar} />
+                <CartSidebar shop={shop} locale={locale} i18n={i18n} className={styles.sidebar} />
             </section>
 
             {slices}

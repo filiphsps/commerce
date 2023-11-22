@@ -65,6 +65,10 @@
         line-height: 1.05;
         hyphens: auto;
 
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 2.15rem;
+        }
+
         & > a {
             display: contents;
         }
@@ -83,10 +87,6 @@
             font-weight: 500;
             font-size: 0.75em;
             line-height: 1;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 0.85em;
-            }
         }
     }
 

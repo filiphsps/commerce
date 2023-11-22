@@ -25,9 +25,9 @@ export async function generateMetadata({
         const locale = NextLocaleToLocale(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = StorefrontApiClient({ shop, locale });
+        const api = await StorefrontApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-        const store = await StoreApi({ shop, locale, api });
+        const store = await StoreApi({ api, locale });
         const locales = store.i18n.locales;
 
         const title = article.seo?.title || article.title;
@@ -75,8 +75,8 @@ export default async function ArticlePage({
         const locale = NextLocaleToLocale(localeData);
         if (!locale) return notFound();
 
-        const api = StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ shop, locale, api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (

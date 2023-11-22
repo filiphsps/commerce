@@ -23,7 +23,7 @@ export default async function BlogLayout({
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFound();
 
-    const api = StorefrontApiClient({ shop, locale });
+    const api = await StorefrontApiClient({ shop, locale });
     const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
         ({ node: article }) => article
     );

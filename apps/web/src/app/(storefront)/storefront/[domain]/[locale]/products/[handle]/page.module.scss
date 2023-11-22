@@ -20,6 +20,13 @@
         background: var(--color-block);
     }
 
+    .description {
+        h2 {
+            margin-bottom: var(--block-spacer-large);
+            font-size: 1.85em;
+        }
+    }
+
     @media (min-width: $breakpoint-mobile) {
         .prismicDivider {
             width: 80%;

@@ -37,8 +37,8 @@ export async function generateViewport({
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return {};
 
-    const api = StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ shop, locale, api });
+    const api = await StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
 
     return {
         themeColor: store.accent.secondary,
@@ -57,8 +57,8 @@ export async function generateMetadata({
     const locale = NextLocaleToLocale(localeData);
     if (!locale) return notFoundMetadata;
 
-    const api = StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ shop, locale, api });
+    const api = await StorefrontApiClient({ shop, locale });
+    const store = await StoreApi({ api, locale });
 
     return {
         metadataBase: new URL(`https://${domain}/${locale.locale}/`),
@@ -100,9 +100,9 @@ export default async function RootLayout({
         if (!locale) return notFound();
 
         const i18n = await getDictionary(locale);
-        const apiConfig = shopifyApiConfig({ shop });
-        const api = StorefrontApiClient({ shop, locale, apiConfig });
-        const store = await StoreApi({ shop, locale, api });
+        const apiConfig = await shopifyApiConfig({ shop });
+        const api = await StorefrontApiClient({ shop, locale, apiConfig });
+        const store = await StoreApi({ api, locale });
         const navigation = await NavigationApi({ shop, locale });
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });

@@ -1,16 +1,14 @@
-import { ProductApi } from '@/api/shopify/product';
-import { NextLocaleToLocale } from '@/utils/locale';
-
 import { PageApi } from '@/api/page';
+import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
+import { ProductApi } from '@/api/shopify/product';
 import { StoreApi } from '@/api/store';
 import Gallery from '@/components/Gallery';
 import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
-import { InfoLines } from '@/components/products/info-lines';
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
@@ -18,11 +16,15 @@ import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
+import { NextLocaleToLocale } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
+import { parseGid } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
+import { ProductJsonLd } from 'next-seo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
@@ -36,8 +38,8 @@ export const dynamicParams = true;
 
     return await Promise.all(
         shops.flatMap(async (shop) => {
-            const apiConfig = shopifyApiConfig({ shop, noHeaders: true });
-            const api = StorefrontApiClient({ shop, locale, apiConfig });
+            const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+            const api = await StorefrontApiClient({ shop, locale, apiConfig });
             const { products } = await ProductsApi({ api });
 
             return products.map(({ node: { handle } }) => ({
@@ -65,8 +67,8 @@ export async function generateMetadata({
         const locale = NextLocaleToLocale(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ shop, locale, api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
         const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = store.i18n.locales;
@@ -143,9 +145,10 @@ export default async function ProductPage({
             return redirect(`/products/${handle}?variant=${variant}`, RedirectType.replace);
         }
 
-        const api = StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ shop, locale, api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api, locale });
         const product = await ProductApi({ api, handle });
+        const reviews = await ProductReviewsApi({ api, product });
 
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
@@ -156,9 +159,14 @@ export default async function ProductPage({
             let result = description;
 
             const titleTags = new RegExp('(?<=<h1>)(.+?)(?=</h1>)').exec(description)?.[0];
-            if (titleTags && result.startsWith(`<h1>${titleTags}</h1>\n`))
+
+            if (titleTags) {
+                const title = titleTags.replaceAll(/<[^>]*>/g, '');
+
                 result = result.replace(`<h1>${titleTags}</h1>\n`, '');
-            else return null;
+                // Replace h1 with h2
+                result = `<h2>${title}</h2>\n${result}`;
+            }
 
             return result;
         };
@@ -235,13 +243,11 @@ export default async function ProductPage({
                             initialVariant={initialVariant!}
                             selectedVariant={selectedVariant}
                         />
-                        {(product && <InfoLines product={product} />) || null}
 
                         {content ? (
                             <>
-                                <div className={styles.contentDivider} />
-
                                 <Content
+                                    className={styles.description}
                                     dangerouslySetInnerHTML={{
                                         __html: content
                                     }}
@@ -249,22 +255,131 @@ export default async function ProductPage({
                             </>
                         ) : null}
 
-                        <div className={styles.contentDivider} />
+                        {page?.slices && page?.slices.length > 0 ? (
+                            <>
+                                <div className={styles.contentDivider} />
 
-                        {page?.slices && page?.slices.length > 0 && (
-                            <PrismicPage
-                                shop={shop}
-                                store={store}
-                                locale={locale}
-                                page={page}
-                                prefetch={prefetch}
-                                i18n={i18n}
-                                handle={handle}
-                                type={'product_page'}
-                            />
-                        )}
+                                <PrismicPage
+                                    shop={shop}
+                                    store={store}
+                                    locale={locale}
+                                    page={page}
+                                    prefetch={prefetch}
+                                    i18n={i18n}
+                                    handle={handle}
+                                    type={'product_page'}
+                                />
+                            </>
+                        ) : null}
                     </div>
                 </SplitView>
+
+                <ProductJsonLd
+                    useAppDir
+                    key={variant?.id}
+                    keyOverride={`item_${variant?.id}`}
+                    productName={`${product.vendor} ${product.title} ${variant.title}`}
+                    brand={product.vendor}
+                    sku={ProductToMerchantsCenterId({
+                        locale: locale,
+                        product: {
+                            productGid: product!.id,
+                            variantGid: variant!.id
+                        } as any
+                    })}
+                    mpn={variant.barcode || variant.sku || undefined}
+                    images={
+                        (product.images?.edges?.map?.((edge) => edge?.node?.url).filter((i) => i) as string[]) || []
+                    }
+                    description={product.description || ''}
+                    // TODO: Utility function.
+                    reviews={
+                        reviews?.reviews?.map(({ rating, title, body, author, createdAt }) => ({
+                            type: 'Review',
+                            author: {
+                                type: 'Person',
+                                name: author
+                            },
+                            datePublished: createdAt,
+                            reviewBody: body, // FIXME: This is shopify rich text schema, we need write a parser.
+                            name: title,
+                            reviewRating: {
+                                bestRating: '5',
+                                ratingValue: rating.toString(),
+                                worstRating: '1'
+                            },
+                            publisher: {
+                                type: 'Organization',
+                                name: store.name
+                            }
+                        })) || undefined
+                    }
+                    aggregateRating={
+                        (reviews.averageRating && {
+                            ratingValue: reviews.averageRating,
+                            reviewCount: reviews.reviews.length
+                        }) ||
+                        undefined
+                    }
+                    offers={[
+                        {
+                            itemCondition: 'https://schema.org/NewCondition',
+                            availability: variant.availableForSale
+                                ? 'https://schema.org/InStock'
+                                : 'https://schema.org/SoldOut',
+                            url: `https://${shop.domains.primary}/${locale.locale}/products/${
+                                product.handle
+                            }/?variant=${parseGid(variant.id).id}`,
+                            seller: {
+                                name: store.name
+                            },
+                            priceSpecification: {
+                                type: 'PriceSpecification',
+                                price: Number.parseFloat(variant.price.amount),
+                                priceCurrency: variant.price.currencyCode
+                            },
+
+                            // TODO: Make all of the following configurable.
+                            priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
+                            hasMerchantReturnPolicy: {
+                                type: 'MerchantReturnPolicy',
+                                applicableCountry: locale.country,
+                                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
+                            },
+                            shippingDetails: {
+                                type: 'OfferShippingDetails',
+                                shippingRate: {
+                                    type: 'MonetaryAmount',
+                                    maxValue: 25,
+                                    minValue: 0,
+                                    currency: variant.price.currencyCode!
+                                },
+                                shippingDestination: [
+                                    {
+                                        type: 'DefinedRegion',
+                                        addressCountry: locale.country
+                                    }
+                                ],
+                                cutoffTime: '11:00:00Z',
+                                deliveryTime: {
+                                    type: 'ShippingDeliveryTime',
+                                    handlingTime: {
+                                        type: 'QuantitativeValue',
+                                        minValue: 0,
+                                        maxValue: 3,
+                                        unitCode: 'DAY'
+                                    },
+                                    transitTime: {
+                                        type: 'QuantitativeValue',
+                                        minValue: 2,
+                                        maxValue: 14,
+                                        unitCode: 'DAY'
+                                    }
+                                }
+                            }
+                        }
+                    ]}
+                />
             </Page>
         );
     } catch (error: any) {
