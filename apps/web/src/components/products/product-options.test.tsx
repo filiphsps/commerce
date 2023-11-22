@@ -108,7 +108,7 @@ describe('components', () => {
         });
 
         it('disables options that are out of stock or unavailable', async () => {
-            const { rerender } = render(
+            render(
                 <ProductOptions
                     locale={NextLocaleToLocale('en-GB')!}
                     initialVariant={variants[0] as any}

@@ -6,9 +6,9 @@ import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
 import { SearchApi } from '@/api/shopify/search';
-import { Button } from '@/components/actionable/button';
 import { Input } from '@/components/Input';
-import PageLoader from '@/components/PageLoader';
+import { Button } from '@/components/actionable/button';
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import { Label } from '@/components/typography/label';
 import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
@@ -201,7 +201,7 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
             )}
 
             <Content>
-                {((isValidating || isLoading) && <PageLoader />) ||
+                {((isValidating || isLoading) && <LoadingIndicator />) ||
                     products?.map((product) => <ProductSearchResultItem key={product.id} product={product} />)}
             </Content>
         </Container>

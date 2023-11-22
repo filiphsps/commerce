@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import PageLoader from '@/components/PageLoader';
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import { render } from '@testing-library/react';
 
 describe('components', () => {
-    describe('PageLoader', () => {
+    describe('LoadingIndicator', () => {
         it('should render', () => {
-            const wrapper = render(<PageLoader />);
+            const wrapper = render(<LoadingIndicator />);
 
             expect(() => wrapper.unmount()).not.toThrow();
         });

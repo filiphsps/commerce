@@ -14,5 +14,15 @@
         width: 1465px;
         max-width: 100%;
         padding: var(--block-padding-large);
+
+        .flag,
+        .social-icon {
+            height: 2.75rem;
+            width: auto;
+        }
+
+        .social-icon {
+            aspect-ratio: 1 / 1;
+        }
     }
 }

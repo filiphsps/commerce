@@ -89,7 +89,7 @@ export const SearchPredictionApi = async ({
     client: AbstractApi;
     query: string;
 }): Promise<PredictiveSearchResult | {}> => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
         if (!query) return resolve({});
 
         const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(

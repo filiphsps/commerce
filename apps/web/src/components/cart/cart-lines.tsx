@@ -5,7 +5,7 @@ import '@/styles/currency.scss';
 import { CartLineProvider, useCart } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
-import PageLoader from '@/components/PageLoader';
+import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import { Label } from '@/components/typography/label';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense } from 'react';
@@ -64,7 +64,7 @@ type CartContentProps = {
 };
 export default function CartLines({ locale, i18n }: CartContentProps) {
     const { status, lines } = useCart();
-    if (!['idle', 'uninitialized'].includes(status)) return <PageLoader />;
+    if (!['idle', 'uninitialized'].includes(status)) return <LoadingIndicator />;
 
     if (!lines || lines.length <= 0)
         return (
