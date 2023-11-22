@@ -6,28 +6,6 @@
     height: 6rem;
     width: 6rem;
 
-    @keyframes swing {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        15% {
-            transform: rotate(0deg);
-        }
-
-        50% {
-            transform: rotate(180deg);
-        }
-
-        65% {
-            transform: rotate(180deg);
-        }
-
-        100% {
-            transform: rotate(0deg);
-        }
-    }
-
     .item {
         --speed: 1.75;
         --color: var(--accent-secondary);
