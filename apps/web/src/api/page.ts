@@ -7,11 +7,13 @@ import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client
 export const PagesApi = async ({
     shop,
     locale,
-    client: _client
+    client: _client,
+    exclude = ['shop', 'countries', 'search', 'cart']
 }: {
     shop: Shop;
     locale: Locale;
     client?: PrismicClient;
+    exclude?: string[];
 }): Promise<PrismicDocument[]> => {
     return new Promise(async (resolve, reject) => {
         const client = _client || createClient({ shop, locale });
@@ -24,12 +26,12 @@ export const PagesApi = async ({
             if (!pages) return reject(new Error('404: No pages found'));
 
             // TODO: Remove filter once we've migrated away from "special" pages
-            const filtered = pages.filter(({ uid }) => !['shop', 'countries', 'search', 'cart'].includes(uid!));
+            const filtered = pages.filter(({ uid }) => !exclude.includes(uid!));
             return resolve(filtered);
         } catch (error: any) {
             if (error.message.includes('No documents')) {
                 if (!isDefaultLocale(locale)) {
-                    return resolve(await PagesApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale.
+                    return resolve(await PagesApi({ shop, locale: DefaultLocale(), client, exclude })); // Try again with default locale.
                 }
 
                 return reject(new Error(`404: "Pages" for the locale "${locale.locale}" cannot be found`));
