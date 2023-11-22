@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import { ProductOptions } from '@/components/products/product-options';
 import { NextLocaleToLocale } from '@/utils/locale';
@@ -25,7 +25,7 @@ const variants = [
         id: 'gid://shopify/ProductVariant/2'
     },
     {
-        title: '300g - Red',
+        title: '300g',
         id: 'gid://shopify/ProductVariant/3'
     }
 ];
@@ -47,7 +47,7 @@ vi.mock('@shopify/hydrogen-react', async () => ({
         variants,
         selectedOptions,
         setSelectedOptions,
-        isOptionInStock: vi.fn().mockReturnValue(true)
+        isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
     }),
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
@@ -107,6 +107,21 @@ describe('components', () => {
             expect(sizeOptionValueElement).toHaveTextContent('4oz');
         });
 
-        it.todo('disables options that are out of stock or unavailable');
+        it('disables options that are out of stock or unavailable', async () => {
+            const { rerender } = render(
+                <ProductOptions
+                    locale={NextLocaleToLocale('en-GB')!}
+                    initialVariant={variants[0] as any}
+                    selectedVariant={variants[0] as any}
+                />
+            );
+
+            await waitFor(() => {
+                const target = screen.getByText(variants[0].title);
+                expect(target).toBeDefined();
+                expect(target).not.toHaveAttribute('href');
+                expect(target).toHaveAttribute('disabled');
+            });
+        });
     });
 });

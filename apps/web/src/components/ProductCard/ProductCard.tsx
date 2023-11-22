@@ -11,10 +11,10 @@ import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { AddToCart } from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
+import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
 import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
-import Pricing from '../typography/pricing';
 
 const ProductImageWrapper = styled.div`
     position: relative;

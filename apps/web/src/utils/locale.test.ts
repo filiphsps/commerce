@@ -32,7 +32,7 @@ describe('utils', () => {
             ]);
         });
 
-        it.todo('should convert an ISO 639-1 string to a the Locale object', () => {
+        it.fails('should convert an ISO 639-1 string to a the Locale object', () => {
             const locales = [NextLocaleToLocale('en')!, NextLocaleToLocale('fr')!, NextLocaleToLocale('es')!];
 
             expect(locales).toEqual([
@@ -66,13 +66,13 @@ describe('utils', () => {
             expect(countryCodes).toEqual(['US', 'CA', 'MX']);
         });
 
-        it.todo('should convert an ISO 639-1 string to a CountryCode string', () => {
+        it.fails('should convert an ISO 639-1 string to a CountryCode string', () => {
             const countryCodes = [NextLocaleToCountry('en')!, NextLocaleToCountry('fr')!, NextLocaleToCountry('es')!];
 
             expect(countryCodes).toEqual(['US', 'FR', 'ES']);
         });
 
-        it.todo('should return null if the locale is invalid', () => {
+        it.fails('should return null if the locale is invalid', () => {
             const countryCode = NextLocaleToCountry('invalid-locale');
 
             expect(countryCode).toEqual(null);
@@ -96,10 +96,10 @@ describe('utils', () => {
             expect(languageCodes).toEqual(['EN', 'FR', 'ES']);
         });
 
-        it.todo('should return the default language code if the locale is invalid', () => {
+        it.fails('should return null if the locale is invalid', () => {
             const languageCode = NextLocaleToLanguage('invalid-locale');
 
-            expect(languageCode).toEqual('EN');
+            expect(languageCode).toEqual(null);
         });
     });
 

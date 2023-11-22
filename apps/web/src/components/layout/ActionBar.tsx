@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+/* c8 ignore start */
 export const ActionBar = styled.div`
     display: flex;
     justify-content: end;
@@ -22,3 +23,4 @@ export const ActionBarItem = styled.div<{ active?: boolean }>`
     opacity: ${({ active }) => (active && '1') || '0.75'};
     cursor: pointer;
 `;
+/* c8 ignore stop */

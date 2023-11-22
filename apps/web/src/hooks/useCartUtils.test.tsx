@@ -74,14 +74,16 @@ describe('hooks', () => {
             await waitFor(() => expect(useCart().cartCreate).not.toHaveBeenCalled());
         });
 
-        it.skip('should add discount code to cart when present in URL', () => {
+        it('should add discount code to cart when present in URL', async () => {
             const discount = ['COUPON_CODE'];
             (useSearchParams as Mock<any, any>).mockReturnValue({
                 discount: discount
             });
 
-            renderHook((locale: Locale = USA) => useCartUtils({ locale }));
-            expect(useCart().discountCodes).toEqual(discount);
+            const { rerender } = renderHook((locale: Locale = USA) => useCartUtils({ locale }));
+            await act(() => rerender());
+
+            await waitFor(() => expect(useCart().discountCodes).toEqual(discount));
         });
     });
 });

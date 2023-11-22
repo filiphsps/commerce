@@ -3,6 +3,7 @@
 import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import Link from '@/components/link';
 import styles from '@/components/products/product-actions-container.module.scss';
+import { Label } from '@/components/typography/label';
 import type { Locale } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
@@ -113,7 +114,7 @@ export const ProductOptions = ({
                 {options?.map((option, index) =>
                     option?.values ? (
                         <Fragment key={option.name}>
-                            <label className={styles.label}>{option.name}</label>
+                            <Label className={styles.label}>{option.name}</Label>
                             <OptionValues>
                                 {option.values.map((value) => {
                                     if (!value) return null;
@@ -163,6 +164,7 @@ export const ProductOptions = ({
                                         }) ||
                                         {};
 
+                                    const inStock = isOptionInStock(option.name!, value!);
                                     return (
                                         <OptionValue
                                             key={value}
@@ -172,9 +174,10 @@ export const ProductOptions = ({
                                             }`}
                                             className={`${
                                                 (selectedOptions?.[option.name!] === value && 'selected') || ''
-                                            } ${(!isOptionInStock(option.name!, value!) && 'disabled') || ''} ${
+                                            } ${(!inStock && 'disabled') || ''} ${
                                                 (asComponent !== 'div' && 'clickable') || ''
                                             }`}
+                                            disabled={!inStock}
                                             {...extraProps}
                                         >
                                             {title}
