@@ -7,7 +7,7 @@ import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { DefaultLocale, Locale, NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -55,16 +55,18 @@ export async function generateMetadata({
         if (!isValidHandle(handle)) return notFoundMetadata;
 
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
+
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
 
         const api = await StorefrontApiClient({ shop, locale });
         const store = await StoreApi({ api });
-        const locales = store.i18n.locales;
-
-        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
+        const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFoundMetadata;
 
+        const locales = store.i18n.locales;
         // If the page is the homepage we shouldn't add the handle to path.
         // TODO: Deal with this in a better way.
         const path = handle === 'homepage' ? '/' : `/${handle}/`;
@@ -77,9 +79,9 @@ export async function generateMetadata({
             alternates: {
                 canonical: `https://${domain}/${locale.code}${path}`,
                 languages: locales.reduce(
-                    (prev, { locale }) => ({
+                    (prev, { code }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}${path}`
+                        [code]: `https://${domain}/${code}${path}`
                     }),
                     {}
                 )
@@ -87,8 +89,7 @@ export async function generateMetadata({
             // TODO: Metadata.
         };
     } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
             return notFoundMetadata;
         }
 
@@ -117,12 +118,15 @@ export default async function CustomPage({
         // Setup the AbstractApi client.
         const api = await StorefrontApiClient({ shop, locale });
 
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
+
         // Do the actual API calls.
         const store = await StoreApi({ api });
-        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
+        const { page } = await PageApi({ shop, locale, handle });
 
         if (!page) return notFound(); // TODO: Return proper error.
-        const prefetch = (page && (await Prefetch({ api, page }))) || null;
+        const prefetch = await Prefetch({ api, page });
 
         return (
             <Page>
@@ -136,7 +140,6 @@ export default async function CustomPage({
                             prefetch={prefetch}
                             i18n={i18n}
                             handle={handle}
-                            type={'custom_page'}
                         />
                     ) : null}
                 </PageContent>

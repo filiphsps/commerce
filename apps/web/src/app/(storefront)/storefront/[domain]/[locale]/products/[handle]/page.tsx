@@ -134,7 +134,7 @@ export default async function ProductPage({
         const reviews = await ProductReviewsApi({ api, product });
 
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const prefetch = (page && (await Prefetch({ api, page }))) || null;
+        const prefetch = await Prefetch({ api, page });
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {

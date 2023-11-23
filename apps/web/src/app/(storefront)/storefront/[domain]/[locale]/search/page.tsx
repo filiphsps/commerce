@@ -115,7 +115,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
         const store = await StoreApi({ api });
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
-        const prefetch = (page && (await Prefetch({ api, page }))) || null;
+        const prefetch = await Prefetch({ api, page });
 
         return (
             <Page>

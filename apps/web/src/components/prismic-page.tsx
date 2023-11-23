@@ -1,23 +1,36 @@
-import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
 
+import type { PageData, PageType } from '@/api/page';
 import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import { components as slices } from '@/slices';
+import type { PrefetchData } from '@/utils/prefetch';
 
-type PageParams = {
+type PageParams<T extends PageType> = {
     shop: Shop;
     store: StoreModel;
     locale: Locale;
-    prefetch: any;
     i18n: LocaleDictionary;
-    // TODO: Type for this.
-    page: CollectionPageDocumentData | ProductPageDocumentData | CustomPageDocumentData;
+    page: PageData<T>;
     handle: string;
-    type: string;
+    type?: T;
+
+    /**
+     * @deprecated Migrate to the preloading pattern ({@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}).
+     */
+    prefetch: PrefetchData;
 };
-export default function PrismicPage({ shop, store, locale, prefetch, i18n, page, handle, type }: PageParams) {
+export default function PrismicPage<T extends PageType = 'custom_page'>({
+    shop,
+    store,
+    locale,
+    prefetch,
+    i18n,
+    page,
+    handle,
+    type = 'custom_page' as T
+}: PageParams<T>) {
     if (!page || (page.slices && page.slices.length <= 0)) return null;
 
     return (

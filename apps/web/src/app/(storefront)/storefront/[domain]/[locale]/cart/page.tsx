@@ -7,7 +7,7 @@ import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { DefaultLocale, NextLocaleToLocale, useTranslation } from '@/utils/locale';
+import { DefaultLocale, Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -28,9 +28,9 @@ export async function generateStaticParams() {
                 const api = await StorefrontApiClient({ shop, locale });
                 const locales = await LocalesApi({ api });
 
-                return locales.map(({ locale }) => ({
+                return locales.map(({ code }) => ({
                     domain: shop.domains.primary,
-                    locale: locale
+                    locale: code
                 }));
             })
         )
@@ -46,7 +46,7 @@ export async function generateMetadata({
     params: CartPageParams;
 }): Promise<Metadata> {
     const shop = await ShopApi({ domain });
-    const locale = NextLocaleToLocale(localeData);
+    const locale = Locale.from(localeData);
     if (!locale) return notFoundMetadata;
     const handle = 'cart';
 
@@ -66,9 +66,9 @@ export async function generateMetadata({
         alternates: {
             canonical: `https://${domain}/${locale.code}/${handle}/`,
             languages: locales.reduce(
-                (prev, { locale }) => ({
+                (prev, { code }) => ({
                     ...prev,
-                    [locale]: `https://${domain}/${locale}/${handle}/`
+                    [code]: `https://${domain}/${code}/${handle}/`
                 }),
                 {}
             )
@@ -98,7 +98,7 @@ export async function generateMetadata({
 
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     const shop = await ShopApi({ domain });
-    const locale = NextLocaleToLocale(localeData);
+    const locale = Locale.from(localeData);
     if (!locale) return notFound();
     const i18n = await getDictionary(locale);
     const handle = 'cart';
@@ -106,7 +106,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
     const api = await StorefrontApiClient({ shop, locale });
     const store = await StoreApi({ api });
     const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
-    const prefetch = (page && (await Prefetch({ api, page }))) || null;
+    const prefetch = await Prefetch({ api, page });
 
     return (
         <Page>

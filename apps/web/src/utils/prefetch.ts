@@ -12,6 +12,9 @@ export type PrefetchData = {
     vendors?: VendorModel[];
 };
 
+/**
+ * @deprecated Migrate to the preloading pattern {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}.
+ */
 const Prefetch = ({
     api,
     page,

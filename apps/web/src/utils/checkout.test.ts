@@ -87,7 +87,7 @@ describe('utils', () => {
                 }
             }
         } as any;
-        const locale = Locale.from('en-US');
+        const locale = Locale.from('en-US')!;
 
         beforeEach(() => {
             (window as any).uetq = [];

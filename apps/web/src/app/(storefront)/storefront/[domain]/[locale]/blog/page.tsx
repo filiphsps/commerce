@@ -102,7 +102,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         const api = await StorefrontApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-        const prefetch = (page && (await Prefetch({ api, page }))) || null;
+        const prefetch = await Prefetch({ api, page });
         const blog = await BlogApi({ api, handle: 'news' });
 
         return (
