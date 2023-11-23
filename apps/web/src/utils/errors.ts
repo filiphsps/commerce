@@ -3,6 +3,7 @@ export class CommerceError<T = unknown> extends Error {
     public readonly name!: string;
     public readonly details!: string;
     public readonly code!: T;
+    public readonly statusCode?: number;
 
     public constructor() {
         super(...arguments);
@@ -32,8 +33,8 @@ export type ApiErrorKind =
     | 'API_ICON_HEIGHT_NO_FRACTIONAL'
     | 'API_ICON_HEIGHT_OUT_OF_BOUNDS';
 export class ApiError extends CommerceError<ApiErrorKind> {
-    public statusCode: number = 400;
-    name = 'Unknown API Error';
+    statusCode = 400;
+    name = 'Unknown Error';
     details = 'An unknown error occurred';
     code = 'API_UNKNOWN_ERROR' as ApiErrorKind;
 }
@@ -41,23 +42,17 @@ export class ApiError extends CommerceError<ApiErrorKind> {
 export class UnknownApiError extends ApiError {
     statusCode = 404;
 }
-
-export class UnknownShopDomainError extends ApiError {
-    statusCode = 404;
+export class UnknownShopDomainError extends UnknownApiError {
     name = 'Unknown shop domain';
     details = 'Could not find a shop with the given domain';
     code = 'API_UNKNOWN_SHOP_DOMAIN' as const;
 }
-
-export class UnknownCommerceProviderError extends ApiError {
-    statusCode = 404;
+export class UnknownCommerceProviderError extends UnknownApiError {
     name = 'Unknown commerce provider';
     details = 'Could not find a commerce provider with the given type';
     code = 'API_UNKNOWN_COMMERCE_PROVIDER' as const;
 }
-
-export class UnknownLocaleError extends ApiError {
-    statusCode = 404;
+export class UnknownLocaleError extends UnknownApiError {
     name = 'Unknown locale';
     details = 'Unsupported or invalid locale code was provided';
     code = 'API_UNKNOWN_LOCALE' as const;
@@ -104,7 +99,7 @@ export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
         case 400:
             return ApiError;
         case 404:
-            return UnknownApiError;
+            return NotFoundError;
         case 405:
             return MethodNotAllowedError;
         case 429:
@@ -114,9 +109,10 @@ export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
     return ApiError;
 };
 
-export type GenericErrorKind = 'GENERIC_UNKNOWN_ERROR' | 'GENERIC_TODO';
+export type GenericErrorKind = 'GENERIC_UNKNOWN_ERROR' | 'GENERIC_TODO' | 'NOT_FOUND';
 export class GenericError extends CommerceError<GenericErrorKind> {
-    name = 'Unknown APIError';
+    statusCode = 500;
+    name = 'Unknown Error';
     details = 'An unknown error occurred';
     code = 'GENERIC_UNKNOWN_ERROR' as GenericErrorKind;
 }
@@ -125,5 +121,15 @@ export class TodoError extends GenericError {
     details = 'This feature is not implemented yet';
     code = 'GENERIC_TODO' as const;
 }
+export class NotFoundError extends GenericError {
+    statusCode = 404;
+    name = 'Not Found';
+    details = 'The requested resource could not be found';
+    code = 'NOT_FOUND' as const;
+}
+
+export const isNotFoundError = (error: GenericError | unknown): boolean =>
+    (error as any).statusCode === 404 ||
+    ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e));
 
 /* c8 ignore stop */

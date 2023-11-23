@@ -14,8 +14,8 @@ vi.mock('@shopify/hydrogen-react', () => ({
     useCart: vi.fn()
 }));
 
-const USA = Locale.from('en-US');
-const GER = Locale.from('de-DE');
+const USA = Locale.from('en-US')!;
+const GER = Locale.from('de-DE')!;
 
 describe('hooks', () => {
     describe('useCartUtils', () => {

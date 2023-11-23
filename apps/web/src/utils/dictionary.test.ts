@@ -34,7 +34,7 @@ describe('utils', () => {
         });
 
         it('should return the correct dictionary for a locale', async () => {
-            const locale = Locale.from('en-US');
+            const locale = Locale.from('en-US')!;
             const i18n = await getDictionary(locale);
             expect(typeof i18n).toBe('object');
             expect(typeof i18n.cart).toBe('object');
