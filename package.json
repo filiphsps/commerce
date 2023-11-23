@@ -74,7 +74,7 @@
         "typescript": "5.3.2"
     },
     "dependencies": {
-        "@nordcom/nordstar": "0.0.10"
+        "@nordcom/nordstar": "0.0.11"
     },
     "packageManager": "npm@10.2.4",
     "nextBundleAnalysis": {
