@@ -20,7 +20,7 @@ export const PagesApi = async ({
 
         try {
             const pages = await client.getAllByType('custom_page', {
-                lang: locale.locale
+                lang: locale.code
             });
 
             if (!pages) return reject(new Error('404: No pages found'));
@@ -34,7 +34,7 @@ export const PagesApi = async ({
                     return resolve(await PagesApi({ shop, locale: DefaultLocale(), client, exclude })); // Try again with default locale.
                 }
 
-                return reject(new Error(`404: "Pages" for the locale "${locale.locale}" cannot be found`));
+                return reject(new Error(`404: "Pages" for the locale "${locale.code}" cannot be found`));
             }
 
             console.error(error);
@@ -69,7 +69,7 @@ export const PageApi = async <T extends 'collection_page' | 'product_page' | 'cu
 
         try {
             const { data: page } = await client.getByUID(type, handle, {
-                lang: locale.locale
+                lang: locale.code
             });
 
             if (!page) return resolve({ page: null });

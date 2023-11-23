@@ -18,7 +18,7 @@ export const HeaderApi = async ({
 
         try {
             const res = await client.getSingle('head', {
-                lang: locale.locale
+                lang: locale.code
             });
             return resolve(res.data as any as HeaderModel);
         } catch (error: any) {
@@ -27,7 +27,7 @@ export const HeaderApi = async ({
                     return resolve(await HeaderApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
                 }
 
-                return reject(new Error(`404: "Header" with the locale "${locale.locale}" cannot be found`));
+                return reject(new Error(`404: "Header" with the locale "${locale.code}" cannot be found`));
             }
 
             console.error(error);

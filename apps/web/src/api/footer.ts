@@ -18,7 +18,7 @@ export const FooterApi = async ({
 
         try {
             const res = await client.getSingle('footer', {
-                lang: locale.locale
+                lang: locale.code
             });
 
             return resolve({
@@ -34,7 +34,7 @@ export const FooterApi = async ({
                     return resolve(await FooterApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
                 }
 
-                return reject(new Error(`404: "Footer" with the locale "${locale.locale}" cannot be found`));
+                return reject(new Error(`404: "Footer" with the locale "${locale.code}" cannot be found`));
             }
 
             console.error(error);

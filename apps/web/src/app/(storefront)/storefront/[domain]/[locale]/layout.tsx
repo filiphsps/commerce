@@ -1,7 +1,7 @@
 import '@/styles/app.scss';
 
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { notFound } from 'next/navigation';
@@ -39,11 +39,11 @@ export async function generateViewport({
     params: LayoutParams;
 }): Promise<Viewport> {
     const shop = await ShopApi({ domain });
-    const locale = NextLocaleToLocale(localeData);
+    const locale = Locale.from(localeData);
     if (!locale) return {};
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
 
     return {
         themeColor: store.accent.secondary,
@@ -59,14 +59,14 @@ export async function generateMetadata({
     params: LayoutParams;
 }): Promise<Metadata> {
     const shop = await ShopApi({ domain });
-    const locale = NextLocaleToLocale(localeData);
+    const locale = Locale.from(localeData);
     if (!locale) return notFoundMetadata;
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
 
     return {
-        metadataBase: new URL(`https://${domain}/${locale.locale}/`),
+        metadataBase: new URL(`https://${domain}/${locale.code}/`),
         title: {
             default: store.name,
             // Allow tenants to customize this.
@@ -101,20 +101,20 @@ export default async function RootLayout({
 }) {
     try {
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
         const i18n = await getDictionary(locale);
         const apiConfig = await shopifyApiConfig({ shop });
         const api = await StorefrontApiClient({ shop, locale, apiConfig });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const navigation = await NavigationApi({ shop, locale });
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });
 
         return (
             <html
-                lang={locale.locale}
+                lang={locale.code}
                 className={`${font.variable}`}
                 style={
                     {
@@ -131,7 +131,7 @@ export default async function RootLayout({
                         type="Organization"
                         name={store.name}
                         description={store.description}
-                        url={`https://${domain}/${locale.locale}/`}
+                        url={`https://${domain}/${locale.code}/`}
                         logo={store.favicon?.src || store.logos?.primary?.src}
                         foundingDate="2023"
                         founders={[
@@ -167,7 +167,7 @@ export default async function RootLayout({
                             contactType: 'Customer relations and support',
                             email: 'hello@sweetsideofsweden.com',
                             telephone: '+1 866 502 5580',
-                            url: `https://${domain}/${locale.locale}/about/`,
+                            url: `https://${domain}/${locale.code}/about/`,
                             availableLanguage: ['English', 'Swedish']
                         }}
                         sameAs={store?.social?.map(({ url }) => url)}
@@ -175,10 +175,10 @@ export default async function RootLayout({
                     <SiteLinksSearchBoxJsonLd
                         useAppDir
                         name={store.name}
-                        url={`https://${domain}/${locale.locale}/`}
+                        url={`https://${domain}/${locale.code}/`}
                         potentialActions={[
                             {
-                                target: `https://${domain}/${locale.locale}/search/?q`,
+                                target: `https://${domain}/${locale.code}/search/?q`,
                                 queryInput: 'search_term_string'
                             }
                         ]}

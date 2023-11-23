@@ -1,6 +1,6 @@
 import type { Shop } from '@/api/shop';
 import { Checkout } from '@/utils/checkout';
-import type { Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -87,11 +87,7 @@ describe('utils', () => {
                 }
             }
         } as any;
-        const locale: Locale = {
-            locale: 'en-US',
-            language: 'EN',
-            country: 'US'
-        };
+        const locale = Locale.from('en-US');
 
         beforeEach(() => {
             (window as any).uetq = [];

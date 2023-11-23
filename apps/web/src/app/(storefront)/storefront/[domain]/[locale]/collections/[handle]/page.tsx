@@ -39,7 +39,7 @@ export async function generateStaticParams() {
 
                         return collections.map(({ handle }) => ({
                             domain: shop.domains.primary,
-                            locale: locale.locale,
+                            locale: locale.code,
                             handle
                         }));
                     })
@@ -65,7 +65,7 @@ export async function generateMetadata({
         if (!locale) return notFoundMetadata;
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = store.i18n.locales;
@@ -79,7 +79,7 @@ export async function generateMetadata({
             title: page?.meta_title || collection.title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}/collections/${handle}/`,
+                canonical: `https://${domain}/${locale.code}/collections/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
@@ -94,7 +94,7 @@ export async function generateMetadata({
                 title: page?.meta_title || collection.title,
                 description,
                 siteName: store?.name,
-                locale: locale.locale,
+                locale: locale.code,
                 images:
                     (page?.meta_image && [
                         {
@@ -133,7 +133,7 @@ export default async function CollectionPage({
 
         const i18n = await getDictionary(locale);
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const collection = await CollectionApi({ api, handle });
 
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });

@@ -5,16 +5,74 @@ import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 
 // TODO: This should be tenant configurable.
-const defaultLocale = BuildConfig.i18n.default;
+const defaultLocale = BuildConfig?.i18n?.default || 'en-US'; // FIXME: Don't hardcode `en-US`.
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 
-export type Locale = {
-    locale: string; // xx-XX
+type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
+type LocaleInstance = {
+    /**
+     * @deprecated Use `code` instead.
+     */
+    locale: Code;
+
+    code: Code;
     language: LanguageCode;
-    country: CountryCode;
-    currency?: CurrencyCode;
+    country?: CountryCode;
 };
+
+export class Locale implements LocaleInstance {
+    public code!: Code;
+    public language!: LanguageCode;
+    public country?: CountryCode;
+
+    /**
+     * @deprecated Use `code` instead.
+     */
+    public locale!: Code;
+
+    private constructor({ language, country }: { language: LanguageCode; country?: CountryCode }) {
+        this.language = language;
+        this.country = country;
+
+        if (typeof country !== 'undefined') {
+            this.code = `${language.toLowerCase()}-${country.toUpperCase()}` as Code;
+        } else {
+            this.code = `${language.toLowerCase()}` as Code;
+        }
+
+        this.locale = this.code;
+    }
+
+    static from(data: { language: LanguageCode; country?: CountryCode } | Code | string) {
+        const wrap = (locale: Locale) => Object.freeze(Object.fromEntries(Object.entries(locale)) as LocaleInstance);
+
+        if (typeof data === 'string') {
+            const code = data.toUpperCase() as Uppercase<Code>;
+
+            if (!code || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
+                return null;
+                // FIXME: `throw new UnknownLocaleError();`.
+            }
+
+            if (code.length === 2) {
+                return wrap(new Locale({ language: code as LanguageCode }));
+            }
+
+            const [language, country] = code.split('-') as [LanguageCode, CountryCode?];
+            return wrap(new Locale({ language, country }));
+        } else {
+            const { language, country } = data;
+
+            if (language.length !== 2 || (typeof country !== 'undefined' && language.length !== 2)) {
+                return null;
+                // FIXME: `throw new UnknownLocaleError();`.
+            }
+
+            return wrap(new Locale({ language, country }));
+        }
+    }
+}
 
 /**
  * Converts a locale string to a `CountryCode`.
@@ -55,29 +113,25 @@ export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode;
  *         the default locale is defined in `Config.i18n.default` and
  *         is not tenant configurable at the moment.
  *
+ * @deprecated Use {@link Locale.from} instead.
+ *
  * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {Locale} `Locale` object.
  */
 export const NextLocaleToLocale = (code: string): Locale | null => {
+    // Legacy handling.
     if (!code || code.length < 2 || code.length > 5 || (code.length > 2 && !code.includes('-'))) {
-        // FIXME: Handle invalid locales in a better way.
         return null;
     }
 
+    // Legacy handling.
     if (code.length === 2) {
-        // FIXME: Get default country for a given language.
         throw new Error('Not implemented');
     }
 
     const country = NextLocaleToCountry(code);
     const language = NextLocaleToLanguage(code);
-    return {
-        locale: `${language.toLowerCase()}-${country}`,
-        language,
-        country,
-        // TODO: Add currency.
-        currency: undefined //NextLocaleToCurrency({ country, store })
-    };
+    return Locale.from({ language, country });
 };
 
 /**
@@ -86,7 +140,7 @@ export const NextLocaleToLocale = (code: string): Locale | null => {
  * @returns {Locale} `Locale` object.
  */
 export const DefaultLocale = (): Locale => {
-    return NextLocaleToLocale(defaultLocale)!;
+    return Locale.from(defaultLocale)!;
 };
 
 /**
@@ -96,7 +150,7 @@ export const DefaultLocale = (): Locale => {
  * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
  */
 export const isDefaultLocale = (locale: Locale): boolean => {
-    return locale.locale === defaultLocale;
+    return locale.code === defaultLocale;
 };
 
 export type DeepKeys<T> = T extends object

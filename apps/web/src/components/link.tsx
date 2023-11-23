@@ -43,7 +43,7 @@ export default function Link({ shop, locale, href, prefetch, ...props }: Props) 
         // Check if any lang (xx-YY) is already a part of the URL.
         if (!/\/[a-z]{2}-[A-Z]{2}\//.test(url.pathname)) {
             // Add locale to href.
-            url.pathname = `/${locale.locale}${url.pathname}`;
+            url.pathname = `/${locale.code}${url.pathname}`;
         }
     }
 

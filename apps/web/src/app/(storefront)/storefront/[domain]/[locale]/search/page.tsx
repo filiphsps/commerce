@@ -7,7 +7,7 @@ import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { DefaultLocale, NextLocaleToLocale, useTranslation } from '@/utils/locale';
+import { DefaultLocale, Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -29,9 +29,9 @@ export async function generateStaticParams() {
                 const api = await StorefrontApiClient({ shop, locale });
                 const locales = await LocalesApi({ api });
 
-                return locales.map(({ locale }) => ({
+                return locales.map(({ code }) => ({
                     domain: shop.domains.primary,
-                    locale: locale
+                    locale: code
                 }));
             })
         )
@@ -49,11 +49,11 @@ export async function generateMetadata({
     try {
         const shop = await ShopApi({ domain });
         const handle = 'search';
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const locales = store.i18n.locales;
         const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
         const i18n = await getDictionary(locale);
@@ -65,7 +65,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}/${handle}/`,
+                canonical: `https://${domain}/${locale.code}/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
@@ -80,7 +80,7 @@ export async function generateMetadata({
                 title,
                 description,
                 siteName: store?.name,
-                locale: locale.locale,
+                locale: locale.code,
                 images:
                     (page?.meta_image && [
                         {
@@ -94,9 +94,8 @@ export async function generateMetadata({
                     undefined
             }
         };
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
             return notFoundMetadata;
         }
 
@@ -108,12 +107,12 @@ export async function generateMetadata({
 export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     try {
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFound();
         const i18n = await getDictionary(locale);
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const prefetch = (page && (await Prefetch({ api, page }))) || null;
@@ -142,9 +141,8 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                 </PageContent>
             </Page>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
             return notFound();
         }
 

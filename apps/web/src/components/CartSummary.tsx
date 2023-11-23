@@ -125,12 +125,6 @@ const FreeShipping = styled(FreeShippingProgress)`
     border-top: calc(var(--block-border-width) / 1.5) dotted var(--color-gray);
 `;
 
-const Center = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 const BreakdownItemMoney = styled.div`
     font-weight: 500;
     font-size: 1.5rem;

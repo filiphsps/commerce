@@ -20,7 +20,7 @@ export const CurrentLocaleFlag = ({
         <Image
             {...props}
             className={`${styles.flag} ${className}`}
-            alt={alt}
+            alt={alt!}
             aria-label={alt}
             width={width || '24'}
             height={height || '16'}

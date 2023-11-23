@@ -15,16 +15,19 @@ describe('utils', () => {
 
             expect(locales).toEqual([
                 {
+                    code: 'en-US',
                     locale: 'en-US',
                     language: 'EN',
                     country: 'US'
                 },
                 {
+                    code: 'fr-CA',
                     locale: 'fr-CA',
                     language: 'FR',
                     country: 'CA'
                 },
                 {
+                    code: 'es-MX',
                     locale: 'es-MX',
                     language: 'ES',
                     country: 'MX'
@@ -37,16 +40,19 @@ describe('utils', () => {
 
             expect(locales).toEqual([
                 {
+                    code: 'en-US',
                     locale: 'en-US',
                     language: 'EN',
                     country: 'US'
                 },
                 {
+                    code: 'fr-CA',
                     locale: 'fr-CA',
                     language: 'FR',
                     country: 'CA'
                 },
                 {
+                    code: 'es-MX',
                     locale: 'es-MX',
                     language: 'ES',
                     country: 'MX'
@@ -171,16 +177,19 @@ describe('utils', () => {
 
             expect(locales).toEqual([
                 {
+                    code: 'en-US',
                     locale: 'en-US',
                     language: 'EN',
                     country: 'US'
                 },
                 {
+                    code: 'fr-CA',
                     locale: 'fr-CA',
                     language: 'FR',
                     country: 'CA'
                 },
                 {
+                    code: 'es-MX',
                     locale: 'es-MX',
                     language: 'ES',
                     country: 'MX'

@@ -16,7 +16,7 @@ import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
@@ -47,11 +47,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = store.i18n.locales;
@@ -72,7 +72,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}/products/${handle}/`,
+                canonical: `https://${domain}/${locale.code}/products/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
@@ -87,7 +87,7 @@ export async function generateMetadata({
                 title,
                 description,
                 siteName: store?.name,
-                locale: locale.locale,
+                locale: locale.code,
                 images: image
             }
         };
@@ -111,7 +111,7 @@ export default async function ProductPage({
 }) {
     try {
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFound();
         const i18n = await getDictionary(locale);
 
@@ -129,7 +129,7 @@ export default async function ProductPage({
         }
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const reviews = await ProductReviewsApi({ api, product });
 
@@ -311,9 +311,9 @@ export default async function ProductPage({
                             availability: variant.availableForSale
                                 ? 'https://schema.org/InStock'
                                 : 'https://schema.org/SoldOut',
-                            url: `https://${shop.domains.primary}/${locale.locale}/products/${
-                                product.handle
-                            }/?variant=${parseGid(variant.id).id}`,
+                            url: `https://${shop.domains.primary}/${locale.code}/products/${product.handle}/?variant=${
+                                parseGid(variant.id).id
+                            }`,
                             seller: {
                                 name: store.name
                             },

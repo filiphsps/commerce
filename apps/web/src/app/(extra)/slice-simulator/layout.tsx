@@ -18,10 +18,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     const locale = DefaultLocale();
     const shopifyApi = await shopifyApiConfig({ shop });
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
 
     return (
-        <html lang={locale.locale}>
+        <html lang={locale.code}>
             <head />
             <body>
                 <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()} store={store}>

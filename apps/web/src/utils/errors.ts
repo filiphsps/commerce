@@ -24,6 +24,7 @@ export type ApiErrorKind =
     | 'API_UNKNOWN_ERROR'
     | 'API_UNKNOWN_SHOP_DOMAIN'
     | 'API_UNKNOWN_COMMERCE_PROVIDER'
+    | 'API_UNKNOWN_LOCALE'
     | 'API_TOO_MANY_REQUESTS'
     | 'API_METHOD_NOT_ALLOWED'
     | 'API_ICON_WIDTH_NO_FRACTIONAL'
@@ -32,23 +33,34 @@ export type ApiErrorKind =
     | 'API_ICON_HEIGHT_OUT_OF_BOUNDS';
 export class ApiError extends CommerceError<ApiErrorKind> {
     public statusCode: number = 400;
-    name = 'Unknown APIError';
+    name = 'Unknown API Error';
     details = 'An unknown error occurred';
     code = 'API_UNKNOWN_ERROR' as ApiErrorKind;
 }
 
-export class UnknownApiError extends ApiError {}
+export class UnknownApiError extends ApiError {
+    statusCode = 404;
+}
 
 export class UnknownShopDomainError extends ApiError {
+    statusCode = 404;
     name = 'Unknown shop domain';
     details = 'Could not find a shop with the given domain';
     code = 'API_UNKNOWN_SHOP_DOMAIN' as const;
 }
 
 export class UnknownCommerceProviderError extends ApiError {
+    statusCode = 404;
     name = 'Unknown commerce provider';
     details = 'Could not find a commerce provider with the given type';
     code = 'API_UNKNOWN_COMMERCE_PROVIDER' as const;
+}
+
+export class UnknownLocaleError extends ApiError {
+    statusCode = 404;
+    name = 'Unknown locale';
+    details = 'Unsupported or invalid locale code was provided';
+    code = 'API_UNKNOWN_LOCALE' as const;
 }
 
 export class TooManyRequestsError extends ApiError {
@@ -91,6 +103,8 @@ export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
     switch (statusCode) {
         case 400:
             return ApiError;
+        case 404:
+            return UnknownApiError;
         case 405:
             return MethodNotAllowedError;
         case 429:

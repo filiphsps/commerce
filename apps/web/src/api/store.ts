@@ -1,7 +1,7 @@
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { DefaultLocale, NextLocaleToLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { DefaultLocale, isDefaultLocale, Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
@@ -45,9 +45,7 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
             const countries = await CountriesApi({ api });
             const locales = countries.flatMap((country) =>
                 country.availableLanguages
-                    .map((language) =>
-                        NextLocaleToLocale(`${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`)
-                    )
+                    .map((language) => Locale.from({ language: language.isoCode, country: country.isoCode }))
                     .filter((_) => _)
             ) as Locale[];
 
@@ -64,17 +62,23 @@ export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[
     });
 };
 
+/**
+ * Get store details.
+ *
+ * @todo deprecate - This functionality will be moved into the {@link ShopApi} in the future.
+ */
 export const StoreApi = async ({
-    locale,
+    locale: _locale,
     client: _client,
     api
 }: {
-    locale: Locale;
+    locale?: Locale;
     client?: PrismicClient;
     api: AbstractApi;
 }): Promise<StoreModel> => {
     return new Promise(async (resolve, reject) => {
         const shop = api.shop();
+        const locale = _locale || api.locale();
         const client = _client || createClient({ shop, locale });
 
         try {
@@ -119,7 +123,7 @@ export const StoreApi = async ({
             const { data: store }: StoreDocument = await (async () => {
                 try {
                     return await client.getSingle('store', {
-                        lang: locale.locale,
+                        lang: locale.code,
                         fetchOptions: {
                             cache: undefined,
                             next: {
