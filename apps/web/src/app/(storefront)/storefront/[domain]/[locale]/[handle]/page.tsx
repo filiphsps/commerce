@@ -7,7 +7,7 @@ import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { DefaultLocale, Locale, NextLocaleToLocale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -33,7 +33,7 @@ export async function generateStaticParams() {
 
                         return pages.map(({ uid: handle }) => ({
                             domain: shop.domains.primary,
-                            locale: locale.locale,
+                            locale: locale.code,
                             handle
                         }));
                     })
@@ -59,7 +59,7 @@ export async function generateMetadata({
         if (!locale) return notFoundMetadata;
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const locales = store.i18n.locales;
 
         const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
@@ -75,7 +75,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}${path}`,
+                canonical: `https://${domain}/${locale.code}${path}`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
@@ -96,23 +96,29 @@ export async function generateMetadata({
     }
 }
 /* c8 ignore stop */
-
 export default async function CustomPage({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeCode, handle }
 }: {
     params: CustomPageParams;
 }) {
     try {
         if (!isValidHandle(handle)) return notFound();
 
+        // Fetch the current shop.
         const shop = await ShopApi({ domain });
-        const locale = NextLocaleToLocale(localeData);
+
+        // Creates a locale object from a locale code (e.g. `en-US`).
+        const locale = Locale.from(localeCode);
         if (!locale) return notFound();
 
-        const i18n = await getDictionary(locale);
-        const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        // Get dictionary of strings for the current locale.
+        const i18n = await getDictionary({ shop, locale });
 
+        // Setup the AbstractApi client.
+        const api = await StorefrontApiClient({ shop, locale });
+
+        // Do the actual API calls.
+        const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
 
         if (!page) return notFound(); // TODO: Return proper error.

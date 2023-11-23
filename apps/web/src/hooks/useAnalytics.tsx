@@ -147,7 +147,7 @@ export function useAnalytics({ locale, shop, pagePropsAnalyticsData }: useAnalyt
         shopId: shop.configuration.commerce.id,
         shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
         storefrontId: shop.configuration.commerce.storefrontId,
-        currency: locale.currency,
+        currency: cost?.totalAmount?.currencyCode!, //locale.currency, // FIXME: Currency support!
         acceptedLanguage: locale.language,
         hasUserConsent: true,
         isMerchantRequest: true,

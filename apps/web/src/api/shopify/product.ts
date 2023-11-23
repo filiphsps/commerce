@@ -205,7 +205,7 @@ export const ConvertToLocalMeasurementSystem = ({
     };
     // FIXME: Support more than just US here, because apparently there's alot
     //        more countries out there using imperial.
-    const metric = locale.country.toLowerCase() !== 'us';
+    const metric = locale.country && locale.country.toLowerCase() !== 'us';
     const unit = weightUnitToConvertUnits(weightUnit);
     // TODO: Do this properly.
     const targetUnit = (metric && 'g') || 'oz';

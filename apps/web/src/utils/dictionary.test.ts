@@ -1,5 +1,6 @@
 import type { DictionaryLanguageCode } from '@/i18n/dictionary';
 import { dictionaries, getDictionary } from '@/i18n/dictionary';
+import { Locale } from '@/utils/locale';
 import { describe, expect, it } from 'vitest';
 
 describe('utils', () => {
@@ -33,7 +34,8 @@ describe('utils', () => {
         });
 
         it('should return the correct dictionary for a locale', async () => {
-            const i18n = await getDictionary({ locale: 'en-US', country: 'US', language: 'EN' });
+            const locale = Locale.from('en-US');
+            const i18n = await getDictionary(locale);
             expect(typeof i18n).toBe('object');
             expect(typeof i18n.cart).toBe('object');
             expect(typeof i18n.common).toBe('object');

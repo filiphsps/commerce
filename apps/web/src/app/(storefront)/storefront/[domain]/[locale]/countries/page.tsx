@@ -52,7 +52,7 @@ export async function generateMetadata({
     if (!locale) return notFoundMetadata;
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
     const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
     const locales = store.i18n.locales;
     const i18n = await getDictionary(locale);
@@ -65,7 +65,7 @@ export async function generateMetadata({
         title,
         description,
         alternates: {
-            canonical: `https://${domain}/${locale.locale}/countries/`,
+            canonical: `https://${domain}/${locale.code}/countries/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
@@ -80,7 +80,7 @@ export async function generateMetadata({
             title,
             description,
             siteName: store?.name,
-            locale: locale.locale,
+            locale: locale.code,
             images:
                 (page?.meta_image && [
                     {
@@ -108,7 +108,7 @@ export default async function CountriesPage({
     const i18n = await getDictionary(locale);
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
     const countries = await CountriesApi({ api });
 
     const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });

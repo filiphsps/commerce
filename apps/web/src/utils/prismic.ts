@@ -2,8 +2,7 @@ import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/clie
 
 import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
@@ -86,7 +85,7 @@ export const createClient = ({
             next: { tags: defaultTags }
         },
         defaultParams: {
-            lang: locale.locale!
+            lang: locale.code!
         },
         ...config
     });
@@ -100,22 +99,22 @@ export const createClient = ({
 };
 
 export const linkResolver: LinkResolverFunction<any> = (doc) => {
-    const locale = NextLocaleToLocale(doc.lang)!; // FIXME: handle invalid locales.
+    const { code: locale } = Locale.from(doc.lang)!; // FIXME: handle invalid locales.
 
     if (doc.type === 'custom_page') {
-        if (doc.uid === 'homepage') return `/${locale.locale}/`;
-        else if (doc.uid === 'countries') return `/${locale.locale}/countries/`;
-        else if (doc.uid === 'search') return `/${locale.locale}/search/`;
-        else if (doc.uid === 'cart') return `/${locale.locale}/cart/`;
-        else if (doc.uid === 'blog') return `/${locale.locale}/blog/`;
+        if (doc.uid === 'homepage') return `/${locale}/`;
+        else if (doc.uid === 'countries') return `/${locale}/countries/`;
+        else if (doc.uid === 'search') return `/${locale}/search/`;
+        else if (doc.uid === 'cart') return `/${locale}/cart/`;
+        else if (doc.uid === 'blog') return `/${locale}/blog/`;
         // TODO: Handle pages with multi-level paths.
-        else if (doc.uid) return `/${locale.locale}/${doc.uid}/`;
+        else if (doc.uid) return `/${locale}/${doc.uid}/`;
     } else if (doc.type === 'product_page') {
-        return `/${locale.locale}/products/${doc.uid}/`;
+        return `/${locale}/products/${doc.uid}/`;
     } else if (doc.type === 'collection_page') {
-        return `/${locale.locale}/collection/${doc.uid}/`;
+        return `/${locale}/collection/${doc.uid}/`;
     } else if (doc.type === 'article_page') {
-        return `/${locale.locale}/collection/${doc.uid}/`;
+        return `/${locale}/collection/${doc.uid}/`;
     }
 
     return null;

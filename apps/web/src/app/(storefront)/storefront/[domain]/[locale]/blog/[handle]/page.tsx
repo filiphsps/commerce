@@ -32,7 +32,7 @@ export async function generateStaticParams() {
 
                         return blog.articles.edges.map(({ node: { handle } }) => ({
                             domain: shop.domains.primary,
-                            locale: locale.locale,
+                            locale: locale.code,
                             handle
                         }));
                     })
@@ -57,7 +57,7 @@ export async function generateMetadata({
 
         const api = await StorefrontApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const locales = store.i18n.locales;
 
         const title = article.seo?.title || article.title;
@@ -66,7 +66,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.locale}/blog/${handle}/`,
+                canonical: `https://${domain}/${locale.code}/blog/${handle}/`,
                 languages: locales.reduce(
                     (prev, { locale }) => ({
                         ...prev,
@@ -81,7 +81,7 @@ export async function generateMetadata({
                 title,
                 description,
                 siteName: store?.name,
-                locale: locale.locale,
+                locale: locale.code,
                 images: []
             }
         };
@@ -106,7 +106,7 @@ export default async function ArticlePage({
         if (!locale) return notFound();
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api, locale });
+        const store = await StoreApi({ api });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
@@ -117,7 +117,7 @@ export default async function ArticlePage({
 
                 <NewsArticleJsonLd
                     useAppDir
-                    url={`https://${shop.domains.primary}/${locale.locale}/blog/${handle}/`}
+                    url={`https://${shop.domains.primary}/${locale.code}/blog/${handle}/`}
                     description={article.seo?.description || article.excerpt || ''}
                     body={article.content}
                     title={article.title}

@@ -125,11 +125,11 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
 
     useEffect(() => {
         if (!query) {
-            window.history.replaceState(null, '', `/${locale.locale}/search/`);
+            window.history.replaceState(null, '', `/${locale.code}/search/`);
             return;
         }
 
-        window.history.replaceState(null, '', `/${locale.locale}/search/?q=${encodeURI(query)}`);
+        window.history.replaceState(null, '', `/${locale.code}/search/?q=${encodeURI(query)}`);
     }, [query]);
 
     const {
@@ -160,7 +160,7 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) =>
-                            e.key === 'Enter' && router.push(`/${locale.locale}/search/?q=${encodeURI(input)}`)
+                            e.key === 'Enter' && router.push(`/${locale.code}/search/?q=${encodeURI(input)}`)
                         }
                         autoFocus={true}
                         spellCheck={false}
@@ -176,7 +176,7 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
 
                 <SearchButton
                     //disabled={!router.isReady}
-                    onClick={() => router.push(`/${locale.locale}/search/?q=${encodeURI(input)}`)}
+                    onClick={() => router.push(`/${locale.code}/search/?q=${encodeURI(input)}`)}
                     /* TODO: Make this configurable. */
                     title="Press this to search the world of Swedish sweets and candy"
                 >

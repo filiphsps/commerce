@@ -96,7 +96,7 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                                 locale={NextLocaleToLocale(country.locale)!}
                                 title={`${country.country} (${country.language})`}
                                 className={`${styles.locale} ${
-                                    (country.locale === locale.locale && styles.active) || ''
+                                    (country.locale === locale.code && styles.active) || ''
                                 }`}
                                 scroll={false}
                                 replace={true}

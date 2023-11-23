@@ -14,7 +14,7 @@ export type MenuItemProps = {
     locale: Locale;
 };
 export const MenuItem = ({ data, locale, children }: MenuItemProps) => {
-    const route = usePathname().replace(`/${locale.locale}`, '');
+    const route = usePathname().replace(`/${locale.code}`, '');
     let target: string = data.handle || '/';
 
     if (!target.startsWith('/') || target === '') target = `/${target}`;
@@ -43,7 +43,7 @@ export type SubMenuItemProps = {
     locale: Locale;
 };
 export const SubMenuItem = ({ children, data, locale }: SubMenuItemProps) => {
-    const route = usePathname().replace(`/${locale.locale}`, '');
+    const route = usePathname().replace(`/${locale.code}`, '');
     let target: string = data.handle || '/';
 
     if (!target.startsWith('/') || target === '') target = `/${target}`;

@@ -42,7 +42,7 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
             ...(buyerIdentity as any),
             countryCode: locale.country
         });
-    }, [locale.locale, buyerIdentity]);
+    }, [locale.code, buyerIdentity]);
 
     // Discount codes in url
     useEffect(() => {

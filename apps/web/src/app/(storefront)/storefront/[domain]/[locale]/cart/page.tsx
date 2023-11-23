@@ -51,7 +51,7 @@ export async function generateMetadata({
     const handle = 'cart';
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
     const locales = store.i18n.locales;
     const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
     const i18n = await getDictionary(locale);
@@ -64,7 +64,7 @@ export async function generateMetadata({
         title,
         description,
         alternates: {
-            canonical: `https://${domain}/${locale.locale}/${handle}/`,
+            canonical: `https://${domain}/${locale.code}/${handle}/`,
             languages: locales.reduce(
                 (prev, { locale }) => ({
                     ...prev,
@@ -79,7 +79,7 @@ export async function generateMetadata({
             title,
             description,
             siteName: store?.name,
-            locale: locale.locale,
+            locale: locale.code,
             images:
                 (page?.meta_image && [
                     {
@@ -104,7 +104,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
     const handle = 'cart';
 
     const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api, locale });
+    const store = await StoreApi({ api });
     const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
     const prefetch = (page && (await Prefetch({ api, page }))) || null;
 

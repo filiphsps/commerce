@@ -27,7 +27,7 @@ export const NavigationApi = async ({
 
         try {
             const navigation = await client.getSingle('navigation', {
-                lang: locale.locale
+                lang: locale.code
             });
 
             return resolve(
@@ -43,7 +43,7 @@ export const NavigationApi = async ({
                     return resolve(await NavigationApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
                 }
 
-                return reject(new Error(`404: "Navigation" with the locale "${locale.locale}" cannot be found`));
+                return reject(new Error(`404: "Navigation" with the locale "${locale.code}" cannot be found`));
             }
 
             console.error(error);

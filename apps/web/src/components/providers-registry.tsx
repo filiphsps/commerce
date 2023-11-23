@@ -72,7 +72,7 @@ export default function ProvidersRegistry({
                     storeDomain={`https://${domain}`}
                     storefrontApiVersion={BuildConfig.shopify.api}
                     storefrontToken={token}
-                    countryIsoCode={locale.country}
+                    countryIsoCode={locale.country!}
                     languageIsoCode={locale.language}
                 >
                     <CartProvider cartFragment={CartFragment}>

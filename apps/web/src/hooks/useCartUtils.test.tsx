@@ -1,4 +1,4 @@
-import type { Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSearchParams } from 'next/navigation';
@@ -14,8 +14,8 @@ vi.mock('@shopify/hydrogen-react', () => ({
     useCart: vi.fn()
 }));
 
-const USA: Locale = { locale: 'en-US', country: 'US', language: 'EN' };
-const GER: Locale = { locale: 'de-DE', country: 'DE', language: 'DE' };
+const USA = Locale.from('en-US');
+const GER = Locale.from('de-DE');
 
 describe('hooks', () => {
     describe('useCartUtils', () => {

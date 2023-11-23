@@ -37,7 +37,7 @@ describe('components', () => {
             const locale: Locale = { locale: 'sv-SE', language: 'sv', country: 'SE' } as any;
             const { container } = render(<Link href={href} locale={locale} />);
             const link = container.querySelector('a');
-            expect(link?.getAttribute('href')).toBe(`/${locale.locale}${href}`);
+            expect(link?.getAttribute('href')).toBe(`/${locale.code}${href}`);
         });
 
         it('should not add the locale to the href if it is already present', () => {

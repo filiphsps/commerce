@@ -1,5 +1,6 @@
 import 'server-only';
 
+import type { Shop } from '@/api/shop';
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
 const stub = { cart: {}, common: {} };
@@ -160,5 +161,18 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  * @param {Locale} locale - Locale to get dictionary for.
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
-export const getDictionary = async (locale: Locale): Promise<LocaleDictionary> =>
-    dictionaries[locale?.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? {};
+export const getDictionary = async (props: { shop: Shop; locale: Locale } | Locale): Promise<LocaleDictionary> => {
+    let locale: Locale, shop: Shop | undefined;
+
+    if (Object.hasOwn(props, 'shop')) {
+        const temp = props as { shop: Shop; locale: Locale };
+        locale = temp.locale;
+        // eslint-disable-next-line unused-imports/no-unused-vars
+        shop = temp.shop;
+    } else {
+        locale = props as Locale;
+    }
+
+    // TODO: Fetch tenant-specific dictionary if it exists and shop is defined.
+    return dictionaries[locale?.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? {};
+};
