@@ -376,6 +376,13 @@ const Container = styled.section<{ $available?: boolean }>`
         border: var(--block-border-width) solid var(--color-sale);
     }
 
+    .BlackFriday &,
+    .BlackFriday &.Sale {
+        background: #000000;
+        border-color: #000000;
+        color: #cccccc;
+    }
+
     ${({ $available }) =>
         !$available &&
         css`

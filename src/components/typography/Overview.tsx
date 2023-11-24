@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 
 import ContentComponent from '@/components/Content';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
 import { ImageLoader } from '@/utils/ImageLoader';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
 
 const Container = styled.div<{ $layout?: 'left' | 'right' }>`
     display: grid;
@@ -75,6 +75,11 @@ const Content = styled(ContentComponent)`
     border-radius: var(--block-border-radius);
     background: var(--color-block);
 
+    .BlackFriday & {
+        background: #242424;
+        color: #ccc;
+    }
+
     @media (min-width: 950px) {
         padding: calc(var(--block-padding-large) * 2);
         height: 100%;
@@ -102,6 +107,7 @@ const Content = styled(ContentComponent)`
 
 interface OverviewProps {
     body?: React.ReactNode;
+    className?: string;
     image?: {
         alt?: string;
         url: string;
@@ -114,11 +120,11 @@ interface OverviewProps {
     layout?: 'left' | 'right';
     style?: React.CSSProperties;
 }
-export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, style }) => {
+export const Overview: FunctionComponent<OverviewProps> = ({ body, className, image, imageStyle, layout, style }) => {
     if (!image) return <Content className="Plain">{body}</Content>;
 
     return (
-        <Container style={style} className="TextBlock Block" $layout={layout}>
+        <Container style={style} className={`TextBlock Block ${className}`} $layout={layout}>
             <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
                     <Image

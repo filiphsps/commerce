@@ -22,7 +22,7 @@ import SEO from '../../nextseo.config';
 import preval from '../data.preval';
 
 const font = Lexend_Deca({
-    weight: ['400', '500', '600', '700'],
+    weight: 'variable',
     subsets: ['latin'],
     display: 'swap',
     preload: true

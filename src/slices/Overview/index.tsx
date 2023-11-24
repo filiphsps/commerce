@@ -1,8 +1,8 @@
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
-import { Content } from '@prismicio/client';
-import { Overview } from '@/components/typography/Overview';
 import PageContent from '@/components/PageContent';
+import { Overview } from '@/components/typography/Overview';
+import { Content } from '@prismicio/client';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -41,6 +41,7 @@ const OverviewSlice = ({ slice }: OverviewProps): JSX.Element => {
                                     } as React.CSSProperties)) ||
                                 undefined
                             }
+                            className="Overview"
                             layout={item.layout}
                             image={(item.image?.url && (item.image as any)) || undefined}
                             imageStyle={item.image_style}

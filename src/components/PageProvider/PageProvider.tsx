@@ -1,20 +1,20 @@
 import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
 
-import { Config } from '@/utils/Config';
-import type { FunctionComponent } from 'react';
 import { HeaderApi } from '@/api/header';
-import type { Locale } from '@/utils/Locale';
 import { NavigationApi } from '@/api/navigation';
-import type { StoreModel } from '@/models/StoreModel';
-import { asHTML } from '@prismicio/client';
-import dynamic from 'next/dynamic';
-import preval from '../../data.preval';
-import styled from 'styled-components';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
+import type { StoreModel } from '@/models/StoreModel';
+import { Config } from '@/utils/Config';
+import type { Locale } from '@/utils/Locale';
+import { asHTML } from '@prismicio/client';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import type { FunctionComponent } from 'react';
 import { useState } from 'react';
+import styled from 'styled-components';
+import useSWR from 'swr';
+import preval from '../../data.preval';
 
 const Header = dynamic(() => import('@/components/Header'));
 const HeaderNavigation = dynamic(() => import('@/components/HeaderNavigation'));
@@ -50,6 +50,14 @@ const Announcement = styled.div`
             color: var(--accent-primary);
             font-weight: 800;
             text-decoration: underline;
+        }
+    }
+
+    .BlackFriday & {
+        &.primary,
+        &.secondary {
+            background: #000;
+            color: #ccc;
         }
     }
 `;

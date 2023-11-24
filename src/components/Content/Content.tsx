@@ -1,3 +1,4 @@
+import { HTMLProps } from 'react';
 import styled from 'styled-components';
 
 const Content = styled.div`
@@ -87,4 +88,12 @@ const Content = styled.div`
     }
 `;
 
-export default Content;
+const Wrapper = ({ className, children, ...props }: {} & HTMLProps<HTMLDivElement>) => {
+    return (
+        <Content {...props} className={`Content ${className}`}>
+            {children}
+        </Content>
+    );
+};
+
+export default Wrapper;

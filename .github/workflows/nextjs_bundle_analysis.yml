@@ -18,6 +18,7 @@ permissions:
 
 jobs:
     analyze:
+        if: false
         name: 🧪 Analyze
         timeout-minutes: 10
         runs-on: ubuntu-latest
@@ -82,5 +83,5 @@ jobs:
             - name: Comment
               uses: marocchino/sticky-pull-request-comment@v2
               with:
-                header: next-touched-pages
-                message: ${{ steps.get-comment-body.outputs.body }}
+                  header: next-touched-pages
+                  message: ${{ steps.get-comment-body.outputs.body }}

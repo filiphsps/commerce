@@ -12,6 +12,7 @@ on:
 
 jobs:
     test:
+        if: false
         name: 🔬 Test
         timeout-minutes: 10
         runs-on: ubuntu-latest

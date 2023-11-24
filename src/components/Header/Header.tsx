@@ -1,17 +1,17 @@
+import { useEffect, useState } from 'react';
 import { FiAlignLeft, FiChevronDown, FiSearch, FiShoppingBag, FiX } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useState } from 'react';
 
-import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
-import { ImageLoader } from '@/utils/ImageLoader';
 import { Input } from '@/components/Input';
-import Link from 'next/link';
-import { Pluralize } from '@/utils/Pluralize';
+import { CurrentLocaleFlag } from '@/components/layout/CurrentLocaleFlag';
 import type { StoreModel } from '@/models/StoreModel';
+import { ImageLoader } from '@/utils/ImageLoader';
+import { Pluralize } from '@/utils/Pluralize';
 import { useCart } from '@shopify/hydrogen-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
 
 const Content = styled.div`
     display: grid;
@@ -315,6 +315,10 @@ const Header = styled.header<{ $scrolled?: boolean }>`
             border-bottom-color: var(--accent-secondary);
             box-shadow: 0px 1rem 1rem -0.75rem var(--color-block-shadow);
         `}
+
+    .BlackFriday & {
+        background: var(--accent-secondary);
+    }
 
     @media (min-width: 950px) {
         height: calc(4.5rem + calc(var(--block-padding) * 2));

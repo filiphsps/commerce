@@ -2,8 +2,8 @@ import { Content, asLink } from '@prismicio/client';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 import styled, { css } from 'styled-components';
 
-import Link from 'next/link';
 import color from 'color';
+import Link from 'next/link';
 
 const Contents = styled.div`
     display: grid;
@@ -14,6 +14,11 @@ const Contents = styled.div`
     padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
     min-height: 30vh;
     max-width: 1465px;
+
+    .BlackFriday & {
+        min-height: unset;
+        padding: calc(var(--block-padding-large) * 2);
+    }
 
     @media (min-width: 950px) {
         gap: calc(var(--block-padding-large) * 2);
@@ -174,8 +179,7 @@ const Container = styled.section<{ $background: string; $fullWidth?: boolean; $s
                     padding: var(--block-padding) var(--block-padding-large);
 
                     @media (min-width: 950px) {
-                        padding: calc(var(--block-padding) * 1.25)
-                            calc(var(--block-padding-large) * 2);
+                        padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 2);
                         font-size: 1.5rem;
                         line-height: 1.5rem;
                     }
@@ -215,7 +219,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
         <Container
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            className={slice.variation}
+            className={`${slice.variation} Banner`}
             $slim={slice.variation.toLowerCase().includes('slim')}
             $background={slice.primary.background || '#cce2cb'}
         >

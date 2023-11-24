@@ -22,7 +22,7 @@ export const Subtitle = styled.h3`
     line-height: 2rem;
     font-weight: 400;
 
-    ${Content} a, a {
+    ${Content as any} a, a {
         display: inline-block;
         transition: 250ms ease-in-out all;
         cursor: pointer;

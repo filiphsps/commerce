@@ -24,6 +24,11 @@ const Content = styled.div`
     background: color-mix(in srgb, var(--background) 40%, var(--color-bright));
     border-radius: var(--block-border-radius);
     color: var(--foreground);
+
+    .BlackFriday & {
+        background: #242424;
+        color: #ccc;
+    }
 `;
 
 const Header = styled.div<{ $alignment: 'left' | 'center' | 'right' }>`

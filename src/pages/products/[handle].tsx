@@ -2,11 +2,7 @@ import { ProductApi } from '@/api/product';
 import { Badge, BadgeContainer } from '@/components/Badges';
 import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
-import type {
-    Collection,
-    Product,
-    ProductVariantEdge
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { Collection, Product, ProductVariantEdge } from '@shopify/hydrogen-react/storefront-api-types';
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
 import { useCallback, useRef, useState } from 'react';
@@ -429,7 +425,7 @@ const InformationContent = styled(TabContent)`
             line-height: 1.75rem;
         }
 
-        ${Content} {
+        ${Content as any} {
             padding: var(--block-padding-large);
             border-radius: var(--block-border-radius);
             background: var(--color-block);
