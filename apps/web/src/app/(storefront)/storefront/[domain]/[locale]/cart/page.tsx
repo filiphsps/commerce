@@ -56,12 +56,11 @@ export async function generateMetadata({
         const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
-        const handle = 'cart';
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
-        const locales = store.i18n?.locales || [Locale.default];
-        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
+        const locales = await LocalesApi({ api });
+        const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
 
@@ -72,17 +71,17 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/${handle}/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/cart/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${domain}/${code}/${handle}/`
+                        [code]: `https://${shop.domains.primary}/${code}/cart/`
                     }),
                     {}
                 )
             },
             openGraph: {
-                url: `/${handle}/`,
+                url: `/cart/`,
                 type: 'website',
                 title,
                 description,
@@ -117,11 +116,10 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
         const i18n = await getDictionary(locale);
-        const handle = 'cart';
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
-        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
+        const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
         const prefetch = await Prefetch({ api, page });
 
         return (
@@ -144,7 +142,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                                     page={page}
                                     prefetch={prefetch}
                                     i18n={i18n}
-                                    handle={handle}
+                                    handle={'cart'}
                                     type={'custom_page'}
                                 />
                             ) : null
