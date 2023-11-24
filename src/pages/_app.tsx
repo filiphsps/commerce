@@ -98,7 +98,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 type="Organization"
                 name={store?.name}
                 description={store?.description}
-                url={`https://${Config.domain}/`}
+                url={`https://www.sweetsideofsweden.com/`}
                 logo={store?.favicon.src}
                 foundingDate="2023"
                 founders={[
@@ -134,7 +134,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     contactType: 'Customer relations and support',
                     email: 'hello@sweetsideofsweden.com',
                     telephone: '+1 866 502 5580',
-                    url: `https://${Config.domain}/about/`,
+                    url: `https://www.sweetsideofsweden.com/about/`,
                     availableLanguage: ['English', 'Swedish'],
                     areaServed:
                         store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
@@ -147,10 +147,10 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             <SiteLinksSearchBoxJsonLd
                 name={store?.name}
                 alternateName={'sweetsideofsweden'}
-                url={`https://${Config.domain}/`}
+                url={`https://www.sweetsideofsweden.com/`}
                 potentialActions={[
                     {
-                        target: `https://${Config.domain}/search/?q`,
+                        target: `https://www.sweetsideofsweden.com/search/?q`,
                         queryInput: 'search_term_string'
                     }
                 ]}

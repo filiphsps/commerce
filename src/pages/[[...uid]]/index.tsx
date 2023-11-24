@@ -5,7 +5,6 @@ import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { CustomPageDocument } from '@/prismic/types';
 import { components } from '@/slices';
-import { Config } from '@/utils/Config';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { Prefetch } from '@/utils/Prefetch';
 import { getServerTranslations } from '@/utils/getServerTranslations';
@@ -42,14 +41,14 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                 description={
                     (page.data.meta_description && asText(page.data.meta_description)) || page.data.description || ''
                 }
-                canonical={`https://${Config.domain}/${router.locale}${router.asPath}`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}${router.asPath}`}
                 languageAlternates={
-                    router.locales?.map((locale) => ({
-                        hrefLang: locale,
-                        href: `https://${Config.domain}${(locale !== 'x-default' && `/${locale}`) || ''}${
-                            router.asPath
-                        }`
-                    })) || undefined
+                    router.locales
+                        ?.filter((_) => _ !== 'x-default')
+                        ?.map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://www.sweetsideofsweden.com/${locale}${router.asPath}`
+                        })) || undefined
                 }
                 additionalMetaTags={
                     (page.data.keywords &&
@@ -62,7 +61,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
                     undefined
                 }
                 openGraph={{
-                    url: `https://${Config.domain}${router.asPath}`,
+                    url: `https://www.sweetsideofsweden.com/${router.locale}${router.asPath}`,
                     type: 'website',
                     title: page.data.meta_title || '',
                     description: asText(page.data.meta_description) || store?.description || '',

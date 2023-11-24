@@ -319,15 +319,15 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                     page?.data?.description! ||
                     ''
                 }
-                canonical={`https://${Config.domain}/${router.locale}/cart/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/cart/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}cart/`
+                        href: `https://www.sweetsideofsweden.com/${(locale !== 'x-default' && `${locale}/`) || ''}cart/`
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}${router.locale}/cart/`,
+                    url: `https://www.sweetsideofsweden.com${router.locale}/cart/`,
                     type: 'website',
                     title: page?.data.meta_title || page?.data.title!,
                     description:

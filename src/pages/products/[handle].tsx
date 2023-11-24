@@ -20,7 +20,6 @@ import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { ProductPageDocument } from '@/prismic/types';
 import { components } from '@/slices';
-import { Config } from '@/utils/Config';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { titleToHandle } from '@/utils/TitleToHandle';
@@ -638,14 +637,14 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
             <NextSeo
                 title={`${product?.seo?.title || product?.title}`}
                 description={product?.seo?.description || product?.description || ''}
-                canonical={`https://${Config.domain}/${router.locale}/products/${product.handle}/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/products/${product.handle}/`}
                 languageAlternates={
-                    router.locales?.map((locale) => ({
-                        hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}products/${
-                            product.handle
-                        }/`
-                    })) || []
+                    router.locales
+                        ?.filter((_) => _ !== 'x-default')
+                        ?.map((locale) => ({
+                            hrefLang: locale,
+                            href: `https://www.sweetsideofsweden.com/${locale}/products/${product.handle}/`
+                        })) || []
                 }
                 additionalMetaTags={
                     ((product as any).keywords?.value && [
@@ -657,7 +656,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/products/${product.handle}/`,
+                    url: `https://www.sweetsideofsweden.com/${router.locale}/products/${product.handle}/`,
                     type: 'website',
                     title: page?.data.meta_title || product.seo?.title || product.title,
                     description:
@@ -720,7 +719,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             availability: variant.availableForSale
                                 ? 'https://schema.org/InStock'
                                 : 'https://schema.org/SoldOut',
-                            url: `https://${Config.domain}/${router.locale}/products/${
+                            url: `https://www.sweetsideofsweden.com/${router.locale}/products/${
                                 product.handle
                             }/?variant=${variant.id.split('/').at(-1)}`,
 

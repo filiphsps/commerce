@@ -9,7 +9,6 @@ import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { CollectionPageDocument } from '@/prismic/types';
 import { components } from '@/slices';
-import { Config } from '@/utils/Config';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { Prefetch } from '@/utils/Prefetch';
 import { getServerTranslations } from '@/utils/getServerTranslations';
@@ -94,13 +93,13 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                     collection?.description ||
                     undefined
                 }
-                canonical={`https://${Config.domain}/${router.locale}/collections/${collection.handle}/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/collections/${collection.handle}/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}collections/${
-                            collection.handle
-                        }/`
+                        href: `https://www.sweetsideofsweden.com/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }collections/${collection.handle}/`
                     })) || []
                 }
                 additionalMetaTags={
@@ -113,7 +112,7 @@ const CollectionPage: FunctionComponent<InferGetStaticPropsType<typeof getStatic
                     []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/collections/${collection.handle}/`,
+                    url: `https://www.sweetsideofsweden.com/collections/${collection.handle}/`,
                     type: 'website',
                     title: page?.data?.meta_title || collection.seo?.title || collection.title,
                     description:

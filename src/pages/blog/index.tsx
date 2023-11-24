@@ -1,17 +1,16 @@
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import { BlogApi } from '@/api/blog';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Config } from '@/utils/Config';
-import Error from 'next/error';
-import type { FunctionComponent } from 'react';
+import type { StoreModel } from '@/models/StoreModel';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import type { GetStaticProps } from 'next';
+import { NextSeo } from 'next-seo';
+import dynamic from 'next/dynamic';
+import Error from 'next/error';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import { NextSeo } from 'next-seo';
-import type { StoreModel } from '@/models/StoreModel';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const Page = dynamic(() => import('@/components/Page'));
 const PageContent = dynamic(() => import('@/components/PageContent'));
@@ -84,11 +83,11 @@ const BlogPage: FunctionComponent<BlogPageProps> = ({ store, blog, error }) => {
         <Page className="BlogPage">
             <NextSeo
                 title="Blog"
-                canonical={`https://${Config.domain}/${router.locale}/blog/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/blog/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/`
+                        href: `https://www.sweetsideofsweden.com/${(locale !== 'x-default' && `${locale}/`) || ''}blog/`
                     })) || []
                 }
             />

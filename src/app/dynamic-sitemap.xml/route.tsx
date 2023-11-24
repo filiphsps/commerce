@@ -1,8 +1,8 @@
 import { BlogApi } from '@/api/blog';
 import { CollectionsApi } from '@/api/collection';
-import { Config } from '@/utils/Config';
 import { PagesApi } from '@/api/page';
 import { ProductsApi } from '@/api/product';
+import { Config } from '@/utils/Config';
 import { getServerSideSitemap } from 'next-sitemap';
 
 export async function GET() {
@@ -52,7 +52,7 @@ export async function GET() {
     );
 
     const objects: Array<SitemapEntry[]> = [pages, collections, products, blog];
-    const url = `https://${Config.domain}`;
+    const url = `https://www.sweetsideofsweden.com`;
 
     urls.push(
         ...objects
@@ -62,7 +62,9 @@ export async function GET() {
                 const modified = new Date().toISOString();
 
                 return locales?.map((locale) => ({
-                    loc: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}${item.location}`,
+                    loc: `https://www.sweetsideofsweden.com/${(locale !== 'x-default' && `${locale}/`) || ''}${
+                        item.location
+                    }`,
                     lastmod: modified,
                     priority: item.priority || 0.7,
                     alternateRefs: locales?.map((locale) => ({

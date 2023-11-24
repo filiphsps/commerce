@@ -1,27 +1,27 @@
-import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useEffect, useState } from 'react';
+import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
-import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import { SearchApi } from '@/api/search';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import { Config } from '@/utils/Config';
-import type { CustomPageDocument } from '@/prismic/types';
-import type { FunctionComponent } from 'react';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
-import { NextLocaleToLocale } from '@/utils/Locale';
-import { NextSeo } from 'next-seo';
-import { SearchApi } from '@/api/search';
-import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { SliceZone } from '@prismicio/react';
 import type { StoreModel } from '@/models/StoreModel';
-import { asText } from '@prismicio/client';
-import { components } from '@/slices';
 import { createClient } from '@/prismic';
+import type { CustomPageDocument } from '@/prismic/types';
+import { components } from '@/slices';
+import { Config } from '@/utils/Config';
+import { NextLocaleToLocale } from '@/utils/Locale';
+import { asText } from '@prismicio/client';
+import { SliceZone } from '@prismicio/react';
+import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { AnalyticsPageType } from '@shopify/hydrogen-react';
+import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 import useSWR from 'swr';
 
 const Page = dynamic(() => import('@/components/Page'));
@@ -193,15 +193,17 @@ const SearchPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticProp
                     page?.data?.description! ||
                     ''
                 }
-                canonical={`https://${Config.domain}/${router.locale}/search/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/search/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}search/`
+                        href: `https://www.sweetsideofsweden.com/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }search/`
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}${router.locale}/search/`,
+                    url: `https://www.sweetsideofsweden.com${router.locale}/search/`,
                     type: 'website',
                     title: page?.data.meta_title || page?.data.title!,
                     description:

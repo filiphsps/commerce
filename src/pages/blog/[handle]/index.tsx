@@ -7,7 +7,6 @@ import ContentComponent from '@/components/Content';
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
 import type { StoreModel } from '@/models/StoreModel';
-import { Config } from '@/utils/Config';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { isValidHandle } from '@/utils/handle';
 import { AnalyticsPageType } from '@shopify/hydrogen-react';
@@ -149,17 +148,17 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
             <NextSeo
                 title={article.seo.title || article.title}
                 description={article.seo.description || article.excerpt}
-                canonical={`https://${Config.domain}/${router.locale}/blog/${article.handle}/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/blog/${article.handle}/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}blog/${
-                            article.handle
-                        }/`
+                        href: `https://www.sweetsideofsweden.com/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }blog/${article.handle}/`
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}/blog/${article.handle}/`,
+                    url: `https://www.sweetsideofsweden.com/blog/${article.handle}/`,
                     locale: router.locale,
                     type: 'article',
                     title: article.seo.title || article.title,
@@ -179,7 +178,7 @@ const ArticlePage: FunctionComponent<ArticlePageProps> = ({ store, article, blog
                 }}
             />
             <NewsArticleJsonLd
-                url={`https://${Config.domain}/blog/${article.handle}`}
+                url={`https://www.sweetsideofsweden.com/blog/${article.handle}`}
                 description={article.seo.description || article.excerpt}
                 body={article.content}
                 title={article.title}

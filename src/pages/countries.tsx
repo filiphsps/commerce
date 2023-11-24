@@ -143,15 +143,17 @@ const CountriesPage: FunctionComponent<CountriesPageProps> = ({ page, countries:
                     page?.data?.description! ||
                     ''
                 }
-                canonical={`https://${Config.domain}/${router.locale}/countries/`}
+                canonical={`https://www.sweetsideofsweden.com/${router.locale}/countries/`}
                 languageAlternates={
                     router.locales?.map((locale) => ({
                         hrefLang: locale,
-                        href: `https://${Config.domain}/${(locale !== 'x-default' && `${locale}/`) || ''}locales/`
+                        href: `https://www.sweetsideofsweden.com/${
+                            (locale !== 'x-default' && `${locale}/`) || ''
+                        }locales/`
                     })) || []
                 }
                 openGraph={{
-                    url: `https://${Config.domain}${router.locale}/countries/`,
+                    url: `https://www.sweetsideofsweden.com${router.locale}/countries/`,
                     type: 'website',
                     title: page?.data.meta_title || page?.data.title!,
                     description:
