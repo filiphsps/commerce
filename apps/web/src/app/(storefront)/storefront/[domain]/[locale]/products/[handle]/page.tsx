@@ -14,6 +14,7 @@ import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
+import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
@@ -54,7 +55,7 @@ export async function generateMetadata({
         const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const locales = store.i18n.locales;
+        const locales = store.i18n?.locales || [Locale.default];
 
         const url = `/products/${handle}/${(searchParams?.variant && `?variant=${searchParams.variant}`) || ''}`; // TODO: remember existing query parameters.
         const title = page?.meta_title || `${product.vendor} ${product.title}`;
@@ -91,9 +92,8 @@ export async function generateMetadata({
                 images: image
             }
         };
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFoundMetadata;
         }
 
@@ -125,7 +125,7 @@ export default async function ProductPage({
 
             // Remove `gid` from variant parameter.
             // TODO: remember existing query parameters.
-            return redirect(`/products/${handle}?variant=${variant}`, RedirectType.replace);
+            return redirect(`/products/${handle}/?variant=${variant}`, RedirectType.replace);
         }
 
         const api = await StorefrontApiClient({ shop, locale });
@@ -220,7 +220,6 @@ export default async function ProductPage({
                         </SplitView>
 
                         <ProductActionsContainer
-                            locale={locale}
                             i18n={i18n}
                             className={styles.actions}
                             product={product as any}
@@ -366,13 +365,11 @@ export default async function ProductPage({
                 />
             </Page>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

@@ -1,5 +1,5 @@
+import type { Product } from '@/api/product';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { describe, expect, it } from 'vitest';
 
 describe('utils', () => {

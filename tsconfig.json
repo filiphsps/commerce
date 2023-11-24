@@ -7,17 +7,22 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "incremental": true,
+        "inlineSourceMap": true,
         "isolatedModules": true,
         "jsx": "preserve",
         "lib": ["dom", "dom.iterable", "ESNext"],
         "module": "ESNext",
         "moduleResolution": "Node10",
         "noEmit": true,
+        "noImplicitAny": true,
         "removeComments": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
+        "strictBindCallApply": false,
+        "strictFunctionTypes": true,
         "strictNullChecks": true,
+        "strictPropertyInitialization": true,
         "plugins": [
             {
                 "name": "next"

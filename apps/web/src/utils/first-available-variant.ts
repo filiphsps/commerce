@@ -1,4 +1,5 @@
-import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Product, ProductVariant } from '@/api/product';
+import { NotFoundError } from '@/utils/errors';
 
 /**
  * Find the first available and most suitable variant for a specific product.
@@ -14,7 +15,7 @@ export const FirstAvailableVariant = (product?: Product | null): ProductVariant 
         ? product?.variants?.edges?.map?.(({ node: variant }) => variant)
         : (product?.variants as any);
 
-    if (!variants) throw new Error('No variants found.');
+    if (!variants) throw new NotFoundError(`"product.variant"`);
 
     // 2. Check if the last variant is available.
     if (variants.at(-1)?.availableForSale)

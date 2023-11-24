@@ -26,8 +26,8 @@ describe('utils', () => {
             shop: () => ({
                 id: 'mock-shop-id',
                 domains: {
-                    primary: 'mock-shop.com',
-                    alternate: []
+                    primary: 'staging.demo.nordcom.io',
+                    alternatives: []
                 }
             })
         } as any as AbstractApi;

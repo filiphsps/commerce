@@ -6,7 +6,8 @@ import { LocalesApi, StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { DefaultLocale, Locale } from '@/utils/locale';
+import { Error } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -18,7 +19,7 @@ import BlogContent from './blog-content';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = DefaultLocale()!;
+    const locale = Locale.default;
     const shops = await ShopsApi();
 
     return (
@@ -27,9 +28,9 @@ export async function generateStaticParams() {
                 const api = await StorefrontApiClient({ shop, locale });
                 const locales = await LocalesApi({ api });
 
-                return locales.map(({ locale }) => ({
+                return locales.map(({ code }) => ({
                     domain: shop.domains.primary,
-                    locale: locale
+                    locale: code
                 }));
             })
         )
@@ -45,51 +46,59 @@ export async function generateMetadata({
 }: {
     params: BlogPageParams;
 }): Promise<Metadata> {
-    const shop = await ShopApi({ domain });
-    const locale = Locale.from(localeData);
-    if (!locale) return notFoundMetadata;
+    try {
+        const shop = await ShopApi({ domain });
+        const locale = Locale.from(localeData);
+        if (!locale) return notFoundMetadata;
 
-    const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api });
-    const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-    const locales = store.i18n.locales;
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api });
+        const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
+        const locales = store.i18n?.locales || [Locale.default];
 
-    const title = page?.meta_title || page?.title || 'Blog'; // TODO: Fallback should respect i18n.
-    const description: string | undefined =
-        (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
-    return {
-        title,
-        description,
-        alternates: {
-            canonical: `https://${domain}/${locale.code}/blog/`,
-            languages: locales.reduce(
-                (prev, { locale }) => ({
-                    ...prev,
-                    [locale]: `https://${domain}/${locale}/blog/`
-                }),
-                {}
-            )
-        },
-        openGraph: {
-            url: `/blog/`,
-            type: 'website',
+        const title = page?.meta_title || page?.title || 'Blog'; // TODO: Fallback should respect i18n.
+        const description: string | undefined =
+            (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
+        return {
             title,
             description,
-            siteName: store?.name,
-            locale: locale.code,
-            images:
-                (page?.meta_image && [
-                    {
-                        url: page?.meta_image!.url as string,
-                        width: page?.meta_image!.dimensions?.width || 0,
-                        height: page?.meta_image!.dimensions?.height || 0,
-                        alt: page?.meta_image!.alt || '',
-                        secureUrl: page?.meta_image!.url as string
-                    }
-                ]) ||
-                undefined
+            alternates: {
+                canonical: `https://${domain}/${locale.code}/blog/`,
+                languages: locales.reduce(
+                    (prev, { code }) => ({
+                        ...prev,
+                        [code]: `https://${code}/${locale}/blog/`
+                    }),
+                    {}
+                )
+            },
+            openGraph: {
+                url: `/blog/`,
+                type: 'website',
+                title,
+                description,
+                siteName: store?.name,
+                locale: locale.code,
+                images:
+                    (page?.meta_image && [
+                        {
+                            url: page?.meta_image!.url as string,
+                            width: page?.meta_image!.dimensions?.width || 0,
+                            height: page?.meta_image!.dimensions?.height || 0,
+                            alt: page?.meta_image!.alt || '',
+                            secureUrl: page?.meta_image!.url as string
+                        }
+                    ]) ||
+                    undefined
+            }
+        };
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            return notFoundMetadata;
         }
-    };
+
+        throw error;
+    }
 }
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
@@ -124,13 +133,11 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                 )}
             </>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

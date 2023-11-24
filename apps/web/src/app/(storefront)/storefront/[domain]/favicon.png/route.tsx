@@ -1,8 +1,8 @@
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 
 import { ShopApi } from '@/api/shop';
-import { DefaultLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
@@ -13,8 +13,8 @@ export type FaviconRouteParams = {
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
     const url = new URL(req.url);
-    let width = url.searchParams.get('width') ? Number.parseFloat(url.searchParams.get('width')!) : null;
-    let height = url.searchParams.get('height') ? Number.parseFloat(url.searchParams.get('height')!) : null;
+    let width = url?.searchParams?.get?.('width') ? Number.parseFloat(url?.searchParams?.get?.('width')!) : null;
+    let height = url?.searchParams?.get?.('height') ? Number.parseFloat(url?.searchParams?.get?.('height')!) : null;
 
     const errors = [...(await validateSize({ width, height }))];
 
@@ -43,13 +43,17 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         let src!: string;
 
         const shop = await ShopApi({ domain });
-        const locale = DefaultLocale();
-        const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api });
-        if (store.favicon?.src) {
-            src = store.favicon.src;
+        if (shop.configuration.design?.branding?.logos?.alternatives?.square) {
+            src = shop.configuration.design.branding.logos.alternatives.square.src;
         } else {
-            src = req.url.replace('/favicon.png', '/icon.png');
+            const locale = Locale.default;
+            const api = await ShopifyApiClient({ shop, locale });
+            const store = await StoreApi({ api });
+            if (store.favicon?.src) {
+                src = store.favicon.src;
+            } else {
+                src = req.url.replace('/favicon.png', '/icon.png');
+            }
         }
 
         // See https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image

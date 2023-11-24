@@ -2,6 +2,7 @@
 declare module '@next/third-parties/google' {
     declare global {
         interface Window {
+            locale?: string;
             dataLayer?: Object[];
             [key: string]: any;
         }

@@ -8,6 +8,8 @@ import { getServerSideSitemap } from 'next-sitemap';
 import type { NextRequest } from 'next/server';
 import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 
+export const dynamic = 'force-dynamic';
+
 /* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi({ domain });

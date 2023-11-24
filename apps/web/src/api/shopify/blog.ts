@@ -71,7 +71,7 @@ export const BlogApi = async ({
                 return reject(new Error(`404: "Articles" for blog "${handle}" cannot be found`));
 
             return resolve(data.blogByHandle);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }
@@ -142,7 +142,7 @@ export const BlogArticleApi = async ({
                 ...data.blogByHandle.articleByHandle,
                 contentHtml: data.blogByHandle.articleByHandle.contentHtml.replace(/data-mce-fragment="1"/gi, '')
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }

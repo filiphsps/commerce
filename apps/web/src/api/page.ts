@@ -1,10 +1,10 @@
 import type { Shop } from '@/api/shop';
 import type { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
+import { cache } from '@/utils/abstract-api';
 import { Error, NotFoundError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
-import { cache } from 'react';
 
 export const PagesApi = async ({
     shop,

@@ -2,9 +2,11 @@ import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import ProvidersRegistry from '@/components/providers-registry';
-import { DefaultLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
     robots: {
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
     const shop = await ShopApi({ domain: 'demo.nordcom.io' }); // TODO: Don't hardcode this.
-    const locale = DefaultLocale();
+    const locale = Locale.default;
     const shopifyApi = await shopifyApiConfig({ shop });
     const api = await StorefrontApiClient({ shop, locale });
     const store = await StoreApi({ api });

@@ -1,12 +1,12 @@
 'use client';
 
-import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
+import type { ProductVariant } from '@/api/product';
 import Link from '@/components/link';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { Label } from '@/components/typography/label';
 import type { Locale } from '@/utils/locale';
+import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
-import type { ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { Fragment, type HTMLProps } from 'react';
 import styled from 'styled-components';
 

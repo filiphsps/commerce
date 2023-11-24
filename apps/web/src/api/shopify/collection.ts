@@ -1,5 +1,6 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import type { AbstractApi } from '@/utils/abstract-api';
+import type { AbstractApi, ApiOptions, Identifiable, Nullable } from '@/utils/abstract-api';
+import { cache, cleanShopifyHtml } from '@/utils/abstract-api';
 import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@/utils/errors';
 import type {
     CollectionEdge,
@@ -8,41 +9,7 @@ import type {
     QueryRoot
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
-import { cache } from 'react';
 
-/** @todo TODO: Type-library this so we can use it in other places. */
-type Nullable<T> = T | null;
-
-/**
- * @todo TODO: This should be replaced with a generalized shopify parser.
- *       Preferably one that we can use to output in whatever format we want.
- */
-const cleanShopifyHtml = (html: string | unknown): Nullable<string> => {
-    if (typeof html !== 'string' || !html) return null;
-    let out = html as string;
-
-    // Remove all non-breaking spaces and replace them with normal spaces.
-    // TODO: This is a hacky solution. We should write a proper shopify parser.
-    out = out.replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ');
-
-    // Replace some of the more common unicode characters with their HTML.
-    out = out
-        .replaceAll('”', '&rdquo;')
-        .replaceAll('“', '&ldquo;')
-        .replaceAll('‘', '&lsquo;')
-        .replaceAll('’', '&rsquo;')
-        .replaceAll('…', '&hellip;');
-
-    // Trim the preceding and trailing whitespace.
-    out = out.trim();
-
-    return out;
-};
-
-/** @todo TODO: Type-library this so we can use it in other places. */
-type ApiOptions = { api: AbstractApi };
-/** @todo TODO: Type-library this so we can use it in other places. */
-type Identifiable = { handle: string };
 /** @todo TODO: Type-library this so we can use it in other places. */
 type LimitFilters = { limit?: Nullable<number> } | { first?: Nullable<number>; last?: Nullable<number> };
 

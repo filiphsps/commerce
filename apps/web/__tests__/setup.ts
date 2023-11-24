@@ -2,13 +2,12 @@ import 'next';
 
 import * as matchers from '@testing-library/jest-dom/matchers';
 
-import { expect, vi } from 'vitest';
+import { beforeEach, expect, vi } from 'vitest';
 
 expect.extend(matchers);
 
-// Mock the `server-only` module as it doesn't work with vitest.
-vi.mock('server-only', () => {
-    return {};
+beforeEach(() => {
+    vi.mock('server-only', () => ({}));
 });
 
 // Mock the `build-config` module as it almost only contains tokens,
@@ -24,6 +23,22 @@ vi.mock('@/utils/build-config', () => ({
             storefront_id: 'mock-id'
         }
     }
+}));
+
+vi.mock('@/api/shop', () => ({
+    ShopApi: vi.fn().mockResolvedValue({
+        id: 'mock-shop-id',
+        domains: {
+            primary: 'staging.demo.nordcom.io',
+            alternatives: []
+        },
+        configuration: {
+            commerce: {
+                type: 'dummy' as const,
+                domain: 'mock.shop' as const
+            }
+        }
+    })
 }));
 
 // Mock the `prismic` module as it requires a valid Prismic repository,
@@ -59,6 +74,11 @@ vi.mock('react', async () => {
         cache: vi.fn().mockImplementation((func) => func)
     };
 });
+vi.mock('next/cache', async () => {
+    return {
+        unstable_cache: vi.fn().mockImplementation((func) => func)
+    };
+});
 
 // Thanks to https://github.com/akiran/react-slick/issues/742#issuecomment-298992238
 window.matchMedia =
@@ -70,3 +90,13 @@ window.matchMedia =
             removeListener: function () {}
         };
     };
+
+window.location = {
+    ...(window.location || {}),
+    pathname: '/en-US/',
+    host: 'staging.demo.nordcom.io',
+    href: 'http://staging.demo.nordcom.io/en-US/',
+    search: '',
+    origin: 'http://staging.demo.nordcom.io',
+    protocol: 'http:'
+};

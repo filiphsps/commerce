@@ -1,13 +1,14 @@
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { DefaultLocale, Locale, useTranslation } from '@/utils/locale';
+import { Error } from '@/utils/errors';
+import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -20,20 +21,26 @@ import SearchContent from './search-content';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = DefaultLocale()!; // TODO: Don't hardcode locale.
+    const locale = Locale.default;
     const shops = await ShopsApi();
 
     return (
         await Promise.all(
-            shops.map(async (shop) => {
-                const api = await StorefrontApiClient({ shop, locale });
-                const locales = await LocalesApi({ api });
+            shops
+                .map(async (shop) => {
+                    try {
+                        const api = await ShopifyApiClient({ shop, locale });
+                        const locales = await LocalesApi({ api });
 
-                return locales.map(({ code }) => ({
-                    domain: shop.domains.primary,
-                    locale: code
-                }));
-            })
+                        return locales.map(({ code }) => ({
+                            domain: shop.domains.primary,
+                            locale: code
+                        }));
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
         )
     ).flat(2);
 }
@@ -48,34 +55,34 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
-        const handle = 'search';
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
-        const locales = store.i18n.locales;
-        const { page } = await PageApi({ shop, locale, handle, type: 'custom_page' });
+        const locales = await LocalesApi({ api });
+        const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
 
         const title = page?.meta_title || page?.title || t('search');
         const description = (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
+
         return {
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/${handle}/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/search/`,
                 languages: locales.reduce(
-                    (prev, { locale }) => ({
+                    (prev, { code }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}/${handle}/`
+                        [code]: `https://${shop.domains.primary}/${code}/search/`
                     }),
                     {}
                 )
             },
             openGraph: {
-                url: `/${handle}/`,
+                url: `/search/`,
                 type: 'website',
                 title,
                 description,
@@ -95,7 +102,7 @@ export async function generateMetadata({
             }
         };
     } catch (error: unknown) {
-        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
+        if (Error.isNotFound(error)) {
             return notFoundMetadata;
         }
 
@@ -111,7 +118,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
         if (!locale) return notFound();
         const i18n = await getDictionary(locale);
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
@@ -142,11 +149,10 @@ export default async function SearchPage({ params: { domain, locale: localeData 
             </Page>
         );
     } catch (error: unknown) {
-        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

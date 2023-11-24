@@ -22,13 +22,16 @@ export default async function BlogContent({ shop, locale, blog }: BlogContentPro
                     blog.articles.edges.map(async ({ node: article }) => {
                         const href = `/blog/${article.handle}/`;
 
-                        const authorAvatar =
-                            (article.authorV2?.email &&
-                                (await gravatar.resolve(article.authorV2.email, {
-                                    protocol: 'https',
-                                    defaultIcon: 'blank'
-                                }))) ||
-                            undefined;
+                        let authorAvatar: string | null | undefined = null;
+                        try {
+                            authorAvatar =
+                                (article.authorV2?.email &&
+                                    (await gravatar.resolve(article.authorV2.email, {
+                                        protocol: 'https',
+                                        defaultIcon: 'blank'
+                                    }))) ||
+                                undefined;
+                        } catch {}
 
                         return (
                             <article key={article.id} className={styles.article}>

@@ -1,9 +1,9 @@
 import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { Locale, NextLocaleToLocale } from '@/utils/locale';
 
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
@@ -12,6 +12,7 @@ import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
+import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -24,33 +25,40 @@ import { metadata as notFoundMetadata } from '../../not-found';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = DefaultLocale()!;
+    const locale = Locale.default;
     const shops = await ShopsApi();
 
     const pages = (
         await Promise.all(
-            shops.map(async (shop) => {
-                const api = await StorefrontApiClient({ shop, locale });
-                const locales = await LocalesApi({ api });
-
-                return await Promise.all(
-                    locales.map(async (locale) => {
+            shops
+                .map(async (shop) => {
+                    try {
                         const api = await StorefrontApiClient({ shop, locale });
-                        const collections = await CollectionsApi({ client: api });
+                        const locales = await LocalesApi({ api });
 
-                        return collections
-                            .filter(({ hasProducts }) => hasProducts)
-                            .map(({ handle }) => ({
-                                domain: shop.domains.primary,
-                                locale: locale.code,
-                                handle
-                            }));
-                    })
-                );
-            })
+                        return await Promise.all(
+                            locales.map(async (locale) => {
+                                const api = await StorefrontApiClient({ shop, locale });
+                                const collections = await CollectionsApi({ client: api });
+
+                                return collections
+                                    .filter(({ hasProducts }) => hasProducts)
+                                    .map(({ handle }) => ({
+                                        domain: shop.domains.primary,
+                                        locale: locale.code,
+                                        handle
+                                    }));
+                            })
+                        );
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
         )
     ).flat(2);
 
+    // FIXME: We have already looped through all pages when we get here which is really inefficient.
     if (BuildConfig.build.limit_pages) {
         return pages.slice(0, BuildConfig.build.limit_pages);
     }
@@ -70,14 +78,14 @@ export async function generateMetadata({
         const shop = await ShopApi({ domain });
         if (!isValidHandle(handle)) return notFoundMetadata;
 
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
-        const locales = store.i18n.locales;
+        const locales = store.i18n?.locales || [Locale.default];
 
         const description: string | undefined =
             (page?.meta_description && asText(page.meta_description)) ||
@@ -88,11 +96,11 @@ export async function generateMetadata({
             title: page?.meta_title || collection.title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/collections/${handle}/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`,
                 languages: locales.reduce(
-                    (prev, { locale }) => ({
+                    (prev, { code }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}/collections/${handle}/`
+                        [code]: `https://${shop.domains.primary}/${code}/collections/${handle}/`
                     }),
                     {}
                 )
@@ -117,9 +125,8 @@ export async function generateMetadata({
                     undefined
             }
         };
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFoundMetadata;
         }
 
@@ -182,13 +189,11 @@ export default async function CollectionPage({
                 </PageContent>
             </Page>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

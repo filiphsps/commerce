@@ -1,12 +1,11 @@
 'use client';
 
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { ConvertToLocalMeasurementSystem, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ConvertToLocalMeasurementSystem } from '@/api/shopify/product';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { AddToCart } from '@/components/products/add-to-cart';

@@ -1,13 +1,14 @@
-import type { CountryCode, CurrencyCode, LanguageCode } from '@shopify/hydrogen-react/storefront-api-types';
-
 import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
+import { TodoError, UnknownLocaleError } from '@/utils/errors';
+import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
+import ConvertUnits from 'convert-units';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
 
-type LocaleInstance = {
+type SerializableLocale = {
     /**
      * @deprecated Use `code` instead.
      */
@@ -21,7 +22,7 @@ type LocaleInstance = {
 /**
  * A locale.
  */
-export class Locale implements LocaleInstance {
+export class Locale implements SerializableLocale {
     public code!: Code;
     public language!: LanguageCode;
     public country?: CountryCode;
@@ -41,7 +42,7 @@ export class Locale implements LocaleInstance {
             this.code = `${language.toLowerCase()}` as Code;
         }
 
-        // TODO: Remove `locale` when `locale` is removed from `LocaleInstance`.
+        // TODO: Remove `locale` when `locale` is removed from `SerializableLocale`.
         this.locale = this.code;
     }
 
@@ -50,9 +51,27 @@ export class Locale implements LocaleInstance {
      *
      * @todo TODO: This should be tenant configurable.
      */
-    static get default() {
+    static get default(): Readonly<SerializableLocale> {
         // FIXME: Don't hardcode `en-US` as the fallback.
-        return Locale.from(BuildConfig?.i18n?.default || ('en-US' as Code))!;
+        return Locale.from(BuildConfig?.i18n?.default || ('en-US' as Code));
+    }
+    static get current(): Readonly<SerializableLocale> {
+        if (typeof window === 'undefined') {
+            console.warn('The currently used locale is unavailable, returning the default locale instead.');
+            return Locale.default;
+        }
+
+        if (window.locale) {
+            return Locale.from(window.locale);
+        }
+
+        // Get the locale code from the first path segment.
+        const code = window.location.pathname.split('/')[1];
+        if (!code) {
+            throw new UnknownLocaleError(`Invalid locale: "${code}"`);
+        }
+
+        return Locale.from(code);
     }
 
     /**
@@ -73,14 +92,14 @@ export class Locale implements LocaleInstance {
      */
     static from(data: { language: LanguageCode; country?: CountryCode } | Code | string) {
         // We can only pass pure objects to the client.
-        const wrap = (locale: Locale) => Object.freeze(Object.fromEntries(Object.entries(locale)) as LocaleInstance);
+        const wrap = (locale: Locale) =>
+            Object.freeze(Object.fromEntries(Object.entries(locale)) as SerializableLocale);
 
         if (typeof data === 'string') {
             const code = data.toUpperCase() as Uppercase<Code>;
 
             if (!code || code.length < 2 || code.length > 5 || (code.length !== 2 && !code.includes('-'))) {
-                return null;
-                // FIXME: `throw new UnknownLocaleError();`.
+                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
             }
 
             if (code.length === 2) {
@@ -93,8 +112,7 @@ export class Locale implements LocaleInstance {
             const { language, country } = data;
 
             if (language.length !== 2 || (typeof country !== 'undefined' && language.length !== 2)) {
-                return null;
-                // FIXME: `throw new UnknownLocaleError();`.
+                throw new UnknownLocaleError(`Invalid locale: "${data}"`);
             }
 
             return wrap(new Locale({ language, country }));
@@ -159,7 +177,7 @@ export const NextLocaleToLocale = (code: string): Locale | null => {
 
     // Legacy handling.
     if (code.length === 2) {
-        throw new Error('Not implemented');
+        throw new TodoError();
     }
 
     return Locale.from(code);
@@ -215,4 +233,41 @@ export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleD
     return {
         t: (key: LocaleDictionaryKey): string => (dictionary as any)?.[scope]?.[key] || key
     };
+};
+
+export const ConvertToLocalMeasurementSystem = ({
+    locale,
+    weight,
+    weightUnit
+}: {
+    locale: Locale;
+    weight: number;
+    weightUnit: WeightUnit;
+}): string => {
+    const weightUnitToConvertUnits = (unit: WeightUnit) => {
+        switch (unit.toUpperCase()) {
+            case 'GRAMS':
+                return 'g';
+            case 'KILOGRAMS':
+                return 'kg';
+            case 'OUNCES':
+                return 'oz';
+            case 'POUNDS':
+                return 'lb';
+
+            // TODO: Handle this; which should never possibly actually occur.
+            default:
+                return 'g';
+        }
+    };
+    // FIXME: Support more than just US here, because apparently there's alot
+    //        more countries out there using imperial.
+    const metric = locale.country && locale.country.toLowerCase() !== 'us';
+    const unit = weightUnitToConvertUnits(weightUnit);
+    // TODO: Do this properly.
+    const targetUnit = (metric && 'g') || 'oz';
+
+    const res = ConvertUnits(weight).from(unit).to(targetUnit);
+    // TODO: Precision should be depending on unit.
+    return `${Math.ceil(res)}${targetUnit}`;
 };

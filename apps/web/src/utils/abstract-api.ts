@@ -1,7 +1,16 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
-import type { ApolloClient, DocumentNode, FetchPolicy, TypedDocumentNode } from '@apollo/client';
+import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
+import { unstable_cache } from 'next/cache';
+
+export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
+export type Nullable<T> = T | null;
+export type Identifiable = { handle: string };
+
+export type OmitTypeName<T> = Omit<T, '__typename'>;
+
+export type ApiOptions = { api: AbstractApi };
 
 export type AbstractApi<Q = any> = {
     locale: () => Locale;
@@ -32,6 +41,8 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
 /**
  * Creates an AbstractApiBuilder for Shopify Apollo APIs.
  *
+ * @todo TODO: Improve the type safety of all `AbstractApi` implementations.
+ *
  * @param {object} options - The api options.
  * @param {ApolloClient<any>} options.api - The Apollo client to use.
  * @param {Locale} options.locale - The locale to use.
@@ -39,7 +50,7 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
  * @param {string[] | undefined} options.tags - The nextjs fetch tags to use.
  * @returns {AbstractApiBuilder} The AbstractApiBuilder.
  */
-export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNode | TypedDocumentNode<any, any>> = ({
+export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, any>> = ({
     api,
     locale,
     shop,
@@ -72,3 +83,43 @@ export const ShopifyApolloApiBuilder: AbstractShopifyApolloApiBuilder<DocumentNo
         return { data: data || null, errors };
     }
 });
+
+export const cache: typeof unstable_cache = (func, keyparts, options) => {
+    /*if (typeof (React as any).cache === 'undefined') {
+        console.warn('React cache is unavailable in this environment.');
+        return func;
+    }*/
+
+    if (typeof unstable_cache === 'undefined') {
+        console.warn('next/cache is unavailable in this environment.');
+        return func;
+    }
+
+    return unstable_cache(func, keyparts, options);
+};
+
+/**
+ * @todo TODO: This should be replaced with a generalized shopify parser.
+ *       Preferably one that we can use to output in whatever format we want.
+ */
+export const cleanShopifyHtml = (html: string | unknown): Nullable<string> => {
+    if (typeof html !== 'string' || !html) return null;
+    let out = html as string;
+
+    // Remove all non-breaking spaces and replace them with normal spaces.
+    // TODO: This is a hacky solution. We should write a proper shopify parser.
+    out = out.replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ');
+
+    // Replace some of the more common unicode characters with their HTML.
+    out = out
+        .replaceAll('”', '&rdquo;')
+        .replaceAll('“', '&ldquo;')
+        .replaceAll('‘', '&lsquo;')
+        .replaceAll('’', '&rsquo;')
+        .replaceAll('…', '&hellip;');
+
+    // Trim the preceding and trailing whitespace.
+    out = out.trim();
+
+    return out;
+};

@@ -1,19 +1,18 @@
 'use client';
 
+import type { Product, ProductVariant } from '@/api/product';
 import { AddToCart } from '@/components/products/add-to-cart';
 import { InfoLines } from '@/components/products/info-lines';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { Label } from '@/components/typography/label';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { useTranslation } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
+import { Locale, useTranslation } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type { Product, ProductVariant } from '@shopify/hydrogen-react/storefront-api-types';
 import { useState, type HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
     product?: Product;
     initialVariant: ProductVariant;
@@ -22,7 +21,6 @@ export type ProductActionsContainerProps = {
 
 export const ProductActionsContainer = ({
     className,
-    locale,
     i18n,
     product,
     initialVariant,
@@ -32,9 +30,10 @@ export const ProductActionsContainer = ({
 }: ProductActionsContainerProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantity, setQuantity] = useState(1);
+    const locale = Locale.current;
 
     return (
-        <ProductProvider data={product!} initialVariantId={selectedVariant?.id || initialVariant.id}>
+        <ProductProvider data={product as any} initialVariantId={selectedVariant?.id || initialVariant.id}>
             <section {...props} className={`${styles.options} ${className || ''}`}>
                 <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
 
