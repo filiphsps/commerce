@@ -4,12 +4,9 @@ import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 
-// TODO: This should be tenant configurable.
-const defaultLocale = BuildConfig?.i18n?.default || 'en-US'; // FIXME: Don't hardcode `en-US`.
-
 export type { CountryCode, CurrencyCode, LanguageCode };
+export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
 
-type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
 type LocaleInstance = {
     /**
      * @deprecated Use `code` instead.
@@ -21,6 +18,9 @@ type LocaleInstance = {
     country?: CountryCode;
 };
 
+/**
+ * A locale.
+ */
 export class Locale implements LocaleInstance {
     public code!: Code;
     public language!: LanguageCode;
@@ -41,10 +41,38 @@ export class Locale implements LocaleInstance {
             this.code = `${language.toLowerCase()}` as Code;
         }
 
+        // TODO: Remove `locale` when `locale` is removed from `LocaleInstance`.
         this.locale = this.code;
     }
 
+    /**
+     * The default locale.
+     *
+     * @todo TODO: This should be tenant configurable.
+     */
+    static get default() {
+        // FIXME: Don't hardcode `en-US` as the fallback.
+        return Locale.from(BuildConfig?.i18n?.default || ('en-US' as Code))!;
+    }
+
+    /**
+     * Check if a locale is configured as the default locale.
+     *
+     * @param {Locale} locale - The locale
+     * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
+     */
+    static isDefault(locale: Locale): boolean {
+        return locale ? locale.code === Locale.default.code : false;
+    }
+
+    /**
+     * Convert data to a `Locale`.
+     *
+     * @param {Code | any} data - The basis to create the locale from.
+     * @returns {Locale} The immutable locale.
+     */
     static from(data: { language: LanguageCode; country?: CountryCode } | Code | string) {
+        // We can only pass pure objects to the client.
         const wrap = (locale: Locale) => Object.freeze(Object.fromEntries(Object.entries(locale)) as LocaleInstance);
 
         if (typeof data === 'string') {
@@ -77,24 +105,29 @@ export class Locale implements LocaleInstance {
 /**
  * Converts a locale string to a `CountryCode`.
  *
+ * @deprecated Use {@link Locale.from} instead.
+ *
  * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {CountryCode} `CountryCode` string.
  */
-export const NextLocaleToCountry = (locale?: string): CountryCode =>
-    (locale?.split('-')?.[1] || defaultLocale.split('-')[1]).toUpperCase() as CountryCode;
+export const NextLocaleToCountry = (locale?: string): CountryCode => {
+    // FIXME: Remove `!` when `Locale.from` actually throws.
+    // TODO: Fallback should be tenant-specific.
+    return (locale ? Locale.from(locale)! : Locale.default).country || ('US' as const);
+};
 
 /**
  * Converts a locale string to a `LanguageCode`.
  *
+ * @deprecated Use {@link Locale.from} instead.
+ *
  * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {LanguageCode} `LanguageCode` string.
  */
-export const NextLocaleToLanguage = (locale?: string): LanguageCode =>
-    (
-        (locale && locale.length === 2 && locale) ||
-        locale?.split('-')?.[0] ||
-        defaultLocale.split('-')[0]
-    ).toUpperCase() as LanguageCode; // TODO: Replace `toUpperCase` with `toLowerCase`.
+export const NextLocaleToLanguage = (locale?: string): LanguageCode => {
+    // FIXME: Remove `!` when `Locale.from` actually throws.
+    return (locale ? Locale.from(locale)! : Locale.default).language;
+};
 
 /**
  * Converts a locale string to a `CurrencyCode`.
@@ -109,9 +142,9 @@ export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode;
 /**
  * Converts a locale string to a Locale.
  *
- * > NOTE: If the locale is invalid, the default locale will be used.
- *         the default locale is defined in `Config.i18n.default` and
- *         is not tenant configurable at the moment.
+ * @note If the locale is invalid, the default locale will be used.
+ *       the default locale is defined in `Config.i18n.default` and
+ *       is not tenant configurable at the moment.
  *
  * @deprecated Use {@link Locale.from} instead.
  *
@@ -129,28 +162,31 @@ export const NextLocaleToLocale = (code: string): Locale | null => {
         throw new Error('Not implemented');
     }
 
-    const country = NextLocaleToCountry(code);
-    const language = NextLocaleToLanguage(code);
-    return Locale.from({ language, country });
+    return Locale.from(code);
 };
 
 /**
  * Returns the default locale.
  *
+ * @deprecated Use {@link Locale.default} instead.
+ *
  * @returns {Locale} `Locale` object.
  */
 export const DefaultLocale = (): Locale => {
-    return Locale.from(defaultLocale)!;
+    return Locale.default;
 };
 
 /**
  * Check if a locale is the default locale.
  *
+ * @deprecated Use {@link Locale.isDefault} instead.
+ * @todo TODO: `defaultLocale` should be tenant configurable.
+ *
  * @param {Locale} locale - The locale to check.
  * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
  */
 export const isDefaultLocale = (locale: Locale): boolean => {
-    return locale.code === defaultLocale;
+    return Locale.isDefault(locale);
 };
 
 export type DeepKeys<T> = T extends object
@@ -159,7 +195,9 @@ export type DeepKeys<T> = T extends object
       }[keyof T]
     : never;
 
-// Use `english` to get type safety.
+/**
+ * A dictionary, uses `en.json` as the base for type-safety.
+ */
 export type LocaleDictionary = typeof english;
 export type LocaleDictionaryScope = Lowercase<keyof LocaleDictionary>;
 export type LocaleDictionaryKey = Lowercase<DeepKeys<LocaleDictionary>>;
@@ -178,20 +216,3 @@ export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleD
         t: (key: LocaleDictionaryKey): string => (dictionary as any)?.[scope]?.[key] || key
     };
 };
-
-// https://stackoverflow.com/questions/47057649/typescript-string-dot-notation-of-nested-object
-/* type BreakDownObject<O, R = void> = {
-    [K in keyof O as string]: K extends string
-        ? R extends string
-            ? ObjectDotNotation<O[K], `${R}.${K}`>
-            : ObjectDotNotation<O[K], K>
-        : never;
-};
-
-type ObjectDotNotation<O, R = void> = O extends string
-    ? R extends string
-        ? R
-        : never
-    : BreakDownObject<O, R>[keyof BreakDownObject<O, R>]; */
-
-// ObjectDotNotation<typeof dictionary>

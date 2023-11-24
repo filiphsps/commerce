@@ -1,4 +1,4 @@
-import type { CommerceError } from '@/utils/errors';
+import type { Error } from '@/utils/errors';
 import { getErrorFromStatusCode } from '@/utils/errors';
 import { useEffect, useState } from 'react';
 
@@ -6,7 +6,7 @@ export const api = 'https://api.country.is';
 
 export type useCountryResult = {
     code: string | undefined;
-    error: CommerceError | undefined;
+    error: Error | undefined;
     isLoading: boolean;
 };
 export const useCountry = (): useCountryResult => {
