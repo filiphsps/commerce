@@ -10,11 +10,19 @@ const Container = styled.div<{ $primary?: boolean }>`
     width: 100%;
     margin: 0px auto;
 
+    .BlackFriday & {
+        color: #ccc;
+    }
+
     ${({ $primary }) =>
         $primary &&
         css`
             padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
             gap: calc(var(--block-spacer-large) * 2);
+
+            .BlackFriday & {
+                padding: var(--block-spacer-large) var(--block-spacer);
+            }
         `}
 `;
 

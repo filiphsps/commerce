@@ -82,7 +82,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     --accent-secondary-text: #101418;
                 }
             `}</style>
-            <DefaultSeo {...SEO} themeColor={store?.accent.secondary} />
+            <DefaultSeo {...SEO} themeColor={/*store?.accent.secondary*/ '#000'} />
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />

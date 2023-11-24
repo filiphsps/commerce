@@ -356,7 +356,6 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
                         style={{ gridArea: 'header' }}
                         title={page?.data.title}
                         subtitle={page?.data.description}
-                        foreground="var(--color-dark)"
                     />
 
                     <ContentWrapper>

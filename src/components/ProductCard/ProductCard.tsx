@@ -1,18 +1,16 @@
 import { ConvertToLocalMeasurementSystem, ProductApi } from '@/api/product';
-import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
-import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import { useEffect, useState } from 'react';
-import { FiMinus, FiPlus } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
-
 import { Button } from '@/components/Button';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
+import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
+import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
+import { useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 export const ProductImage = styled.div`
@@ -28,6 +26,10 @@ export const ProductImage = styled.div`
     background: var(--color-bright);
     box-shadow: 0px 0px 1rem -0.25rem var(--color-block-shadow);
     height: 14rem;
+
+    .BlackFriday & {
+        background: #aaa;
+    }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
@@ -643,12 +645,10 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                         className={quantity > 1 ? '' : 'Inactive'}
                         onClick={() => setQuantity(quantity - 1 || 0)}
                     >
-                        <FiMinus />
+                        -
                     </QuantityAction>
                     <QuantityValue>{quantity}</QuantityValue>
-                    <QuantityAction onClick={() => setQuantity(quantity + 1)}>
-                        <FiPlus />
-                    </QuantityAction>
+                    <QuantityAction onClick={() => setQuantity(quantity + 1)}>+</QuantityAction>
                 </Quantity>
             </Actions>
         </Container>
