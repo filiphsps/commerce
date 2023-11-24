@@ -1,7 +1,7 @@
 'use client';
 
 import type { StoreModel } from '@/models/StoreModel';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import { useEffect, type ReactNode } from 'react';
@@ -13,6 +13,7 @@ type HeaderProviderProps = {
 export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     const pathname = usePathname();
     const router = useRouter();
+    const params = useSearchParams();
 
     useEffect(() => {
         const threshold = 5;
@@ -34,7 +35,7 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
     useEffect(() => {
         NProgress.done();
-    }, [pathname, router]);
+    }, [pathname, router, params]);
 
     return (
         <>
