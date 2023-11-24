@@ -128,9 +128,11 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     useShopifyCookies({ hasUserConsent: true, domain: trimDomain(domain) });
 
     if (!shopId) {
-        throw new Error(`Invalid shopId: ${shopId}`);
+        console.warn(`Invalid shopId: ${shopId}`);
+        return;
     } else if (!domain) {
-        throw new Error(`Invalid domain: ${domain}`);
+        console.warn(`Invalid domain: ${domain}`);
+        return;
     }
 
     const { lines, id: cartId, cost, status, totalQuantity } = useCart();
@@ -144,7 +146,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
-        shopifySalesChannel: ShopifySalesChannel.hydrogen, // FIXME: Use `ShopifySalesChannel.headless` when Shopify fixes analytics.
+        shopifySalesChannel: ShopifySalesChannel.hydrogen,
         storefrontId: Config.shopify.storefront_id,
         currency: locale.currency,
         acceptedLanguage: locale.language.toLowerCase(),
@@ -212,7 +214,8 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             ...pageAnalytics,
             ...pagePropsAnalyticsData,
             cartId: cartId!,
-            totalValue: Number.parseFloat(cost?.totalAmount?.amount!)
+            totalValue: Number.parseFloat(cost?.totalAmount?.amount!),
+            products
         };
 
         sendShopifyAnalytics(

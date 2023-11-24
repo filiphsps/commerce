@@ -245,6 +245,11 @@ const HeaderContent = styled.div`
         font-size: 2.25rem;
         line-height: 2.25rem;
         margin-bottom: calc(var(--block-spacer-small) * -1);
+
+        .BlackFriday & {
+            text-transform: uppercase;
+            font-weight: 500;
+        }
     }
 
     h2 {
@@ -252,6 +257,12 @@ const HeaderContent = styled.div`
         line-height: 3rem;
         margin-bottom: calc(var(--block-spacer-small) * -1);
         color: var(--accent-secondary-dark);
+
+        .BlackFriday & {
+            text-transform: uppercase;
+            font-weight: 800;
+            color: inherit;
+        }
     }
 
     @media (min-width: 950px) {
@@ -314,6 +325,10 @@ const PriceContainer = styled.div`
     flex-direction: column;
     height: 100%;
     color: var(--accent-primary-dark);
+
+    .BlackFriday & {
+        color: inherit;
+    }
 
     @media (min-width: 1260px) {
         min-width: 12rem;
@@ -386,12 +401,20 @@ const Tab = styled.div`
     &.Active {
         color: var(--accent-primary-dark);
         font-weight: 700;
+
+        .BlackFriday & {
+            color: inherit;
+        }
     }
 
     @media (hover: hover) and (pointer: fine) {
         &:hover {
             color: var(--accent-primary-dark);
             font-weight: 700;
+
+            .BlackFriday & {
+                color: inherit;
+            }
         }
     }
 `;

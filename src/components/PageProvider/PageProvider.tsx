@@ -56,8 +56,8 @@ const Announcement = styled.div`
     .BlackFriday & {
         &.primary,
         &.secondary {
-            background: #000;
-            color: #ccc;
+            background: #000 !important;
+            color: #ccc !important;
         }
     }
 `;

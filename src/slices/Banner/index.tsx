@@ -95,6 +95,11 @@ const Action = styled(Link)<{ $primary?: boolean }>`
             background: var(--heading-selected-color);
             color: var(--accent-primary-text);
             font-weight: 700;
+
+            .BlackFriday & {
+                background: #000;
+                color: inherit;
+            }
         `}
 
     @media (hover: hover) and (pointer: fine) {

@@ -73,6 +73,13 @@ let config = {
         return config;
     },
 
+    async rewrites() {
+        return [{
+            source: '/:lang/beta/:slug*',
+            destination: 'https://staging.sweetsideofsweden.com/:lang/:slug*'
+        }];
+    },
+
     async redirects() {
         return [
             {
@@ -86,8 +93,18 @@ let config = {
                 permanent: true
             },
             {
-                source: '/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                source: '/:lang/admin/',
+                destination: `https://checkout.sweetsideofsweden.com/admin`,
+                permanent: true
+            },
+            {
+                source: '/:lang/admin/:slug*',
+                destination: `https://checkout.sweetsideofsweden.com/admin`,
+                permanent: true
+            },
+            {
+                source: '/admin/:slug*',
+                destination: `https://checkout.sweetsideofsweden.com/admin`,
                 permanent: true
             },
             {

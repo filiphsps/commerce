@@ -98,7 +98,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 type="Organization"
                 name={store?.name}
                 description={store?.description}
-                url={`https://www.sweetsideofsweden.com/`}
+                url={`https://www.sweetsideofsweden.com/${router.locale}/`}
                 logo={store?.favicon.src}
                 foundingDate="2023"
                 founders={[
@@ -134,7 +134,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                     contactType: 'Customer relations and support',
                     email: 'hello@sweetsideofsweden.com',
                     telephone: '+1 866 502 5580',
-                    url: `https://www.sweetsideofsweden.com/about/`,
+                    url: `https://www.sweetsideofsweden.com/${router.locale}/about/`,
                     availableLanguage: ['English', 'Swedish'],
                     areaServed:
                         store?.payment?.countries?.map(({ isoCode }) => isoCode) ||
@@ -147,10 +147,10 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             <SiteLinksSearchBoxJsonLd
                 name={store?.name}
                 alternateName={'sweetsideofsweden'}
-                url={`https://www.sweetsideofsweden.com/`}
+                url={`https://www.sweetsideofsweden.com/${router.locale}/`}
                 potentialActions={[
                     {
-                        target: `https://www.sweetsideofsweden.com/search/?q`,
+                        target: `https://www.sweetsideofsweden.com/${router.locale}/search/?q`,
                         queryInput: 'search_term_string'
                     }
                 ]}
@@ -180,7 +180,7 @@ export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric)
 
     (window as any)?.dataLayer?.push({
         event: 'web-vital',
-        event_category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
+        event_category: 'Web Vitals',
         event_action: name,
         // Google Analytics metrics must be integers, so the value is rounded.
         // For CLS the value is first multiplied by 1000 for greater precision
