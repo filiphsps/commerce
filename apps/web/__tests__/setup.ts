@@ -53,6 +53,13 @@ vi.mock('@/api/product-reviews', () => ({
     })
 }));
 
+vi.mock('react', async () => {
+    return {
+        ...((await vi.importActual('react')) || {}),
+        cache: vi.fn().mockImplementation((func) => func)
+    };
+});
+
 // Thanks to https://github.com/akiran/react-slick/issues/742#issuecomment-298992238
 window.matchMedia =
     window.matchMedia ||

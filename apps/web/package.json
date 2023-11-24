@@ -12,15 +12,14 @@
     "scripts": {
         "start": "next start -p $PORT",
         "dev": "next dev",
+        "dev:turbo": "next dev --turbo",
         "build": "next build",
-        "lint": "concurrently --raw npm:lint:*",
-        "lint:next": "next lint",
-        "lint:prettier": "prettier src/**/*.* --check",
+        "lint": "next lint",
+        "prettier": "prettier src/**/*.* --check",
         "typecheck": "tsc -noEmit",
-        "test": "concurrently --raw npm:test:*",
-        "test:vitest": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" vitest run --coverage --reporter=basic",
+        "test": "vitest run --coverage --reporter=basic",
         "slicemachine": "start-slicemachine",
-        "watch:test:vitest": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" vitest watch"
+        "watch:test": "vitest watch"
     },
     "author": {
         "name": "Nordcom Group Inc.",

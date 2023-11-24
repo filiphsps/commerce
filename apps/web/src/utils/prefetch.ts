@@ -29,6 +29,7 @@ const Prefetch = ({
             // No page data to go of was supplied to prefetch.
             return resolve({});
         }
+        const shop = api.shop();
 
         const slices = page?.slices;
         let collections = initialData?.collections || {},
@@ -47,104 +48,108 @@ const Prefetch = ({
 
                         if (!handle || collections[handle]) continue;
 
-                        let collection = await CollectionApi({
-                            api,
-                            handle,
-                            limit: slice.variation === 'full' ? undefined : limit
-                        });
+                        try {
+                            let collection = await CollectionApi({
+                                api,
+                                handle,
+                                limit: slice.variation === 'full' ? undefined : limit
+                            });
 
-                        if (!collection) {
-                            console.warn(`Collection "${handle}" not found.`);
-                            continue; // TODO: Figure out if we should throw here.
-                        } else if (!collection?.products?.edges) {
-                            console.warn(`No products in collection "${collection.handle || handle}".`);
-                            continue; // TODO: Figure out if we should throw here.
-                        }
-
-                        collections[handle] = {
-                            ...collection,
-                            products: {
-                                ...collection.products,
-                                edges: (collection.products.edges as ProductEdge[])
-                                    .map(
-                                        (
-                                            {
-                                                node: {
-                                                    id,
-                                                    handle,
-                                                    availableForSale,
-                                                    title,
-                                                    description,
-                                                    vendor,
-                                                    tags,
-                                                    seo,
-                                                    variants,
-                                                    images
-                                                }
-                                            },
-                                            index
-                                        ) => {
-                                            if (
-                                                (slice?.primary as any)?.limit &&
-                                                (slice?.primary as any)?.limit > 0 &&
-                                                (slice?.primary as any)?.limit <= index
-                                            ) {
-                                                return null;
-                                            }
-
-                                            return {
-                                                node: {
-                                                    id,
-                                                    handle,
-                                                    availableForSale,
-                                                    title,
-                                                    description: (seo?.description || description).slice(0, 75),
-                                                    vendor,
-                                                    tags,
-                                                    sellingPlanGroups: {
-                                                        edges: []
-                                                    },
-                                                    variants: {
-                                                        edges:
-                                                            variants?.edges.map(
-                                                                ({
-                                                                    node: {
-                                                                        id,
-                                                                        sku,
-                                                                        title,
-                                                                        price,
-                                                                        compareAtPrice,
-                                                                        availableForSale,
-
-                                                                        weight,
-                                                                        weightUnit,
-                                                                        image,
-                                                                        selectedOptions
-                                                                    }
-                                                                }) => ({
-                                                                    node: {
-                                                                        id,
-                                                                        sku,
-                                                                        title,
-                                                                        price,
-                                                                        compareAtPrice,
-                                                                        availableForSale,
-                                                                        weight,
-                                                                        weightUnit,
-                                                                        image,
-                                                                        selectedOptions
-                                                                    }
-                                                                })
-                                                            ) || []
-                                                    },
-                                                    images
-                                                }
-                                            };
-                                        }
-                                    )
-                                    .filter((_) => _)
+                            if (!collection) {
+                                console.warn(`Collection "${handle}" not found.`);
+                                continue; // TODO: Figure out if we should throw here.
+                            } else if (!collection?.products?.edges) {
+                                console.warn(`No products in collection "${collection.handle || handle}".`);
+                                continue; // TODO: Figure out if we should throw here.
                             }
-                        } as any;
+
+                            collections[handle] = {
+                                ...collection,
+                                products: {
+                                    ...collection.products,
+                                    edges: (collection.products.edges as ProductEdge[])
+                                        .map(
+                                            (
+                                                {
+                                                    node: {
+                                                        id,
+                                                        handle,
+                                                        availableForSale,
+                                                        title,
+                                                        description,
+                                                        vendor,
+                                                        tags,
+                                                        seo,
+                                                        variants,
+                                                        images
+                                                    }
+                                                },
+                                                index
+                                            ) => {
+                                                if (
+                                                    (slice?.primary as any)?.limit &&
+                                                    (slice?.primary as any)?.limit > 0 &&
+                                                    (slice?.primary as any)?.limit <= index
+                                                ) {
+                                                    return null;
+                                                }
+
+                                                return {
+                                                    node: {
+                                                        id,
+                                                        handle,
+                                                        availableForSale,
+                                                        title,
+                                                        description: (seo?.description || description).slice(0, 75),
+                                                        vendor,
+                                                        tags,
+                                                        sellingPlanGroups: {
+                                                            edges: []
+                                                        },
+                                                        variants: {
+                                                            edges:
+                                                                variants?.edges.map(
+                                                                    ({
+                                                                        node: {
+                                                                            id,
+                                                                            sku,
+                                                                            title,
+                                                                            price,
+                                                                            compareAtPrice,
+                                                                            availableForSale,
+
+                                                                            weight,
+                                                                            weightUnit,
+                                                                            image,
+                                                                            selectedOptions
+                                                                        }
+                                                                    }) => ({
+                                                                        node: {
+                                                                            id,
+                                                                            sku,
+                                                                            title,
+                                                                            price,
+                                                                            compareAtPrice,
+                                                                            availableForSale,
+                                                                            weight,
+                                                                            weightUnit,
+                                                                            image,
+                                                                            selectedOptions
+                                                                        }
+                                                                    })
+                                                                ) || []
+                                                        },
+                                                        images
+                                                    }
+                                                };
+                                            }
+                                        )
+                                        .filter((_) => _)
+                                }
+                            } as any;
+                        } catch (error: unknown) {
+                            console.warn(`Collection "${handle}" failed prefetch for tenant "${shop.id}".`, error);
+                        }
                         continue;
                     }
                     case 'vendors': {

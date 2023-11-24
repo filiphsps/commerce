@@ -1,36 +1,158 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import type {
-    Collection,
-    CollectionConnection,
-    CollectionEdge,
-    CollectionSortKeys
-} from '@shopify/hydrogen-react/storefront-api-types';
-
 import type { AbstractApi } from '@/utils/abstract-api';
+import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@/utils/errors';
+import type {
+    CollectionEdge,
+    CollectionSortKeys,
+    ProductCollectionSortKeys,
+    QueryRoot
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
+import { cache } from 'react';
+
+/** @todo TODO: Type-library this so we can use it in other places. */
+type Nullable<T> = T | null;
+
+/**
+ * @todo TODO: This should be replaced with a generalized shopify parser.
+ *       Preferably one that we can use to output in whatever format we want.
+ */
+const cleanShopifyHtml = (html: string | unknown): Nullable<string> => {
+    if (typeof html !== 'string' || !html) return null;
+    let out = html as string;
+
+    // Remove all non-breaking spaces and replace them with normal spaces.
+    // TODO: This is a hacky solution. We should write a proper shopify parser.
+    out = out.replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ');
+
+    // Replace some of the more common unicode characters with their HTML.
+    out = out
+        .replaceAll('”', '&rdquo;')
+        .replaceAll('“', '&ldquo;')
+        .replaceAll('‘', '&lsquo;')
+        .replaceAll('’', '&rsquo;')
+        .replaceAll('…', '&hellip;');
+
+    // Trim the preceding and trailing whitespace.
+    out = out.trim();
+
+    return out;
+};
+
+/** @todo TODO: Type-library this so we can use it in other places. */
+type ApiOptions = { api: AbstractApi };
+/** @todo TODO: Type-library this so we can use it in other places. */
+type Identifiable = { handle: string };
+/** @todo TODO: Type-library this so we can use it in other places. */
+type LimitFilters = { limit?: Nullable<number> } | { first?: Nullable<number>; last?: Nullable<number> };
+
+type GenericCollectionFilters = {
+    after?: Nullable<string>;
+    before?: Nullable<string>;
+};
+type CollectionFilters = {
+    sorting?: Nullable<ProductCollectionSortKeys>;
+} & GenericCollectionFilters &
+    LimitFilters;
+type CollectionsFilters = {
+    sorting?: Nullable<CollectionSortKeys>;
+
+    /**
+     * @deprecated
+     */
+    vendor?: Nullable<string>;
+} & GenericCollectionFilters &
+    LimitFilters;
+
+const extractLimitLikeFilters = (
+    filters: LimitFilters,
+    defaultLimit = 30
+):
+    | {
+          first: number;
+      }
+    | {
+          last: number;
+      }
+    | {
+          first: number;
+          last: number;
+      }
+    | {} => {
+    switch (true) {
+        case filters === null || typeof filters === 'undefined':
+        case typeof (filters as any).limit !== 'number' &&
+            typeof (filters as any).first !== 'number' &&
+            typeof (filters as any).last !== 'number':
+        case !('limit' in filters) && !('first' in filters) && !('last' in filters):
+            return {
+                first: defaultLimit
+            };
+
+        case 'limit' in filters:
+            if ('first' in filters || 'last' in filters) {
+                throw new TodoError(); // TODO: Add ErrorCode and Error for this.
+            }
+            return {
+                first: filters.limit || defaultLimit
+            };
+
+        case 'first' in filters || 'last' in filters:
+            if (typeof filters.first === 'number' && typeof filters.last === 'number') {
+                throw new TodoError(); // TODO: Add ErrorCode and Error for this.
+            }
+            return {
+                first: filters.first || null,
+                last: filters.last || null
+            };
+    }
+
+    // This should never actually be reachable.
+    throw new GenericError('Supposedly unreachable code path was reached');
+};
+
+type CollectionOptions = ApiOptions &
+    Identifiable &
+    (
+        | {
+              filters: CollectionFilters;
+          }
+        | /** @deprecated */ CollectionFilters
+    );
 
 /**
  * Get a collection from Shopify.
- * NOTE: We modify the descriptionHtml to remove all non-breaking spaces
+ *
+ * @note We modify the descriptionHtml to remove all non-breaking spaces
  *       and replace them with normal spaces.
+ *
+ * @todo TODO: Support `id` as an alternative to `handle` {@link https://shopify.dev/docs/api/storefront/2023-10/queries/collection}.
+ *
+ * @param {CollectionOptions} options - The options for the collection.
+ * @param {AbstractApi} options.api - The API to use.
+ * @param {string} options.handle - The handle of the collection to fetch.
+ * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
+ * @returns {Promise<Collection>} The collection.
  */
-export const CollectionApi = async ({
-    api,
-    handle,
-    limit
-}: {
-    api: AbstractApi;
-    handle: string;
-    limit?: number;
-}): Promise<Collection> => {
-    return new Promise(async (resolve, reject) => {
-        if (!handle) return reject(new Error('400: Invalid handle'));
+export const CollectionApi = cache(async ({ api, handle, ...props }: CollectionOptions) => {
+    if (!handle) throw new Error('400: Invalid handle');
 
-        try {
-            const { data, errors } = await api.query<{ collectionByHandle: Collection }>(
-                gql`
-                    query collection($handle: String!, $limit: Int!) {
-                        collectionByHandle(handle: $handle) {
+    const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
+
+    try {
+        const { data, errors } = await api.query<{
+            collection: QueryRoot['collection'];
+        }>(
+            gql`
+                    query collection(
+                        $handle: String!
+                        $first: Int
+                        $last: Int
+                        $sorting: ProductCollectionSortKeys
+                        $before: String
+                        $after: String
+                    ) {
+                        collection(handle: $handle) {
                             id
                             handle
                             title
@@ -47,11 +169,23 @@ export const CollectionApi = async ({
                                 title
                                 description
                             }
-                            products(first: $limit) {
+                            products(
+                                first: $first
+                                last: $last
+                                sortKey: $sorting
+                                before: $before
+                                after: $after
+                            ) {
                                 edges {
                                     node {
                                         ${PRODUCT_FRAGMENT_MINIMAL}
                                     }
+                                }
+                                pageInfo {
+                                    startCursor
+                                    endCursor
+                                    hasNextPage
+                                    hasPreviousPage
                                 }
                             }
                             keywords: metafield(namespace: "store", key: "keywords") {
@@ -66,37 +200,45 @@ export const CollectionApi = async ({
                         }
                     }
                 `,
-                {
-                    handle: handle,
-                    limit: limit || 250
-                }
-            );
+            {
+                handle: handle,
+                ...extractLimitLikeFilters(filters),
+                ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
+                    sorting: sorting,
+                    before: before,
+                    after: after
+                }))(filters)
+            }
+        );
 
-            if (errors)
-                return reject(
-                    new Error(`500: Something went wrong on our end (${errors.map((e) => e.message).join('\n')})`)
-                );
-            if (!data?.collectionByHandle)
-                return reject(new Error(`404: "Collection" with handle "${handle}" cannot be found`));
-
-            return resolve({
-                ...data.collectionByHandle,
-                descriptionHtml: (data.collectionByHandle.descriptionHtml || '')
-                    .replaceAll(/ /g, ' ')
-                    .replaceAll('\u00A0', ' ')
-            });
-        } catch (error) {
-            console.error(error);
-            return reject(error);
+        if (errors) {
+            throw new UnknownApiError();
+        } else if (!data?.collection) {
+            throw new NotFoundError(`"Collection" with the handle "${handle}"`);
         }
-    });
-};
 
-export const CollectionsApi = async ({
-    client
-}: {
-    client: AbstractApi;
-}): Promise<
+        return {
+            ...data.collection,
+            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || undefined
+        };
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+});
+
+export const CollectionsApi = async (
+    options:
+        | {
+              api: AbstractApi;
+          }
+        | {
+              /**
+               * @deprecated Use `api` instead.
+               */
+              client: AbstractApi;
+          }
+): Promise<
     Array<{
         id: string;
         handle: string;
@@ -104,8 +246,9 @@ export const CollectionsApi = async ({
     }>
 > => {
     return new Promise(async (resolve, reject) => {
-        // TODO: Pagination.
-        const { data, errors } = await client.query<{ collections: CollectionConnection }>(gql`
+        const api = 'api' in options ? options.api : /** @deprecated */ options.client;
+
+        const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
             query collections($language: LanguageCode!, $country: CountryCode!)
             @inContext(language: $language, country: $country) {
                 collections(first: 250) {
@@ -113,7 +256,6 @@ export const CollectionsApi = async ({
                         node {
                             id
                             handle
-                            product
 
                             products(first: 1) {
                                 edges {
@@ -141,100 +283,111 @@ export const CollectionsApi = async ({
     });
 };
 
+type CollectionsOptions = ApiOptions &
+    (
+        | {
+              filters: CollectionsFilters;
+          }
+        | /** @deprecated */ CollectionsFilters
+    );
+
 /**
  * Fetches collections from the Shopify API.
  */
-export const CollectionsPaginationApi = async ({
-    api,
-    limit = 35,
-    sorting = 'RELEVANCE',
-    vendor,
-    before,
-    after
-}: {
-    api: AbstractApi;
-    limit?: number;
-    vendor?: string;
-    sorting?: CollectionSortKeys;
-    before?: string | null;
-    after?: string | null;
-}): Promise<{
-    page_info: {
-        start_cursor: string | null;
-        end_cursor: string | null;
-        has_next_page: boolean;
-        has_prev_page: boolean;
-    };
-    collections: CollectionEdge[];
-}> => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const { data } = await api.query<{ collections: CollectionConnection }>(
-                gql`
-                    query collections(
-                        $limit: Int!
-                        $sorting: CollectionSortKeys
-                        $query: String
-                        $before: String
-                        $after: String
-                    ) {
-                        collections(first: $limit, sortKey: $sorting, query: $query, before: $before, after: $after) {
-                            edges {
-                                cursor
-                                node {
-                                    id
-                                    handle
-                                    createdAt
-                                    updatedAt
-                                    title
-                                    description
-                                    descriptionHtml
-                                    image {
+export const CollectionsPaginationApi = cache(
+    async ({
+        api,
+        ...props
+    }: CollectionsOptions): Promise<{
+        page_info: {
+            start_cursor: string | null;
+            end_cursor: string | null;
+            has_next_page: boolean;
+            has_prev_page: boolean;
+        };
+        collections: CollectionEdge[];
+    }> => {
+        const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
+
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
+                    gql`
+                        query collections(
+                            $first: Int
+                            $last: Int
+                            $sorting: CollectionSortKeys
+                            $query: String
+                            $before: String
+                            $after: String
+                        ) {
+                            collections(
+                                first: $first
+                                last: $last
+                                sortKey: $sorting
+                                query: $query
+                                before: $before
+                                after: $after
+                            ) {
+                                edges {
+                                    cursor
+                                    node {
                                         id
-                                        altText
-                                        url
-                                        height
-                                        width
-                                    }
-                                    seo {
+                                        handle
+                                        createdAt
+                                        updatedAt
                                         title
                                         description
+                                        descriptionHtml
+                                        image {
+                                            id
+                                            altText
+                                            url
+                                            height
+                                            width
+                                        }
+                                        seo {
+                                            title
+                                            description
+                                        }
                                     }
                                 }
-                            }
-                            pageInfo {
-                                startCursor
-                                endCursor
-                                hasNextPage
-                                hasPreviousPage
+                                pageInfo {
+                                    startCursor
+                                    endCursor
+                                    hasNextPage
+                                    hasPreviousPage
+                                }
                             }
                         }
+                    `,
+                    {
+                        ...extractLimitLikeFilters(filters),
+                        ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
+                            query: vendor && `query:"vendor:${vendor}"`,
+                            sorting: sorting,
+                            before: before,
+                            after: after
+                        }))(filters)
                     }
-                `,
-                {
-                    limit,
-                    query: (vendor && `query:"vendor:${vendor}"`) || null,
-                    sorting: sorting || null,
-                    before: before || null,
-                    after: after || null
-                }
-            );
+                );
 
-            const page_info = data?.collections.pageInfo;
-            if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
+                const page_info = data?.collections.pageInfo;
+                if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
 
-            return resolve({
-                page_info: {
-                    start_cursor: page_info.startCursor || null,
-                    end_cursor: page_info.endCursor || null,
-                    has_next_page: page_info.hasNextPage,
-                    has_prev_page: page_info.hasPreviousPage
-                },
-                collections: data.collections?.edges || []
-            });
-        } catch (error: any) {
-            console.error(error);
-            return reject(error);
-        }
-    });
-};
+                return resolve({
+                    collections: data.collections?.edges || [],
+                    page_info: {
+                        start_cursor: page_info.startCursor || null,
+                        end_cursor: page_info.endCursor || null,
+                        has_next_page: page_info.hasNextPage,
+                        has_prev_page: page_info.hasPreviousPage
+                    }
+                });
+            } catch (error: unknown) {
+                console.error(error);
+                return reject(error);
+            }
+        });
+    }
+);

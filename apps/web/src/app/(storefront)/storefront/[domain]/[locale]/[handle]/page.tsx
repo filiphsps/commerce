@@ -7,7 +7,7 @@ import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
-import { DefaultLocale, Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
@@ -18,12 +18,15 @@ import { metadata as notFoundMetadata } from '../not-found';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = DefaultLocale()!;
+    const locale = Locale.default;
     const shops = await ShopsApi();
 
     return (
         await Promise.all(
             shops.map(async (shop) => {
+                // TODO: Deal with this in a better way.
+                if (shop.configuration.commerce.type === 'dummy') return [];
+
                 const api = await StorefrontApiClient({ shop, locale });
                 const locales = await LocalesApi({ api });
 
@@ -31,11 +34,13 @@ export async function generateStaticParams() {
                     locales.map(async (locale) => {
                         const pages = await PagesApi({ shop, locale });
 
-                        return pages.map(({ uid: handle }) => ({
-                            domain: shop.domains.primary,
-                            locale: locale.code,
-                            handle
-                        }));
+                        return pages
+                            .filter(({ uid }) => uid !== 'homepage')
+                            .map(({ uid: handle }) => ({
+                                domain: shop.domains.primary,
+                                locale: locale.code,
+                                handle
+                            }));
                     })
                 );
             })

@@ -12,7 +12,6 @@ export class Error<T = unknown> extends BuiltinError {
     public constructor() {
         super(...arguments);
 
-        Object.setPrototypeOf(this, Error.prototype);
         Object.defineProperty(this, 'help', {
             get: function () {
                 return `https://shops.nordcom.io/docs/errors/${this.code}/`;
@@ -20,6 +19,7 @@ export class Error<T = unknown> extends BuiltinError {
             enumerable: true,
             configurable: false
         });
+        Object.setPrototypeOf(this, Error.prototype);
     }
 
     public isNotFoundError(): boolean {
@@ -138,6 +138,14 @@ export class GenericError extends Error<GenericErrorKind> {
     name = 'Unknown Error';
     details = 'An unknown error occurred';
     code = 'GENERIC_UNKNOWN_ERROR' as GenericErrorKind;
+
+    constructor(cause?: string) {
+        super();
+
+        if (cause) {
+            this.cause = cause;
+        }
+    }
 }
 export class TodoError extends GenericError {
     name = 'TODO';
@@ -149,6 +157,14 @@ export class NotFoundError extends GenericError {
     name = 'Not Found';
     details = 'The requested resource could not be found';
     code = 'NOT_FOUND' as const;
+
+    constructor(requestedResource?: string) {
+        super();
+
+        if (requestedResource) {
+            this.cause = this.details.replace('resource', `resource "${requestedResource}"`);
+        }
+    }
 }
 
 /**
