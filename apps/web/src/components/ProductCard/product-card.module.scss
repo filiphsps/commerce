@@ -36,6 +36,13 @@
         //box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
         aspect-ratio: 1.25 / 1;
 
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
         @media (min-width: 950px) {
             padding: var(--block-padding-large);
             aspect-ratio: 1.35 / 1;
