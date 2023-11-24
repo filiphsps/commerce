@@ -1,4 +1,4 @@
-import type { CommerceError } from '@/utils/errors';
+import type { Error } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { useSearchParams } from 'next/navigation';
@@ -14,14 +14,14 @@ type useCartUtilsProps = {
     locale: Locale;
 };
 type useCartUtilsResult = {
-    error: CommerceError | undefined;
+    error: Error | undefined;
 };
 export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
     if (typeof window === 'undefined') {
         return { error: undefined };
     }
 
-    const [error, setError] = useState<CommerceError | undefined>();
+    const [error, setError] = useState<Error | undefined>();
     const query = useSearchParams() as any;
 
     const {

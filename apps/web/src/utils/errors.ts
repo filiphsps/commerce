@@ -1,14 +1,18 @@
-/* c8 ignore start */
-export class CommerceError<T = unknown> extends Error {
+import { NotFoundError as PrismicNotFoundError } from '@prismicio/client';
+import { BuiltinError } from './error';
+
+export class Error<T = unknown> extends BuiltinError {
     public readonly name!: string;
     public readonly details!: string;
     public readonly code!: T;
     public readonly statusCode?: number;
+    // Defined in the constructor using `Object.defineProperty`.
+    public readonly help!: string;
 
     public constructor() {
         super(...arguments);
 
-        Object.setPrototypeOf(this, CommerceError.prototype);
+        Object.setPrototypeOf(this, Error.prototype);
         Object.defineProperty(this, 'help', {
             get: function () {
                 return `https://shops.nordcom.io/docs/errors/${this.code}/`;
@@ -18,7 +22,26 @@ export class CommerceError<T = unknown> extends Error {
         });
     }
 
-    public help!: string; // Defined in the constructor using `Object.defineProperty`.
+    public isNotFoundError(): boolean {
+        return Error.isNotFound(this);
+    }
+
+    public static isNotFound(error: Error | unknown): boolean {
+        switch (true) {
+            case error instanceof PrismicNotFoundError:
+            case error instanceof NotFoundError:
+                return true;
+
+            // TODO: Default should return false.
+            default:
+                break;
+        }
+
+        return (
+            (error as any).statusCode === 404 ||
+            ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e))
+        );
+    }
 }
 
 export type ApiErrorKind =
@@ -32,7 +55,7 @@ export type ApiErrorKind =
     | 'API_ICON_WIDTH_OUT_OF_BOUNDS'
     | 'API_ICON_HEIGHT_NO_FRACTIONAL'
     | 'API_ICON_HEIGHT_OUT_OF_BOUNDS';
-export class ApiError extends CommerceError<ApiErrorKind> {
+export class ApiError extends Error<ApiErrorKind> {
     statusCode = 400;
     name = 'Unknown Error';
     details = 'An unknown error occurred';
@@ -110,7 +133,7 @@ export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
 };
 
 export type GenericErrorKind = 'GENERIC_UNKNOWN_ERROR' | 'GENERIC_TODO' | 'NOT_FOUND';
-export class GenericError extends CommerceError<GenericErrorKind> {
+export class GenericError extends Error<GenericErrorKind> {
     statusCode = 500;
     name = 'Unknown Error';
     details = 'An unknown error occurred';
@@ -128,8 +151,9 @@ export class NotFoundError extends GenericError {
     code = 'NOT_FOUND' as const;
 }
 
-export const isNotFoundError = (error: GenericError | unknown): boolean =>
-    (error as any).statusCode === 404 ||
-    ['No documents', '404:'].some((e) => (((error as any)?.message as string) || '').includes(e));
-
-/* c8 ignore stop */
+/**
+ * @deprecated Use {@link Error.isNotFound} instead.
+ */
+export const isNotFoundError = (error: Error | unknown): boolean => {
+    return Error.isNotFound(error);
+};

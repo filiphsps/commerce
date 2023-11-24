@@ -1,7 +1,8 @@
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { DefaultLocale, isDefaultLocale, Locale } from '@/utils/locale';
+import { NotFoundError, isNotFoundError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
@@ -228,16 +229,19 @@ export const StoreApi = async ({
                     wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
                 }
             });
-        } catch (error: any) /* TODO: FRO-14 proper error type. */ {
-            if (error.message.includes('No documents') && !isDefaultLocale(locale)) {
-                return resolve(
-                    // Try again with default locale.
-                    await StoreApi({
-                        locale: DefaultLocale(),
-                        client,
-                        api
-                    })
-                );
+        } catch (error: unknown) {
+            if (isNotFoundError(error)) {
+                if (!Locale.isDefault(locale)) {
+                    return resolve(
+                        await StoreApi({
+                            locale: Locale.default,
+                            client,
+                            api
+                        })
+                    );
+                }
+
+                return reject(new NotFoundError());
             }
 
             console.error(error);
