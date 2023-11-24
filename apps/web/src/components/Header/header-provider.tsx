@@ -1,7 +1,7 @@
 'use client';
 
 import type { StoreModel } from '@/models/StoreModel';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import { useEffect, type ReactNode } from 'react';
@@ -13,7 +13,6 @@ type HeaderProviderProps = {
 export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     const pathname = usePathname();
     const router = useRouter();
-    const params = useSearchParams();
 
     useEffect(() => {
         const threshold = 5;
@@ -21,7 +20,6 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
 
         const onScroll = () => {
             const scroll = Math.floor(window.scrollY);
-
             // document.body.style.setProperty('--scroll-y', `${scroll}px`);
 
             const scrolled = scroll >= threshold ? 'true' : 'false';
@@ -33,9 +31,11 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     }, []);
 
     // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
+    // this should also trigger on searchParams changes but listening to it would cause
+    // Next.js to deopt into client-side rendering. :(
     useEffect(() => {
         NProgress.done();
-    }, [pathname, router, params]);
+    }, [pathname, router]);
 
     return (
         <>

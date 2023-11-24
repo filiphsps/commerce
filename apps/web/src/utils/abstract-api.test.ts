@@ -1,4 +1,4 @@
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import { ApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { ApolloClient } from '@apollo/client';
 import { describe, expect, it } from 'vitest';
@@ -17,7 +17,7 @@ describe('utils', () => {
             })
         })
     }));
-    describe('ShopifyApolloApiBuilder', () => {
+    describe('ApiBuilder', () => {
         // Mock apollo client.
         const client = new ApolloClient({
             uri: 'https://fake-shopify-store.com/graphql'
@@ -29,7 +29,7 @@ describe('utils', () => {
             country: 'US'
         } as Locale;
 
-        const api = ShopifyApolloApiBuilder({
+        const api = ApiBuilder({
             shop: {} as any,
             api: client,
             locale

@@ -54,12 +54,21 @@ export type ApiErrorKind =
     | 'API_ICON_WIDTH_NO_FRACTIONAL'
     | 'API_ICON_WIDTH_OUT_OF_BOUNDS'
     | 'API_ICON_HEIGHT_NO_FRACTIONAL'
-    | 'API_ICON_HEIGHT_OUT_OF_BOUNDS';
+    | 'API_ICON_HEIGHT_OUT_OF_BOUNDS'
+    | 'API_NO_LOCALES_AVAILABLE';
 export class ApiError extends Error<ApiErrorKind> {
     statusCode = 400;
     name = 'Unknown Error';
     details = 'An unknown error occurred';
     code = 'API_UNKNOWN_ERROR' as ApiErrorKind;
+
+    constructor(cause?: string) {
+        super();
+
+        if (cause) {
+            this.cause = cause;
+        }
+    }
 }
 
 export class UnknownApiError extends ApiError {
@@ -114,6 +123,13 @@ export class IconHeightOutOfBoundsError extends ApiError {
     name = 'Height is out of bounds';
     details = '`height` must be between `1` and `1024` or `undefined`';
     code = 'API_ICON_HEIGHT_OUT_OF_BOUNDS' as const;
+}
+
+export class NoLocalesAvailableError extends ApiError {
+    statusCode = 404;
+    name = 'No locales available';
+    details = 'No locales have been configured for the requested shop instance';
+    code = 'API_NO_LOCALES_AVAILABLE' as const;
 }
 
 export type ApiErrorStatusCode = 400 | 405 | 429 | number;

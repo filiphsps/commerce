@@ -1,6 +1,7 @@
 import type { Shop } from '@/api/shop';
 import type { FooterModel } from '@/models/FooterModel';
-import { DefaultLocale, Locale } from '@/utils/locale';
+import { ApiError, NotFoundError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
 
@@ -13,32 +14,29 @@ export const FooterApi = async ({
     locale: Locale;
     client?: PrismicClient;
 }): Promise<FooterModel> => {
-    return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ shop, locale });
+    const client = _client || createClient({ shop, locale });
 
-        try {
-            const res = await client.getSingle('footer', {
-                lang: locale.code
-            });
+    try {
+        const res = await client.getSingle('footer', {
+            lang: locale.code
+        });
 
-            return resolve({
-                address: res.data.address,
-                blocks: res.data.body.map((item: any) => ({
-                    title: item.primary.title,
-                    items: item.items
-                }))
-            });
-        } catch (error: any) {
-            if (error.message.includes('No documents')) {
-                if (!Locale.isDefault(locale)) {
-                    return resolve(await FooterApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
-                }
-
-                return reject(new Error(`404: "Footer" with the locale "${locale.code}" cannot be found`));
+        return {
+            address: res.data.address,
+            blocks: res.data.body.map((item: any) => ({
+                title: item.primary.title,
+                items: item.items
+            }))
+        };
+    } catch (error: unknown) {
+        if (ApiError.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return await FooterApi({ shop, locale: Locale.default, client }); // Try again with default locale
             }
 
-            console.error(error);
-            return reject(error);
+            throw new NotFoundError(`"Footer" with the locale "${locale.code}"`);
         }
-    });
+
+        throw error;
+    }
 };

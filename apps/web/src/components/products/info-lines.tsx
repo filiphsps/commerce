@@ -1,6 +1,6 @@
+import type { Product } from '@/api/product';
 import styles from '@/components/products/info-lines.module.scss';
 import { Label } from '@/components/typography/label';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { FunctionComponent } from 'react';
 import { FiPackage } from 'react-icons/fi';
 

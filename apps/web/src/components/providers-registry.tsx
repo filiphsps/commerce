@@ -49,6 +49,13 @@ export default function ProvidersRegistry({
         return () => clearTimeout(timeout);
     }, []);
 
+    // Set the locale globally for the client.
+    useEffect(() => {
+        if (typeof window === 'undefined' || !locale) return;
+
+        window.locale = locale.code;
+    }, [, locale]);
+
     let domain, token, id;
     switch (shop.configuration.commerce.type) {
         case 'shopify':

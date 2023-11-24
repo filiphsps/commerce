@@ -1,5 +1,3 @@
-import 'server-only';
-
 import type { Shop } from '@/api/shop';
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 

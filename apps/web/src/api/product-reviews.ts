@@ -1,7 +1,8 @@
+import type { Product } from '@/api/product';
 import type { AbstractApi } from '@/utils/abstract-api';
 import { UnknownApiError } from '@/utils/errors';
 import { gql } from '@apollo/client';
-import type { MetaobjectConnection, Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { MetaobjectConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 export type Review = {
     rating: number;

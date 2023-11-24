@@ -1,11 +1,12 @@
 import { PageApi, PagesApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiClient, StorefrontApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
+import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
@@ -23,27 +24,33 @@ export async function generateStaticParams() {
 
     return (
         await Promise.all(
-            shops.map(async (shop) => {
-                // TODO: Deal with this in a better way.
-                if (shop.configuration.commerce.type === 'dummy') return [];
+            shops
+                .map(async (shop) => {
+                    try {
+                        // TODO: Deal with this in a better way.
+                        if (!shop || shop?.configuration?.commerce?.type === 'dummy') return null;
 
-                const api = await StorefrontApiClient({ shop, locale });
-                const locales = await LocalesApi({ api });
+                        const api = await ShopifyApiClient({ shop, locale });
+                        const locales = await LocalesApi({ api });
 
-                return await Promise.all(
-                    locales.map(async (locale) => {
-                        const pages = await PagesApi({ shop, locale });
+                        return await Promise.all(
+                            locales.map(async (locale) => {
+                                const pages = await PagesApi({ shop, locale });
 
-                        return pages
-                            .filter(({ uid }) => uid !== 'homepage')
-                            .map(({ uid: handle }) => ({
-                                domain: shop.domains.primary,
-                                locale: locale.code,
-                                handle
-                            }));
-                    })
-                );
-            })
+                                return pages
+                                    .filter(({ uid }) => uid !== 'homepage')
+                                    .map(({ uid: handle }) => ({
+                                        domain: shop.domains.primary,
+                                        locale: locale.code,
+                                        handle
+                                    }));
+                            })
+                        );
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
         )
     ).flat(2);
 }
@@ -71,7 +78,7 @@ export async function generateMetadata({
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFoundMetadata;
 
-        const locales = store.i18n.locales;
+        const locales = store.i18n?.locales || [Locale.default];
         // If the page is the homepage we shouldn't add the handle to path.
         // TODO: Deal with this in a better way.
         const path = handle === 'homepage' ? '/' : `/${handle}/`;
@@ -82,19 +89,19 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}${path}`,
+                canonical: `https://${shop.domains.primary}/${locale.code}${path}`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${domain}/${code}${path}`
+                        [code]: `https://${shop.domains.primary}/${code}${path}`
                     }),
                     {}
                 )
             }
             // TODO: Metadata.
         };
-    } catch (error: any) {
-        if ((error as any).statusCode === 404 || (((error as any)?.message as string) || '').startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFoundMetadata;
         }
 
@@ -150,13 +157,11 @@ export default async function CustomPage({
                 </PageContent>
             </Page>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

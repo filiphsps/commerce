@@ -1,3 +1,4 @@
+import { Locale } from '@/utils/locale';
 import { render } from '@testing-library/react';
 import { notFound } from 'next/navigation';
 import { describe, vi } from 'vitest';
@@ -16,6 +17,9 @@ describe('app', () => {
         vi.mock('@/api/shopify', () => ({
             StorefrontApiClient: vi.fn().mockReturnValue({
                 query: vi.fn().mockResolvedValue({})
+            }),
+            ShopifyApolloApiClient: vi.fn().mockReturnValue({
+                query: vi.fn().mockResolvedValue({})
             })
         }));
         vi.mock('@/api/page', () => ({
@@ -26,9 +30,10 @@ describe('app', () => {
             })
         }));
         vi.mock('@/api/store', () => ({
+            LocalesApi: vi.fn().mockResolvedValue([Locale.default]),
             StoreApi: vi.fn().mockResolvedValue({
                 i18n: {
-                    locales: [{ locale: 'en-US', country: 'US', language: 'EN' }]
+                    locales: [Locale.default]
                 }
             })
         }));
@@ -87,7 +92,7 @@ describe('app', () => {
                     title: 'search',
                     description: undefined,
                     alternates: {
-                        canonical: `https://${domain}/${locale}/search/`,
+                        canonical: `https://${domain}/en-US/search/`,
                         languages: {
                             'en-US': `https://${domain}/en-US/search/`
                         }

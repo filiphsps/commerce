@@ -49,6 +49,14 @@ const config = {
         remotePatterns: [
             {
                 protocol: 'https',
+                hostname: 'nordcom.io'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.nordcom.io'
+            },
+            {
+                protocol: 'https',
                 hostname: '**.prismic.io'
             },
             {

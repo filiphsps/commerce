@@ -11,14 +11,15 @@ import {
 import type { ApiConfig } from '@/api/client';
 import type { ReactNode } from 'react';
 
-const createClientMaker = ({ apiConfig }: { apiConfig: ApiConfig }) => {
-    return () => {
+export const createClientMaker =
+    ({ apiConfig }: { apiConfig: ApiConfig }) =>
+    () => {
         const httpLink = new HttpLink({
             uri: apiConfig.uri,
             headers: apiConfig.headers,
             // you can disable result caching here if you want to
             // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
-            fetchOptions: { cache: 'no-store', next: { revalidate: 120 } }
+            fetchOptions: { cache: 'force-cache', next: { revalidate: 28_800 } }
             // you can override the default `fetchOptions` on a per query basis
             // via the `context` property on the options passed as a second argument
             // to an Apollo Client data fetching hook, e.g.:
@@ -26,9 +27,25 @@ const createClientMaker = ({ apiConfig }: { apiConfig: ApiConfig }) => {
         });
 
         const isBrowser = typeof window === 'undefined';
+        // TODO: Validate `apiConfig` to make sure it doesn't include private token on client.
+
         return new NextSSRApolloClient({
             // use the `NextSSRInMemoryCache`, not the normal `InMemoryCache`
             cache: new NextSSRInMemoryCache(),
+
+            defaultOptions: {
+                watchQuery: {
+                    fetchPolicy: 'cache-and-network',
+                    errorPolicy: 'ignore'
+                },
+                query: {
+                    fetchPolicy: 'cache-first',
+                    errorPolicy: 'all'
+                },
+                mutate: {
+                    errorPolicy: 'all'
+                }
+            },
             link:
                 (isBrowser &&
                     ApolloLink.from([
@@ -43,7 +60,6 @@ const createClientMaker = ({ apiConfig }: { apiConfig: ApiConfig }) => {
                 httpLink
         });
     };
-};
 
 export default function ApiProvider({ children, apiConfig }: { children: ReactNode; apiConfig: ApiConfig }) {
     return <ApolloNextAppProvider makeClient={createClientMaker({ apiConfig })}>{children}</ApolloNextAppProvider>;

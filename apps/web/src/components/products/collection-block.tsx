@@ -1,4 +1,5 @@
 /* eslint-disable unused-imports/no-unused-vars */
+import type { Product } from '@/api/product';
 import { ProductCardSkeleton } from '@/components/ProductCard';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
@@ -32,7 +33,8 @@ export const CollectionBlock = ({
     className,
     ...props
 }: CollectionBlockProps) => {
-    const products = collection?.products?.edges || [];
+    // TODO: Add collection type.
+    const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];
     if (!collection || !products || products.length <= 0) return null;
 
     return (

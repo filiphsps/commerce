@@ -5,7 +5,8 @@ import { Page } from '@/components/layout/page';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Error } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
@@ -24,47 +25,55 @@ export default async function BlogLayout({
     children: ReactNode;
     params: BlogLayoutParams;
 }) {
-    const shop = await ShopApi({ domain });
-    const locale = NextLocaleToLocale(localeData);
-    if (!locale) return notFound();
+    try {
+        const shop = await ShopApi({ domain });
+        const locale = Locale.from(localeData);
+        if (!locale) return notFound();
 
-    const api = await StorefrontApiClient({ shop, locale });
-    const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
-        ({ node: article }) => article
-    );
-    const popular = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'RELEVANCE' })).articles.edges.map(
-        ({ node: article }) => article
-    );
+        const api = await StorefrontApiClient({ shop, locale });
+        const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
+            ({ node: article }) => article
+        );
+        const popular = (await BlogApi({ api, handle: 'news', limit: 5, sorting: 'RELEVANCE' })).articles.edges.map(
+            ({ node: article }) => article
+        );
 
-    return (
-        <Page>
-            <PageContent primary>
-                <div className={styles.container}>
-                    <main className={styles.content}>{children}</main>
+        return (
+            <Page>
+                <PageContent primary>
+                    <div className={styles.container}>
+                        <main className={styles.content}>{children}</main>
 
-                    <div className={styles['sidebar-wrapper']}>
-                        <aside className={styles.sidebar}>
-                            <section className={styles.section}>
-                                <Label>Latest Articles</Label>
-                                {latest.map(({ id, handle, title }) => (
-                                    <Link key={id} href={`/blog/${handle}/`}>
-                                        {title}
-                                    </Link>
-                                ))}
-                            </section>
-                            <section className={styles.section}>
-                                <Label>Popular Posts</Label>
-                                {popular.map(({ id, handle, title }) => (
-                                    <Link key={id} href={`/blog/${handle}/`}>
-                                        {title}
-                                    </Link>
-                                ))}
-                            </section>
-                        </aside>
+                        <div className={styles['sidebar-wrapper']}>
+                            <aside className={styles.sidebar}>
+                                <section className={styles.section}>
+                                    <Label>Latest Articles</Label>
+                                    {latest.map(({ id, handle, title }) => (
+                                        <Link key={id} href={`/blog/${handle}/`}>
+                                            {title}
+                                        </Link>
+                                    ))}
+                                </section>
+                                <section className={styles.section}>
+                                    <Label>Popular Posts</Label>
+                                    {popular.map(({ id, handle, title }) => (
+                                        <Link key={id} href={`/blog/${handle}/`}>
+                                            {title}
+                                        </Link>
+                                    ))}
+                                </section>
+                            </aside>
+                        </div>
                     </div>
-                </div>
-            </PageContent>
-        </Page>
-    );
+                </PageContent>
+            </Page>
+        );
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            return notFound();
+        }
+
+        throw error;
+    }
 }
 /* c8 ignore stop */

@@ -107,7 +107,7 @@ describe('app', () => {
             }
         }));
         const params: ProductPageParams = {
-            domain: 'www.sweetsideofsweden.com',
+            domain: 'staging.demo.nordcom.io',
             locale: 'en-US',
             handle: product.handle
         };
@@ -115,6 +115,22 @@ describe('app', () => {
         // Mock the `ProductApi` function to prevent API calls.
         vi.mock('@/api/shopify/product', () => ({
             ProductApi: vi.fn().mockResolvedValue({ ...product })
+        }));
+
+        vi.mock('@/api/shop', () => ({
+            ShopApi: vi.fn().mockResolvedValue({
+                id: 'mock-shop-id',
+                domains: {
+                    primary: 'staging.demo.nordcom.io',
+                    alternatives: []
+                },
+                configuration: {
+                    commerce: {
+                        type: 'dummy' as const,
+                        domain: 'mock.shop' as const
+                    }
+                }
+            })
         }));
 
         it('renders the product title and vendor', async () => {

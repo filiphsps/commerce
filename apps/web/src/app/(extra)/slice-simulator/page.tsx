@@ -1,12 +1,14 @@
 'use client';
 
 import english from '@/i18n/en.json';
-import { DefaultLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { SliceSimulator } from '@slicemachine/adapter-next/simulator';
 import type { PartialDeep } from 'type-fest';
+
+export const dynamic = 'force-dynamic';
 
 const dummyShopify = {
     product: {
@@ -55,7 +57,7 @@ const dummyShopify = {
 };
 
 export default function SliceSimulatorPage() {
-    const locale = DefaultLocale();
+    const locale = Locale.default;
 
     return (
         <SliceSimulator

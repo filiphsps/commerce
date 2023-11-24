@@ -59,7 +59,7 @@ export const VendorsApi = async ({ api }: { api: AbstractApi }): Promise<VendorM
 
             // FIXME: Handle errors and missing data.
             return resolve(Convertor(data?.products?.edges!));
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }

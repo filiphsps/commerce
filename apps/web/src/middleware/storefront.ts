@@ -1,4 +1,6 @@
 import { ShopApi } from '@/api/shop';
+import { ShopifyApiClient, shopifyApiConfig } from '@/api/shopify';
+import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { getHostname } from '@/middleware/router';
 import AcceptLanguageParser from 'accept-language-parser';
@@ -6,8 +8,6 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 /* c8 ignore start */
-const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.split(',')] : ['en-US'])];
-
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi;
 
@@ -26,10 +26,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Check if we're dealing with a file, or other specially-handled resource.
-    if (
-        (newUrl.pathname.match(FILE_TEST) || newUrl.pathname.includes('/api/')) &&
-        !newUrl.pathname.includes('/storefront/')
-    ) {
+    if (newUrl.pathname.match(FILE_TEST) && !newUrl.pathname.includes('/storefront/')) {
+        if (newUrl.pathname.startsWith('/assets/')) {
+            return NextResponse.next();
+        }
+
         let target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
         return NextResponse.rewrite(new URL(target, req.url), {
             status: 200,
@@ -44,16 +45,23 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
     if (!newUrl.pathname.match(LOCALE_TEST) && !newUrl.pathname.includes('/api/')) {
-        // Make sure it's not a file
-        const acceptLanguageHeader = req.headers.get('accept-language') || '';
-        // FIXME: This should be dynamic, not based on a build-time configuration.
-        //        Maybe we can use edge config for this?..
-        const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
-        const savedLocale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
-        const locale = savedLocale || userLang || locales.at(0);
+        let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
+
         if (!locale) {
-            throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
+            const apiConfig = await shopifyApiConfig({ shop, noHeaders: false });
+            const api = await ShopifyApiClient({ shop, apiConfig });
+            const locales = (await LocalesApi({ api })).map(({ code }) => code);
+
+            const acceptLanguageHeader = req.headers.get('accept-language') || '';
+            const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
+
+            locale = userLang || locales.at(0);
+            if (!locale) {
+                throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
+            }
         }
+
+        // TODO: Set the locale in the cookie here.
 
         // In a perfect world we'd just set `newUrl.locale` here but
         // since we want to support fully dynamic locales we need to

@@ -1,5 +1,6 @@
 import type { Shop } from '@/api/shop';
-import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { ApiError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
 
@@ -22,32 +23,27 @@ export const NavigationApi = async ({
     locale: Locale;
     client?: PrismicClient;
 }): Promise<NavigationItem[]> => {
-    return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ shop, locale });
+    const client = _client || createClient({ shop, locale });
 
-        try {
-            const navigation = await client.getSingle('navigation', {
-                lang: locale.code
-            });
+    try {
+        const navigation = await client.getSingle('navigation', {
+            lang: locale.code
+        });
 
-            return resolve(
-                (navigation?.data?.body as any)?.map((item: any) => ({
-                    title: item.primary.title,
-                    handle: item.primary.handle,
-                    children: item.items
-                }))
-            );
-        } catch (error: any) {
-            if (error.message.includes('No documents')) {
-                if (!isDefaultLocale(locale)) {
-                    return resolve(await NavigationApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
-                }
-
-                return reject(new Error(`404: "Navigation" with the locale "${locale.code}" cannot be found`));
+        return (navigation?.data?.body as any)?.map((item: any) => ({
+            title: item.primary.title,
+            handle: item.primary.handle,
+            children: item.items
+        }));
+    } catch (error: unknown) {
+        if (ApiError.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return await NavigationApi({ shop, locale: Locale.default, client }); // Try again with default locale
             }
 
-            console.error(error);
-            return reject(error);
+            throw new Error(`404: "Navigation" with the locale "${locale.code}" cannot be found`);
         }
-    });
+
+        throw error;
+    }
 };

@@ -1,6 +1,6 @@
 import '@/styles/app.scss';
 
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApolloApiClient, StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { Locale } from '@/utils/locale';
 import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
@@ -15,6 +15,7 @@ import { PageProvider } from '@/components/layout/page-provider';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
+import { Error } from '@/utils/errors';
 import { Lexend_Deca } from 'next/font/google';
 import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
@@ -38,19 +39,27 @@ export async function generateViewport({
 }: {
     params: LayoutParams;
 }): Promise<Viewport> {
-    const shop = await ShopApi({ domain });
-    const locale = Locale.from(localeData);
-    if (!locale) return {};
+    try {
+        const shop = await ShopApi({ domain });
+        const locale = Locale.from(localeData);
+        if (!locale) return {};
 
-    const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api });
 
-    return {
-        themeColor: store.accent.secondary,
-        width: 'device-width',
-        initialScale: 1,
-        interactiveWidget: 'resizes-visual'
-    };
+        return {
+            themeColor: store.accent.secondary,
+            width: 'device-width',
+            initialScale: 1,
+            interactiveWidget: 'resizes-visual'
+        };
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            return {};
+        }
+
+        throw error;
+    }
 }
 
 export async function generateMetadata({
@@ -58,38 +67,46 @@ export async function generateMetadata({
 }: {
     params: LayoutParams;
 }): Promise<Metadata> {
-    const shop = await ShopApi({ domain });
-    const locale = Locale.from(localeData);
-    if (!locale) return notFoundMetadata;
+    try {
+        const shop = await ShopApi({ domain });
+        const locale = Locale.from(localeData);
+        if (!locale) return notFoundMetadata;
 
-    const api = await StorefrontApiClient({ shop, locale });
-    const store = await StoreApi({ api });
+        const api = await StorefrontApiClient({ shop, locale });
+        const store = await StoreApi({ api });
 
-    return {
-        metadataBase: new URL(`https://${domain}/${locale.code}/`),
-        title: {
-            default: store.name,
-            // Allow tenants to customize this.
-            // For example allow them to use other separators
-            // like `·`, `—` etc.
-            template: `%s - ${store.name}`
-        },
-        icons: {
-            icon: ['/favicon.png'],
-            shortcut: ['/favicon.png'],
-            apple: ['/favicon.png']
-        },
-        robots: {
-            follow: true,
-            index: BuildConfig.environment === 'production' ? true : false
-        },
-        referrer: 'origin',
-        formatDetection: {
-            email: false,
-            address: false,
-            telephone: false
+        return {
+            metadataBase: new URL(`https://${domain}/${locale.code}/`),
+            title: {
+                default: store.name,
+                // Allow tenants to customize this.
+                // For example allow them to use other separators
+                // like `·`, `—` etc.
+                template: `%s - ${store.name}`
+            },
+            icons: {
+                icon: ['/favicon.png'],
+                shortcut: ['/favicon.png'],
+                apple: ['/favicon.png']
+            },
+            robots: {
+                follow: true,
+                index: BuildConfig.environment === 'production' ? true : false
+            },
+            referrer: 'origin',
+            formatDetection: {
+                email: false,
+                address: false,
+                telephone: false
+            }
+        };
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
+            return notFoundMetadata;
         }
-    };
+
+        throw error;
+    }
 }
 
 export default async function RootLayout({
@@ -106,20 +123,23 @@ export default async function RootLayout({
 
         const i18n = await getDictionary(locale);
         const apiConfig = await shopifyApiConfig({ shop });
-        const api = await StorefrontApiClient({ shop, locale, apiConfig });
+        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
         const store = await StoreApi({ api });
         const navigation = await NavigationApi({ shop, locale });
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });
 
+        const branding = shop.configuration.design?.branding;
         return (
             <html
                 lang={locale.code}
                 className={`${font.variable}`}
                 style={
                     {
-                        '--accent-primary': store.accent.primary,
-                        '--accent-secondary': store.accent.secondary
+                        '--accent-primary':
+                            branding?.colors?.find(({ type }) => type === 'primary') || store.accent.primary,
+                        '--accent-secondary':
+                            branding?.colors?.find(({ type }) => type === 'secondary') || store.accent.secondary
                     } as React.CSSProperties
                 }
                 suppressHydrationWarning
@@ -132,7 +152,7 @@ export default async function RootLayout({
                         name={store.name}
                         description={store.description}
                         url={`https://${domain}/${locale.code}/`}
-                        logo={store.favicon?.src || store.logos?.primary?.src}
+                        logo={store?.favicon?.src || store.logos?.primary?.src}
                         foundingDate="2023"
                         founders={[
                             {
@@ -198,13 +218,11 @@ export default async function RootLayout({
                 </body>
             </html>
         );
-    } catch (error: any) {
-        const message = (error?.message as string) || '';
-        if (message.startsWith('404:')) {
+    } catch (error: unknown) {
+        if (Error.isNotFound(error)) {
             return notFound();
         }
 
-        console.error(error);
         throw error;
     }
 }

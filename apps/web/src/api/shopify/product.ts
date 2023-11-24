@@ -1,14 +1,8 @@
-import type {
-    Product,
-    ProductConnection,
-    ProductEdge,
-    ProductSortKeys,
-    WeightUnit
-} from '@shopify/hydrogen-react/storefront-api-types';
-
-import type { AbstractApi } from '@/utils/abstract-api';
-import type { Locale } from '@/utils/locale';
-import ConvertUnits from 'convert-units';
+import type { Product } from '@/api/product';
+import type { AbstractApi, ApiOptions, Identifiable } from '@/utils/abstract-api';
+import { cache, cleanShopifyHtml } from '@/utils/abstract-api';
+import { NotFoundError } from '@/utils/errors';
+import type { ProductConnection, ProductEdge, ProductSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
@@ -177,85 +171,44 @@ export const PRODUCT_FRAGMENT = `
     }
 `;
 
-// Handle metric and imperial
-export const ConvertToLocalMeasurementSystem = ({
-    locale,
-    weight,
-    weightUnit
-}: {
-    locale: Locale;
-    weight: number;
-    weightUnit: WeightUnit;
-}): string => {
-    const weightUnitToConvertUnits = (unit: WeightUnit) => {
-        switch (unit) {
-            case 'GRAMS':
-                return 'g';
-            case 'KILOGRAMS':
-                return 'kg';
-            case 'OUNCES':
-                return 'oz';
-            case 'POUNDS':
-                return 'lb';
+type ProductOptions = ApiOptions & Identifiable;
+export const ProductApi = cache(async ({ api, handle }: ProductOptions): Promise<Product> => {
+    if (!handle) throw new Error('400: Invalid handle');
 
-            // TODO: Handle this; which should never possibly actually occur.
-            default:
-                return 'g';
-        }
-    };
-    // FIXME: Support more than just US here, because apparently there's alot
-    //        more countries out there using imperial.
-    const metric = locale.country && locale.country.toLowerCase() !== 'us';
-    const unit = weightUnitToConvertUnits(weightUnit);
-    // TODO: Do this properly.
-    const targetUnit = (metric && 'g') || 'oz';
-
-    const res = ConvertUnits(weight).from(unit).to(targetUnit);
-    // TODO: Precision should be depending on unit.
-    return `${Math.ceil(res)}${targetUnit}`;
-};
-
-export const ProductApi = async ({ api, handle }: { api: AbstractApi; handle: string }): Promise<Product> => {
-    return new Promise(async (resolve, reject) => {
-        if (!handle) return reject(new Error('400: Invalid handle'));
-
-        try {
-            const { data, errors } = await api.query<{ productByHandle: Product }>(
-                gql`
+    try {
+        const { data, errors } = await api.query<{ product: Product }>(
+            gql`
                     query product($handle: String!) {
-                        productByHandle(handle: $handle) {
+                        product(handle: $handle) {
                             ${PRODUCT_FRAGMENT}
                         }
                     }
                 `,
-                {
-                    handle
-                }
+            {
+                handle
+            }
+        );
+
+        if (errors) {
+            throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
+        } else if (!data?.product?.handle) {
+            throw new NotFoundError(`"Product" with the handle "${handle}"`);
+        } else if (data.product?.handle !== handle) {
+            throw new Error(
+                `500: Product handle doesn't match requested handle ("${data.product?.handle}" !== "${handle}")`
             );
-
-            if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
-            else if (!data?.productByHandle || !data.productByHandle?.handle)
-                return reject(new Error(`404: Product with handle "${handle}" cannot be found`));
-            else if (data.productByHandle?.handle !== handle)
-                return reject(
-                    new Error(
-                        `500: Product handle doesn't match requested handle ("${data.productByHandle?.handle}" !== "${handle}")`
-                    )
-                );
-
-            const product = data.productByHandle;
-            return resolve({
-                ...product,
-                descriptionHtml: product.descriptionHtml
-                    ? product.descriptionHtml.replaceAll(/ /g, ' ').replaceAll('\u00A0', ' ')
-                    : ''
-            });
-        } catch (error: any) {
-            console.error(error);
-            return reject(error);
         }
-    });
-};
+
+        const product = data.product;
+        return {
+            ...product,
+            descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || undefined
+        };
+    } catch (error: unknown) {
+        console.error(error);
+        throw error;
+    }
+});
 
 export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Promise<number> => {
     const count_products = async (count: number = 0, cursor?: string) => {
@@ -455,7 +408,7 @@ export const ProductsPaginationApi = async ({
                 },
                 products: data.products?.edges || []
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             return reject(error);
         }

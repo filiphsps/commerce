@@ -18,14 +18,45 @@ export type DummyCommerceProvider = {
 };
 export type CommerceProvider = ShopifyCommerceProvider | DummyCommerceProvider;
 
+type Color = `#${string}` | string;
+
+type BrandColorType = 'primary' | 'secondary' | 'background';
+type BrandColorVariant = 'default' | 'light' | 'dark';
+type BrandColor = {
+    type: BrandColorType;
+    variant: BrandColorVariant;
+    background: Color;
+    foreground: Color;
+};
+
+type Image = {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+};
+type BrandImage = Image;
+
 export type Shop = {
     id: string;
     domains: {
         primary: string;
-        alternate: string[];
+        alternatives: string[];
     };
     configuration: {
         commerce: CommerceProvider;
+        design?: {
+            branding?: {
+                logos?: {
+                    primary?: BrandImage;
+                    alternatives?: {
+                        monochrome?: BrandImage;
+                        square?: BrandImage;
+                    };
+                };
+                colors?: BrandColor[];
+            };
+        };
         thirdParty?: {
             googleTagManager?: string;
         };
@@ -37,12 +68,10 @@ export const ShopsApi = async (): Promise<Shop[]> => {
     return [
         {
             id: 'sweet-side-of-sweden',
-
             domains: {
                 primary: 'www.sweetsideofsweden.com',
-                alternate: ['sweetsideofsweden.com', 'staging.sweetsideofsweden.com']
+                alternatives: ['sweetsideofsweden.com', 'staging.sweetsideofsweden.com']
             },
-
             configuration: {
                 commerce: {
                     type: 'shopify' as const,
@@ -54,7 +83,6 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         publicToken: process.env.SHOPIFY_TOKEN!
                     }
                 },
-
                 thirdParty: {
                     googleTagManager: process.env.GTM
                 }
@@ -63,13 +91,45 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 
         {
             id: 'nordcom-commerce-demo',
-
             domains: {
                 primary: 'demo.nordcom.io',
-                alternate: ['staging.demo.nordcom.io']
+                alternatives: ['staging.demo.nordcom.io']
             },
-
             configuration: {
+                design: {
+                    branding: {
+                        colors: [
+                            {
+                                type: 'primary',
+                                variant: 'default',
+                                background: '#ed1e79',
+                                foreground: '#fefefe'
+                            },
+                            {
+                                type: 'background',
+                                variant: 'default',
+                                background: '#000000',
+                                foreground: '#fefefe'
+                            }
+                        ],
+                        logos: {
+                            primary: {
+                                src: 'https://nordcom.io/logo.svg',
+                                alt: 'Nordcom Commerce',
+                                width: 500,
+                                height: 250
+                            },
+                            alternatives: {
+                                square: {
+                                    src: 'https://nordcom.io/favicon.png',
+                                    alt: 'Nordcom Commerce',
+                                    width: 500,
+                                    height: 250
+                                }
+                            }
+                        }
+                    }
+                },
                 commerce: {
                     type: 'dummy' as const,
                     domain: 'mock.shop' as const
@@ -84,7 +144,7 @@ export const ShopApi = async ({ domain }: { domain: string }): Promise<Shop> => 
     const shops = await ShopsApi();
     const shop =
         shops.find((shop) => shop.domains.primary === domain) ||
-        shops.find((shop) => shop.domains.alternate.includes(domain));
+        shops.find((shop) => shop.domains.alternatives.includes(domain));
 
     if (!shop) {
         if (domain.endsWith('.vercel.app')) {

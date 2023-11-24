@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { ApiError, MethodNotAllowedError, UnknownApiError } from '@/utils/errors';
+import { Error, MethodNotAllowedError, UnknownApiError } from '@/utils/errors';
 import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -8,76 +8,82 @@ const headers = { 'Cache-Control': 'no-store' };
 export type RevalidateApiRouteParams = {
     domain: string;
 };
-const revalidate = async (req: NextRequest, params: RevalidateApiRouteParams) => {
-    const shop = await ShopApi({ domain: params.domain });
+const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams) => {
+    // TODO: Revalidate either depending on the topic or the body.
+    // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
-    let body = {};
     try {
-        const shopify = {
-            triggeredAt: req.headers.get('X-Shopify-Triggered-At'),
-            domain: req.headers.get('X-Shopify-Shop-Domain'),
-            topic: req.headers.get('X-Shopify-Topic'),
-            webhookId: req.headers.get('X-Shopify-Webhook-Id'),
-            apiVersion: req.headers.get('X-Shopify-API-Version')
-        };
-        console.warn(JSON.stringify({ shopify, params }, null, 4));
+        const shop = await ShopApi({ domain });
 
-        body = await req.json();
-        console.warn(body);
+        switch (req.method) {
+            case 'POST': {
+                // TODO: Validate API type and authenticity.
+                revalidateTag(`shopify.${shop.id}`);
 
-        // TODO: Revalidate either depending on the topic or the body.
-        // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
-        revalidateTag(`prismic.${shop.id}`);
-        revalidateTag(`shopify.${shop.id}`);
+                const data = await req.json();
+                console.warn(JSON.stringify({ ...data }, null, 4));
 
-        // revalidateTag(domain);
+                return NextResponse.json(
+                    {
+                        status: 200,
+                        data: {
+                            revalidated: true,
+                            tags: [`shopify.${shop.id}`],
+                            paths: [],
+                            domains: [domain]
+                        },
+                        errors: null
+                    },
+                    { status: 200, headers }
+                );
+            }
+            case 'GET': {
+                revalidateTag(`prismic.${shop.id}`);
+
+                return NextResponse.json(
+                    {
+                        status: 200,
+                        data: {
+                            revalidated: true,
+                            tags: [`prismic.${shop.id}`],
+                            paths: [domain]
+                        },
+                        errors: null
+                    },
+                    { status: 200, headers }
+                );
+            }
+            default:
+                throw new MethodNotAllowedError(req.method);
+        }
     } catch (error: unknown) {
-        if (error instanceof ApiError) {
-            return NextResponse.json(
-                {
-                    status: error.statusCode,
-                    data: null,
-                    errors: [error]
-                },
-                { status: error.statusCode, headers }
-            );
+        switch (true) {
+            // Switch case to let us easily add more specific error handling.
+            case error instanceof Error:
+                return NextResponse.json(
+                    {
+                        status: error.statusCode ?? 500,
+                        data: null,
+                        errors: [error]
+                    },
+                    { status: error.statusCode ?? 500 }
+                );
         }
 
-        const fallback = new UnknownApiError();
+        const ex = new UnknownApiError();
         return NextResponse.json(
             {
-                status: fallback.statusCode,
+                status: ex.statusCode,
                 data: null,
-                errors: [fallback]
+                errors: [error, ex]
             },
-            { status: fallback.statusCode, headers }
+            { status: ex.statusCode }
         );
     }
-
-    // TODO: API response builder or similar.
-    return NextResponse.json(
-        {
-            status: 200,
-            data: {
-                revalidated: true
-            },
-            errors: null
-        },
-        { status: 200, headers }
-    );
 };
 
-export async function GET(_: NextRequest, {}: { params: RevalidateApiRouteParams }) {
-    const error = new MethodNotAllowedError();
-
-    return NextResponse.json(
-        {
-            status: error.statusCode,
-            data: null,
-            errors: [error]
-        },
-        { status: error.statusCode, headers }
-    );
+export async function GET(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {
+    return revalidate(req, params);
 }
 
 export async function POST(req: NextRequest, { params }: { params: RevalidateApiRouteParams }) {

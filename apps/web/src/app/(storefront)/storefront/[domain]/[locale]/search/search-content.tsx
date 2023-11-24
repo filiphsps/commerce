@@ -10,7 +10,7 @@ import { Input } from '@/components/Input';
 import { Button } from '@/components/actionable/button';
 import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import { Label } from '@/components/typography/label';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import { ApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { useApolloClient } from '@apollo/client';
 import dynamic from 'next/dynamic';
@@ -140,7 +140,7 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
         (query.length > 0 && [
             'SearchApi',
             {
-                client: ShopifyApolloApiBuilder({ locale, shop, api: useApolloClient() }),
+                client: ApiBuilder({ locale, shop, api: useApolloClient() }),
                 query: query
             }
         ]) ||

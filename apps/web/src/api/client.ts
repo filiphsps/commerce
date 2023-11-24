@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { registerApolloClient } from '@apollo/experimental-nextjs-app-support/rsc';
 
 export type ApiConfig = {
@@ -8,14 +8,15 @@ export type ApiConfig = {
     headers: Record<string, string>;
 };
 
-export const setupApi = ({ uri, headers }: ApiConfig) =>
+const ssr = ({ uri, headers }: ApiConfig) =>
     registerApolloClient(
         () =>
             new ApolloClient({
                 ssrMode: true,
                 link: new HttpLink({
                     uri,
-                    headers
+                    headers,
+                    fetchOptions: { cache: 'force-cache', next: { revalidate: 28_800 } }
                 }),
                 cache: new InMemoryCache({
                     canonizeResults: true,
@@ -37,3 +38,7 @@ export const setupApi = ({ uri, headers }: ApiConfig) =>
                 }
             })
     );
+
+export const setupApollo = (apiConfig: ApiConfig) => {
+    return ssr(apiConfig);
+};

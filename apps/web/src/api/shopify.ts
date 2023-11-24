@@ -1,11 +1,11 @@
 import 'server-only';
 
 import type { ApiConfig } from '@/api/client';
-import { setupApi } from '@/api/client';
+import { setupApollo } from '@/api/client';
 import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
-import { ShopifyApolloApiBuilder } from '@/utils/abstract-api';
+import { ApiBuilder } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
-import type { Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 
@@ -50,17 +50,70 @@ export const shopifyApiConfig = async ({
     };
 };
 
-export const StorefrontApiClient = async ({
-    shop,
-    locale,
-    apiConfig
-}: {
+type StorefrontApiConfig = Awaited<ReturnType<typeof shopifyApiConfig>>;
+type ShopifyApiOptions = {
     shop: Shop;
-    locale: Locale;
-    apiConfig?: Awaited<ReturnType<typeof shopifyApiConfig>>;
-}) =>
-    ShopifyApolloApiBuilder({
+    locale?: Locale;
+    apiConfig?: StorefrontApiConfig;
+};
+
+export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
+    'use server';
+
+    return ApiBuilder({
+        shop,
+        locale: locale,
+        api: setupApollo((apiConfig || (await shopifyApiConfig({ shop }))).private()).getClient()
+    });
+};
+
+/**
+ * Shopify API client using the fetch API instead of Apollo.
+ */
+export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
+    return ApiBuilder({
         shop,
         locale,
-        api: setupApi((apiConfig || (await shopifyApiConfig({ shop }))).private()).getClient()
+        api: {
+            query: async ({ query, context: { fetchOptions, ...context }, variables }: any) => {
+                const config = apiConfig!.private()!;
+
+                const response = await fetch(config.uri, {
+                    method: 'POST',
+                    headers: config.headers,
+                    body: JSON.stringify({
+                        ...(query && { query: query?.loc?.source?.body }),
+                        ...(variables && { variables }),
+                        ...(context && { context })
+                    }),
+
+                    // This handles cache, next options, etc.
+                    ...(fetchOptions ? fetchOptions : {})
+
+                    // TODO: context, e.g. locale
+                });
+
+                const body = await response.json();
+
+                if (body.errors) {
+                    return {
+                        loading: false,
+                        errors: body.errors,
+                        data: body
+                    };
+                }
+
+                return {
+                    loading: false,
+                    data: body.data,
+                    errors: null
+                } as any;
+            }
+        } as any
     });
+};
+
+/**
+ * @deprecated Use {@link ShopifyApolloApiClient} instead.
+ */
+export const StorefrontApiClient = ShopifyApolloApiClient;
