@@ -1,6 +1,6 @@
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi, StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
@@ -24,15 +24,21 @@ export async function generateStaticParams() {
 
     return (
         await Promise.all(
-            shops.map(async (shop) => {
-                const api = await StorefrontApiClient({ shop, locale });
-                const locales = await LocalesApi({ api });
+            shops
+                .map(async (shop) => {
+                    try {
+                        const api = await ShopifyApiClient({ shop, locale });
+                        const locales = await LocalesApi({ api });
 
-                return locales.map(({ code }) => ({
-                    domain: shop.domains.primary,
-                    locale: code
-                }));
-            })
+                        return locales.map(({ code }) => ({
+                            domain: shop.domains.primary,
+                            locale: code
+                        }));
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
         )
     ).flat(2);
 }
@@ -51,10 +57,10 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-        const locales = store.i18n?.locales || [Locale.default];
+        const locales = await LocalesApi({ api });
 
         const title = page?.meta_title || page?.title || 'Blog'; // TODO: Fallback should respect i18n.
         const description: string | undefined =
@@ -63,11 +69,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/blog/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/blog/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${code}/${locale}/blog/`
+                        [code]: `https://${shop.domains.primary}/${code}/blog/`
                     }),
                     {}
                 )
@@ -108,7 +114,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         if (!locale) return notFound();
 
         const i18n = await getDictionary(locale);
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
         const prefetch = await Prefetch({ api, page });
