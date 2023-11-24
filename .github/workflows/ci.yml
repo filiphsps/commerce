@@ -18,6 +18,7 @@ on:
 
 env:
     CI: true
+    LIMIT_STATIC_PAGES: 5,
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
