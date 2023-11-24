@@ -11,6 +11,7 @@ import PrismicPage from '@/components/prismic-page';
 import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { isValidHandle } from '@/utils/handle';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -26,7 +27,7 @@ export async function generateStaticParams() {
     const locale = DefaultLocale()!;
     const shops = await ShopsApi();
 
-    return (
+    const pages = (
         await Promise.all(
             shops.map(async (shop) => {
                 const api = await StorefrontApiClient({ shop, locale });
@@ -37,16 +38,24 @@ export async function generateStaticParams() {
                         const api = await StorefrontApiClient({ shop, locale });
                         const collections = await CollectionsApi({ client: api });
 
-                        return collections.map(({ handle }) => ({
-                            domain: shop.domains.primary,
-                            locale: locale.code,
-                            handle
-                        }));
+                        return collections
+                            .filter(({ hasProducts }) => hasProducts)
+                            .map(({ handle }) => ({
+                                domain: shop.domains.primary,
+                                locale: locale.code,
+                                handle
+                            }));
                     })
                 );
             })
         )
     ).flat(2);
+
+    if (BuildConfig.build.limit_pages) {
+        return pages.slice(0, BuildConfig.build.limit_pages);
+    }
+
+    return pages;
 }
 /* c8 ignore stop */
 

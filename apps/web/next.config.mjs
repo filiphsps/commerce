@@ -88,6 +88,7 @@ const config = {
 
     env: {
         // Settings
+        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
         DOMAIN: process.env.DOMAIN,
         STORE_LOCALES: process.env.STORE_LOCALES,
         STORE_DEFAULT_LOCALE: process.env.STORE_DEFAULT_LOCALE,
@@ -105,6 +106,9 @@ const config = {
         PRISMIC_REPO: process.env.PRISMIC_REPO,
     },
     serverRuntimeConfig: {
+        // Settings
+        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
+
         // Shopify
         SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
 

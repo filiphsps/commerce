@@ -40,13 +40,13 @@ export default defineConfig({
             include: ['**/src/**/*.{ts,tsx}'],
             exclude: [
                 '**/__snapshots__/**/*.*',
-                '**/*.d.ts',
-                '**/*.test.{js,ts,jsx,tsx}',
-                '**/*.test.{js,ts,jsx,tsx}',
-                '**/app/**/{layout}.tsx',
+                '**/*.d.*',
+                '**/*.test.*',
+                '**/app/**/{layout}.*',
                 '**/app/**/*slice-simulator*',
-                '**/build-config.ts',
-                '**/src/**/index.{ts,tsx}',
+                '**/build-config.*',
+                '**/src/**/index.*',
+                '**/src/**/markdoc/**/*.*',
 
                 // TODO: Eh?
                 '**/src/locales/*.*',

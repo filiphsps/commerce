@@ -100,6 +100,7 @@ export const CollectionsApi = async ({
     Array<{
         id: string;
         handle: string;
+        hasProducts: boolean;
     }>
 > => {
     return new Promise(async (resolve, reject) => {
@@ -112,6 +113,15 @@ export const CollectionsApi = async ({
                         node {
                             id
                             handle
+                            product
+
+                            products(first: 1) {
+                                edges {
+                                    node {
+                                        id
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -121,7 +131,13 @@ export const CollectionsApi = async ({
         if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
         else if (!data?.collections) return reject(new Error(`404: No collections could be found`));
 
-        return resolve(data.collections.edges.map((item: any) => item.node));
+        return resolve(
+            data.collections.edges.map(({ node: { id, handle, products } }) => ({
+                id,
+                handle,
+                hasProducts: products?.edges ? products.edges.length > 0 : false
+            }))
+        );
     });
 };
 
