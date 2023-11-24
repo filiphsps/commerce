@@ -239,20 +239,16 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
 
                 <FooterBottomSectionBlock>
                     <Socials>
-                        {store?.social
-                            ?.filter((social) =>
-                                ['instagram', 'facebook', 'twitter'].includes(social.name.toLowerCase())
-                            )
-                            .map((social) => (
-                                <Social className={styles['social-icon']} key={social.url} href={social.url}>
-                                    <Image
-                                        src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
-                                        fill
-                                        alt={social.name}
-                                        title={social.name}
-                                    />
-                                </Social>
-                            ))}
+                        {store?.social.map((social) => (
+                            <Social className={styles['social-icon']} key={social.url} href={social.url}>
+                                <Image
+                                    src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
+                                    fill
+                                    alt={social.name}
+                                    title={social.name}
+                                />
+                            </Social>
+                        ))}
                         <Link className={styles.flag} href="/countries/" title={t('language-and-region-settings')}>
                             <CurrentLocaleFlag locale={locale} />
                         </Link>

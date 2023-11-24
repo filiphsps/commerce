@@ -17,8 +17,16 @@
 
         .flag,
         .social-icon {
+            overflow: hidden;
             height: 2.75rem;
             width: auto;
+
+            imng {
+                height: 100%;
+                width: 100%;
+                object-fit: contain;
+                object-position: center;
+            }
         }
 
         .social-icon {
