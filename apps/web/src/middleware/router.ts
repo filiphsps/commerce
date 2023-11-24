@@ -12,7 +12,7 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
     hostname = hostname.split(':')[0];
 
     // Deal with development server and Vercel's preview URLs.
-    if (hostname === 'localhost' || hostname.endsWith('.vercel.app')) {
+    if (hostname === 'localhost' || hostname.endsWith('.vercel.app') || hostname.endsWith('app.github.dev')) {
         if (process.env.SHOPS_DEV) {
             return 'shops.nordcom.io';
         }

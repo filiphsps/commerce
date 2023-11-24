@@ -1,7 +1,7 @@
 import type { Shop } from '@/api/shop';
 import type { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
-import { isNotFoundError } from '@/utils/errors';
-import { DefaultLocale, isDefaultLocale, type Locale } from '@/utils/locale';
+import { Error, NotFoundError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
 import { cache } from 'react';
@@ -25,18 +25,18 @@ export const PagesApi = async ({
                 lang: locale.code
             });
 
-            if (!pages) return reject(new Error('404: No pages found'));
+            if (!pages) return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
 
             // TODO: Remove filter once we've migrated away from "special" pages
             const filtered = pages.filter(({ uid }) => !exclude.includes(uid!));
             return resolve(filtered);
-        } catch (error: any) {
-            if (error.message.includes('No documents')) {
-                if (!isDefaultLocale(locale)) {
-                    return resolve(await PagesApi({ shop, locale: DefaultLocale(), client, exclude })); // Try again with default locale.
+        } catch (error: unknown) {
+            if (Error.isNotFound(error)) {
+                if (!Locale.isDefault(locale)) {
+                    return resolve(await PagesApi({ shop, locale: Locale.default, client, exclude })); // Try again with default locale.
                 }
 
-                return reject(new Error(`404: "Pages" for the locale "${locale.code}" cannot be found`));
+                return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
             }
 
             console.error(error);
@@ -88,9 +88,9 @@ const cachablePageApi = cache(
 
                 return resolve({ page });
             } catch (error) {
-                if (isNotFoundError(error)) {
-                    if (!isDefaultLocale(locale)) {
-                        return resolve(await PageApi({ shop, locale: DefaultLocale(), handle, type, client })); // Try again with default locale.
+                if (Error.isNotFound(error)) {
+                    if (!Locale.isDefault(locale)) {
+                        return resolve(await PageApi({ shop, locale: Locale.default, handle, type, client })); // Try again with default locale.
                     }
 
                     // Don't throw on 404.

@@ -1,7 +1,16 @@
 #!/usr/bin/env sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run lint
-npm run typecheck
-npm run test
+reset=$(tput sgr0)
+green='\033[1;32m'
+red='\033[1;31m'
+
+if hash bun 2>/dev/null; then
+    echo -e "Running pre-commit hooks with ${green}bun${reset}"
+    bunx concurrently "bun:lint" "bun:typecheck" "bun:test"
+else
+    echo -e "Runnin pre-commit hooks with ${red}npm${reset}"
+    npx concurrently "npm:lint" "npm:typecheck" "npm:test"
+fi
+
 #npm run build
