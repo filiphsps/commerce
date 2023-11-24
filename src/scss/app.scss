@@ -23,10 +23,10 @@ body {
     &.BlackFriday,
     .BlackFriday & {
         background: #000000;
-        color: #fefefe;
+        color: #ccc;
 
         main {
-            --accent-primary: var(--accent-primary-light);
+            --foreground: #ccc;
 
             .Banner {
                 h1 {

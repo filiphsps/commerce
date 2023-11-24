@@ -10,6 +10,10 @@ const Container = styled.div`
     gap: var(--block-spacer-small);
     color: var(--foreground);
     padding: var(--padding);
+
+    .BlackFriday & {
+        color: #fefefe;
+    }
 `;
 
 export const Title = styled.h2`

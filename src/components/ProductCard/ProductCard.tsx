@@ -28,7 +28,9 @@ export const ProductImage = styled.div`
     height: 14rem;
 
     .BlackFriday & {
-        background: #aaa;
+        background: #ccc;
+        mix-blend-mode: multiply;
+        filter: brightness(110%);
     }
 
     @media (hover: hover) and (pointer: fine) {
