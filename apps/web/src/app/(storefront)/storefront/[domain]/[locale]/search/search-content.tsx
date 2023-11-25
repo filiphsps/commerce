@@ -94,7 +94,7 @@ export type SearchContentProps = {
     locale: Locale;
     query?: string;
 };
-export default function SearchContent({ shop, locale }: SearchContentProps) {
+export default function SearchContent({ shop, locale, query = '' }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
