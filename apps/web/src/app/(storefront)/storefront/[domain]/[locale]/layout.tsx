@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
-import { ShopApi } from '@/api/shop';
+import { ShopApi, type Shop } from '@/api/shop';
 import { StoreApi } from '@/api/store';
 import { PageProvider } from '@/components/layout/page-provider';
 import ProvidersRegistry from '@/components/providers-registry';
@@ -57,11 +57,12 @@ export async function generateViewport({
     params: LayoutParams;
 }): Promise<Viewport> {
     try {
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return {};
 
+        const shop = await ShopApi({ domain });
         const api = await StorefrontApiClient({ shop, locale });
+
         const store = await StoreApi({ api });
         const branding = getBrandingColors(shop.configuration.design?.branding);
 
@@ -73,7 +74,11 @@ export async function generateViewport({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return {};
+            return {
+                width: 'device-width',
+                initialScale: 1,
+                interactiveWidget: 'resizes-visual'
+            };
         }
 
         throw error;
@@ -86,11 +91,12 @@ export async function generateMetadata({
     params: LayoutParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
+        const shop = await ShopApi({ domain });
         const api = await StorefrontApiClient({ shop, locale });
+
         const store = await StoreApi({ api });
 
         return {
@@ -135,20 +141,21 @@ export default async function RootLayout({
     params: LayoutParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
+        const shop = await ShopApi({ domain });
+        const api = await ShopifyApolloApiClient({ shop, locale });
+
         const i18n = await getDictionary(locale);
-        const apiConfig = await shopifyApiConfig({ shop });
-        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
-        const store = await StoreApi({ api });
+
         const navigation = await NavigationApi({ shop, locale });
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });
 
+        const store = await StoreApi({ api });
         const branding = getBrandingColors(shop.configuration.design?.branding);
-        
+
         return (
             <html
                 lang={locale.code}
