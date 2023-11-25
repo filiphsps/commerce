@@ -35,9 +35,6 @@
 
     --accent-primary: #073b4c; // Gets replaced by the brand primary color in the layout.
     --accent-secondary: #118ab2; // Gets replaced by the brand secondary color in the layout.
-
-    --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
-    --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 }
 
 html,
@@ -93,6 +90,9 @@ body {
             var(--color-accent-secondary-dark, var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark))));
         --accent-secondary-light:
             var(--color-accent-secondary-light, var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright))));
+
+        --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
+        --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
         // Components:
         --component-product-card-width: 22rem;
