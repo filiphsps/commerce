@@ -36,6 +36,7 @@ type Image = {
     height: number;
 };
 type BrandImage = Image;
+type Icon = Image;
 
 export type Shop = {
     id: string;
@@ -47,6 +48,9 @@ export type Shop = {
         commerce: CommerceProvider;
         design?: {
             branding?: {
+                icons?: {
+                    favicon?: Icon
+                };
                 logos?: {
                     primary?: BrandImage;
                     alternatives?: {
@@ -88,7 +92,6 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                 }
             }
         },
-
         {
             id: 'nordcom-commerce-demo',
             domains: {
@@ -112,9 +115,17 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                                 foreground: '#fefefe'
                             }
                         ],
+                        icons: {
+                            favicon: {
+                                src: 'https://nordcom.io/favicon.png',
+                                alt: 'Nordcom Commerce',
+                                width: 500,
+                                height: 250
+                            }
+                        },
                         logos: {
                             primary: {
-                                src: 'https://nordcom.io/logo.svg',
+                                src: 'https://nordcom.io/logo-light.svg',
                                 alt: 'Nordcom Commerce',
                                 width: 500,
                                 height: 250
@@ -133,6 +144,9 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                 commerce: {
                     type: 'dummy' as const,
                     domain: 'mock.shop' as const
+                },
+                thirdParty: {
+                    googleTagManager: 'GTM-N6TLG8MX'
                 }
             }
         }
