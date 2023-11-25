@@ -2,7 +2,7 @@ import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
-import { Error, UnknownApiError } from '@/utils/errors';
+import { Error, NotFoundError, UnknownApiError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
@@ -20,7 +20,11 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         const api = await StorefrontApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 
-        const articles = (await BlogApi({ api, handle: 'news' })).articles.edges.map(({ node: article }) => article);
+        // TODO: const blogs = await BlogsApi({ api });
+        const blog = await BlogApi({ api, handle: 'news' });
+        if (!blog) throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
+
+        const articles = blog.articles?.edges?.map?.(({ node: article }) => article) || [];
         return getServerSideSitemap(
             locales
                 .map(({ code }) => {
