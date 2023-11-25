@@ -67,7 +67,7 @@ export async function generateViewport({
         const branding = getBrandingColors(shop.configuration.design);
 
         return {
-            themeColor: branding?.primary || store.accent.secondary,
+            themeColor: (branding?.primary || store.accent.secondary) as string,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
