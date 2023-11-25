@@ -25,6 +25,23 @@ export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 /* c8 ignore stop */
 
+// TODO: Generalize this
+const getBrandingColors = (branding: Shop['configuration']['design']['branding']) => {
+    if (!branding?.colors) return null;
+    const { colors } = branding;
+    
+    // TODO: Deal with variants.
+    const primary = colors.find(({ type }) => type === 'primary');
+    const secondary = colors.find(({ type }) => type === 'secondary');
+    const background = colors.find(({ type }) => type === 'background');
+
+    return {
+        primary,
+        secondary: secondary || primary,
+        background: background || '#fefefe'
+    };
+};
+
 const font = Lexend_Deca({
     weight: 'variable',
     subsets: ['latin'],
@@ -46,9 +63,10 @@ export async function generateViewport({
 
         const api = await StorefrontApiClient({ shop, locale });
         const store = await StoreApi({ api });
+        const branding = getBrandingColors(shop.configuration.design?.branding);
 
         return {
-            themeColor: store.accent.secondary,
+            themeColor: branding?.primary || store.accent.secondary,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
@@ -129,17 +147,22 @@ export default async function RootLayout({
         const header = await HeaderApi({ shop, locale });
         const footer = await FooterApi({ shop, locale });
 
-        const branding = shop.configuration.design?.branding;
+        const branding = getBrandingColors(shop.configuration.design?.branding);
+        
         return (
             <html
                 lang={locale.code}
                 className={`${font.variable}`}
                 style={
                     {
-                        '--accent-primary':
-                            branding?.colors?.find(({ type }) => type === 'primary') || store.accent.primary,
-                        '--accent-secondary':
-                            branding?.colors?.find(({ type }) => type === 'secondary') || store.accent.secondary
+                        '--color-accent-primary': branding?.primary || store?.accent?.primary,
+                        '--color-accent-secondary': branding?.secondary || store?.accent?.secondary,
+                        '--color-background': branding?.background, // TODO: Figure out how to deal with dark/light mode.
+
+                        // Legacy.
+                        '--accent-primary': branding?.primary || store?.accent?.primary,
+                        '--accent-secondary': branding?.secondary || store?.accent?.secondary
+                            
                     } as React.CSSProperties
                 }
                 suppressHydrationWarning
