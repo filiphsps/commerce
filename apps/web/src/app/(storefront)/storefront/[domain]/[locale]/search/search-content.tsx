@@ -1,30 +1,17 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
-import { SearchApi } from '@/api/shopify/search';
 import { Input } from '@/components/Input';
 import { Button } from '@/components/actionable/button';
-import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import { Label } from '@/components/typography/label';
-import { ApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
-import { useApolloClient } from '@apollo/client';
-import dynamic from 'next/dynamic';
 import { styled } from 'styled-components';
-import useSWR from 'swr';
-
-const ProductSearchFilters = dynamic(
-    () => import('@/components/ProductSearchFilters').then((c) => c.ProductSearchFilters),
-    { ssr: false }
-);
-const ProductSearchResultItem = dynamic(
-    () => import('@/components/ProductSearchResultItem').then((c) => c.ProductSearchResultItem),
-    { ssr: false }
-);
+import { ProductSearchFilters } from '@/components/ProductSearchFilters';
+import { ProductSearchResultItem } from '@/components/ProductSearchResultItem';
 
 const Container = styled.article`
     display: contents;
@@ -102,51 +89,28 @@ const ContentHeader = styled(SearchHeader)`
     color: var(--accent-primary-text);
 `;
 
-type SearchContentProps = {
+export type SearchContentProps = {
     shop: Shop;
     locale: Locale;
+    query?: string;
 };
 export default function SearchContent({ shop, locale }: SearchContentProps) {
-    const router = useRouter();
-    const query = useSearchParams()?.get('q') || '';
+    const { replace } = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
 
-    const [input, setInput] = useState<string>(query || '');
     const [showFilters, setShowFilters] = useState(false);
 
-    useEffect(() => {
-        if (!window?.history?.state?.url) return;
-        if (!window.history.state.url.includes('?q=')) return;
-
-        const q = window.history.state.url.split('q=')?.at(-1);
-        if (!q) return;
-
-        setInput(decodeURI(q));
-    }, []);
-
-    useEffect(() => {
-        if (!query) {
-            window.history.replaceState(null, '', `/${locale.code}/search/`);
-            return;
+    function handleSearch(term?: string) {
+        const params = new URLSearchParams(searchParams);
+        if (term) {
+            params.set('q', term);
+        } else {
+            params.delete('q');
         }
 
-        window.history.replaceState(null, '', `/${locale.code}/search/?q=${encodeURI(query)}`);
-    }, [query]);
-
-    const {
-        data: results,
-        isValidating,
-        isLoading
-    } = useSWR(
-        (query.length > 0 && [
-            'SearchApi',
-            {
-                client: ApiBuilder({ locale, shop, api: useApolloClient() }),
-                query: query
-            }
-        ]) ||
-            null,
-        ([, props]) => SearchApi(props)
-    );
+        replace(`${pathname}?${params.toString()}`);
+    }
 
     const { products, productFilters } = results || {};
     const count = products?.length || 0;
@@ -157,53 +121,44 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
                 <SearchBar>
                     <Input
                         type="search"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) =>
-                            e.key === 'Enter' && router.push(`/${locale.code}/search/?q=${encodeURI(input)}`)
-                        }
+                        defaultValue={searchParams.get('q')?.toString()}
+                        onChange={(e) => handleSearch(e.target.value)}
                         autoFocus={true}
-                        spellCheck={false}
-                        /* TODO: Make this configurable. */
+                        spellCheck={true}
+                        /* TODO: Make this copy configurable. */
                         placeholder="Find the perfect candy, chocolate, licorice and snacks"
                     />
                     {query.length > 0 && (
                         <SearchBarClear>
-                            <FiX className="Icon" onClick={() => setInput('')} />
+                            <FiX className="Icon" onClick={() => handleSearch()} />
                         </SearchBarClear>
                     )}
                 </SearchBar>
 
-                <SearchButton
-                    //disabled={!router.isReady}
-                    onClick={() => router.push(`/${locale.code}/search/?q=${encodeURI(input)}`)}
-                    /* TODO: Make this configurable. */
-                    title="Press this to search the world of Swedish sweets and candy"
-                >
+                <SearchButton onClick={() => console.warn('todo')} title="Search">
                     <FiSearch />
                 </SearchButton>
             </SearchHeader>
 
-            {((count > 1 || productFilters) && (
-                <ContentHeader>
-                    {productFilters && (
-                        <Label onClick={() => setShowFilters(!showFilters)} style={{ opacity: 0.5 }}>
-                            <FiFilter /> Filter and Sort
-                        </Label>
-                    )}
-                    {count > 1 && <Label>{count} Results</Label>}
-                </ContentHeader>
-            )) ||
-                null}
-
-            {process.env.NODE_ENV === 'development' && productFilters && (
-                <ProductSearchFilters filters={productFilters} open={showFilters} />
-            )}
-
-            <Content>
-                {((isValidating || isLoading) && <LoadingIndicator />) ||
-                    products?.map((product) => <ProductSearchResultItem key={product.id} product={product} />)}
-            </Content>
+            {(count > 1 || productFilters) ? (
+                <>
+                    <ContentHeader>
+                        {productFilters && (
+                            <Label onClick={() => setShowFilters(!showFilters)}>
+                                <FiFilter /> Filter and Sort
+                            </Label>
+                        )}
+                        {count > 1 && <Label>{count} Results</Label>}
+                    </ContentHeader>
+    
+                    <ProductSearchFilters filters={productFilters} open={showFilters} />
+                    <Content>
+                        <Suspense>
+                            {products ? products.map((product) => <ProductSearchResultItem key={product.id} product={product} />) : null}
+                        </Suspense>
+                    </Content>
+                </>
+            ) : null}
         </Container>
     );
 }
