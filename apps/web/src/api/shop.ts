@@ -25,6 +25,7 @@ type BrandColorVariant = 'default' | 'light' | 'dark';
 type BrandColor = {
     type: BrandColorType;
     variant: BrandColorVariant;
+    accent: Color;
     background: Color;
     foreground: Color;
 };
@@ -105,12 +106,14 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                             {
                                 type: 'primary',
                                 variant: 'default',
-                                background: '#ed1e79',
+                                accent: '#ed1e79',
+                                background: '#000000',
                                 foreground: '#fefefe'
                             },
                             {
-                                type: 'background',
+                                type: 'secondary',
                                 variant: 'default',
+                                accent: '#ed1e79',
                                 background: '#000000',
                                 foreground: '#fefefe'
                             }
