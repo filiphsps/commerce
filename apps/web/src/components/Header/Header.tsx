@@ -20,7 +20,7 @@ type HeaderProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 } & HTMLProps<HTMLDivElement>;
-const HeaderComponent = ({ store, navigation, locale, i18n, className, ...props }: HeaderProps) => {
+const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...props }: HeaderProps) => {
     const { logos } = store;
     const logo = shop?.configuration?.design?.branding?.logos?.primary || store?.logos?.alternative || store?.logos?.primary;
 
