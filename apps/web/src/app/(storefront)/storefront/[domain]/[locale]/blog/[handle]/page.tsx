@@ -31,15 +31,20 @@ export async function generateStaticParams() {
 
                         return await Promise.all(
                             locales.map(async (locale) => {
-                                const api = await ShopifyApiClient({ shop, locale });
-                                const blog = await BlogApi({ api, handle: 'news' });
-
-                                return blog.articles.edges.map(({ node: { handle } }) => ({
-                                    domain: shop.domains.primary,
-                                    locale: locale.code,
-                                    handle
-                                }));
+                                try {
+                                    const api = await ShopifyApiClient({ shop, locale });
+                                    const blog = await BlogApi({ api, handle: 'news' });
+    
+                                    return blog.articles.edges.map(({ node: { handle } }) => ({
+                                        domain: shop.domains.primary,
+                                        locale: locale.code,
+                                        handle
+                                    }));
+                                } catch {
+                                    return null;
+                                }
                             })
+                            .filter((_) => _)
                         );
                     } catch {
                         return null;
@@ -142,7 +147,7 @@ export default async function ArticlePage({
                     datePublished={article.publishedAt}
                     authorName={article.authorV2?.name!}
                     publisherName={store.name}
-                    publisherLogo={store?.favicon?.src!}
+                    publisherLogo={store.favicon?.src!}
                 />
 
                 <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
