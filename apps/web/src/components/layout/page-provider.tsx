@@ -24,6 +24,7 @@ export type PageProviderProps = {
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
 export const PageProvider = ({
+    shop,
     store,
     locale,
     i18n,
@@ -45,7 +46,7 @@ export const PageProvider = ({
                 </section>
             )}
             <Suspense>
-                <Header store={store} navigation={navigation} locale={locale} i18n={i18n} className={styles.header} />
+                <Header shop={shop} store={store} navigation={navigation} locale={locale} i18n={i18n} className={styles.header} />
             </Suspense>
             {bellow.length > 0 && (
                 <section className={styles.announcements}>
