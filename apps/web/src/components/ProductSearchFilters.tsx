@@ -29,7 +29,7 @@ const Values = styled.div`
         margin: 1rem 0 0.5rem 0;
     }
 `;
-const ListOption = styled.div<{ selected?: boolean }>`
+const ListOption = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,12 +42,10 @@ const ListOption = styled.div<{ selected?: boolean }>`
     line-height: 1.25rem;
     border-radius: var(--block-border-radius);
 
-    ${({ selected }) =>
-        selected &&
-        css`
-            background: var(--accent-primary);
-            color: var(--accent-primary-text);
-        `}
+    &[data-selected='true'] {
+        background: var(--accent-primary);
+        color: var(--accent-primary-text);
+    }
 `;
 
 const RangeOption = styled.div`
@@ -88,11 +86,11 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
                     {filter.values.map((value: any) => (
                         <ListOption
                             key={value.id}
-                            selected={options[filter.id] === value.id}
                             onClick={setOptions({
                                 ...options,
                                 [filter.id]: value.id
                             })}
+                            data-selected={options[filter.id] === value.id}
                         >
                             {value.label}
                         </ListOption>
@@ -128,25 +126,25 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
 };
 
 interface ProductSearchFiltersProps {
-    filters: any[];
+    filters: any[] | nukl;
     open?: boolean;
 }
 export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> = ({ filters, open }) => {
     const [options, setOptions] = useState<any>({});
 
-    // TODO
-    if (!open) return null;
-
     if (!filters) return null;
+
+    // TODO: this.
+    if (!open) return null;
 
     return (
         <Container>
-            {filters.map((filter) => (
+            {filters.map((filter) => filter ? (
                 <Filter key={filter.id}>
                     <FilterLabel>{filter.label}</FilterLabel>
                     <FilterOptions filter={filter} options={options} setOptions={setOptions} />
                 </Filter>
-            ))}
+            ) : null)}
         </Container>
     );
 };
