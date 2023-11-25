@@ -126,16 +126,13 @@ export const FilterOptions: FunctionComponent<FilterOptionsProps> = ({ filter, o
 };
 
 interface ProductSearchFiltersProps {
-    filters: any[] | nukl;
+    filters?: any[] | null;
     open?: boolean;
 }
 export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> = ({ filters, open }) => {
     const [options, setOptions] = useState<any>({});
 
-    if (!filters) return null;
-
-    // TODO: this.
-    if (!open) return null;
+    if (!filters || !open) return null;
 
     return (
         <Container>
