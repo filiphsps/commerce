@@ -64,7 +64,7 @@ export async function generateViewport({
         const api = await StorefrontApiClient({ shop, locale });
 
         const store = await StoreApi({ api });
-        const branding = getBrandingColors(shop.configuration.design?.branding);
+        const branding = getBrandingColors(shop.configuration.design);
 
         return {
             themeColor: branding?.primary || store.accent.secondary,
@@ -154,7 +154,7 @@ export default async function RootLayout({
         const footer = await FooterApi({ shop, locale });
 
         const store = await StoreApi({ api });
-        const branding = getBrandingColors(shop.configuration.design?.branding);
+        const branding = getBrandingColors(shop.configuration.design);
 
         return (
             <html
