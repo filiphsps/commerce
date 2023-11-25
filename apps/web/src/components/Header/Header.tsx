@@ -7,12 +7,14 @@ import styles from '@/components/Header/header.module.scss';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
+import type { Shop } from '@/api/shop';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
 import type { HTMLProps } from 'react';
 import { CartButton } from './cart-button';
 
 type HeaderProps = {
+    shop?: Shop,
     store: StoreModel;
     navigation: any;
     locale: Locale;
@@ -20,8 +22,7 @@ type HeaderProps = {
 } & HTMLProps<HTMLDivElement>;
 const HeaderComponent = ({ store, navigation, locale, i18n, className, ...props }: HeaderProps) => {
     const { logos } = store;
-
-    const logo = logos.alternative || logos.primary;
+    const logo = shop?.configuration?.design?.branding?.logos?.primary || store?.logos?.alternative || store?.logos?.primary;
 
     return (
         <>
