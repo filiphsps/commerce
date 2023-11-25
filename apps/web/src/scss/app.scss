@@ -34,15 +34,10 @@
     --color-block-info-text: var(--color-dark);
 
     --accent-primary: #073b4c; // Gets replaced by the brand primary color in the layout.
-    --accent-primary-dark: color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark));
-    --accent-primary-light: color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright));
-
     --accent-secondary: #118ab2; // Gets replaced by the brand secondary color in the layout.
-    --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark));
-    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright));
 
-    --accent-primary-text: var(--color-bright);
-    --accent-secondary-text: var(--color-dark);
+    --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
+    --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 }
 
 html,
@@ -64,8 +59,8 @@ body {
         'Open Sans',
         'Helvetica Neue',
         sans-serif;
-    color: var(--color-dark);
-    background: var(--color-bright);
+    color: var(--color-foreground, var(--color-dark));
+    background: var(--color-background, var(--color-bright));
 
     @media screen and (max-width: 950px) {
         font-size: 0.55rem;
@@ -90,8 +85,19 @@ body {
     }
 
     &:root {
+        --accent-primary-dark:
+            var(--color-accent-primary-dark, var(--color-accent-primary, color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark))));
+        --accent-primary-light:
+            var(--color-accent-primary-light, var(--color-accent-primary, color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright))));
+        --accent-secondary-dark:
+            var(--color-accent-secondary-dark, var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark))));
+        --accent-secondary-light:
+            var(--color-accent-secondary-light, var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright))));
+
+        // Components:
         --component-product-card-width: 22rem;
 
+        // Layouting:
         --page-width: 1465px;
 
         --block-border-radius-large: 2rem;
