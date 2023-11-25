@@ -31,9 +31,10 @@ export async function generateStaticParams() {
                     try {
                         const api = await ShopifyApiClient({ shop, locale });
                         const locales = await LocalesApi({ api });
+                        const domain = shop.domains.primary;
 
                         return locales.map(({ code }) => ({
-                            domain: shop.domains.primary,
+                            domain,
                             locale: code
                         }));
                     } catch {
@@ -51,7 +52,7 @@ export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
-    params: SearchPageParams;
+    params: SearchPageParams
 }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
@@ -111,7 +112,15 @@ export async function generateMetadata({
 }
 /* c8 ignore stop */
 
-export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
+export default async function SearchPage({
+    params: { domain, locale: localeData },
+    searchParams
+}: {
+    params: SearchPageParams,
+    searchParams?: {
+        q?: string;
+    }
+}) {
     try {
         const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
@@ -123,6 +132,8 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const prefetch = await Prefetch({ api, page });
+
+        const query = searchParams?.q || '';
 
         return (
             <Page>
@@ -142,8 +153,8 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                         />
                     )}
 
-                    <Suspense>
-                        <SearchContent shop={shop} locale={locale} />
+                    <Suspense key={query}>
+                        <SearchContent shop={shop} locale={locale} query={query} />
                     </Suspense>
                 </PageContent>
             </Page>
