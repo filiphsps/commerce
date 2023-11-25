@@ -33,12 +33,10 @@ const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) =
     // TODO: Deal with variants.
     const primary = colors.find(({ type }) => type === 'primary');
     const secondary = colors.find(({ type }) => type === 'secondary');
-    const background = colors.find(({ type }) => type === 'background');
 
     return {
         primary,
-        secondary: secondary || primary,
-        background: background || '#fefefe'
+        secondary
     };
 };
 
@@ -67,7 +65,7 @@ export async function generateViewport({
         const branding = getBrandingColors(shop.configuration.design);
 
         return {
-            themeColor: (branding?.primary || store.accent.secondary) as string,
+            themeColor: (branding?.primary?.background || store.accent.secondary) as string,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
@@ -163,14 +161,37 @@ export default async function RootLayout({
                 className={`${font.variable}`}
                 style={
                     {
-                        '--color-accent-primary': branding?.primary || store?.accent?.primary,
-                        '--color-accent-secondary': branding?.secondary || store?.accent?.secondary,
-                        '--color-background': branding?.background, // TODO: Figure out how to deal with dark/light mode.
+                        ...(branding?.primary ? {
+                            '--color-accent-primary': branding?.primary?.accent,
+                            '--color-accent-primary-text': branding?.primary?.foreground
+                            '--color-background': branding?.primary?.background,
+                            '--color-foreground': branding?.primary?.foreground,
 
-                        // Legacy.
-                        '--accent-primary': branding?.primary || store?.accent?.primary,
-                        '--accent-secondary': branding?.secondary || store?.accent?.secondary
-                            
+                            // Legacy
+                            '--accent-primary': store?.accent?.primary,
+
+                            ...(branding?.secondary ? {
+                                '--color-accent-secondary': branding?.secondary?.accent,
+                                '--color-accent-secondary-text': branding?.secondary?.foreground
+
+                                // Legacy
+                                '--accent-secondary': branding?.secondary?.accent,
+                            } : {
+                                // Fallback
+                                '--color-accent-secondary': branding?.primary?.accent,
+                                '--color-accent-secondary-text': branding?.primary?.foreground
+
+                                // Legacy
+                                '--accent-secondary': branding?.primary?.accent
+                            }),
+                        } : {
+                            '--color-accent-primary': store?.accent?.primary,
+                            '--color-accent-secondary': store?.accent?.secondary,
+
+                            // Legacy
+                            '--accent-primary': store?.accent?.primary,
+                            '--accent-secondary': store?.accent?.secondary
+                        })
                     } as React.CSSProperties
                 }
                 suppressHydrationWarning
