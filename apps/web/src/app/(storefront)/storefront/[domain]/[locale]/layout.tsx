@@ -26,7 +26,7 @@ export const dynamicParams = true;
 /* c8 ignore stop */
 
 // TODO: Generalize this
-const getBrandingColors = (branding: Shop['configuration']['design']['branding']) => {
+const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
     if (!branding?.colors) return null;
     const { colors } = branding;
     
