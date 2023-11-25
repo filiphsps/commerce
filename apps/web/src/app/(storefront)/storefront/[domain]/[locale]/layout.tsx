@@ -163,7 +163,7 @@ export default async function RootLayout({
                     {
                         ...(branding?.primary ? {
                             '--color-accent-primary': branding?.primary?.accent,
-                            '--color-accent-primary-text': branding?.primary?.foreground
+                            '--color-accent-primary-text': branding?.primary?.foreground,
                             '--color-background': branding?.primary?.background,
                             '--color-foreground': branding?.primary?.foreground,
 
@@ -172,14 +172,14 @@ export default async function RootLayout({
 
                             ...(branding?.secondary ? {
                                 '--color-accent-secondary': branding?.secondary?.accent,
-                                '--color-accent-secondary-text': branding?.secondary?.foreground
+                                '--color-accent-secondary-text': branding?.secondary?.foreground,
 
                                 // Legacy
-                                '--accent-secondary': branding?.secondary?.accent,
+                                '--accent-secondary': branding?.secondary?.accent
                             } : {
                                 // Fallback
                                 '--color-accent-secondary': branding?.primary?.accent,
-                                '--color-accent-secondary-text': branding?.primary?.foreground
+                                '--color-accent-secondary-text': branding?.primary?.foreground,
 
                                 // Legacy
                                 '--accent-secondary': branding?.primary?.accent
