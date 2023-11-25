@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
@@ -99,8 +99,6 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
 
-    const [showFilters, setShowFilters] = useState(false);
-
     function handleSearch(term?: string) {
         const params = new URLSearchParams(searchParams);
         if (term) {
@@ -112,9 +110,8 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
         replace(`${pathname}?${params.toString()}`);
     }
 
-    const { products, productFilters } = results || {};
-    const count = products?.length || 0;
-
+    const products: any[] = [];
+    const count: number = products?.length || 0;
     return (
         <Container>
             <SearchHeader>
@@ -128,37 +125,30 @@ export default function SearchContent({ shop, locale }: SearchContentProps) {
                         /* TODO: Make this copy configurable. */
                         placeholder="Find the perfect candy, chocolate, licorice and snacks"
                     />
-                    {query.length > 0 && (
-                        <SearchBarClear>
-                            <FiX className="Icon" onClick={() => handleSearch()} />
-                        </SearchBarClear>
-                    )}
+
+                    <SearchBarClear>
+                        <FiX className="Icon" onClick={() => handleSearch()} />
+                    </SearchBarClear>
                 </SearchBar>
 
                 <SearchButton onClick={() => console.warn('todo')} title="Search">
                     <FiSearch />
                 </SearchButton>
             </SearchHeader>
+            <ContentHeader>
+                <Label onClick={() => console.warn('todo')}>
+                    <FiFilter /> Filter and Sort
+                </Label>
+                <Label>{count} Results</Label>
+            </ContentHeader>
 
-            {(count > 1 || productFilters) ? (
-                <>
-                    <ContentHeader>
-                        {productFilters && (
-                            <Label onClick={() => setShowFilters(!showFilters)}>
-                                <FiFilter /> Filter and Sort
-                            </Label>
-                        )}
-                        {count > 1 && <Label>{count} Results</Label>}
-                    </ContentHeader>
-    
-                    <ProductSearchFilters filters={productFilters} open={showFilters} />
-                    <Content>
-                        <Suspense>
-                            {products ? products.map((product) => <ProductSearchResultItem key={product.id} product={product} />) : null}
-                        </Suspense>
-                    </Content>
-                </>
-            ) : null}
+            <ProductSearchFilters filters={null} open={false} />
+
+            <Content>
+                <Suspense key={query}>
+                    {products ? products.map((product: any) => <ProductSearchResultItem key={product.id} product={product} />) : null}
+                </Suspense>
+            </Content>
         </Container>
     );
 }
