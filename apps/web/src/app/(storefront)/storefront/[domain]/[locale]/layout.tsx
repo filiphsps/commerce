@@ -145,7 +145,8 @@ export default async function RootLayout({
         if (!locale) return notFound();
 
         const shop = await ShopApi({ domain });
-        const api = await ShopifyApolloApiClient({ shop, locale });
+        const apiConfig = await shopifyApiConfig({ shop });
+        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const i18n = await getDictionary(locale);
 
