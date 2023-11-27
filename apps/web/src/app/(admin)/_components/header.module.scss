@@ -1,12 +1,101 @@
 .container {
+    z-index: 10;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+    padding: var(--block-padding) 0;
+    margin-bottom: var(--block-padding);
+    border-bottom: var(--block-border-width) solid var(--color-background-highlight);
+    backdrop-filter: saturate(220%) blur(8px);
+    background-color: rgba(0, 0, 0, 0.75);
+    box-shadow: rgb(51, 51, 51) 0px 0px 0px 1px;
+
     @media (min-width: 950px) {
-        padding-bottom: var(--layout-section-spacing);
+        padding: 0;
     }
 
-    .logo {
-        max-height: 6.5rem;
-        height: 100%;
-        width: auto;
-        max-width: min(100%, 80vw);
+    .content {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: center;
+        width: calc(100vw - calc(var(--layout-page-spacing) * 2));
+        max-width: var(--layout-page-width);
+        margin: 0 var(--layout-page-spacing);
+        gap: var(--block-padding);
+
+        @media (min-width: 950px) {
+            grid-template-columns: 1fr auto;
+            padding: var(--block-padding) 0;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: block;
+            justify-self: flex-start;
+            height: 100%;
+            height: 2rem;
+
+            [data-logo-placement='center'] & {
+                justify-self: flex-start;
+
+                @media (min-width: 950px) {
+                    justify-self: unset;
+                }
+            }
+
+            @media (min-width: 950px) {
+                height: 2.5rem;
+            }
+
+            .logo {
+                height: 100%;
+                width: 100%;
+                user-select: none;
+                object-fit: contain;
+                object-position: left center;
+            }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--block-padding);
+            width: 100%;
+            user-select: none;
+
+            .links {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                gap: var(--block-padding);
+
+                @media (min-width: 950px) {
+                    justify-content: center;
+                    gap: calc(var(--layout-section-spacing) * 2);
+                }
+            }
+
+            a {
+                font-weight: 800;
+                text-transform: uppercase;
+            }
+
+            @media (max-width: 950px) {
+                .button {
+                    padding: 0;
+                    border: none;
+                }
+            }
+
+            @media (min-width: 950px) {
+                justify-content: flex-end;
+                gap: calc(var(--layout-section-spacing) * 2);
+            }
+        }
     }
 }

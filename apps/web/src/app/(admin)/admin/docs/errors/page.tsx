@@ -15,8 +15,8 @@ export default async function DocsErrorsPage({ params: {} }: { params: DocsError
     return (
         <article className={`${styles.container}`}>
             <div className={`${styles.heading}`}>
-                <Heading level="h1">Errors</Heading>
-                <Heading level="h2">These are all the currently documented error codes</Heading>
+                <Heading level="h1">Errors Codes</Heading>
+                <Heading level="h2">These are all of the currently documented error codes</Heading>
             </div>
 
             <div className={styles.content}>
@@ -33,6 +33,7 @@ export default async function DocsErrorsPage({ params: {} }: { params: DocsError
                             href={`/docs/errors/${error.code}/`}
                             className={styles.section}
                             key={error.code}
+                            draggable={false}
                         >
                             <Heading level="h4" as="h3">
                                 {error.code}

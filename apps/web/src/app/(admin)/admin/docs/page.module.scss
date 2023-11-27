@@ -45,7 +45,6 @@
                     color: var(--color-foreground);
                     border-color: var(--color-foreground);
                 }
-
                 &:is(:hover, :active, :focus, :focus-within):not(:disabled) {
                     h3,
                     p {

@@ -12,6 +12,12 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
         return NextResponse.rewrite(new URL(target, req.url));
     }
 
+    // Check if we're trying to access the error pages directly.
+    if (newUrl.pathname.startsWith('/errors')) {
+        // TODO: Proper 404 page.
+        return NextResponse.rewrite(new URL('/admin/not-found/', req.url), { status: 404 });
+    }
+
     // Validate the url against our common issues.
     newUrl = commonValidations(newUrl);
 

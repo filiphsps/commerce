@@ -69,6 +69,7 @@
         "HSTS",
         "lastmod",
         "Lexend",
+        "markdoc",
         "Mellerud",
         "nextjs",
         "Nordcom",
@@ -89,7 +90,14 @@
     "vscord.enabled": true,
     "markdownlint.config": {
         "single-title": false,
-        "no-inline-html": false
+        "no-inline-html": false,
+        "list-indent": true,
+        "list-marker-space": {
+            "ol_multi": 1,
+            "ol_single": 1,
+            "ul_multi": 3,
+            "ul_single": 3
+        }
     },
     "javascript.inlayHints.enumMemberValues.enabled": true,
     "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
@@ -101,5 +109,8 @@
     "prettier.printWidth": 120,
     "[prisma]": {
         "editor.defaultFormatter": "Prisma.prisma"
+    },
+    "[markdown]": {
+        "editor.formatOnType": true
     }
 }

@@ -2,6 +2,8 @@ import '#/styles/app.scss';
 
 import type { Metadata, Viewport } from 'next';
 
+import Footer from '#/components/footer';
+import Header from '#/components/header';
 import { Providers } from '#/components/providers';
 import { GeistMono } from 'geist/font/mono';
 import { Montserrat } from 'next/font/google';
@@ -34,6 +36,10 @@ export const metadata: Metadata = {
         email: false,
         address: false,
         telephone: false
+    },
+    openGraph: {
+        siteName: 'Nordcom Commerce',
+        locale: 'en-US'
     }
 };
 
@@ -49,7 +55,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang="en">
             <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
-                <Providers>{children}</Providers>
+                <Providers>
+                    <Header />
+
+                    {children}
+
+                    <Footer />
+                </Providers>
             </body>
         </html>
     );

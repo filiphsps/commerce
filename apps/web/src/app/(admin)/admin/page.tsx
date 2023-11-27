@@ -1,7 +1,8 @@
+import { Button } from '#/components/button';
 import Container from '#/components/container';
-import Header from '#/components/header';
-import { Heading } from '@nordcom/nordstar';
+import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import styles from './page.module.scss';
 
 export type IndexAdminPageParams = {};
@@ -15,8 +16,6 @@ export const metadata: Metadata = {
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
         <Container className={`${styles.container}`}>
-            <Header />
-
             <div className={`${styles.heading}`}>
                 <Heading>TODO</Heading>
                 <Heading level="h2">An admin interface for tenants</Heading>
@@ -24,9 +23,31 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
 
             <article className={`${styles.content}`}>
                 <p>
-                    This currently serves as a placeholder to make sure domain routing works and continue to work
-                    through deployments and domain configuration changes.
+                    This currently serves as a placeholder to make sure domain routing works
+                    <br />
+                    and continues to work through deployments and domain configuration changes.
                 </p>
+
+                <div className={styles.blocks}>
+                    <Card className={styles.block}>
+                        <Heading level="h4" as="div">
+                            View a demo
+                        </Heading>
+
+                        <Button as={Link} href="">
+                            Demo Storefront
+                        </Button>
+                    </Card>
+                    <Card className={styles.block}>
+                        <Heading level="h4" as="div">
+                            See it in action
+                        </Heading>
+
+                        <Button as={Link} href="">
+                            Sweet Side of Sweden
+                        </Button>
+                    </Card>
+                </div>
             </article>
         </Container>
     );

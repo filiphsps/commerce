@@ -7,15 +7,21 @@
     padding: calc(var(--block-padding) / 1.5) var(--block-padding);
     text-transform: uppercase;
     text-align: center;
-    font-weight: 800;
+    font-weight: 700;
+    font-size: inherit;
     color: var(--color-foreground);
     border-radius: 0;
-    border: calc(var(--block-border-width) * 2.5) solid var(--color-foreground);
+    //border-radius: var(--block-border-radius, 0);
+    border: calc(var(--block-border-width) * 2) solid var(--color-foreground);
     user-select: none;
     transition:
         200ms ease-in-out background-color,
         200ms ease-in-out border-color,
         200ms ease-in-out color;
+
+    @media (min-width: 950px) {
+        border-width: calc(var(--block-border-width) * 2.5);
+    }
 
     p {
         font-weight: inherit;
@@ -27,7 +33,7 @@
         border-color: var(--color-accent-primary);
     }
 
-    &:is(:active, :focus):not(:disabled) {
+    &:is(:active):not(:disabled) {
         background-color: var(--color-foreground);
         border-color: var(--color-foreground);
         color: var(--color-background);

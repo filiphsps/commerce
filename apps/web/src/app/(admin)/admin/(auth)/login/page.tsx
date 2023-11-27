@@ -1,4 +1,3 @@
-import Container from '#/components/container';
 import LoginButton from '#/components/login-button';
 import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
-        <Container className={`${styles.container}`}>
+        <section className={`${styles.container}`}>
             <Heading level="h1">Login</Heading>
 
             <Card className={styles.providers}>
@@ -24,6 +23,6 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                     <LoginButton provider="google" />
                 </Suspense>
             </Card>
-        </Container>
+        </section>
     );
 }

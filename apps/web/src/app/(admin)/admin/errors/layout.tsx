@@ -5,12 +5,12 @@ import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
     title: {
-        default: 'Account',
+        default: 'Error',
         template: `%s · Nordcom Commerce`
     }
 };
 
-export default async function AuthLayout({ children }: { children: ReactNode }) {
+export default async function ErrorLayout({ children }: { children: ReactNode }) {
     return (
         <Container className={`${styles.container}`}>
             <main className={`${styles.content}`}>{children}</main>

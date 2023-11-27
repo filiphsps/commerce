@@ -7,7 +7,7 @@
         max-width: 100%;
 
         h1 {
-            margin-bottom: calc(var(--block-padding) / 4);
+            margin: calc(var(--block-padding) / 4) 0 var(--block-padding) 0;
 
             @media (max-width: 950px) {
                 font-size: 3.25rem !important;
@@ -50,6 +50,7 @@
 
         p,
         ul {
+            font-size: inherit;
             margin: 0 0 calc(var(--block-padding) / 2) 0;
             line-height: normal;
         }

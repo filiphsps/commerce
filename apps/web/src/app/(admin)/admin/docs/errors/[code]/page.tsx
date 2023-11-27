@@ -23,9 +23,7 @@ export default async function DocsErrorPage({ params: { code } }: { params: Docs
                     {error.statusCode}:
                 </Heading>
                 <Heading level="h1">{error.details}</Heading>
-                <Heading level="h2">
-                    <code>{error.code}</code>
-                </Heading>
+                <Heading level="h2">{error.code}</Heading>
             </div>
 
             <div className={`${styles.content}`}>

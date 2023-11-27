@@ -1,9 +1,7 @@
 import { Tag } from '@markdoc/markdoc';
-import { Card, Heading } from '@nordcom/nordstar';
-import Link from 'next/link';
 
 export const link = {
-    render: Link,
+    render: 'Link',
     attributes: {
         href: {
             type: String
@@ -12,7 +10,20 @@ export const link = {
 };
 
 export const fence = {
-    render: Card,
+    render: 'Fence',
+    attributes: {
+        content: {
+            type: String
+        },
+        language: {
+            type: String
+        }
+    }
+};
+
+export const code = {
+    render: 'Code',
+    children: ['inline'],
     attributes: {
         content: {
             type: String
@@ -24,7 +35,7 @@ export const fence = {
 };
 
 export const heading = {
-    render: Heading,
+    render: 'Heading',
     children: ['inline'],
     attributes: {
         id: { type: String },
@@ -35,6 +46,6 @@ export const heading = {
         const { level, ...attributes } = node.transformAttributes(config);
         const children = node.transformChildren(config);
 
-        return new Tag(this.render as any, { ...attributes, level: `h${level}` }, children);
+        return new Tag(this.render as any, { ...attributes, level: `h${level}`, 'data-level': `h${level}` }, children);
     }
 };

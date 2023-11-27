@@ -20,7 +20,7 @@ export const unknown = async (req: NextRequest): Promise<NextResponse> => {
         return NextResponse.redirect(newUrl, { status: 307 });
     }
 
-    const target = `/unknown/${newUrl.search}`;
+    const target = `/admin/errors/unknown-storefront/${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url), { status: 404 });
 };
 /* c8 ignore stop */
