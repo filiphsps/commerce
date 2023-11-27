@@ -30,6 +30,7 @@
             // Admin (shops.nordcom.io)
             "#/components/*": ["src/app/(admin)/_components/*"],
             "#/api/*": ["src/app/(admin)/_api/*"],
+            "#/utils/*": ["src/app/(admin)/_utils/*"],
             "#/styles/*": ["src/app/(admin)/_scss/*"]
         }
     },
