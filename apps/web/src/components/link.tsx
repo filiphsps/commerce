@@ -39,15 +39,17 @@ export default function Link({ shop, locale, href, prefetch, ...props }: Props) 
               searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
           };
 
-    if (href.startsWith('/') || url.host === host) {
+    if (!isExternal && (href.startsWith('/') || url.host === host)) {
         // Check if any lang (xx-YY) is already a part of the URL.
         if (!/\/[a-z]{2}-[A-Z]{2}\//.test(url.pathname)) {
             // Add locale to href.
             url.pathname = `/${locale.code}${url.pathname}`;
         }
+
+        // Deal with common issues.
+        url = commonValidations(url as any);
     }
 
-    url = commonValidations(url as any);
     return (
         <BaseLink
             {...props}
