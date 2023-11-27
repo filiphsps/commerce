@@ -81,10 +81,13 @@ export const createClient = ({
 }: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
 
-    // TODO: Deal with `dummy` content provider.
-    if (shop.configuration.content.type !== 'prismic') throw new TodoError();
+    if (shop.configuration.content.type !== 'prismic') {
+        // TODO: Deal with the `shopify` content provider.
+        // TODO: Deal with the `dummy` content provider.
+    }
 
-    const client = prismicCreateClient(shop.configuration.content.id, {
+    // TODO: Remove `repositoryName` variable.
+    const client = prismicCreateClient(shop.configuration.content.id || repositoryName, {
         routes,
         accessToken: accessToken || undefined,
         fetchOptions: {
