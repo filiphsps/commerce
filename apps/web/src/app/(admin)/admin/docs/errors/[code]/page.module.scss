@@ -3,11 +3,12 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        gap: calc(var(--block-padding) / 2);
         width: 100%;
         max-width: 100%;
 
         h1 {
+            margin-bottom: calc(var(--block-padding) / 4);
+
             @media (max-width: 950px) {
                 font-size: 3.25rem !important;
             }
@@ -18,6 +19,7 @@
             word-break: break-all;
             white-space: pre-wrap;
             background-color: unset;
+            color: inherit;
         }
     }
 
@@ -49,7 +51,6 @@
         p,
         ul {
             margin: 0 0 calc(var(--block-padding) / 2) 0;
-            font-size: 1.25em;
             line-height: normal;
         }
 

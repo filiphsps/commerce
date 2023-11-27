@@ -56,7 +56,13 @@ h4 {
     }
 }
 
+p {
+    font-weight: 500;
+}
+
 a {
+    font-weight: inherit;
+    font-size: inherit;
     transition: 150ms ease-in-out color;
 
     &:hover {
@@ -80,6 +86,8 @@ code {
 
     &::before,
     &::after {
+        display: inline-block;
+        text-align: center;
         content: '`';
     }
 }

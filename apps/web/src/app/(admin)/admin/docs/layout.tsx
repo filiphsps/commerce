@@ -7,8 +7,8 @@ import styles from './layout.module.scss';
 export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/docs/`),
     title: {
-        default: 'Overview',
-        template: `%s - Docs · Nordcom Commerce`
+        absolute: 'Documentation · Nordcom Commerce',
+        template: `%s · Documentation · Nordcom Commerce`
     }
 };
 

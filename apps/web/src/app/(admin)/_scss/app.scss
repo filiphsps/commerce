@@ -1,12 +1,19 @@
 @import 'destyle.css';
 @import '_text';
 
+html,
+body {
+    background: var(--color-foreground, #000000);
+    color: var(--color-foreground, #fefefe);
+}
+
 :root {
     --color-accent-primary: #ed1e79;
 }
 
 input {
     &[type='number'] {
+        appearance: textfield;
         -moz-appearance: textfield !important;
 
         &::-webkit-inner-spin-button {
@@ -21,6 +28,7 @@ input {
             ::-webkit-search-results-button,
             ::-webkit-search-results-decoration
         ) {
+        appearance: none;
         -webkit-appearance: none;
     }
 }

@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import styles from './page.module.scss';
 
-export type DocsErrorsPageParams = {
+export type DocsErrorPageParams = {
     code: string;
 };
-export default async function DocsErrorsPage({ params: { code } }: { params: DocsErrorsPageParams }) {
+export default async function DocsErrorPage({ params: { code } }: { params: DocsErrorPageParams }) {
     // TODO: Forward to uppercase version of code if not uppercase.
 
     const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
@@ -69,7 +69,10 @@ export default async function DocsErrorsPage({ params: { code } }: { params: Doc
                         Code
                     </Heading>
                     <p>
-                        <code data-language="typescript">new {error.name}();</code>
+                        <code data-language="typescript">
+                            {`import { ${error.name} } from '@/utils/errors';\n\n`}
+                            throw new {error.name}();
+                        </code>
                     </p>
                 </Card>
 

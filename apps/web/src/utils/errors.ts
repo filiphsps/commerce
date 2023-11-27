@@ -221,6 +221,10 @@ export class TypeError extends GenericError {
     code = GenericErrorKind.INVALID_TYPE;
 }
 
+export const getAllErrorCodes = () => {
+    return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
+};
+
 export const getErrorFromCode = (code: GenericErrorKind | ApiErrorKind) => {
     switch (code) {
         // Generic Errors.
