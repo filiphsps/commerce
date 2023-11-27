@@ -2,10 +2,9 @@
 
 import type { Shop } from '@/api/shop';
 import { commonValidations } from '@/middleware/common-validations';
-import type { Locale } from '@/utils/locale';
-import { DefaultLocale, NextLocaleToLocale } from '@/utils/locale';
+import { TypeError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import BaseLink from 'next/link';
-import { usePathname } from 'next/navigation';
 import { type ComponentProps } from 'react';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
@@ -13,48 +12,64 @@ type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
     locale?: Locale;
 };
 
+const isInternal = (href: string, shop?: Shop): boolean => {
+    // If the url starts with `/` we're obviously requesting an internal path.
+    if (href.startsWith('/')) {
+        return true;
+    }
+
+    // Next if shop is defined we can check if we're linking to ourselves.
+    if (shop) {
+        if (href.startsWith(`https://${shop.domains.primary}`) || href.startsWith(`http://${shop.domains.primary}`)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 // FIXME: i18n provider?
 export default function Link({ shop, locale, href, prefetch, ...props }: Props) {
     if (typeof href !== 'string') {
-        throw new Error(`Link href must be of type string. Received ${typeof href} instead.`);
+        // TODO: Deal with `URL` as `href`.
+        throw new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`);
     }
 
-    const path = usePathname();
-    // TODO: Use a more sensible fallback.
-    locale = locale || NextLocaleToLocale(path.split('/')[1]) || DefaultLocale();
+    // Get the locale if it's not provided to us.
+    try {
+        locale = locale || Locale.current || Locale.default;
+    } catch {
+        locale = Locale.default;
+    }
 
-    // FIXME: There has to be a better and simpler way to do this.
-    const host = !href.startsWith('/')
-        ? shop?.domains.primary || typeof window !== 'undefined'
-            ? window.location?.host
-            : undefined
-        : undefined;
+    const url = ((href: string, shop?: Shop): string | URL => {
+        const internal = isInternal(href, shop);
 
-    const isExternal = !href.startsWith('/') && (href.startsWith('http://') || href.startsWith('https://')) && host;
-    let url = isExternal
-        ? new URL(href, host.includes('://') ? host : `https://${host}`)
-        : {
-              host: host, // TODO
-              pathname: host && href.includes(host) ? href.split('?')[0].split(host)[1] : href.split('?')[0],
-              searchParams: href.includes('?') ? `?${href.split('?')[1]}` : ''
-          };
+        if (internal) {
+            // It's possible that the internal link still includes the protocol,
+            // if it does, remove it.
+            if (href.startsWith('https://') || href.startsWith('http://')) {
+                // Add the first slash since that would be removed by the `slice`.
+                href = `/${href.split('://')[1].split('/').slice(1).join('/')}`;
+            }
 
-    if (!isExternal && (href.startsWith('/') || url.host === host)) {
-        // Check if any lang (xx-YY) is already a part of the URL.
-        if (!/\/[a-z]{2}-[A-Z]{2}\//.test(url.pathname)) {
-            // Add locale to href.
-            url.pathname = `/${locale.code}${url.pathname}`;
+            // Perform some common fixups.
+            href = commonValidations(href);
+
+            // Check if locale is provided, if not add it.
+            if (!/\/[a-z]{2}-[A-Z]{2}\//.test(href)) return `/${locale.code}${href}`;
+            // Otherwise return as-is.
+            else return href;
         }
 
-        // Deal with common issues.
-        url = commonValidations(url as any);
-    }
+        // Check if it's a special url (e.g. `tel:`, `mailto:`, etc)
+        if (!href.startsWith('https://') && !href.startsWith('https://')) {
+            return href;
+        }
 
-    return (
-        <BaseLink
-            {...props}
-            href={url.host !== host ? url : `${url.pathname}${url.searchParams}`}
-            prefetch={prefetch || false}
-        />
-    );
+        // TODO: Should we validate that a protocol is provided?
+        return new URL(href);
+    })(href, shop);
+
+    return <BaseLink {...props} href={url} prefetch={prefetch || false} />;
 }

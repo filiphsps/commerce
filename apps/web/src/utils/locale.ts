@@ -55,6 +55,10 @@ export class Locale implements SerializableLocale {
         // FIXME: Don't hardcode `en-US` as the fallback.
         return Locale.from(BuildConfig?.i18n?.default || ('en-US' as Code));
     }
+
+    /**
+     * Get the current locale.
+     */
     static get current(): Readonly<SerializableLocale> {
         if (typeof window === 'undefined') {
             console.warn('The currently used locale is unavailable, returning the default locale instead.');
