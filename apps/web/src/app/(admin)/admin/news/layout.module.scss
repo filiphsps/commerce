@@ -1,0 +1,26 @@
+.container {
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-section-padding);
+        width: 100%;
+        padding-top: calc(var(--layout-section-spacing) * 6);
+
+        h1 {
+            margin: 0 0 var(--layout-section-spacing) 0;
+        }
+        h2 {
+            margin: 0 0 calc(var(--layout-section-spacing) / 4) 0;
+        }
+        section {
+            margin: var(--layout-section-spacing) 0;
+        }
+        p {
+            margin: 0 0 var(--layout-section-spacing) 0;
+        }
+
+        & :is(:last-child) {
+            margin-bottom: 0;
+        }
+    }
+}

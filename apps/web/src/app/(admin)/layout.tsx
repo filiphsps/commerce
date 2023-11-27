@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(`https://shops.nordcom.io/`),
     title: {
         default: 'admin',
-        template: `%s · nordcom commerce`
+        template: `%s · Nordcom Commerce`
     },
     icons: {
         icon: ['/favicon.png', '/favicon.ico'],

@@ -5,14 +5,14 @@ import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
-    metadataBase: new URL(`https://shops.nordcom.io/docs/`),
+    metadataBase: new URL(`https://shops.nordcom.io/news/`),
     title: {
         default: 'Overview',
-        template: `%s - Docs · Nordcom Commerce`
+        template: `%s - News · Nordcom Commerce`
     }
 };
 
-export default async function DocsLayout({ children }: { children: ReactNode }) {
+export default async function NewsLayout({ children }: { children: ReactNode }) {
     return (
         <Container className={`${styles.container}`}>
             <Header />
