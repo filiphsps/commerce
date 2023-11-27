@@ -58,17 +58,6 @@ h4 {
     }
 }
 
-p,
-a {
-    font-size: 1.05rem;
-    font-weight: 500;
-    line-height: 1.35;
-
-    @media (min-width: 950px) {
-        font-size: 1.15rem;
-    }
-}
-
 a {
     transition: 150ms ease-in-out color;
 
