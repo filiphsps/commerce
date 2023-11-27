@@ -11,17 +11,16 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "predev": "prisma generate",
+        "predev": "prisma generate --schema=../../prisma/schema.prisma",
         "dev": "next dev",
         "dev:turbo": "next dev --turbo",
-        "prebuild": "prisma generate",
+        "prebuild": "prisma generate --schema=../../prisma/schema.prisma",
         "build": "next build",
         "lint": "next lint",
         "prettier": "prettier src/**/*.* --check",
         "typecheck": "tsc -noEmit",
         "test": "vitest run --coverage",
         "slicemachine": "start-slicemachine",
-        "db": "prisma generate && prisma db push",
         "watch:test": "vitest watch"
     },
     "author": {

@@ -4,7 +4,7 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
-    "buildCommand": "turbo db && turbo build",
+    "buildCommand": "npm run db:migrate && turbo build",
     "devCommand": "turbo dev",
     "outputDirectory": "apps/web/.next",
     "github": {

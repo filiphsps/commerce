@@ -7,7 +7,6 @@
             "dependsOn": ["^build"],
             "outputs": ["**/.next/**", "!**/.next/cache/**", "!**/coverage/**", "!**/*.md", "!**/*.yml"]
         },
-        "db": { "cache": false },
         "lint": { "cache": false },
         "prettier": { "cache": false },
         "test": { "cache": false, "outputs": ["**/coverage/**"] },
