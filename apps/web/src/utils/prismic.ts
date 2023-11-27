@@ -6,7 +6,7 @@ import { Locale } from '@/utils/locale';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
-import { TodoError } from './errors';
+import { TodoError } from '@/utils/errors';
 
 /**
  * The project's Prismic repository name.
@@ -81,9 +81,12 @@ export const createClient = ({
 }: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
 
-    if (shop.configuration.content.type !== 'prismic') {
-        // TODO: Deal with the `shopify` content provider.
+    // TODO: These cases should be dealt with before even arriving here.
+    if (shop.configuration.content.type === 'dummy') {
         // TODO: Deal with the `dummy` content provider.
+    } else if (shop.configuration.content.type !== 'prismic') {
+        // TODO: Deal with the `shopify` content provider.
+        throw new TodoError();
     }
 
     // TODO: Remove `repositoryName` variable.
