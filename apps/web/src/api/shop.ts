@@ -50,7 +50,7 @@ export type Shop = {
         design?: {
             branding?: {
                 icons?: {
-                    favicon?: Icon
+                    favicon?: Icon;
                 };
                 logos?: {
                     primary?: BrandImage;

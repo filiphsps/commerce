@@ -10,5 +10,11 @@
     "github": {
         "enabled": true,
         "autoJobCancelation": true
-    }
+    },
+    "crons": [
+        {
+            "path": "/api/heartbeat",
+            "schedule": "*/15 * * * *"
+        }
+    ]
 }

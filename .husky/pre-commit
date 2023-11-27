@@ -8,10 +8,10 @@ red='\033[1;31m'
 export LIMIT_STATIC_PAGES='3'
 if hash bun 2>/dev/null; then
     echo -e "Running pre-commit hooks with ${green}bun${reset}"
-    bunx concurrently "bun:lint" "bun:typecheck" "bun:test"
+    bunx concurrently "bun:lint" "bun:prettier" "bun:typecheck" "bun:test"
     bun run build
 else
     echo -e "Runnin pre-commit hooks with ${red}npm${reset}"
-    npx concurrently "npm:lint" "npm:typecheck" "npm:test"
+    npx concurrently "npm:lint" "npm:prettier" "npm:typecheck" "npm:test"
     npm run build
 fi

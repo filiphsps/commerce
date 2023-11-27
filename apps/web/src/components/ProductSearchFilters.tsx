@@ -136,12 +136,14 @@ export const ProductSearchFilters: FunctionComponent<ProductSearchFiltersProps> 
 
     return (
         <Container>
-            {filters.map((filter) => filter ? (
-                <Filter key={filter.id}>
-                    <FilterLabel>{filter.label}</FilterLabel>
-                    <FilterOptions filter={filter} options={options} setOptions={setOptions} />
-                </Filter>
-            ) : null)}
+            {filters.map((filter) =>
+                filter ? (
+                    <Filter key={filter.id}>
+                        <FilterLabel>{filter.label}</FilterLabel>
+                        <FilterOptions filter={filter} options={options} setOptions={setOptions} />
+                    </Filter>
+                ) : null
+            )}
         </Container>
     );
 };
