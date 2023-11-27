@@ -2,6 +2,7 @@
 
 import styles from '#/components/login-button.module.scss';
 import type { AuthProvider } from '#/utils/auth';
+import { UnknownApiError } from '@/utils/errors';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, type HTMLProps } from 'react';
@@ -29,6 +30,14 @@ export default function LoginButton({ provider = 'github', className, ...props }
     switch (provider) {
         case 'github': {
             layout = <p>Login with GitHub</p>;
+            break;
+        }
+        case 'google': {
+            layout = <p>Login with Google</p>;
+            break;
+        }
+        default: {
+            throw new UnknownApiError();
         }
     }
 
@@ -41,6 +50,14 @@ export default function LoginButton({ provider = 'github', className, ...props }
                         setLoading(true);
                         signIn('github');
                         break;
+                    }
+                    case 'google': {
+                        setLoading(true);
+                        signIn('google');
+                        break;
+                    }
+                    default: {
+                        throw new UnknownApiError();
                     }
                 }
             }}

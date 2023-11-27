@@ -1,12 +1,24 @@
 .container {
     // TODO: This should be a part of nordstar.
     appearance: none;
-    padding: calc(var(--block-padding) / 2) var(--block-padding);
+    padding: calc(var(--block-padding) / 1.5) var(--block-padding);
     text-transform: uppercase;
-    font-weight: 700;
+    text-align: center;
+    font-weight: 800;
     color: var(--color-foreground);
     border-radius: 0;
-    border: 0.25rem solid var(--color-foreground);
+    border: calc(var(--block-border-width) * 2) solid var(--color-foreground);
+    user-select: none;
+    transition:
+        200ms ease-in-out background-color,
+        200ms ease-in-out border-color,
+        200ms ease-in-out color;
+
+    &:is(:active, :focus):not(:disabled) {
+        background-color: var(--color-foreground);
+        border-color: var(--color-foreground);
+        color: var(--color-background);
+    }
 
     &.loading {
         opacity: 0.5;

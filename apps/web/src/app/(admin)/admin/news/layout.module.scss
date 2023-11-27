@@ -4,7 +4,8 @@
         flex-direction: column;
         gap: var(--layout-section-padding);
         width: 100%;
-        padding-top: calc(var(--layout-section-spacing) * 6);
+        max-width: 100%;
+        padding-top: calc(var(--layout-section-spacing) * 2);
 
         h1 {
             margin: 0 0 var(--layout-section-spacing) 0;

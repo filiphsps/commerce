@@ -1,0 +1,41 @@
+.container {
+    .heading {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--block-padding) / 2);
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--block-padding) / 2);
+        width: 100%;
+        max-width: 100%;
+        margin-top: calc(var(--layout-section-spacing) * 2);
+
+        section {
+            margin: var(--block-padding) 0;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        p,
+        ul {
+            margin: 0 0 calc(var(--block-padding) / 2) 0;
+        }
+
+        img {
+            max-width: 100%;
+            margin: calc(var(--block-padding) / 2) 0;
+        }
+
+        & :is(:last-child) {
+            margin-bottom: 0;
+        }
+    }
+}

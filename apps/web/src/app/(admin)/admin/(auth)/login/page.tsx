@@ -1,9 +1,9 @@
 import Container from '#/components/container';
 import LoginButton from '#/components/login-button';
-import { Heading } from '@nordcom/nordstar';
+import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
-import styles from './page.module.scss';
 import { Suspense } from 'react';
+import styles from './page.module.scss';
 
 export type IndexAdminPageParams = {};
 
@@ -16,9 +16,14 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
         <Container className={`${styles.container}`}>
             <Heading level="h1">Login</Heading>
 
-            <Suspense fallback={<>Loading...</>}>
-                <LoginButton provider="github" />
-            </Suspense>
+            <Card className={styles.providers}>
+                <Suspense fallback={<>Loading...</>}>
+                    <LoginButton provider="github" />
+                </Suspense>
+                <Suspense fallback={<>Loading...</>}>
+                    <LoginButton provider="google" />
+                </Suspense>
+            </Card>
         </Container>
     );
 }
