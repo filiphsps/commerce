@@ -17,7 +17,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.renderWhitespace": "all",
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
+        "source.fixAll.eslint": true,
+        "source.fixAll.prettier": true,
         "source.organizeImports": true,
         "source.sortMembers": true
     },
@@ -57,6 +58,7 @@
     "git-graph.graph.colours": ["#ED1E79", "#EDD382", "#274690"],
     "cSpell.words": [
         "Albin",
+        "autofocus",
         "Bergsgatan",
         "Dahlqvist",
         "Deca",
@@ -78,7 +80,9 @@
         "Sahlin",
         "Sandström",
         "Siitam",
+        "slicemachine",
         "sweetsideofsweden",
+        "typecheck",
         "Västra",
         "webp"
     ],

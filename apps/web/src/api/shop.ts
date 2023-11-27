@@ -157,7 +157,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 };
 
 export const ShopApi = async ({ domain }: { domain: string }): Promise<Shop> => {
-    // TODO: This should be a cachable database query.
+    // TODO: This should be a cache-able database query.
     const shops = await ShopsApi();
     const shop =
         shops.find((shop) => shop.domains.primary === domain) ||

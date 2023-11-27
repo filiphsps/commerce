@@ -19,7 +19,7 @@ describe('components', () => {
             }
         }));
 
-        it('should render a link with the correct href', () => {
+        it('should render a link with the correct `href`', () => {
             const href = '/some/path';
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');
@@ -27,20 +27,21 @@ describe('components', () => {
             expect(link?.getAttribute('href')).toBe(`/en-US${href}`);
         });
 
-        it('should throw an error if href is not a string', () => {
+        it('should throw an error if `href` is not a string', () => {
             const href = { invalid: 'href' };
-            expect(() => render(<Link href={href as any} />)).toThrowErrorMatchingSnapshot();
+            expect(() => render(<Link href={href as any} />)).toThrowError();
         });
 
-        it('should add the locale to the href if it is not already present', () => {
+        it('should add the locale to the `href` if it is not already present', () => {
             const href = '/some/path';
             const locale: Locale = { locale: 'sv-SE', language: 'sv', country: 'SE' } as any;
             const { container } = render(<Link href={href} locale={locale} />);
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe(`/${locale.code}${href}`);
+            expect(link).toMatchSnapshot();
         });
 
-        it('should not add the locale to the href if it is already present', () => {
+        it('should not add the locale to the `href` if it is already present', () => {
             const href = '/sv-SE/some/path';
             const locale: Locale = { locale: 'sv-SE', language: 'sv', country: 'SE' } as any;
             const { container } = render(<Link href={href} locale={locale} />);
@@ -49,16 +50,28 @@ describe('components', () => {
             expect(link).toMatchSnapshot();
         });
 
-        it('should remove the current domain from the href', () => {
+        it('should remove the current domain from the `href`', () => {
             vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'example.com' } as any);
             window.location.host = 'example.com';
             const href = `https://example.com/some/path`;
-            const { container } = render(<Link href={href} />);
+            const { container } = render(
+                <Link
+                    shop={
+                        {
+                            domains: {
+                                primary: 'example.com'
+                            }
+                        } as any
+                    }
+                    href={href}
+                />
+            );
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe('/en-US/some/path');
+            expect(link).toMatchSnapshot();
         });
 
-        it('should remove double slashes from the href', () => {
+        it('should remove double slashes from the `href`', () => {
             const href = '/some//path';
             const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');
@@ -73,6 +86,14 @@ describe('components', () => {
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe(href);
             expect(link?.getAttribute('class')).toBe(className);
+        });
+
+        it('should handle `href` using `tel:`, `mailto:`, etc protocols', () => {
+            const href = 'mailto:hi@nordcom.io';
+            const { container } = render(<Link href={href} />);
+            const link = container.querySelector('a');
+            expect(link?.getAttribute('href')).toBe(href);
+            expect(link).toMatchSnapshot();
         });
     });
 });

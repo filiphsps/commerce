@@ -1,23 +1,47 @@
+import { UnreachableError } from '@/utils/errors';
 import type { NextURL } from 'next/dist/server/web/next-url';
 
-export const commonValidations = (url: NextURL): NextURL => {
+export const DOUBLE_SLASHES = /\/\//g;
+
+export const commonValidations = <T extends string | NextURL | URL>(url: T): T => {
+    let path: string;
+    if (typeof url === 'string') {
+        path = url;
+    } else {
+        path = url.pathname;
+    }
+
     // Remove `/admin/` and `/storefront/` paths.
-    url.pathname = url.pathname.replace(/\/(admin|storefront)\//, '/');
+    path = path.replace(/\/(admin|storefront)\//, '/');
 
     // Remove `x-default` if it's still there.
-    url.pathname = url.pathname.replaceAll('x-default/', '');
+    path = path.replaceAll('x-default/', '');
 
-    // Make sure we don't have any double slashes.
-    url.pathname = url.pathname.replaceAll(/\/\//g, '/');
+    // Make sure we don't have any double slashes, except for the ones
+    // in the protocol.
+    if (path.includes('://')) {
+        const chunks = path.split('://');
+        path = `${chunks[0]}://${chunks[1].replaceAll(DOUBLE_SLASHES, '/')}`;
+    } else {
+        path = path.replaceAll(DOUBLE_SLASHES, '/');
+    }
 
     // Make sure we end with a slash.
     if (
-        !url.pathname.endsWith('/') &&
-        !/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/.test(url.pathname) &&
-        !/\.(.*)$/.test(url.pathname)
+        !path.endsWith('/') &&
+        !/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/.test(path) &&
+        !/\.(.*)$/.test(path)
     ) {
-        url.pathname += '/';
+        path += '/';
     }
 
-    return url;
+    if (typeof url === 'string') {
+        return path as T;
+    } else {
+        url.pathname = path;
+        return url;
+    }
+
+    // eslint-disable-next-line no-unreachable
+    throw new UnreachableError();
 };

@@ -17,7 +17,7 @@
         "lint": "next lint",
         "prettier": "prettier src/**/*.* --check",
         "typecheck": "tsc -noEmit",
-        "test": "vitest run --coverage --reporter=basic",
+        "test": "vitest run --coverage",
         "slicemachine": "start-slicemachine",
         "watch:test": "vitest watch"
     },

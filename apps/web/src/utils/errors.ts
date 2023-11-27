@@ -148,7 +148,7 @@ export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
     return ApiError;
 };
 
-export type GenericErrorKind = 'GENERIC_UNKNOWN_ERROR' | 'GENERIC_TODO' | 'NOT_FOUND';
+export type GenericErrorKind = 'GENERIC_UNKNOWN_ERROR' | 'GENERIC_TODO' | 'NOT_FOUND' | 'UNREACHABLE' | 'INVALID_TYPE';
 export class GenericError extends Error<GenericErrorKind> {
     statusCode = 500;
     name = 'Unknown Error';
@@ -181,6 +181,16 @@ export class NotFoundError extends GenericError {
             this.cause = this.details.replace('resource', `resource "${requestedResource}"`);
         }
     }
+}
+export class UnreachableError extends GenericError {
+    name = 'Unreachable';
+    details = 'Supposedly unreachable code-path taken';
+    code = 'UNREACHABLE' as const;
+}
+export class TypeError extends GenericError {
+    name = 'TypeError';
+    details = 'Invalid type was passed to function';
+    code = 'INVALID_TYPE' as const;
 }
 
 /**

@@ -19,6 +19,7 @@
         "no-mixed-operators": "off",
         "no-unused-vars": "off",
         "no-useless-constructor": "off",
+        "no-unreachable": "error",
         "react-hooks/exhaustive-deps": "off",
         "react-hooks/rules-of-hooks": "off",
         "react/no-children-prop": "off",
