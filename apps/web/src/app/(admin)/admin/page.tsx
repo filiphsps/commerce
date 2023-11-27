@@ -1,7 +1,7 @@
 import Container from '#/components/container';
+import Header from '#/components/header';
 import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import styles from './page.module.scss';
 
 export type IndexAdminPageParams = {};
@@ -15,16 +15,7 @@ export const metadata: Metadata = {
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
         <Container className={`${styles.container}`}>
-            <header className={`${styles.header}`}>
-                <Image
-                    className={`${styles.logo}`}
-                    src="https://nordcom.io/logo.svg"
-                    alt="Nordcom Group Inc.'s Logo"
-                    height={75}
-                    width={150}
-                    priority
-                />
-            </header>
+            <Header />
 
             <div className={`${styles.heading}`}>
                 <Heading>TODO</Heading>

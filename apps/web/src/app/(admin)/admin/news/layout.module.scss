@@ -18,6 +18,10 @@
         p {
             margin: 0 0 var(--layout-section-spacing) 0;
         }
+        img {
+            max-width: 100%;
+            margin: 0 0 var(--layout-section-spacing) 0;
+        }
 
         & :is(:last-child) {
             margin-bottom: 0;

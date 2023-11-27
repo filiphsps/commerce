@@ -19,7 +19,8 @@ export default function LoginButton({ provider = 'github', className, ...props }
     useEffect(() => {
         const errorMessage = Array.isArray(error) ? error.pop() : error;
         console.error(errorMessage);
-        // TODO: Toast message.
+        // TODO: Proper toast message.
+        alert(errorMessage);
     }, [error]);
 
     let layout = <></>;
