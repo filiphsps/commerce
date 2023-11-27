@@ -3,6 +3,7 @@ import LoginButton from '#/components/login-button';
 import { Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import styles from './page.module.scss';
+import { Suspense } from 'react';
 
 export type IndexAdminPageParams = {};
 
@@ -15,7 +16,9 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
         <Container className={`${styles.container}`}>
             <Heading level="h1">Login</Heading>
 
-            <LoginButton provider="github" />
+            <Suspense fallback={<>Loading...</>}>
+                <LoginButton provider="github" />
+            </Suspense>
         </Container>
     );
 }
