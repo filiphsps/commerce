@@ -65,7 +65,7 @@ export async function generateViewport({
         const branding = getBrandingColors(shop.configuration.design);
 
         return {
-            themeColor: (branding?.primary?.background || store.accent.secondary) as string,
+            themeColor: (branding?.primary?.accent || store.accent.secondary) as string,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
@@ -167,28 +167,35 @@ export default async function RootLayout({
                             '--color-background': branding?.primary?.background,
                             '--color-foreground': branding?.primary?.foreground,
 
-                            // Legacy
+                            // TODO: Figure out how to deal with `color-block`.
+
+                            // Legacy.
                             '--accent-primary': store?.accent?.primary,
 
                             ...(branding?.secondary ? {
                                 '--color-accent-secondary': branding?.secondary?.accent,
                                 '--color-accent-secondary-text': branding?.secondary?.foreground,
 
-                                // Legacy
+                                // Legacy.
                                 '--accent-secondary': branding?.secondary?.accent
                             } : {
-                                // Fallback
+                                // Fallback.
                                 '--color-accent-secondary': branding?.primary?.accent,
                                 '--color-accent-secondary-text': branding?.primary?.foreground,
 
-                                // Legacy
+                                // Legacy.
                                 '--accent-secondary': branding?.primary?.accent
                             }),
                         } : {
+                            // Legacy code-path.
                             '--color-accent-primary': store?.accent?.primary,
+                            '--color-accent-primary-light': 'color-mix(in srgb, var(--color-accent-primary) 85%, var(--color-bright))',
+                            '--color-accent-primary-dark': 'color-mix(in srgb, var(--color-accent-primary) 65%, var(--color-dark))',
                             '--color-accent-secondary': store?.accent?.secondary,
+                            '--color-accent-secondary-light': 'color-mix(in srgb, var(--color-accent-secondary) 65%, var(--color-bright))',
+                            '--color-accent-secondary-dark': 'color-mix(in srgb, var(--color-accent-secondary) 95%, var(--color-dark))',
 
-                            // Legacy
+                            // Legacy.
                             '--accent-primary': store?.accent?.primary,
                             '--accent-secondary': store?.accent?.secondary
                         })
