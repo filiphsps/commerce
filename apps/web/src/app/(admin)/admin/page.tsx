@@ -8,7 +8,7 @@ export type IndexAdminPageParams = {};
 
 export const metadata: Metadata = {
     title: {
-        absolute: 'nordcom commerce — the headless commerce solution'
+        absolute: 'Nordcom Commerce — the Headless Commerce Solution'
     }
 };
 
