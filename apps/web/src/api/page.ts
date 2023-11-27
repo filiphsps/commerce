@@ -17,6 +17,10 @@ export const PagesApi = async ({
     client?: PrismicClient;
     exclude?: string[];
 }): Promise<PrismicDocument[]> => {
+    if (shop.configuration.content.type !== 'prismic') {
+        throw new NotFoundError();
+    }
+
     return new Promise(async (resolve, reject) => {
         const client = _client || createClient({ shop, locale });
 
@@ -25,7 +29,7 @@ export const PagesApi = async ({
                 lang: locale.code
             });
 
-            if (!pages) return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
+            if (!pages) return reject(new NotFoundError(`\`Pages\` for the locale \`${locale.code}\``));
 
             // TODO: Remove filter once we've migrated away from "special" pages
             const filtered = pages.filter(({ uid }) => !exclude.includes(uid!));
@@ -36,7 +40,7 @@ export const PagesApi = async ({
                     return resolve(await PagesApi({ shop, locale: Locale.default, client, exclude })); // Try again with default locale.
                 }
 
-                return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
+                return reject(new NotFoundError(`\`Pages\` for the locale \`${locale.code}\``));
             }
 
             console.error(error);
@@ -77,6 +81,10 @@ const cachablePageApi = cache(
     }): Promise<{
         page: PageData<T> | null;
     }> => {
+        if (shop.configuration.content.type !== 'prismic') {
+            throw new NotFoundError();
+        }
+
         return new Promise(async (resolve, reject) => {
             const client = _client || createClient({ shop, locale });
 
