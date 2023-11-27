@@ -19,6 +19,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             case 'POST': {
                 // TODO: Validate API type and authenticity.
                 revalidateTag(`shopify.${shop.id}`);
+                console.log(`Revalidated shopify for shop with id ${shop.id}`);
 
                 const data = await req.json();
                 console.warn(JSON.stringify({ ...data }, null, 4));
@@ -39,6 +40,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             }
             case 'GET': {
                 revalidateTag(`prismic.${shop.id}`);
+                console.log(`Revalidated prismic for shop with id ${shop.id}`);
 
                 return NextResponse.json(
                     {

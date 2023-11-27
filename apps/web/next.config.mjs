@@ -79,13 +79,7 @@ const config = {
         formats: ['image/webp', 'image/avif']
     },
     compiler: {
-        styledComponents: true,
-        ...((process.env.NODE_ENV === 'production' && {
-            removeConsole: {
-                exclude: ['warn', 'error']
-            }
-        }) ||
-            {})
+        styledComponents: true
     },
     eslint: {
         ignoreDuringBuilds: true

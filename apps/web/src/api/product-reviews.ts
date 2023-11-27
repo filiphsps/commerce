@@ -58,6 +58,7 @@ export const ProductReviewsApi = async ({
         .filter((edge) => edge.node.fields.find((field) => field.key === 'product' && field.value === product.id))
         .map(({ node: { fields, ...node } }) => ({
             ...node,
+            // eslint-disable-next-line unused-imports/no-unused-vars
             fields: fields.map(({ __typename, ...field }) => field)
         }));
 
