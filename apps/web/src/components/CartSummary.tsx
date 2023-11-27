@@ -329,14 +329,12 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                         ) : null}
                     </div>
 
-                    {!loading && ((totalQuantity || 0) <= 0 || !lines) ? (
-                        <CheckoutButton disabled={(totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
-                            <Label>{t('continue-to-checkout')}</Label>
-                            <CheckoutButtonIcon>
-                                <FiChevronRight />
-                            </CheckoutButtonIcon>
-                        </CheckoutButton>
-                    ) : null}
+                    <CheckoutButton disabled={loading || (totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
+                        <Label>{t('continue-to-checkout')}</Label>
+                        <CheckoutButtonIcon>
+                            <FiChevronRight />
+                        </CheckoutButtonIcon>
+                    </CheckoutButton>
 
                     <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
                         <Notice>

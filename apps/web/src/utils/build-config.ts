@@ -17,6 +17,7 @@ export const BuildConfig = {
             .replace('.cdn.prismic.io/api/v2', '')
     },
 
+    /** @deprecated */
     i18n: {
         locales: process.env.STORE_LOCALES?.split?.(',') || ['en-US'],
         default: process.env.STORE_DEFAULT_LOCALE || 'en-US',
