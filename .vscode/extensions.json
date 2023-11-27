@@ -10,6 +10,7 @@
         "esbenp.prettier-vscode",
         "medo64.render-crlf",
         "styled-components.vscode-styled-components",
-        "wakatime.vscode-wakatime"
+        "wakatime.vscode-wakatime",
+        "prisma.prisma"
     ]
 }

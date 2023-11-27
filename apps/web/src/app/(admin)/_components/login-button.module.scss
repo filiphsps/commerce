@@ -1,0 +1,10 @@
+.container {
+    // TODO: This should be a part of nordstar.
+
+    appearance: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-foreground);
+    border-radius: 0;
+    border: 0.25rem solid var(--color-foreground);
+}
