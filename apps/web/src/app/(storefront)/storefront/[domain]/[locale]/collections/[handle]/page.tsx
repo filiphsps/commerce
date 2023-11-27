@@ -1,6 +1,5 @@
 import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { Locale, NextLocaleToLocale } from '@/utils/locale';
-
+import { Locale } from '@/utils/locale';
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
@@ -38,17 +37,22 @@ export async function generateStaticParams() {
 
                         return await Promise.all(
                             locales.map(async (locale) => {
-                                const api = await StorefrontApiClient({ shop, locale });
-                                const collections = await CollectionsApi({ client: api });
-
-                                return collections
-                                    .filter(({ hasProducts }) => hasProducts)
-                                    .map(({ handle }) => ({
-                                        domain: shop.domains.primary,
-                                        locale: locale.code,
-                                        handle
-                                    }));
+                                try {
+                                    const api = await StorefrontApiClient({ shop, locale });
+                                    const collections = await CollectionsApi({ client: api });
+    
+                                    return collections
+                                        .filter(({ hasProducts }) => hasProducts)
+                                        .map(({ handle }) => ({
+                                            domain: shop.domains.primary,
+                                            locale: locale.code,
+                                            handle
+                                        }));
+                                } catch {
+                                    return null;
+                                }
                             })
+                            .filter((_) => _)
                         );
                     } catch {
                         return null;
@@ -87,13 +91,14 @@ export async function generateMetadata({
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = store.i18n?.locales || [Locale.default];
 
+        const title = page?.meta_title || collection.seo?.title || collection.title;
         const description: string | undefined =
             (page?.meta_description && asText(page.meta_description)) ||
             collection.seo.description ||
             collection.description?.substring(0, 150) ||
             undefined;
         return {
-            title: page?.meta_title || collection.title,
+            title,
             description,
             alternates: {
                 canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`,
@@ -108,7 +113,7 @@ export async function generateMetadata({
             openGraph: {
                 url: `/collections/${handle}/`,
                 type: 'website',
-                title: page?.meta_title || collection.title,
+                title,
                 description,
                 siteName: store?.name,
                 locale: locale.code,
@@ -144,7 +149,7 @@ export default async function CollectionPage({
         const shop = await ShopApi({ domain });
         if (!isValidHandle(handle)) return notFound();
 
-        const locale = NextLocaleToLocale(localeData);
+        const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
         const i18n = await getDictionary(locale);
@@ -161,15 +166,23 @@ export default async function CollectionPage({
         return (
             <Page>
                 <PageContent primary>
-                    {!page || page.enable_header ? (
+                    {!page || page.enable_header === undefined || page.enable_header ? (
                         <div>
                             <Heading title={collection.title} subtitle={null} />
                         </div>
                     ) : null}
+
                     {!page || page.enable_collection === undefined || page.enable_collection ? (
                         <>
                             <Suspense fallback={<CollectionBlockSkeleton />}>
-                                <CollectionBlock data={collection as any} store={store} locale={locale} i18n={i18n} />
+                                <CollectionBlock
+                                    data={collection as any}
+                                    store={store}
+                                    locale={locale}
+                                    i18n={i18n}
+                                    // TODO: Pagination.
+                                    limit={250}
+                                />
                             </Suspense>
                         </>
                     ) : null}
