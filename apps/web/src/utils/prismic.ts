@@ -80,6 +80,8 @@ export const createClient = ({
     ...config
 }: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
+    // TODO: Remove `repositoryName` variable.
+    let name: string = repositoryName;
 
     // TODO: These cases should be dealt with before even arriving here.
     if (shop.configuration.content.type === 'dummy') {
@@ -87,10 +89,13 @@ export const createClient = ({
     } else if (shop.configuration.content.type !== 'prismic') {
         // TODO: Deal with the `shopify` content provider.
         throw new TodoError();
+    } else {
+        // Work-around since `content.id` wouldn't exist on a `DummyContentProvider`.
+        name = shop.configuration.content?.id || repositoryName;
     }
 
     // TODO: Remove `repositoryName` variable.
-    const client = prismicCreateClient(shop.configuration.content.id || repositoryName, {
+    const client = prismicCreateClient(name, {
         routes,
         accessToken: accessToken || undefined,
         fetchOptions: {
@@ -114,6 +119,8 @@ export const createClient = ({
 export const linkResolver: LinkResolverFunction<any> = (doc) => {
     const { code: locale } = Locale.from(doc.lang)!; // FIXME: handle invalid locales.
 
+    // TODO: Deal with tenants that don't use locales in their paths.
+
     if (doc.type === 'custom_page') {
         if (doc.uid === 'homepage') return `/${locale}/`;
         else if (doc.uid === 'countries') return `/${locale}/countries/`;
@@ -127,7 +134,7 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
     } else if (doc.type === 'collection_page') {
         return `/${locale}/collection/${doc.uid}/`;
     } else if (doc.type === 'article_page') {
-        return `/${locale}/collection/${doc.uid}/`;
+        return `/${locale}/blog/${doc.uid}/`;
     }
 
     return null;
