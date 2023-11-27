@@ -4,7 +4,7 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
-    "buildCommand": "turbo build",
+    "buildCommand": "turbo db && turbo build",
     "devCommand": "turbo dev",
     "outputDirectory": "apps/web/.next",
     "github": {
@@ -13,7 +13,7 @@
     },
     "crons": [
         {
-            "path": "/api/heartbeat",
+            "path": "/admin/api/heartbeat",
             "schedule": "*/15 * * * *"
         }
     ]
