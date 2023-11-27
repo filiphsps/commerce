@@ -15,7 +15,7 @@
         "jsx-a11y/anchor-is-valid": "off",
         "jsx-a11y/html-has-lang": "off",
         "jsx-a11y/no-autofocus": "off",
-        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-console": ["error", { "allow": ["log", "warn", "error"] }], // TODO: Proper logger.
         "no-mixed-operators": "off",
         "no-unused-vars": "off",
         "no-useless-constructor": "off",
@@ -24,7 +24,7 @@
         "react/no-children-prop": "off",
         "react/no-find-dom-node": "off",
         "react/no-string-refs": "off",
-        "react/prop-types": 1,
+        "react/prop-types": "error",
         "semi": ["error", "always"],
         "standard/computed-property-even-spacing": "off",
         "unused-imports/no-unused-imports": "error",

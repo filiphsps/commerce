@@ -54,6 +54,7 @@ export type PageDocument<T> = T extends 'collection_page'
 export type PageData<T> = PageDocument<T>['data'];
 
 export type Preloadable<T = unknown> = T & {
+    // eslint-disable-next-line unused-imports/no-unused-vars
     preload: T extends (...args: infer A) => any ? (...args: A) => void : never;
 };
 

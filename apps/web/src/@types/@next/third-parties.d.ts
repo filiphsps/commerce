@@ -16,6 +16,8 @@ declare module '@next/third-parties/google' {
         preview?: string;
     };
 
+    // eslint-disable-next-line unused-imports/no-unused-vars
     declare const sendGTMEvent: (event: Object) => void;
+    // eslint-disable-next-line unused-imports/no-unused-vars
     declare const GoogleTagManager: (props: GTMParams) => any;
 }
