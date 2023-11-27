@@ -164,6 +164,7 @@ export class GenericError extends Error<GenericErrorKind> {
     }
 }
 export class TodoError extends GenericError {
+    statusCode = 404; // TODO: This ain't really correct.
     name = 'TODO';
     details = 'This feature is not implemented yet';
     code = 'GENERIC_TODO' as const;

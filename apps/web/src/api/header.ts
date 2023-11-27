@@ -1,7 +1,7 @@
 import type { Shop } from '@/api/shop';
 import type { HeaderModel } from '@/models/HeaderModel';
 import { ApiError, NotFoundError } from '@/utils/errors';
-import { DefaultLocale, Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
 
@@ -25,7 +25,7 @@ export const HeaderApi = async ({
         } catch (error: unknown) {
             if (ApiError.isNotFound(error)) {
                 if (!Locale.isDefault(locale)) {
-                    return resolve(await HeaderApi({ shop, locale: DefaultLocale(), client })); // Try again with default locale
+                    return resolve(await HeaderApi({ shop, locale: Locale.default, client })); // Try again with default locale
                 }
 
                 return reject(new NotFoundError(`"Header" with the locale "${locale.code}"`));

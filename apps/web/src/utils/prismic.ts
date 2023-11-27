@@ -6,11 +6,15 @@ import { Locale } from '@/utils/locale';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
+import { TodoError } from './errors';
 
 /**
  * The project's Prismic repository name.
+ *
+ * @deprecated
  */
 export const repositoryName = BuildConfig.prismic.name;
+/** @deprecated */
 export const accessToken = process.env.PRISMIC_TOKEN;
 
 /**
@@ -77,7 +81,10 @@ export const createClient = ({
 }: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
 
-    const client = prismicCreateClient(repositoryName, {
+    // TODO: Deal with `dummy` content provider.
+    if (shop.configuration.content.type !== 'prismic') throw new TodoError();
+
+    const client = prismicCreateClient(shop.configuration.content.id, {
         routes,
         accessToken: accessToken || undefined,
         fetchOptions: {

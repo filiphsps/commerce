@@ -29,9 +29,9 @@ model Account {
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
-    accountId    String
     expires      DateTime
     account      Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    accountId    String
 
     @@index([accountId])
 }

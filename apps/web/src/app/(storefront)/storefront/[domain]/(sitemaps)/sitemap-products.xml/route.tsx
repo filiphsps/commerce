@@ -2,7 +2,7 @@ import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
-import { DefaultLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
@@ -12,7 +12,7 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 /* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi({ domain });
-    const locale = DefaultLocale();
+    const locale = Locale.default;
     const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
     const api = await StorefrontApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });

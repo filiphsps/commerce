@@ -18,6 +18,22 @@ export type DummyCommerceProvider = {
 };
 export type CommerceProvider = ShopifyCommerceProvider | DummyCommerceProvider;
 
+export type ShopifyContentProvider = {
+    type: 'shopify';
+};
+export type PrismicContentProvider = {
+    type: 'prismic';
+    id: string;
+    repository: string;
+    authentication: {
+        token: string | null;
+    };
+};
+export type DummyContentProvider = {
+    type: 'dummy';
+};
+export type ContentProvider = ShopifyContentProvider | PrismicContentProvider | DummyContentProvider;
+
 type Color = `#${string}` | string;
 
 type BrandColorType = 'primary' | 'secondary' | 'background';
@@ -47,6 +63,7 @@ export type Shop = {
     };
     configuration: {
         commerce: CommerceProvider;
+        content: ContentProvider;
         design?: {
             branding?: {
                 icons?: {
@@ -88,6 +105,16 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         publicToken: process.env.SHOPIFY_TOKEN!
                     }
                 },
+                content: {
+                    type: 'prismic' as const,
+                    id: !!process.env.PRISMIC_REPO
+                        ? process.env.PRISMIC_REPO.split('://')[1].split('.')[0]!
+                        : 'candy-by-sweden',
+                    repository: process.env.prismic_repository || 'https://candy-by-sweden.cdn.prismic.io/api/v2',
+                    authentication: {
+                        token: null
+                    }
+                },
                 thirdParty: {
                     googleTagManager: process.env.GTM
                 }
@@ -100,6 +127,10 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                 alternatives: ['staging.demo.nordcom.io']
             },
             configuration: {
+                commerce: {
+                    type: 'dummy' as const,
+                    domain: 'mock.shop' as const
+                },
                 design: {
                     branding: {
                         colors: [
@@ -122,8 +153,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                             favicon: {
                                 src: 'https://nordcom.io/favicon.png',
                                 alt: 'Nordcom Commerce',
-                                width: 500,
-                                height: 250
+                                width: 512,
+                                height: 512
                             }
                         },
                         logos: {
@@ -144,9 +175,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         }
                     }
                 },
-                commerce: {
-                    type: 'dummy' as const,
-                    domain: 'mock.shop' as const
+                content: {
+                    type: 'dummy' as const
                 },
                 thirdParty: {
                     googleTagManager: 'GTM-N6TLG8MX'

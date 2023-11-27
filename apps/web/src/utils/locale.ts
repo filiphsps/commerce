@@ -61,7 +61,7 @@ export class Locale implements SerializableLocale {
      */
     static get current(): Readonly<SerializableLocale> {
         if (typeof window === 'undefined') {
-            console.warn('The currently used locale is unavailable, returning the default locale instead.');
+            // TODO: This should be based on the current shop.
             return Locale.default;
         }
 
@@ -185,30 +185,6 @@ export const NextLocaleToLocale = (code: string): Locale | null => {
     }
 
     return Locale.from(code);
-};
-
-/**
- * Returns the default locale.
- *
- * @deprecated Use {@link Locale.default} instead.
- *
- * @returns {Locale} `Locale` object.
- */
-export const DefaultLocale = (): Locale => {
-    return Locale.default;
-};
-
-/**
- * Check if a locale is the default locale.
- *
- * @deprecated Use {@link Locale.isDefault} instead.
- * @todo TODO: `defaultLocale` should be tenant configurable.
- *
- * @param {Locale} locale - The locale to check.
- * @returns {boolean} `true` if the locale is the default locale, otherwise `false`.
- */
-export const isDefaultLocale = (locale: Locale): boolean => {
-    return Locale.isDefault(locale);
 };
 
 export type DeepKeys<T> = T extends object

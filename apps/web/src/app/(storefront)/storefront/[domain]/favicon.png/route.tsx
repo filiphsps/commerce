@@ -43,7 +43,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         let src!: string;
 
         const shop = await ShopApi({ domain });
-        if (shop.configuration.design?.branding?.logos?.alternatives?.square) {
+        if (shop?.configuration?.design?.branding?.logos?.alternatives?.square?.src) {
             src = shop.configuration.design.branding.logos.alternatives.square.src;
         } else {
             const locale = Locale.default;
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
             }
         }
 
-        // See https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image
+        /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
         const image = new ImageResponse(
             (
                 // eslint-disable-next-line @next/next/no-img-element

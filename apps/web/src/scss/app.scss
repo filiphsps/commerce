@@ -167,6 +167,7 @@ img {
 }
 
 input[type='number'] {
+    appearance: textfield;
     -moz-appearance: textfield !important;
 
     &::-webkit-inner-spin-button {

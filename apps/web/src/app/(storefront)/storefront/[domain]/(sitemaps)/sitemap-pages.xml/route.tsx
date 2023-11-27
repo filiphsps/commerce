@@ -1,8 +1,8 @@
 import { PagesApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient, shopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
-import { DefaultLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
 import type { NextRequest } from 'next/server';
@@ -11,9 +11,9 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 /* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi({ domain });
-    const locale = DefaultLocale();
+    const locale = Locale.default;
     const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
-    const api = await StorefrontApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });
 
     const pages = (await PagesApi({ shop, locale, exclude: [] })).map(({ url, ...page }) => ({
@@ -23,18 +23,18 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     return getServerSideSitemap(
         locales
-            .map(({ locale }) => {
+            .map(({ code }) => {
                 return pages.map(
                     (page) =>
                         ({
-                            loc: `https://${shop.domains.primary}/${locale}/${page.url}`, // Trailing slash is already added.
+                            loc: `https://${shop.domains.primary}/${code}/${page.url}`, // Trailing slash is already added.
                             changefreq: 'monthly',
                             lastmod: page.last_publication_date,
                             alternateRefs: locales
-                                .filter(({ locale: code }) => code !== locale)
-                                .map(({ locale }) => ({
-                                    href: `https://${shop.domains.primary}/${locale}/${page.url}`,
-                                    hreflang: locale,
+                                .filter(({ code: c }) => code !== c)
+                                .map(({ code }) => ({
+                                    href: `https://${shop.domains.primary}/${code}/${page.url}`,
+                                    hreflang: code,
                                     hrefIsAbsolute: true
                                 })),
                             //priority: 0.9,

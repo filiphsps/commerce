@@ -21,6 +21,7 @@
         "prettier": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run prettier",
         "typecheck": "NODE_OPTIONS=\"--no-deprecation\" turbo run typecheck",
         "test": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run test",
+        "db": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run db",
         "slicemachine": "NODE_OPTIONS=\"--no-deprecation\" turbo run slicemachine"
     },
     "author": {

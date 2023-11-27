@@ -256,7 +256,7 @@ export const _mockShopApi = ({ id }: Shop): StoreModel => ({
 
     logos: {
         primary: {
-            src: 'https://nordcom.io/logo.svg'
+            src: 'https://nordcom.io/logo-light.svg'
         }
     },
 
