@@ -1,10 +1,14 @@
 .container {
     // TODO: This should be a part of nordstar.
-
     appearance: none;
+    padding: calc(var(--block-padding) / 2) var(--block-padding);
     text-transform: uppercase;
     font-weight: 700;
     color: var(--color-foreground);
     border-radius: 0;
     border: 0.25rem solid var(--color-foreground);
+
+    &.loading {
+        opacity: 0.5;
+    }
 }

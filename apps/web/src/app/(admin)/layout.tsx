@@ -2,7 +2,7 @@ import '#/styles/app.scss';
 
 import type { Metadata, Viewport } from 'next';
 
-import { NordstarProvider } from '@nordcom/nordstar';
+import { Providers } from '#/components/providers';
 import { GeistMono } from 'geist/font/mono';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
@@ -49,7 +49,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang="en">
             <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
-                <NordstarProvider>{children}</NordstarProvider>
+                <Providers>{children}</Providers>
             </body>
         </html>
     );

@@ -8,29 +8,53 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model UserEmail {
-    id     String @id @default(cuid())
-    email  String @unique
-    User   User   @relation(fields: [userId], references: [id])
-    userId String
+model AccountEmail {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    account   Account? @relation(fields: [accountId], references: [id])
+    accountId String?
 }
 
-model User {
-    id          String      @id @default(cuid())
+model Account {
+    id          String             @id @default(cuid())
     name        String?
     gh_username String?
-    emails      UserEmail[]
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
+    emails      AccountEmail[]
+    createdAt   DateTime           @default(now())
+    updatedAt   DateTime           @updatedAt
     sessions    Session[]
+    shops       ShopCollaborator[]
 }
 
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
-    userId       String
+    accountId    String
     expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    account      Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+    @@index([accountId])
+}
+
+model ShopCollaborator {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shop      Shop     @relation(fields: [shopId], references: [id])
+    shopId    String
+    account   Account? @relation(fields: [accountId], references: [id])
+    accountId String?
+
+    @@index([shopId])
+    @@index([accountId])
+}
+
+model Shop {
+    id               String             @id
+    name             String
+    domain           String             @unique
+    alternateDomains String[]           @unique @default([])
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    collaborators    ShopCollaborator[]
 }

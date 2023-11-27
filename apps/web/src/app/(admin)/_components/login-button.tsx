@@ -5,6 +5,7 @@ import type { AuthProvider } from '#/utils/auth';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, type HTMLProps } from 'react';
+import { toast } from 'sonner';
 
 export type LoginButtonProps = {
     provider?: AuthProvider;
@@ -18,9 +19,10 @@ export default function LoginButton({ provider = 'github', className, ...props }
 
     useEffect(() => {
         const errorMessage = Array.isArray(error) ? error.pop() : error;
+        if (!errorMessage) return;
+
         console.error(errorMessage);
-        // TODO: Proper toast message.
-        alert(errorMessage);
+        toast.error(errorMessage);
     }, [error]);
 
     let layout = <></>;
@@ -44,15 +46,9 @@ export default function LoginButton({ provider = 'github', className, ...props }
             }}
             type="button"
             disabled={loading}
-            className={`${styles.container} ${className || ''}`}
+            className={`${styles.container} ${loading ? styles.loading : ''} ${className || ''}`}
         >
-            {!loading ? (
-                layout
-            ) : (
-                <>
-                    <p>Loading...</p>
-                </>
-            )}
+            {!loading ? layout : <p>Loading...</p>}
         </button>
     );
 }
