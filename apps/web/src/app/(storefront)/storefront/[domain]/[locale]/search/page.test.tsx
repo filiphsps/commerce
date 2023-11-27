@@ -41,7 +41,8 @@ describe('app', () => {
         vi.mock('next/navigation', () => ({
             notFound: vi.fn().mockReturnValue({}),
             useRouter: vi.fn().mockReturnValue({}),
-            useSearchParams: vi.fn().mockReturnValue({ get: () => '' })
+            useSearchParams: vi.fn().mockReturnValue({ get: () => '' }),
+            usePathname: vi.fn().mockReturnValue('')
         }));
         vi.mock('@shopify/hydrogen-react', async () => {
             return {

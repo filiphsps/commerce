@@ -8,6 +8,7 @@
             "outputs": ["**/.next/**", "!**/.next/cache/**", "!**/coverage/**", "!**/*.md", "!**/*.yml"]
         },
         "lint": { "cache": false },
+        "prettier": { "cache": false },
         "test": { "cache": false, "outputs": ["**/coverage/**"] },
         "typecheck": { "cache": false },
         "dev": {
