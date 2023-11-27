@@ -1,5 +1,6 @@
 import { getErrorFromCode } from '@/utils/errors';
 import { Card, Heading } from '@nordcom/nordstar';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import styles from './page.module.scss';
 
@@ -18,42 +19,75 @@ export default async function DocsErrorsPage({ params: { code } }: { params: Doc
     return (
         <article className={`${styles.container}`}>
             <div className={`${styles.heading}`}>
-                <Heading>{error.name}</Heading>
+                <Heading level="h3" as="div">
+                    {error.statusCode}:
+                </Heading>
+                <Heading level="h1">{error.details}</Heading>
                 <Heading level="h2">
-                    {error.statusCode}: <code>{error.code}</code>
+                    <code>{error.code}</code>
                 </Heading>
             </div>
 
-            <Card className={`${styles.content}`}>
-                <Heading level="h4" as="h3">
-                    Details
-                </Heading>
-                <div className={styles.section}>
-                    <p>{error.details}.</p>
-                </div>
+            <div className={`${styles.content}`}>
+                <Card as="section" className={styles.section}>
+                    <Heading id="name" level="h4" as="h3">
+                        Error Class Name
+                    </Heading>
+                    <p>{error.name}.</p>
+                </Card>
 
-                <Heading level="h4" as="h3">
-                    Causes
-                </Heading>
-                <div className={styles.section}>
-                    <p>TODO: Add a list of causes.</p>
+                <Card as="section" className={styles.section}>
+                    <Heading id="causes" level="h4" as="h3">
+                        Possible Causes
+                    </Heading>
+
+                    <p>
+                        <b>TODO:</b> Add a list of causes.
+                    </p>
+
                     <ul>
                         <li>A possible cause.</li>
                         <li>Another way to trigger it.</li>
                         <li>And the last one.</li>
                     </ul>
-                    <p>Finish off with a paragraph or even just a short text.</p>
-                </div>
 
-                <Heading level="h4" as="h3">
-                    Code
-                </Heading>
-                <div className={styles.section}>
+                    <p>Finish off with a paragraph or even just a short text.</p>
+                </Card>
+
+                <Card as="section" className={styles.section}>
+                    <Heading id="documentation" level="h4" as="h3">
+                        Documentation
+                    </Heading>
                     <p>
-                        <code>new {ErrorKind.name}();</code>
+                        <b>TODO:</b> Load the documentation from some markdown or similar format file here.
                     </p>
-                </div>
-            </Card>
+                    <p>Maybe better yet, load it from an open source repository.</p>
+                </Card>
+
+                <Card as="section" className={styles.section}>
+                    <Heading id="code" level="h4" as="h3">
+                        Code
+                    </Heading>
+                    <p>
+                        <code data-language="typescript">new {error.name}();</code>
+                    </p>
+                </Card>
+
+                <Card as="section" className={styles.section}>
+                    <Heading id="documentation" level="h4" as="h3">
+                        Related Articles
+                    </Heading>
+
+                    <ul>
+                        <li>
+                            <Link href="#">An article</Link>
+                        </li>
+                        <li>
+                            <Link href="#">Yet another one</Link>
+                        </li>
+                    </ul>
+                </Card>
+            </div>
         </article>
     );
 }

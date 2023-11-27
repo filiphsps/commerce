@@ -17,7 +17,7 @@ export default async function DocsLayout({ children }: { children: ReactNode }) 
         <Container className={`${styles.container}`}>
             <Header />
 
-            <div className={`${styles.content}`}>{children}</div>
+            <main className={`${styles.content}`}>{children}</main>
         </Container>
     );
 }

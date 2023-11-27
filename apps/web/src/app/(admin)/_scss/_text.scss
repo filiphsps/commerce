@@ -4,16 +4,14 @@
 }
 
 h1 {
-    font-size: 4.25rem;
-    font-weight: 800;
-    line-height: 0.9;
     text-transform: uppercase;
     hyphens: auto;
     max-width: 100%;
     hyphens: auto;
 
-    @media (min-width: 950px) {
-        font-size: 3rem;
+    code {
+        font-weight: 500;
+        line-height: 1.1;
     }
 
     &:after {
@@ -72,12 +70,11 @@ strong {
 }
 
 code {
-    padding: 0.075rem 0;
-    border-radius: 0.25rem;
+    border-radius: calc(var(--block-border-radius) / 2);
     color: var(--color-accent-primary);
     font-family: var(--font-geist-mono);
-    font-weight: inherit;
-    font-size: 0.9em;
+    font-weight: 400;
+    font-size: inherit;
     line-height: inherit;
     background-color: #82828226;
 
