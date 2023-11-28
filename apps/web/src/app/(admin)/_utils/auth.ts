@@ -5,7 +5,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 
-export type AuthProvider = 'github' | 'google';
+export type AuthProvider = 'github';
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 

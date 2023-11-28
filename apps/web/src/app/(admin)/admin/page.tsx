@@ -34,7 +34,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                             View a demo
                         </Heading>
 
-                        <Button as={Link} href="">
+                        <Button as={Link} href="https://demo.nordcom.io/" target="_blank">
                             Demo Storefront
                         </Button>
                     </Card>
@@ -43,7 +43,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                             See it in action
                         </Heading>
 
-                        <Button as={Link} href="">
+                        <Button as={Link} href="https://www.sweetsideofsweden.com/" target="_blank">
                             Sweet Side of Sweden
                         </Button>
                     </Card>

@@ -32,10 +32,6 @@ export default function LoginButton({ provider = 'github', className, ...props }
             layout = <p>Login with GitHub</p>;
             break;
         }
-        case 'google': {
-            layout = <p>Login with Google</p>;
-            break;
-        }
         default: {
             throw new UnknownApiError();
         }
@@ -49,11 +45,6 @@ export default function LoginButton({ provider = 'github', className, ...props }
                     case 'github': {
                         setLoading(true);
                         signIn('github');
-                        break;
-                    }
-                    case 'google': {
-                        setLoading(true);
-                        signIn('google');
                         break;
                     }
                     default: {

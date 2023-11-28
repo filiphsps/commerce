@@ -19,9 +19,6 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                 <Suspense fallback={<>Loading...</>}>
                     <LoginButton provider="github" />
                 </Suspense>
-                <Suspense fallback={<>Loading...</>}>
-                    <LoginButton provider="google" />
-                </Suspense>
             </Card>
         </section>
     );
