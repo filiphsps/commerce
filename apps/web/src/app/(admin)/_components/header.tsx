@@ -1,11 +1,14 @@
 import { Button } from '#/components/button';
 import styles from '#/components/header.module.scss';
+import { getSession } from '#/utils/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export default function Header({ className, ...props }: HeaderProps) {
+export default async function Header({ className, ...props }: HeaderProps) {
+    const session = await getSession();
+
     return (
         <header {...props} className={`${styles.container} ${className || ''}`}>
             <div className={styles.content}>
@@ -28,9 +31,15 @@ export default function Header({ className, ...props }: HeaderProps) {
                         <Link href="/docs/">Documentation</Link>
                     </div>
 
-                    <Button as={Link} href="/login/" className={styles.button}>
-                        Login
-                    </Button>
+                    {!session ? (
+                        <Button as={Link} href="/login/" className={styles.button}>
+                            Login
+                        </Button>
+                    ) : (
+                        <Button as={Link} href="/shop/" className={styles.button}>
+                            Dashboard
+                        </Button>
+                    )}
                 </nav>
             </div>
         </header>

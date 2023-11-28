@@ -41,6 +41,11 @@ export default function LoginButton({ provider = 'github', className, ...props }
         <button
             {...props}
             onClick={() => {
+                if (loading) {
+                    toast.error('Please wait for the current request to finish.');
+                    return;
+                }
+
                 switch (provider) {
                     case 'github': {
                         setLoading(true);

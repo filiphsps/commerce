@@ -1,6 +1,6 @@
 ---
 title: 'Progress Report #1 - November 2023'
-description: 'Getting closer to the `v2.0`-release.'
+description: 'Getting closer to the v2.0-release of Sweet Side of Sweden while also making steady progress towards the multi-tenancy release of the storefront'
 date: 2023-11-11
 author: 'Filiph Siitam Sandström <filiph@nordcom.io>'
 handle: '@filiphsandstrom'

@@ -1,6 +1,6 @@
 ---
 title: 'Hello World from Nordcom Group Inc'
-description: 'Exciting things are about to happen'
+description: 'This is just a test news post to validate the dynamic markdoc integration. However, exciting things are about to happen here, keep an eye out for more news'
 date: 2023-11-27
 author: 'Filiph Siitam Sandström <filiph@nordcom.io>'
 handle: '@filiphsandstrom'

@@ -1,6 +1,7 @@
 import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getArticles } from './[year]/[month]/[slug]/articles';
 import styles from './page.module.scss';
 
 export const metadata: Metadata = {
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 
 export type NewsPageParams = {};
 export default async function DocsPage({ params: {} }: { params: NewsPageParams }) {
+    const articles = await getArticles();
+
     return (
         <article className={`${styles.container}`}>
             <div className={`${styles.heading}`}>
@@ -18,15 +21,20 @@ export default async function DocsPage({ params: {} }: { params: NewsPageParams 
             </div>
 
             <article className={styles.content}>
-                <Card as={Link} href={`/news/2023/11/hello-world`} className={styles.section} draggable={false}>
-                    <Heading level="h4" as="h3">
-                        Hello World
-                    </Heading>
-                    <p>
-                        Just a temporary news post to test the layout. This will be replaced with a real news post once
-                        we&apos;re ready to go live.
-                    </p>
-                </Card>
+                {articles.map(({ year, month, slug, meta: { title, description, date } }) => (
+                    <Card
+                        key={`/${year}/${month}/${slug}`}
+                        as={Link}
+                        href={`/news/${year}/${month}/${slug}`}
+                        className={styles.section}
+                        draggable={false}
+                    >
+                        <Heading level="h4" as="h3">
+                            {title} - {date.toLocaleDateString('en-US')}
+                        </Heading>
+                        <p>{description}.</p>
+                    </Card>
+                ))}
             </article>
         </article>
     );
