@@ -14,6 +14,9 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
 
     try {
         const shop = await ShopApi({ domain });
+        //TODO: Do this in the correct place.
+        revalidateTag(`shopify`);
+        revalidateTag('prismic');
 
         switch (req.method) {
             case 'POST': {
@@ -39,6 +42,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
                 );
             }
             case 'GET': {
+                // FIXME: This is incorrect, prismic also uses POST.
                 revalidateTag(`prismic.${shop.id}`);
                 console.log(`Revalidated prismic for shop with id ${shop.id}`);
 

@@ -1,6 +1,6 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi, ApiOptions, Identifiable, Nullable } from '@/utils/abstract-api';
-import { cache, cleanShopifyHtml } from '@/utils/abstract-api';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@/utils/errors';
 import type {
     CollectionEdge,
@@ -101,7 +101,7 @@ type CollectionOptions = ApiOptions &
  * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
  * @returns {Promise<Collection>} The collection.
  */
-export const CollectionApi = cache(async ({ api, handle, ...props }: CollectionOptions) => {
+export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions) => {
     if (!handle) throw new Error('400: Invalid handle');
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
@@ -192,7 +192,7 @@ export const CollectionApi = cache(async ({ api, handle, ...props }: CollectionO
         console.error(error);
         throw error;
     }
-});
+};
 
 export const CollectionsApi = async (
     options:
@@ -261,100 +261,98 @@ type CollectionsOptions = ApiOptions &
 /**
  * Fetches collections from the Shopify API.
  */
-export const CollectionsPaginationApi = cache(
-    async ({
-        api,
-        ...props
-    }: CollectionsOptions): Promise<{
-        page_info: {
-            start_cursor: string | null;
-            end_cursor: string | null;
-            has_next_page: boolean;
-            has_prev_page: boolean;
-        };
-        collections: CollectionEdge[];
-    }> => {
-        const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
+export const CollectionsPaginationApi = async ({
+    api,
+    ...props
+}: CollectionsOptions): Promise<{
+    page_info: {
+        start_cursor: string | null;
+        end_cursor: string | null;
+        has_next_page: boolean;
+        has_prev_page: boolean;
+    };
+    collections: CollectionEdge[];
+}> => {
+    const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionsFilters);
 
-        return new Promise(async (resolve, reject) => {
-            try {
-                const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
-                    gql`
-                        query collections(
-                            $first: Int
-                            $last: Int
-                            $sorting: CollectionSortKeys
-                            $query: String
-                            $before: String
-                            $after: String
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data } = await api.query<{ collections: QueryRoot['collections'] }>(
+                gql`
+                    query collections(
+                        $first: Int
+                        $last: Int
+                        $sorting: CollectionSortKeys
+                        $query: String
+                        $before: String
+                        $after: String
+                    ) {
+                        collections(
+                            first: $first
+                            last: $last
+                            sortKey: $sorting
+                            query: $query
+                            before: $before
+                            after: $after
                         ) {
-                            collections(
-                                first: $first
-                                last: $last
-                                sortKey: $sorting
-                                query: $query
-                                before: $before
-                                after: $after
-                            ) {
-                                edges {
-                                    cursor
-                                    node {
+                            edges {
+                                cursor
+                                node {
+                                    id
+                                    handle
+                                    createdAt
+                                    updatedAt
+                                    title
+                                    description
+                                    descriptionHtml
+                                    image {
                                         id
-                                        handle
-                                        createdAt
-                                        updatedAt
+                                        altText
+                                        url
+                                        height
+                                        width
+                                    }
+                                    seo {
                                         title
                                         description
-                                        descriptionHtml
-                                        image {
-                                            id
-                                            altText
-                                            url
-                                            height
-                                            width
-                                        }
-                                        seo {
-                                            title
-                                            description
-                                        }
                                     }
                                 }
-                                pageInfo {
-                                    startCursor
-                                    endCursor
-                                    hasNextPage
-                                    hasPreviousPage
-                                }
+                            }
+                            pageInfo {
+                                startCursor
+                                endCursor
+                                hasNextPage
+                                hasPreviousPage
                             }
                         }
-                    `,
-                    {
-                        ...extractLimitLikeFilters(filters),
-                        ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
-                            query: vendor && `query:"vendor:${vendor}"`,
-                            sorting: sorting,
-                            before: before,
-                            after: after
-                        }))(filters)
                     }
-                );
+                `,
+                {
+                    ...extractLimitLikeFilters(filters),
+                    ...(({ vendor = null, sorting = 'RELEVANCE', before = null, after = null }) => ({
+                        query: vendor && `query:"vendor:${vendor}"`,
+                        sorting: sorting,
+                        before: before,
+                        after: after
+                    }))(filters)
+                }
+            );
 
-                const page_info = data?.collections.pageInfo;
-                if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
+            const page_info = data?.collections.pageInfo;
+            if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
 
-                return resolve({
-                    collections: data.collections?.edges || [],
-                    page_info: {
-                        start_cursor: page_info.startCursor || null,
-                        end_cursor: page_info.endCursor || null,
-                        has_next_page: page_info.hasNextPage,
-                        has_prev_page: page_info.hasPreviousPage
-                    }
-                });
-            } catch (error: unknown) {
-                console.error(error);
-                return reject(error);
-            }
-        });
-    }
-);
+            return resolve({
+                collections: data.collections?.edges || [],
+                page_info: {
+                    start_cursor: page_info.startCursor || null,
+                    end_cursor: page_info.endCursor || null,
+                    has_next_page: page_info.hasNextPage,
+                    has_prev_page: page_info.hasPreviousPage
+                }
+            });
+        } catch (error: unknown) {
+            console.error(error);
+            return reject(error);
+        }
+    });
+};
