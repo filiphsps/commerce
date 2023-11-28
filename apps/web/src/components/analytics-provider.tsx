@@ -16,16 +16,18 @@ type AnalyticsProvider = {
 export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider) => {
     const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
     useEffect(() => {
-        if (!shop.configuration.thirdParty?.googleTagManager) {
+        if (!shop?.configuration?.thirdParty?.googleTagManager) {
             return;
         }
 
         const timeout = setTimeout(() => {
-            if (afterLoad) return;
+            if (afterLoad || !shop?.configuration?.thirdParty?.googleTagManager) {
+                return;
+            }
 
             setAfterLoad(() => (
                 <>
-                    <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager} />
+                    <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager!} />
                 </>
             ));
 
