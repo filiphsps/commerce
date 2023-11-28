@@ -1,7 +1,7 @@
 import { commonValidations } from '@/middleware/common-validations';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getToken } from "next-auth/jwt";
+import { getToken } from 'next-auth/jwt';
 
 /* c8 ignore start */
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
