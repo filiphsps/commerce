@@ -19,11 +19,7 @@ export const authOptions: NextAuthOptions = {
                     id: profile.id.toString(),
                     name: profile.name || profile.login,
                     gh_username: profile.login,
-                    emails: [
-                        {
-                            email: profile.email
-                        }
-                    ]
+                    email: profile.email
                 };
             }
         })
@@ -43,7 +39,7 @@ export const authOptions: NextAuthOptions = {
                 sameSite: 'lax',
                 path: '/',
                 // When working on localhost, the cookie domain must be omitted entirely (https://stackoverflow.com/a/1188145)
-                domain: VERCEL_DEPLOYMENT ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` : undefined,
+                domain: VERCEL_DEPLOYMENT ? `.nordcom.io` : undefined,
                 secure: VERCEL_DEPLOYMENT
             }
         }
@@ -74,7 +70,7 @@ export function getSession() {
             id: string;
             name: string;
             username: string;
-            emails: { email: string }[];
+            email: string;
         };
     } | null>;
 }
