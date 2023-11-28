@@ -40,7 +40,7 @@ class Document extends NextDocument {
                     <link rel="preconnect" href={`https://${Config.shopify.checkout_domain}`} />
                     <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
                 </Head>
-                <body className="BlackFriday">
+                <body>
                     <Main />
                     <NextScript />
 
