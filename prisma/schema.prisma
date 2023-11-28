@@ -1,26 +1,45 @@
 datasource db {
     provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    url       = env("POSTGRES_PRISMA_URL")
+    directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 generator client {
     provider = "prisma-client-js"
 }
 
+model User {
+    id            String             @id @default(cuid())
+    name          String?
+    email         String             @unique
+    image         String?
+    emailVerified DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    accounts      Account[]
+    sessions      Session[]
+    shops         ShopCollaborator[]
+
+    // GitHub
+    gh_username String?
+}
+
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String?
-    access_token      String?
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?
-    session_state     String?
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String?
+    refresh_token_expires_in Int?
+    access_token             String?
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String?
+    session_state            String?
+    oauth_token_secret       String?
+    oauth_token              String?
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -34,20 +53,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
-model User {
-    id            String             @id @default(cuid())
-    name          String?
-    email         String             @unique
-    image         String?
-    emailVerified DateTime?
-    accounts      Account[]
-    sessions      Session[]
-    shops         ShopCollaborator[]
-
-    // GitHub
-    gh_username String?
+    @@index([userId])
 }
 
 model VerificationToken {
@@ -62,9 +69,9 @@ model ShopCollaborator {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    shop      Shop     @relation(fields: [shopId], references: [id])
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
-    user      User     @relation(fields: [userId], references: [id])
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     userId    String
 
     @@index([shopId])
@@ -72,11 +79,11 @@ model ShopCollaborator {
 }
 
 model Shop {
-    id               String             @id
-    name             String
-    domain           String             @unique
-    alternateDomains String[]           @unique @default([])
-    createdAt        DateTime           @default(now())
-    updatedAt        DateTime           @updatedAt
-    collaborators    ShopCollaborator[]
+    id                 String             @id
+    name               String
+    domain             String             @unique
+    alternativeDomains String[]           @unique @default([])
+    createdAt          DateTime           @default(now())
+    updatedAt          DateTime           @updatedAt
+    collaborators      ShopCollaborator[]
 }
