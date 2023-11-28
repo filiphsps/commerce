@@ -78,7 +78,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
 
                     --accent-secondary: ${store?.accent.secondary};
                     --accent-secondary-dark: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-dark));
-                    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 35%, var(--color-bright));
+                    --accent-secondary-light: color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright));
                     --accent-secondary-text: #101418;
                 }
             `}</style>
