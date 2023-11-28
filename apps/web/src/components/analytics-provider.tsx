@@ -6,7 +6,7 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import type { Locale } from '@/utils/locale';
 import { GoogleTagManager, sendGTMEvent } from '@next/third-parties/google';
 import { useReportWebVitals } from 'next/web-vitals';
-import { type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 type AnalyticsProvider = {
     shop: Shop;
@@ -14,6 +14,27 @@ type AnalyticsProvider = {
     children: ReactNode;
 };
 export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider) => {
+    const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
+    useEffect(() => {
+        if (!shop.configuration.thirdParty?.googleTagManager) {
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            if (afterLoad) return;
+
+            setAfterLoad(() => (
+                <>
+                    <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager} />
+                </>
+            ));
+
+            // Wait 5.75 seconds to prevent tag manager from destroying our ranking.
+        }, 5_750);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
     useAnalytics({
         locale,
         shop,
@@ -26,7 +47,6 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
 
     useReportWebVitals(({ id, name, value }) => {
         if (!window.dataLayer) return;
-
         sendGTMEvent({
             event: 'web-vital',
             event_category: 'Web Vitals',
@@ -46,9 +66,7 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
     return (
         <>
             {children}
-            {shop.configuration.thirdParty?.googleTagManager ? (
-                <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager} />
-            ) : null}
+            {afterLoad}
         </>
     );
 };
