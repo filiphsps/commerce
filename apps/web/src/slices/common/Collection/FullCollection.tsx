@@ -33,6 +33,7 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
                     data={collection as any}
                     store={store}
                     i18n={i18n}
+                    limit={250}
                     showViewAll={false}
                 />
             </PageContent>
