@@ -27,7 +27,7 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
 
             setAfterLoad(() => (
                 <>
-                    <GoogleTagManager gtmId={shop.configuration.thirdParty.googleTagManager!} />
+                    <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
                 </>
             ));
 
