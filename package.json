@@ -14,16 +14,16 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "prepare": "husky install",
-        "start": "NODE_OPTIONS=\"--no-deprecation\" turbo run start",
-        "dev": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run dev --color",
-        "build": "NODE_OPTIONS=\"--no-deprecation\" turbo run build",
-        "lint": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run lint",
-        "prettier": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run prettier",
-        "typecheck": "NODE_OPTIONS=\"--no-deprecation\" turbo run typecheck",
-        "test": "FORCE_COLOR=1 NODE_OPTIONS=\"--no-deprecation\" turbo run test",
-        "db:migrate": "prisma migrate deploy",
-        "db:generate": "prisma generate && prisma db push",
-        "slicemachine": "NODE_OPTIONS=\"--no-deprecation\" turbo run slicemachine"
+        "postinstall": "prisma generate",
+        "start": "turbo run start",
+        "dev": "turbo run dev",
+        "build:vercel": "prisma migrate deploy",
+        "build": "turbo run build",
+        "lint": "turbo run lint",
+        "prettier": "turbo run prettier",
+        "typecheck": "turbo run typecheck",
+        "test": "turbo run test",
+        "slicemachine": "turbo run slicemachine"
     },
     "author": {
         "name": "Nordcom Group Inc.",
