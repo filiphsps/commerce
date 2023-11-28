@@ -19,13 +19,13 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
         console.warn('User accessed the `/errors` path directly');
     }
 
-    // Check if were trying to access the dashboard section.
-    if (newUrl.pathname.startsWith('/store')) {
+    // Check if were trying to access the shop dashboard section.
+    if (newUrl.pathname.startsWith('/shop')) {
         const session = await getToken({ req });
 
         // User is not logged in, so let's redirect them to the login page.
         if (!session) {
-            return NextResponse.redirect(new URL("/login/", req.url));
+            return NextResponse.redirect(new URL('/login/', req.url));
         }
     }
 
