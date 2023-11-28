@@ -60,7 +60,7 @@
     ],
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@typescript-eslint/eslint-plugin": "6.13.0",
+        "@typescript-eslint/eslint-plugin": "6.13.1",
         "babel-plugin-module-resolver": "5.0.0",
         "concurrently": "8.2.2",
         "eslint": "8.54.0",
