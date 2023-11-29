@@ -85,7 +85,7 @@ export type ImageGridProps = SliceComponentProps<Content.ImageGridSlice>;
 /**
  * Component for "ImageGrid" Slices.
  */
-const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
+const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
@@ -108,6 +108,9 @@ const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
                                 fallbackAlt=""
                                 imgixParams={{ q: 65 }}
                                 loader={undefined}
+                                // If we're positioned high up in the page, we want to load the image
+                                // immediately. Otherwise, we can wait until the browser decides to.
+                                priority={index < 3}
                             />
                             <TitleContainer>
                                 <Title>{title}</Title>
