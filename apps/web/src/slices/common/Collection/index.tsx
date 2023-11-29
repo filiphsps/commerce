@@ -14,7 +14,7 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 /**
  * Component for "Collection" Slices.
  */
-const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
+const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => {
     switch (slice.variation) {
         case 'default': {
             return (
@@ -36,6 +36,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                             store={context?.store}
                             locale={context.locale}
                             i18n={context.i18n}
+                            priority={index < 3}
                         />
                     </Suspense>
                 </CollectionContainer>

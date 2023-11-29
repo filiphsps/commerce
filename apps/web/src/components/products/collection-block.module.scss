@@ -20,7 +20,7 @@
             justify-content: start;
             gap: var(--block-spacer);
             grid-template-columns: repeat(
-                auto-fit,
+                auto-fill,
                 minmax(calc(var(--component-product-card-width) + var(--block-padding)), 1fr)
             );
         }

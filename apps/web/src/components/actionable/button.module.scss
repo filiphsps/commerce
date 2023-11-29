@@ -32,7 +32,6 @@
         gap: var(--block-spacer-small);
         padding: calc(var(--block-padding) - var(--block-border-width))
             calc(var(--block-padding) - var(--block-border-width));
-        font-size: 1.45rem;
     }
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
