@@ -16,11 +16,10 @@ const ssr = ({ uri, headers }: ApiConfig) =>
                 link: new HttpLink({
                     uri,
                     headers,
-                    fetchOptions: { cache: 'force-cache', next: { revalidate: 28_800 } }
+                    fetchOptions: { cache: 'force-cache', next: { revalidate: 28_800, tags: ['shopify'] } }
                 }),
                 cache: new InMemoryCache({
                     canonizeResults: true,
-                    //addTypename: false,
                     addTypename: true
                 }),
                 defaultOptions: {

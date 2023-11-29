@@ -1,4 +1,4 @@
-import { ImageLoader } from '@/utils/image-loader';
+import { LegacyLoader as ImageLoader } from '@/utils/image-loader';
 import { describe, expect, it } from 'vitest';
 
 describe('utils', () => {
