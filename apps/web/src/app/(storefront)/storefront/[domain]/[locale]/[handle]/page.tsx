@@ -19,40 +19,25 @@ import { metadata as notFoundMetadata } from '../not-found';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = Locale.default;
     const shops = await ShopsApi();
 
-    return (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        // TODO: Deal with this in a better way.
-                        if (!shop || shop?.configuration?.commerce?.type === 'dummy') return null;
+    return await Promise.all(
+        shops.map(async (shop) => {
+            const api = await ShopifyApiClient({ shop, locale: Locale.default });
+            const locales = await LocalesApi({ api });
 
-                        const api = await ShopifyApiClient({ shop, locale });
-                        const locales = await LocalesApi({ api });
-
-                        return await Promise.all(
-                            locales.map(async (locale) => {
-                                const pages = await PagesApi({ shop, locale });
-
-                                return pages
-                                    .filter(({ uid }) => uid !== 'homepage')
-                                    .map(({ uid: handle }) => ({
-                                        domain: shop.domains.primary,
-                                        locale: locale.code,
-                                        handle
-                                    }));
-                            })
-                        );
-                    } catch {
-                        return null;
-                    }
+            return await Promise.all(
+                locales.map(async (locale) => {
+                    const pages = await PagesApi({ shop, locale });
+                    return pages.map(({ uid: handle }) => ({
+                        domain: shop.domains.primary,
+                        locale: locale.code,
+                        handle
+                    }));
                 })
-                .filter((_) => _)
-        )
-    ).flat(2);
+            );
+        })
+    );
 }
 /* c8 ignore stop */
 

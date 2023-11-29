@@ -76,7 +76,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
         locale,
         api: {
             query: async ({ query, context: { fetchOptions, ...context }, variables }: any) => {
-                const config = apiConfig!.private()!;
+                const config = (apiConfig || (await shopifyApiConfig({ shop })))!.private()!;
 
                 const response = await fetch(config.uri, {
                     method: 'POST',
