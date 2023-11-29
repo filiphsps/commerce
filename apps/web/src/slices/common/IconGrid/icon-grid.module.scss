@@ -38,6 +38,10 @@
 
                 // TODO: Remove this when the icons are fixed.
                 filter: invert(1);
+                img {
+                    object-fit: contain;
+                    object-position: center;
+                }
             }
 
             .title {

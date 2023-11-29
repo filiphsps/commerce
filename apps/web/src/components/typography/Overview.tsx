@@ -131,13 +131,7 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
         <Container style={style} className={`${styles.container} TextBlock Block`} $layout={layout}>
             <ImageContainer $expand={imageStyle === 'cover'}>
                 <ImageWrapper>
-                    <PrismicNextImage
-                        field={image as any}
-                        sizes="(max-width: 1150px) 250px, 250px"
-                        fallbackAlt=""
-                        imgixParams={{ q: 65 }}
-                        loader={undefined}
-                    />
+                    <PrismicNextImage field={image as any} sizes="(max-width: 1150px) 250px, 250px" fallbackAlt="" />
                 </ImageWrapper>
             </ImageContainer>
             <Content className={styles.content}>{body}</Content>
