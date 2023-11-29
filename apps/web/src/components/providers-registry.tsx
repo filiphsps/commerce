@@ -7,7 +7,6 @@ import type { ApiConfig } from '@/api/client';
 import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
 import { HeaderProvider } from '@/components/Header/header-provider';
-import ApiProvider from '@/components/api-provider';
 import StyledComponentsProvider from '@/components/styled-components-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
@@ -83,15 +82,13 @@ export default function ProvidersRegistry({
                     languageIsoCode={locale.language}
                 >
                     <CartProvider cartFragment={CartFragment}>
-                        <ApiProvider apiConfig={apiConfig}>
-                            <HeaderProvider store={store}>
-                                <AnalyticsProvider shop={shop} locale={locale}>
-                                    {children}
+                        <HeaderProvider store={store}>
+                            <AnalyticsProvider shop={shop} locale={locale}>
+                                {children}
 
-                                    {afterLoad}
-                                </AnalyticsProvider>
-                            </HeaderProvider>
-                        </ApiProvider>
+                                {afterLoad}
+                            </AnalyticsProvider>
+                        </HeaderProvider>
                     </CartProvider>
                 </ShopifyProvider>
             </PrismicProvider>
