@@ -246,8 +246,9 @@ interface ProductCardProps {
     className?: string;
     i18n: LocaleDictionary;
     style?: CSSProperties;
+    priority?: boolean;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n, style }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n, style, priority }) => {
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
     const { product, selectedVariant, setSelectedVariant } = useProduct();
@@ -322,6 +323,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                                 width={195}
                                 height={155}
                                 sizes="(max-width: 950px) 155px, 200px"
+                                priority={priority}
                             />
                         </ProductImageWrapper>
                     </Link>

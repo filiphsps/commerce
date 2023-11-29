@@ -26,14 +26,14 @@
         grid-area: product-image;
         overflow: hidden;
         position: relative;
-        height: auto;
+        height: 100%;
         width: 100%;
         padding: var(--block-padding-small);
         border-radius: var(--block-border-radius-small);
         transition: 150ms ease-in-out;
         user-select: none;
         background-color: var(--product-card-color-image-background, var(--color-bright));
-        //box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
         aspect-ratio: 1.25 / 1;
 
         img {

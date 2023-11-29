@@ -20,6 +20,7 @@ export type CollectionBlockProps = {
     data: Collection;
     limit?: number;
     showViewAll?: boolean;
+    priority?: boolean;
 } & CollectionBlockCommonProps &
     HTMLProps<HTMLDivElement>;
 export const CollectionBlock = ({
@@ -30,6 +31,7 @@ export const CollectionBlock = ({
     store,
     locale,
     i18n,
+    priority,
     className,
     ...props
 }: CollectionBlockProps) => {
@@ -52,7 +54,13 @@ export const CollectionBlock = ({
                         </>
                     }
                 >
-                    <CollectionBlockContent locale={locale} i18n={i18n} products={products} store={store} />
+                    <CollectionBlockContent
+                        locale={locale}
+                        i18n={i18n}
+                        products={products}
+                        store={store}
+                        priority={priority}
+                    />
                 </Suspense>
 
                 {showViewAll ? (
