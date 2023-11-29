@@ -240,7 +240,7 @@ export const ConvertToLocalMeasurementSystem = ({
                 return 'g';
         }
     };
-    // FIXME: Support more than just US here, because apparently there's alot
+    // FIXME: Support more than just US here, because apparently there's a lot
     //        more countries out there using imperial.
     const metric = locale.country && locale.country.toLowerCase() !== 'us';
     const unit = weightUnitToConvertUnits(weightUnit);

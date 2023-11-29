@@ -124,30 +124,15 @@ const config = {
             // TODO: Point these to the multi-tenant admin app once that is built.
             {
                 source: '/:locale/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin/`,
                 permanent: false
             },
             {
                 source: '/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin`,
+                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin/`,
                 permanent: false
             }
         ];
-    },
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve = {
-                ...config.resolve,
-                fallback: {
-                    net: false,
-                    dns: false,
-                    tls: false,
-                    fs: false,
-                    request: false
-                }
-            };
-        }
-        return config;
     },
 
     // While I wish we could use this we must handle it
@@ -162,6 +147,7 @@ export default withMarkdoc({
     mode: 'static',
     schemaPath: './src/utils/markdoc',
     tokenizerOptions: {
-        allowComments: true
+        allowComments: true,
+        slots: true
     }
 })(config);

@@ -36,7 +36,8 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 
 export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
     const shop = api.shop();
-    if (shop && shop?.configuration?.commerce?.type === 'dummy') {
+    if (shop?.configuration?.commerce?.type !== 'shopify') {
+        // TODO: Do this properly.
         return [Locale.from('en-US')];
     }
 
@@ -78,7 +79,8 @@ export const StoreApi = async ({
     const locale = _locale || api.locale();
     const client = _client || createClient({ shop, locale });
 
-    if (shop && shop?.configuration?.commerce?.type === 'dummy') {
+    if (shop?.configuration?.commerce?.type !== 'shopify') {
+        // FIXME: Do this properly.
         return _mockShopApi(shop);
     }
 
