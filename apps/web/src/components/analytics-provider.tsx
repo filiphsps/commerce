@@ -17,7 +17,7 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
     const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
     useEffect(() => {
         if (!shop?.configuration?.thirdParty?.googleTagManager) {
-            return null;
+            return () => {};
         }
 
         const timeout = setTimeout(() => {
