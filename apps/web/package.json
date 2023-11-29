@@ -54,7 +54,7 @@
         "supports css-grid"
     ],
     "dependencies": {
-        "@apollo/client": "3.8.7",
+        "@apollo/client": "3.8.8",
         "@apollo/experimental-nextjs-app-support": "0.5.1",
         "@markdoc/markdoc": "0.3.5",
         "@markdoc/next.js": "0.3.6",
