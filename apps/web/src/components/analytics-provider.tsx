@@ -17,7 +17,7 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
     const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
     useEffect(() => {
         if (!shop?.configuration?.thirdParty?.googleTagManager) {
-            return;
+            return null;
         }
 
         const timeout = setTimeout(() => {
@@ -32,7 +32,7 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
             ));
 
             // Wait 5.75 seconds to prevent tag manager from destroying our ranking.
-        }, 5_750);
+        }, 6_500);
 
         return () => clearTimeout(timeout);
     }, []);
