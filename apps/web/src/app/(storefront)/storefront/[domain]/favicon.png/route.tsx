@@ -43,8 +43,8 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         let src!: string;
 
         const shop = await ShopApi({ domain });
-        if (shop?.configuration?.design?.branding?.icons?.favicon?.src) {
-            src = shop.configuration.design.branding.icons.favicon.src;
+        if (shop?.configuration?.icons?.favicon?.src) {
+            src = shop.configuration.icons.favicon.src;
         } else {
             const locale = Locale.default;
             const api = await ShopifyApiClient({ shop, locale });
@@ -52,11 +52,9 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
 
             if (store?.favicon?.src) {
                 src = store.favicon.src;
+            } else {
+                throw new NotFoundError('favicon.png');
             }
-        }
-
-        if (!src) {
-            throw new NotFoundError('favicon.png');
         }
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */

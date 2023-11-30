@@ -64,11 +64,11 @@ export type Shop = {
     configuration: {
         commerce: CommerceProvider;
         content: ContentProvider;
+        icons?: {
+            favicon?: Icon;
+        };
         design?: {
             branding?: {
-                icons?: {
-                    favicon?: Icon;
-                };
                 logos?: {
                     primary?: BrandImage;
                     alternatives?: {
@@ -131,6 +131,14 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     type: 'dummy' as const,
                     domain: 'mock.shop' as const
                 },
+                icons: {
+                    favicon: {
+                        src: 'https://nordcom.io/favicon.png',
+                        alt: 'Nordcom Commerce',
+                        width: 512,
+                        height: 512
+                    }
+                },
                 design: {
                     branding: {
                         colors: [
@@ -149,14 +157,6 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                                 foreground: '#fefefe'
                             }
                         ],
-                        icons: {
-                            favicon: {
-                                src: 'https://nordcom.io/favicon.png',
-                                alt: 'Nordcom Commerce',
-                                width: 512,
-                                height: 512
-                            }
-                        },
                         logos: {
                             primary: {
                                 src: 'https://nordcom.io/logo-light.svg',
