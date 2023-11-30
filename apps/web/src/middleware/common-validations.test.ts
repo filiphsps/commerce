@@ -45,5 +45,11 @@ describe('middleware', () => {
             const result = commonValidations(url);
             expect(result.pathname).toBe('/.well-known/acme-challenge/token');
         });
+
+        it('should not add a trailing slash to the URL pathname if it includes a query parameter', () => {
+            const url: NextURL = { pathname: '/products/test?hello=world' } as any;
+            const result = commonValidations(url);
+            expect(result.pathname).toBe('/products/test/?hello=world');
+        });
     });
 });

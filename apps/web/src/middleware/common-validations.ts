@@ -32,7 +32,14 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
         !/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/.test(path) &&
         !/\.(.*)$/.test(path)
     ) {
-        path += '/';
+        if (path.includes('?')) {
+            const [pathname, query] = path.split('?');
+            if (!pathname.endsWith('/')) {
+                path = `${pathname}/?${query}`;
+            }
+        } else {
+            path += '/';
+        }
     }
 
     if (typeof url === 'string') {
