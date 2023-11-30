@@ -42,7 +42,7 @@ export default defineConfig({
                 '**/__snapshots__/**/*.*',
                 '**/*.d.*',
                 '**/*.test.*',
-                '**/app/**/{layout}.*',
+                '**/app/**/{layout,route}.*',
                 '**/app/**/*slice-simulator*',
                 '**/build-config.*',
                 '**/src/**/index.*',
@@ -62,9 +62,10 @@ export default defineConfig({
                 '**/src/app/**/layout.ts*',
                 '**/src/app/**/*favicon.png*',
                 '**/src/components/**/*-provider*.tsx',
+                '**/src/components/**/providers-registry.tsx',
 
                 // TODO: Remove these once we do some work on the admin dashboard.
-                '**/src/app/({unknown,admin,extra})/**/*.*'
+                '**/src/app/({admin,extra,news})/**/*.*'
             ]
         }
     }

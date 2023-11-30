@@ -12,16 +12,14 @@ import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
-import * as Prismic from '@/utils/prismic';
-import { PrismicPreview } from '@prismicio/next';
 import { PrismicProvider } from '@prismicio/react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { AnalyticsProvider } from './analytics-provider';
+import { ThirdPartiesProvider } from './thirdparties-provider';
 
 export default function ProvidersRegistry({
     shop,
     locale,
-    apiConfig,
     store,
     children
 }: {
@@ -31,23 +29,6 @@ export default function ProvidersRegistry({
     store: StoreModel;
     children: ReactNode;
 }) {
-    const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            if (afterLoad) return;
-
-            setAfterLoad(() => (
-                <>
-                    <PrismicPreview repositoryName={Prismic.repositoryName} />
-                </>
-            ));
-
-            // Wait 10 seconds to prevent the lighthouse score from being affected by the preview toolbar
-        }, 10_000);
-
-        return () => clearTimeout(timeout);
-    }, []);
-
     // Set the locale globally for the client.
     useEffect(() => {
         if (typeof window === 'undefined' || !locale) return;
@@ -84,9 +65,7 @@ export default function ProvidersRegistry({
                     <CartProvider cartFragment={CartFragment}>
                         <HeaderProvider store={store}>
                             <AnalyticsProvider shop={shop} locale={locale}>
-                                {children}
-
-                                {afterLoad}
+                                <ThirdPartiesProvider shop={shop}>{children}</ThirdPartiesProvider>
                             </AnalyticsProvider>
                         </HeaderProvider>
                     </CartProvider>

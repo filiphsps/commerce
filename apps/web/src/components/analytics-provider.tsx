@@ -4,39 +4,16 @@ import type { Shop } from '@/api/shop';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { Locale } from '@/utils/locale';
-import { GoogleTagManager, sendGTMEvent } from '@next/third-parties/google';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { useReportWebVitals } from 'next/web-vitals';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-type AnalyticsProvider = {
+export type AnalyticsProviderProps = {
     shop: Shop;
     locale: Locale;
     children: ReactNode;
 };
-export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider) => {
-    const [afterLoad, setAfterLoad] = useState<ReactNode>(null);
-    useEffect(() => {
-        if (!shop?.configuration?.thirdParty?.googleTagManager) {
-            return () => {};
-        }
-
-        const timeout = setTimeout(() => {
-            if (afterLoad || !shop?.configuration?.thirdParty?.googleTagManager) {
-                return;
-            }
-
-            setAfterLoad(() => (
-                <>
-                    <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
-                </>
-            ));
-
-            // Wait 5.75 seconds to prevent tag manager from destroying our ranking.
-        }, 6_500);
-
-        return () => clearTimeout(timeout);
-    }, []);
-
+export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProviderProps) => {
     useAnalytics({
         locale,
         shop,
@@ -65,10 +42,5 @@ export const AnalyticsProvider = ({ shop, locale, children }: AnalyticsProvider)
         });
     });
 
-    return (
-        <>
-            {children}
-            {afterLoad}
-        </>
-    );
+    return <>{children}</>;
 };
