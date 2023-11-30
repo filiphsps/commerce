@@ -10,38 +10,34 @@ generator client {
 
 model User {
     id            String             @id @default(cuid())
+    createdAt     DateTime           @default(now())
+    updatedAt     DateTime           @updatedAt
     name          String?
+    ghUsername    String?            @map("gh_username") // GitHub username
     email         String             @unique
     image         String?
     emailVerified DateTime?
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
     accounts      Account[]
     sessions      Session[]
     shops         ShopCollaborator[]
-
-    // GitHub
-    gh_username String?
 }
 
 model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String?
-    refresh_token_expires_in Int?
-    access_token             String?
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String?
-    session_state            String?
-    oauth_token_secret       String?
-    oauth_token              String?
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id                String   @id @default(cuid())
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    userId            String
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    type              String
+    provider          String
+    providerAccountId String   @map("provider_account_id")
+    refreshToken      String?  @map("refresh_token") @db.Text
+    accessToken       String?  @map("access_token") @db.Text
+    expiresAt         Int?     @map("expires_at")
+    tokenType         String?  @map("token_type")
+    scope             String?
+    idToken           String?  @map("id_token") @db.Text
+    sessionState      String?  @map("session_state")
 
     @@unique([provider, providerAccountId])
     @@index([userId])
@@ -49,10 +45,11 @@ model Account {
 
 model Session {
     id           String   @id @default(cuid())
+    createdAt    DateTime @default(now())
     sessionToken String   @unique
     userId       String
-    expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expires      DateTime
 
     @@index([userId])
 }
@@ -80,10 +77,38 @@ model ShopCollaborator {
 
 model Shop {
     id                 String             @id
-    name               String
-    domain             String             @unique
-    alternativeDomains String[]           @unique @default([])
     createdAt          DateTime           @default(now())
     updatedAt          DateTime           @updatedAt
+    name               String             @db.Text
+    domain             String             @unique @db.Text
+    alternativeDomains String[]           @default([])
+    commerceProvider   CommerceProvider?
+    contentProvider    ContentProvider?
     collaborators      ShopCollaborator[]
+}
+
+model CommerceProvider {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String
+    data      Json
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shopId    String
+
+    @@unique([shopId])
+    @@index([shopId])
+}
+
+model ContentProvider {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String
+    data      Json
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shopId    String
+
+    @@unique([shopId])
+    @@index([shopId])
 }
