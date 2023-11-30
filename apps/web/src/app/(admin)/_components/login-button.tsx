@@ -28,9 +28,12 @@ export default function LoginButton({ provider = 'github', className, ...props }
         toast.error(errorMessage);
 
         const params = new URLSearchParams(searchParams);
-        params.delete('error');
 
-        router.replace(`${path}${params.toString}`);
+        // Delete error message from URL.
+        params.delete('error');
+        params.delete('callbackUrl');
+
+        router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}`);
     }, [error]);
 
     let layout = <></>;
@@ -56,7 +59,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 switch (provider) {
                     case 'github': {
                         setLoading(true);
-                        signIn('github');
+                        signIn('github', { callbackUrl: '/shop/' });
                         break;
                     }
                     default: {
