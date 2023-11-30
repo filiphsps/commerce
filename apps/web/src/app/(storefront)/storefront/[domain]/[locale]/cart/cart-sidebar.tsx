@@ -8,6 +8,8 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 
+import { toast } from 'sonner';
+
 export type CartSidebarProps = {
     shop: Shop;
     locale: Locale;
@@ -20,8 +22,10 @@ export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSid
         <aside {...props} className={`${styles.container} ${className || ''}`}>
             <CartSummary
                 onCheckout={async () => {
-                    // FIXME: User-feedback here.
-                    if (!['idle', 'uninitialized'].includes(cart.status)) return;
+                    if (!['idle', 'uninitialized'].includes(cart.status)) {
+                        toast.error('The cart is still loading, please try again in a few seconds'); // TODO: i18n.
+                        return;
+                    }
 
                     try {
                         await Checkout({
@@ -30,9 +34,8 @@ export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSid
                             cart
                         });
                     } catch (error: any) {
-                        // FIXME: Also user-feedback here.
                         console.error(error);
-                        alert(error.message);
+                        toast.error(error.message);
                     }
                 }}
                 i18n={i18n}

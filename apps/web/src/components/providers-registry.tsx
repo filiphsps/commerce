@@ -14,6 +14,7 @@ import { UnknownCommerceProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { PrismicProvider } from '@prismicio/react';
 import { useEffect, type ReactNode } from 'react';
+import { Toaster } from 'sonner';
 import { AnalyticsProvider } from './analytics-provider';
 import { ThirdPartiesProvider } from './thirdparties-provider';
 
@@ -65,7 +66,10 @@ export default function ProvidersRegistry({
                     <CartProvider cartFragment={CartFragment}>
                         <HeaderProvider store={store}>
                             <AnalyticsProvider shop={shop} locale={locale}>
-                                <ThirdPartiesProvider shop={shop}>{children}</ThirdPartiesProvider>
+                                <ThirdPartiesProvider shop={shop}>
+                                    <Toaster theme="light" />
+                                    {children}
+                                </ThirdPartiesProvider>
                             </AnalyticsProvider>
                         </HeaderProvider>
                     </CartProvider>

@@ -92,7 +92,9 @@ export const Checkout = async ({ shop, locale, cart }: { shop: Shop; locale: Loc
                 )
             });
         }
-    } catch {}
+    } catch (error) {
+        console.error(error);
+    }
 
     const ga4 = getCrossDomainLinkerParameter();
     const finalUrl = `${url}${(ga4 && `${(url.includes('?') && '&') || '?'}_gl=${ga4}`) || ''}`;
