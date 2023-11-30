@@ -13,7 +13,7 @@ model User {
     createdAt     DateTime           @default(now())
     updatedAt     DateTime           @updatedAt
     name          String?
-    ghUsername    String?            @map("gh_username") // GitHub username
+    ghUsername    String?            @unique // GitHub username
     email         String             @unique
     image         String?
     emailVerified DateTime?
@@ -30,14 +30,14 @@ model Account {
     user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     type              String
     provider          String
-    providerAccountId String   @map("provider_account_id")
-    refreshToken      String?  @map("refresh_token") @db.Text
+    providerAccountId String
+    refreshToken      String?  @db.Text
     accessToken       String?  @map("access_token") @db.Text
-    expiresAt         Int?     @map("expires_at")
-    tokenType         String?  @map("token_type")
+    expiresAt         Int?
+    tokenType         String?
     scope             String?
-    idToken           String?  @map("id_token") @db.Text
-    sessionState      String?  @map("session_state")
+    idToken           String?  @db.Text
+    sessionState      String?
 
     @@unique([provider, providerAccountId])
     @@index([userId])
