@@ -2,6 +2,7 @@
 
 import { ModalProvider } from '#/components/modal/provider';
 import { NordstarProvider } from '@nordcom/nordstar';
+import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
@@ -11,8 +12,9 @@ import { Toaster } from 'sonner';
 
 export type ProvidersProps = {
     children: ReactNode;
+    session: Session | null;
 };
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children, session }: ProvidersProps) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -24,7 +26,7 @@ export function Providers({ children }: ProvidersProps) {
     }, [pathname, router]);
 
     return (
-        <SessionProvider>
+        <SessionProvider session={session}>
             <NordstarProvider>
                 <Toaster theme="dark" />
                 <NextTopLoader color={'#ed1e79'} showSpinner={true} crawl={true} />

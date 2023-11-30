@@ -5,7 +5,9 @@ import type { Metadata, Viewport } from 'next';
 import Footer from '#/components/footer';
 import Header from '#/components/header';
 import { Providers } from '#/components/providers';
+import { authOptions } from '#/utils/auth';
 import { GeistMono } from 'geist/font/mono';
+import { getServerSession } from 'next-auth/next';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
 
@@ -52,14 +54,14 @@ const primaryFont = Montserrat({
 });
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+    const session = await getServerSession(authOptions);
+
     return (
         <html lang="en">
             <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
-                <Providers>
+                <Providers session={session}>
                     <Header />
-
                     {children}
-
                     <Footer />
                 </Providers>
             </body>
