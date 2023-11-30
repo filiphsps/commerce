@@ -1,6 +1,7 @@
 'use client';
 
 import { ModalProvider } from '#/components/modal/provider';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { NordstarProvider } from '@nordcom/nordstar';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
@@ -31,6 +32,7 @@ export function Providers({ children, session }: ProvidersProps) {
                 <Toaster theme="dark" />
                 <NextTopLoader color={'#ed1e79'} showSpinner={true} crawl={true} />
                 <ModalProvider>{children}</ModalProvider>
+                <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
             </NordstarProvider>
         </SessionProvider>
     );

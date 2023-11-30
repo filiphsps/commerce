@@ -133,9 +133,7 @@ export class Locale implements SerializableLocale {
  * @returns {CountryCode} `CountryCode` string.
  */
 export const NextLocaleToCountry = (locale?: string): CountryCode => {
-    // FIXME: Remove `!` when `Locale.from` actually throws.
-    // TODO: Fallback should be tenant-specific.
-    return (locale ? Locale.from(locale)! : Locale.default).country || ('US' as const);
+    return (locale ? Locale.from(locale) : Locale.default).country || ('US' as const);
 };
 
 /**
@@ -147,8 +145,7 @@ export const NextLocaleToCountry = (locale?: string): CountryCode => {
  * @returns {LanguageCode} `LanguageCode` string.
  */
 export const NextLocaleToLanguage = (locale?: string): LanguageCode => {
-    // FIXME: Remove `!` when `Locale.from` actually throws.
-    return (locale ? Locale.from(locale)! : Locale.default).language;
+    return (locale ? Locale.from(locale) : Locale.default).language;
 };
 
 /**
@@ -225,22 +222,24 @@ export const ConvertToLocalMeasurementSystem = ({
     weightUnit: WeightUnit;
 }): string => {
     const weightUnitToConvertUnits = (unit: WeightUnit) => {
-        switch (unit.toUpperCase()) {
-            case 'GRAMS':
+        switch (unit.toLowerCase()) {
+            case 'grams':
                 return 'g';
-            case 'KILOGRAMS':
+            case 'kilograms':
                 return 'kg';
-            case 'OUNCES':
+            case 'ounces':
                 return 'oz';
-            case 'POUNDS':
+            case 'pounds':
                 return 'lb';
 
             // TODO: Handle this; which should never possibly actually occur.
-            default:
+            default: {
+                console.warn(`Unknown weight unit: ${unit}, defaulting to grams.`);
                 return 'g';
+            }
         }
     };
-    // FIXME: Support more than just US here, because apparently there's a lot
+    // TODO: Support more than just US here, because apparently there's a lot
     //        more countries out there using imperial.
     const metric = locale.country && locale.country.toLowerCase() !== 'us';
     const unit = weightUnitToConvertUnits(weightUnit);
