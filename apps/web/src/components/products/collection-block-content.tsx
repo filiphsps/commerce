@@ -25,7 +25,7 @@ export const CollectionBlockContent = ({ locale, i18n, products, store, priority
                         data={product as any}
                         initialVariantId={FirstAvailableVariant(product)?.id}
                     >
-                        <ProductCard store={store} locale={locale} i18n={i18n} priority={priority && index <= 6} />
+                        <ProductCard store={store} locale={locale} i18n={i18n} priority={priority && index < 2} />
                     </ProductProvider>
                 );
 
