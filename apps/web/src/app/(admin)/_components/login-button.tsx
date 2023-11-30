@@ -4,7 +4,7 @@ import styles from '#/components/login-button.module.scss';
 import type { AuthProvider } from '#/utils/auth';
 import { UnknownApiError } from '@/utils/errors';
 import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 
@@ -15,6 +15,8 @@ export default function LoginButton({ provider = 'github', className, ...props }
     const [loading, setLoading] = useState<boolean>(false);
 
     // Get error message added by next/auth in URL.
+    const router = useRouter();
+    const path = usePathname();
     const searchParams = useSearchParams();
     const error = searchParams?.get('error');
 
@@ -24,6 +26,11 @@ export default function LoginButton({ provider = 'github', className, ...props }
 
         console.error(errorMessage);
         toast.error(errorMessage);
+
+        const params = new URLSearchParams(searchParams);
+        params.delete('error');
+
+        router.replace(`${path}${params.toString}`);
     }, [error]);
 
     let layout = <></>;

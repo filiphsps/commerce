@@ -32,12 +32,12 @@ model Account {
     provider          String
     providerAccountId String
     refreshToken      String?  @db.Text
-    accessToken       String?  @map("access_token") @db.Text
-    expiresAt         Int?
-    tokenType         String?
+    access_token      String?  @db.Text
+    expires_at        Int?
+    token_type        String?
     scope             String?
-    idToken           String?  @db.Text
-    sessionState      String?
+    id_token          String?  @db.Text
+    session_state     String?
 
     @@unique([provider, providerAccountId])
     @@index([userId])
