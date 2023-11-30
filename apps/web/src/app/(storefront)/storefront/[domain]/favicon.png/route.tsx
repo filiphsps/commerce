@@ -2,12 +2,12 @@ import { ShopifyApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 
 import { ShopApi } from '@/api/shop';
+import { NotFoundError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
 
-/* c8 ignore start */
 export type FaviconRouteParams = {
     domain: string;
 };
@@ -43,17 +43,20 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         let src!: string;
 
         const shop = await ShopApi({ domain });
-        if (shop?.configuration?.design?.branding?.logos?.alternatives?.square?.src) {
-            src = shop.configuration.design.branding.logos.alternatives.square.src;
+        if (shop?.configuration?.design?.branding?.icons?.favicon?.src) {
+            src = shop.configuration.design.branding.icons.favicon.src;
         } else {
             const locale = Locale.default;
             const api = await ShopifyApiClient({ shop, locale });
             const store = await StoreApi({ api });
-            if (store.favicon?.src) {
+
+            if (store?.favicon?.src) {
                 src = store.favicon.src;
-            } else {
-                src = req.url.replace('/favicon.png', '/icon.png');
             }
+        }
+
+        if (!src) {
+            throw new NotFoundError('favicon.png');
         }
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
@@ -91,4 +94,3 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         );
     }
 }
-/* c8 ignore stop */
