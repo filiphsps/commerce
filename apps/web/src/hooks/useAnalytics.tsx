@@ -39,11 +39,6 @@ const sendEcommerceEvent = ({
     event: 'view_item' | 'view_item_list' | 'view_cart' | 'add_to_cart' | 'remove_from_cart';
     payload: AnalyticsEcommerceItemListPayload | AnalyticsEcommerceBasePayload;
 }) => {
-    if (!window.dataLayer) {
-        console.error('Google Tag Manager is not loaded.');
-        return;
-    }
-
     sendGTMEvent({ ecommerce: null });
     sendGTMEvent({
         event: event,

@@ -16,6 +16,7 @@ import { PrismicProvider } from '@prismicio/react';
 import { useEffect, type ReactNode } from 'react';
 import { Toaster } from 'sonner';
 import { AnalyticsProvider } from './analytics-provider';
+import { ShopProvider } from './shop/provider';
 import { ThirdPartiesProvider } from './thirdparties-provider';
 
 export default function ProvidersRegistry({
@@ -64,14 +65,16 @@ export default function ProvidersRegistry({
                     languageIsoCode={locale.language}
                 >
                     <CartProvider cartFragment={CartFragment}>
-                        <HeaderProvider store={store}>
-                            <AnalyticsProvider shop={shop} locale={locale}>
-                                <ThirdPartiesProvider shop={shop}>
-                                    <Toaster theme="dark" style={{ background: 'var(--color-accent-primary)' }} />
-                                    {children}
-                                </ThirdPartiesProvider>
-                            </AnalyticsProvider>
-                        </HeaderProvider>
+                        <ShopProvider shop={shop} currency={'USD'}>
+                            <HeaderProvider store={store}>
+                                <AnalyticsProvider shop={shop} locale={locale}>
+                                    <ThirdPartiesProvider shop={shop}>
+                                        <Toaster theme="dark" style={{ background: 'var(--color-accent-primary)' }} />
+                                        {children}
+                                    </ThirdPartiesProvider>
+                                </AnalyticsProvider>
+                            </HeaderProvider>
+                        </ShopProvider>
                     </CartProvider>
                 </ShopifyProvider>
             </PrismicProvider>
