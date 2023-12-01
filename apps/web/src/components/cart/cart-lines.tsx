@@ -1,7 +1,5 @@
 'use client';
 
-import '@/styles/currency.scss';
-
 import { CartLineProvider, useCart } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
