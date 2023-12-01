@@ -75,7 +75,7 @@ body {
     font-optical-sizing: auto;
     font-size-adjust: ex-height ch-width from-font;
     text-rendering: optimizeLegibility;
-    text-size-adjust: auto
+    text-size-adjust: auto;
 
     &:root {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
