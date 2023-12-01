@@ -85,7 +85,8 @@ describe('utils', () => {
                     slice_type: 'collection',
                     variation: 'full',
                     primary: {
-                        handle: 'collection-handle'
+                        handle: 'collection-handle',
+                        limit: 200
                     }
                 },
                 {
