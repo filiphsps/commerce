@@ -22,19 +22,27 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 /* c8 ignore start */
-interface AnalyticsEcommercePayload {
+type AnalyticsEcommerceBasePayload = {
     currency: CurrencyCode;
     value: number;
     items?: Array<{}>;
-}
+};
+type AnalyticsEcommerceItemListPayload = {
+    item_list_id: string;
+    item_list_name: string;
+} & AnalyticsEcommerceBasePayload;
+
 const sendEcommerceEvent = ({
     event,
     payload
 }: {
-    event: 'view_item' | 'add_to_cart';
-    payload: AnalyticsEcommercePayload;
+    event: 'view_item' | 'view_item_list' | 'view_cart' | 'add_to_cart' | 'remove_from_cart';
+    payload: AnalyticsEcommerceItemListPayload | AnalyticsEcommerceBasePayload;
 }) => {
-    if (window.dataLayer) return;
+    if (!window.dataLayer) {
+        console.error('Google Tag Manager is not loaded.');
+        return;
+    }
 
     sendGTMEvent({ ecommerce: null });
     sendGTMEvent({
@@ -88,6 +96,21 @@ export const sendPageViewEvent = ({
                             quantity: product.quantity
                         }
                     ]
+                }
+            });
+            break;
+        }
+        case AnalyticsPageType.collection: {
+            if (!pageAnalytics.collectionHandle) break;
+
+            sendEcommerceEvent({
+                event: 'view_item_list',
+                payload: {
+                    currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                    value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount),
+                    item_list_id: pageAnalytics.collectionHandle,
+                    item_list_name: pageAnalytics.title,
+                    items: [] // TODO: Add items.
                 }
             });
             break;
