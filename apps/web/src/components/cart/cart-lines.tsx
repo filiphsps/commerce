@@ -65,8 +65,6 @@ type CartContentProps = {
 export default function CartLines({ locale, i18n }: CartContentProps) {
     const { status, lines } = useCart();
 
-    console.log(status, lines);
-
     const noItems = !lines || lines.length <= 0;
 
     if (['fetching', 'creating', 'uninitialized'].includes(status) && noItems) {
