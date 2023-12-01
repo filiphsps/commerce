@@ -16,7 +16,7 @@
 
     --color-lights-out: #051821;
 
-    --color-block: #e6e6e6;
+    --color-block: #ececec;
     --color-block-light: #f5f5f5;
     --color-block-dark: #bebebe;
     --color-block-black: #7c7c7c;
@@ -75,12 +75,7 @@ body {
     font-optical-sizing: auto;
     font-size-adjust: ex-height ch-width from-font;
     text-rendering: optimizeLegibility;
-    text-size-adjust: auto;
-
-    b,
-    strong {
-        font-weight: 800;
-    }
+    text-size-adjust: auto
 
     &:root {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
@@ -155,7 +150,7 @@ input[type='number'] {
     -moz-appearance: textfield !important;
 
     &::-webkit-inner-spin-button {
-        /*For Webkits like Chrome and Safari*/
+        appearance: none;
         -webkit-appearance: none;
         margin: 0;
     }
@@ -167,6 +162,7 @@ input[type='search']:is(
         ::-webkit-search-results-button,
         ::-webkit-search-results-decoration
     ) {
+    appearance: none;
     -webkit-appearance: none;
 }
 
@@ -184,10 +180,10 @@ input[type='search']:is(
     .bar {
         background: var(--accent-primary-light);
         position: fixed;
-        z-index: 2147483647;
+        z-index: 1000;
         top: 0;
         left: 0;
         width: 100%;
-        height: var(--block-padding-small) !important;
+        height: var(--block-spacer) !important;
     }
 }
