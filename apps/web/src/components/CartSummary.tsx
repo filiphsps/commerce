@@ -1,4 +1,4 @@
-import { CartCost, Money, useCart } from '@shopify/hydrogen-react';
+import { CartCost, Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
 import { useEffect, useState } from 'react';
 import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 
@@ -7,7 +7,6 @@ import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/cart/cart-summary.module.scss';
-import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
@@ -20,10 +19,11 @@ const Container = styled.section`
     flex-direction: column;
     gap: var(--block-spacer);
 `;
+
 const Block = styled.section`
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-small);
     padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     //background: var(--accent-secondary-light);
@@ -85,17 +85,17 @@ const CheckoutButtonIcon = styled.div`
     justify-content: right;
     align-items: right;
     flex-shrink: 0;
-    font-size: 2.25rem;
-    line-height: 100%;
     width: 0;
-    height: 100%;
+    height: 5rem;
     transition: 150ms ease-in-out;
     opacity: 0;
 
     svg {
-        display: block;
+        font-size: inherit;
+        line-height: inherit;
     }
 `;
+
 const CheckoutButton = styled(Button)`
     && {
         display: flex;
@@ -107,13 +107,13 @@ const CheckoutButton = styled(Button)`
         padding: var(--block-padding-large);
         border-radius: var(--block-border-radius);
         font-size: 1.5rem;
-        line-height: 1.5rem;
+        line-height: 1;
 
         &:not(:disabled):is(:hover, :active, :focus, :focus-within) {
-            gap: var(--block-padding);
+            gap: var(--block-padding-small);
 
             ${CheckoutButtonIcon} {
-                width: 3rem;
+                width: 2rem;
                 opacity: 1;
             }
         }
@@ -136,8 +136,9 @@ const BreakdownItem = styled.div`
     grid-template-columns: 1fr auto;
     grid-auto-rows: 1fr;
     gap: var(--block-spacer);
-    align-items: end;
-    justify-content: stretch;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2rem;
     height: 100%;
     color: var(--color-dark);
 `;
@@ -201,9 +202,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
     if (['creating', 'fetching'].includes(status)) {
         return (
             <Container>
-                <Block>
-                    <LoadingIndicator />
-                </Block>
+                <Block>{/* TODO: Shimmer */}</Block>
             </Container>
         );
     }
@@ -229,7 +228,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
     const freeShipping = Number.parseFloat(cost?.totalAmount?.amount!) >= 95;
 
     return (
-        <Container>
+        <Container className={styles.container}>
             <Block>
                 <Header>
                     <Label>{t('order-summary')}</Label>
@@ -258,12 +257,13 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
 
             {['idle', 'uninitialized'].includes(status) ? (
                 <Block>
-                    <div>
-                        <BreakdownItem>
-                            <Label>{t('subtotal')}</Label>
+                    <div className={styles.breakdowns}>
+                        <BreakdownItem className={`${styles.breakdown}`}>
+                            <Label className={styles.label}>{t('subtotal')}</Label>
                             {cost?.subtotalAmount ? (
                                 <Money
                                     as={BreakdownItemMoney}
+                                    className={styles.money}
                                     data={{
                                         currencyCode: cost?.subtotalAmount?.currencyCode,
                                         amount:
@@ -276,10 +276,14 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                         </BreakdownItem>
 
                         {sale ? (
-                            <BreakdownDiscountItem title={`${salePercentage}% OFF`}>
-                                <Label>{t('sale-discount')}</Label>
+                            <BreakdownDiscountItem
+                                title={`${salePercentage}% OFF`}
+                                className={`${styles.breakdown} ${styles.discount}`}
+                            >
+                                <Label className={styles.label}>{t('sale-discount')}</Label>
                                 <Money
                                     as={BreakdownItemMoney}
+                                    className={styles.money}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
                                         amount: sale.toString()
@@ -289,10 +293,11 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                         ) : null}
 
                         {promos ? (
-                            <BreakdownDiscountItem>
-                                <Label>{t('promo-codes')}</Label>
+                            <BreakdownDiscountItem className={`${styles.breakdown} ${styles.discount}`}>
+                                <Label className={styles.label}>{t('promo-codes')}</Label>
                                 <Money
                                     as={BreakdownItemMoney}
+                                    className={styles.money}
                                     data={{
                                         currencyCode: cost?.totalAmount?.currencyCode,
                                         amount: promos.toString()
@@ -301,12 +306,13 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                             </BreakdownDiscountItem>
                         ) : null}
 
-                        <BreakdownItem>
-                            <Label>{t('shipping')}</Label>
+                        <BreakdownItem className={`${styles.breakdown} ${freeShipping ? styles.discount : ''}`}>
+                            <Label className={styles.label}>{t('shipping')}</Label>
 
                             {freeShipping ? (
                                 <Money
                                     as={BreakdownItemMoney}
+                                    className={styles.money}
                                     data={{
                                         currencyCode: cost?.subtotalAmount?.currencyCode,
                                         amount: (0).toString()
@@ -318,7 +324,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                         </BreakdownItem>
 
                         <BreakdownTotalItem>
-                            <Label>{t('estimated-total')}</Label>
+                            <Label className={`${styles.label} ${styles.total}`}>{t('estimated-total')}</Label>
                             <CartCost as={BreakdownItemMoney} />
                         </BreakdownTotalItem>
 
@@ -335,6 +341,18 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                             <FiChevronRight />
                         </CheckoutButtonIcon>
                     </CheckoutButton>
+
+                    {lines && lines.length > 0 ? (
+                        <ShopPayButton
+                            // TODO: Only show this if we're using Shopify.
+                            width="100%"
+                            className={styles['shop-button']}
+                            variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
+                                quantity,
+                                id
+                            }))}
+                        />
+                    ) : null}
 
                     <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
                         <Notice>

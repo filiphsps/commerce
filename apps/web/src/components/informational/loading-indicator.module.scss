@@ -1,3 +1,5 @@
+@import '_globals.scss';
+
 .container {
     position: relative;
     display: flex;
@@ -18,7 +20,8 @@
         justify-content: flex-start;
         height: 100%;
         width: 100%;
-        animation: swing var(--speed) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+
+        animation: var(--speed) cubic-bezier(0.45, 0, 0.55, 1) infinite;
 
         &::before {
             content: '';
@@ -44,6 +47,7 @@
         &:nth-child(3) {
             animation-delay: calc(var(--speed) * -0.18);
             opacity: 0.6;
+
             &::before {
                 transform: scale(0.8);
             }
@@ -52,6 +56,7 @@
         &:nth-child(4) {
             animation-delay: calc(var(--speed) * -0.09);
             opacity: 0.4;
+
             &::before {
                 transform: scale(0.7);
             }

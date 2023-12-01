@@ -24,6 +24,8 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
     const logo =
         shop?.configuration?.design?.branding?.logos?.primary || store?.logos?.alternative || store?.logos?.primary;
 
+    const searchEnabled = false;
+
     return (
         <>
             <HeaderContainer {...props} className={className || ''}>
@@ -48,15 +50,17 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
                 <HeaderNavigation menu={navigation} locale={locale} />
 
                 <div className={styles.actions}>
-                    <div className={styles.action}>
-                        <Link
-                            href={'/search/'}
-                            className="Wrapper"
-                            title="Search for products, collections and pages across the whole store"
-                        >
-                            <TbSearch />
-                        </Link>
-                    </div>
+                    {searchEnabled ? (
+                        <div className={styles.action}>
+                            <Link
+                                href={'/search/'}
+                                title="Search for products, collections and pages across the whole store"
+                            >
+                                <TbSearch />
+                            </Link>
+                        </div>
+                    ) : null}
+
                     <CartButton locale={locale} i18n={i18n} />
                 </div>
             </HeaderContainer>

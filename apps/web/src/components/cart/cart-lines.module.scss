@@ -1,0 +1,51 @@
+@import '_globals.scss';
+
+.container {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-auto-rows: 1fr;
+    gap: var(--block-spacer);
+    width: 100%;
+
+    @media (min-width: $breakpoint-tablet-medium) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .line-item {
+        overflow: hidden;
+        display: grid;
+        position: relative;
+        min-height: 10rem;
+        width: 100%;
+        grid-template-columns: 8rem 1fr 8.5rem 14rem;
+        grid-template-rows: 1fr;
+        grid-template-areas: 'image meta price quantity';
+        gap: var(--block-spacer-small);
+        padding: var(--block-padding);
+        background: var(--color-block);
+        color: var(--color-dark);
+        border-radius: var(--block-border-radius);
+
+        @media (max-width: 950px) {
+            grid-template-columns: 8rem 1fr 14rem;
+            grid-template-areas:
+                'image meta meta'
+                'image price quantity';
+        }
+
+        &.placeholder {
+            background: var(--color-block);
+            background-image: linear-gradient(
+                to right,
+                var(--color-block) 0%,
+                var(--color-block-light) 20%,
+                var(--color-block) 40%,
+                var(--color-block) 100%
+            );
+            background-repeat: no-repeat;
+            background-size: 800px 104px;
+
+            animation: shimmer 1s infinite linear forwards;
+        }
+    }
+}

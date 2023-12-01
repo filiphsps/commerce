@@ -1,6 +1,5 @@
 'use client';
 
-import { LoadingIndicator } from '@/components/informational/loading-indicator';
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
 import type { FunctionComponent } from 'react';
@@ -60,12 +59,7 @@ interface VendorsProps {
     data: Array<VendorModel>;
 }
 const Vendors: FunctionComponent<VendorsProps> = ({ data: vendors }) => {
-    if (!vendors)
-        return (
-            <Container className="Vendors">
-                <LoadingIndicator />
-            </Container>
-        );
+    if (!vendors) return <Container className="Vendors">{/* TODO: Shimmer */}</Container>;
 
     return (
         <Container className="Vendors">

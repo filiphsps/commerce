@@ -4,3 +4,70 @@
     padding: var(--block-padding-small) 0 0 0;
     text-align: center;
 }
+
+.container {
+    .breakdowns {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--block-spacer-small) / 2);
+
+        .breakdown {
+            --discount-prefix: '-';
+
+            font-size: 1.5rem;
+            font-weight: 500;
+
+            @media (min-width: $breakpoint-mobile) {
+                font-size: 1.35rem;
+            }
+
+            .label {
+                font-size: inherit;
+                font-weight: inherit;
+            }
+
+            .money {
+                font-weight: 700;
+                font-size: 0.95em;
+                line-height: 1;
+                align-self: flex-start;
+            }
+
+            &.discount {
+                .money {
+                    z-index: 1;
+                    position: relative;
+                    color: var(--color-green);
+
+                    &::before {
+                        content: var(--discount-prefix);
+                    }
+
+                    &::after {
+                        content: '';
+                        z-index: -2;
+                        position: absolute;
+                        inset: calc(var(--block-padding-small) * -0.5);
+                        padding: 0 var(--block-padding-small);
+                        background: var(--color-green-light);
+                        color: var(--color-green);
+                        border-radius: var(--block-border-radius-tiny);
+                        pointer-events: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .label.total {
+        font-size: 1.75rem;
+        align-self: flex-end;
+    }
+
+    .shop-button {
+        --shop-pay-button-height: 5rem;
+
+        overflow: hidden;
+        border-radius: var(--block-border-radius);
+    }
+}

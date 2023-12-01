@@ -4,7 +4,7 @@ import { CartLineQuantity, CartLineQuantityAdjustButton, Money, useCart, useCart
 import { FiTrash } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
-import { LoadingIndicator } from '@/components/informational/loading-indicator';
+import styles from '@/components/CartItem/cart-item.module.scss';
 import Link from '@/components/link';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation, type Locale } from '@/utils/locale';
@@ -124,7 +124,7 @@ const Price = styled(SectionContent)`
         height: 100%;
     }
 
-    &.Sale {
+    &.sale {
         display: grid;
         grid-template-rows: 1fr 1fr;
         justify-content: center;
@@ -143,7 +143,7 @@ const Price = styled(SectionContent)`
         align-items: start;
         justify-content: center;
 
-        &.Sale {
+        &.sale {
             display: flex;
             justify-content: center;
             align-items: start;
@@ -299,21 +299,6 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale, i18n }) => {
     const line = useCartLine();
     const TempImage = Image as any;
 
-    if (status === 'fetching') {
-        return (
-            <Content>
-                <ProductImage>
-                    <ImageWrapper></ImageWrapper>
-                </ProductImage>
-                <Section />
-                <Section>
-                    <LoadingIndicator />
-                </Section>
-                <Section />
-            </Content>
-        );
-    }
-
     const product: Required<Product> = line.merchandise?.product! as any;
     if (!product) {
         console.error(`Product not found for line ${line.id}`);
@@ -330,7 +315,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale, i18n }) => {
             Number.parseFloat(variant.compareAtPrice?.amount || '') - Number.parseFloat(variant.price.amount || '')) ||
         0;
     return (
-        <Content className={(discount > 0 && 'Sale') || ''}>
+        <Content className={`${styles.container} ${(discount > 0 && 'sale') || ''}`}>
             <ProductImage>
                 <ImageWrapper>
                     <Link href={`/products/${product?.handle}/`} locale={locale}>
@@ -358,7 +343,7 @@ const CartItem: FunctionComponent<CartItemProps> = ({ locale, i18n }) => {
 
             {(variant.price?.amount && (
                 <PriceSection>
-                    <Price className={`${(discount > 0 && 'Sale') || ''}`}>
+                    <Price className={`${(discount > 0 && 'sale') || ''}`}>
                         {discount > 0 && variant.compareAtPrice?.amount && (
                             <Money
                                 data={{

@@ -67,7 +67,7 @@ export default function ProvidersRegistry({
                         <HeaderProvider store={store}>
                             <AnalyticsProvider shop={shop} locale={locale}>
                                 <ThirdPartiesProvider shop={shop}>
-                                    <Toaster theme="light" />
+                                    <Toaster theme="dark" style={{ background: 'var(--color-accent-primary)' }} />
                                     {children}
                                 </ThirdPartiesProvider>
                             </AnalyticsProvider>

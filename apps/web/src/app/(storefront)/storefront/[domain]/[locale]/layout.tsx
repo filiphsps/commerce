@@ -16,6 +16,7 @@ import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
+import { colord } from 'colord';
 import { Lexend_Deca } from 'next/font/google';
 import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
@@ -29,7 +30,7 @@ export const dynamicParams = true;
 const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
     if (!branding?.colors) return null;
     const { colors } = branding;
-    
+
     // TODO: Deal with variants.
     const primary = colors.find(({ type }) => type === 'primary');
     const secondary = colors.find(({ type }) => type === 'secondary');
@@ -59,7 +60,7 @@ export async function generateViewport({
         if (!locale) return {};
 
         const shop = await ShopApi({ domain });
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         const store = await StoreApi({ api });
         const branding = getBrandingColors(shop.configuration.design);
@@ -161,44 +162,72 @@ export default async function RootLayout({
                 className={`${font.variable}`}
                 style={
                     {
-                        ...(branding?.primary ? {
-                            '--color-accent-primary': branding?.primary?.accent,
-                            '--color-accent-primary-text': branding?.primary?.foreground,
-                            '--color-background': branding?.primary?.background,
-                            '--color-foreground': branding?.primary?.foreground,
+                        ...(branding?.primary
+                            ? {
+                                  '--color-accent-primary': branding?.primary?.accent,
+                                  '--color-accent-primary-text': branding?.primary?.foreground,
+                                  '--color-background': branding?.primary?.background,
+                                  '--color-foreground': branding?.primary?.foreground,
 
-                            // TODO: Figure out how to deal with `color-block`.
+                                  // TODO: This should probably be handled by the API.
+                                  '--color-accent-primary-light': colord(branding.primary.accent).lighten(0.15).toHex(),
+                                  '--color-accent-primary-dark': colord(branding.primary.accent).darken(0.15).toHex(),
 
-                            // Legacy.
-                            '--accent-primary': store?.accent?.primary,
+                                  // TODO: Figure out how to deal with `color-block`.
 
-                            ...(branding?.secondary ? {
-                                '--color-accent-secondary': branding?.secondary?.accent,
-                                '--color-accent-secondary-text': branding?.secondary?.foreground,
+                                  ...(branding?.secondary
+                                      ? {
+                                            '--color-accent-secondary': branding?.secondary?.accent,
+                                            '--color-accent-secondary-text': branding?.secondary?.foreground,
 
-                                // Legacy.
-                                '--accent-secondary': branding?.secondary?.accent
-                            } : {
-                                // Fallback.
-                                '--color-accent-secondary': branding?.primary?.accent,
-                                '--color-accent-secondary-text': branding?.primary?.foreground,
+                                            // TODO: This should probably be handled by the API.
+                                            '--color-accent-secondary-light': colord(store.accent.secondary)
+                                                .lighten(0.15)
+                                                .toHex(),
+                                            '--color-accent-secondary-dark': colord(store.accent.secondary)
+                                                .darken(0.15)
+                                                .toHex()
+                                        }
+                                      : {
+                                            // Fallback.
+                                            '--color-accent-secondary': branding.primary.accent,
+                                            '--color-accent-secondary-text': branding.primary.foreground,
 
-                                // Legacy.
-                                '--accent-secondary': branding?.primary?.accent
-                            }),
-                        } : {
-                            // Legacy code-path.
-                            '--color-accent-primary': store?.accent?.primary,
-                            '--color-accent-primary-light': 'color-mix(in srgb, var(--color-accent-primary) 85%, var(--color-bright))',
-                            '--color-accent-primary-dark': 'color-mix(in srgb, var(--color-accent-primary) 65%, var(--color-dark))',
-                            '--color-accent-secondary': store?.accent?.secondary,
-                            '--color-accent-secondary-light': 'color-mix(in srgb, var(--color-accent-secondary) 65%, var(--color-bright))',
-                            '--color-accent-secondary-dark': 'color-mix(in srgb, var(--color-accent-secondary) 95%, var(--color-dark))',
+                                            // TODO: This should probably be handled by the API.
+                                            '--color-accent-secondary-light': colord(branding.primary.accent)
+                                                .lighten(0.15)
+                                                .toHex(),
+                                            '--color-accent-secondary-dark': colord(branding.primary.accent)
+                                                .darken(0.15)
+                                                .toHex()
+                                        })
+                              }
+                            : {
+                                  // Legacy code-path.
+                                  '--color-accent-primary': store?.accent?.primary,
+                                  '--color-accent-primary-light': colord(store?.accent?.primary)
+                                      .lighten(0.175)
+                                      .toHex(),
+                                  '--color-accent-primary-dark': colord(store?.accent?.primary)
+                                      .darken(0.1)
+                                      .toHex(),
+                                  '--color-accent-secondary': store?.accent?.secondary,
+                                  '--color-accent-secondary-light': colord(store?.accent?.secondary)
+                                      .lighten(0.15)
+                                      .toHex(),
+                                  '--color-accent-secondary-dark': colord(store?.accent?.secondary)
+                                      .darken(0.15)
+                                      .toHex()
+                              }),
 
-                            // Legacy.
-                            '--accent-primary': store?.accent?.primary,
-                            '--accent-secondary': store?.accent?.secondary
-                        })
+                        // Legacy
+                        '--accent-primary': 'var(--color-accent-primary)',
+                        '--accent-primary-light': 'var(--color-accent-primary-light)',
+                        '--accent-primary-dark': 'var(--color-accent-primary-dark)',
+
+                        '--accent-secondary': 'var(--color-accent-secondary)',
+                        '--accent-secondary-light': 'var(--color-accent-secondary-light)',
+                        '--accent-secondary-dark': 'var(--color-accent-secondary-dark)'
                     } as React.CSSProperties
                 }
                 suppressHydrationWarning

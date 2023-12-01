@@ -12,12 +12,9 @@ const Container = styled.section<{ $active?: boolean }>`
     color: var(--color-dark);
     transition: 150ms ease-in-out;
 
-    ${({ $active }) =>
-        $active &&
-        css`
-            border-radius: var(--block-border-radius);
-            color: var(--color-green);
-        `}
+    &.success {
+        color: var(--color-green);
+    }
 `;
 const Label = styled.div`
     gap: var(--block-spacer-small);
@@ -54,7 +51,7 @@ interface FreeShippingProgressProps {
     style?: React.CSSProperties;
     i18n: LocaleDictionary;
 }
-export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = ({ i18n, ...props }) => {
+export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> = ({ i18n, className, ...props }) => {
     const { cost } = useCart();
     const { t } = useTranslation('cart', i18n);
 
@@ -100,14 +97,16 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
         null;
 
     return (
-        <Container {...props} $active={freeShipping}>
-            {
+        <Container {...props} className={`${className || ''} ${freeShipping ? 'success' : ''}`}>
+            {freeShipping ? (
+                <Label suppressHydrationWarning>{` ${t('free-shipping-on-this-order')} `}</Label>
+            ) : (
                 <Label suppressHydrationWarning>
                     {amountLeftComponent}
                     {` ${t('away-from-getting')} `}
                     <Target suppressHydrationWarning>{t('free-shipping')}</Target>.
                 </Label>
-            }
+            )}
             <ProgressBar $full={freeShipping}>
                 <ProgressBarLine
                     style={{

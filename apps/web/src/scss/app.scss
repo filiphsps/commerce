@@ -16,7 +16,8 @@
 
     --color-lights-out: #051821;
 
-    --color-block: #ececec;
+    --color-block: #e6e6e6;
+    --color-block-light: #f5f5f5;
     --color-block-dark: #bebebe;
     --color-block-black: #7c7c7c;
     --color-block-shadow: rgba(0, 0, 0, 0.35);
@@ -82,23 +83,6 @@ body {
     }
 
     &:root {
-        --accent-primary-dark: var(
-            --color-accent-primary-dark,
-            var(--color-accent-primary, color-mix(in srgb, var(--accent-primary) 65%, var(--color-dark)))
-        );
-        --accent-primary-light: var(
-            --color-accent-primary-light,
-            var(--color-accent-primary, color-mix(in srgb, var(--accent-primary) 85%, var(--color-bright)))
-        );
-        --accent-secondary-dark: var(
-            --color-accent-secondary-dark,
-            var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 95%, var(--color-dark)))
-        );
-        --accent-secondary-light: var(
-            --color-accent-secondary-light,
-            var(--color-accent-secondary, color-mix(in srgb, var(--accent-secondary) 65%, var(--color-bright)))
-        );
-
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
@@ -205,27 +189,5 @@ input[type='search']:is(
         left: 0;
         width: 100%;
         height: var(--block-padding-small) !important;
-    }
-}
-
-@keyframes swing {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    15% {
-        transform: rotate(0deg);
-    }
-
-    50% {
-        transform: rotate(180deg);
-    }
-
-    65% {
-        transform: rotate(180deg);
-    }
-
-    100% {
-        transform: rotate(0deg);
     }
 }

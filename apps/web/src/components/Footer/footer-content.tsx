@@ -24,21 +24,16 @@ const Logo = styled.div`
         height: 100%;
         width: 100%;
         object-fit: contain;
-        object-position: center;
-
-        @media (min-width: 950px) {
-            object-position: 0;
-        }
+        object-position: left;
     }
 `;
 const Address = styled.address`
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+    font-size: 1.5rem;
+    line-height: normal;
     font-weight: 400;
-    text-align: center;
 
     @media (min-width: 950px) {
-        text-align: inherit;
+        font-size: 1.25rem;
     }
 `;
 
@@ -57,9 +52,9 @@ const FooterBlocksContainer = styled.div`
 `;
 const FooterBlock = styled.div`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: flex-end;
     flex-direction: column;
-    gap: var(--block-spacer);
     width: 100%;
     height: 100%;
 
@@ -67,11 +62,12 @@ const FooterBlock = styled.div`
     line-height: 1.15;
     font-weight: 400;
 
+    a {
+        font-weight: inherit;
+        margin-bottom: var(--block-spacer);
+    }
+
     @media (min-width: 950px) {
-        padding-bottom: 0;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 0.5rem;
         font-size: 1.5rem;
         line-height: normal;
     }
@@ -80,21 +76,23 @@ const FooterBlock = styled.div`
 const BlockTitle = styled.div`
     font-size: 2.5rem;
     line-height: normal;
-    font-weight: 700;
+    font-weight: 600;
+    margin-bottom: var(--block-spacer-small);
 `;
 
 const LegalAndCopyright = styled.div`
-    height: 4rem;
-    margin: 1rem 0;
+    margin: var(--block-spacer-large) 0;
 
     @media (min-width: 950px) {
+        height: 4rem;
         margin: 0;
     }
 `;
 const FooterBottomSection = styled.section`
     display: grid;
     grid-template-columns: 1fr;
-    padding-top: 1rem;
+    padding-top: var(--block-spacer-large);
+    gap: var(--block-spacer-small);
 
     @media (min-width: 950px) {
         grid-template-columns: 1fr 1fr;
@@ -104,11 +102,11 @@ const FooterBottomSectionBlock = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
-    gap: var(--block-spacer-large);
+    align-items: flex-start;
+    gap: var(--block-spacer);
 
     &:nth-child(2) {
-        align-items: center;
+        align-items: flex-start;
 
         @media (min-width: 950px) {
             align-items: flex-end;
@@ -119,42 +117,51 @@ const FooterBottomSectionBlock = styled.div`
         justify-content: flex-end;
         align-items: flex-start;
         gap: 0.5em;
+        gap: var(--block-spacer-large);
     }
 `;
 const ImportantLinks = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: var(--block-spacer);
 
     @media (min-width: 950px) {
         display: grid;
         grid-template-columns: auto auto auto;
-        gap: 1.25rem;
+        gap: var(--block-spacer-large);
         height: 3rem;
     }
 `;
 
 const Copyright = styled.div`
     display: block;
-    height: 3rem;
-    font-size: 1.25rem;
-    font-weight: 800;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: normal;
     text-transform: uppercase;
-    text-align: center;
+    text-align: left;
 
     @media (min-width: 950px) {
         display: flex;
         justify-content: flex-end;
         align-items: flex-end;
         gap: var(--block-spacer-small);
+        font-weight: 800;
         text-align: right;
+        height: 3rem;
+        font-size: 1.25rem;
     }
 `;
 const Policy = styled(Link)`
-    padding: var(--block-padding-large) 0;
-    font-size: 1.25rem;
-    font-weight: 800;
+    font-size: 1.5rem;
+    font-weight: 700;
     text-transform: uppercase;
+
+    @media (min-width: 950px) {
+        padding: var(--block-padding-large) 0;
+        font-weight: 800;
+        font-size: 1.25rem;
+    }
 `;
 const Socials = styled(ImportantLinks)`
     display: flex;
@@ -185,6 +192,8 @@ export type FooterContentProps = {
 };
 export const FooterContent = ({ locale, i18n, store, data: footer }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
+
+    const year = new Date().getFullYear();
 
     return (
         <>
@@ -255,13 +264,13 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                     </Socials>
                     <LegalAndCopyright>
                         <Copyright>
-                            <span>&copy; {new Date().getFullYear()} </span>
+                            <span>&copy; {`${year !== 2023 ? '2023-' : ''}${year} `}</span>
                             <span>
                                 <Link href={`https://nordcom.io/`} target="_blank">
                                     Nordcom Group Inc.
                                 </Link>
                             </span>
-                            <span> - All Rights Reserved</span>
+                            <span>{` — All Rights Reserved`}</span>
                         </Copyright>
                     </LegalAndCopyright>
                 </FooterBottomSectionBlock>

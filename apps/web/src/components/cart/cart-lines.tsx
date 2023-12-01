@@ -5,7 +5,7 @@ import '@/styles/currency.scss';
 import { CartLineProvider, useCart } from '@shopify/hydrogen-react';
 
 import CartItem from '@/components/CartItem';
-import { LoadingIndicator } from '@/components/informational/loading-indicator';
+import styles from '@/components/cart/cart-lines.module.scss';
 import { Label } from '@/components/typography/label';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense } from 'react';
@@ -64,9 +64,14 @@ type CartContentProps = {
 };
 export default function CartLines({ locale, i18n }: CartContentProps) {
     const { status, lines } = useCart();
-    if (!['idle', 'uninitialized'].includes(status)) return <LoadingIndicator />;
 
-    if (!lines || lines.length <= 0)
+    console.log(status, lines);
+
+    const noItems = !lines || lines.length <= 0;
+
+    if (['fetching', 'creating', 'uninitialized'].includes(status) && noItems) {
+        return <CartLinesSkeleton />;
+    } else if (['idle'].includes(status) && noItems) {
         return (
             <NoItems>
                 <div>
@@ -74,28 +79,41 @@ export default function CartLines({ locale, i18n }: CartContentProps) {
                 </div>
             </NoItems>
         );
+    }
 
     return (
         <Container>
-            <tbody>
-                <Suspense
-                    fallback={
-                        <>
-                            <CartItem locale={locale} i18n={i18n} />
-                        </>
-                    }
-                >
-                    {lines?.map((item) => {
-                        if (!item) return null;
+            <Suspense
+                fallback={
+                    <>
+                        <CartItem locale={locale} i18n={i18n} />
+                    </>
+                }
+            >
+                {!noItems ? (
+                    <tbody>
+                        {lines?.map((item) => {
+                            if (!item) return null;
 
-                        return (
-                            <CartLineProvider key={item.id} line={item}>
-                                <CartItem locale={locale} i18n={i18n} />
-                            </CartLineProvider>
-                        );
-                    })}
-                </Suspense>
-            </tbody>
+                            return (
+                                <CartLineProvider key={item.id} line={item}>
+                                    <CartItem locale={locale} i18n={i18n} />
+                                </CartLineProvider>
+                            );
+                        })}
+                    </tbody>
+                ) : null}
+            </Suspense>
         </Container>
     );
 }
+
+export const CartLinesSkeleton = () => {
+    return (
+        <section className={styles.container}>
+            {[...Array(3).keys()].map((i) => (
+                <div key={i} className={`${styles['line-item']} ${styles.placeholder}`} />
+            ))}
+        </section>
+    );
+};

@@ -2,6 +2,7 @@
 
 .container {
     appearance: none;
+    -webkit-appearance: none;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -34,6 +35,10 @@
             calc(var(--block-padding) - var(--block-border-width));
     }
 
+    &:hover {
+        background-color: var(--accent-primary-light);
+    }
+
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
         background-color: var(--color-block-success);
         border-color: var(--color-block-success-dark);
@@ -42,15 +47,19 @@
     }
 
     &:not([data-success], :disabled) {
+        background-color: var(--accent-primary);
+
         &:is(:hover) {
             background-color: var(--accent-primary-light);
+            border-color: var(--accent-primary-light);
         }
         &:is(:active, :focus, :focus-within) {
             background-color: var(--accent-primary-dark);
+            border-color: var(--accent-primary-dark);
         }
     }
 
-    &:is(:disabled):not([data-success]) {
+    &:is(:disabled):not([data-success], [data-ready]) {
         border-color: var(--color-block);
         background-color: var(--color-block);
         color: var(--color-block-black);
