@@ -12,32 +12,33 @@ model User {
     id            String             @id @default(cuid())
     createdAt     DateTime           @default(now())
     updatedAt     DateTime           @updatedAt
-    name          String?
+    name          String?            @db.Text
     ghUsername    String?            @unique // GitHub username
     email         String             @unique
-    image         String?
     emailVerified DateTime?
+    image         String?            @db.Text
     accounts      Account[]
     sessions      Session[]
     shops         ShopCollaborator[]
 }
 
 model Account {
-    id                String   @id @default(cuid())
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
-    userId            String
-    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String?  @db.Text
-    access_token      String?  @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?  @db.Text
-    session_state     String?
+    id                       String   @id @default(cuid())
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @updatedAt
+    userId                   String
+    user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String?  @map("refreshToken") @db.Text
+    refresh_token_expires_in Int?     @map("refreshTokenExpiresIn")
+    access_token             String?  @map("accessToken") @db.Text
+    expires_at               Int?     @map("expiresAt")
+    token_type               String?  @map("tokenType")
+    scope                    String?
+    id_token                 String?  @map("idToken") @db.Text
+    session_state            String?  @map("sessionState")
 
     @@unique([provider, providerAccountId])
     @@index([userId])
@@ -76,7 +77,7 @@ model ShopCollaborator {
 }
 
 model Shop {
-    id                 String             @id
+    id                 String             @id // Based on the name, for example `nordcom-demo`.
     createdAt          DateTime           @default(now())
     updatedAt          DateTime           @updatedAt
     name               String             @db.Text
