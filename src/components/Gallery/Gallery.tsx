@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import type { FunctionComponent } from 'react';
 import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
-import { ImageLoader } from '@/utils/ImageLoader';
 
 const Previews = styled.div`
     position: relative;
@@ -214,7 +213,6 @@ const Gallery: FunctionComponent<GalleryProps> = ({
                         width={image.width || 0}
                         height={image.height || 0}
                         priority
-                        loader={ImageLoader}
                     />
                 </ImageWrapper>
             </Primary>
@@ -234,7 +232,6 @@ const Gallery: FunctionComponent<GalleryProps> = ({
                                     width={125}
                                     height={125}
                                     sizes="(max-width: 950px) 75px, 250px"
-                                    loader={ImageLoader}
                                 />
                             </ImageWrapper>
                         </Preview>
