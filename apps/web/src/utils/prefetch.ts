@@ -52,7 +52,8 @@ const Prefetch = ({
                             let collection = await CollectionApi({
                                 api,
                                 handle,
-                                limit: slice.variation === 'full' ? undefined : limit
+                                // TODO: Pagination for the full variation.
+                                limit: slice.variation === 'full' ? 200 : limit
                             });
 
                             if (!collection) {
