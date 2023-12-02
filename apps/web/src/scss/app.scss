@@ -116,6 +116,10 @@ body {
             --block-spacer-large: 1rem;
         }
     }
+
+    [data-sonner-toaster] {
+        font-family: var(--font-primary);
+    }
 }
 
 a:not(:disabled) {
