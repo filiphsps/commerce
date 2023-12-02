@@ -17,7 +17,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { colord } from 'colord';
-import { Lexend_Deca } from 'next/font/google';
+import { Public_Sans } from 'next/font/google';
 import { type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
@@ -41,7 +41,7 @@ const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) =
     };
 };
 
-const font = Lexend_Deca({
+const fontPrimary = Public_Sans({
     weight: 'variable',
     subsets: ['latin'],
     display: 'swap',
@@ -159,7 +159,7 @@ export default async function RootLayout({
         return (
             <html
                 lang={locale.code}
-                className={`${font.variable}`}
+                className={`${fontPrimary.variable}`}
                 style={
                     {
                         ...(branding?.primary
