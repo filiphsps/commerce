@@ -8,6 +8,11 @@ body {
     background: var(--color-background, #000000);
     color: var(--color-foreground, #fefefe);
     font-size: 14px;
+    font-family: var(--font-primary);
+
+    [data-sonner-toaster] {
+        font-family: var(--font-primary);
+    }
 }
 
 :root {
