@@ -4,9 +4,6 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-//import { createRequire } from 'node:module';
-//const require = createRequire(import.meta.url);
-
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx', 'md'],
@@ -48,6 +45,7 @@ const config = {
     images: {
         //loader: 'custom',
         //loaderFile: './src/utils/image-loader.ts',
+        dangerouslyAllowSVG: true,
         remotePatterns: [
             {
                 protocol: 'https',
