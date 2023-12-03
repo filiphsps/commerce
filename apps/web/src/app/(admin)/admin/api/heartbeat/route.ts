@@ -1,5 +1,5 @@
 import { ShopsApi } from '@/api/shop';
-import { ShopifyApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { Locale } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -15,7 +15,7 @@ export async function GET(_req: NextRequest, {}: { params: HeartbeatApiRoutePara
 
         switch (shop.configuration.commerce.type) {
             case 'shopify': {
-                const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+                const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
                 const _api = await ShopifyApiClient({ shop, locale, apiConfig });
 
                 // TODO: Check if webhooks are set up. If not, set them up.

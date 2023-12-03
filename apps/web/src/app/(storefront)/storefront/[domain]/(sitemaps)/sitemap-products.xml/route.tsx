@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiConfig, StorefrontApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
@@ -13,7 +13,7 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi({ domain });
     const locale = Locale.default;
-    const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+    const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await StorefrontApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });
 

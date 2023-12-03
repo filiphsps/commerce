@@ -4,7 +4,7 @@ import { FooterApi } from '@/api/footer';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { ShopApi, type Shop } from '@/api/shop';
-import { ShopifyApolloApiClient, StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiConfig, ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { PageProvider } from '@/components/layout/page-provider';
 import ProvidersRegistry from '@/components/providers-registry';
@@ -144,7 +144,7 @@ export default async function RootLayout({
         if (!locale) return notFound();
 
         const shop = await ShopApi({ domain });
-        const apiConfig = await shopifyApiConfig({ shop });
+        const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const i18n = await getDictionary(locale);
