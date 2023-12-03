@@ -1,8 +1,8 @@
 import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { sendGTMEvent } from '@next/third-parties/google';
 import type { CartWithActions } from '@shopify/hydrogen-react';
+import type { TrackableContextValue } from './trackable';
 
 // Const hacky workaround for ga4 cross-domain
 // Ugly hack taken from StackOverflow
@@ -33,7 +33,17 @@ export const getCrossDomainLinkerParameter = () => {
     return null; // TODO: Maybe throw an error here.
 };
 
-export const Checkout = async ({ shop, locale, cart }: { shop: Shop; locale: Locale; cart: CartWithActions }) => {
+export const Checkout = async ({
+    shop,
+    locale,
+    cart,
+    trackable
+}: {
+    shop: Shop;
+    locale: Locale;
+    cart: CartWithActions;
+    trackable: TrackableContextValue;
+}) => {
     if (!cart.totalQuantity || cart.totalQuantity <= 0 || !cart.lines) throw new Error('Cart is empty!');
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
@@ -44,37 +54,37 @@ export const Checkout = async ({ shop, locale, cart }: { shop: Shop; locale: Loc
     }
 
     try {
-        // Google Tracking
-        sendGTMEvent({
-            ecommerce: null
-        });
-        sendGTMEvent({
-            event: 'begin_checkout',
-            ecommerce: {
-                currency: cart.cost?.totalAmount?.currencyCode!,
-                value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-                items: cart.lines.map(
-                    (line) =>
-                        line && {
-                            item_id: ProductToMerchantsCenterId({
-                                locale: locale,
-                                product: {
-                                    productGid: line.merchandise!.product!.id,
-                                    variantGid: line.merchandise!.id
-                                } as any
-                            }),
-                            item_name: line.merchandise?.product?.title,
-                            item_variant: line.merchandise?.title,
-                            item_brand: line.merchandise?.product?.vendor,
-                            currency: line.merchandise?.price?.currencyCode!,
-                            price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
-                            quantity: line.quantity
-                        }
-                )
+        trackable.queueEvent('begin_checkout', {
+            gtm: {
+                ecommerce: {
+                    currency: cart.cost?.totalAmount?.currencyCode!,
+                    value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
+                    items: cart.lines.map(
+                        (line) =>
+                            line && {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale: locale,
+                                    product: {
+                                        productGid: line.merchandise!.product!.id,
+                                        variantGid: line.merchandise!.id
+                                    } as any
+                                }),
+                                item_name: line.merchandise?.product?.title,
+                                item_variant: line.merchandise?.title,
+                                item_brand: line.merchandise?.product?.vendor,
+                                currency: line.merchandise?.price?.currencyCode!,
+                                price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                                quantity: line.quantity
+                            }
+                    )
+                }
             }
         });
 
-        // Microsoft Ads tracking
+        /**
+         * Microsoft Universal Event Tracking
+         * @todo TODO: Move this to `<Trackable />`.
+         */
         if ((window as any).uetq) {
             (window as any).uetq.push('event', 'begin_checkout', {
                 ecomm_prodid: cart.lines.map((line) => line && line.merchandise?.id),
