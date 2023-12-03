@@ -117,5 +117,8 @@
     },
     "[markdown]": {
         "editor.formatOnType": true
-    }
+    },
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    "prettier.requireConfig": true
 }
