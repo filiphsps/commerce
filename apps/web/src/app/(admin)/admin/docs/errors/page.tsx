@@ -1,4 +1,5 @@
-import { getAllErrorCodes, getErrorFromCode } from '@/utils/errors';
+import type { Error } from '@/utils/errors';
+import { MissingContextProviderError, getAllErrorCodes, getErrorFromCode } from '@/utils/errors';
 import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -24,7 +25,15 @@ export default async function DocsErrorsPage({ params: {} }: { params: DocsError
                     const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
                     if (!ErrorKind) return null;
 
-                    const error = new ErrorKind();
+                    let error!: Error<string>;
+                    if (ErrorKind instanceof MissingContextProviderError) {
+                        error = new (ErrorKind as typeof MissingContextProviderError)(
+                            'useSomeContext',
+                            'SomeContextProvider'
+                        );
+                    } else {
+                        error = new ErrorKind();
+                    }
 
                     return (
                         <Card

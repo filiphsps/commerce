@@ -5,6 +5,7 @@ import { CartSummary } from '@/components/CartSummary';
 import styles from '@/components/typography/label.module.scss';
 import { Checkout } from '@/utils/checkout';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { useTrackable } from '@/utils/trackable';
 import { useCart } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 
@@ -17,6 +18,7 @@ export type CartSidebarProps = {
 } & HTMLProps<HTMLDivElement>;
 export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSidebarProps) => {
     const cart = useCart();
+    const trackable = useTrackable();
 
     return (
         <aside {...props} className={`${styles.container} ${className || ''}`}>
@@ -31,7 +33,8 @@ export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSid
                         await Checkout({
                             shop,
                             locale,
-                            cart
+                            cart,
+                            trackable
                         });
                     } catch (error: any) {
                         console.error(error);

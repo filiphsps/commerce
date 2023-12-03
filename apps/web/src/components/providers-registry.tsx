@@ -67,8 +67,8 @@ export default function ProvidersRegistry({
                     <CartProvider cartFragment={CartFragment}>
                         <ShopProvider shop={shop} currency={'USD'}>
                             <HeaderProvider store={store}>
-                                <AnalyticsProvider shop={shop} locale={locale}>
-                                    <ThirdPartiesProvider shop={shop}>
+                                <AnalyticsProvider>
+                                    <ThirdPartiesProvider shop={shop} locale={locale}>
                                         <Toaster theme="dark" style={{ background: 'var(--color-accent-primary)' }} />
                                         {children}
                                     </ThirdPartiesProvider>

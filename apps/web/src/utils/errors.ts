@@ -168,7 +168,8 @@ export enum GenericErrorKind {
     GENERIC_TODO = 'GENERIC_TODO',
     NOT_FOUND = 'NOT_FOUND',
     UNREACHABLE = 'UNREACHABLE',
-    INVALID_TYPE = 'INVALID_TYPE'
+    INVALID_TYPE = 'INVALID_TYPE',
+    MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER'
 }
 
 export class GenericError extends Error<GenericErrorKind> {
@@ -220,12 +221,25 @@ export class TypeError extends GenericError {
     description = 'Invalid type was passed to function';
     code = GenericErrorKind.INVALID_TYPE;
 }
+export class MissingContextProviderError extends GenericError {
+    name = 'MissingContextProviderError';
+    details = 'Missing Context Provider';
+    code = GenericErrorKind.MISSING_CONTEXT_PROVIDER;
+
+    constructor(functionName: string, contextName: string) {
+        super();
+
+        this.description = `\`${functionName}()\` must be used within a \`<${contextName}/>\` provider.`;
+    }
+}
 
 export const getAllErrorCodes = () => {
     return [...Object.values(GenericErrorKind), ...Object.values(ApiErrorKind)];
 };
 
-export const getErrorFromCode = (code: GenericErrorKind | ApiErrorKind) => {
+export const getErrorFromCode = (
+    code: GenericErrorKind | ApiErrorKind
+): typeof GenericError | typeof ApiError | null => {
     switch (code) {
         // Generic Errors.
         case GenericErrorKind.GENERIC_UNKNOWN_ERROR:
@@ -238,6 +252,8 @@ export const getErrorFromCode = (code: GenericErrorKind | ApiErrorKind) => {
             return UnreachableError;
         case GenericErrorKind.INVALID_TYPE:
             return TypeError;
+        case GenericErrorKind.MISSING_CONTEXT_PROVIDER:
+            return MissingContextProviderError as any;
 
         // Api Errors.
         case ApiErrorKind.API_UNKNOWN_ERROR:

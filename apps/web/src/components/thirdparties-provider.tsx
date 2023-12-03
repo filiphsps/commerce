@@ -1,6 +1,8 @@
 'use client';
 
 import type { Shop } from '@/api/shop';
+import { useCartUtils } from '@/hooks/useCartUtils';
+import type { Locale } from '@/utils/locale';
 import * as Prismic from '@/utils/prismic';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { PrismicPreview } from '@prismicio/next';
@@ -9,9 +11,10 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 export type ThirdPartiesProviderProps = {
     shop: Shop;
+    locale: Locale;
     children: ReactNode;
 };
-export const ThirdPartiesProvider = ({ shop, children }: ThirdPartiesProviderProps) => {
+export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
     const [delayedContent, setDelayedContent] = useState<ReactNode>(null);
     useEffect(() => {
         if (!shop?.configuration?.thirdParty?.googleTagManager) {
@@ -36,6 +39,11 @@ export const ThirdPartiesProvider = ({ shop, children }: ThirdPartiesProviderPro
 
         return () => clearTimeout(timeout);
     }, []);
+
+    // Not really a third party, but it's a good place to put it.
+    useCartUtils({
+        locale
+    });
 
     return (
         <>

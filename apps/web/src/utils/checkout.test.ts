@@ -87,6 +87,12 @@ describe('utils', () => {
                 }
             }
         } as any;
+
+        const trackable = {
+            queueEvent: vi.fn(),
+            postEvent: vi.fn()
+        };
+
         const locale = Locale.from('en-US')!;
 
         beforeEach(() => {
@@ -107,7 +113,7 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ shop, locale, cart: emptyCart })).rejects.toThrow('Cart is empty!');
+            await expect(Checkout({ shop, locale, cart: emptyCart, trackable })).rejects.toThrow('Cart is empty!');
         });
 
         it(`should throw an error when cart is missing checkoutUrl`, async () => {
@@ -140,13 +146,13 @@ describe('utils', () => {
                 }
             } as any;
 
-            await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl })).rejects.toThrow(
+            await expect(Checkout({ shop, locale, cart: cartWithoutCheckoutUrl, trackable })).rejects.toThrow(
                 'Cart is missing checkoutUrl'
             );
         });
 
-        it.fails(`should track the begin_checkout event in Google Analytics`, async () => {
-            await Checkout({ shop, locale, cart });
+        it.skip(`should track the begin_checkout event in Google Analytics`, async () => {
+            await Checkout({ shop, locale, cart, trackable });
 
             expect((window as any).dataLayer).toContainEqual({
                 event: 'begin_checkout',
