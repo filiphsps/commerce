@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiConfig, StorefrontApiClient } from '@/api/shopify';
 import { CollectionsPaginationApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { Error, UnknownApiError } from '@/utils/errors';
@@ -17,7 +17,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     try {
         const shop = await ShopApi({ domain });
         const locale = Locale.default;
-        const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+        const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
         const api = await StorefrontApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 

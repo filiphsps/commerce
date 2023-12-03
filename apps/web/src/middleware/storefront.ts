@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { getHostname } from '@/middleware/router';
@@ -48,7 +48,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const apiConfig = await shopifyApiConfig({ shop, noHeaders: false });
+            const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api })).map(({ code }) => code);
 

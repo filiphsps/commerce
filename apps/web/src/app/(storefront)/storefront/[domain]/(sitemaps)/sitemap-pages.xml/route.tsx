@@ -1,6 +1,6 @@
 import { PagesApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 import type { ISitemapField } from 'next-sitemap';
@@ -12,7 +12,7 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi({ domain });
     const locale = Locale.default;
-    const apiConfig = await shopifyApiConfig({ shop, noHeaders: true });
+    const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await ShopifyApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });
 

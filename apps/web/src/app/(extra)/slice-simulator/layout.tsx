@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient, shopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import ProvidersRegistry from '@/components/providers-registry';
 import { Locale } from '@/utils/locale';
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     const shop = await ShopApi({ domain: 'demo.nordcom.io' }); // TODO: Don't hardcode this.
     const locale = Locale.default;
-    const shopifyApi = await shopifyApiConfig({ shop });
-    const api = await StorefrontApiClient({ shop, locale });
+    const shopifyApi = await ShopifyApiConfig({ shop });
+    const api = await ShopifyApiClient({ shop, locale });
     const store = await StoreApi({ api });
 
     return (

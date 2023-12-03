@@ -9,7 +9,7 @@ import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 
-export const shopifyApiConfig = async ({
+export const ShopifyApiConfig = async ({
     shop,
     noHeaders = true
 }: {
@@ -50,7 +50,7 @@ export const shopifyApiConfig = async ({
     };
 };
 
-type StorefrontApiConfig = Awaited<ReturnType<typeof shopifyApiConfig>>;
+type StorefrontApiConfig = Awaited<ReturnType<typeof ShopifyApiConfig>>;
 type ShopifyApiOptions = {
     shop: Shop;
     locale?: Locale;
@@ -63,7 +63,7 @@ export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, ap
     return ApiBuilder({
         shop,
         locale: locale,
-        api: setupApollo((apiConfig || (await shopifyApiConfig({ shop }))).private()).getClient()
+        api: setupApollo((apiConfig || (await ShopifyApiConfig({ shop }))).private()).getClient()
     });
 };
 
@@ -76,7 +76,7 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
         locale,
         api: {
             query: async ({ query, context: { fetchOptions, ...context }, variables }: any) => {
-                const config = (apiConfig || (await shopifyApiConfig({ shop })))!.private()!;
+                const config = (apiConfig || (await ShopifyApiConfig({ shop })))!.private()!;
 
                 const response = await fetch(config.uri, {
                     method: 'POST',
