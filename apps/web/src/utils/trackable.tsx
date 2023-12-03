@@ -48,7 +48,10 @@ function shopifyEventHandler(
     const pageAnalytics = {
         canonicalUrl: '',
         resourceId: '',
-        pageType: 'index' // https://shopify.dev/docs/api/hydrogen-react/2023-10/utilities/sendshopifyanalytics#analyticspagetype
+        /**
+         * @see {@link https://shopify.dev/docs/api/hydrogen-react/2023-10/utilities/sendshopifyanalytics#analyticspagetype}
+         */
+        pageType: 'index'
     };
 
     const sharedPayload: ShopifyPageViewPayload = {
@@ -126,7 +129,7 @@ export function Trackable({}: TrackableProps) {
     }, [, path]);
 
     useEffect(() => {
-        if (!shop || !currency) return;
+        if (!shop || !currency || !queue || queue.length <= 0) return;
 
         // Flush queue.
         setQueue((queue) => {
