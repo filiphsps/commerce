@@ -52,11 +52,8 @@ const TitleContainer = styled.div`
         align-items: center;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover,
-        &:active {
-            outline-color: var(--accent-primary);
-        }
+    &:is(:hover, :active) {
+        outline-color: var(--accent-primary);
     }
 `;
 
@@ -69,11 +66,9 @@ const Item = styled(Link)`
     outline-color: var(--accent-secondary-light);
     outline-width: 0;
 
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            background: var(--accent-primary);
-            outline: var(--block-border-width) solid var(--accent-primary);
-        }
+    &:is(:hover, :active) {
+        background: var(--accent-primary);
+        outline: var(--block-border-width) solid var(--accent-primary);
     }
 `;
 
