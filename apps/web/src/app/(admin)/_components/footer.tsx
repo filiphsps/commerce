@@ -14,14 +14,17 @@ export default function Footer({ className, ...props }: FooterProps) {
 
                         <div className={`${styles.status} ${styles.beside}`}>
                             <section className={styles.section}>
-                                <div className={styles.indicator}></div>
-                                <Heading level="h4" as="div" className={styles.message}>
-                                    All Services Operational
-                                </Heading>
+                                <iframe
+                                    src="https://status.nordcom.io/badge?theme=dark"
+                                    width="250"
+                                    height="0.75rem"
+                                    frameborder="0"
+                                    scrolling="no"
+                                />
                             </section>
                             <section className={styles.section}>
-                                <Link href="https://status.nordcom.io/" target="_blank">
-                                    Status
+                                <Link href="/changelog/" target="_blank">
+                                    {(process.env.GIT_COMMIT_SHA || '').slice(0, 7)}
                                 </Link>
                             </section>
                         </div>

@@ -4,7 +4,7 @@
     overflow: hidden;
     display: inline-block;
     max-height: 100%;
-    padding: calc(var(--block-padding) / 1.5) var(--block-padding);
+    padding: calc(var(--layout-block-padding) / 1.5) var(--layout-block-padding);
     text-transform: uppercase;
     text-align: center;
     font-weight: 700;

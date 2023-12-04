@@ -37,7 +37,7 @@
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
-                gap: calc(var(--block-padding) / 2);
+                gap: calc(var(--layout-block-padding) / 2);
 
                 .indicator {
                     width: 0.75rem;
@@ -54,7 +54,7 @@
                 a,
                 .message {
                     text-transform: uppercase;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: inherit;
                 }
             }
@@ -73,12 +73,12 @@
         padding: var(--layout-section-padding) 0;
 
         text-transform: uppercase;
-        font-weight: 800;
+        font-weight: 600;
         font-size: 1em;
 
         .links {
             display: flex;
-            gap: var(--block-padding);
+            gap: var(--layout-block-padding);
         }
 
         &.beside {
@@ -98,7 +98,7 @@
     grid-template-columns: 1fr 1fr;
     justify-content: flex-start;
     align-items: center;
-    gap: calc(var(--block-padding) / 4);
+    gap: calc(var(--layout-block-padding) / 4);
 
     .section {
         &:is(:last-child) {

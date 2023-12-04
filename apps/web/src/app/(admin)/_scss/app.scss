@@ -1,24 +1,14 @@
 @import 'destyle.css';
 @import '_text';
 
-html,
 body {
-    width: 100%;
-    max-width: 100vw;
-    background: var(--color-background, #000000);
-    color: var(--color-foreground, #fefefe);
-    font-size: 14px;
-    font-family: var(--font-primary);
-
     [data-sonner-toaster] {
-        font-family: var(--font-primary);
+        font-family: inherit;
     }
 }
 
 :root {
-    --color-accent-primary: #ed1e79;
     --color-success: #04e762;
-    --block-border-radius: 0.45rem;
 }
 
 input {

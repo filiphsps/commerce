@@ -1,25 +1,25 @@
 .container,
 article.container {
-    --small-spacing: calc(var(--block-padding) / 3);
-    --spacing: calc(var(--block-padding) / 1.5);
+    --small-spacing: calc(var(--layout-block-padding) / 3);
+    --spacing: calc(var(--layout-block-padding) / 1.5);
 
     display: flex;
     flex-direction: column;
-    gap: calc(var(--block-padding) / 2);
+    gap: calc(var(--layout-block-padding) / 2);
     width: 100%;
     max-width: 100%;
     margin-top: calc(var(--layout-section-spacing) * 2);
     font-size: 1em;
 
     @media (min-width: 950px) {
-        --small-spacing: calc(var(--block-padding) / 2);
+        --small-spacing: calc(var(--layout-block-padding) / 2);
 
         font-size: 1.15em;
     }
 
     h2,
     [data-level='h2'] {
-        margin: var(--block-padding) 0 calc(var(--small-spacing) / 2) 0;
+        margin: var(--layout-block-padding) 0 calc(var(--small-spacing) / 2) 0;
         font-weight: 500;
         font-size: 2.5em;
         line-height: 1.1;
@@ -50,6 +50,10 @@ article.container {
         &:after {
             content: '.';
         }
+
+        code {
+            font-weight: 500;
+        }
     }
 
     h4,
@@ -67,7 +71,7 @@ article.container {
     }
 
     p img {
-        margin: var(--block-padding) 0 calc(var(--block-padding) / 2) 0;
+        margin: var(--layout-block-padding) 0 calc(var(--layout-block-padding) / 2) 0;
     }
 
     a {
@@ -79,7 +83,7 @@ article.container {
 
         li::before {
             content: '-';
-            padding: 0 calc(var(--block-padding) / 2);
+            padding: 0 calc(var(--layout-block-padding) / 2);
             font-weight: 700;
         }
     }

@@ -89,7 +89,7 @@ const config = {
     },
 
     env: {
-        // Settings
+        // Settings.
         LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
         DOMAIN: process.env.DOMAIN,
         STORE_LOCALES: process.env.STORE_LOCALES,
@@ -97,24 +97,28 @@ const config = {
         STORE_CURRENCIES: process.env.STORE_CURRENCIES,
         GTM: process.env.GTM,
 
-        // Shopify
+        // Shopify.
         SHOPIFY_SHOP_ID: process.env.SHOPIFY_SHOP_ID,
         SHOPIFY_STOREFRONT_ID: process.env.SHOPIFY_STOREFRONT_ID,
         SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
         SHOPIFY_CHECKOUT_DOMAIN: process.env.SHOPIFY_CHECKOUT_DOMAIN,
         SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
 
-        // Prismic
+        // Prismic.
         PRISMIC_REPO: process.env.PRISMIC_REPO,
+
+        // Misc.
+        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+        GIT_COMMIT_SHA: (process.env.VERCEL_GIT_COMMIT_SHA || 'unknown')
     },
     serverRuntimeConfig: {
-        // Settings
+        // Settings.
         LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
 
-        // Shopify
+        // Shopify.
         SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
 
-        // Prismic
+        // Prismic.
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
     },
     async redirects() {
