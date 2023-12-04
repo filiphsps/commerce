@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { RecommendationApi } from '@/api/recommendation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import CartItem from '@/components/CartItem';
+import Page from '@/components/Page';
+import PageContent from '@/components/PageContent';
+import PageHeader from '@/components/PageHeader';
 import type { StoreModel } from '@/models/StoreModel';
 import { createClient } from '@/prismic';
 import type { CustomPageDocument } from '@/prismic/types';
@@ -25,9 +28,6 @@ import useSWR from 'swr';
 
 const CartSummary = dynamic(() => import('@/components/CartSummary').then((c) => c.CartSummary));
 const CollectionBlock = dynamic(() => import('@/components/CollectionBlock'));
-const Page = dynamic(() => import('@/components/Page'));
-const PageContent = dynamic(() => import('@/components/PageContent'));
-const PageHeader = dynamic(() => import('@/components/PageHeader'));
 const PageLoader = dynamic(() => import('@/components/PageLoader'));
 
 const Content = styled.div`
@@ -180,6 +180,9 @@ export const Checkout = async ({
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
+                    ...(cart.discountCodes && cart.discountCodes.length > 0 ? {
+                        coupon: cart.discountCodes || '';
+                    } : {}),
                     items: cart.lines.map(
                         (line) =>
                             line && {
@@ -199,25 +202,6 @@ export const Checkout = async ({
                 }
             }
         );
-
-        // Microsoft Ads tracking
-        if ((window as any).uetq) {
-            (window as any).uetq.push('event', 'begin_checkout', {
-                ecomm_prodid: cart.lines.map((line) => line && line.merchandise?.id),
-                ecomm_pagetype: 'cart',
-                ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
-                revenue_value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
-                currency: cart.cost?.totalAmount?.currencyCode!,
-                items: cart.lines.map(
-                    (line) =>
-                        line && {
-                            id: line.merchandise?.id,
-                            quantity: line.quantity,
-                            price: Number.parseFloat(line.merchandise?.price?.amount! || '0')
-                        }
-                )
-            });
-        }
     } catch {}
 
     const ga4 = getCrossDomainLinkerParameter();
