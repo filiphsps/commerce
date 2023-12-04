@@ -27,8 +27,12 @@ export default async function Header({ className, ...props }: HeaderProps) {
                 <nav className={styles.nav} draggable={false}>
                     <div className={styles.links}>
                         <Link href="/">Home</Link>
-                        <Link href="/news/">News</Link>
-                        <Link href="/docs/">Documentation</Link>
+                        <Link href="/news/" prefetch={false}>
+                            News
+                        </Link>
+                        <Link href="/docs/" prefetch={false}>
+                            Documentation
+                        </Link>
                     </div>
 
                     {!session ? (
