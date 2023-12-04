@@ -32,7 +32,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
     return (
         <ModalContext.Provider value={{ show, hide }}>
             {children}
-            {showModal ? <></> : null}
+            {showModal ? <>{modalContent}</> : null}
         </ModalContext.Provider>
     );
 }

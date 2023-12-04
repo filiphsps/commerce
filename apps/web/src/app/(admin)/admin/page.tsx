@@ -33,7 +33,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                     We prefer working in the open, none of the content on this site is final and should only be taken as
                     placeholder content.
                     <br />
-                    If you'd like to learn more please reach out to us on{' '}
+                    If you&apos;d like to learn more please reach out to us on{' '}
                     <Link
                         target="_blank"
                         rel="noopener noreferrer"

@@ -77,9 +77,6 @@
         "turbo": "1.10.16",
         "typescript": "5.3.2"
     },
-    "dependencies": {
-        "@nordcom/nordstar": "0.0.13"
-    },
     "packageManager": "npm@10.2.4",
     "nextBundleAnalysis": {
         "budget": 248400,

@@ -1,5 +1,4 @@
 import styles from '#/components/footer.module.scss';
-import { Heading } from '@nordcom/nordstar';
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
 
@@ -15,6 +14,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                         <div className={`${styles.status} ${styles.beside}`}>
                             <section className={styles.section}>
                                 <iframe
+                                    title="Nordcom Status"
                                     src="https://status.nordcom.io/badge?theme=dark"
                                     width="250"
                                     height="0.75rem"
