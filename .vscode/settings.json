@@ -44,9 +44,7 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/.next": true,
-        "**/node_modules": true,
         "**/coverage": true,
-        "**/package-lock.json": true,
         "**/*.tsbuildinfo": true
     },
     "files.autoSave": "off",

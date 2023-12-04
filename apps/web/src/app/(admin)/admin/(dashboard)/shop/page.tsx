@@ -1,10 +1,9 @@
 import { getSession } from '#/utils/auth';
-import { Heading } from '@nordcom/nordstar';
+import { Button, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import styles from './page.module.scss';
-import { Button } from '#/components/button';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Your Shops'

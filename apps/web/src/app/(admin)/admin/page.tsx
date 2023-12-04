@@ -1,6 +1,5 @@
-import { Button } from '#/components/button';
 import Container from '#/components/container';
-import { Accented, Card, Heading } from '@nordcom/nordstar';
+import { Accented, Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import styles from './page.module.scss';
@@ -47,22 +46,16 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
 
                 <div className={styles.blocks}>
                     <Card className={styles.block}>
-                        <Heading level="h4" as="div">
-                            View a demo
-                        </Heading>
+                        <Label>View a demo</Label>
                     </Card>
                     <Card className={styles.block}>
-                        <Heading level="h4" as="div">
-                            Previews, demos and mock-stores
-                        </Heading>
+                        <Label>Previews, demos and mock-stores</Label>
 
                         <Button as={Link} href="https://demo.nordcom.io/" target="_blank">
                             Mock.shop Storefront
                         </Button>
 
-                        <Heading level="h4" as="div">
-                            Real-world usage
-                        </Heading>
+                        <Label>Real-world usage</Label>
 
                         <Button as={Link} href="https://www.sweetsideofsweden.com/" target="_blank">
                             Sweet Side of Sweden

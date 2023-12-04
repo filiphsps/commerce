@@ -28,7 +28,18 @@ export function Providers({ children, session }: ProvidersProps) {
 
     return (
         <SessionProvider session={session}>
-            <NordstarProvider>
+            <NordstarProvider
+                theme={{
+                    accents: {
+                        primary: '#ed1e79',
+                        secondary: '#ed1e79'
+                    },
+                    fonts: {
+                        heading: 'var(--font-primary)',
+                        body: 'var(--font-primary)'
+                    }
+                }}
+            >
                 <Toaster theme="dark" />
                 <NextTopLoader color={'#ed1e79'} showSpinner={true} crawl={true} />
                 <ModalProvider>{children}</ModalProvider>

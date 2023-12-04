@@ -1,6 +1,6 @@
-import { Button } from '#/components/button';
 import styles from '#/components/header.module.scss';
 import { getSession } from '#/utils/auth';
+import { Button } from '@nordcom/nordstar';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
