@@ -143,6 +143,9 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         navigationType: 'navigate'
     } as unknown as ShopifyPageViewPayload;
 
+    const router = useRouter();
+    const path = `${pathname}/`;
+
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
         shopId,
@@ -159,8 +162,6 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             path: path || '/'
         } as any)
     };
-
-    const router = useRouter();
 
     // Page view analytics
     // FIXME: We miss the initial PageView
