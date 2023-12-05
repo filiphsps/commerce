@@ -108,7 +108,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         const { events, setEvents } = props.events;
         if (!events || events.length <= 0) return;
 
-        setEvents((events) => {
+        setEvents((events: string[]) => {
             events.forEach((event) => {
                 switch(event) {
                     case 'remove_from_cart': {
