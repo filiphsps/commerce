@@ -35,6 +35,7 @@ Router.events.on('hashChangeComplete', () => NProgress.done());
 
 const StoreApp = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
+    const [events, setEvents] = useState<any[]>([]);
 
     const { data: store } = useSWR(
         [
@@ -165,8 +166,11 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 countryIsoCode={country}
                 languageIsoCode={language}
             >
-                <CartProvider cartFragment={CartFragment}>
-                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics}>
+                <CartProvider
+                    cartFragment={CartFragment}
+                    onCartLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
+                    onCartLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}>
+                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics} events={{ events, setEvents }}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
                 </CartProvider>
