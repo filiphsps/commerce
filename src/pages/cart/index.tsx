@@ -181,7 +181,7 @@ export const Checkout = async ({
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
                     ...(cart.discountCodes && cart.discountCodes.length > 0 ? {
-                        coupon: cart.discountCodes || '';
+                        coupon: cart.discountCodes || ''
                     } : {}),
                     items: cart.lines.map(
                         (line) =>
