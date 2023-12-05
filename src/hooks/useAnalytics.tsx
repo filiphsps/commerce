@@ -78,8 +78,8 @@ export const sendPageViewEvent = ({
             sendEcommerceEvent({
                 event: 'view_item',
                 payload: {
-                    currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
-                    value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount, product.price),
+                    currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode! || 'USD',
+                    value: ShopifyPriceToNumber(undefined, product.price),
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
@@ -90,7 +90,7 @@ export const sendPageViewEvent = ({
                             item_name: product.name,
                             item_variant: product.variantName,
                             item_brand: product.brand,
-                            currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode!,
+                            currency: pageAnalytics.currency || cost?.totalAmount?.currencyCode! || 'USD',
                             price: ShopifyPriceToNumber(undefined, product.price!),
                             quantity: product.quantity
                         }
@@ -104,9 +104,9 @@ export const sendPageViewEvent = ({
     const payload: ShopifyPageViewPayload = {
         ...getClientBrowserParameters(),
         ...pageAnalytics,
-        url: `https://${domain}${path}`,
-        canonicalUrl: `https://${domain}${path}`,
-        path: path
+        url: `https://${domain}/${locale.locale}${path || '/'}`,
+        canonicalUrl: `https://${domain}/${locale.locale}${path || '/'}`,
+        path: path || '/'
     };
 
     sendShopifyAnalytics(
@@ -152,7 +152,12 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         acceptedLanguage: locale.language.toLowerCase(),
         hasUserConsent: true,
         isMerchantRequest: true,
-        ...((pagePropsAnalyticsData as any) || {})
+        ...((pagePropsAnalyticsData as any) || {}),
+        ...({
+            url: `https://${domain}/${locale.locale}${path || '/'}`,
+            canonicalUrl: `https://${domain}/${locale.locale}${path || '/'}`,
+            path: path || '/'
+        } as any)
     };
 
     const router = useRouter();
@@ -229,8 +234,8 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
         sendEcommerceEvent({
             event: 'add_to_cart',
             payload: {
-                currency: cost?.totalAmount?.currencyCode! || pageAnalytics.currency,
-                value: ShopifyPriceToNumber(undefined, cost?.totalAmount?.amount) * line.quantity,
+                currency: cost?.totalAmount?.currencyCode! || pageAnalytics.currency || 'USD',
+                value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount) * line.quantity || undefined,
                 items: ((line: CartLine) => {
                     return [
                         {
@@ -242,7 +247,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
                             item_name: line.merchandise.product.title,
                             item_variant: line.merchandise.title,
                             item_brand: line.merchandise.product.vendor,
-                            currency: line.merchandise.price.currencyCode,
+                            currency: line.merchandise.price.currencyCode || pageAnalytics.currency || 'USD',
                             price: ShopifyPriceToNumber(undefined, line.merchandise.price?.amount!),
                             quantity: line.quantity
                         }
