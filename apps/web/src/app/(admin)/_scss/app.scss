@@ -1,7 +1,17 @@
 @import 'destyle.css';
 @import '_text';
 
+html,
 body {
+    padding: 0;
+    margin: 0;
+    
+    background: #000000;
+    foreground: #fefefe;
+
+    font-family: var(--font-primary);
+    font-weight: 500;
+
     [data-sonner-toaster] {
         font-family: inherit;
     }
