@@ -15,7 +15,7 @@ export default function NotFound() {
                 {
                     event: 'error_404',
                     event_path: router.pathname,
-                    event_search: router.query
+                    event_search: JSON.stringify(router.query || {})
                 }
             );
         } catch {}
