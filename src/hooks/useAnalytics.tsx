@@ -144,7 +144,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     } as unknown as ShopifyPageViewPayload;
 
     const router = useRouter();
-    const path = `${pathname}/`;
+    const path = `${router.pathname}/`;
 
     const pageAnalytics: ShopifyPageViewPayload = {
         ...viewPayload,
@@ -167,7 +167,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     // FIXME: We miss the initial PageView
     useEffect(() => {
         const handleRouteChange = (url: string) => {
-            const path = `/${url.split('/').slice(2, -1).join('/')}/`.replace('//', '/');
+            const path = `/${url.split('/').slice(2, -1).join('/')}/`.replaceAll('//', '/');
             sendPageViewEvent({
                 path,
                 domain,
