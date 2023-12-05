@@ -1,5 +1,5 @@
 import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
-
+import { useCart } from '@shopify/hydrogen-react';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -11,7 +11,7 @@ import { asHTML } from '@prismicio/client';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import preval from '../../data.preval';
@@ -90,12 +90,55 @@ interface PageProviderProps {
     pagePropsAnalyticsData: any;
     children: any;
     className?: string;
+    events?: {
+        events: string[],
+        setEvents: any
+    }
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const { store, pagePropsAnalyticsData } = props;
 
+    const cart = useCart();
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        if (!props.events || !cart || cart.status !== 'idle') return;
+
+        const { events, setEvents } = props.events;
+        if (!events || events.length <= 0) return;
+
+        setEvents((events) => {
+            events.forEach((event) => {
+                switch(event) {
+                    case 'remove_from_cart': {
+                        try {
+                            // Google Tracking
+                            (window as any).dataLayer?.push(
+                                {
+                                    ecommerce: null
+                                },
+                                {
+                                    event: 'remove_from_cart',
+                                    ecommerce: {
+                                        currency: cart.cost?.totalAmount?.currencyCode! || 'USD',
+                                        value: 0, // TODO: Get the value of the removed items.
+                                        items: [] // TODO: Get the removed items.
+                                    }
+                                }
+                            );
+                        } catch {}
+                        return;
+                    }
+                    default: {
+                        console.warn(`Unknown event "${event}" triggered!`);
+                        return;
+                    }
+                }
+            });
+            return [];
+        });
+    }, [props.events])
 
     const { data: navigation } = useSWR(
         [
@@ -136,6 +179,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
         shopId: store?.id,
         pagePropsAnalyticsData
     });
+
     useCartUtils({
         locale: {
             locale: locale.locale,
