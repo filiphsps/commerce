@@ -23,7 +23,7 @@ export default function NotFound() {
     return (
         <Page>
             <PageContent primary>
-                <Heading title="Error 404" subtitle="Page not found" />
+                <Heading title="Page not found" subtitle="Error 404" />
 
                 <Content>
                     <p>Sorry, we could not find the page you were looking for.</p>
@@ -32,7 +32,7 @@ export default function NotFound() {
                         <br />
                         If you followed a link from another site,
                         <br />
-                        please let them know one their links are broken.
+                        please let them know one of their links are broken.
                         <br />
                         <br />
                         Or if you think this is a mistake,
