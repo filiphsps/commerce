@@ -19,7 +19,7 @@ export default function NotFound() {
                 }
             );
         } catch {}
-    });
+    }, []);
 
     return (
         <Page className={`NotFoundPage`}>
