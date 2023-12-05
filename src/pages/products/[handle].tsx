@@ -561,7 +561,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                         value: Number.parseInt(selectedVariant?.price?.amount!) || undefined,
                         items: [{
                             item_id: ProductToMerchantsCenterId({
-                                locale: (locale !== 'x-default' && locale) || locales?.[1],
+                                locale: router.locale,
                                 productId: product?.id!,
                                 variantId: selectedVariant?.id!
                             }),
