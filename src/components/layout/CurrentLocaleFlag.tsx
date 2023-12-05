@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 const Container = styled.div`
     overflow: hidden;
     position: relative;
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 100%;
     border: calc(var(--block-border-width) / 1.5) solid var(--accent-secondary-text);
 
