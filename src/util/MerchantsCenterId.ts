@@ -1,12 +1,18 @@
+import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
+import { parseGid } from '@shopify/hydrogen-react';
+
 export const ProductToMerchantsCenterId = ({
     locale,
     productId,
     variantId
 }: {
-    locale?: string;
+    locale: string;
     productId: string;
     variantId: string;
 }) => {
-    // FIXME: Tests for this!
-    return `shopify_${locale?.split('-')[1] || 'US'}_${productId.split('/').at(-1)}_${variantId.split('/').at(-1)}`;
+    const product = parseGid(productId).resourceId;
+    const variant = parseGid(variantId).resourceId;
+    const country = (locale?.split('-')[1] || 'US').toUpperCase();
+
+    return `shopify_${country}_${product}_${variant}`;
 };
