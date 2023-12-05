@@ -236,7 +236,7 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
             event: 'add_to_cart',
             payload: {
                 currency: cost?.totalAmount?.currencyCode! || pageAnalytics.currency || 'USD',
-                value: (ShopifyPriceToNumber(0, cost?.totalAmount?.amount) || 0) * line.quantity || undefined,
+                value: ShopifyPriceToNumber(undefined, cost?.totalAmount?.amount),
                 items: ((line: CartLine) => {
                     return [
                         {
