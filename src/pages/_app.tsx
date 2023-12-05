@@ -8,7 +8,7 @@ import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import Router, { useRouter } from 'next/router';
-
+import { useState } from 'react';
 import { CartFragment } from '@/api/cart';
 import { StoreApi } from '@/api/store';
 import PageProvider from '@/components/PageProvider';
