@@ -35,7 +35,7 @@ export default function NotFound() {
                     <br/>
                     If you followed a link from another site,
                     <br/>
-                    please let them know one their links are broken.
+                    please let them know one of their links are broken.
                     <br/>
                     <br/>
                     Or if you think this is a mistake,
