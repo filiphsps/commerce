@@ -24,6 +24,7 @@ import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { getServerTranslations } from '@/utils/getServerTranslations';
+import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { isValidHandle } from '@/utils/handle';
 import { asText } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
@@ -557,8 +558,8 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                 {
                     event: 'view_item',
                     ecommerce: {
-                        currency: selectedVariant?.price?.currencyCode!,
-                        value: Number.parseInt(selectedVariant?.price?.amount!) || undefined,
+                        currency: selectedVariant?.price?.currencyCode! || 'USD',
+                        value: ShopifyPriceToNumber(0, selectedVariant?.price?.amount!) || undefined,
                         items: [{
                             item_id: ProductToMerchantsCenterId({
                                 locale: router.locale,
@@ -568,8 +569,8 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                             item_name: product?.title,
                             item_variant: selectedVariant?.title,
                             item_brand: product?.vendor,
-                            currency: selectedVariant?.price?.currencyCode!,
-                            price: Number.parseFloat(selectedVariant?.price?.amount!) || undefined,
+                            currency: selectedVariant?.price?.currencyCode! || 'USD',
+                            price: ShopifyPriceToNumber(undefined, selectedVariant?.price?.amount!),
                             quantity: 1
                         }]
                     }
