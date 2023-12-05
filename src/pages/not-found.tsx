@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import Page from '@/components/Page';
 import PageContent from '@/components/PageContent';
-import PageContent from '@/components/PageHeader';
+import PageHeader from '@/components/PageHeader';
 
 export default function NotFound() {
     const router = useRouter();
