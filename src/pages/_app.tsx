@@ -168,8 +168,8 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             >
                 <CartProvider
                     cartFragment={CartFragment}
-                    onCartLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
-                    onCartLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}>
+                    onLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
+                    onLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}>
                     <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics} events={{ events, setEvents }}>
                         <Component key={router.asPath} {...pageProps} store={store} />
                     </PageProvider>
