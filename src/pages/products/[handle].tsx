@@ -558,7 +558,7 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     event: 'view_item',
                     ecommerce: {
                         currency: selectedVariant?.price?.currencyCode!,
-                        value: Number.parseInt(selectedVariant?.price?.amount) || undefined,
+                        value: Number.parseInt(selectedVariant?.price?.amount!) || undefined,
                         items: [{
                             item_id: ProductToMerchantsCenterId({
                                 locale: (locale !== 'x-default' && locale) || locales?.[1],
