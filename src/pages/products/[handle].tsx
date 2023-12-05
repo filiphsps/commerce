@@ -549,6 +549,35 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
         [cart, selectedVariant, quantity, addedTimeout]
     );
 
+    useEffect(() => {
+        try {
+            // Google Tracking
+            (window as any).dataLayer?.push(
+                { ecommerce: null },
+                {
+                    event: 'view_item',
+                    ecommerce: {
+                        currency: selectedVariant?.price?.currencyCode!,
+                        value: Number.parseInt(selectedVariant?.price?.amount) || undefined,
+                        items: [{
+                            item_id: ProductToMerchantsCenterId({
+                                locale: (locale !== 'x-default' && locale) || locales?.[1],
+                                productId: product?.id!,
+                                variantId: selectedVariant?.id!
+                            }),
+                            item_name: product?.title,
+                            item_variant: selectedVariant?.title,
+                            item_brand: product?.vendor,
+                            currency: selectedVariant?.price?.currencyCode!,
+                            price: Number.parseFloat(selectedVariant?.price?.amount!) || undefined,
+                            quantity: 1
+                        }]
+                    }
+                }
+            );
+        } catch {}
+    }, []);
+
     // This should never be able to happen at this moment.
     // TODO: Placeholders to support things like this?
     if (!store || !product) return null;
