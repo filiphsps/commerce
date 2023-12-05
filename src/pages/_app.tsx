@@ -14,14 +14,14 @@ import { StoreApi } from '@/api/store';
 import PageProvider from '@/components/PageProvider';
 import { Config } from '@/utils/Config';
 import { appWithTranslation } from 'next-i18next';
-import { Lexend_Deca } from 'next/font/google';
+import { Public_Sans } from 'next/font/google';
 import Head from 'next/head';
 import NProgress from 'nprogress';
 import useSWR from 'swr';
 import SEO from '../../nextseo.config';
 import preval from '../data.preval';
 
-const font = Lexend_Deca({
+const font = Public_Sans({
     weight: 'variable',
     subsets: ['latin'],
     display: 'swap',
