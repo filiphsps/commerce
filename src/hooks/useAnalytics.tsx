@@ -35,8 +35,8 @@ const trimDomain = (domain?: string): string | undefined => {
 
 interface AnalyticsEcommercePayload {
     currency: CurrencyCode;
-    value: number;
-    items?: Array<{}>;
+    value: number | undefined;
+    items?: any[];
 }
 const sendEcommerceEvent = ({
     event,
