@@ -5,7 +5,7 @@ import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '
 import type { Collection, Product, ProductVariantEdge } from '@shopify/hydrogen-react/storefront-api-types';
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { NextSeo, ProductJsonLd } from 'next-seo';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
 
