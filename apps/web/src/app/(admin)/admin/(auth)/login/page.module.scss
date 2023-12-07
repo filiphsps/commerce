@@ -9,7 +9,7 @@
         grid-auto-columns: 1fr;
         justify-content: flex-start;
         align-items: flex-start;
-        gap: calc(var(--block-padding) / 2);
+        gap: calc(var(--layout-block-padding) / 2);
 
         @media (min-width: 950px) {
             grid-auto-columns: auto;

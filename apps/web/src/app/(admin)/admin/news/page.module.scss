@@ -3,7 +3,7 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        gap: calc(var(--block-padding) / 2);
+        gap: calc(var(--layout-block-padding) / 2);
         width: 100%;
         max-width: 100%;
     }
@@ -13,7 +13,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
         grid-auto-rows: 1fr;
-        gap: var(--block-padding);
+        gap: var(--layout-block-padding);
         width: 100%;
         max-width: 100%;
         margin-top: calc(var(--layout-section-spacing) * 2);
@@ -24,7 +24,7 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: flex-start;
-            gap: calc(var(--block-padding) / 4);
+            gap: calc(var(--layout-block-padding) / 4);
 
             &:is(a) {
                 user-select: none;

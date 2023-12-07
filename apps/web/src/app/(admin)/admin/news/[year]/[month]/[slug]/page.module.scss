@@ -5,7 +5,7 @@
         flex-direction: column;
         width: 100%;
         max-width: 100%;
-        padding-bottom: var(--block-padding);
+        padding-bottom: var(--layout-block-padding);
         border-bottom: var(--block-border-width) solid var(--color-background-highlight);
 
         .authors {
@@ -23,7 +23,7 @@
                 font-weight: 600;
                 font-size: 1em;
                 text-transform: uppercase;
-                margin-bottom: calc(var(--block-padding) / 2);
+                margin-bottom: calc(var(--layout-block-padding) / 2);
             }
 
             .author {
@@ -83,7 +83,7 @@
 
         h1 {
             line-height: 1;
-            margin: calc(var(--block-padding) / 2) 0 var(--block-padding) 0;
+            margin: calc(var(--layout-block-padding) / 2) 0 var(--layout-block-padding) 0;
 
             @media (min-width: 950px) {
                 max-width: 62rem;

@@ -4,6 +4,7 @@ import type { Shop } from '@/api/shop';
 import * as Prismic from '@/utils/prismic';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { PrismicPreview } from '@prismicio/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { useEffect, useState, type ReactNode } from 'react';
 
 export type ThirdPartiesProviderProps = {
@@ -26,6 +27,7 @@ export const ThirdPartiesProvider = ({ shop, children }: ThirdPartiesProviderPro
                 <>
                     <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
                     <PrismicPreview repositoryName={Prismic.repositoryName} />
+                    <SpeedInsights />
                 </>
             ));
 

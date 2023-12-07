@@ -5,7 +5,7 @@
         "build": {
             "cache": true,
             "dependsOn": ["^build"],
-            "outputs": ["**/.next/**", "!**/.next/cache/**", "!**/coverage/**", "!**/*.md", "!**/*.yml"]
+            "outputs": ["**/.next/**", "!*/**/.next/cache/**", "!*/**/coverage/**", "!*/**/*.md", "!*/**/*.yml"]
         },
         "lint": { "cache": false },
         "prettier": { "cache": false },

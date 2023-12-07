@@ -1,12 +1,12 @@
 import '#/styles/app.scss';
 
-import type { Metadata, Viewport } from 'next';
-
 import Footer from '#/components/footer';
 import Header from '#/components/header';
 import { Providers } from '#/components/providers';
 import { authOptions } from '#/utils/auth';
+import { HighlightInit } from '@highlight-run/next/client';
 import { GeistMono } from 'geist/font/mono';
+import type { Metadata, Viewport } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
@@ -57,14 +57,26 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     const session = await getServerSession(authOptions);
 
     return (
-        <html lang="en">
-            <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
-                <Providers session={session}>
-                    <Header />
-                    {children}
-                    <Footer />
-                </Providers>
-            </body>
-        </html>
+        <>
+            <HighlightInit
+                projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
+                serviceName={`Nordcom Commerce Admin`}
+                tracingOrigins
+                networkRecording={{
+                    enabled: true,
+                    recordHeadersAndBody: true,
+                    urlBlocklist: []
+                }}
+            />
+            <html lang="en">
+                <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
+                    <Providers session={session}>
+                        <Header />
+                        {children}
+                        <Footer />
+                    </Providers>
+                </body>
+            </html>
+        </>
     );
 }
