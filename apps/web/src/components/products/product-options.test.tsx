@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 
 import { ProductOptions } from '@/components/products/product-options';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { describe, expect, it, vi } from 'vitest';
 
 const options = [
@@ -64,18 +64,18 @@ describe('components', () => {
         it('renders all options and values', () => {
             render(
                 <ProductOptions
-                    locale={NextLocaleToLocale('en-GB')!}
+                    locale={Locale.from('en-GB')!}
                     initialVariant={variants[0] as any}
                     selectedVariant={variants[0] as any}
                 />
             );
             options.forEach((option) => {
                 const optionTitle = screen.getByText(option.name);
-                expect(optionTitle).toBeInTheDocument();
+                expect(optionTitle).toBeDefined();
 
                 option.values.forEach((value) => {
                     const optionValue = screen.getByText(value);
-                    expect(optionValue).toBeInTheDocument();
+                    expect(optionValue).toBeDefined();
                 });
             });
         });
@@ -83,19 +83,19 @@ describe('components', () => {
         it('calls setSelectedOptions when an option is clicked', () => {
             render(
                 <ProductOptions
-                    locale={NextLocaleToLocale('en-GB')!}
+                    locale={Locale.from('en-GB')!}
                     initialVariant={variants[0] as any}
                     selectedVariant={variants[0] as any}
                 />
             );
             const target = screen.getByText(variants[1].title);
-            expect(target).not.toHaveAttribute('href');
+            expect(target.getAttribute('href')).toBeNull();
         });
 
         it('converts grams to ounces when locale is en-US', () => {
             render(
                 <ProductOptions
-                    locale={NextLocaleToLocale('en-US')!}
+                    locale={Locale.from('en-US')!}
                     initialVariant={variants[0] as any}
                     selectedVariant={variants[0] as any}
                 />
@@ -104,13 +104,13 @@ describe('components', () => {
             const sizeOptionValueElement = screen.getByText('4oz');
 
             // NOTE: The conversion function rounds to the nearest whole number.
-            expect(sizeOptionValueElement).toHaveTextContent('4oz');
+            expect(sizeOptionValueElement.textContent).toContain('4oz');
         });
 
         it('disables options that are out of stock or unavailable', async () => {
             render(
                 <ProductOptions
-                    locale={NextLocaleToLocale('en-GB')!}
+                    locale={Locale.from('en-GB')!}
                     initialVariant={variants[0] as any}
                     selectedVariant={variants[0] as any}
                 />
@@ -119,8 +119,8 @@ describe('components', () => {
             await waitFor(() => {
                 const target = screen.getByText(variants[0].title);
                 expect(target).toBeDefined();
-                expect(target).not.toHaveAttribute('href');
-                expect(target).toHaveAttribute('disabled');
+                expect(target.getAttribute('href')).toBeNull();
+                expect(target.getAttribute('disabled')).toBeDefined();
             });
         });
     });

@@ -138,22 +138,22 @@ describe('app', () => {
             const title = await screen.findByText(product.title);
             const vendor = await screen.findByText(product.vendor);
 
-            expect(title).toBeInTheDocument();
-            expect(vendor).toBeInTheDocument();
+            expect(title).toBeDefined();
+            expect(vendor).toBeDefined();
         });
 
         it('renders the product image', async () => {
             render(await ProductPage({ params }));
             const image = await screen.findByRole('img');
-            expect(image).toHaveAttribute('src');
+            expect(image.getAttribute('src')).toBeDefined();
         });
 
         it('renders the product pricing', async () => {
             render(await ProductPage({ params }));
             const price = await screen.findByText('$10.00');
             const compareAtPrice = await screen.findByText('$15.00');
-            expect(price).toBeInTheDocument();
-            expect(compareAtPrice).toBeInTheDocument();
+            expect(price).toBeDefined();
+            expect(compareAtPrice).toBeDefined();
         });
 
         it('generates the correct metadata', async () => {

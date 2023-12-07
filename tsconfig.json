@@ -28,9 +28,7 @@
                 "name": "next"
             }
         ],
-        "target": "ESNext",
-        // FIXME: Create `tsconfig.test.json` and move this there.
-        "types": ["vitest/globals", "@testing-library/jest-dom"]
+        "target": "ESNext"
     },
     "exclude": ["node_modules", "public"]
 }

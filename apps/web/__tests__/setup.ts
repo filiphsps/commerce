@@ -1,10 +1,9 @@
 import 'next';
 
-import * as matchers from '@testing-library/jest-dom/matchers';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { beforeEach, vi } from 'vitest';
 
-import { beforeEach, expect, vi } from 'vitest';
-
-expect.extend(matchers);
+GlobalRegistrator.register();
 
 beforeEach(() => {
     vi.mock('server-only', () => ({}));

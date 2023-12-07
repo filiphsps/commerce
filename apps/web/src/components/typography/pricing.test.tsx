@@ -18,13 +18,13 @@ describe('components', () => {
         it('renders the price', () => {
             render(<Pricing price={price} />);
             const priceElement = screen.getByText('$10.00');
-            expect(priceElement).toBeInTheDocument();
+            expect(priceElement).toBeDefined();
         });
 
         it('renders the compare at price', () => {
             render(<Pricing price={price} compareAtPrice={compareAtPrice} />);
             const compareAtPriceElement = screen.getByText('$15.00');
-            expect(compareAtPriceElement).toBeInTheDocument();
+            expect(compareAtPriceElement).toBeDefined();
         });
     });
 });

@@ -26,14 +26,24 @@ export default defineConfig({
     },
     test: {
         bail: 1,
-        environment: 'jsdom',
-        globals: true,
+        environment: 'happy-dom',
         maxConcurrency: 16,
         passWithNoTests: true,
-        useAtomics: true,
+
+        typecheck: {
+            tsconfig: './tsconfig.test.json'
+        },
 
         setupFiles: ['./__tests__/setup.ts'],
         reporters: ['verbose'],
+
+        globals: true,
+        deps: {
+            web: {
+                transformCss: true,
+                transformAssets: true
+            }
+        },
 
         coverage: {
             all: true,

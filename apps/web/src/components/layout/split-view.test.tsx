@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it } from 'vitest';
+import { render } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
 import SplitView from '@/components/layout/split-view';
 
@@ -8,16 +8,13 @@ describe('SplitView', () => {
         const asideContent = 'This is the aside content';
         const primaryContent = 'This is the primary content';
 
-        render(
+        const { getByText } = render(
             <SplitView aside={<div>{asideContent}</div>}>
                 <div>{primaryContent}</div>
             </SplitView>
         );
 
-        const asideElement = await screen.findByText(asideContent);
-        const primaryElement = await screen.findByText(primaryContent);
-
-        expect(asideElement).toBeInTheDocument();
-        expect(primaryElement).toBeInTheDocument();
+        expect(getByText(asideContent)).toBeDefined();
+        expect(getByText(primaryContent)).toBeDefined();
     });
 });
