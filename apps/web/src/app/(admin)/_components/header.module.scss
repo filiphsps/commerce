@@ -67,6 +67,7 @@
             gap: var(--layout-block-padding);
             width: 100%;
             user-select: none;
+            overflow-x: auto;
 
             .links {
                 display: flex;
@@ -89,10 +90,13 @@
                 .button {
                     padding: 0;
                     border: none;
+                    background: none;
+                    color: var(--color-foreground);
                 }
             }
 
             @media (min-width: 950px) {
+                overflow-x: unset;
                 justify-content: flex-end;
                 gap: calc(var(--layout-section-spacing) * 2);
             }

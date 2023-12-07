@@ -6,7 +6,7 @@ import { glob } from 'glob';
 import matter from 'gray-matter';
 import path from 'path';
 
-const ARTICLES_PATH = 'src/app/(news)';
+const ARTICLES_PATH = 'src/app/(admin)/(news)';
 const POSTS_DIR = path.join(process.cwd(), ARTICLES_PATH);
 
 export async function getArticlePaths() {

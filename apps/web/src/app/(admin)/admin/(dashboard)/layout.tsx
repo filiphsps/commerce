@@ -6,7 +6,7 @@ import styles from './layout.module.scss';
 export const metadata: Metadata = {
     title: {
         default: 'Account',
-        template: `%s · Admin · Nordcom Commerce`
+        template: `%s · Nordcom Commerce Admin`
     }
 };
 
