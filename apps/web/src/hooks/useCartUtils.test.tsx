@@ -3,7 +3,7 @@ import { useCart } from '@shopify/hydrogen-react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSearchParams } from 'next/navigation';
 import type { Mock } from 'vitest';
-import { describe, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCartUtils } from './useCartUtils';
 
 vi.mock('next/navigation', () => ({

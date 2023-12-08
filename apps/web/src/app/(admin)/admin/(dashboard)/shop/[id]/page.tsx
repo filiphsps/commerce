@@ -1,6 +1,6 @@
 import { getSession } from '#/utils/auth';
 import { getShopForUser } from '#/utils/fetchers';
-import { Card, Heading, Label } from '@nordcom/nordstar';
+import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import styles from '../page.module.scss';
@@ -51,7 +51,9 @@ export default async function Shop({ params: { id: shopId } }: ShopPageProps) {
                     <Label>collaborators</Label>
                     <div className={styles.collaborators}>
                         {shop.collaborators.map(({ user: { name } }) => (
-                            <div key={name}>{name}</div>
+                            <Button key={name} className={styles.collaborator}>
+                                {name}
+                            </Button>
                         ))}
                     </div>
                 </Card>

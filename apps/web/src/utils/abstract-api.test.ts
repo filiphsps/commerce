@@ -1,7 +1,7 @@
 import { ApiBuilder } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { ApolloClient } from '@apollo/client';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
     vi.mock('@apollo/client', () => ({

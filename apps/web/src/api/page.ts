@@ -53,8 +53,8 @@ export type PageType = 'collection_page' | 'product_page' | 'custom_page';
 export type PageDocument<T> = T extends 'collection_page'
     ? CollectionPageDocument
     : T extends 'product_page'
-    ? ProductPageDocument
-    : CustomPageDocument;
+      ? ProductPageDocument
+      : CustomPageDocument;
 export type PageData<T> = PageDocument<T>['data'];
 
 export type Preloadable<T = unknown> = T & {

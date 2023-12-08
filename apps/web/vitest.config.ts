@@ -4,6 +4,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
     plugins: [react()],
+    optimizeDeps: {
+        force: true
+    },
     resolve: {
         alias: [
             {
@@ -30,12 +33,20 @@ export default defineConfig({
         maxConcurrency: 16,
         passWithNoTests: true,
 
+        /*pool: 'vmThreads',
+        poolOptions: {
+            vmThreads: {
+                useAtomics: true
+            }
+        },*/
+
         typecheck: {
             tsconfig: './tsconfig.test.json'
         },
 
         setupFiles: ['./__tests__/setup.ts'],
         reporters: ['verbose'],
+        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/'],
 
         globals: true,
         deps: {

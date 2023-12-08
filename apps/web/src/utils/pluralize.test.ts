@@ -1,4 +1,5 @@
 import { Pluralize } from '@/utils/pluralize';
+import { describe, expect, it } from 'vitest';
 
 describe('utils', () => {
     describe('Pluralize', () => {

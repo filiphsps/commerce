@@ -1,6 +1,6 @@
 import type { Locale } from '@/utils/locale';
 import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Link from './link';
 
 describe('components', () => {

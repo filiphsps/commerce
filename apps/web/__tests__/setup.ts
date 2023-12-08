@@ -1,13 +1,11 @@
 import 'next';
 
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { beforeEach, vi } from 'vitest';
+import { vi } from 'vitest';
 
 GlobalRegistrator.register();
 
-beforeEach(() => {
-    vi.mock('server-only', () => ({}));
-});
+vi.mock('server-only', () => ({}));
 
 // Mock the `build-config` module as it almost only contains tokens,
 // secrets, and other sensitive data (excluding the i18n config which
@@ -78,17 +76,6 @@ vi.mock('next/cache', async () => {
         unstable_cache: vi.fn().mockImplementation((func) => func)
     };
 });
-
-// Thanks to https://github.com/akiran/react-slick/issues/742#issuecomment-298992238
-window.matchMedia =
-    window.matchMedia ||
-    function () {
-        return {
-            matches: false,
-            addListener: function () {},
-            removeListener: function () {}
-        };
-    };
 
 window.location = {
     ...(window.location || {}),

@@ -2,7 +2,7 @@ import type { Shop } from '@/api/shop';
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
 import type { CartWithActions } from '@shopify/hydrogen-react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
     describe('checkout', () => {

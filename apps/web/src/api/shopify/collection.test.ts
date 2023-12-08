@@ -1,6 +1,6 @@
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import { describe, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { Shop } from '../shop';
 import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from './collection';
 

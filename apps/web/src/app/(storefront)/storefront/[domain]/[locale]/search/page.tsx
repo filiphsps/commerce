@@ -52,7 +52,7 @@ export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
 }: {
-    params: SearchPageParams
+    params: SearchPageParams;
 }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
@@ -116,10 +116,10 @@ export default async function SearchPage({
     params: { domain, locale: localeData },
     searchParams
 }: {
-    params: SearchPageParams,
+    params: SearchPageParams;
     searchParams?: {
         q?: string;
-    }
+    };
 }) {
     try {
         const shop = await ShopApi({ domain });

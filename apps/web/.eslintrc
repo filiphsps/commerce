@@ -1,0 +1,23 @@
+{
+    "extends": ["../../.eslintrc"],
+    "ignorePatterns": ["!**/*"],
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+            "parserOptions": {
+                "project": ["./tsconfig.json", "./tsconfig.test.json"],
+                "ecmaFeatures": {
+                    "jsx": true
+                }
+            }
+        },
+        {
+            "files": ["*.ts", "*.tsx"],
+            "rules": {}
+        },
+        {
+            "files": ["*.js", "*.jsx"],
+            "rules": {}
+        }
+    ]
+}

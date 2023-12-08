@@ -2,7 +2,7 @@ import { useCountry } from '@/hooks/useCountry';
 import { TooManyRequestsError } from '@/utils/errors';
 import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('hooks', () => {
     describe('useCountry', () => {
