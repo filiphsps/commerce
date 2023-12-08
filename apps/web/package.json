@@ -69,7 +69,7 @@
         "@vercel/kv": "1.0.1",
         "@vercel/otel": "0.3.0",
         "@vercel/postgres": "0.5.1",
-        "@vercel/speed-insights": "1.0.0",
+        "@vercel/speed-insights": "1.0.1",
         "accept-language-parser": "1.5.0",
         "colord": "2.9.3",
         "convert-units": "2.3.4",
