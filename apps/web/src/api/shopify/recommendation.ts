@@ -1,5 +1,5 @@
-import type { AbstractApi } from '@/utils/abstract-api';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import type { AbstractApi } from '@/utils/abstract-api';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
@@ -12,8 +12,7 @@ export const RecommendationApi = async ({ client, id }: { client: AbstractApi; i
         try {
             const { data, errors } = await client.query<{ productRecommendations: Product[] }>(
                 gql`
-                    query productRecommendations($productId: ID!, $language: LanguageCode!, $country: CountryCode!)
-                    @inContext(language: $language, country: $country) {
+                    query productRecommendations($productId: ID!) {
                         productRecommendations(productId: $productId, intent: RELATED) {
                             ${PRODUCT_FRAGMENT_MINIMAL}
                         }

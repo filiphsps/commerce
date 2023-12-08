@@ -28,10 +28,7 @@ export const SearchApi = async ({
                     query searchProducts(
                             $query: String!,
                             $first: Int,
-                            $type: [SearchType!],
-                            $language: LanguageCode!,
-                            $country: CountryCode!)
-                            @inContext(language: $language, country: $country) {
+                            $type: [SearchType!]) {
 
                         search(query: $query, first: $first, types: $type) {
                             productFilters {
@@ -94,8 +91,7 @@ export const SearchPredictionApi = async ({
 
         const { data } = await client.query<{ predictiveSearch: PredictiveSearchResult }>(
             gql`
-                query predictiveSearch($query: String!, $language: LanguageCode!, $country: CountryCode!)
-                @inContext(language: $language, country: $country) {
+                query predictiveSearch($query: String!) {
                     predictiveSearch(query: $query, types: [QUERY], limit: 5) {
                         queries {
                             styledText
