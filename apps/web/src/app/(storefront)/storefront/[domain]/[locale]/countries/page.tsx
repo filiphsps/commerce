@@ -167,7 +167,7 @@ export default async function CountriesPage({
 
                                 // Needs to happen outside of the try and catch block.
                                 // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
-                                redirect(`/`);
+                                redirect(`/${locale}/`);
                             }}
                         >
                             <LocaleSelector shop={shop} countries={countries} store={store} locale={locale} />
