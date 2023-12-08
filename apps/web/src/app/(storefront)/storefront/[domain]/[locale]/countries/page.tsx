@@ -15,7 +15,7 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { RedirectType, notFound, redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 import LocaleSelector from './locale-selector';
 
@@ -63,9 +63,10 @@ export async function generateMetadata({
     params: CountriesPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
+
+        const shop = await ShopApi({ domain, locale });
 
         const api = await StorefrontApiClient({ shop, locale });
         const store = await StoreApi({ api });
