@@ -1,3 +1,5 @@
+@import '_globals.scss';
+
 .container {
     display: flex;
     justify-content: space-around;
@@ -27,6 +29,10 @@
                 object-fit: contain;
                 object-position: center;
             }
+        }
+
+        .flag {
+            aspect-ratio: 2 / 1;
         }
 
         .social-icon {
