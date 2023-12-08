@@ -9,7 +9,7 @@ import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
-import { Error } from '@/utils/errors';
+import { Error, UnknownLocaleError } from '@/utils/errors';
 import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
@@ -154,7 +154,7 @@ export default async function CountriesPage({
                                 // Make sure we got a locale.
                                 if (!locale) {
                                     // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
-                                    throw new Error('No locale provided.'); // TODO: Proper nordcom error.
+                                    throw new UnknownLocaleError();
                                 }
 
                                 // Validate the locale.
