@@ -4,7 +4,8 @@ import { ApolloClient } from '@apollo/client';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
-    vi.mock('@apollo/client', () => ({
+    vi.mock('@apollo/client', async () => ({
+        ...(await vi.importActual('@apollo/client')),
         ApolloClient: vi.fn().mockReturnValue({
             query: vi.fn().mockResolvedValue({
                 data: {

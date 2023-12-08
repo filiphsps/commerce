@@ -1,5 +1,7 @@
 'use client';
 
+import type { ApiConfig } from '@/api/client';
+import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloLink, HttpLink } from '@apollo/client';
 import {
     ApolloNextAppProvider,
@@ -7,8 +9,6 @@ import {
     NextSSRInMemoryCache,
     SSRMultipartLink
 } from '@apollo/experimental-nextjs-app-support/ssr';
-
-import type { ApiConfig } from '@/api/client';
 import type { ReactNode } from 'react';
 
 export const createClientMaker =
@@ -19,7 +19,7 @@ export const createClientMaker =
             headers: apiConfig.headers,
             // you can disable result caching here if you want to
             // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
-            fetchOptions: { cache: 'force-cache', next: { revalidate: 28_800 } }
+            fetchOptions: { cache: 'no-cache' /*'force-cache'*/, next: { revalidate: 28_800 } }
             // you can override the default `fetchOptions` on a per query basis
             // via the `context` property on the options passed as a second argument
             // to an Apollo Client data fetching hook, e.g.:
@@ -32,7 +32,7 @@ export const createClientMaker =
         return new NextSSRApolloClient({
             // use the `NextSSRInMemoryCache`, not the normal `InMemoryCache`
             cache: new NextSSRInMemoryCache(),
-
+            documentTransform: shopifyContextTransform,
             defaultOptions: {
                 watchQuery: {
                     fetchPolicy: 'cache-and-network',
@@ -40,7 +40,8 @@ export const createClientMaker =
                 },
                 query: {
                     fetchPolicy: 'cache-first',
-                    errorPolicy: 'all'
+                    errorPolicy: 'all',
+                    canonizeResults: true
                 },
                 mutate: {
                     errorPolicy: 'all'

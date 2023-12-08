@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { registerApolloClient } from '@apollo/experimental-nextjs-app-support/rsc';
 
@@ -22,6 +23,7 @@ const ssr = ({ uri, headers }: ApiConfig) =>
                     canonizeResults: true,
                     addTypename: true
                 }),
+                documentTransform: shopifyContextTransform,
                 defaultOptions: {
                     watchQuery: {
                         fetchPolicy: 'cache-and-network',

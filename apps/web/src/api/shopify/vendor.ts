@@ -44,8 +44,7 @@ export const Convertor = (
 export const VendorsApi = async ({ api }: { api: AbstractApi }): Promise<VendorModel[]> => {
     try {
         const { data } = await api.query<{ products: ProductConnection }>(gql`
-            query products($language: LanguageCode!, $country: CountryCode!)
-            @inContext(language: $language, country: $country) {
+            query products {
                 products(first: 250, sortKey: BEST_SELLING) {
                     edges {
                         node {

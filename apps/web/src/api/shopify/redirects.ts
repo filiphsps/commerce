@@ -44,8 +44,7 @@ export const RedirectsApi = async ({
         try {
             const { data, errors } = await client.query<{ urlRedirects: UrlRedirectConnection }>(
                 gql`
-                        query urlRedirects($limit: Int!, $language: LanguageCode!, $country: CountryCode!)
-                        @inContext(language: $language, country: $country) {
+                        query urlRedirects($limit: Int!) {
                             urlRedirects(first: $limit ${(cursor && `, after: "${cursor}"`) || ''}) {
                                 edges {
                                     cursor

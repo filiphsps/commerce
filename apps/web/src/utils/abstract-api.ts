@@ -2,6 +2,8 @@
 import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
+import { DocumentTransform } from '@apollo/client';
+import { visit } from 'graphql';
 import { unstable_cache } from 'next/cache';
 
 export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
@@ -63,8 +65,6 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
             query,
             fetchPolicy,
             context: {
-                language: locale.country,
-                locale: locale.country,
                 fetchOptions: {
                     cache: revalidate ? undefined : 'force-cache',
                     next: {
@@ -123,3 +123,102 @@ export const cleanShopifyHtml = (html: string | unknown): Nullable<string> => {
 
     return out;
 };
+
+/**
+ * A GraphQL document transform that adds the `@inContext` directive to all queries.
+ *
+ * THIS IS (or at least seems to be) A REALLY HACKY SOLUTION. USE WITH CAUTION. :^)
+ *
+ * @todo TODO: This should be placed in a separate file or even a separate package.
+ * @todo TODO: Need to add tests for this.
+ * @todo TODO: This currently adds duplicate variables if they already exist.
+ */
+export const shopifyContextTransform = new DocumentTransform((document) => {
+    // Add Shopify's `@inContext` directive to all queries.
+    const transformedDocument = visit(document, {
+        OperationDefinition(node) {
+            return {
+                ...node,
+                variableDefinitions: [
+                    ...(node.variableDefinitions || []),
+                    {
+                        kind: 'VariableDefinition',
+                        variable: {
+                            kind: 'Variable',
+                            name: {
+                                kind: 'Name',
+                                value: 'country'
+                            }
+                        },
+                        type: {
+                            kind: 'NamedType',
+                            name: {
+                                kind: 'Name',
+                                value: 'CountryCode'
+                            }
+                        }
+                    },
+                    {
+                        kind: 'VariableDefinition',
+                        variable: {
+                            kind: 'Variable',
+                            name: {
+                                kind: 'Name',
+                                value: 'language'
+                            }
+                        },
+                        type: {
+                            kind: 'NamedType',
+                            name: {
+                                kind: 'Name',
+                                value: 'LanguageCode'
+                            }
+                        }
+                    }
+                ],
+                directives: [
+                    ...(node.directives || []),
+                    {
+                        kind: 'Directive',
+                        name: {
+                            kind: 'Name',
+                            value: 'inContext'
+                        },
+                        arguments: [
+                            {
+                                kind: 'Argument',
+                                name: {
+                                    kind: 'Name',
+                                    value: 'country'
+                                },
+                                value: {
+                                    kind: 'Variable',
+                                    name: {
+                                        kind: 'Name',
+                                        value: 'country'
+                                    }
+                                }
+                            },
+                            {
+                                kind: 'Argument',
+                                name: {
+                                    kind: 'Name',
+                                    value: 'language'
+                                },
+                                value: {
+                                    kind: 'Variable',
+                                    name: {
+                                        kind: 'Name',
+                                        value: 'language'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+    });
+
+    return transformedDocument;
+});

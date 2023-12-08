@@ -216,8 +216,7 @@ export const CollectionsApi = async (
         const api = 'api' in options ? options.api : /** @deprecated */ options.client;
 
         const { data, errors } = await api.query<{ collections: QueryRoot['collections'] }>(gql`
-            query collections($language: LanguageCode!, $country: CountryCode!)
-            @inContext(language: $language, country: $country) {
+            query collections {
                 collections(first: 250) {
                     edges {
                         node {
