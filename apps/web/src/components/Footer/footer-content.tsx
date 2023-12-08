@@ -68,8 +68,14 @@ const FooterBlock = styled.div`
     }
 
     @media (min-width: 950px) {
+        justify-content: flex-start;
+
         font-size: 1.5rem;
-        line-height: normal;
+        line-height: 1;
+
+        a {
+            margin-bottom: calc(var(--block-spacer) / 1.5);
+        }
     }
 `;
 
@@ -166,6 +172,7 @@ const Policy = styled(Link)`
 const Socials = styled(ImportantLinks)`
     display: flex;
     height: 3rem;
+    width: 100%;
     justify-content: flex-end;
     align-items: flex-end;
 `;
@@ -247,17 +254,21 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                 </FooterBottomSectionBlock>
 
                 <FooterBottomSectionBlock>
-                    <Socials>
-                        {store?.social.map((social) => (
-                            <Social className={styles['social-icon']} key={social.url} href={social.url}>
-                                <Image
-                                    src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
-                                    fill
-                                    alt={social.name}
-                                    title={social.name}
-                                />
-                            </Social>
-                        ))}
+                    <Socials
+                    // TODO: Add LinkedIn and YouTube icons.
+                    >
+                        {store?.social
+                            .filter(({ name }) => !['linkedin', 'youtube'].includes(name.toLowerCase()))
+                            .map((social) => (
+                                <Social className={styles['social-icon']} key={social.url} href={social.url}>
+                                    <Image
+                                        src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
+                                        fill
+                                        alt={social.name}
+                                        title={social.name}
+                                    />
+                                </Social>
+                            ))}
                         <Link className={styles.flag} href="/countries/" title={t('language-and-region-settings')}>
                             <CurrentLocaleFlag locale={locale} />
                         </Link>

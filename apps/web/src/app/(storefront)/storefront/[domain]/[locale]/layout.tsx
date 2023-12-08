@@ -167,6 +167,7 @@ export default async function RootLayout({
                         recordHeadersAndBody: true,
                         urlBlocklist: []
                     }}
+                    excludedHostnames={['localhost']}
                 />
                 <html
                     lang={locale.code}
