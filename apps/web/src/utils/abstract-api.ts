@@ -69,7 +69,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
                     cache: revalidate ? undefined : 'force-cache',
                     next: {
                         revalidate,
-                        tags: ['shopify', `shopify.${shop.id}`, ...tags]
+                        tags: ['shopify', `shopify.${shop.id}`, `shopify.${shop.id}.${locale.code}`, ...tags]
                     }
                 }
             },
