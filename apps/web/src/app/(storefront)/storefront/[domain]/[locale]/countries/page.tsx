@@ -157,7 +157,7 @@ export default async function CountriesPage({
                                     const { code } = Locale.from(locale);
 
                                     cookies().set('LOCALE', code);
-                                    return redirect(`/${code}/countries/`, RedirectType.replace);
+                                    return redirect(`/${code}/`);
                                 } catch (error: unknown) {
                                     return { message: 'Invalid locale provided.' };
                                 }
