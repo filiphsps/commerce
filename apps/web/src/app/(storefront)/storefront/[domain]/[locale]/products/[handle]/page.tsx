@@ -71,7 +71,8 @@ export async function generateMetadata({
         const url = `/products/${handle}/${(searchParams?.variant && `?variant=${searchParams.variant}`) || ''}`; // TODO: remember existing query parameters.
         const title = page?.meta_title || `${product.vendor} ${product.title}`;
         const description = asText(page?.meta_description) || product.description;
-        const image = // TODO: Add Product Image as fallback.
+        // TODO: Add Product Image as fallback.
+        const image =
             (page?.meta_image &&
                 page.meta_image.dimensions && {
                     url: page.meta_image.url,
@@ -207,7 +208,7 @@ export default async function ProductPage({
                 <SplitView
                     primaryDesktopWidth={0.46}
                     primaryClassName={styles.headingPrimary}
-                    asideDesktopWidth={0.524
+                    asideDesktopWidth={0.54}
                     aside={
                         <Gallery
                             initialImageId={variant?.image?.id || product.images?.edges?.[0].node.id}
