@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -186,7 +187,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
     ];
 };
 
-export const ShopApi = async ({ domain }: { domain: string }): Promise<Shop> => {
+export type ShopResponse = {} & Shop;
+export const ShopApi = async ({ domain, locale }: { domain: string; locale?: Locale }): Promise<ShopResponse> => {
     // TODO: This should be a cache-able database query.
     const shops = await ShopsApi();
     const shop =
@@ -202,7 +204,9 @@ export const ShopApi = async ({ domain }: { domain: string }): Promise<Shop> => 
         throw new UnknownShopDomainError();
     }
 
-    return shop;
+    return {
+        ...shop
+    };
 };
 
 export const CommerceProviderAuthenticationApi = async ({
