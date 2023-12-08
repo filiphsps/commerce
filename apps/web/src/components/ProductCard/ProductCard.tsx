@@ -100,18 +100,20 @@ const QuantityAction = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
     width: 3rem;
-    height: 100%;
-    padding: 0 0.5rem 0.25rem 0;
+    height: 3.25rem;
+    padding: 0 0.35rem 0 0;
     cursor: pointer;
     transition: 150ms ease-in-out all;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.85em;
+    font-weight: 600;
+    line-height: 1;
 
     &:first-child {
-        justify-content: center;
-        padding-right: 0;
-        padding-left: 0.5rem;
+        // Hack: Padding bottom shouldn't be here.
+        padding: 0 0 0.3rem 0.35rem;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -138,17 +140,13 @@ const QuantityValue = styled.input`
     display: block;
     width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
     min-width: 1.25rem;
-    height: 100%;
-    padding: 0 0 0.25rem 0;
-    font-size: 1.85rem;
+    height: 3.25rem;
     text-align: center;
+    font-size: 1.85rem;
+    line-height: 1;
     outline: none;
     transition: 150ms all ease-in-out;
     font-variant: common-ligatures tabular-nums slashed-zero;
-
-    @media (min-width: 950px) {
-        padding-bottom: 0.15rem;
-    }
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button,

@@ -69,7 +69,23 @@ export default function ProvidersRegistry({
                             <HeaderProvider store={store}>
                                 <AnalyticsProvider>
                                     <ThirdPartiesProvider shop={shop} locale={locale}>
-                                        <Toaster theme="dark" style={{ background: 'var(--color-accent-primary)' }} />
+                                        <Toaster
+                                            theme="dark"
+                                            position="bottom-left"
+                                            closeButton={true}
+                                            expand={true}
+                                            duration={5000}
+                                            gap={4}
+                                            toastOptions={{
+                                                style: {
+                                                    padding: 'var(--block-padding-large)',
+                                                    backgroundColor: 'var(--color-accent-primary)',
+                                                    borderColor: 'var(--color-accent-primary-dark)',
+                                                    borderWidth: 'var(--block-border-width)',
+                                                    borderRadius: 'var(--block-border-radius)'
+                                                }
+                                            }}
+                                        />
                                         {children}
                                     </ThirdPartiesProvider>
                                 </AnalyticsProvider>
