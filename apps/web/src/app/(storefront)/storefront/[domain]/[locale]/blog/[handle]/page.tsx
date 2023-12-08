@@ -30,21 +30,22 @@ export async function generateStaticParams() {
                         const locales = await LocalesApi({ api });
 
                         return await Promise.all(
-                            locales.map(async (locale) => {
-                                try {
-                                    const api = await ShopifyApiClient({ shop, locale });
-                                    const blog = await BlogApi({ api, handle: 'news' });
-    
-                                    return blog.articles.edges.map(({ node: { handle } }) => ({
-                                        domain: shop.domains.primary,
-                                        locale: locale.code,
-                                        handle
-                                    }));
-                                } catch {
-                                    return null;
-                                }
-                            })
-                            .filter((_) => _)
+                            locales
+                                .map(async (locale) => {
+                                    try {
+                                        const api = await ShopifyApiClient({ shop, locale });
+                                        const blog = await BlogApi({ api, handle: 'news' });
+
+                                        return blog.articles.edges.map(({ node: { handle } }) => ({
+                                            domain: shop.domains.primary,
+                                            locale: locale.code,
+                                            handle
+                                        }));
+                                    } catch {
+                                        return null;
+                                    }
+                                })
+                                .filter((_) => _)
                         );
                     } catch {
                         return null;

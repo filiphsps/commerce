@@ -30,5 +30,14 @@
         ],
         "target": "ESNext"
     },
-    "exclude": ["node_modules", "public"]
+    "exclude": [
+        "**/node_modules",
+        "**/dist",
+        "**/.turbo",
+        "**/storybook-static",
+        "**/coverage",
+        "**/build",
+        "**/public",
+        "**.*.test.*"
+    ]
 }

@@ -1,7 +1,32 @@
 {
     "$schema": "https://json.schemastore.org/eslintrc.json",
-    "extends": ["next/core-web-vitals", "plugin:jsx-a11y/recommended", "prettier"],
-    "plugins": ["@typescript-eslint", "eslint-plugin-jsdoc", "import", "jsx-a11y", "prettier", "unused-imports"],
+    "root": true,
+    "env": {
+        "browser": false,
+        "es2024": true,
+        "node": true
+    },
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:react/recommended",
+        "prettier",
+        "plugin:react-hooks/recommended",
+        "plugin:jsx-a11y/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "eslint-plugin-jsdoc", "import", "jsx-a11y", "unused-imports", "prettier"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "sourceType": "module",
+        "project": ["./tsconfig.json", "./apps/*/tsconfig.json"]
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "rules": {
         "@typescript-eslint/consistent-type-imports": "error",
         "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
@@ -19,13 +44,14 @@
         "no-mixed-operators": "off",
         "no-unused-vars": "off",
         "no-useless-constructor": "off",
-        "no-unreachable": "error",
         "react-hooks/exhaustive-deps": "off",
         "react-hooks/rules-of-hooks": "off",
         "react/no-children-prop": "off",
         "react/no-find-dom-node": "off",
         "react/no-string-refs": "off",
         "react/prop-types": "error",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-uses-react": "off",
         "semi": ["error", "always"],
         "standard/computed-property-even-spacing": "off",
         "unused-imports/no-unused-imports": "error",

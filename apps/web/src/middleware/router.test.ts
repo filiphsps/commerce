@@ -1,6 +1,6 @@
 import { getRequestType } from '@/middleware/router';
 import type { NextRequest } from 'next/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('middleware', () => {
     describe('router', () => {

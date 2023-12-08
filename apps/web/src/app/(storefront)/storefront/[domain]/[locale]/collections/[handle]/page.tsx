@@ -36,23 +36,24 @@ export async function generateStaticParams() {
                         const locales = await LocalesApi({ api });
 
                         return await Promise.all(
-                            locales.map(async (locale) => {
-                                try {
-                                    const api = await StorefrontApiClient({ shop, locale });
-                                    const collections = await CollectionsApi({ client: api });
-    
-                                    return collections
-                                        .filter(({ hasProducts }) => hasProducts)
-                                        .map(({ handle }) => ({
-                                            domain: shop.domains.primary,
-                                            locale: locale.code,
-                                            handle
-                                        }));
-                                } catch {
-                                    return null;
-                                }
-                            })
-                            .filter((_) => _)
+                            locales
+                                .map(async (locale) => {
+                                    try {
+                                        const api = await StorefrontApiClient({ shop, locale });
+                                        const collections = await CollectionsApi({ client: api });
+
+                                        return collections
+                                            .filter(({ hasProducts }) => hasProducts)
+                                            .map(({ handle }) => ({
+                                                domain: shop.domains.primary,
+                                                locale: locale.code,
+                                                handle
+                                            }));
+                                    } catch {
+                                        return null;
+                                    }
+                                })
+                                .filter((_) => _)
                         );
                     } catch {
                         return null;

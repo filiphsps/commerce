@@ -7,9 +7,10 @@ describe('components', () => {
         it('should render a title and subtitle', () => {
             const title = 'This is the title';
             const subtitle = 'This is the subtitle';
-            const { getByText } = render(<Heading title={title} subtitle={subtitle} />);
+            const { getByText, unmount } = render(<Heading title={title} subtitle={subtitle} />);
             expect(getByText(title).innerText).toBe(title);
             expect(getByText(subtitle).innerText).toBe(subtitle);
+            expect(() => unmount()).not.toThrow();
         });
 
         it.todo('should render the title and subtitle in reverse order if reverse prop is true');

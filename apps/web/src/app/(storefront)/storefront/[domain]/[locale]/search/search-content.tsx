@@ -6,12 +6,12 @@ import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
 import { Input } from '@/components/Input';
+import { ProductSearchFilters } from '@/components/ProductSearchFilters';
+import { ProductSearchResultItem } from '@/components/ProductSearchResultItem';
 import { Button } from '@/components/actionable/button';
 import { Label } from '@/components/typography/label';
 import type { Locale } from '@/utils/locale';
 import { styled } from 'styled-components';
-import { ProductSearchFilters } from '@/components/ProductSearchFilters';
-import { ProductSearchResultItem } from '@/components/ProductSearchResultItem';
 
 const Container = styled.article`
     display: contents;
@@ -94,7 +94,7 @@ export type SearchContentProps = {
     locale: Locale;
     query?: string;
 };
-export default function SearchContent({ shop, locale, query = '' }: SearchContentProps) {
+export default function SearchContent({ query = '' }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -146,7 +146,9 @@ export default function SearchContent({ shop, locale, query = '' }: SearchConten
 
             <Content>
                 <Suspense key={query}>
-                    {products ? products.map((product: any) => <ProductSearchResultItem key={product.id} product={product} />) : null}
+                    {products
+                        ? products.map((product: any) => <ProductSearchResultItem key={product.id} product={product} />)
+                        : null}
                 </Suspense>
             </Content>
         </Container>

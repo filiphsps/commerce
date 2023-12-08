@@ -8,7 +8,7 @@ export async function getShopsForUser(userId: string) {
         async () => {
             return prisma.shop.findMany({
                 where: {
-                    collaborators: { every: { userId } }
+                    collaborators: { some: { userId } }
                 },
                 select: {
                     id: true,
@@ -36,7 +36,7 @@ export async function getShopForUser(userId: string, shopId: string) {
             return prisma.shop.findUnique({
                 where: {
                     id: shopId,
-                    collaborators: { every: { userId } }
+                    collaborators: { some: { userId } }
                 },
                 select: {
                     id: true,
@@ -81,14 +81,9 @@ export async function createShop(userId: string) {
         await revalidateTag(`admin.user.${userId}.shops`);
         return response;
     } catch (error: any) {
-        if (error.code === 'P2002') {
-            return {
-                error: `This subdomain is already taken`
-            };
-        } else {
-            return {
-                error: error.message
-            };
-        }
+        console.error(error);
+        return {
+            error: error.message
+        };
     }
 }

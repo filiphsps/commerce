@@ -18,15 +18,7 @@ export type AddToCartProps = {
 } & HTMLProps<HTMLButtonElement>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-export const AddToCart = ({
-    locale,
-    i18n,
-    className,
-    quantity = 0,
-    showIcon = false,
-    type,
-    ...props
-}: AddToCartProps) => {
+export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();

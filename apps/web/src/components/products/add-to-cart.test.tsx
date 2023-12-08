@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { AddToCart } from '@/components/products/add-to-cart';
 import { render } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('components', () => {
     describe('AddToCart', () => {

@@ -7,7 +7,7 @@ import type { PrefetchData } from '@/utils/prefetch';
 import { Prefetch } from '@/utils/prefetch';
 import type { CollectionEdge } from '@shopify/hydrogen-react/storefront-api-types';
 import type { MockedFunction } from 'vitest';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/api/shopify/collection');
 vi.mock('@/api/shopify/vendor');

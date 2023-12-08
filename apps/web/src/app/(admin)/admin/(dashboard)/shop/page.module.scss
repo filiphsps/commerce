@@ -7,6 +7,15 @@
 .shops {
     display: flex;
 }
+.collaborators {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--layout-block-padding) / 4);
+
+    .collaborator {
+        width: 100%;
+    }
+}
 
 .blocks {
     display: flex;
@@ -15,5 +24,10 @@
         display: flex;
         flex-direction: column;
         gap: calc(var(--layout-block-padding) / 2);
+        width: 100%;
+
+        @media (min-width: 950px) {
+            width: auto;
+        }
     }
 }
