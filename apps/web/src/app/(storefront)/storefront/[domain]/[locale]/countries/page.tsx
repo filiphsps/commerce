@@ -127,9 +127,11 @@ export default async function CountriesPage({
     params: CountriesPageParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
+
+        const shop = await ShopApi({ domain, locale });
+        
         const i18n = await getDictionary(locale);
 
         const api = await StorefrontApiClient({ shop, locale });
@@ -147,21 +149,23 @@ export default async function CountriesPage({
                         <form
                             action={async (formData: FormData) => {
                                 'use server';
-
                                 const locale = formData.get('locale') as string | null;
 
                                 // Make sure we got a locale.
+                                // FIXME: Throw see https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
                                 if (!locale) return { message: 'No locale provided.' };
 
                                 // Validate the locale.
                                 try {
                                     const { code } = Locale.from(locale);
-
                                     cookies().set('LOCALE', code);
-                                    return redirect(`/${code}/`);
                                 } catch (error: unknown) {
-                                    return { message: 'Invalid locale provided.' };
+                                    return { message: 'Invalid locale provided.' }; // FIXME: Should also throw.
                                 }
+
+                                // Needs to happen outside of the try and catch block.
+                                // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
+                                redirect(`/`);
                             }}
                         >
                             <LocaleSelector shop={shop} countries={countries} store={store} locale={locale} />
