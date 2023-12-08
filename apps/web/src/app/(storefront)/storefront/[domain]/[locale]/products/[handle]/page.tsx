@@ -47,20 +47,31 @@ export async function generateMetadata({
     searchParams?: ProductPageQueryParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
+        if (!isValidHandle(handle)) return notFound();
+
+        // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
+        // Fetch the current shop.
+        const shop = await ShopApi({ domain, locale });
+
+        // Setup the AbstractApi client.
         const api = await StorefrontApiClient({ shop, locale });
+
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
+
+        // Do the actual API calls.
         const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const locales = store.i18n?.locales || [Locale.default];
+        const locales = store.i18n?.locales || [Locale.default]; // TODO: Handle this better since the fallback may not include the current locale.
 
         const url = `/products/${handle}/${(searchParams?.variant && `?variant=${searchParams.variant}`) || ''}`; // TODO: remember existing query parameters.
         const title = page?.meta_title || `${product.vendor} ${product.title}`;
         const description = asText(page?.meta_description) || product.description;
-        const image =
+        const image = // TODO: Add Product Image as fallback.
             (page?.meta_image &&
                 page.meta_image.dimensions && {
                     url: page.meta_image.url,
@@ -75,9 +86,9 @@ export async function generateMetadata({
             alternates: {
                 canonical: `https://${domain}/${locale.code}/products/${handle}/`,
                 languages: locales.reduce(
-                    (prev, { locale }) => ({
+                    (prev, { code }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${locale}/products/${handle}/`
+                        [locale]: `https://${domain}/${code}/products/${handle}/`
                     }),
                     {}
                 )
@@ -110,12 +121,24 @@ export default async function ProductPage({
     searchParams?: ProductPageQueryParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
+        if (!isValidHandle(handle)) return notFound();
+
+        // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
-        const i18n = await getDictionary(locale);
 
-        if (!isValidHandle(handle)) return notFound();
+        // Fetch the current shop.
+        const shop = await ShopApi({ domain, locale });
+
+        // Setup the AbstractApi client.
+        const api = await StorefrontApiClient({ shop, locale });
+
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
+
+        // Get dictionary of strings for the current locale.
+        const i18n = await getDictionary({ shop, locale });
+
         if (searchParams?.variant && searchParams?.variant.match(/^(?![0-9]+$).*/)) {
             const variant = searchParams?.variant.split('/').at(-1);
             if (!variant) {
@@ -128,7 +151,7 @@ export default async function ProductPage({
             return redirect(`/products/${handle}/?variant=${variant}`, RedirectType.replace);
         }
 
-        const api = await StorefrontApiClient({ shop, locale });
+        // Do the actual API calls.
         const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const reviews = await ProductReviewsApi({ api, product });
@@ -182,9 +205,9 @@ export default async function ProductPage({
         return (
             <Page className={styles.container}>
                 <SplitView
-                    primaryDesktopWidth={0.48}
+                    primaryDesktopWidth={0.46}
                     primaryClassName={styles.headingPrimary}
-                    asideDesktopWidth={0.52}
+                    asideDesktopWidth={0.524
                     aside={
                         <Gallery
                             initialImageId={variant?.image?.id || product.images?.edges?.[0].node.id}
