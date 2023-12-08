@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
-import { Locale } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
