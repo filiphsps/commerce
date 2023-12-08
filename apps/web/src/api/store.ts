@@ -268,3 +268,25 @@ export const _mockShopApi = ({ id }: Shop): StoreModel => ({
 
     social: []
 });
+
+export const CurrentLocaleApi = async ({ api }: { api: AbstractApi }) => {
+    const { data } = await api.query<{ localization: Localization }>(gql`
+        query localization {
+            localization {
+                country {
+                    currency {
+                        isoCode
+                        name
+                        symbol
+                    }
+                    isoCode
+                    name
+                    unitSystem
+                }
+            }
+        }
+    `);
+
+    // FIXME: Handle errors or missing data.
+    return data?.localization?.country;
+};
