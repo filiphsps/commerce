@@ -152,15 +152,17 @@ export default async function CountriesPage({
                                 const locale = formData.get('locale') as string | null;
 
                                 // Make sure we got a locale.
-                                // FIXME: Throw see https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
-                                if (!locale) return { message: 'No locale provided.' };
+                                if (!locale) {
+                                    // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
+                                    throw new Error('No locale provided.'); // TODO: Proper nordcom error.
+                                }
 
                                 // Validate the locale.
                                 try {
                                     const { code } = Locale.from(locale);
                                     cookies().set('LOCALE', code);
                                 } catch (error: unknown) {
-                                    return { message: 'Invalid locale provided.' }; // FIXME: Should also throw.
+                                    throw error; // TODO: Proper nordcom error.
                                 }
 
                                 // Needs to happen outside of the try and catch block.
