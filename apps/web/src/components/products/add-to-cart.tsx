@@ -22,7 +22,7 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
     const { t } = useTranslation('common', i18n);
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
-    const { selectedVariant } = useProduct();
+    const { selectedVariant, product } = useProduct();
     const { status, linesAdd } = useCart();
 
     const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
@@ -79,6 +79,20 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
                         quantity
                     }
                 ]);
+
+                // TODO: Move the toast to the provider.
+                // TODO: i18n.
+                toast.success(
+                    <>
+                        <p>
+                            Added{' '}
+                            <b>
+                                <span>{quantity}x</span> {selectedVariant!.title} - {product!.title}
+                            </b>{' '}
+                            to the cart!
+                        </p>
+                    </>
+                );
             }}
             title={`Add ${quantity} to your cart`} // TODO: i18n.
         >
