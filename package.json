@@ -22,6 +22,7 @@
         "lint": "turbo run lint",
         "todo:lint:all": "eslint ./{apps,packages}/**/src/**/*.{ts,js,tsx} --no-error-on-unmatched-pattern",
         "prettier": "prettier **/src/**/*.{ts,tsx,js} --check",
+        "fix:prettier": "prettier **/src/**/*.{ts,tsx,js} --write",
         "typecheck": "turbo run typecheck",
         "test": "turbo run test",
         "slicemachine": "turbo run slicemachine"

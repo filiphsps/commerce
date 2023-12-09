@@ -60,13 +60,24 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <>
             <HighlightInit
                 projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
+                version={process.env.GIT_COMMIT_SHA || 'dev'}
                 serviceName={`Nordcom Commerce Admin`}
-                tracingOrigins
+                privacySetting="none"
+                storageMode="localStorage"
+                samplingStrategy={{}}
+                inlineStylesheet={true}
+                tracingOrigins={true}
+                reportConsoleErrors={true}
+                enableSegmentIntegration={true}
+                enablePerformanceRecording={true}
                 networkRecording={{
                     enabled: true,
                     recordHeadersAndBody: true,
                     urlBlocklist: []
                 }}
+                enableCanvasRecording={false}
+                excludedHostnames={['localhost']}
+                disableBackgroundRecording={true}
             />
             <html lang="en">
                 <body className={`${primaryFont.variable} ${GeistMono.variable}`}>

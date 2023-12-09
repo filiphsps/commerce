@@ -161,13 +161,22 @@ export default async function RootLayout({
                 <HighlightInit
                     projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
                     serviceName={`Nordcom Commerce Store - ${shop.id}`}
-                    tracingOrigins
+                    privacySetting="none"
+                    storageMode="localStorage"
+                    samplingStrategy={{}}
+                    inlineStylesheet={true}
+                    tracingOrigins={true}
+                    reportConsoleErrors={true}
+                    enableSegmentIntegration={true}
+                    enablePerformanceRecording={true}
                     networkRecording={{
                         enabled: true,
                         recordHeadersAndBody: true,
                         urlBlocklist: []
                     }}
+                    enableCanvasRecording={false}
                     excludedHostnames={['localhost']}
+                    disableBackgroundRecording={true}
                 />
                 <html
                     lang={locale.code}

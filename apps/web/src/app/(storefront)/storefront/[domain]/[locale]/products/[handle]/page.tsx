@@ -1,7 +1,7 @@
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { StoreApi } from '@/api/store';
 import Gallery from '@/components/Gallery';
@@ -57,7 +57,7 @@ export async function generateMetadata({
         const shop = await ShopApi({ domain, locale });
 
         // Setup the AbstractApi client.
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Next.js Preloading pattern.
         PageApi.preload({ shop, locale, handle });
@@ -89,7 +89,7 @@ export async function generateMetadata({
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [locale]: `https://${domain}/${code}/products/${handle}/`
+                        [code]: `https://${domain}/${code}/products/${handle}/`
                     }),
                     {}
                 )
@@ -132,7 +132,7 @@ export default async function ProductPage({
         const shop = await ShopApi({ domain, locale });
 
         // Setup the AbstractApi client.
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Next.js Preloading pattern.
         PageApi.preload({ shop, locale, handle });

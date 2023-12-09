@@ -1,3 +1,4 @@
+import type { PageApi as OriginalPageApi } from '@/api/page';
 import { Locale } from '@/utils/locale';
 import { render } from '@testing-library/react';
 import { notFound } from 'next/navigation';
@@ -22,13 +23,17 @@ describe('app', () => {
                 query: vi.fn().mockResolvedValue({})
             })
         }));
-        vi.mock('@/api/page', () => ({
-            PageApi: vi.fn().mockResolvedValue({
+        vi.mock('@/api/page', () => {
+            let PageApi = vi.fn().mockResolvedValue({
                 page: {
                     slices: []
                 }
-            })
-        }));
+            }) as any as typeof OriginalPageApi;
+            PageApi.preload = vi.fn().mockResolvedValue({});
+            return {
+                PageApi
+            };
+        });
         vi.mock('@/api/store', () => ({
             LocalesApi: vi.fn().mockResolvedValue([Locale.default]),
             StoreApi: vi.fn().mockResolvedValue({

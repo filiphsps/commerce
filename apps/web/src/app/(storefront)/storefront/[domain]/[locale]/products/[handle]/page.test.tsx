@@ -1,8 +1,8 @@
+import type { PageApi as OriginalPageApi } from '@/api/page';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import ProductPage, { generateMetadata } from './page';
-
 import type { ProductPageParams } from './page';
+import ProductPage, { generateMetadata } from './page';
 
 describe('app', () => {
     vi.mock('@/utils/prefetch', () => ({
@@ -16,15 +16,20 @@ describe('app', () => {
     vi.mock('@/api/shopify', () => ({
         StorefrontApiClient: vi.fn().mockReturnValue({
             query: vi.fn().mockResolvedValue({})
-        })
+        }),
+        ShopifyApolloApiClient: vi.fn().mockReturnValue({})
     }));
-    vi.mock('@/api/page', () => ({
-        PageApi: vi.fn().mockResolvedValue({
+    vi.mock('@/api/page', () => {
+        let PageApi = vi.fn().mockResolvedValue({
             page: {
                 slices: []
             }
-        })
-    }));
+        }) as any as typeof OriginalPageApi;
+        PageApi.preload = vi.fn().mockResolvedValue({});
+        return {
+            PageApi
+        };
+    });
     vi.mock('@/api/store', () => ({
         StoreApi: vi.fn().mockResolvedValue({
             i18n: {

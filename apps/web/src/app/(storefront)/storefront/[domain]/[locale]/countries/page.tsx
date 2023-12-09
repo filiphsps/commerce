@@ -131,7 +131,7 @@ export default async function CountriesPage({
         if (!locale) return notFound();
 
         const shop = await ShopApi({ domain, locale });
-        
+
         const i18n = await getDictionary(locale);
 
         const api = await StorefrontApiClient({ shop, locale });
