@@ -69,7 +69,7 @@
         "@typescript-eslint/eslint-plugin": "6.13.2",
         "@typescript-eslint/parser": "6.13.2",
         "@vitejs/plugin-react": "4.2.1",
-        "@vitest/coverage-v8": "1.0.2",
+        "@vitest/coverage-v8": "1.0.3",
         "babel-plugin-module-resolver": "5.0.0",
         "concurrently": "8.2.2",
         "eslint": "8.55.0",
@@ -89,7 +89,7 @@
         "prisma": "5.7.0",
         "turbo": "1.11.1",
         "typescript": "5.3.3",
-        "vitest": "1.0.2"
+        "vitest": "1.0.3"
     },
     "packageManager": "npm@10.2.5",
     "nextBundleAnalysis": {
