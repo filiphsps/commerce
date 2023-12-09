@@ -1,16 +1,7 @@
 import { ProductApi } from '@/api/product';
-import { Badge, BadgeContainer } from '@/components/Badges';
-import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
-import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
-import type { Collection, Product, ProductVariantEdge } from '@shopify/hydrogen-react/storefront-api-types';
-import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { NextSeo, ProductJsonLd } from 'next-seo';
-import { useCallback, useRef, useEffect, useState } from 'react';
-import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
-import styled, { css } from 'styled-components';
-
 import { RecommendationApi } from '@/api/recommendation';
 import { RedirectProductApi } from '@/api/redirects';
+import { Badge, BadgeContainer } from '@/components/Badges';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
 import Content from '@/components/Content';
@@ -22,19 +13,27 @@ import type { ProductPageDocument } from '@/prismic/types';
 import { components } from '@/slices';
 import { NextLocaleToLocale } from '@/utils/Locale';
 import { ProductToMerchantsCenterId } from '@/utils/MerchantsCenterId';
+import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { getServerTranslations } from '@/utils/getServerTranslations';
-import { ShopifyPriceToNumber } from '@/utils/Pricing';
 import { isValidHandle } from '@/utils/handle';
 import { asText } from '@prismicio/client';
 import { SliceZone } from '@prismicio/react';
+import type { ShopifyAnalyticsProduct, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import { AnalyticsPageType, Money, ProductProvider, useCart, useProduct } from '@shopify/hydrogen-react';
+import type { Collection, Product, ProductVariantEdge } from '@shopify/hydrogen-react/storefront-api-types';
+import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import type { SSRConfig } from 'next-i18next';
 import { useTranslation } from 'next-i18next';
+import { NextSeo, ProductJsonLd } from 'next-seo';
 import dynamic from 'next/dynamic';
 import Error from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { FiCheck, FiMinus, FiPlus, FiShoppingCart } from 'react-icons/fi';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
@@ -560,19 +559,21 @@ const ProductPage: FunctionComponent<InferGetStaticPropsType<typeof getStaticPro
                     ecommerce: {
                         currency: selectedVariant?.price?.currencyCode! || 'USD',
                         value: ShopifyPriceToNumber(0, selectedVariant?.price?.amount!) || undefined,
-                        items: [{
-                            item_id: ProductToMerchantsCenterId({
-                                locale: router.locale,
-                                productId: product?.id!,
-                                variantId: selectedVariant?.id!
-                            }),
-                            item_name: product?.title,
-                            item_variant: selectedVariant?.title,
-                            item_brand: product?.vendor,
-                            currency: selectedVariant?.price?.currencyCode! || 'USD',
-                            price: ShopifyPriceToNumber(undefined, selectedVariant?.price?.amount!),
-                            quantity: 1
-                        }]
+                        items: [
+                            {
+                                item_id: ProductToMerchantsCenterId({
+                                    locale: router.locale,
+                                    productId: product?.id!,
+                                    variantId: selectedVariant?.id!
+                                }),
+                                item_name: product?.title,
+                                item_variant: selectedVariant?.title,
+                                item_brand: product?.vendor,
+                                currency: selectedVariant?.price?.currencyCode! || 'USD',
+                                price: ShopifyPriceToNumber(undefined, selectedVariant?.price?.amount!),
+                                quantity: 1
+                            }
+                        ]
                     }
                 }
             );

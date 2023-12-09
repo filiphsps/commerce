@@ -3,20 +3,21 @@ import 'destyle.css';
 
 import * as nextI18NextConfig from '../../next-i18next.config.cjs';
 
-import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
-import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
-import type { AppProps, NextWebVitalsMetric } from 'next/app';
-import Router, { useRouter } from 'next/router';
-import { useState } from 'react';
 import { CartFragment } from '@/api/cart';
 import { StoreApi } from '@/api/store';
 import PageProvider from '@/components/PageProvider';
 import { Config } from '@/utils/Config';
+import { NextLocaleToCountry, NextLocaleToLanguage } from '@/utils/Locale';
+import { HighlightInit } from '@highlight-run/next/client';
+import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { appWithTranslation } from 'next-i18next';
+import { DefaultSeo, SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
+import type { AppProps, NextWebVitalsMetric } from 'next/app';
 import { Public_Sans } from 'next/font/google';
 import Head from 'next/head';
+import Router, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
+import { useState } from 'react';
 import useSWR from 'swr';
 import SEO from '../../nextseo.config';
 import preval from '../data.preval';
@@ -158,23 +159,51 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             />
 
             {/* Page */}
-            <ShopifyProvider
-                storefrontId={Config.shopify.storefront_id}
-                storeDomain={`https://${Config.shopify.checkout_domain}`}
-                storefrontApiVersion={Config.shopify.api}
-                storefrontToken={Config.shopify.token}
-                countryIsoCode={country}
-                languageIsoCode={language}
-            >
-                <CartProvider
-                    cartFragment={CartFragment}
-                    onLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
-                    onLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}>
-                    <PageProvider store={store} pagePropsAnalyticsData={pageProps.analytics} events={{ events, setEvents }}>
-                        <Component key={router.asPath} {...pageProps} store={store} />
-                    </PageProvider>
-                </CartProvider>
-            </ShopifyProvider>
+            <>
+                <HighlightInit
+                    projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
+                    serviceName={`Legacy - Nordcom Commerce Store - sweet-side-of-sweden`}
+                    privacySetting="none"
+                    storageMode="localStorage"
+                    samplingStrategy={{}}
+                    inlineStylesheet={true}
+                    tracingOrigins={true}
+                    reportConsoleErrors={true}
+                    enableSegmentIntegration={true}
+                    enablePerformanceRecording={true}
+                    networkRecording={{
+                        enabled: true,
+                        recordHeadersAndBody: true,
+                        urlBlocklist: []
+                    }}
+                    enableCanvasRecording={false}
+                    excludedHostnames={['localhost']}
+                    disableBackgroundRecording={true}
+                />
+
+                <ShopifyProvider
+                    storefrontId={Config.shopify.storefront_id}
+                    storeDomain={`https://${Config.shopify.checkout_domain}`}
+                    storefrontApiVersion={Config.shopify.api}
+                    storefrontToken={Config.shopify.token}
+                    countryIsoCode={country}
+                    languageIsoCode={language}
+                >
+                    <CartProvider
+                        cartFragment={CartFragment}
+                        onLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
+                        onLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}
+                    >
+                        <PageProvider
+                            store={store}
+                            pagePropsAnalyticsData={pageProps.analytics}
+                            events={{ events, setEvents }}
+                        >
+                            <Component key={router.asPath} {...pageProps} store={store} />
+                        </PageProvider>
+                    </CartProvider>
+                </ShopifyProvider>
+            </>
         </>
     );
 };

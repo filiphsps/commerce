@@ -6,6 +6,11 @@ const locales = [...(process.env.STORE_LOCALES ? [...process.env.STORE_LOCALES.s
 
 const PUBLIC_FILE = /\.(.*)$/;
 
+//export const runtime = 'experimental-edge';
+export const config = {
+    matcher: ['/:path*']
+};
+
 // Based on https://github.com/vercel/next.js/discussions/18419#discussioncomment-3838336
 // then later also on https://stackoverflow.com/a/75845778/3142553
 export default function middleware(req: NextRequest) {
@@ -31,13 +36,9 @@ export default function middleware(req: NextRequest) {
     while (true) {
         const trailingLocales = newUrl.pathname.match(localeRegex);
 
-        if (!trailingLocales || trailingLocales.length <= 0)
-            break;
+        if (!trailingLocales || trailingLocales.length <= 0) break;
 
         newUrl.pathname = newUrl.pathname.replaceAll(localeRegex, '/');
-    }
-    if (newUrl.pathname !== req.nextUrl.pathname) {
-        console.warn(`Fixed locale duplication "${req.nextUrl.href}" -> "${newUrl.href}"`);
     }
 
     if (req.nextUrl.locale === 'x-default') {
@@ -61,6 +62,8 @@ export default function middleware(req: NextRequest) {
     // Make sure we end with a slash.
     if (!newUrl.pathname.endsWith('/') && !newUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)) {
         newUrl.pathname += '/';
+    } else if (newUrl.pathname.includes('/homepage')) {
+        newUrl.pathname = '/';
     }
 
     // Redirect if `newURL` is different from `req.nextUrl`.
@@ -70,7 +73,3 @@ export default function middleware(req: NextRequest) {
 
     return NextResponse.next();
 }
-export const config = {
-    matcher: ['/:path*']
-    //matcher: '/((?!api|_next/static|_next/image|favicon).*)'
-};

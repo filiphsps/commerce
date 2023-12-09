@@ -1,9 +1,9 @@
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
 import type { ImageConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
 
 const Previews = styled.div`
     position: relative;
@@ -212,6 +212,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
                         title={image.altText || undefined}
                         width={image.width || 0}
                         height={image.height || 0}
+                        sizes="(max-width: 950px) 125px, 950px"
                         priority
                     />
                 </ImageWrapper>

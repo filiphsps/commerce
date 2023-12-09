@@ -11,13 +11,11 @@ export default function NotFound() {
     useEffect(() => {
         try {
             // Google Tracking
-            (window as any).dataLayer?.push(
-                {
-                    event: 'error_404',
-                    event_path: router.pathname,
-                    event_search: JSON.stringify(router.query || {})
-                }
-            );
+            (window as any).dataLayer?.push({
+                event: 'error_404',
+                event_path: router.pathname,
+                event_search: JSON.stringify(router.query || {})
+            });
         } catch {}
     }, []);
 
@@ -27,19 +25,19 @@ export default function NotFound() {
                 <PageHeader title={'Page not found'} subtitle={'Error 404'} />
                 <p>
                     Page not found
-                    <br/>
+                    <br />
                     Sorry, we could not find the page you were looking for.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Are you sure you typed the correct URL?
-                    <br/>
+                    <br />
                     If you followed a link from another site,
-                    <br/>
+                    <br />
                     please let them know one of their links are broken.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Or if you think this is a mistake,
-                    <br/>
+                    <br />
                     please reach out to our support.
                 </p>
             </PageContent>

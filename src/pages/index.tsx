@@ -1,4 +1,4 @@
-import type { GetStaticPaths, GetStaticProps } from 'next';
+import type { GetStaticProps } from 'next';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import type { StoreModel } from '@/models/StoreModel';
@@ -14,7 +14,7 @@ import { AnalyticsPageType } from '@shopify/hydrogen-react';
 import type { SSRConfig } from 'next-i18next';
 import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import Error from 'next/error';
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
 
@@ -32,7 +32,7 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
     const router = useRouter();
     const path = page?.url?.split('/').filter((i) => i);
 
-    if (!page) return <Error statusCode={404} />;
+    if (!page) return <NextError statusCode={404} />;
 
     return (
         <Page className={`CustomPage CustomPage-${page?.type}`}>
@@ -108,18 +108,12 @@ const CustomPage: FunctionComponent<CustomPageProps> = ({ store, prefetch, page 
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({}) => {
-    return { paths: [], fallback: 'blocking' };
-};
-
 export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: localeData, previewData }) => {
     const client = createClient({ previewData });
     const locale = NextLocaleToLocale(localeData);
 
     try {
-        const uid = (params?.uid && params!.uid![params!.uid!.length - 1]) || 'homepage';
-
-        if (['null', 'undefined', '[handle]'].includes(uid))
+        if (['null', 'undefined', '[handle]'].includes('homepage'))
             return {
                 notFound: true,
                 revalidate: false
@@ -133,11 +127,11 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
 
         let page: any = null;
         try {
-            page = await client.getByUID('custom_page', uid, {
+            page = await client.getByUID('custom_page', 'homepage', {
                 lang: locale.locale
             });
         } catch (error) {
-            page = await client.getByUID('custom_page', uid);
+            page = await client.getByUID('custom_page', 'homepage');
         }
         const prefetch = (page && (await Prefetch(page, params, locale.locale))) || null;
 
@@ -151,14 +145,10 @@ export const getStaticProps: GetStaticProps<{}> = async ({ params, locale: local
         return {
             props: {
                 ...translations,
-                handle: uid,
+                handle: 'homepage',
                 page,
                 prefetch,
-                analytics: (uid !== 'homepage' && {
-                    pageType: AnalyticsPageType.page,
-                    // TODO: fetch this ID from shopify
-                    resourceId: `gid://shopify/OnlineStorePage/${uid}` || null
-                }) || {
+                analytics: {
                     pageType: AnalyticsPageType.home
                 }
             },

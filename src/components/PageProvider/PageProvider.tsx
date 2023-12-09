@@ -1,5 +1,3 @@
-import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
-import { useCart } from '@shopify/hydrogen-react';
 import { HeaderApi } from '@/api/header';
 import { NavigationApi } from '@/api/navigation';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -7,11 +5,13 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import type { StoreModel } from '@/models/StoreModel';
 import { Config } from '@/utils/Config';
 import type { Locale } from '@/utils/Locale';
+import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
 import { asHTML } from '@prismicio/client';
+import { useCart } from '@shopify/hydrogen-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 import preval from '../../data.preval';
@@ -91,9 +91,9 @@ interface PageProviderProps {
     children: any;
     className?: string;
     events?: {
-        events: string[],
-        setEvents: any
-    }
+        events: string[];
+        setEvents: any;
+    };
 }
 const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
     const { store, pagePropsAnalyticsData } = props;
@@ -110,7 +110,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
 
         setEvents((events: string[]) => {
             events.forEach((event) => {
-                switch(event) {
+                switch (event) {
                     case 'remove_from_cart': {
                         try {
                             // Google Tracking
@@ -138,7 +138,7 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
             });
             return [];
         });
-    }, [props.events])
+    }, [props.events]);
 
     const { data: navigation } = useSWR(
         [

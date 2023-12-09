@@ -1,4 +1,3 @@
-import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
 import { parseGid } from '@shopify/hydrogen-react';
 
 export const ProductToMerchantsCenterId = ({

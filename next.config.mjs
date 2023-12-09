@@ -1,3 +1,4 @@
+import { withHighlightConfig } from '@highlight-run/next/config';
 import createNextPluginPreval from '@sweetsideofsweden/next-plugin-preval/config.js';
 import { i18n } from './next-i18next.config.cjs';
 
@@ -5,39 +6,81 @@ const withNextPluginPreval = createNextPluginPreval();
 
 /** @type {import('next').NextConfig} */
 let config = {
+    i18n,
+
     poweredByHeader: false,
     reactStrictMode: true,
     trailingSlash: true,
-    skipTrailingSlashRedirect: true,
     swcMinify: true,
-    i18n,
-    productionBrowserSourceMaps: false,
+    productionBrowserSourceMaps: true,
     compress: true,
+    transpilePackages: [],
     experimental: {
-        scrollRestoration: true,
+        appDocumentPreloading: true,
         esmExternals: true,
+        //fallbackNodePolyfills: false, // We rely on `process.env`.
+        gzipSize: true,
+        instrumentationHook: true,
+        optimisticClientCache: true,
+        optimizeCss: true,
         optimizePackageImports: [
-            '@shopify/hydrogen-react',
-            'react-icons',
+            '@apollo/client',
             '@prismicio/client',
             '@prismicio/next',
             '@prismicio/react',
-            '@apollo/client'
+            '@shopify/hydrogen-react',
+            'react-icons'
         ],
+        optimizeServerReact: true,
+        scrollRestoration: true,
+        serverComponentsExternalPackages: [],
+        turbo: {
+            resolveAlias: {
+                '@/styles/': './src/scss/'
+            }
+        },
+        webpackBuildWorker: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
+        windowHistorySupport: true
     },
     images: {
-        minimumCacheTTL: 60 * 6,
-        domains: ['cdn.shopify.com', 'images.prismic.io', 'images.unsplash.com', '*.github.io'],
-        formats: ['image/avif', 'image/webp']
+        //loader: 'custom',
+        //loaderFile: './src/utils/image-loader.ts',
+        dangerouslyAllowSVG: true,
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'nordcom.io'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.nordcom.io'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.prismic.io'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.unsplash.com'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.shopify.com'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.github.io'
+            },
+            {
+                protocol: 'https',
+                hostname: '**.gravatar.com'
+            }
+        ],
+        formats: ['image/webp', 'image/avif']
     },
     compiler: {
-        styledComponents: true,
-        ...(process.env.NODE_ENV === 'production' && {
-            removeConsole: {
-                exclude: ['warn', 'error'],
-            }
-        } || {})
+        styledComponents: true
     },
     eslint: {
         ignoreDuringBuilds: true,
@@ -63,21 +106,9 @@ let config = {
     serverRuntimeConfig: {
         // Prismic
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
-    },
-    webpack(config, { webpack }) {
-        config.plugins.push(
-            new webpack.DefinePlugin({
-                "globalThis.__DEV__": false,
-            })
-        );
-        return config;
-    },
 
-    async rewrites() {
-        return [{
-            source: '/:lang/beta/:slug*',
-            destination: 'https://staging.sweetsideofsweden.com/:lang/:slug*'
-        }];
+        // Shopify.
+        SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
     },
 
     async redirects() {
@@ -121,4 +152,7 @@ let config = {
     }
 };
 
-export default withNextPluginPreval(config);
+export default withNextPluginPreval(await withHighlightConfig(config, {
+    apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
+    appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
+}));
