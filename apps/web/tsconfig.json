@@ -28,10 +28,10 @@
             "@/prismic/types": ["prismicio-types.d.ts"],
 
             // Admin (shops.nordcom.io)
-            "#/components/*": ["src/app/(admin)/_components/*"],
-            "#/api/*": ["src/app/(admin)/_api/*"],
-            "#/utils/*": ["src/app/(admin)/_utils/*"],
-            "#/styles/*": ["src/app/(admin)/_scss/*"]
+            "#/components/*": ["src/app/(shops)/_components/*"],
+            "#/api/*": ["src/app/(shops)/_api/*"],
+            "#/utils/*": ["src/app/(shops)/_utils/*"],
+            "#/styles/*": ["src/app/(shops)/_scss/*"]
         }
     },
     "include": [

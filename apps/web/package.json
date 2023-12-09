@@ -90,8 +90,7 @@
         "sharp": "0.33.0",
         "sonner": "1.2.4",
         "styled-components": "6.1.1",
-        "swr": "2.2.4",
-        "use-debounce": "10.0.0"
+        "swr": "2.2.4"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",

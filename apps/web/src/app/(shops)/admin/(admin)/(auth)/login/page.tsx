@@ -1,6 +1,6 @@
 import LoginButton from '#/components/login-button';
 import { getSession } from '#/utils/auth';
-import { Card, Heading } from '@nordcom/nordstar';
+import { Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -20,12 +20,19 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
 
     return (
         <section className={`${styles.container}`}>
-            <Heading level="h1">Login</Heading>
+            <Card className={styles['login-card']}>
+                <div className={styles['card-header']}>
+                    <Label as="h1">Login</Label>
+                    <Heading level="h3" as="h2">
+                        Welcome back
+                    </Heading>
+                </div>
 
-            <Card className={styles.providers}>
-                <Suspense fallback={<>Loading...</>}>
-                    <LoginButton provider="github" />
-                </Suspense>
+                <div className={styles.actions}>
+                    <Suspense fallback={<>Loading...</>}>
+                        <LoginButton provider="github" className={styles.button} />
+                    </Suspense>
+                </div>
             </Card>
         </section>
     );

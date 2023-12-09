@@ -3,6 +3,7 @@
 import styles from '#/components/login-button.module.scss';
 import type { AuthProvider } from '#/utils/auth';
 import { UnknownApiError } from '@/utils/errors';
+import { Button } from '@nordcom/nordstar';
 import { signIn } from 'next-auth/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, type HTMLProps } from 'react';
@@ -48,8 +49,10 @@ export default function LoginButton({ provider = 'github', className, ...props }
     }
 
     return (
-        <button
+        <Button
             {...props}
+            color="default"
+            variant="outline"
             onClick={() => {
                 if (loading) {
                     toast.error('Please wait for the current request to finish.');
@@ -68,10 +71,11 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 }
             }}
             type="button"
+            as="button"
             disabled={loading}
             className={`${styles.container} ${loading ? styles.loading : ''} ${className || ''}`}
         >
             {!loading ? layout : <p>Loading...</p>}
-        </button>
+        </Button>
     );
 }
