@@ -1,4 +1,3 @@
-import Container from '#/components/container';
 import { Accented, Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     return (
-        <Container className={`${styles.container}`}>
+        <>
             <div className={`${styles.heading}`}>
                 <Heading>
                     Commerce by <Accented>Nordcom</Accented> Group Inc
@@ -63,6 +62,6 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                     </Card>
                 </div>
             </article>
-        </Container>
+        </>
     );
 }

@@ -5,11 +5,13 @@ import Header from '#/components/header';
 import { Providers } from '#/components/providers';
 import { authOptions } from '#/utils/auth';
 import { HighlightInit } from '@highlight-run/next/client';
+import { View } from '@nordcom/nordstar';
 import { GeistMono } from 'geist/font/mono';
 import type { Metadata, Viewport } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
+import styles from './layout.module.scss';
 
 export const viewport: Viewport = {
     themeColor: '#000000',
@@ -83,7 +85,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <body className={`${primaryFont.variable} ${GeistMono.variable}`}>
                     <Providers session={session}>
                         <Header />
-                        {children}
+                        <View className={styles.content} withoutWrapper={true}>
+                            {children}
+                        </View>
                         <Footer />
                     </Providers>
                 </body>

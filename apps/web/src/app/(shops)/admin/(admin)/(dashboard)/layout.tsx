@@ -1,4 +1,4 @@
-import Container from '#/components/container';
+import { View } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
@@ -6,14 +6,14 @@ import styles from './layout.module.scss';
 export const metadata: Metadata = {
     title: {
         default: 'Account',
-        template: `%s · Nordcom Commerce`
+        template: `%s · Nordcom Commerce Admin`
     }
 };
 
-export default async function AuthLayout({ children }: { children: ReactNode }) {
+export default async function ShopLayout({ children }: { children: ReactNode }) {
     return (
-        <Container className={`${styles.container}`}>
+        <View className={`${styles.container}`}>
             <main className={`${styles.content}`}>{children}</main>
-        </Container>
+        </View>
     );
 }
