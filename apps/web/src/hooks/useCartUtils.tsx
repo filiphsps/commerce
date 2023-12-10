@@ -36,11 +36,9 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
 
     // Handle country code change
     useEffect(() => {
-        if (status !== 'idle') return;
-        else if (!buyerIdentity || locale.country === buyerIdentity?.countryCode) return;
+        if (status !== 'idle' || !locale) return;
 
         buyerIdentityUpdate({
-            ...(buyerIdentity as any),
             countryCode: locale.country
         });
     }, [locale.code, buyerIdentity]);

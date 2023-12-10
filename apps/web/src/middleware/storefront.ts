@@ -69,6 +69,15 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = `/${locale}${newUrl.pathname}`;
     }
 
+    // Replace locale with locale from cookie if it doesn't match.
+    const locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
+    if (locale && newUrl.pathname.includes('/storefront/') && newUrl.pathname.match(LOCALE_TEST)) {
+        const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0].replace('/', '');
+        if (urlLocale && urlLocale !== locale) {
+            newUrl.pathname = newUrl.pathname.replace(LOCALE_TEST, `/${locale}`);
+        }
+    }
+
     // Validate that we don't now have more than one locale in the path,
     // for example `/en-US/de-DE/en-gb/de-de/about/` which should instead
     // be `/en-US/about/`. This can occur for numerous reasons; for example

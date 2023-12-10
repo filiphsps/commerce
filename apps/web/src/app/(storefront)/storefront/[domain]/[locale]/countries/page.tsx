@@ -2,7 +2,7 @@ import { CountriesApi, LocalesApi, StoreApi } from '@/api/store';
 
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -134,7 +134,7 @@ export default async function CountriesPage({
 
         const i18n = await getDictionary(locale);
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const countries = await CountriesApi({ api });
 

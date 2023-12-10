@@ -55,10 +55,14 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
 
         if (Array.isArray(cartError)) {
             cartError.forEach((error) => {
+                if (!error.message) return;
+
                 console.error(error.message);
                 toast.error(error.message, options);
             });
         } else {
+            if (!cartError.message) return;
+
             console.error(cartError.message);
             toast.error(cartError.message, options);
         }
