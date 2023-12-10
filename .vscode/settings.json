@@ -43,7 +43,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/.next": true,
         "**/coverage": true,
         "**/*.tsbuildinfo": true
     },
@@ -91,7 +90,6 @@
         "Västra",
         "webp"
     ],
-    "vscord.enabled": true,
     "markdownlint.config": {
         "single-title": false,
         "no-inline-html": false,
@@ -119,5 +117,5 @@
     },
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
-    "prettier.requireConfig": true
+    "prettier.requireConfig": false
 }

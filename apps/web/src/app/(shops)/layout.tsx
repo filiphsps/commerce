@@ -4,6 +4,7 @@ import Footer from '#/components/footer';
 import Header from '#/components/header';
 import { Providers } from '#/components/providers';
 import { authOptions } from '#/utils/auth';
+import { highlightConfig } from '@/utils/config/highlight';
 import { HighlightInit } from '@highlight-run/next/client';
 import { View } from '@nordcom/nordstar';
 import { GeistMono } from 'geist/font/mono';
@@ -61,25 +62,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <>
             <HighlightInit
-                projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
-                version={process.env.GIT_COMMIT_SHA || 'dev'}
+                {...highlightConfig}
                 serviceName={`Nordcom Commerce Admin`}
-                privacySetting="none"
-                storageMode="localStorage"
-                samplingStrategy={{}}
-                inlineStylesheet={true}
-                tracingOrigins={true}
-                reportConsoleErrors={true}
-                enableSegmentIntegration={true}
-                enablePerformanceRecording={true}
-                networkRecording={{
-                    enabled: true,
-                    recordHeadersAndBody: true,
-                    urlBlocklist: []
-                }}
-                enableCanvasRecording={false}
                 excludedHostnames={['localhost']}
-                disableBackgroundRecording={true}
             />
             <html lang="en">
                 <body className={`${primaryFont.variable} ${GeistMono.variable}`}>

@@ -10,6 +10,7 @@ import { PageProvider } from '@/components/layout/page-provider';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
+import { highlightConfig } from '@/utils/config/highlight';
 import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
@@ -159,24 +160,9 @@ export default async function RootLayout({
         return (
             <>
                 <HighlightInit
-                    projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
-                    serviceName={`Nordcom Commerce Store - ${shop.id}`}
-                    privacySetting="none"
-                    storageMode="localStorage"
-                    samplingStrategy={{}}
-                    inlineStylesheet={true}
-                    tracingOrigins={true}
-                    reportConsoleErrors={true}
-                    enableSegmentIntegration={true}
-                    enablePerformanceRecording={true}
-                    networkRecording={{
-                        enabled: true,
-                        recordHeadersAndBody: true,
-                        urlBlocklist: []
-                    }}
-                    enableCanvasRecording={false}
+                    {...highlightConfig}
+                    serviceName={`Nordcom Commerce Storefront`}
                     excludedHostnames={['localhost']}
-                    disableBackgroundRecording={true}
                 />
                 <html
                     lang={locale.code}

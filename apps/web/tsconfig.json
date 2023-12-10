@@ -40,8 +40,6 @@
         "prismicio-types.d.ts",
         "prismicio.ts",
         "src/@types",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.json"
+        "src"
     ]
 }
