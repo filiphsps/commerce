@@ -241,6 +241,16 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
             {/* TODO: This should be configurable in prismic. */}
             <FooterBottomSection>
                 <FooterBottomSectionBlock>
+                    <div className={styles['status-badge']}>
+                        <iframe
+                            title="Nordcom Status"
+                            src="https://status.nordcom.io/badge?theme=dark"
+                            width="auto"
+                            height="30"
+                            frameBorder="0"
+                            scrolling="no"
+                        />
+                    </div>
                     <AcceptedPaymentMethods store={store!} />
                     <LegalAndCopyright>
                         <ImportantLinks>
@@ -282,7 +292,6 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                                     Nordcom Group Inc.
                                 </Link>
                             </span>
-                            <span>{` — All Rights Reserved`}</span>
                         </Copyright>
                     </LegalAndCopyright>
                 </FooterBottomSectionBlock>

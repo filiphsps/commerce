@@ -117,7 +117,7 @@ export const ProductOptions = ({
                             <Label className={styles.label} data-options={option.values.length}>
                                 {option.name}
                             </Label>
-                            <OptionValues data-options={option.values.length}>
+                            <OptionValues data-options={option.values.length} suppressHydrationWarning={true}>
                                 {option.values.map((value) => {
                                     if (!value) return null;
                                     let title = value;
@@ -181,6 +181,7 @@ export const ProductOptions = ({
                                             }`}
                                             disabled={!inStock}
                                             {...extraProps}
+                                            suppressHydrationWarning={true}
                                         >
                                             {title}
                                         </OptionValue>

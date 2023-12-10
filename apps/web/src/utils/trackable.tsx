@@ -189,7 +189,7 @@ const postEvent = async (
     { shop, currency, shopify }: AnalyticsEventActionProps
 ) => {
     if (!window.dataLayer) {
-        console.warn('window.dataLayer not found, creating it.');
+        console.debug('window.dataLayer not found, creating it.');
         window.dataLayer = [];
     }
 

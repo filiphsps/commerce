@@ -137,6 +137,7 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
     // Add Shopify's `@inContext` directive to all queries.
     const transformedDocument = visit(document, {
         OperationDefinition(node) {
+            console.log(node);
             return {
                 ...node,
                 variableDefinitions: [

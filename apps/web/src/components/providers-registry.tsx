@@ -64,7 +64,12 @@ export default function ProvidersRegistry({
                     countryIsoCode={locale.country!}
                     languageIsoCode={locale.language}
                 >
-                    <CartProvider cartFragment={CartFragment}>
+                    <CartProvider
+                        cartFragment={CartFragment}
+                        numCartLines={50}
+                        languageCode={locale.language}
+                        countryCode={locale.country}
+                    >
                         <ShopProvider shop={shop} currency={'USD'} locale={locale}>
                             <HeaderProvider store={store}>
                                 <AnalyticsProvider>
