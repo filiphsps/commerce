@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@/utils/test/react';
 
 import { ProductOptions } from '@/components/products/product-options';
 import { Locale } from '@/utils/locale';

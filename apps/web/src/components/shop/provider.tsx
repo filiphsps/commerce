@@ -1,5 +1,6 @@
 import type { Shop } from '@/api/shop';
 import { MissingContextProviderError } from '@/utils/errors';
+import { Locale } from '@/utils/locale';
 import type { CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
@@ -12,6 +13,11 @@ export interface ShopProviderBase {
      * @todo TODO: This should be a part of the `shop` object.
      */
     currency: CurrencyCode;
+
+    /**
+     * @todo TODO: This should be a part of the `shop` object.
+     */
+    locale: Locale;
 }
 export interface ShopProviderProps extends ShopProviderBase {
     children: ReactNode;
@@ -21,8 +27,12 @@ export interface ShopContextValue extends ShopProviderBase, ShopContextReturns {
 
 export const ShopContext = createContext<ShopContextValue | null>(null);
 
-export function ShopProvider({ children, shop }: ShopProviderProps) {
-    return <ShopContext.Provider value={{ shop, currency: 'USD' }}>{children}</ShopContext.Provider>;
+export function ShopProvider({ children, shop, currency, locale }: ShopProviderProps) {
+    return (
+        <ShopContext.Provider value={{ shop, currency: currency || 'USD', locale: locale || Locale.default }}>
+            {children}
+        </ShopContext.Provider>
+    );
 }
 
 export const useShop = (): ShopContextValue => {

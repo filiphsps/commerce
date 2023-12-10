@@ -1,5 +1,5 @@
 import type { PageApi as OriginalPageApi } from '@/api/page';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { ProductPageParams } from './page';
 import ProductPage, { generateMetadata } from './page';

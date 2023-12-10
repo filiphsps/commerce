@@ -6,6 +6,7 @@ import { TypeError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import BaseLink from 'next/link';
 import { type ComponentProps } from 'react';
+import { useShop } from './shop/provider';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
     shop?: Shop;
@@ -29,15 +30,17 @@ const isInternal = (href: string, shop?: Shop): boolean => {
 };
 
 // FIXME: i18n provider?
-export default function Link({ shop, locale, href, prefetch, ...props }: Props) {
+export default function Link({ locale, href, prefetch, ...props }: Props) {
     if (typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
         throw new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`);
     }
 
+    const shop = useShop();
+
     // Get the locale if it's not provided to us.
     try {
-        locale = locale || Locale.current || Locale.default;
+        locale = locale || shop.locale || Locale.current || Locale.default;
     } catch {
         locale = Locale.default;
     }
@@ -69,7 +72,7 @@ export default function Link({ shop, locale, href, prefetch, ...props }: Props) 
 
         // TODO: Should we validate that a protocol is provided?
         return new URL(href);
-    })(href, shop);
+    })(href, shop.shop);
 
-    return <BaseLink {...props} href={url} prefetch={prefetch || false} />;
+    return <BaseLink {...props} href={url} prefetch={prefetch || false} suppressHydrationWarning={true} />;
 }

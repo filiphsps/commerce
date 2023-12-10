@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import PageContent from '@/components/page-content';
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('PageContent', () => {

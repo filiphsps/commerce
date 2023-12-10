@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 import { describe, expect, it } from 'vitest';
 
 import SplitView from '@/components/layout/split-view';

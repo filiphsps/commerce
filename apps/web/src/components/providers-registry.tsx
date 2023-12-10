@@ -65,7 +65,7 @@ export default function ProvidersRegistry({
                     languageIsoCode={locale.language}
                 >
                     <CartProvider cartFragment={CartFragment}>
-                        <ShopProvider shop={shop} currency={'USD'}>
+                        <ShopProvider shop={shop} currency={'USD'} locale={locale}>
                             <HeaderProvider store={store}>
                                 <AnalyticsProvider>
                                     <ThirdPartiesProvider shop={shop} locale={locale}>

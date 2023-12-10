@@ -1,5 +1,5 @@
 import type { Locale } from '@/utils/locale';
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Link from './link';
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import PrismicPage from '@/components/prismic-page';
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('PrismicPage', () => {

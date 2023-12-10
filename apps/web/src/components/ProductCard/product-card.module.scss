@@ -87,13 +87,16 @@
         }
 
         .title {
+            font-size: inherit;
             font-weight: 700;
+            hyphens: auto;
         }
 
         .brand {
             font-weight: 500;
             font-size: 0.75em;
             line-height: 1;
+            hyphens: auto;
         }
     }
 

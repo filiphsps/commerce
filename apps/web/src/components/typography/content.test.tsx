@@ -1,5 +1,5 @@
 import { Content } from '@/components/typography/content';
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 import { describe, expect, it } from 'vitest';
 
 describe('components', () => {

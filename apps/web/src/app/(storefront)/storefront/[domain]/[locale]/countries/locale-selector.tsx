@@ -3,8 +3,7 @@
 import type { Shop } from '@/api/shop';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import type { Locale } from '@/utils/locale';
-import { NextLocaleToLocale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import { useRef } from 'react';
@@ -91,9 +90,9 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                         return (
                             <Link
                                 key={country.locale}
-                                href={`/countries/`} // TODO: Go to the previous route
+                                href={`/${country.locale}/`} // TODO: Go to the previous route
                                 shop={shop}
-                                locale={NextLocaleToLocale(country.locale)!}
+                                locale={Locale.from(country.locale)!}
                                 title={`${country.country} (${country.language})`}
                                 className={`${styles.locale} ${
                                     (country.locale === locale.code && styles.active) || ''
@@ -114,6 +113,7 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                                         alt={country.country}
                                         fill
                                         aria-label={country.country}
+                                        sizes="35px"
                                     />
                                 </Flag>
                                 <Label>

@@ -1,5 +1,5 @@
 import { AddToCart } from '@/components/products/add-to-cart';
-import { render } from '@testing-library/react';
+import { render } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('components', () => {
