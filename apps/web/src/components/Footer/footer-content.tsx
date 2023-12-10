@@ -266,6 +266,7 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                                         fill
                                         alt={social.name}
                                         title={social.name}
+                                        sizes="35px"
                                     />
                                 </Social>
                             ))}

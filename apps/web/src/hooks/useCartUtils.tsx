@@ -15,10 +15,11 @@ type useCartUtilsProps = {
 };
 type useCartUtilsResult = {
     error: Error | undefined;
+    cartError: any | undefined;
 };
 export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult => {
     if (typeof window === 'undefined') {
-        return { error: undefined };
+        return { error: undefined, cartError: undefined };
     }
 
     const [error, setError] = useState<Error | undefined>();
@@ -66,5 +67,5 @@ export const useCartUtils = ({ locale }: useCartUtilsProps): useCartUtilsResult 
         }
     }, [query, status]);
 
-    return { error };
+    return { error, cartError };
 };

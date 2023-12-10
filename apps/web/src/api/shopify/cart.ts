@@ -26,18 +26,15 @@ export const CartFragment = /* GraphQL */ `
                     }
                     cost {
                         totalAmount {
-                            amount
-                            currencyCode
+                            ...MoneyFragment
                         }
                         compareAtAmountPerQuantity {
-                            amount
-                            currencyCode
+                            ...MoneyFragment
                         }
                     }
                     discountAllocations {
                         discountedAmount {
-                            amount
-                            currencyCode
+                            ...MoneyFragment
                         }
                     }
                     merchandise {
@@ -92,15 +89,6 @@ export const CartFragment = /* GraphQL */ `
         discountCodes {
             code
             applicable
-        }
-        discountAllocations {
-            ... on CartAutomaticDiscountAllocation {
-                title
-                discountedAmount {
-                    currencyCode
-                    amount
-                }
-            }
         }
     }
 

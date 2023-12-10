@@ -61,7 +61,7 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
             onClick={() => {
                 if (!ready) {
                     // TODO: i18n.
-                    toast.error(`The cart is still loading, please try again in a few seconds`);
+                    toast.warning(`The cart is still loading, please try again in a few seconds`);
                     return;
                 }
 

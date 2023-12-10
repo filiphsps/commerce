@@ -14,7 +14,6 @@
         text-transform: uppercase;
         font-size: 1.45rem;
         line-height: 1.1;
-        font-weight: 700;
         text-align: center;
 
         @media (min-width: $breakpoint-mobile) {
@@ -27,7 +26,6 @@
         }
 
         a {
-            font-weight: 800;
             text-decoration: underline;
         }
     }

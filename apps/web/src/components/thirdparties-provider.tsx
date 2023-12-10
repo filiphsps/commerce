@@ -8,6 +8,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { PrismicPreview } from '@prismicio/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { useEffect, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 
 export type ThirdPartiesProviderProps = {
     shop: Shop;
@@ -41,9 +42,27 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
     }, []);
 
     // Not really a third party, but it's a good place to put it.
-    useCartUtils({
+    const { cartError } = useCartUtils({
         locale
     });
+
+    useEffect(() => {
+        if (!cartError) return;
+
+        const options = {
+            important: true
+        };
+
+        if (Array.isArray(cartError)) {
+            cartError.forEach((error) => {
+                console.error(error.message);
+                toast.error(error.message, options);
+            });
+        } else {
+            console.error(cartError.message);
+            toast.error(cartError.message, options);
+        }
+    }, [cartError]);
 
     return (
         <>

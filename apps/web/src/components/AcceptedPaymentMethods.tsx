@@ -1,6 +1,6 @@
-import type { FunctionComponent } from 'react';
-import Image from 'next/image';
 import type { StoreModel } from '@/models/StoreModel';
+import Image from 'next/image';
+import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -28,12 +28,12 @@ export const AcceptedPaymentMethods: FunctionComponent<AcceptedPaymentMethodsPro
         <Container>
             {methods?.map((method) => (
                 <Method key={method}>
-                    <Image src={`/assets/payments/${method}.svg`} alt={method} fill />
+                    <Image src={`/assets/payments/${method}.svg`} alt={method} sizes="35px" fill />
                 </Method>
             ))}
             {wallets?.map((method) => (
                 <Method key={method}>
-                    <Image src={`/assets/payments/${method}.svg`} alt={method} fill />
+                    <Image src={`/assets/payments/${method}.svg`} alt={method} sizes="35px" fill />
                 </Method>
             ))}
         </Container>
