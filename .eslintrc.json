@@ -6,7 +6,7 @@
         "consistent-return": "error",
         "no-mixed-operators": 0,
         "no-useless-constructor": 0,
-        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-console": "off",
         "indent": "off",
         "semi": ["error", "always"],
         "brace-style": [

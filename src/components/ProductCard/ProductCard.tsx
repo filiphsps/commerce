@@ -1,9 +1,9 @@
-import { ConvertToLocalMeasurementSystem, ProductApi } from '@/api/product';
+import { ConvertToLocalMeasurementSystem } from '@/api/product';
 import { Button } from '@/components/Button';
 import type { StoreModel } from '@/models/StoreModel';
 import { titleToHandle } from '@/utils/TitleToHandle';
 import { Money, useCart, useProduct } from '@shopify/hydrogen-react';
-import type { Product, ProductVariantEdge, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 import type { FunctionComponent } from 'react';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import useSWR from 'swr';
 
 export const ProductImage = styled.div`
     grid-area: product-image;
@@ -434,21 +433,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
     const [quantity, setQuantity] = useState(1);
     const [addedToCart, setAddedToCart] = useState(false);
     const cart = useCart();
-    const { product: productData, selectedVariant, setSelectedVariant } = useProduct();
-
-    const { data: product } = useSWR(
-        [
-            'ProductApi',
-            {
-                handle: productData?.handle!,
-                locale: router.locale
-            }
-        ],
-        ([, props]) => ProductApi(props),
-        {
-            fallbackData: productData as Product
-        }
-    );
+    const { product, selectedVariant, setSelectedVariant } = useProduct();
 
     useEffect(() => {
         if (!product) return;
@@ -575,18 +560,18 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                     <Variants>
                         {product.variants?.edges &&
                             product.variants.edges.length > 1 &&
-                            product.variants.edges.map((edge: ProductVariantEdge) => {
-                                if (!edge.node) return null;
-                                const variant = edge.node;
+                            product.variants.edges?.map((edge) => {
+                                if (!edge?.node) return null;
+                                const variant = edge.node!;
                                 let title = variant.title;
 
                                 // Handle variants that should have their weight as their actual title
                                 // FIXME: Remove `Size` when we've migrated to using Weight.
                                 // FIXME: Remove incorrectly translated ones, eg  "Größe" & "Storlek".
                                 if (
-                                    variant.selectedOptions.length === 1 &&
+                                    variant?.selectedOptions?.length === 1 &&
                                     ['Size', 'Weight', 'Größe', 'Storlek'].includes(
-                                        variant.selectedOptions.at(0)!.name
+                                        variant?.selectedOptions?.at(0)!.name!
                                     ) &&
                                     variant.weight &&
                                     variant.weightUnit
@@ -601,7 +586,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                                 return (
                                     <Variant
                                         key={variant.id}
-                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                                        title={variant!
+                                            .selectedOptions!.map((i) => `${i!.name}: ${i!.value}`)
+                                            .join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
                                         className={selectedVariant.id === variant.id ? 'Active' : ''}
                                     >

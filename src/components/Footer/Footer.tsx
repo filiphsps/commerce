@@ -284,6 +284,7 @@ const Footer: FunctionComponent<FooterProps> = (props) => {
                                         <Image
                                             src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
                                             fill
+                                            sizes="(max-width: 950px) 35px, 65px"
                                             alt={social.name}
                                             title={social.name}
                                         />

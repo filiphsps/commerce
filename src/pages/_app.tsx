@@ -56,6 +56,11 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
 
     if (!store) return null;
 
+    let storeDomain = Config.shopify.checkout_domain;
+    if (!storeDomain.startsWith('http')) {
+        storeDomain = `https://${storeDomain}`;
+    }
+
     return (
         <>
             <style jsx global>{`
@@ -183,14 +188,20 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
 
                 <ShopifyProvider
                     storefrontId={Config.shopify.storefront_id}
-                    storeDomain={`https://${Config.shopify.checkout_domain}`}
-                    storefrontApiVersion={Config.shopify.api}
+                    storeDomain={storeDomain}
+                    storefrontApiVersion={'2023-10'}
                     storefrontToken={Config.shopify.token}
                     countryIsoCode={country}
                     languageIsoCode={language}
                 >
                     <CartProvider
                         cartFragment={CartFragment}
+                        onNoteUpdateComplete={() => setEvents((events) => [...events, 'update_cart_note'])}
+                        onCreateComplete={() => setEvents((events) => [...events, 'create_cart'])}
+                        onLineAddComplete={() => setEvents((events) => [...events, 'add_to_cart'])}
+                        onBuyerIdentityUpdateComplete={() =>
+                            setEvents((events) => [...events, 'update_cart_buyer_identity'])
+                        }
                         onLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
                         onLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}
                     >
@@ -208,7 +219,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
     );
 };
 
-export function reportWebVitals({ id, name, value, label }: NextWebVitalsMetric) {
+export function reportWebVitals({ id, name, value }: NextWebVitalsMetric) {
     if (process.env.NODE_ENV !== 'production') return;
 
     (window as any)?.dataLayer?.push({

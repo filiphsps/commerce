@@ -5,19 +5,24 @@ import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 export const shopifyClient = createStorefrontClient({
     publicStorefrontToken: Config.shopify.token,
-    storeDomain: `https://${Config.shopify.checkout_domain}`,
-    storefrontApiVersion: Config.shopify.api
+    storeDomain: Config.shopify.checkout_domain,
+    storefrontApiVersion: '2023-10'
 });
 
 export const storefrontClient = new ApolloClient({
     ssrMode: true,
+    connectToDevTools: true,
     link: new HttpLink({
-        uri: shopifyClient.getStorefrontApiUrl(),
+        uri: (() => {
+            let url = shopifyClient.getStorefrontApiUrl();
+            if (!url.startsWith('http')) url = `https://${url}`;
+
+            return url;
+        })(),
         headers: shopifyClient.getPublicTokenHeaders()
     }),
     cache: new InMemoryCache({
-        canonizeResults: true,
-        addTypename: false
+        canonizeResults: true
     }),
     defaultOptions: {
         watchQuery: {
@@ -29,6 +34,7 @@ export const storefrontClient = new ApolloClient({
             errorPolicy: 'all'
         },
         mutate: {
+            fetchPolicy: 'no-cache',
             errorPolicy: 'all'
         }
     }
