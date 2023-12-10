@@ -27,8 +27,8 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
     const searchEnabled = false;
 
     return (
-        <>
-            <HeaderContainer {...props} className={className || ''}>
+        <section className={`${styles.wrapper} ${className || ''}`}>
+            <HeaderContainer {...props}>
                 <HamburgerMenu />
 
                 <div className={styles.logo}>
@@ -65,7 +65,7 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
                 </div>
             </HeaderContainer>
             <MobileMenu navigation={navigation} />
-        </>
+        </section>
     );
 };
 

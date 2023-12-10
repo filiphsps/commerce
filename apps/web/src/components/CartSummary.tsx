@@ -351,6 +351,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                                 quantity,
                                 id
                             }))}
+                            channel="hydrogen"
                         />
                     ) : null}
 

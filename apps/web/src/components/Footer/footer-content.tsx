@@ -83,7 +83,11 @@ const BlockTitle = styled.div`
     font-size: 2.5rem;
     line-height: normal;
     font-weight: 600;
-    margin-bottom: var(--block-spacer-small);
+    margin-bottom: var(--block-spacer-large);
+
+    @media (min-width: 950px) {
+        margin-bottom: var(--block-spacer-small);
+    }
 `;
 
 const LegalAndCopyright = styled.div`
@@ -173,8 +177,11 @@ const Socials = styled(ImportantLinks)`
     display: flex;
     height: 3rem;
     width: 100%;
-    justify-content: flex-end;
-    align-items: flex-end;
+
+    @media (min-width: 950px) {
+        justify-content: flex-end;
+        align-items: flex-end;
+    }
 `;
 const Social = styled(Link)`
     position: relative;

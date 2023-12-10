@@ -1,7 +1,7 @@
 @import '_globals.scss';
 
 .container {
-    position: fixed;
+    position: absolute;
     inset: 7rem 0 0 -105vw;
     display: flex;
     flex-grow: 1;
@@ -12,6 +12,8 @@
     height: 100%;
     height: calc(100vh - 7rem);
     height: calc(100dvh - 7rem);
+    padding: var(--block-padding);
+
     background: var(--accent-secondary-light);
     border-right: var(--block-border-width) solid var(--accent-secondary-dark);
     color: var(--color-dark);

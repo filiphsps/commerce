@@ -1,5 +1,11 @@
 @import '_globals.scss';
 
+.wrapper {
+    position: sticky;
+    z-index: 10;
+    top: 0;
+}
+
 .container {
     display: grid;
     width: 100%;

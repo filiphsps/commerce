@@ -18,23 +18,20 @@ export type CollectionBlockContent = {
 export const CollectionBlockContent = ({ locale, i18n, products, store, priority }: CollectionBlockContent) => {
     return (
         <>
-            {products.map((product, index) => {
-                const element = (
-                    <ProductProvider
-                        key={product?.id}
-                        data={product as any}
-                        initialVariantId={FirstAvailableVariant(product)?.id}
-                    >
-                        <ProductCard store={store} locale={locale} i18n={i18n} priority={priority && index < 2} />
-                    </ProductProvider>
-                );
-
-                if (index > 6) {
-                    return <Suspense key={index}>{element}</Suspense>;
-                }
-
-                return element;
-            })}
+            <Suspense>
+                {products.map((product, index) => {
+                    const element = (
+                        <ProductProvider
+                            key={product?.id}
+                            data={product as any}
+                            initialVariantId={FirstAvailableVariant(product)?.id}
+                        >
+                            <ProductCard store={store} locale={locale} i18n={i18n} priority={priority && index < 2} />
+                        </ProductProvider>
+                    );
+                    return element;
+                })}
+            </Suspense>
         </>
     );
 };

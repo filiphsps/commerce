@@ -234,7 +234,11 @@ export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Pro
                         }
                     }
                 }
-            `
+            `,
+            {},
+            {
+                tags: ['count.products']
+            }
         );
 
         if (!data?.products?.edges) return count;
