@@ -186,6 +186,9 @@ export const ProductApi = cache(async ({ api, handle }: ProductOptions): Promise
                 `,
             {
                 handle
+            },
+            {
+                tags: [`product.${handle}`]
             }
         );
 
@@ -296,6 +299,9 @@ export const ProductsApi = async ({
                     limit,
                     sorting: sorting || null,
                     cursor: cursor || null
+                },
+                {
+                    tags: ['products']
                 }
             );
 
@@ -326,7 +332,7 @@ export const ProductsApi = async ({
  * @param {object} options - The options.
  * @param {AbstractApi} options.client - The AbstractApi to use.
  * @param {number} [options.limit=35] - The limit of products to fetch.
- * @param {ProductSortKeys} [options.sorting=BEST_SELLING] - The sorting to use.
+ * @param {ProductSortKeys} [options.sorting="BEST_SELLING"] - The sorting to use.
  * @param {string} [options.vendor] - The vendor to use.
  * @param {string} [options.before] - The cursor to use for pagination.
  * @param {string} [options.after] - The cursor to use for pagination.
@@ -393,6 +399,11 @@ export const ProductsPaginationApi = async ({
                     sorting: sorting || null,
                     before: before || null,
                     after: after || null
+                },
+                {
+                    tags: ['pagination.products'],
+                    fetchPolicy: 'no-cache',
+                    revalidate: undefined
                 }
             );
 

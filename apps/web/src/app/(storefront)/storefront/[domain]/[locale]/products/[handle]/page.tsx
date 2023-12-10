@@ -203,8 +203,6 @@ export default async function ProductPage({
 
         const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
 
-        console.log(locale, product.variants.edges[0]!.node);
-
         return (
             <Page className={styles.container}>
                 <SplitView

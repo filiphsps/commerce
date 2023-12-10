@@ -23,8 +23,6 @@ export const ProductReviewsApi = async ({
     averageRating: number | undefined;
     reviews: ProductReview[];
 }> => {
-    const shop = api.shop();
-
     const { data, errors } = await api.query<{
         reviews: MetaobjectConnection;
     }>(
@@ -45,7 +43,7 @@ export const ProductReviewsApi = async ({
         `,
         {},
         {
-            tags: ['shopify.reviews', `shopify.${shop.id}.reviews`]
+            tags: [`product.${product.id}.reviews`]
         }
     );
 

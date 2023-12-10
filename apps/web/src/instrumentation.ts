@@ -4,9 +4,9 @@ export async function register() {
     const { registerOTel } = await import('@vercel/otel');
     const { registerHighlight } = await import('@highlight-run/next/server');
 
-    registerOTel('next-app');
+    registerOTel('Nordcom Commerce');
     registerHighlight({
         ...highlightConfig,
-        serviceName: `Nordcom Commerce`
+        serviceName: 'Nordcom Commerce'
     });
 }

@@ -4,7 +4,6 @@ import type { ApiConfig } from '@/api/client';
 import { setupApollo } from '@/api/client';
 import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
-import { BuildConfig } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
@@ -24,7 +23,6 @@ export const ShopifyApiConfig = async ({
         publicStorefrontToken: publicToken,
         privateStorefrontToken: token || undefined,
         storeDomain: shop.configuration.commerce.domain,
-        storefrontApiVersion: BuildConfig.shopify.api,
         contentType: 'json'
     });
 

@@ -21,6 +21,7 @@ export type AbstractApi<Q = any> = {
         query: Q,
         variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
         options?: {
+            fetchPolicy?: FetchPolicy;
             tags?: string[];
             revalidate?: number;
         }
@@ -60,16 +61,24 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
 }) => ({
     locale: () => locale,
     shop: () => shop,
-    query: async (query, variables = {}, { tags = [], revalidate = undefined } = {}) => {
-        const { data, errors } = await api.query({
+    query: async (query, variables = {}, { tags = [], revalidate = undefined, fetchPolicy = undefined } = {}) => {
+        const processedTags = [
+            'shopify',
+            ...tags.map((tag) => `shopify.${tag}`),
+            `shopify.${shop.id}`,
+            `shopify.${shop.id}.${locale.code}`,
+            ...tags.map((tag) => `shopify.${shop.id}.${locale.code}.${tag}`)
+        ];
+
+        const { data, errors, error } = await api.query({
             query,
             fetchPolicy,
             context: {
                 fetchOptions: {
-                    cache: revalidate ? undefined : 'force-cache',
+                    cache: fetchPolicy || revalidate ? undefined : 'force-cache',
                     next: {
                         revalidate,
-                        tags: ['shopify', `shopify.${shop.id}`, `shopify.${shop.id}.${locale.code}`, ...tags]
+                        tags: processedTags
                     }
                 }
             },
@@ -80,7 +89,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
             }
         });
 
-        return { data: data || null, errors };
+        return { data: data || null, errors, error };
     }
 });
 
@@ -137,7 +146,6 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
     // Add Shopify's `@inContext` directive to all queries.
     const transformedDocument = visit(document, {
         OperationDefinition(node) {
-            console.log(node);
             return {
                 ...node,
                 variableDefinitions: [
@@ -220,6 +228,5 @@ export const shopifyContextTransform = new DocumentTransform((document) => {
             };
         }
     });
-
     return transformedDocument;
 });

@@ -11,7 +11,7 @@ import StyledComponentsProvider from '@/components/styled-components-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
-import type { Locale } from '@/utils/locale';
+import { Locale } from '@/utils/locale';
 import { PrismicProvider } from '@prismicio/react';
 import { useEffect, type ReactNode } from 'react';
 import { Toaster } from 'sonner';
@@ -61,7 +61,7 @@ export default function ProvidersRegistry({
                     storeDomain={`https://${domain}`}
                     storefrontApiVersion={BuildConfig.shopify.api}
                     storefrontToken={token}
-                    countryIsoCode={locale.country!}
+                    countryIsoCode={(locale.country || Locale.default.country)!}
                     languageIsoCode={locale.language}
                 >
                     <CartProvider
