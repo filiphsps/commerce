@@ -35,7 +35,16 @@ describe('app', () => {
             i18n: {
                 locales: ['en-US', 'de-DE', 'en-GB']
             }
-        })
+        }),
+        useShop: vi.fn().mockReturnValue({})
+    }));
+
+    vi.mock('next/navigation', () => ({
+        usePathname: vi.fn().mockReturnValue(''),
+        useRouter: vi.fn().mockReturnValue({
+            replace: vi.fn()
+        }),
+        useSearchParams: vi.fn().mockReturnValue({ get: vi.fn().mockReturnValue('') })
     }));
 
     // Mock `@shopify/hydrogen-react`.

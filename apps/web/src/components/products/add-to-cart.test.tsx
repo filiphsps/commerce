@@ -13,7 +13,8 @@ describe('components', () => {
                 }),
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
-                })
+                }),
+                useShop: vi.fn().mockReturnValue({})
             };
         });
 

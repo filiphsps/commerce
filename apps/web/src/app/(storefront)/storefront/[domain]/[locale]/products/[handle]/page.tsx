@@ -1,19 +1,18 @@
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
-import { ShopApi } from '@/api/shop';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
-import { StoreApi } from '@/api/store';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { LocalesApi, StoreApi } from '@/api/store';
 import Gallery from '@/components/Gallery';
 import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
-import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-import Pricing from '@/components/typography/pricing';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
@@ -23,28 +22,68 @@ import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
-import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import type { Metadata } from 'next';
 import { ProductJsonLd } from 'next-seo';
-import { RedirectType, notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
+import { ProductContent, ProductPricing } from './product-content';
 
 /* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-// TODO: Replace `searchParams` with subpath so we can server render this.
-/* c8 ignore stop */
+export async function generateStaticParams() {
+    const locale = Locale.default;
+    const shops = await ShopsApi();
 
-/* c8 ignore start */
+    const pages = (
+        await Promise.all(
+            shops
+                .map(async (shop) => {
+                    try {
+                        const api = await ShopifyApolloApiClient({ shop, locale });
+                        const locales = await LocalesApi({ api });
+
+                        return await Promise.all(
+                            locales
+                                .map(async (locale) => {
+                                    try {
+                                        const api = await ShopifyApolloApiClient({ shop, locale });
+                                        const { products } = await ProductsApi({ api });
+
+                                        return products.map(({ node: { handle } }) => ({
+                                            domain: shop.domains.primary,
+                                            locale: locale.code,
+                                            handle
+                                        }));
+                                    } catch {
+                                        return null;
+                                    }
+                                })
+                                .filter((_) => _)
+                        );
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
+        )
+    ).flat(2);
+
+    // FIXME: We have already looped through all pages when we get here which is really inefficient.
+    if (BuildConfig.build.limit_pages) {
+        return pages.slice(0, BuildConfig.build.limit_pages);
+    }
+
+    return pages;
+}
+
 export type ProductPageParams = { domain: string; locale: string; handle: string };
-export type ProductPageQueryParams = { variant?: string };
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle },
-    searchParams
+    params: { domain, locale: localeData, handle }
 }: {
     params: ProductPageParams;
-    searchParams?: ProductPageQueryParams;
 }): Promise<Metadata> {
     try {
         if (!isValidHandle(handle)) return notFound();
@@ -68,7 +107,6 @@ export async function generateMetadata({
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = store.i18n?.locales || [Locale.default]; // TODO: Handle this better since the fallback may not include the current locale.
 
-        const url = `/products/${handle}/${(searchParams?.variant && `?variant=${searchParams.variant}`) || ''}`; // TODO: remember existing query parameters.
         const title = page?.meta_title || `${product.vendor} ${product.title}`;
         const description = asText(page?.meta_description) || product.description;
         // TODO: Add Product Image as fallback.
@@ -95,7 +133,7 @@ export async function generateMetadata({
                 )
             },
             openGraph: {
-                url: `${url}`,
+                url: `/products/${handle}/`,
                 type: 'website',
                 title,
                 description,
@@ -115,11 +153,9 @@ export async function generateMetadata({
 /* c8 ignore stop */
 
 export default async function ProductPage({
-    params: { domain, locale: localeData, handle },
-    searchParams
+    params: { domain, locale: localeData, handle }
 }: {
     params: ProductPageParams;
-    searchParams?: ProductPageQueryParams;
 }) {
     try {
         if (!isValidHandle(handle)) return notFound();
@@ -139,18 +175,6 @@ export default async function ProductPage({
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
-
-        if (searchParams?.variant && searchParams?.variant.match(/^(?![0-9]+$).*/)) {
-            const variant = searchParams?.variant.split('/').at(-1);
-            if (!variant) {
-                console.error(`404: Invalid variant "${searchParams?.variant}"`);
-                return notFound();
-            }
-
-            // Remove `gid` from variant parameter.
-            // TODO: remember existing query parameters.
-            return redirect(`/products/${handle}/?variant=${variant}`, RedirectType.replace);
-        }
 
         // Do the actual API calls.
         const store = await StoreApi({ api });
@@ -180,23 +204,8 @@ export default async function ProductPage({
 
         const initialVariant =
             product.variants.edges.length > 1 ? FirstAvailableVariant(product) : product.variants.edges[0]!.node!;
-        const selectedVariant =
-            product.variants.edges.length > 1
-                ? (searchParams?.variant &&
-                      product?.variants?.edges?.find(
-                          ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams?.variant}`
-                      )?.node) ||
-                  undefined
-                : product.variants.edges[0]!.node!;
 
-        if (searchParams?.variant && !selectedVariant && !initialVariant) {
-            console.error(
-                `404: No variant found for product "${handle}" (variant: "${searchParams?.variant || 'default'}")`
-            );
-            return notFound();
-        }
-
-        const variant = selectedVariant || initialVariant;
+        const variant = initialVariant;
         if (!variant) {
             return notFound();
         }
@@ -224,11 +233,9 @@ export default async function ProductPage({
                             asideDesktopWidth={'14rem'}
                             asideClassName={styles.headingAside}
                             aside={
-                                <Pricing
-                                    className={styles.pricing}
-                                    price={variant.price}
-                                    compareAtPrice={variant.compareAtPrice as MoneyV2 | undefined}
-                                />
+                                <Suspense>
+                                    <ProductPricing product={product} initialVariant={initialVariant} />
+                                </Suspense>
                             }
                             style={{ gap: '0', paddingBottom: 'var(--block-spacer-large)' }}
                             reverse
@@ -243,13 +250,9 @@ export default async function ProductPage({
                             />
                         </SplitView>
 
-                        <ProductActionsContainer
-                            i18n={i18n}
-                            className={styles.actions}
-                            product={product as any}
-                            initialVariant={initialVariant!}
-                            selectedVariant={selectedVariant}
-                        />
+                        <Suspense>
+                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n} />
+                        </Suspense>
 
                         {content ? (
                             <>
@@ -282,7 +285,7 @@ export default async function ProductPage({
                 </SplitView>
 
                 <ProductJsonLd
-                    useAppDir
+                    useAppDir={true}
                     key={variant?.id}
                     keyOverride={`item_${variant?.id}`}
                     productName={`${product.vendor} ${product.title} ${variant.title}`}

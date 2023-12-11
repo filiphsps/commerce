@@ -71,9 +71,7 @@ export async function generateStaticParams() {
 
     return pages;
 }
-/* c8 ignore stop */
 
-/* c8 ignore start */
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }

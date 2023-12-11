@@ -2,6 +2,7 @@ import { ShopProvider } from '@/components/shop/provider';
 import { Locale } from '@/utils/locale';
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import { Trackable } from '../trackable';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
@@ -11,7 +12,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     } as any;
     return (
         <ShopProvider shop={shop} locale={Locale.default} currency={'USD'}>
-            {children}
+            <Trackable>{children}</Trackable>
         </ShopProvider>
     );
 };
