@@ -41,7 +41,7 @@ export const LegacyLoader: ImageLoaderType = ({ src, width, quality }) => {
 };
 
 const imageLoader: ImageLoaderType = (props) => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && !props.src.includes('shopify')) {
         return CloudflareImageLoader(props);
     }
 

@@ -7,7 +7,7 @@ import { MissingContextProviderError } from '@/utils/errors';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
-import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
@@ -143,12 +143,13 @@ export type AnalyticsEventActionProps = {
     currency: CurrencyCode;
     locale: Locale;
     shopify: ShopifyContextValue;
+    cart: CartWithActions;
 };
 
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
 ) => {
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
@@ -180,7 +181,7 @@ const shopifyEventHandler = async (
         ...pageAnalytics,
         ...getClientBrowserParameters(),
         path: data.path!.replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
-        //navigationType: 'navigate', // TODO: do this properly.
+        navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
         products: products.map((line) => ({
@@ -216,6 +217,7 @@ const shopifyEventHandler = async (
                     {
                         eventName: ShopifyAnalyticsEventName.ADD_TO_CART,
                         payload: {
+                            cartId: cart.id,
                             ...sharedPayload
                         }
                     },
@@ -232,7 +234,7 @@ const shopifyEventHandler = async (
 const postEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, locale, shopify }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
 ) => {
     if (!window.dataLayer) {
         console.debug('window.dataLayer not found, creating it.');
@@ -241,7 +243,7 @@ const postEvent = async (
 
     switch (shop.configuration.commerce.type) {
         case 'shopify': {
-            await shopifyEventHandler(event, data, { shop, currency, locale, shopify });
+            await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
         }
     }
 
@@ -375,7 +377,7 @@ export function Trackable({ children }: TrackableProps) {
                         ...event,
                         path: event.path || path
                     },
-                    { shop, currency, locale, shopify }
+                    { shop, currency, locale, shopify, cart }
                 );
             })
         ).then((results) => {
@@ -392,7 +394,7 @@ export function Trackable({ children }: TrackableProps) {
             value={{
                 queueEvent,
                 postEvent: async (type, event) => {
-                    return postEvent(type, event, { shop, currency, locale, shopify });
+                    return postEvent(type, event, { shop, currency, locale, shopify, cart });
                 }
             }}
         >
