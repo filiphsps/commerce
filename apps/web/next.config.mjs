@@ -121,6 +121,9 @@ const config = {
 
         // Prismic.
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
+
+        // Highlight.
+        HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY
     },
     async redirects() {
         return [
