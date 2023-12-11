@@ -10,6 +10,7 @@
         ],
         "rootDir": "../../",
         "paths": {
+            // Storefront.
             "@/middleware/*": ["src/middleware/*"],
             "@/components/*": ["src/components/*"],
             "@/hooks/*": ["src/hooks/*"],
@@ -20,28 +21,24 @@
             "@/auth": ["src/auth/auth.ts"],
             "@/auth/*": ["src/auth/*"],
 
-            // i18n
+            // i18n.
             "@/i18n/*": ["src/locales/*"],
             "@/i18n/dictionary": ["src/utils/dictionary.ts"],
 
-            // Prismic
+            // Prismic.
             "@/slices/*": ["src/slices/*"],
             "@/slices": ["src/slices/index"],
             "@/prismic/types": ["prismicio-types.d.ts"],
 
-            // Admin (shops.nordcom.io)
+            // Assets.
+            "@/static/*": ["public/*"],
+
+            // Admin (shops.nordcom.io).
             "#/components/*": ["src/app/(shops)/_components/*"],
             "#/api/*": ["src/app/(shops)/_api/*"],
             "#/utils/*": ["src/app/(shops)/_utils/*"],
             "#/styles/*": ["src/app/(shops)/_scss/*"]
         }
     },
-    "include": [
-        "next-env.d.ts",
-        ".next/types/**/*.ts",
-        "prismicio-types.d.ts",
-        "prismicio.ts",
-        "src/@types",
-        "src"
-    ]
+    "include": ["next-env.d.ts", ".next/types/**/*.ts", "prismicio-types.d.ts", "prismicio.ts", "src/@types", "src"]
 }

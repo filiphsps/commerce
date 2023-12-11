@@ -62,7 +62,8 @@ export const authOptions: NextAuthOptions = {
             };
             return session;
         }
-    }
+    },
+    debug: false
 };
 
 export function getSession() {

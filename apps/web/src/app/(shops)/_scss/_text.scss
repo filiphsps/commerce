@@ -8,30 +8,6 @@ h1 {
         font-weight: 500;
         line-height: 1.1;
     }
-
-    &:after {
-        content: '.';
-        font-size: 0.75em;
-        line-height: 1;
-    }
-}
-
-h2 {
-    font-size: 2rem;
-    font-weight: 400;
-    line-height: 1.075;
-    letter-spacing: 0.02rem;
-    text-transform: lowercase;
-    color: var(--color-background-secondary);
-
-    @media (min-width: 950px) {
-        font-size: 2.75rem;
-        line-height: 1.1;
-    }
-
-    &:after {
-        content: '.';
-    }
 }
 
 h1,

@@ -30,7 +30,7 @@ export default async function DocsPage({ params: {} }: { params: NewsPageParams 
                         draggable={false}
                     >
                         <Heading level="h4" as="h3">
-                            {title} - {date.toLocaleDateString('en-US')}
+                            {title} {date ? `- ${date.toLocaleDateString('en-US')}` : ''}
                         </Heading>
                         <p>{description}.</p>
                     </Card>

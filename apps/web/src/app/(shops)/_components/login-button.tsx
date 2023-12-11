@@ -2,10 +2,13 @@
 
 import styles from '#/components/login-button.module.scss';
 import type { AuthProvider } from '#/utils/auth';
+import GithubLight from '@/static/github-light.svg';
 import { UnknownApiError } from '@/utils/errors';
 import { Button } from '@nordcom/nordstar';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import type { ReactNode } from 'react';
 import { useEffect, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 
@@ -37,10 +40,12 @@ export default function LoginButton({ provider = 'github', className, ...props }
         router.replace(`${path}${params.size > 0 ? '?' : ''}${params.toString()}`);
     }, [error]);
 
-    let layout = <></>;
+    let layout: ReactNode = <></>;
+    let icon: ReactNode = <></>;
     switch (provider) {
         case 'github': {
-            layout = <p>Login with GitHub</p>;
+            layout = 'Login with GitHub';
+            icon = <Image className={styles['provider-logo']} src={GithubLight} alt="GitHub" />;
             break;
         }
         default: {
@@ -74,6 +79,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
             as="button"
             disabled={loading}
             className={`${styles.container} ${loading ? styles.loading : ''} ${className || ''}`}
+            icon={icon}
         >
             {!loading ? layout : <p>Loading...</p>}
         </Button>

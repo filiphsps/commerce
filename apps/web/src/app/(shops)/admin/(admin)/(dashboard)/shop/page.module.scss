@@ -6,7 +6,16 @@
 
 .shops {
     display: flex;
+
+    .shop {
+        width: 100%;
+
+        @media (min-width: 950px) {
+            width: auto;
+        }
+    }
 }
+
 .collaborators {
     display: flex;
     flex-direction: column;

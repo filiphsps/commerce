@@ -76,7 +76,8 @@ export const getAuthOptions = async ({ shop }: { shop?: Shop }): Promise<AuthOpt
                     secure: !!VERCEL_DEPLOYMENT
                 }
             }
-        }
+        },
+        debug: false
     };
 };
 
