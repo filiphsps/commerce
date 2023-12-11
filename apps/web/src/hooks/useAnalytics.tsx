@@ -79,10 +79,16 @@ export const sendPageViewEvent = ({
                     value: ShopifyPriceToNumber(0, cost?.totalAmount?.amount, product.price),
                     items: [
                         {
-                            item_id: ProductToMerchantsCenterId({
-                                locale: locale,
-                                product: product
-                            }),
+                            item_id:
+                                (product &&
+                                    ProductToMerchantsCenterId({
+                                        locale: locale,
+                                        product: {
+                                            productGid: product.productGid!,
+                                            variantGid: product.variantGid!
+                                        }
+                                    })) ||
+                                undefined,
                             item_name: product.name,
                             item_variant: product.variantName,
                             item_brand: product.brand,

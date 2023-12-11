@@ -27,7 +27,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 export type AnalyticsEventType =
     | 'web_vital'
     | 'page_view'
-    | 'view_items'
+    | 'view_item'
     | 'view_item_list'
     | 'view_cart'
     | 'add_to_cart'
@@ -259,7 +259,14 @@ export function Trackable({ children }: TrackableProps) {
     >([]);
 
     const queueEvent = useCallback((type: AnalyticsEventType, event: AnalyticsEventData) => {
-        setQueue((queue) => [...queue, { type, event }]);
+        setQueue((queue) => {
+            // Don't add duplicate events.
+            if (JSON.stringify(queue.at(-1)) === JSON.stringify({ type, event })) {
+                return queue;
+            }
+
+            return [...queue, { type, event }];
+        });
         return;
     }, []);
 
@@ -272,18 +279,13 @@ export function Trackable({ children }: TrackableProps) {
     useEffect(() => {
         if (!shop || !currency || !queue || queue.length <= 0) return;
 
-        console.debug(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}.`);
+        console.debug(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}.`, queue);
 
         // Clone the queue, as it may be modified while we are sending events.
         let events = [...queue];
 
         // Clear queue to prevent duplicate events.
         setQueue(() => []);
-
-        // TODO: Handle this properly.
-        if (events.length === 2 && events[0].type === 'page_view' && events[1].type === 'page_view') {
-            events.pop();
-        }
 
         // Flush the queue.
         Promise.allSettled(

@@ -1,5 +1,4 @@
 import type { Locale } from '@/utils/locale';
-import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen-react';
 import { parseGid } from '@shopify/hydrogen-react';
 
 /**
@@ -15,7 +14,10 @@ export const ProductToMerchantsCenterId = ({
     product
 }: {
     locale: Locale;
-    product: ShopifyAnalyticsProduct;
+    product: {
+        productGid: string;
+        variantGid: string;
+    };
 }) => {
     const productId = parseGid(product.productGid).resourceId;
     const variantId = parseGid(product.variantGid).resourceId;
