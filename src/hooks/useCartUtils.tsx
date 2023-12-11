@@ -34,7 +34,7 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
     useEffect(() => {
         if (!error) return;
 
-        console.error('cart error:', error);
+        console.error((error as any[])[0].message);
     }, [error]);
 
     // Discount codes in url.

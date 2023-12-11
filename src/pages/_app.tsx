@@ -196,6 +196,8 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                 >
                     <CartProvider
                         cartFragment={CartFragment}
+                        countryCode={country}
+                        languageCode={language}
                         onNoteUpdateComplete={() => setEvents((events) => [...events, 'update_cart_note'])}
                         onCreateComplete={() => setEvents((events) => [...events, 'create_cart'])}
                         onLineAddComplete={() => setEvents((events) => [...events, 'add_to_cart'])}
