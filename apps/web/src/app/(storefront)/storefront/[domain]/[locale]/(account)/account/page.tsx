@@ -72,7 +72,7 @@ export default async function AccountPage({ params: { domain, locale: localeData
             <Page>
                 <PageContent primary={true}>
                     <PageContent>
-                        <Heading title="Account" subtitle={null} />
+                        <Heading title={`Hi ${session.user?.name || 'there'}!`} subtitle={null} />
                     </PageContent>
                 </PageContent>
             </Page>
