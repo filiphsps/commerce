@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
     session: { strategy: 'jwt' },
     cookies: {
         sessionToken: {
-            name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}next-auth.session-token`,
+            name: `${VERCEL_DEPLOYMENT ? '__Secure-' : ''}nordcom-commerce.admin.session-token`,
             options: {
                 httpOnly: true,
                 sameSite: 'lax',

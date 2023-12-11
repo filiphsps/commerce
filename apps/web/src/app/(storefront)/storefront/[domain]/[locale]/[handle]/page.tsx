@@ -127,7 +127,7 @@ export default async function CustomPage({
 
         return (
             <Page>
-                <PageContent primary>
+                <PageContent primary={true}>
                     {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
                             shop={shop}

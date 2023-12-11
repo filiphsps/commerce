@@ -124,7 +124,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         return (
             <Page>
-                <PageContent primary>
+                <PageContent primary={true}>
                     <CartContent
                         shop={shop}
                         locale={locale}

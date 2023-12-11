@@ -137,7 +137,7 @@ export default async function SearchPage({
 
         return (
             <Page>
-                <PageContent primary>
+                <PageContent primary={true}>
                     <Heading title={page?.title} subtitle={page?.description} />
 
                     {page?.slices && page?.slices.length > 0 && (

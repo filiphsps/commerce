@@ -40,7 +40,7 @@ export default async function BlogLayout({
 
         return (
             <Page>
-                <PageContent primary>
+                <PageContent primary={true}>
                     <div className={styles.container}>
                         <main className={styles.content}>{children}</main>
 

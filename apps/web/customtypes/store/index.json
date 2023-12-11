@@ -9,7 +9,8 @@
             "store_name": {
                 "type": "Text",
                 "config": {
-                    "label": "Store name"
+                    "label": "Store name",
+                    "placeholder": "Sweet Side of Sweden"
                 }
             },
             "description": {
@@ -36,7 +37,8 @@
             "border_radius": {
                 "type": "Text",
                 "config": {
-                    "label": "Corner radius"
+                    "label": "DEPRECATED - Corner radius",
+                    "placeholder": ""
                 }
             },
             "currencies": {
@@ -46,7 +48,8 @@
                         "currency": {
                             "type": "Text",
                             "config": {
-                                "label": "currency"
+                                "label": "DEPRECATED - currency",
+                                "placeholder": ""
                             }
                         }
                     },
@@ -60,19 +63,24 @@
                         "name": {
                             "type": "Text",
                             "config": {
-                                "label": "Name"
-                            }
-                        },
-                        "url": {
-                            "type": "Text",
-                            "config": {
-                                "label": "Link"
+                                "label": "Name",
+                                "placeholder": "twitter"
                             }
                         },
                         "handle": {
                             "type": "Text",
                             "config": {
-                                "label": "Handle"
+                                "label": "Handle",
+                                "placeholder": "@NordcomInc"
+                            }
+                        },
+                        "url": {
+                            "type": "Link",
+                            "config": {
+                                "label": "URL",
+                                "placeholder": "https://twitter.com/NordcomInc",
+                                "allowTargetBlank": true,
+                                "select": null
                             }
                         }
                     },

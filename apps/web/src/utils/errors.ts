@@ -50,13 +50,15 @@ export enum ApiErrorKind {
     API_UNKNOWN_SHOP_DOMAIN = 'API_UNKNOWN_SHOP_DOMAIN',
     API_UNKNOWN_COMMERCE_PROVIDER = 'API_UNKNOWN_COMMERCE_PROVIDER',
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
+    API_INVALID_SHOP = 'API_INVALID_SHOP',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
     API_METHOD_NOT_ALLOWED = 'API_METHOD_NOT_ALLOWED',
     API_ICON_WIDTH_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
     API_ICON_WIDTH_OUT_OF_BOUNDS = 'API_ICON_WIDTH_OUT_OF_BOUNDS',
     API_ICON_HEIGHT_NO_FRACTIONAL = 'API_ICON_HEIGHT_NO_FRACTIONAL',
     API_ICON_HEIGHT_OUT_OF_BOUNDS = 'API_ICON_HEIGHT_OUT_OF_BOUNDS',
-    API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE'
+    API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE',
+    API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION'
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -96,6 +98,14 @@ export class UnknownLocaleError extends UnknownApiError {
     details = 'Unknown locale';
     description = 'Unsupported or invalid locale code was provided';
     code = ApiErrorKind.API_UNKNOWN_LOCALE;
+}
+
+export class InvalidShopError extends ApiError {
+    statusCode = 400;
+    name = 'InvalidShopError';
+    details = 'Invalid shop';
+    description = 'The current shop is invalid';
+    code = ApiErrorKind.API_INVALID_SHOP;
 }
 
 export class TooManyRequestsError extends ApiError {
@@ -145,6 +155,14 @@ export class NoLocalesAvailableError extends ApiError {
     details = 'No locales available';
     description = 'No locales have been configured for the requested shop instance';
     code = ApiErrorKind.API_NO_LOCALES_AVAILABLE;
+}
+
+export class InvalidShopifyCustomerAccountsApiConfiguration extends ApiError {
+    statusCode = 400;
+    name = 'InvalidShopifyCustomerAccountsApiConfiguration';
+    details = 'Invalid Shopify Customer Account API configuration';
+    description = 'The Shopify Customer Account API configuration is invalid';
+    code = ApiErrorKind.API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION;
 }
 
 export type ApiErrorStatusCode = 400 | 405 | 429 | number;

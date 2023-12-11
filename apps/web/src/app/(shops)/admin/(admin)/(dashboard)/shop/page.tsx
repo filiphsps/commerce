@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function Overview() {
     const session = await getSession();
     if (!session) {
-        redirect('/login/');
+        return redirect('/login/');
     }
 
     const { user } = session;

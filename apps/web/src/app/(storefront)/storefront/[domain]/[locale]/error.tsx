@@ -12,7 +12,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     useEffect(() => console.error(error), [error]);
     return (
         <Page>
-            <PageContent primary>
+            <PageContent primary={true}>
                 <Heading title={error?.name} subtitle={<code>{error?.message}</code>} />
 
                 <Content>

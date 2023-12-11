@@ -718,7 +718,7 @@ export type ProductPageDocument<Lang extends string = string> = prismic.PrismicD
  */
 export interface StoreDocumentDataCurrenciesItem {
     /**
-     * currency field in *Store → DEPRECATED - Currencies*
+     * DEPRECATED - currency field in *Store → DEPRECATED - Currencies*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -736,31 +736,31 @@ export interface StoreDocumentDataSocialItem {
      * Name field in *Store → Social*
      *
      * - **Field Type**: Text
-     * - **Placeholder**: *None*
+     * - **Placeholder**: twitter
      * - **API ID Path**: store.social[].name
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     name: prismic.KeyTextField;
 
     /**
-     * Link field in *Store → Social*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.social[].url
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    url: prismic.KeyTextField;
-
-    /**
      * Handle field in *Store → Social*
      *
      * - **Field Type**: Text
-     * - **Placeholder**: *None*
+     * - **Placeholder**: @NordcomInc
      * - **API ID Path**: store.social[].handle
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     handle: prismic.KeyTextField;
+
+    /**
+     * URL field in *Store → Social*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: https://twitter.com/NordcomInc
+     * - **API ID Path**: store.social[].url
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    url: prismic.LinkField;
 }
 
 /**
@@ -771,7 +771,7 @@ interface StoreDocumentData {
      * Store name field in *Store*
      *
      * - **Field Type**: Text
-     * - **Placeholder**: *None*
+     * - **Placeholder**: Sweet Side of Sweden
      * - **API ID Path**: store.store_name
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#key-text
@@ -812,7 +812,7 @@ interface StoreDocumentData {
     favicon: prismic.KeyTextField;
 
     /**
-     * Corner radius field in *Store*
+     * DEPRECATED - Corner radius field in *Store*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
@@ -1842,7 +1842,7 @@ type NavigationItemSliceVariation = NavigationItemSliceDefault;
 export type NavigationItemSlice = prismic.SharedSlice<'navigation_item', NavigationItemSliceVariation>;
 
 /**
- * Default variation for ProductDescription Slice
+ * Default variation for Description Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -1851,15 +1851,15 @@ export type NavigationItemSlice = prismic.SharedSlice<'navigation_item', Navigat
 export type ProductDescriptionSliceDefault = prismic.SharedSliceVariation<'default', Record<string, never>, never>;
 
 /**
- * Slice variation for *ProductDescription*
+ * Slice variation for *Description*
  */
 type ProductDescriptionSliceVariation = ProductDescriptionSliceDefault;
 
 /**
- * ProductDescription Shared Slice
+ * Description Shared Slice
  *
  * - **API ID**: `product_description`
- * - **Description**: ProductDescription
+ * - **Description**: A component that automatically renders the description of the current product
  * - **Documentation**: https://prismic.io/docs/slice
  */
 export type ProductDescriptionSlice = prismic.SharedSlice<'product_description', ProductDescriptionSliceVariation>;

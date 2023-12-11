@@ -1,0 +1,7 @@
+@import '_globals.scss';
+
+.container {
+    @media (max-width: $breakpoint-mobile) {
+        --component-product-card-width: auto;
+    }
+}

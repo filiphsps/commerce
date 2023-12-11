@@ -11,6 +11,12 @@ export type ShopifyCommerceProvider = {
     authentication: {
         token: string | null;
         publicToken: string;
+
+        customers: {
+            id: string;
+            clientId: string;
+            clientSecret: string;
+        } | null;
     };
 };
 export type DummyCommerceProvider = {
@@ -103,7 +109,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     storefrontId: process.env.SHOPIFY_STOREFRONT_ID || '2130225',
                     authentication: {
                         token: null,
-                        publicToken: process.env.SHOPIFY_TOKEN!
+                        publicToken: process.env.SHOPIFY_TOKEN!,
+                        customers: null
                     }
                 },
                 content: {
@@ -218,7 +225,9 @@ export const CommerceProviderAuthenticationApi = async ({
         case 'dummy': {
             return {
                 token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
-                publicToken: 'public-auth-token'
+                publicToken: 'public-auth-token',
+
+                customers: null
             };
         }
         case 'shopify': {
@@ -226,7 +235,13 @@ export const CommerceProviderAuthenticationApi = async ({
                 case 'sweet-side-of-sweden': {
                     return {
                         ...shop.configuration.commerce.authentication,
-                        token: process.env.SHOPIFY_PRIVATE_TOKEN || null
+                        token: process.env.SHOPIFY_PRIVATE_TOKEN || null,
+
+                        customers: {
+                            id: '76188483889',
+                            clientId: 'shp_9e8fb873-df9e-4a46-9842-293df6d2f2a4',
+                            clientSecret: 'f2a0e4d3cd8c4457d4eda94b1bf2442209d973246a380a5dac1557f54a059753'
+                        }
                     };
                 }
                 default: {

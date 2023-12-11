@@ -1,8 +1,7 @@
-import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { Locale } from '@/utils/locale';
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
+import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
@@ -13,12 +12,14 @@ import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
+import styles from './page.module.scss';
 
 /* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
@@ -165,8 +166,8 @@ export default async function CollectionPage({
         });
 
         return (
-            <Page>
-                <PageContent primary>
+            <Page className={styles.container}>
+                <PageContent primary={true}>
                     {!page || page.enable_header === undefined || page.enable_header ? (
                         <div>
                             <Heading title={collection.title} subtitle={null} />
