@@ -320,7 +320,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                                 title={image?.altText!}
                                 width={195}
                                 height={155}
+                                quality={85}
                                 sizes="(max-width: 950px) 155px, 200px"
+                                loading={priority ? 'eager' : 'lazy'}
                                 priority={priority}
                             />
                         </ProductImageWrapper>

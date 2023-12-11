@@ -4,9 +4,6 @@ import type { Shop } from '@/api/shop';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { Locale } from '@/utils/locale';
 import * as Prismic from '@/utils/prismic';
-import { GoogleTagManager } from '@next/third-parties/google';
-import { PrismicPreview } from '@prismicio/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { useEffect, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
@@ -18,20 +15,22 @@ export type ThirdPartiesProviderProps = {
 export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
     const [delayedContent, setDelayedContent] = useState<ReactNode>(null);
     useEffect(() => {
-        if (!shop?.configuration?.thirdParty?.googleTagManager) {
-            return () => {};
-        }
+        const timeout = setTimeout(async () => {
+            if (delayedContent) return;
 
-        const timeout = setTimeout(() => {
-            if (delayedContent || !shop?.configuration?.thirdParty?.googleTagManager) {
-                return;
-            }
+            const { SpeedInsights } = await import('@vercel/speed-insights/next');
+            const { PrismicPreview } = await import('@prismicio/next');
+            const { GoogleTagManager } = await import('@next/third-parties/google');
+            const { Analytics: VercelAnalytics } = await import('@vercel/analytics/react');
 
             setDelayedContent(() => (
                 <>
-                    <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
+                    {shop?.configuration?.thirdParty?.googleTagManager ? (
+                        <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
+                    ) : null}
                     <PrismicPreview repositoryName={Prismic.repositoryName} />
                     <SpeedInsights />
+                    <VercelAnalytics />
                 </>
             ));
 
