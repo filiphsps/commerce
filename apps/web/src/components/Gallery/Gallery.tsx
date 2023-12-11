@@ -18,10 +18,6 @@ const Previews = styled.div`
     width: 100%;
     height: 100%;
 
-    @media (max-width: 950px) {
-        overflow-y: auto;
-    }
-
     @media (min-width: 950px) {
         position: relative;
         flex-direction: row;
@@ -29,7 +25,6 @@ const Previews = styled.div`
     }
 `;
 const Preview = styled.div`
-    overflow: hidden;
     width: 6rem;
     height: 6rem;
     padding: var(--block-padding-small);
@@ -45,15 +40,14 @@ const Preview = styled.div`
         opacity: 1;
     }
 
-    imng {
-        width: auto;
+    img {
+        width: 100%;
         height: 100%;
     }
 
     @media (min-width: 950px) {
-        overflow: unset;
         width: 12rem;
-        height: 100%;
+        height: 12rem;
         padding: var(--block-padding);
         border: var(--block-border-width) solid var(--color-block);
         opacity: 1;
@@ -85,13 +79,13 @@ const ImageWrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex-shrink: 1;
-    max-height: 100%;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
 `;
 
 const Container = styled.div`
-    position: relative;
-    overflow: hidden;
+    position: sticky;
+    top: 8rem;
     display: grid;
     grid-template-areas: 'primary previews';
     grid-template-columns: 1fr auto;

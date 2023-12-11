@@ -4,7 +4,9 @@ import type { Shop } from '@/api/shop';
 import { useCartUtils } from '@/hooks/useCartUtils';
 import type { Locale } from '@/utils/locale';
 import * as Prismic from '@/utils/prismic';
+import { getClientBrowserParameters } from '@shopify/hydrogen-react';
 import { useEffect, useState, type ReactNode } from 'react';
+import { IntercomProvider, useIntercom } from 'react-use-intercom';
 import { toast } from 'sonner';
 
 export type ThirdPartiesProviderProps = {
@@ -12,6 +14,59 @@ export type ThirdPartiesProviderProps = {
     locale: Locale;
     children: ReactNode;
 };
+
+export const LiveChat = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
+    // TODO: Support other live chat providers.
+    if (!shop.configuration.thirdParty?.intercom) {
+        return <>{children}</>;
+    }
+
+    const { uniqueToken: userId } = getClientBrowserParameters();
+    const { update } = useIntercom();
+
+    // Update attributes.
+    useEffect(() => {
+        update({
+            userId,
+            customAttributes: {
+                locale: locale.code
+            }
+        });
+    }, [, locale]);
+
+    return <>{children}</>;
+};
+
+export const LiveChatWrapper = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
+    // TODO: Support other live chat providers.
+    if (!shop.configuration.thirdParty?.intercom) {
+        return <>{children}</>;
+    }
+
+    const intercom = shop.configuration.thirdParty?.intercom;
+    const { uniqueToken: userId } = getClientBrowserParameters();
+
+    return (
+        <IntercomProvider
+            appId={intercom.appId}
+            autoBoot={true}
+            autoBootProps={{
+                alignment: 'right',
+                actionColor: intercom.actionColor,
+                backgroundColor: intercom.backgroundColor,
+                userId,
+                customAttributes: {
+                    locale: locale.code
+                }
+            }}
+        >
+            <LiveChat shop={shop} locale={locale}>
+                {children}
+            </LiveChat>
+        </IntercomProvider>
+    );
+};
+
 export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
     const [delayedContent, setDelayedContent] = useState<ReactNode>(null);
     useEffect(() => {
@@ -67,9 +122,12 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
         }
     }, [cartError]);
 
+    if (!delayedContent) return children;
     return (
         <>
-            {children}
+            <LiveChatWrapper shop={shop} locale={locale}>
+                {children}
+            </LiveChatWrapper>
             {delayedContent}
         </>
     );

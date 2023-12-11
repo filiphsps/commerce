@@ -88,6 +88,11 @@ export type Shop = {
         };
         thirdParty?: {
             googleTagManager?: string;
+            intercom?: {
+                appId: string;
+                actionColor: string;
+                backgroundColor: string;
+            };
         };
     };
 };
@@ -124,7 +129,12 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     }
                 },
                 thirdParty: {
-                    googleTagManager: process.env.GTM
+                    googleTagManager: process.env.GTM,
+                    intercom: {
+                        appId: 'r02wp8mx',
+                        actionColor: '#274690',
+                        backgroundColor: '#274690'
+                    }
                 }
             }
         },
