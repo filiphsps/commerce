@@ -256,6 +256,7 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                             height="30"
                             frameBorder="0"
                             scrolling="no"
+                            loading="lazy"
                         />
                     </div>
                     <AcceptedPaymentMethods store={store!} />
