@@ -6,7 +6,10 @@ import type { Locale } from '@/utils/locale';
 export type ShopifyCommerceProvider = {
     type: 'shopify';
     id: string;
+    /** E.g. checkout.sweetsideofsweden.com */
     domain: string;
+    /** E.g. sweetsideofsweden.com */
+    rootDomain: string;
     storefrontId: string;
     authentication: {
         token: string | null;
@@ -110,7 +113,8 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                 commerce: {
                     type: 'shopify' as const,
                     id: process.env.SHOPIFY_SHOP_ID || '76188483889',
-                    domain: process.env.SHOPIFY_CHECKOUT_DOMAIN || 'checkout.sweetsideofsweden.com',
+                    domain: 'checkout.sweetsideofsweden.com',
+                    rootDomain: 'sweetsideofsweden.com',
                     storefrontId: process.env.SHOPIFY_STOREFRONT_ID || '2130225',
                     authentication: {
                         token: null,
