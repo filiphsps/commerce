@@ -1,6 +1,6 @@
 import type { Product } from '@/api/product';
 import type { AbstractApi, ApiOptions, Identifiable } from '@/utils/abstract-api';
-import { cache, cleanShopifyHtml } from '@/utils/abstract-api';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { NotFoundError } from '@/utils/errors';
 import type { ProductConnection, ProductEdge, ProductSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
@@ -172,7 +172,7 @@ export const PRODUCT_FRAGMENT = `
 `;
 
 type ProductOptions = ApiOptions & Identifiable;
-export const ProductApi = cache(async ({ api, handle }: ProductOptions): Promise<Product> => {
+export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Product> => {
     if (!handle) throw new Error('400: Invalid handle');
 
     try {
@@ -211,7 +211,7 @@ export const ProductApi = cache(async ({ api, handle }: ProductOptions): Promise
         console.error(error);
         throw error;
     }
-});
+};
 
 export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Promise<number> => {
     const count_products = async (count: number = 0, cursor?: string) => {
