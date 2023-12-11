@@ -208,7 +208,7 @@ const shopifyEventHandler = async (
                             ...sharedPayload
                         }
                     },
-                    commerce.domain
+                    commerce.rootDomain
                 );
                 break;
             }
@@ -221,7 +221,7 @@ const shopifyEventHandler = async (
                             ...sharedPayload
                         }
                     },
-                    commerce.domain
+                    commerce.rootDomain
                 );
                 break;
             }
