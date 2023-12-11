@@ -1,10 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import PrismicPage from '@/components/prismic-page';
 import { render } from '@/utils/test/react';
 
 describe('components', () => {
     describe('PrismicPage', () => {
+        vi.mock('@shopify/hydrogen-react', async () => {
+            return {
+                useCart: vi.fn().mockReturnValue({
+                    status: 'idle'
+                }),
+                useShop: vi.fn().mockReturnValue({})
+            };
+        });
+
         const propsBase = {
             locale: {
                 locale: 'en-US',

@@ -10,6 +10,15 @@ describe('components', () => {
             vi.spyOn(console, 'error').mockImplementation(() => {});
         });
 
+        vi.mock('@shopify/hydrogen-react', async () => {
+            return {
+                useCart: vi.fn().mockReturnValue({
+                    status: 'idle'
+                }),
+                useShop: vi.fn().mockReturnValue({})
+            };
+        });
+
         vi.mock('@/utils/build-config', () => ({
             BuildConfig: {
                 domain: 'example.com',

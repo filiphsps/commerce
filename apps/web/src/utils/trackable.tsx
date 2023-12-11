@@ -6,15 +6,19 @@ import type { Nullable } from '@/utils/abstract-api';
 import { MissingContextProviderError } from '@/utils/errors';
 import type { CurrencyCode } from '@/utils/locale';
 import { Locale } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { ShopifyPriceToNumber } from '@/utils/pricing';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {
     AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    useCart,
     useShop as useShopify
 } from '@shopify/hydrogen-react';
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
@@ -248,8 +252,11 @@ export type TrackableProps = {
 };
 export function Trackable({ children }: TrackableProps) {
     const path = usePathname();
-    const { shop, currency } = useShop();
+    const { shop, currency, locale } = useShop();
+
+    // TODO: Break these out into a separate hook, for tenants using Shopify.
     const shopify = useShopify();
+    const cart = useCart();
 
     const [queue, setQueue] = useState<
         {
@@ -261,7 +268,8 @@ export function Trackable({ children }: TrackableProps) {
     const queueEvent = useCallback((type: AnalyticsEventType, event: AnalyticsEventData) => {
         setQueue((queue) => {
             // Don't add duplicate events.
-            if (JSON.stringify(queue.at(-1)) === JSON.stringify({ type, event })) {
+            const eventHash = JSON.stringify({ type, event });
+            if (JSON.stringify(queue.at(-1)) === eventHash || JSON.stringify(queue.at(-2)) === eventHash) {
                 return queue;
             }
 
@@ -273,6 +281,33 @@ export function Trackable({ children }: TrackableProps) {
     // Page view.
     useEffect(() => {
         queueEvent('page_view', { path });
+
+        if (path.endsWith('/cart/') && cart) {
+            queueEvent('view_cart', {
+                path,
+                gtm: {
+                    ecommerce: {
+                        currency: cart.cost?.totalAmount?.currencyCode!,
+                        value: ShopifyPriceToNumber(undefined, cart.cost?.totalAmount?.amount!),
+                        items: ((cart.lines || []).filter((_) => _) as CartLine[]).map((line) => ({
+                            item_id: ProductToMerchantsCenterId({
+                                locale,
+                                product: {
+                                    productGid: line.merchandise?.product?.id!,
+                                    variantGid: line.merchandise?.id!
+                                }
+                            }),
+                            item_name: line.merchandise?.product?.title,
+                            item_variant: line.merchandise?.title,
+                            item_brand: line.merchandise?.product?.vendor,
+                            currency: line.merchandise?.price?.currencyCode,
+                            price: ShopifyPriceToNumber(undefined, line.merchandise?.price?.amount!),
+                            quantity: line.quantity
+                        }))
+                    }
+                }
+            });
+        }
     }, [path]);
 
     // Send events.

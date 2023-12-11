@@ -77,7 +77,8 @@ describe('app', () => {
             }),
             useCart: vi.fn().mockReturnValue({
                 status: 'uninitialized'
-            })
+            }),
+            useShop: vi.fn().mockReturnValue({})
         };
     });
 

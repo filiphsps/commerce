@@ -52,7 +52,11 @@ vi.mock('@shopify/hydrogen-react', async () => ({
     createStorefrontClient: () => ({
         getStorefrontApiUrl: () => '',
         getPublicTokenHeaders: () => ({})
-    })
+    }),
+    useCart: vi.fn().mockReturnValue({
+        status: 'idle'
+    }),
+    useShop: vi.fn().mockReturnValue({})
 }));
 vi.mock('next/link', async () => ({
     ...((await vi.importActual('next/link')) || {}),

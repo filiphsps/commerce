@@ -1,20 +1,31 @@
 import { render } from '@/utils/test/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import SplitView from '@/components/layout/split-view';
 
-describe('SplitView', () => {
-    it('renders aside and primary content', async () => {
-        const asideContent = 'This is the aside content';
-        const primaryContent = 'This is the primary content';
+describe('components', () => {
+    describe('SplitView', () => {
+        vi.mock('@shopify/hydrogen-react', async () => {
+            return {
+                useCart: vi.fn().mockReturnValue({
+                    status: 'idle'
+                }),
+                useShop: vi.fn().mockReturnValue({})
+            };
+        });
 
-        const { getByText } = render(
-            <SplitView aside={<div>{asideContent}</div>}>
-                <div>{primaryContent}</div>
-            </SplitView>
-        );
+        it('renders aside and primary content', async () => {
+            const asideContent = 'This is the aside content';
+            const primaryContent = 'This is the primary content';
 
-        expect(getByText(asideContent)).toBeDefined();
-        expect(getByText(primaryContent)).toBeDefined();
+            const { getByText } = render(
+                <SplitView aside={<div>{asideContent}</div>}>
+                    <div>{primaryContent}</div>
+                </SplitView>
+            );
+
+            expect(getByText(asideContent)).toBeDefined();
+            expect(getByText(primaryContent)).toBeDefined();
+        });
     });
 });
