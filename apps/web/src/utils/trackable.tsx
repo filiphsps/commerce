@@ -4,8 +4,7 @@ import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
 import { useShop } from '@/components/shop/provider';
 import type { Nullable } from '@/utils/abstract-api';
 import { MissingContextProviderError } from '@/utils/errors';
-import type { CurrencyCode } from '@/utils/locale';
-import { Locale } from '@/utils/locale';
+import type { CurrencyCode, Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import type { ShopifyPageViewPayload } from '@shopify/hydrogen-react';
@@ -19,6 +18,7 @@ import {
 } from '@shopify/hydrogen-react';
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import { track as vercelTrack } from '@vercel/analytics/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
@@ -50,6 +50,23 @@ export type AnalyticsEventData = {
     path?: Nullable<string>;
     gtm?: {
         [key: string]: any;
+        ecommerce?: {
+            [key: string]: any;
+            value?: number;
+            items?: {
+                item_id: string;
+                item_name?: string;
+                item_brand?: string;
+                item_category?: string;
+                item_variant?: string;
+                product_id?: string;
+                variant_id?: string;
+                sku?: string;
+                price?: number;
+                currency?: string;
+                quantity?: number;
+            }[];
+        };
     };
 };
 
@@ -124,13 +141,14 @@ const pathToShopifyPageType = (pathName: string): ShopifyPageType => {
 export type AnalyticsEventActionProps = {
     shop: Shop;
     currency: CurrencyCode;
+    locale: Locale;
     shopify: ShopifyContextValue;
 };
 
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, shopify }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify }: AnalyticsEventActionProps
 ) => {
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
@@ -143,8 +161,11 @@ const shopifyEventHandler = async (
     const commerce = shop.configuration.commerce as ShopifyCommerceProvider;
     const pageType = pathToShopifyPageType(data.path!);
 
+    const products = data.gtm?.ecommerce?.items || [];
+    const value = data.gtm?.ecommerce?.value || 0;
+
     const pageAnalytics = {
-        canonicalUrl: '',
+        canonicalUrl: `https://${shop.domains.primary}/${locale.code}${data.path}`,
         resourceId: '',
         pageType
     };
@@ -154,18 +175,31 @@ const shopifyEventHandler = async (
         shopId: `gid://shopify/Shop/${commerce.id}`,
         storefrontId: shopify.storefrontId,
         currency: currency,
-        acceptedLanguage: Locale.current.language,
+        acceptedLanguage: locale.language,
         hasUserConsent: true, // TODO: Cookie consent.
         ...pageAnalytics,
         ...getClientBrowserParameters(),
         path: data.path!.replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
-        navigationType: 'navigate' // TODO: do this properly.
+        //navigationType: 'navigate', // TODO: do this properly.
+
+        totalValue: value,
+        products: products.map((line) => ({
+            productGid: line.product_id!,
+            variantGid: line.variant_id!,
+            name: line.item_name!,
+            variantName: line.item_variant!,
+            brand: line.item_brand!,
+            category: line.item_category!,
+            price: line.price?.toString(10)!,
+            sku: line.sku!,
+            quantity: line.quantity!
+        }))
     };
 
+    // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {
         switch (event) {
             case 'page_view': {
-                // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
                 await sendShopifyAnalytics(
                     {
                         eventName: ShopifyAnalyticsEventName.PAGE_VIEW,
@@ -178,7 +212,15 @@ const shopifyEventHandler = async (
                 break;
             }
             case 'add_to_cart': {
-                console.warn('TODO: shopify/add_to_cart', data);
+                await sendShopifyAnalytics(
+                    {
+                        eventName: ShopifyAnalyticsEventName.ADD_TO_CART,
+                        payload: {
+                            ...sharedPayload
+                        }
+                    },
+                    commerce.domain
+                );
                 break;
             }
         }
@@ -190,7 +232,7 @@ const shopifyEventHandler = async (
 const postEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
-    { shop, currency, shopify }: AnalyticsEventActionProps
+    { shop, currency, locale, shopify }: AnalyticsEventActionProps
 ) => {
     if (!window.dataLayer) {
         console.debug('window.dataLayer not found, creating it.');
@@ -199,7 +241,7 @@ const postEvent = async (
 
     switch (shop.configuration.commerce.type) {
         case 'shopify': {
-            await shopifyEventHandler(event, data, { shop, currency, shopify });
+            await shopifyEventHandler(event, data, { shop, currency, locale, shopify });
         }
     }
 
@@ -225,6 +267,8 @@ const postEvent = async (
             ecommerce: null
         });
     }
+
+    vercelTrack(event);
 };
 
 type TrackableContextReturns = {
@@ -331,7 +375,7 @@ export function Trackable({ children }: TrackableProps) {
                         ...event,
                         path: event.path || path
                     },
-                    { shop, currency, shopify }
+                    { shop, currency, locale, shopify }
                 );
             })
         ).then((results) => {
@@ -348,7 +392,7 @@ export function Trackable({ children }: TrackableProps) {
             value={{
                 queueEvent,
                 postEvent: async (type, event) => {
-                    return postEvent(type, event, { shop, currency, shopify });
+                    return postEvent(type, event, { shop, currency, locale, shopify });
                 }
             }}
         >

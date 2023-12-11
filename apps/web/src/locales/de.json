@@ -1,5 +1,6 @@
 {
     "cart": {
+        "add-n-to-your-cart": "Fügen Sie {0} zu Ihrem Warenkorb hinzu",
         "add-order-note": "Schreiben Sie eine Nachricht zu Ihrer Bestellung.",
         "away-from-getting": "Bis zu",
         "continue-to-checkout": "Zur Kasse gehen",

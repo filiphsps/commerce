@@ -3,10 +3,10 @@
 import styled, { css } from 'styled-components';
 
 import Link from '@/components/link';
+import { PrismicText } from '@/components/typography/prismic-text';
 import type { Content } from '@prismicio/client';
 import { asLink } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { PrismicRichText } from '@prismicio/react';
 
 const Contents = styled.div`
     display: grid;
@@ -222,7 +222,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
         >
             <Contents>
                 <Header>
-                    <PrismicRichText field={slice.primary.content} />
+                    <PrismicText data={slice.primary.content} />
                 </Header>
                 <ActionBar>
                     {slice.items.map((cta, index) => (
@@ -231,7 +231,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                             $primary={cta.type}
                             href={((cta.target && asLink(cta.target)?.toString()!) || '')!} // FIXME: Handle this correctly.
                         >
-                            <PrismicRichText field={cta.title} />
+                            <PrismicText data={cta.title} />
                         </Action>
                     ))}
                 </ActionBar>

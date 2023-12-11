@@ -1,8 +1,8 @@
 'use client';
 
+import { PrismicText } from '@/components/typography/prismic-text';
 import { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { PrismicRichText } from '@prismicio/react';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -41,7 +41,7 @@ const Title = ({ slice }: TitleProps): JSX.Element => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <Content $alignment={slice.primary.alignment}>
-                <PrismicRichText field={slice.primary.content} />
+                <PrismicText data={slice.primary.content} />
             </Content>
         </Container>
     );

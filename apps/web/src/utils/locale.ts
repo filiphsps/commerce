@@ -197,6 +197,7 @@ export type LocaleDictionary = typeof english;
 export type LocaleDictionaryScope = Lowercase<keyof LocaleDictionary>;
 export type LocaleDictionaryKey = Lowercase<DeepKeys<LocaleDictionary>>;
 
+type TranslationLiteral = string | number | boolean;
 /**
  * Returns a translation function for a given scope and dictionary.
  *
@@ -204,11 +205,24 @@ export type LocaleDictionaryKey = Lowercase<DeepKeys<LocaleDictionary>>;
  *
  * @param {string} scope - The scope of the translation.
  * @param {LocaleDictionary} dictionary - The dictionary to use for the translation.
- * @returns {({ t: (key: string) => string })} The translation function.
+ * @returns {({ t: (key: string, ...literals: TranslationLiteral[]) => string })} The translation function.
  */
 export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleDictionary) => {
     return {
-        t: (key: LocaleDictionaryKey): string => (dictionary as any)?.[scope]?.[key] || key
+        // Pure strings.
+        t: (key: LocaleDictionaryKey, ...literals: TranslationLiteral[]): string => {
+            const string: string = (dictionary as any)?.[scope]?.[key] || key;
+            if (literals.length === 0) {
+                return string;
+            }
+
+            // Replace `{n}` with the literal at index `n`.
+            return literals
+                ? string.replace(/{(\d+)}/g, (match, number) => literals[number].toString() || match)
+                : string;
+        }
+
+        // TODO: React component version of `t`.
     };
 };
 

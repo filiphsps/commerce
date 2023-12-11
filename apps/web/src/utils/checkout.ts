@@ -2,6 +2,7 @@ import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import type { CartWithActions } from '@shopify/hydrogen-react';
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { TrackableContextValue } from './trackable';
 
 // Const hacky workaround for ga4 cross-domain
@@ -54,54 +55,34 @@ export const Checkout = async ({
     }
 
     try {
-        trackable.queueEvent('begin_checkout', {
+        trackable.postEvent('begin_checkout', {
+            path: `/${locale.code}/checkout/`,
             gtm: {
                 ecommerce: {
                     currency: cart.cost?.totalAmount?.currencyCode!,
                     value: Number.parseFloat(cart.cost?.totalAmount?.amount!),
-                    items: cart.lines.map(
-                        (line) =>
-                            line && {
-                                item_id: ProductToMerchantsCenterId({
-                                    locale: locale,
-                                    product: {
-                                        productGid: line.merchandise!.product!.id,
-                                        variantGid: line.merchandise!.id
-                                    } as any
-                                }),
-                                item_name: line.merchandise?.product?.title,
-                                item_variant: line.merchandise?.title,
-                                item_brand: line.merchandise?.product?.vendor,
-                                currency: line.merchandise?.price?.currencyCode!,
-                                price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
-                                quantity: line.quantity
-                            }
-                    )
+                    items: (cart.lines.filter((_) => _) as CartLine[]).map((line) => ({
+                        item_id: ProductToMerchantsCenterId({
+                            locale: locale,
+                            product: {
+                                productGid: line.merchandise!.product!.id,
+                                variantGid: line.merchandise!.id
+                            } as any
+                        }),
+                        item_name: line.merchandise?.product?.title,
+                        item_variant: line.merchandise?.title,
+                        item_brand: line.merchandise?.product?.vendor,
+                        item_category: line.merchandise?.product?.productType,
+                        sku: line.merchandise?.sku || undefined,
+                        product_id: line.merchandise!.product!.id,
+                        variant_id: line.merchandise!.id,
+                        currency: line.merchandise?.price?.currencyCode!,
+                        price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                        quantity: line.quantity
+                    }))
                 }
             }
         });
-
-        /**
-         * Microsoft Universal Event Tracking
-         * @todo TODO: Move this to `<Trackable />`.
-         */
-        if ((window as any).uetq) {
-            (window as any).uetq.push('event', 'begin_checkout', {
-                ecomm_prodid: cart.lines.map((line) => line && line.merchandise?.id),
-                ecomm_pagetype: 'cart',
-                ecomm_totalvalue: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
-                revenue_value: Number.parseFloat(cart.cost?.totalAmount?.amount! || '0'),
-                currency: cart.cost?.totalAmount?.currencyCode!,
-                items: cart.lines.map(
-                    (line) =>
-                        line && {
-                            id: line.merchandise?.id,
-                            quantity: line.quantity,
-                            price: Number.parseFloat(line.merchandise?.price?.amount! || '0')
-                        }
-                )
-            });
-        }
     } catch (error) {
         console.error(error);
     }

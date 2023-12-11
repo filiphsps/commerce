@@ -1,5 +1,6 @@
 {
     "cart": {
+        "add-n-to-your-cart": "Lägg till {0} st i din varukorg",
         "add-order-note": "Skriv ett meddelande till oss om din beställning.",
         "away-from-getting": "Kvar tills du får",
         "continue-to-checkout": "Gå till kassan",

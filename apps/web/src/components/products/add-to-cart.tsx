@@ -4,11 +4,16 @@ import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useState, type HTMLProps } from 'react';
 import { TbShoppingBagCheck, TbShoppingBagPlus } from 'react-icons/tb';
 import { toast } from 'sonner';
+import { useShop } from '../shop/provider';
 
 export type AddToCartProps = {
     locale: Locale;
@@ -20,6 +25,10 @@ export type AddToCartProps = {
 // eslint-disable-next-line unused-imports/no-unused-vars
 export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
+    const { t: tCart } = useTranslation('cart', i18n);
+    const { queueEvent } = useTrackable();
+    const path = usePathname();
+    const { locale, currency } = useShop();
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     const { selectedVariant, product } = useProduct();
@@ -59,7 +68,7 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
             type={type || ('button' as any)}
             data-success={(animation && 'true') || undefined}
             onClick={() => {
-                if (!ready) {
+                if (!ready || !product || !selectedVariant) {
                     // TODO: i18n.
                     toast.warning(`The cart is still loading, please try again in a few seconds`);
                     return;
@@ -80,6 +89,37 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
                     }
                 ]);
 
+                queueEvent('add_to_cart', {
+                    path,
+                    gtm: {
+                        ecommerce: {
+                            currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                            value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity ?? undefined,
+                            items: [
+                                {
+                                    item_id: ProductToMerchantsCenterId({
+                                        locale,
+                                        product: {
+                                            productGid: product!.id!,
+                                            variantGid: selectedVariant!.id!
+                                        }
+                                    }),
+                                    item_name: product.title,
+                                    item_variant: selectedVariant.title,
+                                    item_brand: product.vendor,
+                                    item_category: product.productType,
+                                    product_id: product.id,
+                                    variant_id: selectedVariant.id,
+                                    sku: selectedVariant.sku || undefined,
+                                    currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                                    price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
+                                    quantity: quantity ?? 0
+                                }
+                            ]
+                        }
+                    }
+                });
+
                 // TODO: Move the toast to the provider.
                 // TODO: i18n.
                 toast.success(
@@ -94,7 +134,7 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
                     </>
                 );
             }}
-            title={`Add ${quantity} to your cart`} // TODO: i18n.
+            title={tCart('add-n-to-your-cart', quantity)}
         >
             {icon} {label}
         </Button>

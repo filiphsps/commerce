@@ -2,6 +2,7 @@
 
 import type { Shop } from '@/api/shop';
 import { useCartUtils } from '@/hooks/useCartUtils';
+import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import * as Prismic from '@/utils/prismic';
 import { getClientBrowserParameters } from '@shopify/hydrogen-react';
@@ -17,7 +18,7 @@ export type ThirdPartiesProviderProps = {
 
 export const LiveChat = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
     // TODO: Support other live chat providers.
-    if (!shop.configuration.thirdParty?.intercom) {
+    if (!shop.configuration.thirdParty?.intercom || BuildConfig.environment === 'development') {
         return <>{children}</>;
     }
 
@@ -84,8 +85,12 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
                         <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
                     ) : null}
                     <PrismicPreview repositoryName={Prismic.repositoryName} />
-                    <SpeedInsights />
-                    <VercelAnalytics />
+                    {BuildConfig.environment === 'development' ? null : (
+                        <>
+                            <SpeedInsights debug={false} />
+                            <VercelAnalytics debug={false} />
+                        </>
+                    )}
                 </>
             ));
 

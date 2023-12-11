@@ -1,16 +1,17 @@
 {
     "cart": {
+        "add-n-to-your-cart": "Add {0} to your cart",
         "add-order-note": "Add a note to your order.",
         "away-from-getting": "away from getting",
         "continue-to-checkout": "Continue to Checkout",
         "estimated-total": "Est. Total",
-        "free-shipping": "FREE Shipping",
         "free-shipping-on-this-order": "You're getting FREE Shipping on this order!",
+        "free-shipping": "FREE Shipping",
         "order-summary": "Order Summary",
         "promo-codes": "Promo Codes",
         "sale-discount": "Sale Discount",
-        "shipping": "Shipping",
         "shipping-calculated-at-checkout": "Shipping calculated at checkout",
+        "shipping": "Shipping",
         "subtotal": "Subtotal"
     },
     "common": {

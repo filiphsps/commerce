@@ -96,7 +96,6 @@ describe('utils', () => {
         const locale = Locale.from('en-US')!;
 
         beforeEach(() => {
-            (window as any).uetq = [];
             window.location.href = '';
         });
 

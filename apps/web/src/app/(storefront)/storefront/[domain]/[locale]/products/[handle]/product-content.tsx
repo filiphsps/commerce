@@ -36,7 +36,7 @@ export function ProductContent({ product, initialVariant, i18n }: ProductContent
     const variant = getVariant(product, searchParams) || initialVariant;
 
     const { queueEvent } = useTrackable();
-    const { locale } = useShop();
+    const { locale, currency } = useShop();
 
     useEffect(() => {
         if (!variant) return;
@@ -45,7 +45,7 @@ export function ProductContent({ product, initialVariant, i18n }: ProductContent
             path,
             gtm: {
                 ecommerce: {
-                    currency: variant?.price?.currencyCode! || 'USD',
+                    currency: variant?.price?.currencyCode! || currency || 'USD',
                     value: ShopifyPriceToNumber(undefined, variant?.price?.amount!),
                     items: [
                         {
@@ -59,7 +59,11 @@ export function ProductContent({ product, initialVariant, i18n }: ProductContent
                             item_name: product?.title,
                             item_variant: variant?.title,
                             item_brand: product?.vendor,
-                            currency: variant?.price?.currencyCode! || 'USD',
+                            item_category: product?.productType,
+                            product_id: product?.id,
+                            variant_id: variant?.id,
+                            sku: variant?.sku || undefined,
+                            currency: variant?.price?.currencyCode! || currency || 'USD',
                             price: ShopifyPriceToNumber(undefined, variant?.price?.amount!),
                             quantity: 1
                         }
