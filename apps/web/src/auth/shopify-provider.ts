@@ -1,10 +1,11 @@
-import type { ShopifyCommerceProvider } from '@/api/shop';
+import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import { InvalidShopifyCustomerAccountsApiConfiguration } from '@/utils/errors';
 import type { OAuthConfig, OAuthUserConfig } from 'next-auth/providers/oauth';
 import { cookies } from 'next/headers';
 
 export const SHOPIFY_CUSTOMER_ACCOUNT_ACCESS_TOKEN_COOKIE = 'SHOPIFY_ACCOUNT_ACCESS_TOKEN';
+const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
 interface ShopifyCustomer {
     id: string;
@@ -28,11 +29,16 @@ const getCustomerGql = `#graphql
 
 const ShopifyProvider = (
     options: OAuthUserConfig<ShopifyCustomer>,
-    customers: ShopifyCommerceProvider['authentication']['customers']
+    customers: ShopifyCommerceProvider['authentication']['customers'],
+    shop: Shop
 ): OAuthConfig<ShopifyCustomer> => {
     if (!customers) throw new InvalidShopifyCustomerAccountsApiConfiguration();
 
     const endpointBase = `https://shopify.com/${customers.id}/auth`;
+
+    const { hostname } = new URL(`https://${shop.domains.primary}`);
+    const hostParts = hostname.split('.');
+    const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
 
     return {
         id: 'shopify',
@@ -126,6 +132,11 @@ const ShopifyProvider = (
 
                 // store access token into cookies so we can retrieve it when calling customer account api in server and client
                 cookies().set(SHOPIFY_CUSTOMER_ACCOUNT_ACCESS_TOKEN_COOKIE, data.access_token, {
+                    httpOnly: true,
+                    sameSite: 'lax',
+                    path: '/',
+                    domain: !!VERCEL_DEPLOYMENT ? `.${domain}` : undefined,
+                    secure: !!VERCEL_DEPLOYMENT,
                     expires: Date.now() + expires_in * 1000
                 });
 

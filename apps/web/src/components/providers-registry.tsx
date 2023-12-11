@@ -68,7 +68,6 @@ export default function ProvidersRegistry({
                     >
                         <CartProvider
                             cartFragment={CartFragment}
-                            numCartLines={50}
                             languageCode={locale.language}
                             countryCode={locale.country}
                         >

@@ -19,8 +19,6 @@ export const getAuthOptions = async ({ shop }: { shop?: Shop }): Promise<AuthOpt
     const hostParts = hostname.split('.');
     const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
 
-    // FIXME: https://github.com/nextauthjs/next-auth/issues/600.
-
     return {
         providers: [
             ShopifyProvider(
@@ -28,7 +26,8 @@ export const getAuthOptions = async ({ shop }: { shop?: Shop }): Promise<AuthOpt
                     clientId: customers.clientId,
                     clientSecret: customers.clientSecret
                 },
-                customers
+                customers,
+                shop
             )
         ],
         pages: {
