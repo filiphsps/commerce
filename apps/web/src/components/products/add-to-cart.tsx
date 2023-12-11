@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
@@ -16,7 +16,6 @@ import { toast } from 'sonner';
 import { useShop } from '../shop/provider';
 
 export type AddToCartProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
     quantity: number;
     showIcon?: boolean;

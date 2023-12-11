@@ -22,7 +22,7 @@
         box-shadow: none;
     }
 
-    .image {
+    .image-container {
         grid-area: product-image;
         overflow: hidden;
         position: relative;
@@ -36,7 +36,8 @@
         box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
         aspect-ratio: 1.25 / 1;
 
-        img {
+        img,
+        .image {
             height: 100%;
             width: 100%;
             object-fit: contain;

@@ -20,7 +20,7 @@ const Container = styled.div`
         margin: calc(var(--block-padding) * -1);
     }
 `;
-const Vendor = styled.div`
+const Vendor = styled(Link)`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,6 +31,7 @@ const Vendor = styled.div`
     border-radius: var(--block-border-radius);
     text-align: center;
     text-decoration: none;
+    text-transform: uppercase;
     font-size: 1.25rem;
     font-weight: 700;
     cursor: pointer;
@@ -67,9 +68,9 @@ const Vendors: FunctionComponent<VendorsProps> = ({ data: vendors }) => {
                 if (!vendor?.handle) return null;
 
                 return (
-                    <Link key={vendor?.handle} href={`/collections/${vendor?.handle}/`} className={`Vendors-Vendor`}>
-                        <Vendor>{vendor?.title}</Vendor>
-                    </Link>
+                    <Vendor key={vendor?.handle} href={`/collections/${vendor?.handle}/`} className={`Vendors-Vendor`}>
+                        {vendor?.title}
+                    </Vendor>
                 );
             })}
         </Container>

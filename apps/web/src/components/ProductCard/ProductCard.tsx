@@ -1,37 +1,18 @@
 'use client';
 
-import { ConvertToLocalMeasurementSystem, type Locale, type LocaleDictionary } from '@/utils/locale';
-import { useProduct } from '@shopify/hydrogen-react';
-import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import { useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
-
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { AddToCart } from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
+import { ConvertToLocalMeasurementSystem, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { useProduct } from '@shopify/hydrogen-react';
+import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
-
-const ProductImageWrapper = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-
-    img {
-        position: relative;
-        object-fit: contain;
-        object-position: center;
-        width: 100%;
-        height: 100%;
-    }
-`;
+import { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 
 const Variants = styled.div`
     overflow: hidden;
@@ -222,14 +203,12 @@ const Container = styled.section<{ $available?: boolean }>`
     background: var(--accent-secondary-light);
     color: var(--accent-secondary-text);
 
-    ${({ $available }) =>
-        !$available &&
-        css`
-            opacity: 0.75;
-            filter: brightness(0.85);
-            background: var(--color-block);
-            color: var(--color-dark);
-        `}
+    &[data-available='false'] {
+        opacity: 0.75;
+        filter: brightness(0.85);
+        background: var(--color-block);
+        color: var(--color-dark);
+    }
 `;
 
 export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
@@ -305,27 +284,26 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
     return (
         <Container
             className={`${styles.container} ${className || ''}`}
-            $available={selectedVariant.availableForSale}
+            data-available={!!selectedVariant.availableForSale}
             style={style}
         >
-            <div className={styles.image}>
+            <div className={styles['image-container']}>
                 {image ? (
                     <Link title={linkTitle} href={href}>
-                        <ProductImageWrapper>
-                            <Image
-                                key={image.id}
-                                id={image.id!}
-                                src={image.url}
-                                alt={image?.altText!}
-                                title={image?.altText!}
-                                width={195}
-                                height={155}
-                                quality={85}
-                                sizes="(max-width: 950px) 155px, 200px"
-                                loading={priority ? 'eager' : 'lazy'}
-                                priority={priority}
-                            />
-                        </ProductImageWrapper>
+                        <Image
+                            className={styles.image}
+                            key={image.id}
+                            id={image.id!}
+                            src={image.url}
+                            alt={image?.altText!}
+                            title={image?.altText!}
+                            width={195}
+                            height={155}
+                            quality={85}
+                            sizes="(max-width: 950px) 155px, 200px"
+                            loading={priority ? 'eager' : 'lazy'}
+                            priority={priority}
+                        />
                     </Link>
                 ) : (
                     <div /> // Dummy.
@@ -337,53 +315,55 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     </DiscountBadge>
                 )}
 
-                <Badges>
-                    {isNewProduct && <Badge className="New">New!</Badge>}
-                    {isVegan && <Badge className="Vegan">Vegan</Badge>}
-                </Badges>
+                {isNewProduct || isVegan ? (
+                    <Badges>
+                        {isNewProduct && <Badge className="New">New!</Badge>}
+                        {isVegan && <Badge className="Vegan">Vegan</Badge>}
+                    </Badges>
+                ) : null}
             </div>
             <div className={styles.details}>
-                <div title={linkTitle} className={styles.header}>
-                    <Link href={href}>
-                        <div className={styles.brand}>{product.vendor}</div>
-                        <div className={styles.title}>{product.title}</div>
-                    </Link>
-                </div>
+                <Link href={href} title={linkTitle} className={styles.header}>
+                    <div className={styles.brand}>{product.vendor}</div>
+                    <div className={styles.title}>{product.title}</div>
+                </Link>
 
                 {/* FIXME: Deal with options here. */}
-                <Variants>
-                    {product?.variants?.edges &&
-                        product?.variants.edges.length > 1 &&
-                        product?.variants.edges.map((edge, index) => {
-                            if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
-                            const variant = edge.node! as ProductVariant;
-                            let title = variant.title;
+                {(product?.variants?.edges?.length || 0) > 1 ? (
+                    <Variants>
+                        {product?.variants?.edges &&
+                            product?.variants.edges.length > 1 &&
+                            product?.variants.edges.map((edge, index) => {
+                                if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
+                                const variant = edge.node! as ProductVariant;
+                                let title = variant.title;
 
-                            if (
-                                variant.selectedOptions.length === 1 &&
-                                variant.selectedOptions[0]!.name === 'Size' &&
-                                variant.weight &&
-                                variant.weightUnit
-                            ) {
-                                title = ConvertToLocalMeasurementSystem({
-                                    locale: locale,
-                                    weight: variant.weight,
-                                    weightUnit: variant.weightUnit
-                                });
-                            }
+                                if (
+                                    variant.selectedOptions.length === 1 &&
+                                    variant.selectedOptions[0]!.name === 'Size' &&
+                                    variant.weight &&
+                                    variant.weightUnit
+                                ) {
+                                    title = ConvertToLocalMeasurementSystem({
+                                        locale: locale,
+                                        weight: variant.weight,
+                                        weightUnit: variant.weightUnit
+                                    });
+                                }
 
-                            return (
-                                <Variant
-                                    key={variant.id}
-                                    title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                                    onClick={() => setSelectedVariant(variant)}
-                                    className={selectedVariant.id === variant.id ? 'active' : ''}
-                                >
-                                    {title}
-                                </Variant>
-                            );
-                        })}
-                </Variants>
+                                return (
+                                    <Variant
+                                        key={variant.id}
+                                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                                        onClick={() => setSelectedVariant(variant)}
+                                        className={selectedVariant.id === variant.id ? 'active' : ''}
+                                    >
+                                        {title}
+                                    </Variant>
+                                );
+                            })}
+                    </Variants>
+                ) : null}
             </div>
             <Actions>
                 <div className={styles['quantity-action']}>
@@ -421,7 +401,13 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i
                     </Quantity>
                 </div>
 
-                <AddToCart className={styles.button} type="button" quantity={quantity} locale={locale} i18n={i18n} />
+                <AddToCart
+                    className={styles.button}
+                    type="button"
+                    quantity={quantity}
+                    i18n={i18n}
+                    disabled={!!selectedVariant.availableForSale}
+                />
             </Actions>
         </Container>
     );

@@ -13,19 +13,15 @@ const Pricing = ({ price, compareAtPrice, className, ...props }: PricingProps) =
     return (
         <div {...props} className={`${styles.container} ${className || ''}`}>
             {price ? (
-                <div className={styles.current}>
-                    <Money
-                        data={price}
-                        as={'span'}
-                        className={`${styles.price} ${compareAtPrice ? styles.sale : ''}`}
-                    />
-                </div>
+                <Money
+                    data={price}
+                    as={'div'}
+                    className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
+                />
             ) : null}
             {compareAtPrice ? (
                 <div className={styles.previous}>
-                    <s className={styles.dash}>
-                        <Money data={compareAtPrice} as={'span'} className={styles.price} />
-                    </s>
+                    <Money data={compareAtPrice} as={'s'} className={`${styles.price} ${styles.dash}`} />
                 </div>
             ) : null}
         </div>

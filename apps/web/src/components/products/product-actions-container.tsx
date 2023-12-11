@@ -52,7 +52,7 @@ export const ProductActionsContainer = ({
                 />
             </section>
 
-            <AddToCart className={styles.button} quantity={quantity} locale={locale} i18n={i18n} />
+            <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
             {(product && <InfoLines product={product} />) || null}
 
             {children}

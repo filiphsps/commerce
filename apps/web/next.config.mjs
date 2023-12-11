@@ -45,7 +45,7 @@ const config = {
     },
     images: {
         //loader: 'custom',
-        //loaderFile: './src/utils/image-loader.ts',
+        loaderFile: './src/utils/image-loader.ts',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {
