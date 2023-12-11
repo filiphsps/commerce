@@ -55,7 +55,10 @@ export default function ProvidersRegistry({
     }
 
     return (
-        <ErrorBoundary>
+        <ErrorBoundary
+            // TODO: Show the dialog.
+            showDialog={false}
+        >
             <StyledComponentsProvider>
                 <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
                     <ShopifyProvider
