@@ -3,13 +3,14 @@ import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { getHostname } from '@/middleware/router';
+import { Locale } from '@/utils/locale';
 import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 /* c8 ignore start */
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
-const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/gi;
+const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const hostname = await getHostname(req);
@@ -70,11 +71,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Replace locale with locale from cookie if it doesn't match.
-    const locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
-    if (locale && newUrl.pathname.includes('/storefront/') && newUrl.pathname.match(LOCALE_TEST)) {
+    const locale = !!req.cookies.get('LOCALE') ? Locale.from(req.cookies.get('LOCALE')!.value!) : undefined;
+    if (locale && newUrl.pathname.match(LOCALE_TEST)) {
         const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0].replace('/', '');
-        if (urlLocale && urlLocale !== locale) {
-            newUrl.pathname = newUrl.pathname.replace(LOCALE_TEST, `/${locale}`);
+        if (urlLocale && urlLocale !== locale.code) {
+            newUrl.pathname = newUrl.pathname.replace(LOCALE_TEST, `/${locale.code}`);
         }
     }
 
