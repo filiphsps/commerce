@@ -1,6 +1,7 @@
 import type { Locale } from '@/utils/Locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface useCartUtilsProps {
     locale: Locale;
@@ -25,16 +26,16 @@ export function useCartUtils({ locale }: useCartUtilsProps) {
         if ((!buyerIdentity || locale.country === buyerIdentity?.countryCode) && status !== 'idle') return;
 
         buyerIdentityUpdate({
-            ...(buyerIdentity as any),
             countryCode: locale.country
         });
     }, [locale.locale]);
 
     // Handle errors.
     useEffect(() => {
-        if (!error) return;
+        if (!error || !(error as any)?.[0].message) return;
 
         console.error((error as any[])[0].message);
+        toast.error((error as any[])[0].message);
     }, [error]);
 
     // Discount codes in url.

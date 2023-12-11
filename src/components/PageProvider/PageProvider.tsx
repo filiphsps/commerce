@@ -6,6 +6,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { Config } from '@/utils/Config';
 import type { Locale } from '@/utils/Locale';
 import { NextLocaleToCurrency, NextLocaleToLocale } from '@/utils/Locale';
+import { ErrorBoundary } from '@highlight-run/next/client';
 import { asHTML } from '@prismicio/client';
 import { useCart } from '@shopify/hydrogen-react';
 import dynamic from 'next/dynamic';
@@ -242,7 +243,10 @@ const PageProvider: FunctionComponent<PageProviderProps> = (props) => {
                 </Announcements>
             )}
 
-            {props.children}
+            <ErrorBoundary>
+                {props.children}
+            </ErrorBoundary>
+
             <Footer store={props?.store} />
         </Container>
     );

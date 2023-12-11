@@ -18,6 +18,7 @@ import Head from 'next/head';
 import Router, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { useState } from 'react';
+import { Toaster } from 'sonner';
 import useSWR from 'swr';
 import SEO from '../../nextseo.config';
 import preval from '../data.preval';
@@ -167,7 +168,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
             <>
                 <HighlightInit
                     projectId={process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
-                    serviceName={`Legacy - Nordcom Commerce Store - sweet-side-of-sweden`}
+                    serviceName={`Legacy - Nordcom Commerce Storefront`}
                     privacySetting="none"
                     storageMode="localStorage"
                     samplingStrategy={{}}
@@ -181,9 +182,7 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                         recordHeadersAndBody: true,
                         urlBlocklist: []
                     }}
-                    enableCanvasRecording={false}
                     excludedHostnames={['localhost']}
-                    disableBackgroundRecording={true}
                 />
 
                 <ShopifyProvider
@@ -207,6 +206,19 @@ const StoreApp = ({ Component, pageProps }: AppProps) => {
                         onLineRemoveComplete={() => setEvents((events) => [...events, 'remove_from_cart'])}
                         onLineUpdateComplete={() => setEvents((events) => [...events, 'update_cart'])}
                     >
+                        <Toaster
+                            theme="dark"
+                            position="bottom-left"
+                            closeButton={true}
+                            expand={true}
+                            duration={5000}
+                            gap={4}
+                            toastOptions={{
+                                classNames: {
+                                    toast: 'toast-notification'
+                                }
+                            }}
+                        />
                         <PageProvider
                             store={store}
                             pagePropsAnalyticsData={pageProps.analytics}

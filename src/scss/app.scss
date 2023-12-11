@@ -55,6 +55,30 @@ body {
         font-size: 10px;
     }
 
+    ol li:is([data-sonner-toaster], .toast-notification):is([data-styled='true'], [data-styled='false']) {
+        padding: var(--block-padding);
+
+        font-family: var(--font-primary);
+        font-size: 1.25rem;
+        line-height: normal;
+
+        background-color: var(--accent-primary);
+
+        border-width: var(--block-border-width);
+        border-color: var(--accent-primary-dark);
+        border-radius: var(--block-border-radius);
+
+        &[data-type='error'] {
+            background-color: var(--color-danger);
+
+            border-color: var(--color-danger-dark);
+        }
+
+        [data-icon] {
+            width: 2rem;
+        }
+    }
+
     .zEWidget-launcher {
         z-index: 1 !important;
         margin: 2rem !important;
@@ -87,6 +111,7 @@ body {
     --color-success: #1b6e1b;
     --color-success-light: color-mix(in srgb, var(--color-success) 65%, var(--color-bright));
     --color-danger: #a53d3a;
+    --color-danger-dark: #7c2e2b;
 
     --color-lights-out: #051821;
 

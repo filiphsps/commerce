@@ -1,4 +1,4 @@
-import { ProductApi } from '@/api/product';
+import { ProductApi, ProductsApi } from '@/api/product';
 import { RecommendationApi } from '@/api/recommendation';
 import { RedirectProductApi } from '@/api/redirects';
 import { Badge, BadgeContainer } from '@/components/Badges';
@@ -973,8 +973,17 @@ const ProductPageWrapper: FunctionComponent<InferGetStaticPropsType<typeof getSt
     );
 };
 
-export const getStaticPaths: GetStaticPaths = async ({}) => {
-    return { paths: [], fallback: 'blocking' };
+export const getStaticPaths: GetStaticPaths = async ({ }) => {
+    const { products } = await ProductsApi(250);
+
+    const paths = products.map(({ node: { handle }}) => ({
+        params: {
+            handle
+        },
+        locale: 'en-US'
+    }));
+
+    return { paths, fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<{

@@ -1,8 +1,8 @@
-import { Content } from '@prismicio/client';
-import Link from 'next/link';
 import PageContent from '@/components/PageContent';
+import { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -95,18 +95,19 @@ export type ImageGridProps = SliceComponentProps<Content.ImageGridSlice>;
 /**
  * Component for "ImageGrid" Slices.
  */
-const ImageGrid = ({ slice }: ImageGridProps): JSX.Element => {
+const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
     return (
         <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
                 <Grid>
-                    {slice.items.map(({ href, title, image }) => (
+                    {slice.items.map(({ href, title, image }, i) => (
                         <Item key={href!} href={href! || ''} title={title!}>
                             <Banner
                                 field={image}
                                 width={300}
                                 height={200}
                                 sizes="(max-width: 950px) 150px, 300px"
+                                priority={index <= 2 && i < 2}
                             />
                             <TitleContainer>
                                 <Title>{title}</Title>

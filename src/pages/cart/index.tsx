@@ -232,29 +232,29 @@ const CartPage: FunctionComponent<CartPageProps> = ({ page, store }) => {
     );
 
     // TODO: Handle other currencies properly
-    let freeShippingThreshold = 85;
+    let freeShippingThreshold = 95;
     switch (cart?.cost?.totalAmount?.currencyCode?.toUpperCase()) {
         case 'GBP':
-            freeShippingThreshold = 70;
-            break;
-        case 'EUR':
             freeShippingThreshold = 80;
             break;
+        case 'EUR':
+            freeShippingThreshold = 95;
+            break;
         case 'SEK':
-            freeShippingThreshold = 900;
+            freeShippingThreshold = 1050;
             break;
         case 'DKK':
-            freeShippingThreshold = 575;
+            freeShippingThreshold = 685;
             break;
         case 'NOK':
-            freeShippingThreshold = 875;
+            freeShippingThreshold = 1075;
             break;
         case 'CAD':
-            freeShippingThreshold = 115;
+            freeShippingThreshold = 135;
             break;
         default:
         case 'USD':
-            freeShippingThreshold = 85;
+            freeShippingThreshold = 95;
             break;
     }
     const freeShipping = Number.parseFloat(cart.cost?.totalAmount?.amount || '0') > freeShippingThreshold;

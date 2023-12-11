@@ -50,13 +50,13 @@ const Logo = styled.div`
         img {
             height: 100%;
             width: 100%;
-            padding: 0 0.25rem;
+            padding: 0 0.5rem;
             object-fit: contain;
         }
     }
 
     @media (min-width: 950px) {
-        padding: 0.25rem 0.5rem;
+        padding: 0.25rem 0.25rem;
         height: 100%;
     }
 `;
