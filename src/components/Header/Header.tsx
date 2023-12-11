@@ -31,6 +31,7 @@ const Content = styled.div`
 `;
 
 const Logo = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,12 +50,13 @@ const Logo = styled.div`
         img {
             height: 100%;
             width: 100%;
+            padding: 0 0.25rem;
             object-fit: contain;
         }
     }
 
     @media (min-width: 950px) {
-        padding: 0.25rem 0.75rem;
+        padding: 0.25rem 0.5rem;
         height: 100%;
     }
 `;
@@ -368,6 +370,7 @@ const HeaderComponent: FunctionComponent<HeaderProps> = ({ store, navigation, si
                             alt={`Store logo`}
                             sizes="(max-width: 950px) 75px, 200px"
                             loader={ImageLoader}
+                            priority={true}
                         />
                     </Link>
                 </Logo>

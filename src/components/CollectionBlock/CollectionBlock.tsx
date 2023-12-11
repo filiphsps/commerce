@@ -1,15 +1,15 @@
+import { useEffect, useRef, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import styled, { css } from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
 
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { CollectionApi } from '@/api/collection';
-import type { FunctionComponent } from 'react';
-import Link from 'next/link';
-import { ProductProvider } from '@shopify/hydrogen-react';
 import type { StoreModel } from '@/models/StoreModel';
+import { ProductProvider } from '@shopify/hydrogen-react';
+import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
 import useSWR from 'swr';
 
 const ProductCard = dynamic(() => import('@/components/ProductCard'));
@@ -260,6 +260,8 @@ interface CollectionBlockProps {
     search?: boolean;
     plainTitle?: boolean;
     store: StoreModel;
+
+    priority?: boolean;
 }
 const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     hideTitle,
@@ -267,7 +269,8 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
     handle,
     limit,
     isHorizontal,
-    store
+    store,
+    priority
 }) => {
     const router = useRouter();
     const [shadowLeft, setShadowLeft] = useState(false);
@@ -311,7 +314,7 @@ const CollectionBlock: FunctionComponent<CollectionBlockProps> = ({
         const product = edge.node;
         return (
             <ProductProvider key={`minimal_${product?.id}`} data={product}>
-                <ProductCard handle={product?.handle} store={store} className={(index === 0 && 'First') || ''} />
+                <ProductCard handle={product?.handle} store={store} className={(index === 0 && 'First') || ''} priority={priority && index <= 2} />
             </ProductProvider>
         );
     });

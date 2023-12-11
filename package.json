@@ -23,6 +23,7 @@
         "lint": "npm-run-all --parallel lint:**",
         "lint:next": "next lint",
         "lint:prettier": "prettier src/**/*.* --check",
+        "fix:prettier": "prettier src/**/*.* --write",
         "lint:types": "tsc --project tsconfig.json -noEmit",
         "test": "npm-run-all --parallel test:*",
         "test:jest": "jest --config jest.config.cjs",

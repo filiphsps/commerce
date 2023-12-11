@@ -81,7 +81,7 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 /**
  * Component for "Collection" Slices.
  */
-const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
+const Collection = ({ slice, context, index }: CollectionProps): JSX.Element => {
     switch (slice.variation) {
         case 'default':
             return (
@@ -130,6 +130,7 @@ const Collection = ({ slice, context }: CollectionProps): JSX.Element => {
                                 plainTitle
                                 data={context?.prefetch?.collections?.[slice.primary.handle!]}
                                 store={context?.store}
+                                priority={index >= 2}
                             />
                         </Content>
                     </PageContent>

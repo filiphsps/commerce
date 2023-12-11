@@ -1,10 +1,10 @@
-import styled, { css } from 'styled-components';
 import { useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import { ConvertToLocalMeasurementSystem } from '@/api/product';
-import type { FunctionComponent } from 'react';
 import { useProduct } from '@shopify/hydrogen-react';
 import { useRouter } from 'next/router';
+import type { FunctionComponent } from 'react';
 
 const OptionTitle = styled.div`
     text-transform: uppercase;
@@ -142,6 +142,7 @@ export const ProductOptions: FunctionComponent<ProductOptionProps> = ({ onOption
                                                 value: value!
                                             })
                                         }
+                                        suppressHydrationWarning={true}
                                     >
                                         {title}
                                     </OptionValue>

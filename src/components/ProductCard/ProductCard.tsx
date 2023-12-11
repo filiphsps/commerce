@@ -400,8 +400,9 @@ const Container = styled.section<{ $available?: boolean }>`
 
 interface VariantImageProps {
     image?: ShopifyImage;
+    priority?: boolean;
 }
-const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
+const VariantImage: FunctionComponent<VariantImageProps> = ({ image, priority }) => {
     if (!image) return null;
 
     return (
@@ -412,6 +413,8 @@ const VariantImage: FunctionComponent<VariantImageProps> = ({ image }) => {
             height={100}
             width={100}
             sizes="(max-width: 950px) 75px, 150px"
+            priority={priority}
+            loading={!!priority ? 'eager' : 'lazy'}
         />
     );
 };
@@ -426,8 +429,9 @@ interface ProductCardProps {
     handle?: string;
     store: StoreModel;
     className?: string;
+    priority?: boolean;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, priority }) => {
     const router = useRouter();
     const { t } = useTranslation('common');
     const [quantity, setQuantity] = useState(1);
@@ -496,7 +500,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                     null}
                 {discount > 1 ? ( // Handle rounding-errors
                     <Badge className="Sale">
-                        <BadgeText>{discount}% OFF</BadgeText>
+                        <BadgeText suppressHydrationWarning={true}>{discount}% OFF</BadgeText>
                     </Badge>
                 ) : null}
                 {(is_new_product && (
@@ -515,25 +519,25 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
             <ProductImage>
                 <Link href={href} prefetch={false}>
                     <ProductImageWrapper>
-                        <VariantImage image={image} />
+                        <VariantImage image={image} priority={priority} />
                     </ProductImageWrapper>
                 </Link>
             </ProductImage>
             <Details className="Details">
                 {product.vendor && (
                     <Brand>
-                        <Link href={`/collections/${titleToHandle(product.vendor)}/`} prefetch={false}>
+                        <Link href={`/collections/${titleToHandle(product.vendor)}/`} prefetch={false} suppressHydrationWarning={true}>
                             {product.vendor}
                         </Link>
                     </Brand>
                 )}
                 <Title title={description}>
-                    <Link href={href || ''} prefetch={false}>
+                    <Link href={href || ''} prefetch={false} suppressHydrationWarning={true}>
                         {product.title}
                     </Link>
                 </Title>
 
-                {(description && <Description>{description}</Description>) || null}
+                {(description && <Description suppressHydrationWarning={true}>{description}</Description>) || null}
 
                 <VariantsContainer>
                     <Prices>
@@ -551,6 +555,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                                 data={selectedVariant.price}
                                 as={Price}
                                 className={(selectedVariant?.compareAtPrice && 'Sale') || ''}
+                                suppressHydrationWarning={true}
                             />
                         )) ||
                             null}
@@ -591,6 +596,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className }) => {
                                             .join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
                                         className={selectedVariant.id === variant.id ? 'Active' : ''}
+                                        suppressHydrationWarning={true}
                                     >
                                         {title}
                                     </Variant>
