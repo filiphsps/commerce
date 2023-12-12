@@ -166,8 +166,8 @@ export function useAnalytics({ locale, domain, shopId, pagePropsAnalyticsData }:
     // Page view analytics
     // FIXME: We miss the initial PageView
     useEffect(() => {
-        const handleRouteChange = (url: string) => {
-            const url = new URL(url, 'https://www.sweetsideofsweden.com');
+        const handleRouteChange = (route: string) => {
+            const url = new URL(route, 'https://www.sweetsideofsweden.com');
             sendPageViewEvent({
                 path: url.pathname,
                 domain,
