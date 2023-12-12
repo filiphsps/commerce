@@ -1,5 +1,3 @@
-import { TbSearch } from 'react-icons/tb';
-
 import type { Shop } from '@/api/shop';
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
@@ -10,7 +8,7 @@ import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
-import type { HTMLProps } from 'react';
+import { Suspense, type HTMLProps } from 'react';
 import { CartButton } from './cart-button';
 
 type HeaderProps = {
@@ -23,8 +21,6 @@ type HeaderProps = {
 const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...props }: HeaderProps) => {
     const logo =
         shop?.configuration?.design?.branding?.logos?.primary || store?.logos?.alternative || store?.logos?.primary;
-
-    const searchEnabled = false;
 
     return (
         <section className={`${styles.wrapper} ${className || ''}`}>
@@ -49,20 +45,11 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
 
                 <HeaderNavigation menu={navigation} locale={locale} />
 
-                <div className={styles.actions}>
-                    {searchEnabled ? (
-                        <div className={styles.action}>
-                            <Link
-                                href={'/search/'}
-                                title="Search for products, collections and pages across the whole store"
-                            >
-                                <TbSearch />
-                            </Link>
-                        </div>
-                    ) : null}
-
-                    <CartButton locale={locale} i18n={i18n} />
-                </div>
+                <Suspense>
+                    <div className={styles.actions}>
+                        <CartButton locale={locale} i18n={i18n} />
+                    </div>
+                </Suspense>
             </HeaderContainer>
             <MobileMenu navigation={navigation} />
         </section>

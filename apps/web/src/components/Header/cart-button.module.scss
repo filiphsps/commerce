@@ -20,13 +20,14 @@
             150ms ease-in-out background-color;
     }
 
-    svg {
-        vertical-align: middle;
-        font-size: 0.9em;
-        line-height: 1;
+    .icon {
+        width: 2.75rem;
+        height: 4rem;
+        color: inherit;
+        margin-bottom: 0.05rem !important;
 
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 1em;
+        svg {
+            color: inherit;
         }
     }
 
@@ -60,6 +61,7 @@
         .quantity {
             font-size: 0.85em;
             width: auto;
+            padding: 0 0.25rem;
         }
 
         &:is(:hover, :active) {

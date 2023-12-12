@@ -40,5 +40,13 @@
             "#/styles/*": ["src/app/(shops)/_scss/*"]
         }
     },
-    "include": ["next-env.d.ts", ".next/types/**/*.ts", "prismicio-types.d.ts", "prismicio.ts", "src/@types", "src"]
+    "include": [
+        "src/@types/declarations.d.ts",
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "prismicio-types.d.ts",
+        "prismicio.ts",
+        "src/@types",
+        "src"
+    ]
 }
