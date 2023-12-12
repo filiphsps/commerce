@@ -1,8 +1,6 @@
-import { FiTag, FiX } from 'react-icons/fi';
-
+import { useCart } from '@shopify/hydrogen-react';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
-import { useCart } from '@shopify/hydrogen-react';
 
 const Container = styled.section`
     display: flex;
@@ -44,7 +42,7 @@ const DiscountCodeItem = styled(Badge)`
     text-align: center;
     transition: 150ms ease-in-out;
 `;
-const DiscountCodeItemRemove = styled(FiX)`
+const DiscountCodeItemRemove = styled.span`
     display: none;
     cursor: pointer;
 
@@ -71,7 +69,8 @@ export const CartCoupons: FunctionComponent<CartCouponsProps> = ({}) => {
                     (discount) =>
                         (discount?.code && (
                             <DiscountCodeItem key={discount?.code}>
-                                <FiTag />
+                                {/*<FiTag />*/}
+
                                 {discount?.code}
                                 <DiscountCodeItemRemove
                                     onClick={() =>
@@ -79,7 +78,9 @@ export const CartCoupons: FunctionComponent<CartCouponsProps> = ({}) => {
                                             (discountCodes.filter((i) => i?.code !== discount?.code) as any) || []
                                         )
                                     }
-                                />
+                                >
+                                    x
+                                </DiscountCodeItemRemove>
                             </DiscountCodeItem>
                         )) ||
                         null

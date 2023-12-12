@@ -14,7 +14,7 @@ const config = {
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
-    transpilePackages: [],
+    transpilePackages: ['react-icons', '@lordicon/react'],
     experimental: {
         appDocumentPreloading: true,
         esmExternals: true,
@@ -28,8 +28,8 @@ const config = {
             '@prismicio/client',
             '@prismicio/next',
             '@prismicio/react',
-            '@shopify/hydrogen-react',
-            'react-icons'
+            '@shopify/hydrogen-react'
+            //'react-icons'
         ],
         optimizeServerReact: true,
         scrollRestoration: true,
@@ -41,7 +41,6 @@ const config = {
         webpackBuildWorker: true,
         webVitalsAttribution: ['CLS', 'LCP', 'INP'],
         windowHistorySupport: true
-
     },
     images: {
         //loader: 'custom',
@@ -86,7 +85,7 @@ const config = {
         ignoreDuringBuilds: true
     },
     sassOptions: {
-        includePaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')],
+        includePaths: [path.join(__dirname, 'src/scss'), path.join(__dirname, 'src')]
     },
 
     env: {
@@ -110,7 +109,7 @@ const config = {
 
         // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: (process.env.VERCEL_GIT_COMMIT_SHA || 'unknown')
+        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
     serverRuntimeConfig: {
         // Settings.
@@ -146,19 +145,22 @@ const config = {
     // This is due to the limited amount of redirects
     // we're allowed to use if we want to be on the HSTS
     // preload list.
-    skipTrailingSlashRedirect: true,
+    skipTrailingSlashRedirect: true
 };
 
-export default withHighlightConfig(withMarkdoc({
-    mode: 'static',
-    schemaPath: './src/utils/markdoc',
-    tokenizerOptions: {
-        allowComments: true,
-        slots: true
+export default withHighlightConfig(
+    withMarkdoc({
+        mode: 'static',
+        schemaPath: './src/utils/markdoc',
+        tokenizerOptions: {
+            allowComments: true,
+            slots: true
+        }
+    })(config),
+    {
+        apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
+        appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
+        uploadSourceMaps: true,
+        sourceMapsBasePath: './apps/web/'
     }
-})(config), {
-    apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
-    appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
-    uploadSourceMaps: true,
-    sourceMapsBasePath: './apps/web/'
-});
+);
