@@ -5,6 +5,7 @@ import { useCartUtils } from '@/hooks/useCartUtils';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import * as Prismic from '@/utils/prismic';
+import { ErrorBoundary } from '@highlight-run/next/client';
 import { getClientBrowserParameters } from '@shopify/hydrogen-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { IntercomProvider, useIntercom } from 'react-use-intercom';
@@ -51,6 +52,7 @@ export const LiveChatWrapper = ({ shop, locale, children }: ThirdPartiesProvider
         <IntercomProvider
             appId={intercom.appId}
             autoBoot={true}
+            shouldInitialize={true}
             autoBootProps={{
                 alignment: 'right',
                 actionColor: intercom.actionColor,
@@ -60,6 +62,7 @@ export const LiveChatWrapper = ({ shop, locale, children }: ThirdPartiesProvider
                     locale: locale.code
                 }
             }}
+            initializeDelay={2500}
         >
             <LiveChat shop={shop} locale={locale}>
                 {children}
@@ -125,13 +128,17 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
         }
     }, [cartError]);
 
-    if (!delayedContent) return children;
+    if (typeof window !== 'undefined') {
+        return <>{children}</>;
+    }
+
+    if (!delayedContent) return <>{children}</>;
     return (
-        <>
+        <ErrorBoundary showDialog={false}>
             <LiveChatWrapper shop={shop} locale={locale}>
                 {children}
+                {delayedContent}
             </LiveChatWrapper>
-            {delayedContent}
-        </>
+        </ErrorBoundary>
     );
 };

@@ -11,7 +11,7 @@ export const usePrevious = <T,>(value: T): T | undefined => {
 
     useEffect(() => {
         ref.current = value;
-    }, [value]);
+    }); /*, [value]*/
 
     return ref.current;
 };

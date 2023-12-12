@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { FiFilter, FiSearch, FiX } from 'react-icons/fi';
 
 import type { Shop } from '@/api/shop';
 import { Input } from '@/components/Input';
@@ -126,19 +125,16 @@ export default function SearchContent({ query = '' }: SearchContentProps) {
                         placeholder="Find the perfect candy, chocolate, licorice and snacks"
                     />
 
-                    <SearchBarClear>
-                        <FiX className="Icon" onClick={() => handleSearch()} />
-                    </SearchBarClear>
+                    <SearchBarClear>{/*<FiX className="Icon" onClick={() => handleSearch()} />*/}temp</SearchBarClear>
                 </SearchBar>
 
                 <SearchButton onClick={() => console.warn('todo')} title="Search">
-                    <FiSearch />
+                    temp
+                    {/*<FiSearch />*/}
                 </SearchButton>
             </SearchHeader>
             <ContentHeader>
-                <Label onClick={() => console.warn('todo')}>
-                    <FiFilter /> Filter and Sort
-                </Label>
+                <Label onClick={() => console.warn('todo')}>{/* <FiFilter />*/} Filter and Sort</Label>
                 <Label>{count} Results</Label>
             </ContentHeader>
 

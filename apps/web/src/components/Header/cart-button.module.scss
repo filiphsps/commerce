@@ -21,14 +21,7 @@
     }
 
     .icon {
-        width: 2.75rem;
-        height: 4rem;
-        color: inherit;
-        margin-bottom: 0.05rem !important;
-
-        svg {
-            color: inherit;
-        }
+        height: 100%;
     }
 
     .quantity {
@@ -36,7 +29,12 @@
     }
 
     &:is(:hover, :active) {
-        color: var(--accent-primary);
+        &,
+        svg,
+        svg.primary.design {
+            color: var(--accent-primary);
+            stroke: var(--accent-primary);
+        }
     }
 
     @media (min-width: $breakpoint-mobile) {
@@ -53,20 +51,23 @@
         font-size: 2.25rem;
 
         @media (min-width: $breakpoint-mobile) {
-            gap: var(--block-padding);
             padding: var(--block-padding-small) var(--block-padding);
             font-size: 2.15rem;
         }
 
         .quantity {
-            font-size: 0.85em;
+            font-size: 0.9em;
+            font-weight: 700;
             width: auto;
             padding: 0 0.25rem;
         }
 
         &:is(:hover, :active) {
             background-color: var(--color-bright);
-            color: var(--color-dark);
+
+            :is(&, svg) {
+                color: var(--color-dark);
+            }
         }
     }
 }
