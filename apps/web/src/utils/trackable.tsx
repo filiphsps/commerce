@@ -22,6 +22,7 @@ import { track as vercelTrack } from '@vercel/analytics/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { BuildConfig } from './build-config';
 
 /**
  * Analytics events.
@@ -166,7 +167,7 @@ const shopifyEventHandler = async (
     const value = data.gtm?.ecommerce?.value || 0;
 
     const pageAnalytics = {
-        canonicalUrl: `https://${shop.domains.primary}/${locale.code}${data.path}`,
+        canonicalUrl: `https://${shop.domains.primary}${data.path}`,
         resourceId: '',
         pageType
     };
@@ -196,6 +197,11 @@ const shopifyEventHandler = async (
             quantity: line.quantity!
         }))
     };
+
+    if (BuildConfig.environment === 'development') {
+        console.debug('Shopify analytics', event, sharedPayload);
+        return;
+    }
 
     // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {

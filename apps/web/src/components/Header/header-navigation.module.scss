@@ -3,7 +3,7 @@
 .container {
     display: none;
 
-    @media (min-width: $breakpoint-tablet-medium) {
+    @media (min-width: $breakpoint-header) {
         display: flex;
         justify-content: flex-start;
         align-items: center;

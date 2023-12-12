@@ -1,12 +1,12 @@
 import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
-import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/collection-block';
+import { CollectionBlock } from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
@@ -17,7 +17,6 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
@@ -33,14 +32,14 @@ export async function generateStaticParams() {
             shops
                 .map(async (shop) => {
                     try {
-                        const api = await StorefrontApiClient({ shop, locale });
+                        const api = await ShopifyApolloApiClient({ shop, locale });
                         const locales = await LocalesApi({ api });
 
                         return await Promise.all(
                             locales
                                 .map(async (locale) => {
                                     try {
-                                        const api = await StorefrontApiClient({ shop, locale });
+                                        const api = await ShopifyApolloApiClient({ shop, locale });
                                         const collections = await CollectionsApi({ client: api });
 
                                         return collections
@@ -146,14 +145,23 @@ export default async function CollectionPage({
     params: CollectionPageParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
         if (!isValidHandle(handle)) return notFound();
 
+        // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
+        // Fetch the current shop.
+        const shop = await ShopApi({ domain, locale });
+
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
+
+        // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
-        const api = await StorefrontApiClient({ shop, locale });
+
+        // Do the actual API calls.
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const collection = await CollectionApi({ api, handle });
 
@@ -174,16 +182,13 @@ export default async function CollectionPage({
 
                     {!page || page.enable_collection === undefined || page.enable_collection ? (
                         <>
-                            <Suspense fallback={<CollectionBlockSkeleton />}>
-                                <CollectionBlock
-                                    data={collection as any}
-                                    store={store}
-                                    locale={locale}
-                                    i18n={i18n}
-                                    // TODO: Pagination.
-                                    limit={250}
-                                />
-                            </Suspense>
+                            <CollectionBlock
+                                data={collection as any}
+                                store={store}
+                                i18n={i18n}
+                                // TODO: Pagination.
+                                limit={250}
+                            />
                         </>
                     ) : null}
 

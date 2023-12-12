@@ -69,6 +69,8 @@ export const LiveChatWrapper = ({ shop, locale, children }: ThirdPartiesProvider
 };
 
 export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
+    if (BuildConfig.environment === 'development') return children;
+
     const [delayedContent, setDelayedContent] = useState<ReactNode>(null);
     useEffect(() => {
         const timeout = setTimeout(async () => {
@@ -85,12 +87,8 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
                         <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
                     ) : null}
                     <PrismicPreview repositoryName={Prismic.repositoryName} />
-                    {BuildConfig.environment === 'development' ? null : (
-                        <>
-                            <SpeedInsights debug={false} />
-                            <VercelAnalytics debug={false} />
-                        </>
-                    )}
+                    <SpeedInsights debug={false} />
+                    <VercelAnalytics debug={false} />
                 </>
             ));
 

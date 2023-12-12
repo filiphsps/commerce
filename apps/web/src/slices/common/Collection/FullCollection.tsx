@@ -18,7 +18,7 @@ interface FullCollectionProps {
     i18n: LocaleDictionary;
     prefetch?: PrefetchData;
 }
-export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, store, locale, prefetch, i18n }) => {
+export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, store, prefetch, i18n }) => {
     const collection = prefetch?.collections?.[slice.primary.handle!];
     if (!collection) {
         console.warn(`Collection ${slice.primary.handle} not found in prefetch data`);
@@ -28,14 +28,7 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
     return (
         <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
             <PageContent>
-                <CollectionBlock
-                    locale={locale}
-                    data={collection as any}
-                    store={store}
-                    i18n={i18n}
-                    limit={250}
-                    showViewAll={false}
-                />
+                <CollectionBlock data={collection as any} store={store} i18n={i18n} limit={250} showViewAll={false} />
             </PageContent>
         </section>
     );

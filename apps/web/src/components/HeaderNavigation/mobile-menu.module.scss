@@ -21,7 +21,7 @@
     box-shadow: 1rem 1rem 1rem -0.5rem var(--color-block-shadow);
     pointer-events: none;
 
-    @media (min-width: $breakpoint-tablet-medium) {
+    @media (min-width: $breakpoint-header) {
         display: none;
     }
 }

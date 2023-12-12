@@ -4,9 +4,10 @@ import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { AddToCart } from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
+import { useShop } from '@/components/shop/provider';
 import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
-import { ConvertToLocalMeasurementSystem, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
@@ -219,17 +220,18 @@ export const AppendShopifyParameters = ({ params, url }: { params?: string | nul
 
 interface ProductCardProps {
     store: StoreModel;
-    locale: Locale;
     className?: string;
     i18n: LocaleDictionary;
     style?: CSSProperties;
     priority?: boolean;
 }
-const ProductCard: FunctionComponent<ProductCardProps> = ({ className, locale, i18n, style, priority }) => {
+const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, style, priority }) => {
     const [quantityValue, setQuantityValue] = useState('1');
     const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
     const { product, selectedVariant, setSelectedVariant } = useProduct();
     const quantityRef = useRef<HTMLInputElement>();
+
+    const { locale } = useShop();
 
     useEffect(() => {
         if (Number.parseInt(quantityValue) < 0) {

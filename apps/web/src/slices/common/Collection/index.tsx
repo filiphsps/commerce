@@ -1,8 +1,7 @@
 import type { Content } from '@prismicio/client';
 
-import { CollectionBlock, CollectionBlockSkeleton } from '@/components/products/collection-block';
+import { CollectionBlock } from '@/components/products/collection-block';
 import type { SliceComponentProps } from '@prismicio/react';
-import { Suspense } from 'react';
 import { FullCollection } from './FullCollection';
 import { CollectionContainer } from './collection';
 
@@ -25,20 +24,15 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
                     locale={context.locale}
                     i18n={context.i18n}
                 >
-                    <Suspense
-                        fallback={<CollectionBlockSkeleton isHorizontal={slice.primary.direction === 'horizontal'} />}
-                    >
-                        <CollectionBlock
-                            isHorizontal={slice.primary.direction === 'horizontal'}
-                            limit={slice.primary.limit || 16}
-                            data={context?.prefetch?.collections?.[slice.primary.handle!]}
-                            showViewAll={true}
-                            store={context?.store}
-                            locale={context.locale}
-                            i18n={context.i18n}
-                            priority={index < 3}
-                        />
-                    </Suspense>
+                    <CollectionBlock
+                        isHorizontal={slice.primary.direction === 'horizontal'}
+                        limit={slice.primary.limit || 16}
+                        data={context?.prefetch?.collections?.[slice.primary.handle!]}
+                        showViewAll={true}
+                        store={context?.store}
+                        i18n={context.i18n}
+                        priority={index < 3}
+                    />
                 </CollectionContainer>
             );
         }

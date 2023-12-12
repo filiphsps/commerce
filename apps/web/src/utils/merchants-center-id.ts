@@ -22,5 +22,5 @@ export const ProductToMerchantsCenterId = ({
     const productId = parseGid(product.productGid).resourceId;
     const variantId = parseGid(product.variantGid).resourceId;
 
-    return `shopify_${locale.country}_${productId}_${variantId}`;
+    return `shopify_${locale.country?.toUpperCase()}_${productId}_${variantId}`;
 };

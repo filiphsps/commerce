@@ -91,6 +91,9 @@ const BlockTitle = styled.div`
 `;
 
 const LegalAndCopyright = styled.div`
+    display: flex;
+    align-items: flex-end;
+    justify-self: flex-end;
     margin: var(--block-spacer-large) 0;
 
     @media (min-width: 950px) {
@@ -140,6 +143,8 @@ const ImportantLinks = styled.div`
         grid-template-columns: auto auto auto;
         gap: var(--block-spacer-large);
         height: 3rem;
+        align-items: flex-end;
+        justify-self: flex-end;
     }
 `;
 
@@ -153,13 +158,14 @@ const Copyright = styled.div`
 
     @media (min-width: 950px) {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: flex-end;
         gap: var(--block-spacer-small);
+        height: 3rem;
         font-weight: 800;
         text-align: right;
-        height: 3rem;
         font-size: 1.25rem;
+        line-height: 1;
     }
 `;
 const Policy = styled(Link)`
@@ -168,9 +174,14 @@ const Policy = styled(Link)`
     text-transform: uppercase;
 
     @media (min-width: 950px) {
-        padding: var(--block-padding-large) 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 3rem;
+        padding: 0;
         font-weight: 800;
         font-size: 1.25rem;
+        line-height: 1;
     }
 `;
 const Socials = styled(ImportantLinks)`
@@ -180,7 +191,7 @@ const Socials = styled(ImportantLinks)`
 
     @media (min-width: 950px) {
         justify-content: flex-end;
-        align-items: flex-end;
+        align-items: flex-start;
     }
 `;
 const Social = styled(Link)`

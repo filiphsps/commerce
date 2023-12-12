@@ -11,10 +11,14 @@
     font-weight: 400;
     line-height: 1;
     text-align: center;
-    transition:
-        250ms ease-in-out all,
-        150ms ease-in-out color,
-        150ms ease-in-out background-color;
+
+    &,
+    &:not(:disabled) {
+        transition:
+            250ms ease-in-out all,
+            150ms ease-in-out color,
+            150ms ease-in-out background-color;
+    }
 
     svg {
         vertical-align: middle;
