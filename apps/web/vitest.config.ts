@@ -68,6 +68,7 @@ export default defineConfig({
                 '**/build-config.*',
                 '**/src/**/index.*',
                 '**/src/**/markdoc/**/*.*',
+                '**/src/instrumentation.ts',
 
                 // TODO: Eh?
                 '**/src/locales/*.*',

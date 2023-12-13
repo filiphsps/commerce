@@ -319,7 +319,7 @@ export function Trackable({ children }: TrackableProps) {
 
     const queueEvent = useCallback((type: AnalyticsEventType, event: AnalyticsEventData) => {
         setQueue((queue) => {
-            // Don't add duplicate events.
+            // Don't add duplicate events. This is a very naive implementation.
             const eventHash = JSON.stringify({ type, event });
             if (JSON.stringify(queue.at(-1)) === eventHash || JSON.stringify(queue.at(-2)) === eventHash) {
                 return queue;

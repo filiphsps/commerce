@@ -118,5 +118,8 @@
     },
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
-    "prettier.requireConfig": false
+    "prettier.requireConfig": false,
+    "github.copilot.advanced": {
+        "length": 1200
+    }
 }

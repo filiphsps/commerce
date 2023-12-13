@@ -1,8 +1,8 @@
 import { ShopProvider } from '@/components/shop/provider';
 import { Locale } from '@/utils/locale';
+import { Trackable } from '@/utils/trackable';
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { Trackable } from '../trackable';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
