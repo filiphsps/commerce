@@ -7,12 +7,13 @@ import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
+import { deepEqual } from '@/utils/deep-equal';
 import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const Variants = styled.div`
@@ -425,4 +426,4 @@ export const ProductCardSkeleton = () => {
     );
 };
 
-export default ProductCard;
+export default memo(ProductCard, deepEqual);

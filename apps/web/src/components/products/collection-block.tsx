@@ -4,9 +4,10 @@ import { ProductCardSkeleton } from '@/components/ProductCard';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
 import type { StoreModel } from '@/models/StoreModel';
+import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { Suspense, type HTMLProps } from 'react';
+import { Suspense, memo, type HTMLProps } from 'react';
 import { CollectionBlockContent } from './collection-block-content';
 
 export type CollectionBlockCommonProps = {
@@ -22,7 +23,7 @@ export type CollectionBlockProps = {
     priority?: boolean;
 } & CollectionBlockCommonProps &
     HTMLProps<HTMLDivElement>;
-export const CollectionBlock = ({
+const CollectionBlock = ({
     data: collection,
     limit,
     isHorizontal,
@@ -61,6 +62,8 @@ export const CollectionBlock = ({
         </section>
     );
 };
+
+export default memo(CollectionBlock, deepEqual);
 
 export const CollectionBlockSkeleton = ({ isHorizontal }: CollectionBlockCommonProps) => {
     return (

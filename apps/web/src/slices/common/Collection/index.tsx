@@ -1,7 +1,8 @@
+import CollectionBlock from '@/components/products/collection-block';
+import { deepEqual } from '@/utils/deep-equal';
 import type { Content } from '@prismicio/client';
-
-import { CollectionBlock } from '@/components/products/collection-block';
 import type { SliceComponentProps } from '@prismicio/react';
+import { memo } from 'react';
 import { FullCollection } from './FullCollection';
 import { CollectionContainer } from './collection';
 
@@ -53,4 +54,4 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
     }
 };
 
-export default Collection;
+export default memo(Collection, deepEqual);

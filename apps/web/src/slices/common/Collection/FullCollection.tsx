@@ -1,5 +1,5 @@
 import PageContent from '@/components/page-content';
-import { CollectionBlock } from '@/components/products/collection-block';
+import CollectionBlock from '@/components/products/collection-block';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';

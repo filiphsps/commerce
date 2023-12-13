@@ -6,7 +6,7 @@ import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
-import { CollectionBlock } from '@/components/products/collection-block';
+import CollectionBlock from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
