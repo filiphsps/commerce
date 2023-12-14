@@ -42,7 +42,7 @@ jobs:
               run: node ./.github/common/scripts/bundle-analyze-report.js
 
             - name: 🌎 Upload bundle
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: bundle
                   path: apps/web/.next/analyze/__bundle_analysis.json
