@@ -41,10 +41,12 @@ export const LegacyLoader: ImageLoaderType = ({ src, width, quality }) => {
 };
 
 const imageLoader: ImageLoaderType = (props) => {
-    if (process.env.NODE_ENV === 'production' &&
+    if (
+        process.env.NODE_ENV === 'production' &&
         !props.src.includes('shopify') &&
         !props.src.includes('.svg') &&
-        !props.src.includes('gravatar')) {
+        !props.src.includes('gravatar')
+    ) {
         return CloudflareImageLoader(props);
     }
 

@@ -11,7 +11,6 @@ import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useState, type HTMLProps } from 'react';
-import { TbShoppingBagCheck, TbShoppingBagPlus } from 'react-icons/tb';
 import { toast } from 'sonner';
 import { useShop } from '../shop/provider';
 
@@ -36,25 +35,20 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
     const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
 
     let label: ReactNode = t('add-to-cart');
-    let icon: ReactNode = showIcon ? <TbShoppingBagPlus /> : null;
     if (animation) {
         // 1. Have we just successfully added to cart, if so, show a checkmark.
         label = t('added-to-cart');
-        icon = <TbShoppingBagCheck />;
     } else if (selectedVariant && !selectedVariant.availableForSale) {
         // 2. If out of stock, show the relevant label.
         label = t('out-of-stock');
-        icon = null;
         // eslint-disable-next-line brace-style
     } /* else if (!ready) {
         // 3. Cart is not ready, tell the user.
         label = t('cart-not-ready');
-        icon = null;
     } */ else if (!quantity || quantity < 1) {
         // 4. Quantity is either invalid or 0.
         // TODO: This should not be a disabled state.
         label = t('quantity-too-low');
-        icon = null;
     }
 
     return (
@@ -135,7 +129,7 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
             }}
             title={tCart('add-n-to-your-cart', quantity)}
         >
-            {icon} {label}
+            {label}
         </Button>
     );
 };
