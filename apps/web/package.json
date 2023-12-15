@@ -106,6 +106,6 @@
         "eslint-config-next": "14.0.4",
         "graphql": "16.8.1",
         "server-only": "0.0.1",
-        "slice-machine-ui": "1.21.2"
+        "slice-machine-ui": "1.22.0"
     }
 }
