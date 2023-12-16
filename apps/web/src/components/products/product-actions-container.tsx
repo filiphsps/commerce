@@ -40,7 +40,6 @@ export const ProductActionsContainer = ({
                 <QuantitySelector
                     update={(n) => setQuantity(n)}
                     value={quantity}
-                    locale={locale}
                     i18n={i18n}
                     style={{ gridArea: 'quantity' }}
                 />

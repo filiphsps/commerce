@@ -1,4 +1,5 @@
 @import '_globals.scss';
+
 .container {
     position: relative;
     flex: 1 auto;
@@ -121,6 +122,127 @@
         justify-content: space-between;
         align-items: end;
         height: 100%;
+    }
+
+    .variants {
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: var(--block-spacer);
+        width: 100%;
+        height: 100%;
+        font-size: 1.75rem;
+
+        .variant {
+            appearance: none;
+            -webkit-appearance: none;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+
+            font-weight: 500;
+            font-size: 1em;
+            line-height: 1;
+            text-align: right;
+
+            cursor: pointer;
+            opacity: 0.75;
+            transition: 150ms ease-in-out all;
+
+            &[data-active='true'] {
+                opacity: 1;
+                color: var(--accent-primary);
+                text-decoration: underline;
+                text-decoration-thickness: 0.2rem;
+            }
+
+            &:is([data-active='true'], :hover, :active, :focus) {
+                opacity: 1;
+            }
+        }
+    }
+
+    .quantity {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: end;
+
+        height: 3.25rem;
+
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        font-weight: 500;
+        text-align: center;
+
+        user-select: none;
+        background-color: var(--color-bright);
+        border-radius: var(--block-border-radius);
+        border: none;
+        transition: 250ms ease-in-out all;
+
+        :is([data-quantity-decrease], [data-quantity-increase]) {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            width: 3rem;
+            height: 3.25rem;
+            padding: 0 0.35rem 0 0;
+            cursor: pointer;
+            transition: 150ms ease-in-out all;
+            text-align: center;
+            font-size: 1.85em;
+            font-weight: 600;
+            line-height: 1;
+
+            &:hover {
+                background: var(--accent-secondary);
+                color: var(--accent-secondary-text);
+            }
+            &:is(:active) {
+                color: var(--accent-primary-dark);
+                background: var(--accent-primary-text);
+                border-color: var(--accent-primary);
+            }
+            &:is(:disabled, [data-disabled]) {
+                width: 0.5rem;
+                color: transparent;
+                pointer-events: none;
+                cursor: not-allowed;
+            }
+        }
+
+        [data-quantity-decrease] {
+            // Hack: Padding bottom shouldn't be here.
+            padding: 0 0 0.3rem 0.35rem;
+        }
+
+        [data-quantity-input] {
+            appearance: none;
+            display: block;
+            width: 2.8rem; // 1 char = 1.2rem. Then 1rem padding
+            min-width: 1.25rem;
+            height: 3.25rem;
+            text-align: center;
+            font-size: 1.85rem;
+            line-height: 1;
+            outline: none;
+            transition: 150ms all ease-in-out;
+            font-variant: common-ligatures tabular-nums slashed-zero;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button,
+            &[type='number'] {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
     }
 
     &.skeleton {

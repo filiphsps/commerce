@@ -1,9 +1,10 @@
 'use client';
 
 import styles from '@/components/typography/pricing.module.scss';
+import { deepEqual } from '@/utils/deep-equal';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import type { HTMLProps } from 'react';
+import { memo, type HTMLProps } from 'react';
 
 type PricingProps = {
     price?: MoneyV2 | null;
@@ -28,4 +29,4 @@ const Pricing = ({ price, compareAtPrice, className, ...props }: PricingProps) =
     );
 };
 
-export default Pricing;
+export default memo(Pricing, deepEqual);

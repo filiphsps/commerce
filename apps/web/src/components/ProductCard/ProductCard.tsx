@@ -4,7 +4,7 @@ import styles from '@/components/ProductCard/product-card.module.scss';
 import ProductCardImage from '@/components/ProductCard/product-image';
 import Link from '@/components/link';
 import AddToCart from '@/components/products/add-to-cart';
-import { QuantityInputFilter } from '@/components/products/quantity-selector';
+import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
@@ -13,44 +13,9 @@ import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CSSProperties, FunctionComponent } from 'react';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useState } from 'react';
 import styled from 'styled-components';
-
-const Variants = styled.div`
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: var(--block-spacer);
-    width: 100%;
-    height: 100%;
-    font-size: 1.75rem;
-`;
-
-const Variant = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    font-weight: 500;
-    font-size: 1em;
-    line-height: 1;
-    text-align: right;
-    cursor: pointer;
-    opacity: 0.75;
-    transition: 150ms ease-in-out all;
-
-    &.active {
-        opacity: 1;
-        color: var(--accent-primary);
-        text-decoration: underline;
-        text-decoration-thickness: 0.2rem;
-    }
-
-    &:is(.active, :hover, :active, :focus) {
-        opacity: 1;
-    }
-`;
+import ProductTitle from './product-title';
 
 const Actions = styled.div`
     grid-area: product-actions;
@@ -61,82 +26,6 @@ const Actions = styled.div`
     gap: var(--block-spacer);
     justify-content: space-between;
     align-items: end;
-`;
-
-const Quantity = styled.div`
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    justify-self: end;
-    height: 3.25rem;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 500;
-    text-align: center;
-    user-select: none;
-    background-color: var(--color-bright);
-    border-radius: var(--block-border-radius);
-`;
-const QuantityAction = styled.div`
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-    width: 3rem;
-    height: 3.25rem;
-    padding: 0 0.35rem 0 0;
-    cursor: pointer;
-    transition: 150ms ease-in-out all;
-    text-align: center;
-    font-size: 1.85em;
-    font-weight: 600;
-    line-height: 1;
-
-    &:first-child {
-        // Hack: Padding bottom shouldn't be here.
-        padding: 0 0 0.3rem 0.35rem;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            background: var(--accent-secondary);
-            color: var(--accent-secondary-text);
-        }
-    }
-
-    &:is(:active) {
-        color: var(--accent-primary-dark);
-        background: var(--accent-primary-text);
-        border-color: var(--accent-primary);
-    }
-
-    &.Inactive {
-        width: 0.5rem;
-        color: transparent;
-        pointer-events: none;
-    }
-`;
-const QuantityValue = styled.input`
-    appearance: none;
-    display: block;
-    width: 2.2rem; // 1 char = 1.2rem. Then 1rem padding
-    min-width: 1.25rem;
-    height: 3.25rem;
-    text-align: center;
-    font-size: 1.85rem;
-    line-height: 1;
-    outline: none;
-    transition: 150ms all ease-in-out;
-    font-variant: common-ligatures tabular-nums slashed-zero;
-
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button,
-    &[type='number'] {
-        -webkit-appearance: none;
-        margin: 0;
-    }
 `;
 
 const DiscountBadge = styled.div`
@@ -227,27 +116,11 @@ interface ProductCardProps {
     priority?: boolean;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, style, priority }) => {
-    const [quantityValue, setQuantityValue] = useState('1');
-    const quantity = quantityValue ? Number.parseInt(quantityValue) : 0;
+    const [quantityValue, setQuantityValue] = useState(1);
+    const quantity = quantityValue || 0;
     const { product, selectedVariant, setSelectedVariant } = useProduct();
-    const quantityRef = useRef<HTMLInputElement>();
 
     const { locale } = useShop();
-
-    useEffect(() => {
-        if (Number.parseInt(quantityValue) < 0) {
-            setQuantityValue('1');
-            return;
-        } else if (Number.parseInt(quantityValue) > 999) {
-            setQuantityValue('999');
-            return;
-        }
-
-        if (!quantityRef.current) return; // TODO: Handle this properly.
-        const length = quantityValue.split('').length;
-        if (length <= 1) quantityRef.current.style.removeProperty('width');
-        else quantityRef.current.style.width = `${length * 1.15 + 0.75}rem`;
-    }, [quantityValue]);
 
     if (!product || !product?.variants || !selectedVariant) {
         return <ProductCardSkeleton />;
@@ -312,13 +185,12 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
             </div>
             <div className={styles.details}>
                 <Link href={href} title={linkTitle} className={styles.header}>
-                    <div className={styles.brand}>{product.vendor}</div>
-                    <div className={styles.title}>{product.title}</div>
+                    <ProductTitle title={product.title} vendor={product.vendor} />
                 </Link>
 
                 {/* FIXME: Deal with options here. */}
                 {(product?.variants?.edges?.length || 0) > 1 ? (
-                    <Variants>
+                    <section className={styles.variants}>
                         {product?.variants?.edges &&
                             product?.variants.edges.length > 1 &&
                             product?.variants.edges.map((edge, index) => {
@@ -340,17 +212,18 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
                                 }
 
                                 return (
-                                    <Variant
+                                    <button
                                         key={variant.id}
                                         title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
                                         onClick={() => setSelectedVariant(variant)}
-                                        className={selectedVariant.id === variant.id ? 'active' : ''}
+                                        className={styles.variant}
+                                        data-active={selectedVariant.id === variant.id}
                                     >
                                         {title}
-                                    </Variant>
+                                    </button>
                                 );
                             })}
-                    </Variants>
+                    </section>
                 ) : null}
             </div>
             <Actions>
@@ -361,32 +234,14 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
                         compareAtPrice={selectedVariant?.compareAtPrice as any}
                     />
 
-                    <Quantity>
-                        <QuantityAction
-                            className={quantity > 1 ? '' : 'Inactive'}
-                            onClick={() => quantity > 0 && setQuantityValue(`${quantity - 1}`)}
-                        >
-                            -
-                        </QuantityAction>
-                        <QuantityValue
-                            ref={quantityRef as any}
-                            type="number"
-                            min={1}
-                            max={999}
-                            step={1}
-                            pattern="[0-9]"
-                            value={quantityValue}
-                            placeholder="Quantity"
-                            name="quantity"
-                            onBlur={(_) => {
-                                if (!quantityValue) setQuantityValue('1');
-                            }}
-                            onChange={(e) => {
-                                setQuantityValue(QuantityInputFilter(e?.target?.value, quantityValue));
-                            }}
-                        />
-                        <QuantityAction onClick={() => setQuantityValue(`${quantity + 1}`)}>+</QuantityAction>
-                    </Quantity>
+                    <QuantitySelector
+                        className={styles.quantity}
+                        i18n={i18n}
+                        value={quantityValue}
+                        update={(quantity) => {
+                            setQuantityValue(quantity);
+                        }}
+                    />
                 </div>
 
                 <AddToCart

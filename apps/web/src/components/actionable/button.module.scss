@@ -7,27 +7,31 @@
     justify-content: center;
     align-items: center;
     gap: var(--block-spacer);
+
     width: auto;
     height: auto;
     max-height: 100%;
     padding: calc(var(--block-padding-large) - var(--block-border-width))
         calc(var(--block-padding) - var(--block-border-width));
-    line-height: 1;
+
     font-size: 1.5rem;
     font-weight: 500;
     text-align: center;
-    user-select: none;
+    line-height: 1;
+
     border: var(--block-border-width) solid var(--accent-primary);
     border-radius: var(--block-border-radius-large);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     background-color: var(--accent-primary);
     color: var(--accent-primary-text);
+
     transition:
         250ms ease-in-out background-color,
         250ms ease-in-out border-color,
         250ms ease-in-out color,
         250ms ease-in-out font-weight;
     cursor: pointer;
+    user-select: none;
 
     @media (min-width: $breakpoint-mobile) {
         gap: var(--block-spacer-small);

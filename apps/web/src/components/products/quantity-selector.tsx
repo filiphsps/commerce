@@ -2,7 +2,7 @@
 
 import styles from '@/components/products/quantity-selector.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { memo, useCallback, useEffect, useState, type HTMLProps } from 'react';
 
@@ -25,13 +25,12 @@ export const QuantityInputFilter = (value?: string, prev?: string): string => {
 };
 
 export type QuantitySelectorProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
     update: (quantity: number) => void;
-    value: number;
+    value?: number;
 } & HTMLProps<HTMLDivElement>;
 
-const QuantitySelector = memo(({ className, i18n, value: quantity, update, ...props }: QuantitySelectorProps) => {
+const QuantitySelector = memo(({ className, i18n, value: quantity = 0, update, ...props }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
 
@@ -57,6 +56,7 @@ const QuantitySelector = memo(({ className, i18n, value: quantity, update, ...pr
                 disabled={quantity <= 1}
                 onClick={() => quantity > 1 && updateQuantity(quantity - 1)}
                 title="Decrease quantity" // TODO: i18n.
+                data-quantity-decrease
             >
                 -
             </button>
@@ -88,12 +88,14 @@ const QuantitySelector = memo(({ className, i18n, value: quantity, update, ...pr
 
                     setQuantityValue(value);
                 }}
+                data-quantity-input
             />
             <button
                 type="button"
                 className={`${styles.button} ${styles.remove}`}
                 onClick={() => updateQuantity(quantity + 1)}
                 title="Increase quantity" // TODO: i18n.
+                data-quantity-increase
             >
                 +
             </button>
