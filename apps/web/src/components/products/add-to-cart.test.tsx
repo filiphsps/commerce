@@ -1,4 +1,4 @@
-import { AddToCart } from '@/components/products/add-to-cart';
+import AddToCart from '@/components/products/add-to-cart';
 import { render } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
 

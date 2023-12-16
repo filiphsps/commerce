@@ -1,7 +1,7 @@
 'use client';
 
 import type { Product, ProductVariant } from '@/api/product';
-import { AddToCart } from '@/components/products/add-to-cart';
+import AddToCart from '@/components/products/add-to-cart';
 import { InfoLines } from '@/components/products/info-lines';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { ProductOptions } from '@/components/products/product-options';

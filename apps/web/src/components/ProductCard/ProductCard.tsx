@@ -2,7 +2,7 @@
 
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
-import { AddToCart } from '@/components/products/add-to-cart';
+import AddToCart from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import Pricing from '@/components/typography/pricing';

@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
+import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -10,7 +11,7 @@ import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { useState, type HTMLProps } from 'react';
+import { memo, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 import { useShop } from '../shop/provider';
 
@@ -21,7 +22,7 @@ export type AddToCartProps = {
 } & HTMLProps<HTMLButtonElement>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
+const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
     const { queueEvent } = useTrackable();
@@ -133,3 +134,5 @@ export const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, typ
         </Button>
     );
 };
+
+export default memo(AddToCart, deepEqual);
