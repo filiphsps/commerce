@@ -2,9 +2,11 @@
 
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
+import { deepEqual } from '@/utils/deep-equal';
 import type { Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -116,4 +118,4 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
     );
 };
 
-export default ImageGrid;
+export default memo(ImageGrid, deepEqual);

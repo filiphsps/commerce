@@ -2,13 +2,10 @@
 
 import styles from '@/components/Header/cart-button.module.scss';
 import Link from '@/components/link';
-import { usePrevious } from '@/hooks/usePrevious';
 import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import dynamic from 'next/dynamic';
-import { usePathname } from 'next/navigation';
-import { useRef } from 'react';
 
 const Lottie = dynamic(() => import('react-lottie-player'), { ssr: false });
 
@@ -18,13 +15,11 @@ export type CartButtonProps = {
     i18n: LocaleDictionary;
 };
 export const CartButton = ({ locale }: CartButtonProps) => {
-    const lottieRef = useRef<any>(null);
+    const { totalQuantity /*, status*/ } = useCart();
+    //const prevStatus = usePrevious(status);
 
-    const { totalQuantity, status } = useCart();
-    const prevStatus = usePrevious(status);
-
-    const pathName = usePathname();
-    const prevPathName = usePrevious(pathName);
+    //const pathName = usePathname();
+    //const prevPathName = usePrevious(pathName);
 
     /*const [state, setState] = useState('in-shopping-bag');
     const [direction, setDirection] = useState<1 | -1>(1);
@@ -69,7 +64,6 @@ export const CartButton = ({ locale }: CartButtonProps) => {
             <div className={styles.quantity}>{totalQuantity ? totalQuantity : null}</div>
             <Lottie
                 className={styles.icon}
-                ref={lottieRef}
                 animationData={ShoppingBagIcon}
                 play={true}
                 loop={false}
