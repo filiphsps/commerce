@@ -57,7 +57,7 @@ export const CartButton = ({ locale }: CartButtonProps) => {
         <Link
             href="/cart/"
             locale={locale}
-            className={`${styles.container}`}
+            className={styles.container}
             data-items={totalQuantity || 0}
             title="View your shopping cart"
         >

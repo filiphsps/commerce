@@ -1,6 +1,7 @@
 'use client';
 
 import styles from '@/components/ProductCard/product-card.module.scss';
+import ProductCardImage from '@/components/ProductCard/product-image';
 import Link from '@/components/link';
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantityInputFilter } from '@/components/products/quantity-selector';
@@ -11,7 +12,6 @@ import { deepEqual } from '@/utils/deep-equal';
 import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import Image from 'next/image';
 import type { CSSProperties, FunctionComponent } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -293,24 +293,9 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
             <div className={styles['image-container']}>
                 {image ? (
                     <Link title={linkTitle} href={href}>
-                        <Image
-                            className={styles.image}
-                            key={image.id}
-                            id={image.id!}
-                            src={image.url}
-                            alt={image?.altText!}
-                            title={image?.altText!}
-                            width={195}
-                            height={155}
-                            quality={85}
-                            sizes="(max-width: 950px) 155px, 200px"
-                            loading={priority ? 'eager' : 'lazy'}
-                            priority={priority}
-                        />
+                        <ProductCardImage image={image} priority={priority} />
                     </Link>
-                ) : (
-                    <div /> // Dummy.
-                )}
+                ) : null}
 
                 {discount > 1 && ( // Handle rounding-errors.
                     <DiscountBadge>
