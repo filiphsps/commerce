@@ -9,7 +9,7 @@ import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
-import { Locale, useTranslation } from '@/utils/locale';
+import { useTranslation } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 import { useState, type HTMLProps } from 'react';
 
@@ -35,7 +35,7 @@ export const ProductActionsContainer = ({
 
     return (
         <ProductProvider data={product as any} initialVariantId={selectedVariant?.id || initialVariant.id}>
-            <section {...props} className={`${styles.options} ${className || ''}`}>
+            <div {...props} className={`${styles.options} ${className || ''}`}>
                 <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
 
                 <QuantitySelector
@@ -53,10 +53,10 @@ export const ProductActionsContainer = ({
                     selectedVariant={selectedVariant || initialVariant}
                     style={{ gridArea: 'options' }}
                 />
-            </section>
+            </div>
 
             <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
-            {(product && <InfoLines product={product} />) || null}
+            {product ? <InfoLines product={product} /> : null}
 
             {children}
         </ProductProvider>
