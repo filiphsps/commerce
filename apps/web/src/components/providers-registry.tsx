@@ -70,26 +70,25 @@ export default function ProvidersRegistry({
                         countryCode={locale.country}
                     >
                         <ShopProvider shop={shop} currency={'USD'} locale={locale}>
-                            <HeaderProvider store={store}>
-                                <AnalyticsProvider shop={shop}>
-                                    <ThirdPartiesProvider shop={shop} locale={locale}>
-                                        <Toaster
-                                            theme="dark"
-                                            position="bottom-left"
-                                            closeButton={true}
-                                            expand={true}
-                                            duration={5000}
-                                            gap={4}
-                                            toastOptions={{
-                                                classNames: {
-                                                    toast: 'toast-notification'
-                                                }
-                                            }}
-                                        />
-                                        {children}
-                                    </ThirdPartiesProvider>
-                                </AnalyticsProvider>
-                            </HeaderProvider>
+                            <HeaderProvider store={store} />
+                            <AnalyticsProvider shop={shop}>
+                                <ThirdPartiesProvider shop={shop} locale={locale}>
+                                    <Toaster
+                                        theme="dark"
+                                        position="bottom-left"
+                                        closeButton={true}
+                                        expand={true}
+                                        duration={5000}
+                                        gap={4}
+                                        toastOptions={{
+                                            classNames: {
+                                                toast: 'toast-notification'
+                                            }
+                                        }}
+                                    />
+                                    {children}
+                                </ThirdPartiesProvider>
+                            </AnalyticsProvider>
                         </ShopProvider>
                     </CartProvider>
                 </ShopifyProvider>

@@ -1,10 +1,9 @@
 'use client';
 
 import styles from '@/components/products/quantity-selector.module.scss';
-import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
-import { memo, useCallback, useEffect, useState, type HTMLProps } from 'react';
+import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
@@ -30,7 +29,7 @@ export type QuantitySelectorProps = {
     value?: number;
 } & HTMLProps<HTMLDivElement>;
 
-const QuantitySelector = memo(({ className, i18n, value: quantity = 0, update, ...props }: QuantitySelectorProps) => {
+const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...props }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
 
@@ -102,7 +101,7 @@ const QuantitySelector = memo(({ className, i18n, value: quantity = 0, update, .
             </button>
         </section>
     );
-}, deepEqual);
+};
 
 QuantitySelector.displayName = 'Nordcom.QuantitySelector';
 export { QuantitySelector };

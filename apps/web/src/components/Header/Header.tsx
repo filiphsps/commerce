@@ -6,10 +6,9 @@ import styles from '@/components/Header/header.module.scss';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
-import { deepEqual } from '@/utils/deep-equal';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
-import { Suspense, memo, type HTMLProps } from 'react';
+import { Suspense, type HTMLProps } from 'react';
 import { CartButton } from './cart-button';
 
 type HeaderProps = {
@@ -58,4 +57,4 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
     );
 };
 
-export default memo(HeaderComponent, deepEqual);
+export default HeaderComponent;

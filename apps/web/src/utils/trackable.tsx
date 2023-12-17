@@ -2,6 +2,7 @@
 
 import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
 import { useShop } from '@/components/shop/provider';
+import { usePrevious } from '@/hooks/usePrevious';
 import type { Nullable } from '@/utils/abstract-api';
 import { MissingContextProviderError } from '@/utils/errors';
 import type { CurrencyCode, Locale } from '@/utils/locale';
@@ -242,6 +243,11 @@ const postEvent = async (
     data: AnalyticsEventData,
     { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
 ) => {
+    if (BuildConfig.environment === 'development') {
+        // Don't actually send events in development.
+        return;
+    }
+
     if (!window.dataLayer) {
         console.debug('window.dataLayer not found, creating it.');
         window.dataLayer = [];
@@ -304,6 +310,7 @@ export type TrackableProps = {
 };
 export function Trackable({ children }: TrackableProps) {
     const path = usePathname();
+    const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
 
     // TODO: Break these out into a separate hook, for tenants using Shopify.
@@ -332,6 +339,8 @@ export function Trackable({ children }: TrackableProps) {
 
     // Page view.
     useEffect(() => {
+        if (!path || path === prevPath) return;
+
         queueEvent('page_view', { path });
 
         if (path.endsWith('/cart/') && cart) {
@@ -360,7 +369,7 @@ export function Trackable({ children }: TrackableProps) {
                 }
             });
         }
-    }, [path]);
+    }, [path, prevPath]);
 
     // Send events.
     useEffect(() => {

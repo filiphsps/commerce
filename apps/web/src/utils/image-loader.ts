@@ -1,11 +1,12 @@
 import type { ImageLoader as ImageLoaderType } from 'next/image';
+import { BuildConfig } from './build-config';
 
 const normalizeSrc = (src: string) => {
     return src.startsWith('/') ? src.slice(1) : src;
 };
 
 // See https://developers.cloudflare.com/images/image-resizing/integration-with-frameworks/#nextjs
-export const CloudflareImageLoader: ImageLoaderType = ({ src, width, quality }) => {
+const cloudflareImageLoader: ImageLoaderType = ({ src, width, quality }) => {
     const params = [`width=${width}`];
     if (quality) {
         params.push(`quality=${quality}`);
@@ -14,7 +15,7 @@ export const CloudflareImageLoader: ImageLoaderType = ({ src, width, quality }) 
     return `/cdn-cgi/image/${paramsString}/${normalizeSrc(src)}`;
 };
 
-export const LegacyLoader: ImageLoaderType = ({ src, width, quality }) => {
+export const fallbackLoader: ImageLoaderType = ({ src, width, quality }) => {
     const params = [];
     if (src.includes('images.prismic.io')) {
         if (width) {
@@ -42,17 +43,15 @@ export const LegacyLoader: ImageLoaderType = ({ src, width, quality }) => {
 
 const imageLoader: ImageLoaderType = (props) => {
     if (
-        process.env.NODE_ENV === 'production' &&
+        BuildConfig.environment !== 'development' &&
         !props.src.includes('shopify') &&
-        !props.src.includes('.svg') &&
-        !props.src.includes('gravatar')
+        !props.src.includes('gravatar') &&
+        !props.src.includes('.svg')
     ) {
-        return CloudflareImageLoader(props);
+        return cloudflareImageLoader(props);
     }
 
-    // Legacy. Doesn't need to be this complicated anymore
-    // since it'll only be used during development.
-    return LegacyLoader(props);
+    return fallbackLoader(props);
 };
 
 export default imageLoader;

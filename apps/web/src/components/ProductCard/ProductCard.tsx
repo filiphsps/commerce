@@ -1,13 +1,10 @@
 import type { Product } from '@/api/product';
-import ProductCardActions from '@/components/ProductCard/product-card-actions';
-import ProductCardBadges from '@/components/ProductCard/product-card-badges';
-import ProductCardImage from '@/components/ProductCard/product-card-image';
-import ProductCardOptions from '@/components/ProductCard/product-card-options';
 import ProductCardTitle from '@/components/ProductCard/product-card-title';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
 import { type LocaleDictionary } from '@/utils/locale';
-import { memo } from 'react';
+import { Suspense, memo } from 'react';
+import ProductCardBody from './product-card-body';
 
 export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
     if (!params) return url;
@@ -23,21 +20,18 @@ export type ProductCardProps = {
 };
 const ProductCard = memo(({ className, i18n, data, priority }: ProductCardProps) => {
     return (
-        <div className={`${styles.container} ${className || ''}`} data-available={data.availableForSale}>
-            <div className={styles['image-container']}>
-                <ProductCardImage priority={priority} />
-                <ProductCardBadges i18n={i18n} />
+        <Suspense fallback={<ProductCardSkeleton />}>
+            <div className={`${styles.container} ${className || ''}`} data-available={data.availableForSale}>
+                <ProductCardBody data={data} i18n={i18n} priority={priority}>
+                    <ProductCardTitle data={data} />
+                </ProductCardBody>
             </div>
-
-            <div className={styles.details}>
-                <ProductCardTitle data={data} />
-                <ProductCardOptions i18n={i18n} />
-            </div>
-
-            <ProductCardActions i18n={i18n} />
-        </div>
+        </Suspense>
     );
 }, deepEqual);
+
+ProductCard.displayName = 'Nordcom.ProductCard';
+export default ProductCard;
 
 export const ProductCardSkeleton = () => {
     return (
@@ -48,6 +42,3 @@ export const ProductCardSkeleton = () => {
         </div>
     );
 };
-
-ProductCard.displayName = 'Nordcom.ProductCard';
-export default ProductCard;

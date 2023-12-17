@@ -1,9 +1,7 @@
-/* eslint-disable unused-imports/no-unused-vars */
 import type { Product } from '@/api/product';
 import ProductCard from '@/components/ProductCard';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
-import { ProductWrapper } from '@/components/products/product-wrapper';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -16,22 +14,15 @@ export type CollectionBlockCommonProps = {
 export type CollectionBlockProps = {
     i18n: LocaleDictionary;
     data: Collection;
-    limit?: number;
     showViewAll?: boolean;
     priority?: boolean;
+
+    /** @todo TODO: Limit. */
+    limit?: number;
 } & CollectionBlockCommonProps &
     HTMLProps<HTMLDivElement>;
 const CollectionBlock = memo(
-    ({
-        data: collection,
-        limit,
-        isHorizontal,
-        showViewAll,
-        i18n,
-        priority,
-        className,
-        ...props
-    }: CollectionBlockProps) => {
+    ({ data: collection, isHorizontal, showViewAll, i18n, priority, className, ...props }: CollectionBlockProps) => {
         // TODO: Add collection type.
         const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];
         if (!collection || !products || products.length <= 0) return null;
@@ -43,9 +34,7 @@ const CollectionBlock = memo(
             >
                 <div className={styles.content}>
                     {products.map((product, index) => (
-                        <ProductWrapper key={product.id} product={product}>
-                            <ProductCard i18n={i18n} data={product} priority={priority && index < 2} />
-                        </ProductWrapper>
+                        <ProductCard key={product.id} i18n={i18n} data={product} priority={priority && index < 2} />
                     ))}
 
                     {showViewAll ? (

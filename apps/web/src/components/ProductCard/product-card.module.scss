@@ -39,36 +39,30 @@
     }
 
     .image-container {
-        grid-area: product-image;
-        overflow: hidden;
         position: relative;
-        height: 100%;
+        grid-area: product-image;
+
+        height: 16rem;
         width: 100%;
         padding: var(--block-padding-small);
 
         border-radius: var(--block-border-radius-small);
-        transition: 150ms ease-in-out padding;
-        will-change: padding;
         user-select: none;
+        transition: 150ms ease-in-out padding;
+
         background-color: var(--product-card-color-image-background, var(--color-bright));
         box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
-        aspect-ratio: 1.25 / 1;
-
-        .image-wrapper {
-            display: contents;
-        }
-
-        img,
-        .image {
-            height: 100%;
-            width: 100%;
-            object-fit: contain;
-            object-position: center;
-        }
 
         @media (min-width: 950px) {
             padding: var(--block-padding-large);
-            aspect-ratio: 1.35 / 1;
+        }
+
+        .image {
+            height: 100%;
+            width: 100%;
+
+            object-fit: contain;
+            object-position: center;
         }
 
         &:is(:hover, :active, :focus) {
@@ -99,10 +93,6 @@
             font-size: 2.15rem;
         }
 
-        & > a {
-            display: contents;
-        }
-
         &:is(:hover, :active, :focus) {
             text-decoration: underline dotted 0.2rem var(--accent-primary);
             text-underline-offset: var(--block-border-width);
@@ -130,6 +120,7 @@
         align-items: end;
         align-self: end;
         height: 100%;
+        margin-top: var(--block-spacer-small);
     }
 
     .variants {
@@ -137,7 +128,7 @@
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
-        gap: var(--block-spacer);
+        gap: var(--block-spacer-large);
         width: 100%;
         height: 100%;
         font-size: 1.75rem;
@@ -269,10 +260,6 @@
         gap: 0;
         height: 100%;
         font-size: 0.75rem;
-
-        & > div {
-            display: contents;
-        }
     }
 
     &.skeleton {

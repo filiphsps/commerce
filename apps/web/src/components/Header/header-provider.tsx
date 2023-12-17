@@ -4,13 +4,12 @@ import type { StoreModel } from '@/models/StoreModel';
 import { usePathname, useRouter } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect } from 'react';
 
-type HeaderProviderProps = {
-    children: ReactNode;
+export type HeaderProviderProps = {
     store: StoreModel;
 };
-export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
+export const HeaderProvider = ({ store }: HeaderProviderProps) => {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -40,7 +39,6 @@ export const HeaderProvider = ({ children, store }: HeaderProviderProps) => {
     return (
         <>
             <NextTopLoader color={store.accent.primary} showSpinner={true} crawl={true} />
-            {children}
         </>
     );
 };
