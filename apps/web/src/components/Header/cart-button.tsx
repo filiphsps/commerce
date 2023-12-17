@@ -3,9 +3,11 @@
 import styles from '@/components/Header/cart-button.module.scss';
 import Link from '@/components/link';
 import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
+import { deepEqual } from '@/utils/deep-equal';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import dynamic from 'next/dynamic';
+import { memo } from 'react';
 
 const Lottie = dynamic(() => import('react-lottie-player'), { ssr: false });
 
@@ -14,7 +16,7 @@ export type CartButtonProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 };
-export const CartButton = ({ locale }: CartButtonProps) => {
+const CartButton = memo(({ locale }: CartButtonProps) => {
     const { totalQuantity /*, status*/ } = useCart();
     //const prevStatus = usePrevious(status);
 
@@ -60,8 +62,11 @@ export const CartButton = ({ locale }: CartButtonProps) => {
             className={styles.container}
             data-items={totalQuantity || 0}
             title="View your shopping cart"
+            suppressHydrationWarning
         >
-            <div className={styles.quantity}>{totalQuantity ? totalQuantity : null}</div>
+            <div className={styles.quantity} suppressHydrationWarning>
+                {totalQuantity ? totalQuantity : null}
+            </div>
             <Lottie
                 className={styles.icon}
                 animationData={ShoppingBagIcon}
@@ -71,5 +76,8 @@ export const CartButton = ({ locale }: CartButtonProps) => {
             />
         </Link>
     );
-};
+}, deepEqual);
+
+CartButton.displayName = 'Nordcom.Header.CartButton';
+export { CartButton };
 /* c8 ignore stop */

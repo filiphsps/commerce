@@ -65,6 +65,7 @@ type Icon = Image;
 
 export type Shop = {
     id: string;
+    name: string;
     domains: {
         primary: string;
         alternatives: string[];
@@ -103,6 +104,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
     return [
         {
             id: 'sweet-side-of-sweden',
+            name: 'Sweet Side of Sweden',
             domains: {
                 primary: 'www.sweetsideofsweden.com',
                 alternatives: ['sweetsideofsweden.com', 'staging.sweetsideofsweden.com']
@@ -141,6 +143,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
         },
         {
             id: 'nordcom-commerce-demo',
+            name: 'Nordcom Commerce Demo',
             domains: {
                 primary: 'demo.nordcom.io',
                 alternatives: ['staging.demo.nordcom.io']
@@ -206,7 +209,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 };
 
 export type ShopResponse = {} & Shop;
-export const ShopApi = async ({ domain, locale }: { domain: string; locale?: Locale }): Promise<ShopResponse> => {
+export const ShopApi = async ({ domain }: { domain: string; locale?: Locale }): Promise<ShopResponse> => {
     // TODO: This should be a cache-able database query.
     const shops = await ShopsApi();
     const shop =

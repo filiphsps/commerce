@@ -132,6 +132,7 @@
         align-items: center;
         gap: 0;
         height: 100%;
+        width: 100%;
 
         @media (min-width: $breakpoint-header) {
             gap: var(--block-spacer);

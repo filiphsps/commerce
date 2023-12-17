@@ -46,12 +46,13 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
 
                 <HeaderNavigation menu={navigation} locale={locale} />
 
-                <Suspense>
-                    <div className={styles.actions} suppressHydrationWarning>
+                <div className={styles.actions} suppressHydrationWarning>
+                    <Suspense>
                         <CartButton locale={locale} i18n={i18n} />
-                    </div>
-                </Suspense>
+                    </Suspense>
+                </div>
             </HeaderContainer>
+
             <MobileMenu navigation={navigation} />
         </section>
     );

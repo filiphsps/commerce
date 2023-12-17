@@ -1,7 +1,10 @@
 @import '_globals.scss';
 
 .container {
-    display: flex;
+    overflow: hidden;
+    display: block;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 2.25rem;
     flex-grow: 0;
     justify-content: center;
     align-items: center;
@@ -14,6 +17,7 @@
     text-align: center;
 
     &,
+    svg,
     &:not(:disabled) {
         transition:
             250ms ease-in-out all,
@@ -23,6 +27,8 @@
 
     .icon {
         height: 100%;
+        width: 100%;
+        margin-bottom: 0.15rem;
     }
 
     .quantity {
@@ -41,6 +47,7 @@
     }
 
     &[data-items]:not([data-items='0']) {
+        display: grid;
         gap: var(--block-spacer-small);
         padding: var(--block-padding-small) calc(var(--block-padding) * 1.25);
         background-color: var(--accent-primary);
@@ -69,8 +76,11 @@
         &:is(:hover, :active) {
             background-color: var(--color-bright);
 
-            :is(&, svg) {
+            &,
+            svg {
                 color: var(--color-dark);
+                fill: var(--color-dark);
+                stroke: var(--color-dark);
             }
         }
     }
