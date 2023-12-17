@@ -58,7 +58,7 @@ export const PageProvider = ({
                 </section>
             )}
 
-            <Suspense>{children}</Suspense>
+            {children}
 
             <Suspense>
                 <Footer store={store} locale={locale} i18n={i18n} data={footer} />

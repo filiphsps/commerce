@@ -13,7 +13,6 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../not-found';
 import SearchContent from './search-content';
 
@@ -133,8 +132,6 @@ export default async function SearchPage({
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const prefetch = await Prefetch({ api, page });
 
-        const query = searchParams?.q || '';
-
         return (
             <Page>
                 <PageContent primary={true}>
@@ -153,9 +150,7 @@ export default async function SearchPage({
                         />
                     )}
 
-                    <Suspense key={query}>
-                        <SearchContent shop={shop} locale={locale} query={query} />
-                    </Suspense>
+                    <SearchContent shop={shop} locale={locale} />
                 </PageContent>
             </Page>
         );

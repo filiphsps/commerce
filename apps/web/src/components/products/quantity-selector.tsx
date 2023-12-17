@@ -88,7 +88,7 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
                     setQuantityValue(value);
                 }}
                 data-quantity-input
-                suppressHydrationWarning
+                suppressHydrationWarning={true}
             />
             <button
                 type="button"

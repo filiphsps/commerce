@@ -241,7 +241,7 @@ export default async function RootLayout({
                             '--accent-secondary-dark': 'var(--color-accent-secondary-dark)'
                         } as React.CSSProperties
                     }
-                    suppressHydrationWarning
+                    suppressHydrationWarning={true}
                 >
                     <head />
                     <body data-scrolled="false">

@@ -32,9 +32,9 @@ const CartButton = memo(({ locale, i18n }: CartButtonProps) => {
             className={styles.container}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
-            suppressHydrationWarning
+            suppressHydrationWarning={true}
         >
-            <div className={styles.quantity} suppressHydrationWarning>
+            <div className={styles.quantity} suppressHydrationWarning={true}>
                 {totalQuantity ? totalQuantity : null}
             </div>
             <Lottie
@@ -43,7 +43,7 @@ const CartButton = memo(({ locale, i18n }: CartButtonProps) => {
                 play={true}
                 loop={false}
                 useSubframes={true}
-                suppressHydrationWarning
+                suppressHydrationWarning={true}
             />
         </Link>
     );

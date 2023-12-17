@@ -2,11 +2,9 @@ import type { PageData, PageType } from '@/api/page';
 import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import { components as slices } from '@/slices';
-import { deepEqual } from '@/utils/deep-equal';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
 import { SliceZone } from '@prismicio/react';
-import { memo } from 'react';
 
 type PageParams<T extends PageType> = {
     shop: Shop;
@@ -22,7 +20,7 @@ type PageParams<T extends PageType> = {
      */
     prefetch: PrefetchData;
 };
-export default memo(function PrismicPage<T extends PageType = 'custom_page'>({
+export default function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
     store,
     locale,
@@ -41,4 +39,4 @@ export default memo(function PrismicPage<T extends PageType = 'custom_page'>({
             context={{ shop, store, prefetch, i18n, locale, type, uid: handle }}
         />
     );
-}, deepEqual);
+}

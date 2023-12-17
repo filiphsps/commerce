@@ -99,12 +99,12 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
     return (
         <Container {...props} className={`${className || ''} ${freeShipping ? 'success' : ''}`}>
             {freeShipping ? (
-                <Label suppressHydrationWarning>{` ${t('free-shipping-on-this-order')} `}</Label>
+                <Label suppressHydrationWarning={true}>{` ${t('free-shipping-on-this-order')} `}</Label>
             ) : (
-                <Label suppressHydrationWarning>
+                <Label suppressHydrationWarning={true}>
                     {amountLeftComponent}
                     {` ${t('away-from-getting')} `}
-                    <Target suppressHydrationWarning>{t('free-shipping')}</Target>.
+                    <Target suppressHydrationWarning={true}>{t('free-shipping')}</Target>.
                 </Label>
             )}
             <ProgressBar $full={freeShipping}>
@@ -115,6 +115,7 @@ export const FreeShippingProgress: FunctionComponent<FreeShippingProgressProps> 
                             ((Number.parseFloat(cost?.totalAmount?.amount!) || 0) / threshold) * 100
                         }%`
                     }}
+                    suppressHydrationWarning={true}
                 />
             </ProgressBar>
         </Container>

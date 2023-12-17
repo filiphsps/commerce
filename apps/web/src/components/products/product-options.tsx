@@ -114,7 +114,11 @@ export const ProductOptions = ({
                 {options?.map((option, index) =>
                     option?.values ? (
                         <Fragment key={option.name}>
-                            <Label className={styles.label} data-options={option.values.length}>
+                            <Label
+                                className={styles.label}
+                                data-options={option.values.length}
+                                suppressHydrationWarning={true}
+                            >
                                 {option.name}
                             </Label>
                             <OptionValues data-options={option.values.length} suppressHydrationWarning={true}>

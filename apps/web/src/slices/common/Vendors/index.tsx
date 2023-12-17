@@ -1,16 +1,8 @@
-'use client';
-
 import VendorsComponent from '@/components/Vendors';
 import PageContent from '@/components/page-content';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styled from 'styled-components';
-
-const Container = styled.section`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: var(--block-spacer);
-`;
+import styles from './vendors.module.scss';
 
 /**
  * Props for `Vendors`.
@@ -22,11 +14,14 @@ export type VendorsProps = SliceComponentProps<Content.VendorsSlice>;
  */
 const Vendors = ({ slice, context }: VendorsProps): JSX.Element => {
     return (
-        <Container data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-            <PageContent>
-                <VendorsComponent data={(context as any)?.prefetch?.vendors} />
-            </PageContent>
-        </Container>
+        <PageContent
+            as="section"
+            className={styles.container}
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+        >
+            <VendorsComponent data={(context as any)?.prefetch?.vendors} />
+        </PageContent>
     );
 };
 

@@ -45,7 +45,7 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
 
                 <HeaderNavigation menu={navigation} locale={locale} />
 
-                <div className={styles.actions} suppressHydrationWarning>
+                <div className={styles.actions} suppressHydrationWarning={true}>
                     <Suspense>
                         <CartButton locale={locale} i18n={i18n} />
                     </Suspense>

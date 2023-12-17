@@ -20,7 +20,7 @@ const Pricing = ({ as: Tag = 'div', price, compareAtPrice, className, ...props }
                     data={price}
                     as={'div'}
                     className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
-                    suppressHydrationWarning
+                    suppressHydrationWarning={true}
                 />
             ) : null}
             {compareAtPrice ? (
@@ -29,7 +29,7 @@ const Pricing = ({ as: Tag = 'div', price, compareAtPrice, className, ...props }
                         data={compareAtPrice}
                         as={'s'}
                         className={`${styles.price} ${styles.dash}`}
-                        suppressHydrationWarning
+                        suppressHydrationWarning={true}
                     />
                 </div>
             ) : null}

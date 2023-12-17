@@ -5,13 +5,13 @@ import styled from 'styled-components';
 
 const Container = styled.div`
     display: flex;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-small);
     justify-content: center;
     align-items: center;
 `;
 const Method = styled.div`
     position: relative;
-    width: 4rem;
+    width: 4.15rem;
     height: 3rem;
 `;
 

@@ -6,9 +6,9 @@ export type AlertProps = {
     severity: 'success' | 'info' | 'warning' | 'error';
     children: React.ReactNode;
 };
-export const Alert = ({ children, severity }: AlertProps) => {
+export const Alert = ({ children, severity, ...props }: AlertProps) => {
     return (
-        <div className={styles.container} data-severity={severity}>
+        <div {...props} className={styles.container} data-severity={severity}>
             <div className={styles.icon}>
                 <PiInfoBold />
             </div>
