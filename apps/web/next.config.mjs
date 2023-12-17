@@ -28,7 +28,7 @@ const config = {
             '@prismicio/client',
             '@prismicio/next',
             '@prismicio/react',
-            '@shopify/hydrogen-react'
+            '@shopify/hydrogen-react',
             'react-icons'
         ],
         optimizeServerReact: true,
