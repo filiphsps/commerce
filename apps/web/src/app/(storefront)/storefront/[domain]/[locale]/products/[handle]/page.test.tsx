@@ -128,9 +128,15 @@ describe('app', () => {
         };
 
         // Mock the `ProductApi` function to prevent API calls.
-        vi.mock('@/api/shopify/product', () => ({
-            ProductApi: vi.fn().mockResolvedValue({ ...product })
-        }));
+        vi.mock('@/api/shopify/product', () => {
+            let ProductApi = vi.fn().mockResolvedValue({
+                ...product
+            }) as any as typeof OriginalPageApi;
+            ProductApi.preload = vi.fn().mockResolvedValue({});
+            return {
+                ProductApi
+            };
+        });
 
         vi.mock('@/api/shop', () => ({
             ShopApi: vi.fn().mockResolvedValue({

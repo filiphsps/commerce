@@ -213,6 +213,16 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
     }
 };
 
+/**
+ * Preload a page to speed up api calls.
+ *
+ * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
+ * @todo Generalize this for all API helpers.
+ */
+ProductApi.preload = (data: ProductOptions) => {
+    void ProductApi(data);
+};
+
 export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Promise<number> => {
     const count_products = async (count: number = 0, cursor?: string) => {
         const { data } = await client.query<{ products: ProductConnection }>(

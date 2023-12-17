@@ -6,7 +6,9 @@ import { NavigationApi } from '@/api/navigation';
 import { ShopApi, type Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
+import { Page } from '@/components/layout/page';
 import { PageProvider } from '@/components/layout/page-provider';
+import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
@@ -19,7 +21,7 @@ import type { Metadata, Viewport } from 'next';
 import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { type ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
 /* c8 ignore start */
@@ -311,7 +313,15 @@ export default async function RootLayout({
                                 i18n={i18n}
                                 data={{ navigation, header, footer }}
                             >
-                                {children}
+                                <Suspense
+                                    fallback={
+                                        <Page>
+                                            <PageContent></PageContent>
+                                        </Page>
+                                    }
+                                >
+                                    {children}
+                                </Suspense>
                             </PageProvider>
                         </ProvidersRegistry>
                     </body>

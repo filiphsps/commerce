@@ -100,6 +100,7 @@ export async function generateMetadata({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Next.js Preloading pattern.
+        ProductApi.preload({ api, handle });
         PageApi.preload({ shop, locale, handle });
 
         // Do the actual API calls.
@@ -172,6 +173,7 @@ export default async function ProductPage({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Next.js Preloading pattern.
+        ProductApi.preload({ api, handle });
         PageApi.preload({ shop, locale, handle });
 
         // Get dictionary of strings for the current locale.

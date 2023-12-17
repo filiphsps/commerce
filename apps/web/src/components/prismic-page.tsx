@@ -5,6 +5,7 @@ import { components as slices } from '@/slices';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
 import { SliceZone } from '@prismicio/react';
+import { Suspense } from 'react';
 
 type PageParams<T extends PageType> = {
     shop: Shop;
@@ -30,13 +31,13 @@ export default function PrismicPage<T extends PageType = 'custom_page'>({
     handle,
     type = 'custom_page' as T
 }: PageParams<T>) {
-    if (!page || (page.slices && page.slices.length <= 0)) return null;
-
     return (
-        <SliceZone
-            slices={page.slices}
-            components={slices}
-            context={{ shop, store, prefetch, i18n, locale, type, uid: handle }}
-        />
+        <Suspense>
+            <SliceZone
+                slices={page?.slices || []}
+                components={slices}
+                context={{ shop, store, prefetch, i18n, locale, type, uid: handle }}
+            />
+        </Suspense>
     );
 }
