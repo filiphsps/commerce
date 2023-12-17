@@ -8,16 +8,23 @@
     grid-template-rows: auto 1fr auto;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
     gap: calc(var(--block-spacer-small) / 2);
+
     height: 100%;
     min-height: 36rem;
     width: 100%;
     min-width: var(--component-product-card-width);
     padding: calc(var(--block-padding) - var(--block-border-width));
-    scroll-snap-align: center;
+
     background-color: var(--product-card-color-background, var(--accent-secondary-light));
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
+
     border-radius: var(--block-border-radius);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+    scroll-snap-align: center;
+
+    // See https://web.dev/articles/content-visibility
+    content-visibility: auto;
+    contain-intrinsic-size: var(--component-product-card-width);
 
     &[data-available='false'] {
         opacity: 0.75;

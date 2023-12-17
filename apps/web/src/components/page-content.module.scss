@@ -8,6 +8,10 @@
     width: 100%;
     margin: 0 auto;
 
+    // See https://web.dev/articles/content-visibility
+    content-visibility: auto;
+    contain-intrinsic-size: 48rem;
+
     &:empty {
         display: none;
     }
