@@ -24,6 +24,9 @@
         backface-visibility: hidden;
         will-change: scroll-position, transform;
 
+        // Attempt at fixing performance on iOS/iPadOS webkit
+        -webkit-overflow-scrolling: touch;
+
         @media (min-width: $breakpoint-mobile) {
             justify-content: start;
             gap: var(--block-spacer);
