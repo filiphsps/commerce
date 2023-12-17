@@ -1,14 +1,14 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import type { Product } from '@/api/product';
-import { ProductCardSkeleton } from '@/components/ProductCard';
+import ProductCard, { ProductCardSkeleton } from '@/components/ProductCard';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
+import { ProductWrapper } from '@/components/products/product-wrapper';
 import type { StoreModel } from '@/models/StoreModel';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import { memo, type HTMLProps } from 'react';
-import { CollectionBlockContent } from './collection-block-content';
 
 export type CollectionBlockCommonProps = {
     isHorizontal?: boolean;
@@ -45,7 +45,11 @@ const CollectionBlock = memo(
                 className={`${styles.container} ${isHorizontal ? styles.horizontal : ''} ${className ? className : ''}`}
             >
                 <div className={styles.content}>
-                    <CollectionBlockContent i18n={i18n} products={products} store={store} priority={priority} />
+                    {products.map((product, index) => (
+                        <ProductWrapper key={product.id} product={product}>
+                            <ProductCard i18n={i18n} data={product} priority={priority && index < 2} />
+                        </ProductWrapper>
+                    ))}
 
                     {showViewAll ? (
                         <Link
@@ -64,7 +68,7 @@ const CollectionBlock = memo(
     deepEqual
 );
 
-CollectionBlock.displayName = 'Nordcom.CollectionBlock';
+CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 export default CollectionBlock;
 
 export const CollectionBlockSkeleton = ({ isHorizontal }: CollectionBlockCommonProps) => {

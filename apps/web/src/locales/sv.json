@@ -26,6 +26,7 @@
         "out-of-stock": "Slutsåld",
         "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
-        "search": "Sök"
+        "search": "Sök",
+        "view-cart": "Visa varukorgen"
     }
 }

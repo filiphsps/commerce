@@ -3,12 +3,12 @@
 import { AppendShopifyParameters } from '@/components/ProductCard/ProductCard';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 import { deepEqual } from '@/utils/deep-equal';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import { memo } from 'react';
-import { useShop } from '../shop/provider';
 
 export type ProductCardImageProps = {
     priority?: boolean;
@@ -32,7 +32,7 @@ const ProductCardImage = memo(({ priority }: ProductCardImageProps) => {
 
     const title = `${product.vendor} ${product.title} by ${shop.name}`;
     return (
-        <Link href={href}>
+        <Link href={href} className={styles['image-wrapper']}>
             <Image
                 className={styles.image}
                 key={image.id}

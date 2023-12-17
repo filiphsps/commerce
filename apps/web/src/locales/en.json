@@ -26,6 +26,7 @@
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
-        "search": "Search"
+        "search": "Search",
+        "view-cart": "View your shopping cart"
     }
 }

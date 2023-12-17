@@ -2,7 +2,7 @@
 
 .container {
     overflow: hidden;
-    display: block;
+    display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 2.25rem;
     flex-grow: 0;
@@ -47,7 +47,6 @@
     }
 
     &[data-items]:not([data-items='0']) {
-        display: grid;
         gap: var(--block-spacer-small);
         padding: var(--block-padding-small) calc(var(--block-padding) * 1.25);
         background-color: var(--accent-primary);

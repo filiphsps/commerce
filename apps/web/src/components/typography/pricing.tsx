@@ -20,11 +20,17 @@ const Pricing = ({ as: Tag = 'div', price, compareAtPrice, className, ...props }
                     data={price}
                     as={'div'}
                     className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
+                    suppressHydrationWarning
                 />
             ) : null}
             {compareAtPrice ? (
                 <div className={styles.previous}>
-                    <Money data={compareAtPrice} as={'s'} className={`${styles.price} ${styles.dash}`} />
+                    <Money
+                        data={compareAtPrice}
+                        as={'s'}
+                        className={`${styles.price} ${styles.dash}`}
+                        suppressHydrationWarning
+                    />
                 </div>
             ) : null}
         </Tag>

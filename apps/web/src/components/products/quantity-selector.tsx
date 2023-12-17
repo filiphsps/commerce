@@ -89,6 +89,7 @@ const QuantitySelector = memo(({ className, i18n, value: quantity = 0, update, .
                     setQuantityValue(value);
                 }}
                 data-quantity-input
+                suppressHydrationWarning
             />
             <button
                 type="button"

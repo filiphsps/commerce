@@ -5,10 +5,12 @@
     flex-direction: column;
     gap: var(--block-spacer-large);
 
-    padding: var(--block-padding-large);
-    background: var(--color-block);
-    border-radius: var(--block-border-radius);
-    color: var(--foreground);
+    &:not(.full) {
+        padding: var(--block-padding-large);
+        background: var(--color-block);
+        border-radius: var(--block-border-radius);
+        color: var(--foreground);
+    }
 
     .header {
         display: flex;
@@ -48,6 +50,12 @@
             p {
                 font-size: 1.5rem;
             }
+        }
+    }
+
+    &.full {
+        .full-collection {
+            padding: 0;
         }
     }
 }

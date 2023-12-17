@@ -1,15 +1,14 @@
-'use client';
-
+import type { Product } from '@/api/product';
+import { AppendShopifyParameters } from '@/components/ProductCard';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { deepEqual } from '@/utils/deep-equal';
-import { useProduct } from '@shopify/hydrogen-react';
 import { memo } from 'react';
-import { AppendShopifyParameters } from './ProductCard';
 
-export type ProductCardTitleProps = {};
-const ProductCardTitle = memo(({}: ProductCardTitleProps) => {
-    const { product } = useProduct();
+export type ProductCardTitleProps = {
+    data: Product;
+};
+const ProductCardTitle = memo(({ data: product }: ProductCardTitleProps) => {
     if (!product) return null;
 
     // TODO: Hotlink to variant.

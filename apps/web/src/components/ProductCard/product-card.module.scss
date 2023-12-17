@@ -39,11 +39,16 @@
         width: 100%;
         padding: var(--block-padding-small);
         border-radius: var(--block-border-radius-small);
-        transition: 150ms ease-in-out;
+        transition: 150ms ease-in-out padding;
+        will-change: padding;
         user-select: none;
         background-color: var(--product-card-color-image-background, var(--color-bright));
         box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
         aspect-ratio: 1.25 / 1;
+
+        .image-wrapper {
+            display: contents;
+        }
 
         img,
         .image {
@@ -144,7 +149,7 @@
 
             cursor: pointer;
             opacity: 0.75;
-            transition: 150ms ease-in-out all;
+            transition: 150ms ease-in-out color;
 
             &[data-active='true'] {
                 opacity: 1;
@@ -177,7 +182,9 @@
         background-color: var(--color-bright);
         border-radius: var(--block-border-radius);
         border: none;
-        transition: 250ms ease-in-out all;
+        transition:
+            250ms ease-in-out color,
+            250ms ease-in-out border-radius;
 
         :is([data-quantity-decrease], [data-quantity-increase]) {
             position: relative;
@@ -189,7 +196,10 @@
             height: 3.25rem;
             padding: 0 0.35rem 0 0;
             cursor: pointer;
-            transition: 150ms ease-in-out all;
+            transition:
+                250ms ease-in-out background-color,
+                250ms ease-in-out border-radius,
+                250ms ease-in-out width;
             text-align: center;
             font-size: 1.85em;
             font-weight: 600;
@@ -227,7 +237,6 @@
             font-size: 1.85rem;
             line-height: 1;
             outline: none;
-            transition: 150ms all ease-in-out;
             font-variant: common-ligatures tabular-nums slashed-zero;
 
             &::-webkit-inner-spin-button,

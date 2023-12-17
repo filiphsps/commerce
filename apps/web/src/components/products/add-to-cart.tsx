@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
+import { useShop } from '@/components/shop/provider';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
@@ -13,7 +14,6 @@ import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { memo, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
-import { useShop } from '../shop/provider';
 
 export type AddToCartProps = {
     i18n: LocaleDictionary;

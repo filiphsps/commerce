@@ -26,10 +26,19 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
     }
 
     return (
-        <section className={styles.container} data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-            <PageContent>
-                <CollectionBlock data={collection as any} store={store} i18n={i18n} limit={250} showViewAll={false} />
-            </PageContent>
-        </section>
+        <PageContent
+            className={`${styles.container} ${styles.full}`}
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+        >
+            <CollectionBlock
+                className={styles['full-collection']}
+                data={collection as any}
+                store={store}
+                i18n={i18n}
+                limit={250}
+                showViewAll={false}
+            />
+        </PageContent>
     );
 };
