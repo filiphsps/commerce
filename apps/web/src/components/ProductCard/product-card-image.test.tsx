@@ -1,6 +1,6 @@
+import ProductCardImage from '@/components/ProductCard/product-card-image';
 import { render } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
-import ProductCardImage from './product-image';
 
 describe('components', () => {
     describe('product-card', () => {
