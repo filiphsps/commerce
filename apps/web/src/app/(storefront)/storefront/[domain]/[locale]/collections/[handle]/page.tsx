@@ -2,7 +2,7 @@ import { PageApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { LocalesApi, StoreApi } from '@/api/store';
+import { StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -24,7 +24,7 @@ import styles from './page.module.scss';
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
-    const locale = Locale.default;
+    //const locale = Locale.default;
     const shops = await ShopsApi();
 
     const pages = (
@@ -32,21 +32,21 @@ export async function generateStaticParams() {
             shops
                 .map(async (shop) => {
                     try {
-                        const api = await ShopifyApolloApiClient({ shop, locale });
-                        const locales = await LocalesApi({ api });
+                        //const api = await ShopifyApolloApiClient({ shop, locale });
+                        //const locales = await LocalesApi({ api });
 
                         return await Promise.all(
-                            locales
+                            ['en-US', 'de-DE', 'en-GB', 'en-CA', 'en-AU'] // TODO: Don't hardcode these ones.
                                 .map(async (locale) => {
                                     try {
-                                        const api = await ShopifyApolloApiClient({ shop, locale });
+                                        const api = await ShopifyApolloApiClient({ shop, locale: Locale.from(locale) });
                                         const collections = await CollectionsApi({ client: api });
 
                                         return collections
                                             .filter(({ hasProducts }) => hasProducts)
                                             .map(({ handle }) => ({
                                                 domain: shop.domains.primary,
-                                                locale: locale.code,
+                                                locale: locale,
                                                 handle
                                             }));
                                     } catch {
