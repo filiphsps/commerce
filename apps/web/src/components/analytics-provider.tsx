@@ -18,9 +18,10 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
             {shop?.configuration?.thirdParty?.googleTagManager ? (
                 <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
             ) : null}
-            <Trackable>{children}</Trackable>;
             <VercelAnalytics debug={false} />
             <SpeedInsights debug={false} />
+
+            <Trackable>{children}</Trackable>
         </>
     );
 };
