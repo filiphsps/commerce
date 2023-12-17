@@ -202,3 +202,10 @@ input[type='search']:is(
         height: var(--block-spacer) !important;
     }
 }
+
+svg .primary.design,
+svg .primary {
+    stroke: inherit !important;
+    color: inherit !important;
+    fill: inherit !important;
+}

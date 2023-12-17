@@ -8,7 +8,7 @@ import type { CollectionSliceDefault } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import styles from './collection.module.scss';
 
 export type CollectionContainerProps = {
@@ -46,7 +46,7 @@ export const CollectionContainer = ({ slice, locale, children }: CollectionConta
                         </div>
                     )}
 
-                    {children}
+                    <Suspense>{children}</Suspense>
                 </div>
             </PageContent>
         </section>

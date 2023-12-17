@@ -102,20 +102,6 @@
         }
     }
 
-    .pricing {
-        display: flex;
-        flex-direction: column-reverse;
-        justify-content: flex-start;
-        align-items: flex-start;
-        gap: 0;
-        height: 100%;
-        font-size: 0.75rem;
-
-        & > div {
-            display: contents;
-        }
-    }
-
     .quantity-action {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -242,6 +228,20 @@
                 -webkit-appearance: none;
                 margin: 0;
             }
+        }
+    }
+
+    .pricing {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 0;
+        height: 100%;
+        font-size: 0.75rem;
+
+        & > div {
+            display: contents;
         }
     }
 

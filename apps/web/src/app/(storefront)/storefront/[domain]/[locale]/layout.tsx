@@ -244,7 +244,7 @@ export default async function RootLayout({
                     suppressHydrationWarning
                 >
                     <head />
-                    <body>
+                    <body data-scrolled="false">
                         <SocialProfileJsonLd
                             useAppDir
                             type="Organization"
@@ -279,7 +279,7 @@ export default async function RootLayout({
                                 addressLocality: 'Mellerud',
                                 addressRegion: 'Västra Götaland',
                                 postalCode: '464 30',
-                                addressCountry: 'Sweden'
+                                addressCountry: 'SE'
                             }}
                             contactPoint={{
                                 '@type': 'ContactPoint',

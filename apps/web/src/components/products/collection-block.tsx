@@ -7,7 +7,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
-import { Suspense, memo, type HTMLProps } from 'react';
+import { memo, type HTMLProps } from 'react';
 import { CollectionBlockContent } from './collection-block-content';
 
 export type CollectionBlockCommonProps = {
@@ -23,47 +23,49 @@ export type CollectionBlockProps = {
     priority?: boolean;
 } & CollectionBlockCommonProps &
     HTMLProps<HTMLDivElement>;
-const CollectionBlock = ({
-    data: collection,
-    limit,
-    isHorizontal,
-    showViewAll,
-    store,
-    i18n,
-    priority,
-    className,
-    ...props
-}: CollectionBlockProps) => {
-    // TODO: Add collection type.
-    const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];
-    if (!collection || !products || products.length <= 0) return null;
+const CollectionBlock = memo(
+    ({
+        data: collection,
+        limit,
+        isHorizontal,
+        showViewAll,
+        store,
+        i18n,
+        priority,
+        className,
+        ...props
+    }: CollectionBlockProps) => {
+        // TODO: Add collection type.
+        const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];
+        if (!collection || !products || products.length <= 0) return null;
 
-    return (
-        <section
-            {...props}
-            className={`${styles.container} ${isHorizontal ? styles.horizontal : ''} ${className ? className : ''}`}
-        >
-            <div className={styles.content}>
-                <Suspense fallback={<>{fallback}</>}>
+        return (
+            <section
+                {...props}
+                className={`${styles.container} ${isHorizontal ? styles.horizontal : ''} ${className ? className : ''}`}
+            >
+                <div className={styles.content}>
                     <CollectionBlockContent i18n={i18n} products={products} store={store} priority={priority} />
-                </Suspense>
 
-                {showViewAll ? (
-                    <Link
-                        href={`/collections/${collection.handle}/`}
-                        className={styles.viewAll}
-                        title="Browse all products" // TODO: i18n.
-                        // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
-                    >
-                        View all of the products in this collection
-                    </Link>
-                ) : null}
-            </div>
-        </section>
-    );
-};
+                    {showViewAll ? (
+                        <Link
+                            href={`/collections/${collection.handle}/`}
+                            className={styles.viewAll}
+                            title="Browse all products" // TODO: i18n.
+                            // TODO: View all {products.length} {Pluralize({ count: products.length, noun: 'product' })}.
+                        >
+                            View all of the products in this collection
+                        </Link>
+                    ) : null}
+                </div>
+            </section>
+        );
+    },
+    deepEqual
+);
 
-export default memo(CollectionBlock, deepEqual);
+CollectionBlock.displayName = 'Nordcom.CollectionBlock';
+export default CollectionBlock;
 
 export const CollectionBlockSkeleton = ({ isHorizontal }: CollectionBlockCommonProps) => {
     return (
