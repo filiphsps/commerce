@@ -3,30 +3,17 @@
 import styles from '@/components/ProductCard/product-card.module.scss';
 import ProductCardImage from '@/components/ProductCard/product-image';
 import Link from '@/components/link';
-import AddToCart from '@/components/products/add-to-cart';
-import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
-import Pricing from '@/components/typography/pricing';
 import type { StoreModel } from '@/models/StoreModel';
 import { deepEqual } from '@/utils/deep-equal';
 import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/locale';
 import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CSSProperties, FunctionComponent } from 'react';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
+import ProductCardActions from './product-card-actions';
 import ProductTitle from './product-title';
-
-const Actions = styled.div`
-    grid-area: product-actions;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr minmax(4rem, 1fr);
-    grid-auto-flow: dense;
-    gap: var(--block-spacer);
-    justify-content: space-between;
-    align-items: end;
-`;
 
 const DiscountBadge = styled.div`
     position: absolute;
@@ -116,8 +103,6 @@ interface ProductCardProps {
     priority?: boolean;
 }
 const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, style, priority }) => {
-    const [quantityValue, setQuantityValue] = useState(1);
-    const quantity = quantityValue || 0;
     const { product, selectedVariant, setSelectedVariant } = useProduct();
 
     const { locale } = useShop();
@@ -226,32 +211,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
                     </section>
                 ) : null}
             </div>
-            <Actions>
-                <div className={styles['quantity-action']}>
-                    <Pricing
-                        className={styles.pricing}
-                        price={selectedVariant.price as any}
-                        compareAtPrice={selectedVariant?.compareAtPrice as any}
-                    />
 
-                    <QuantitySelector
-                        className={styles.quantity}
-                        i18n={i18n}
-                        value={quantityValue}
-                        update={(quantity) => {
-                            setQuantityValue(quantity);
-                        }}
-                    />
-                </div>
-
-                <AddToCart
-                    className={styles.button}
-                    type="button"
-                    quantity={quantity}
-                    i18n={i18n}
-                    disabled={!!selectedVariant.availableForSale}
-                />
-            </Actions>
+            <ProductCardActions i18n={i18n} selectedVariant={selectedVariant as any} />
         </Container>
     );
 };

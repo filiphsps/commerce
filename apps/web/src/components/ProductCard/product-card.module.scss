@@ -253,3 +253,14 @@
         }
     }
 }
+
+.actions {
+    grid-area: product-actions;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr minmax(4rem, 1fr);
+    grid-auto-flow: dense;
+    gap: var(--block-spacer);
+    justify-content: space-between;
+    align-items: end;
+}
