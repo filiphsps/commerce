@@ -14,7 +14,7 @@ const config = {
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
-    transpilePackages: ['react-icons', '@lordicon/react'],
+    transpilePackages: ['react-icons'],
     experimental: {
         appDocumentPreloading: true,
         esmExternals: true,
@@ -29,10 +29,11 @@ const config = {
             '@prismicio/next',
             '@prismicio/react',
             '@shopify/hydrogen-react'
-            //'react-icons'
+            'react-icons'
         ],
         optimizeServerReact: true,
         scrollRestoration: true,
+        serverComponentsExternalPackages: ['@highlight-run/node'],
         turbo: {
             resolveAlias: {
                 '@/styles/': './src/scss/'
@@ -44,7 +45,7 @@ const config = {
     },
     images: {
         //loader: 'custom',
-        loaderFile: './src/utils/image-loader.ts',
+        //loaderFile: './src/utils/image-loader.ts',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {
