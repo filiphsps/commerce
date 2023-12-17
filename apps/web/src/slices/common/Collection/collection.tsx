@@ -3,7 +3,6 @@ import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
-import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceDefault } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
@@ -17,7 +16,6 @@ export type CollectionContainerProps = {
         slice_label: null;
         id?: string | undefined;
     } & CollectionSliceDefault;
-    store: StoreModel;
     locale: Locale;
     i18n: LocaleDictionary;
     prefetch?: PrefetchData;

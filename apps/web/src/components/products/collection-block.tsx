@@ -1,10 +1,9 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import type { Product } from '@/api/product';
-import ProductCard, { ProductCardSkeleton } from '@/components/ProductCard';
+import ProductCard from '@/components/ProductCard';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
 import { ProductWrapper } from '@/components/products/product-wrapper';
-import type { StoreModel } from '@/models/StoreModel';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
@@ -16,7 +15,6 @@ export type CollectionBlockCommonProps = {
 
 export type CollectionBlockProps = {
     i18n: LocaleDictionary;
-    store: StoreModel;
     data: Collection;
     limit?: number;
     showViewAll?: boolean;
@@ -29,7 +27,6 @@ const CollectionBlock = memo(
         limit,
         isHorizontal,
         showViewAll,
-        store,
         i18n,
         priority,
         className,
@@ -71,12 +68,10 @@ const CollectionBlock = memo(
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 export default CollectionBlock;
 
-export const CollectionBlockSkeleton = ({ isHorizontal }: CollectionBlockCommonProps) => {
+export const CollectionBlockSkeleton = ({ isHorizontal, children }: CollectionBlockCommonProps) => {
     return (
         <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''} ${styles.skeleton}`}>
-            <div className={styles.content}>{fallback}</div>
+            <div className={styles.content}>{children}</div>
         </section>
     );
 };
-
-const fallback = [...Array(7).keys()].map((i) => <ProductCardSkeleton key={i} />);

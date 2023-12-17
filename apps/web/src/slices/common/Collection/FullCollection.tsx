@@ -1,6 +1,5 @@
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
-import type { StoreModel } from '@/models/StoreModel';
 import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { PrefetchData } from '@/utils/prefetch';
@@ -13,12 +12,11 @@ interface FullCollectionProps {
         slice_label: null;
         id?: string | undefined;
     } & CollectionSliceFull;
-    store: StoreModel;
     locale: Locale;
     i18n: LocaleDictionary;
     prefetch?: PrefetchData;
 }
-export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, store, prefetch, i18n }) => {
+export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, prefetch, i18n }) => {
     const collection = prefetch?.collections?.[slice.primary.handle!];
     if (!collection) {
         console.warn(`Collection ${slice.primary.handle} not found in prefetch data`);
@@ -34,7 +32,6 @@ export const FullCollection: FunctionComponent<FullCollectionProps> = ({ slice, 
             <CollectionBlock
                 className={styles['full-collection']}
                 data={collection as any}
-                store={store}
                 i18n={i18n}
                 limit={250}
                 showViewAll={false}

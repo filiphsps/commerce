@@ -21,7 +21,6 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
                 <CollectionContainer
                     slice={slice}
                     prefetch={context.prefetch}
-                    store={context.store}
                     locale={context.locale}
                     i18n={context.i18n}
                 >
@@ -30,7 +29,6 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
                         limit={slice.primary.limit || 16}
                         data={context?.prefetch?.collections?.[slice.primary.handle!]}
                         showViewAll={true}
-                        store={context?.store}
                         i18n={context.i18n}
                         priority={index < 3}
                     />
@@ -39,13 +37,7 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
         }
         case 'full': {
             return (
-                <FullCollection
-                    slice={slice}
-                    prefetch={context.prefetch}
-                    store={context.store}
-                    locale={context.locale}
-                    i18n={context.i18n}
-                />
+                <FullCollection slice={slice} prefetch={context.prefetch} locale={context.locale} i18n={context.i18n} />
             );
         }
         default: {

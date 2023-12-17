@@ -184,7 +184,6 @@ export default async function CollectionPage({
                         <>
                             <CollectionBlock
                                 data={collection as any}
-                                store={store}
                                 i18n={i18n}
                                 // TODO: Pagination.
                                 limit={250}
