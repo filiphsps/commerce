@@ -123,7 +123,11 @@ const config = {
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
 
         // Highlight.
-        HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY
+        HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
+
+        // Misc.
+        ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
     async redirects() {
         return [
