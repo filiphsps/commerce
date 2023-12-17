@@ -1,20 +1,21 @@
+'use client';
+
 import styles from '@/components/ProductCard/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
+import { useProduct } from '@shopify/hydrogen-react';
 import { memo } from 'react';
 
-export type ProductTitleProps = {
-    title?: string;
-    vendor?: string;
-};
+export type ProductTitleProps = {};
+const ProductTitle = memo(({}: ProductTitleProps) => {
+    const { product } = useProduct();
 
-const ProductTitle = memo(({ title, vendor }: ProductTitleProps) => {
     return (
         <>
-            {vendor ? <div className={styles.brand}>{vendor}</div> : null}
-            {title ? <div className={styles.title}>{title}</div> : null}
+            {product?.vendor ? <div className={styles.brand}>{product.vendor}</div> : null}
+            {product?.title ? <div className={styles.title}>{product.title}</div> : null}
         </>
     );
 }, deepEqual);
-ProductTitle.displayName = 'Nordcom.ProductTitle';
 
+ProductTitle.displayName = 'Nordcom.ProductTitle';
 export default ProductTitle;

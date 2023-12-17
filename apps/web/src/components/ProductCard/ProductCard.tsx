@@ -11,83 +11,8 @@ import { useProduct } from '@shopify/hydrogen-react';
 import type { ProductVariant, Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { CSSProperties, FunctionComponent } from 'react';
 import { memo } from 'react';
-import styled from 'styled-components';
 import ProductCardActions from './product-card-actions';
 import ProductTitle from './product-title';
-
-const DiscountBadge = styled.div`
-    position: absolute;
-    inset: var(--block-spacer-tiny) var(--block-spacer-tiny) auto auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--block-padding-small) var(--block-padding);
-    z-index: 1;
-    pointer-events: none;
-    font-weight: 500;
-    font-size: 1.15rem;
-    line-height: 1;
-    background: var(--color-sale);
-    color: var(--color-bright);
-    border-radius: var(--block-border-radius);
-    box-shadow: 0 0 0.5rem 0 var(--color-block-shadow);
-
-    b {
-        font-weight: 700;
-        font-size: 1.45rem;
-        margin-right: var(--block-spacer-tiny);
-    }
-`;
-const Badges = styled.div`
-    display: flex;
-    align-items: start;
-    justify-content: start;
-    gap: var(--block-spacer-small);
-    z-index: 1;
-    pointer-events: none;
-
-    position: absolute;
-    inset: auto 0 0 auto;
-`;
-const Badge = styled.div`
-    flex-shrink: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: var(--block-spacer-small);
-    padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
-        var(--block-padding);
-    background: var(--accent-primary-light);
-    color: var(--accent-primary-text);
-    border-top-left-radius: var(--block-border-radius);
-    font-weight: 500;
-    font-size: 1.25rem;
-    line-height: normal;
-    text-align: center;
-
-    &.New {
-        background: var(--accent-primary-light);
-        color: var(--accent-primary-text);
-    }
-    &.Vegan {
-        background: rgba(var(--color-green-rgb), 0.9);
-        color: var(--color-bright);
-        text-shadow: 0 0 0.25rem var(--color-dark);
-    }
-`;
-
-const Container = styled.section<{ $available?: boolean }>`
-    background: var(--accent-secondary-light);
-    color: var(--accent-secondary-text);
-
-    &[data-available='false'] {
-        opacity: 0.75;
-        filter: brightness(0.85);
-        background: var(--color-block);
-        color: var(--color-dark);
-    }
-`;
 
 export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
     if (!params) return url;
@@ -143,7 +68,7 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
     }
 
     return (
-        <Container
+        <div
             className={`${styles.container} ${className || ''}`}
             data-available={!!selectedVariant.availableForSale}
             style={style}
@@ -156,21 +81,29 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
                 ) : null}
 
                 {discount > 1 && ( // Handle rounding-errors.
-                    <DiscountBadge>
+                    <div className={styles.badge} data-variant="discount">
                         <b>{discount}%</b> OFF
-                    </DiscountBadge>
+                    </div>
                 )}
 
                 {isNewProduct || isVegan ? (
-                    <Badges>
-                        {isNewProduct && <Badge className="New">New!</Badge>}
-                        {isVegan && <Badge className="Vegan">Vegan</Badge>}
-                    </Badges>
+                    <div className={styles.badges}>
+                        {isNewProduct && (
+                            <div className={styles.badge} data-variant="new">
+                                New!
+                            </div>
+                        )}
+                        {isVegan && (
+                            <div className={styles.badge} data-variant="vegan">
+                                Vegan
+                            </div>
+                        )}
+                    </div>
                 ) : null}
             </div>
             <div className={styles.details}>
                 <Link href={href} title={linkTitle} className={styles.header}>
-                    <ProductTitle title={product.title} vendor={product.vendor} />
+                    <ProductTitle />
                 </Link>
 
                 {/* FIXME: Deal with options here. */}
@@ -212,8 +145,8 @@ const ProductCard: FunctionComponent<ProductCardProps> = ({ className, i18n, sty
                 ) : null}
             </div>
 
-            <ProductCardActions i18n={i18n} selectedVariant={selectedVariant as any} />
-        </Container>
+            <ProductCardActions i18n={i18n} />
+        </div>
     );
 };
 

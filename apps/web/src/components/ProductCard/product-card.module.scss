@@ -14,9 +14,17 @@
     min-width: var(--component-product-card-width);
     padding: calc(var(--block-padding) - var(--block-border-width));
     scroll-snap-align: center;
-    background-color: var(--product-card-color-background);
+    background-color: var(--product-card-color-background, var(--accent-secondary-light));
+    color: var(--product-card-color-foreground, var(--accent-secondary-text));
     border-radius: var(--block-border-radius);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+
+    &[data-available='false'] {
+        opacity: 0.75;
+        filter: brightness(0.85);
+        background: var(--color-block);
+        color: var(--color-dark);
+    }
 
     .button {
         height: 100%;
@@ -263,4 +271,68 @@
     gap: var(--block-spacer);
     justify-content: space-between;
     align-items: end;
+}
+
+/* TODO: Move these into it's own component. */
+.badges {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--block-spacer-small);
+    z-index: 1;
+    pointer-events: none;
+
+    position: absolute;
+    inset: auto 0 0 auto;
+}
+.badge {
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--block-spacer-small);
+    padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
+        var(--block-padding);
+    background: var(--accent-primary-light);
+    color: var(--accent-primary-text);
+    border-top-left-radius: var(--block-border-radius);
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: normal;
+    text-align: center;
+
+    &[data-variant='discount'] {
+        position: absolute;
+        inset: var(--block-spacer-tiny) auto auto var(--block-spacer-tiny);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: var(--block-padding-small) var(--block-padding);
+        z-index: 1;
+        pointer-events: none;
+        font-weight: 500;
+        font-size: 1.15rem;
+        line-height: 1;
+        background: var(--color-sale);
+        color: var(--color-bright);
+        border-radius: var(--block-border-radius);
+        box-shadow: 0 0 0.5rem 0 var(--color-block-shadow);
+
+        b {
+            font-weight: 700;
+            font-size: 1.45rem;
+            margin-right: var(--block-spacer-tiny);
+        }
+    }
+
+    &[data-variant='new'] {
+        background: var(--accent-primary-light);
+        color: var(--accent-primary-text);
+    }
+    &[data-variant='vegan'] {
+        background: rgba(var(--color-green-rgb), 0.9);
+        color: var(--color-bright);
+        text-shadow: 0 0 0.25rem var(--color-dark);
+    }
 }

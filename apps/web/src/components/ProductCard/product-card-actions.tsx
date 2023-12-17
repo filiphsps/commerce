@@ -1,18 +1,20 @@
-import type { ProductVariant } from '@/api/product';
+'use client';
+
 import styles from '@/components/ProductCard/product-card.module.scss';
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import Pricing from '@/components/typography/pricing';
 import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
+import { useProduct } from '@shopify/hydrogen-react';
 import { memo, useState } from 'react';
 
 export type ProductCardActionsProps = {
     i18n: LocaleDictionary;
-    selectedVariant?: ProductVariant;
 };
 
-const ProductCardActions = memo(({ i18n, selectedVariant }: ProductCardActionsProps) => {
+const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
+    const { selectedVariant } = useProduct();
     const [quantity, setQuantity] = useState(1);
 
     if (!selectedVariant) return null;
@@ -23,7 +25,7 @@ const ProductCardActions = memo(({ i18n, selectedVariant }: ProductCardActionsPr
                 <Pricing
                     className={styles.pricing}
                     price={selectedVariant.price as any}
-                    compareAtPrice={selectedVariant?.compareAtPrice as any}
+                    compareAtPrice={selectedVariant.compareAtPrice as any}
                 />
 
                 <QuantitySelector
