@@ -135,7 +135,7 @@ export type FooterContentProps = {
     i18n: LocaleDictionary;
     store: StoreModel;
 };
-export const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
+const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
 
     const [deferred, setDeferred] = useState<any>(null);
@@ -213,3 +213,5 @@ export const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
         </>
     );
 };
+
+export default FooterContent;

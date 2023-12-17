@@ -1,20 +1,21 @@
-import { FooterContent } from '@/components/Footer/footer-content';
 import type { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import type { FunctionComponent } from 'react';
 import Link from '../link';
 import { PrismicText } from '../typography/prismic-text';
 import styles from './footer.module.scss';
 
-interface FooterProps {
+const FooterContent = dynamic(() => import('@/components/Footer/footer-content'));
+
+type FooterProps = {
     store: StoreModel;
     data: FooterModel;
     locale: Locale;
     i18n: LocaleDictionary;
-}
-const Footer: FunctionComponent<FooterProps> = ({ store, data: footer, locale, i18n }) => {
+};
+const Footer = ({ store, data: footer, locale, i18n }: FooterProps) => {
     // TODO: Dynamic copyright copy and content.
     return (
         <footer className={styles.container}>

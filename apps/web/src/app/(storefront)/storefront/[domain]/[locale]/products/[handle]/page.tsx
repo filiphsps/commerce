@@ -40,6 +40,7 @@ export async function generateStaticParams() {
     const pages = (
         await Promise.all(
             shops
+                .filter((shop) => shop.domains.primary !== 'demo.nordcom.io') // TEMP
                 .map(async (shop) => {
                     try {
                         //const api = await ShopifyApolloApiClient({ shop, locale });

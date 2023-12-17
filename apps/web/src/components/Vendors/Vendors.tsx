@@ -2,12 +2,11 @@
 
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
-import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: var(--block-spacer);
 
     @media (max-width: 950px) {
@@ -24,7 +23,7 @@ const Vendor = styled(Link)`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem 0.5rem;
+    padding: var(--block-padding) var(--block-padding);
     background: var(--accent-secondary);
     color: var(--accent-secondary-text);
 
@@ -34,6 +33,7 @@ const Vendor = styled(Link)`
     text-transform: uppercase;
     font-size: 1.25rem;
     font-weight: 700;
+    line-height: 1;
     cursor: pointer;
 
     &.ShowMore {
@@ -56,10 +56,10 @@ const Vendor = styled(Link)`
     }
 `;
 
-interface VendorsProps {
+export type VendorsProps = {
     data: Array<VendorModel>;
-}
-const Vendors: FunctionComponent<VendorsProps> = ({ data: vendors }) => {
+};
+const Vendors = ({ data: vendors }: VendorsProps) => {
     if (!vendors) return <Container className="Vendors">{/* TODO: Shimmer */}</Container>;
 
     return (
