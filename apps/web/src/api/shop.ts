@@ -121,6 +121,14 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         customers: null
                     }
                 },
+                icons: {
+                    favicon: {
+                        src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/logo-square.png?v=1701401938',
+                        alt: 'Sweet Side of Sweden Logo- Copyright 2023 Nordcom Group Inc.',
+                        width: 512,
+                        height: 512
+                    }
+                },
                 content: {
                     type: 'prismic' as const,
                     id: !!process.env.PRISMIC_REPO

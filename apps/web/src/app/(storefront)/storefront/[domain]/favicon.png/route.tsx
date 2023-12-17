@@ -58,7 +58,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         }
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */
-        const image = new ImageResponse(
+        return new ImageResponse(
             (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img width={width!} height={height!} src={src} />
@@ -68,14 +68,6 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
                 height: height!
             }
         );
-
-        return NextResponse.json(image.body, {
-            headers: {
-                ...image.headers,
-                'Content-Type': 'image/png' // TODO: Also add `image/x-icon`.
-            },
-            status: 200
-        });
     } catch (error) {
         console.error(error);
 
