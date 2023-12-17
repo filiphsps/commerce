@@ -76,7 +76,7 @@ export default function ProvidersRegistry({
                         >
                             <ShopProvider shop={shop} currency={'USD'} locale={locale}>
                                 <HeaderProvider store={store}>
-                                    <AnalyticsProvider>
+                                    <AnalyticsProvider shop={shop}>
                                         <ThirdPartiesProvider shop={shop} locale={locale}>
                                             <Toaster
                                                 theme="dark"

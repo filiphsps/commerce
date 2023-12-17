@@ -32,7 +32,7 @@ const config = {
             'react-icons'
         ],
         optimizeServerReact: true,
-        scrollRestoration: true,
+        //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
         turbo: {
             resolveAlias: {
@@ -40,7 +40,6 @@ const config = {
             }
         },
         webpackBuildWorker: true,
-        webVitalsAttribution: ['CLS', 'LCP', 'INP'],
         windowHistorySupport: true
     },
     images: {
