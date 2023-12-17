@@ -52,7 +52,8 @@ export async function generateStaticParams() {
                                         const api = await ShopifyApolloApiClient({ shop, locale: Locale.from(locale) });
                                         const { products } = await ProductsApi({ api });
 
-                                        return products.map(({ node: { handle } }) => ({
+                                        // TODO: This is a hack to prevent us from building way too many pages.
+                                        return products.slice(0, 25).map(({ node: { handle } }) => ({
                                             domain: shop.domains.primary,
                                             locale: locale,
                                             handle
