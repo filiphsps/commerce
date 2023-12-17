@@ -32,8 +32,9 @@ const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
                     className={styles.quantity}
                     i18n={i18n}
                     value={quantity}
-                    update={(quantity) => {
-                        setQuantity(quantity);
+                    update={(value) => {
+                        if (value === quantity) return;
+                        setQuantity(value);
                     }}
                 />
             </div>
