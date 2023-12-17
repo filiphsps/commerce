@@ -2,7 +2,7 @@ import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
-import { IntercomProvider, useIntercom } from 'react-use-intercom';
+import { IntercomProvider } from 'react-use-intercom';
 
 export type LiveChatProps = {
     shop: Shop;
