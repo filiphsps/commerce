@@ -3,9 +3,6 @@
 @import './globals.scss';
 //@use '_globals.scss' as *;
 
-// Components
-// @import './carousel.scss';
-
 :root {
     --fallback-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
         'Helvetica Neue', sans-serif;
@@ -123,7 +120,6 @@ body {
 
         &[data-type='error'] {
             background-color: var(--color-danger);
-
             border-color: var(--color-danger-dark);
         }
 
@@ -143,21 +139,6 @@ a:not(:disabled) {
         color: var(--accent-primary-light);
         text-decoration-color: var(--accent-primary-light);
     }
-}
-
-/* Hack to try and improve image rendering */
-img {
-    backface-visibility: hidden;
-    // Firefox
-    image-rendering: -moz-crisp-edges;
-    // Opera
-    image-rendering: -o-crisp-edges;
-    // Webkit (non-standard naming)
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    // IE (non-standard property)
-    -ms-interpolation-mode: nearest-neighbor;
-    //transform: translateZ(0);
 }
 
 input[type='number'] {
