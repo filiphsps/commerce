@@ -1,6 +1,6 @@
 import styles from '@/components/page-content.module.scss';
 import type { As } from '@nordcom/nordstar';
-
+import { deepEqual } from '@/utils/deep-equal';
 import { memo, type HTMLProps, type ReactNode } from 'react';
 
 export type PageContentProps = {
@@ -10,7 +10,7 @@ export type PageContentProps = {
 } & HTMLProps<HTMLDivElement>;
 const PageContent = memo(({ as: Tag = 'div', primary, className, ...props }: PageContentProps) => {
     return <Tag {...props} className={`${styles.container} ${primary ? styles.primary : ''} ${className || ''}`} />;
-});
+}, deepEqual);
 
 PageContent.displayName = 'Nordcom.PageContent';
 export default PageContent;
