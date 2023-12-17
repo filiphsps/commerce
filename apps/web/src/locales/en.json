@@ -12,7 +12,8 @@
         "sale-discount": "Sale Discount",
         "shipping-calculated-at-checkout": "Shipping calculated at checkout",
         "shipping": "Shipping",
-        "subtotal": "Subtotal"
+        "subtotal": "Subtotal",
+        "view-cart": "View your shopping cart"
     },
     "common": {
         "add-to-cart": "Add to Cart",
@@ -26,7 +27,6 @@
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
-        "search": "Search",
-        "view-cart": "View your shopping cart"
+        "search": "Search"
     }
 }

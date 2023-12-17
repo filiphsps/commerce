@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    gap: var(--block-spacer-small);
+    justify-content: center;
+    align-items: center;
+
+    .item {
+        display: block;
+        width: 4.15rem;
+        height: 3rem;
+    }
+}

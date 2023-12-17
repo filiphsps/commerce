@@ -13,6 +13,7 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../not-found';
 import SearchContent from './search-content';
 
@@ -111,15 +112,7 @@ export async function generateMetadata({
 }
 /* c8 ignore stop */
 
-export default async function SearchPage({
-    params: { domain, locale: localeData },
-    searchParams
-}: {
-    params: SearchPageParams;
-    searchParams?: {
-        q?: string;
-    };
-}) {
+export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     try {
         const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
@@ -150,7 +143,9 @@ export default async function SearchPage({
                         />
                     )}
 
-                    <SearchContent shop={shop} locale={locale} />
+                    <Suspense>
+                        <SearchContent shop={shop} locale={locale} />
+                    </Suspense>
                 </PageContent>
             </Page>
         );

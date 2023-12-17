@@ -12,7 +12,8 @@
         "sale-discount": "Kampanjrabatt",
         "shipping": "Frakt",
         "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
-        "subtotal": "Subtotal"
+        "subtotal": "Subtotal",
+        "view-cart": "Visa varukorgen"
     },
     "common": {
         "add-to-cart": "Lägg till",
@@ -26,7 +27,6 @@
         "out-of-stock": "Slutsåld",
         "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
-        "search": "Sök",
-        "view-cart": "Visa varukorgen"
+        "search": "Sök"
     }
 }

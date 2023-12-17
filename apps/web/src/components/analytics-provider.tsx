@@ -13,10 +13,10 @@ export type AnalyticsProviderProps = {
     children: ReactNode;
 };
 export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {
-    const [delayed, setDelayed] = useState<any>(null);
+    const [deferred, setDeferred] = useState<any>(null);
     useEffect(() => {
         const timeout = setTimeout(() => {
-            setDelayed(
+            setDeferred(
                 <>
                     {shop?.configuration?.thirdParty?.googleTagManager ? (
                         <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
@@ -33,7 +33,7 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
         <>
             <SpeedInsights debug={false} />
             <Trackable>{children}</Trackable>
-            {delayed}
+            {deferred}
         </>
     );
 };

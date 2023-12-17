@@ -6,6 +6,7 @@
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 2.25rem;
     flex-grow: 0;
+    gap: 0;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -17,12 +18,8 @@
     text-align: center;
 
     &,
-    svg,
-    &:not(:disabled) {
-        transition:
-            250ms ease-in-out all,
-            150ms ease-in-out color,
-            150ms ease-in-out background-color;
+    svg {
+        transition: 250ms ease-in-out all;
     }
 
     .icon {
@@ -33,6 +30,15 @@
 
     .quantity {
         width: 0;
+    }
+
+    &:is([data-items='0']):not(:disabled):is(:hover, :active) {
+        &,
+        svg {
+            color: var(--color-accent-primary);
+            fill: var(--color-accent-primary);
+            stroke: var(--color-accent-primary);
+        }
     }
 
     svg {
@@ -68,7 +74,7 @@
         .quantity {
             font-size: 0.9em;
             font-weight: 700;
-            width: auto;
+            width: fit-content;
             padding: 0 0.25rem;
         }
 

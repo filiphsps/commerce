@@ -1,94 +1,15 @@
 'use client';
 
-import { AcceptedPaymentMethods } from '@/components/AcceptedPaymentMethods';
+import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
-import { PrismicText } from '@/components/typography/prismic-text';
-import type { FooterModel } from '@/models/FooterModel';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import styles from './footer.module.scss';
-
-const Logo = styled.div`
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 5rem;
-    margin: 0 0 1rem 0;
-
-    img {
-        display: block;
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
-        object-position: left;
-    }
-`;
-const Address = styled.address`
-    font-size: 1.5rem;
-    line-height: normal;
-    font-weight: 400;
-
-    @media (min-width: 950px) {
-        font-size: 1.25rem;
-    }
-`;
-
-const FooterBlocksContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-
-    @media (min-width: 950px) {
-        display: flex;
-        gap: var(--block-spacer-large);
-    }
-`;
-const FooterBlock = styled.div`
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-
-    font-size: 1.75rem;
-    line-height: 1.15;
-    font-weight: 400;
-
-    a {
-        font-weight: inherit;
-        margin-bottom: var(--block-spacer);
-    }
-
-    @media (min-width: 950px) {
-        justify-content: flex-start;
-
-        font-size: 1.5rem;
-        line-height: 1;
-
-        a {
-            margin-bottom: calc(var(--block-spacer) / 1.5);
-        }
-    }
-`;
-
-const BlockTitle = styled.div`
-    font-size: 2.5rem;
-    line-height: normal;
-    font-weight: 600;
-    margin-bottom: var(--block-spacer-large);
-
-    @media (min-width: 950px) {
-        margin-bottom: var(--block-spacer-small);
-    }
-`;
 
 const LegalAndCopyright = styled.div`
     display: flex;
@@ -213,63 +134,39 @@ export type FooterContentProps = {
     locale: Locale;
     i18n: LocaleDictionary;
     store: StoreModel;
-    data: FooterModel;
 };
-export const FooterContent = ({ locale, i18n, store, data: footer }: FooterContentProps) => {
+export const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
+
+    const [deferred, setDeferred] = useState<any>(null);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDeferred(
+                <>
+                    <iframe
+                        title="Nordcom Status"
+                        src="https://status.nordcom.io/badge?theme=dark"
+                        width="auto"
+                        height="30"
+                        frameBorder="0"
+                        scrolling="no"
+                        loading="lazy"
+                    />
+                </>
+            );
+        }, 6750);
+
+        () => clearTimeout(timeout);
+    }, []);
 
     const year = new Date().getFullYear();
 
     return (
         <>
-            <FooterBlocksContainer>
-                <FooterBlock>
-                    <Logo>
-                        {store.logos?.primary?.src && (
-                            <Image
-                                src={store.logos.primary.src}
-                                alt={store.logos.primary.alt || 'Logo'}
-                                fill
-                                sizes="(max-width: 950px) 75px, 250px"
-                            />
-                        )}
-                    </Logo>
-
-                    <Address>
-                        <PrismicText data={footer.address} />
-                    </Address>
-                </FooterBlock>
-
-                {footer.blocks?.map?.((block) => (
-                    <FooterBlock key={block.title}>
-                        <BlockTitle>{block.title}</BlockTitle>
-                        {block?.items.map((item: any) => (
-                            <Link
-                                key={item.handle}
-                                href={item.handle || ''}
-                                target={item.handle.startsWith('http') ? '_blank' : ''}
-                            >
-                                {item.title}
-                            </Link>
-                        ))}
-                    </FooterBlock>
-                ))}
-            </FooterBlocksContainer>
-
             {/* TODO: This should be configurable in prismic. */}
             <FooterBottomSection>
                 <FooterBottomSectionBlock>
-                    <div className={styles['status-badge']}>
-                        <iframe
-                            title="Nordcom Status"
-                            src="https://status.nordcom.io/badge?theme=dark"
-                            width="auto"
-                            height="30"
-                            frameBorder="0"
-                            scrolling="no"
-                            loading="lazy"
-                        />
-                    </div>
+                    <div className={styles['status-badge']}>{deferred}</div>
                     <AcceptedPaymentMethods store={store!} />
                     <LegalAndCopyright>
                         <ImportantLinks>
@@ -305,12 +202,10 @@ export const FooterContent = ({ locale, i18n, store, data: footer }: FooterConte
                     </Socials>
                     <LegalAndCopyright>
                         <Copyright>
-                            <span>&copy; {`${year !== 2023 ? '2023-' : ''}${year} `}</span>
-                            <span>
-                                <Link href={`https://nordcom.io/`} target="_blank">
-                                    Nordcom Group Inc.
-                                </Link>
-                            </span>
+                            &copy; {`${year !== 2023 ? '2023-' : ''}${year} `}
+                            <Link href={`https://nordcom.io/`} target="_blank">
+                                Nordcom Group Inc.
+                            </Link>
                         </Copyright>
                     </LegalAndCopyright>
                 </FooterBottomSectionBlock>
