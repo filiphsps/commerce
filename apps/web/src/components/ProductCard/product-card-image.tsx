@@ -19,6 +19,7 @@ const ProductCardImage = memo(({ priority }: ProductCardImageProps) => {
     const { shop } = useShop();
     if (!product || !selectedVariant) return null;
 
+    // TODO: useMemo for this.
     const image: ShopifyImage | undefined = ((selectedVariant?.image &&
         product.images?.edges?.find((i) => i?.node?.id === selectedVariant?.image!.id)?.node) ||
         product.images?.edges?.[0]?.node) as ShopifyImage | undefined;
@@ -44,12 +45,12 @@ const ProductCardImage = memo(({ priority }: ProductCardImageProps) => {
                 height={155}
                 quality={85}
                 sizes="(max-width: 950px) 155px, 200px"
-                loading={priority ? 'eager' : 'lazy'}
+                loading={!!priority ? 'eager' : 'lazy'}
                 priority={priority}
             />
         </Link>
     );
 }, deepEqual);
-ProductCardImage.displayName = 'Nordcom.ProductCardImage';
 
+ProductCardImage.displayName = 'Nordcom.ProductCard.Image';
 export default ProductCardImage;
