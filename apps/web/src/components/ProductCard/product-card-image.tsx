@@ -14,7 +14,7 @@ export type ProductCardImageProps = {
     priority?: boolean;
 };
 
-const ProductCardImage = memo(({ priority }: ProductCardImageProps) => {
+const ProductCardImage = memo(({ priority = false }: ProductCardImageProps) => {
     const { product, selectedVariant } = useProduct();
     const { shop } = useShop();
     if (!product || !selectedVariant) return null;
@@ -36,16 +36,14 @@ const ProductCardImage = memo(({ priority }: ProductCardImageProps) => {
         <Link href={href} className={styles['image-wrapper']}>
             <Image
                 className={styles.image}
-                key={image.id}
-                id={image.id!}
-                src={image.url}
-                alt={image?.altText || title}
-                title={image?.altText || title}
+                src={image.url!}
+                alt={image.altText || title}
+                title={image.altText || title}
                 width={195}
                 height={155}
                 quality={85}
                 sizes="(max-width: 950px) 155px, 200px"
-                loading={!!priority ? 'eager' : 'lazy'}
+                loading={priority ? 'eager' : 'lazy'}
                 priority={priority}
             />
         </Link>
