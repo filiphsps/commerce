@@ -3,7 +3,7 @@ import { type NextRequest } from 'next/server';
 
 export const runtime = 'experimental-edge';
 export const config = {
-    matcher: ['/((?!storefront|admin|unknown|_next|_static|slice-simulator|instrumentation).*)']
+    matcher: ['/((?!storefront|admin|unknown|_next|_static|instrumentation).*)']
 };
 
 export default async function middleware(req: NextRequest) {

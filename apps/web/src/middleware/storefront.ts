@@ -45,7 +45,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (!newUrl.pathname.match(LOCALE_TEST) && !newUrl.pathname.includes('/api/')) {
+    if (
+        !newUrl.pathname.match(LOCALE_TEST) &&
+        !newUrl.pathname.includes('/api/') &&
+        !newUrl.pathname.includes('slice-simulator')
+    ) {
         let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
@@ -106,7 +110,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Rewrite index to use the `homepage` handle.
-    if (newUrl.pathname.split('/')[2] === '') {
+    if (newUrl.pathname.split('/')[2] === '' && !newUrl.pathname.includes('slice-simulator')) {
         newUrl.pathname = `${newUrl.pathname}homepage/`;
     }
 

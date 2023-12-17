@@ -1,10 +1,10 @@
 import type { Product } from '@/api/product';
+import ProductCardBody from '@/components/ProductCard/product-card-body';
 import ProductCardTitle from '@/components/ProductCard/product-card-title';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
 import { type LocaleDictionary } from '@/utils/locale';
 import { Suspense, memo } from 'react';
-import ProductCardBody from './product-card-body';
 
 export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
     if (!params) return url;
