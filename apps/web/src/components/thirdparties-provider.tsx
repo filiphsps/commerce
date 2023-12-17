@@ -1,7 +1,6 @@
 import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
-import { ErrorBoundary } from '@highlight-run/next/client';
 import { getClientBrowserParameters } from '@shopify/hydrogen-react';
 import { useEffect, type ReactNode } from 'react';
 import { IntercomProvider, useIntercom } from 'react-use-intercom';
@@ -69,10 +68,8 @@ export const LiveChatWrapper = ({ shop, locale, children }: ThirdPartiesProvider
 
 export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesProviderProps) => {
     return (
-        <ErrorBoundary showDialog={false}>
-            <LiveChatWrapper shop={shop} locale={locale}>
-                {children}
-            </LiveChatWrapper>
-        </ErrorBoundary>
+        <LiveChatWrapper shop={shop} locale={locale}>
+            {children}
+        </LiveChatWrapper>
     );
 };
