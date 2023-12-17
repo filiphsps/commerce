@@ -45,6 +45,7 @@
         height: 100%;
         width: 100%;
         padding: var(--block-padding-small);
+
         border-radius: var(--block-border-radius-small);
         transition: 150ms ease-in-out padding;
         will-change: padding;
@@ -127,6 +128,7 @@
         grid-template-columns: auto 1fr;
         justify-content: space-between;
         align-items: end;
+        align-self: end;
         height: 100%;
     }
 
@@ -191,6 +193,7 @@
         border: none;
         transition:
             250ms ease-in-out color,
+            250ms ease-in-out background-color,
             250ms ease-in-out border-radius;
 
         :is([data-quantity-decrease], [data-quantity-increase]) {
@@ -199,20 +202,23 @@
             align-items: center;
             justify-content: center;
             vertical-align: middle;
+
             width: 3rem;
             height: 3.25rem;
             padding: 0 0.35rem 0 0;
+
             cursor: pointer;
             transition:
                 250ms ease-in-out background-color,
                 250ms ease-in-out border-radius,
                 250ms ease-in-out width;
+
             text-align: center;
             font-size: 1.85em;
             font-weight: 600;
             line-height: 1;
 
-            &:hover {
+            &:not(:disabled, [data-disabled]):is(:hover) {
                 background: var(--accent-secondary);
                 color: var(--accent-secondary-text);
             }
@@ -310,9 +316,12 @@
     gap: var(--block-spacer-small);
     padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
         var(--block-padding);
+
     background: var(--accent-primary-light);
     color: var(--accent-primary-text);
+
     border-top-left-radius: var(--block-border-radius);
+
     font-weight: 500;
     font-size: 1.25rem;
     line-height: normal;
