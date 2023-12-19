@@ -15,6 +15,7 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
+import { Suspense } from 'react';
 
 export const dynamicParams = true;
 export async function generateStaticParams() {
