@@ -22,7 +22,7 @@ type PageParams<T extends PageType> = {
     /**
      * @deprecated Migrate to the preloading pattern ({@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}).
      */
-    prefetch?: PrefetchData;
+    prefetch?: PrefetchData | undefined;
 };
 function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
@@ -35,7 +35,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T
 }: PageParams<T>) {
     return (
-        <Suspense fallback={<PrismicPage.skeleton page={page || undefined} />}>
+        <Suspense key={`${shop.id}.page.${handle}.PrismicPage`} fallback={<PrismicPage.skeleton page={page} />}>
             <SliceZone
                 slices={page?.slices || []}
                 components={slices}
@@ -51,7 +51,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
     if (!page || !page.slices || page.slices.length <= 0) return <div />;
 
     return (
-        <div>
+        <>
             {page.slices.map((slice) => {
                 if (!slice) return null;
 
@@ -64,7 +64,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
 
                 return <div key={slice.id} data-slice={slice.id} />;
             })}
-        </div>
+        </>
     );
 };
 
