@@ -1,12 +1,11 @@
 @import '../_scss/global';
 
 .footer {
+    overflow-x: hidden;
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: auto 1fr;
-    width: 100%;
-    max-width: 100vw;
-    max-width: 100dvw;
+    max-width: 100%;
 }
 
 .container,
@@ -15,7 +14,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 100vw;
+    max-width: 100%;
 }
 
 .container {
@@ -23,10 +22,9 @@
     color: var(--color-foreground);
 
     .content {
-        width: 100%;
-        max-width: var(--layout-page-width);
-        margin: 0 var(--layout-page-spacing);
-        padding: var(--layout-section-padding) 0;
+        width: calc(var(--layout-page-width) + var(--layout-page-spacing) * 2);
+        max-width: 100%;
+        padding: var(--layout-section-padding) var(--layout-page-spacing);
         font-size: 1em;
 
         .section {
@@ -39,22 +37,19 @@
 
         .status {
             &.beside {
-                grid-template-columns: auto 1fr;
+                grid-template-columns: 1fr;
+
+                @media (min-width: 950px) {
+                    grid-template-columns: auto 1fr;
+                }
             }
 
             .section {
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
+                flex-wrap: wrap;
                 gap: calc(var(--layout-block-padding) / 2);
-
-                .indicator {
-                    width: 0.75rem;
-                    height: 0.75rem;
-                    aspect-ratio: 1 / 1;
-                    border-radius: 100%;
-                    background-color: var(--color-success);
-                }
 
                 .message {
                     color: var(--color-foreground);
@@ -111,8 +106,10 @@
 
     .section {
         &:is(:last-child) {
-            justify-self: flex-end;
-            text-align: right;
+            @media (min-width: 950px) {
+                justify-self: flex-end;
+                text-align: right;
+            }
         }
     }
 

@@ -19,6 +19,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                                 height="30"
                                 frameBorder="0"
                                 scrolling="no"
+                                className={styles['status-iframe']}
                             />
                         </section>
                         <section className={styles.section}>

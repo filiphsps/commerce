@@ -46,7 +46,7 @@ export default defineConfig({
 
         setupFiles: ['./__tests__/setup.ts'],
         reporters: ['verbose'],
-        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/', '**/utils/test/**/'],
+        exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
 
         globals: true,
         deps: {

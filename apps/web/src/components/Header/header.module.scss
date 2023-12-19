@@ -3,7 +3,11 @@
 .wrapper {
     position: sticky;
     z-index: 10;
-    top: 0;
+    inset: 0 0 auto 0;
+
+    [data-menu-open='true'] & {
+        position: fixed;
+    }
 }
 
 .container {

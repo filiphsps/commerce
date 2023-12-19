@@ -1,4 +1,4 @@
-import { Accented, Button, Card, Heading, Label } from '@nordcom/nordstar';
+import { Accented, Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import styles from './page.module.scss';
@@ -27,40 +27,21 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
             </div>
 
             <article className={`${styles.content}`}>
-                <p>
-                    We prefer working in the open, none of the content on this site is final and should only be taken as
-                    placeholder content.
-                    <br />
-                    If you&apos;d like to learn more please reach out to us on{' '}
-                    <Link
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://twitter.com/NordcomInc/"
-                        title="@NordcomInc on Twitter"
-                    >
-                        X (Twitter)
-                    </Link>
-                    ;
-                </p>
-
-                <div className={styles.blocks}>
-                    <Card className={styles.block}>
-                        <Label>View a demo</Label>
-                    </Card>
-                    <Card className={styles.block}>
-                        <Label>Previews, demos and mock-stores</Label>
-
-                        <Button as={Link} href="https://demo.nordcom.io/" target="_blank">
-                            Mock.shop Storefront
-                        </Button>
-
-                        <Label>Real-world usage</Label>
-
-                        <Button as={Link} href="https://www.sweetsideofsweden.com/" target="_blank">
-                            Sweet Side of Sweden
-                        </Button>
-                    </Card>
-                </div>
+                <Card variant="solid">
+                    <Heading level="h4" as="div">
+                        We prefer working in the open instead of hiding behind the scenes. That being said, consider
+                        everything on this site a work in progress and subject to change at any time. If you&apos;d like
+                        to learn more please reach out to us on{' '}
+                        <Link
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://twitter.com/NordcomInc/"
+                            title="@NordcomInc on Twitter"
+                        >
+                            X (Twitter)
+                        </Link>
+                    </Heading>
+                </Card>
             </article>
         </>
     );

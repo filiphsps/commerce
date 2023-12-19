@@ -2,6 +2,7 @@ import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
+import { experimental_taintObjectReference as taintObjectReference } from 'react';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -243,19 +244,22 @@ export const CommerceProviderAuthenticationApi = async ({
 }: {
     shop: Shop;
 }): Promise<ShopifyCommerceProvider['authentication']> => {
+    let res;
+
     switch (shop.configuration.commerce.type) {
         case 'dummy': {
-            return {
+            res = {
                 token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
                 publicToken: 'public-auth-token',
 
                 customers: null
             };
+            break;
         }
         case 'shopify': {
             switch (shop.id) {
                 case 'sweet-side-of-sweden': {
-                    return {
+                    res = {
                         ...shop.configuration.commerce.authentication,
                         token: process.env.SHOPIFY_PRIVATE_TOKEN || null,
 
@@ -265,14 +269,19 @@ export const CommerceProviderAuthenticationApi = async ({
                             clientSecret: 'f2a0e4d3cd8c4457d4eda94b1bf2442209d973246a380a5dac1557f54a059753'
                         }
                     };
+                    break;
                 }
                 default: {
                     throw new UnknownShopDomainError();
                 }
             }
+            break;
         }
         default: {
             throw new UnknownCommerceProviderError();
         }
     }
+
+    taintObjectReference('', res);
+    return res;
 };
