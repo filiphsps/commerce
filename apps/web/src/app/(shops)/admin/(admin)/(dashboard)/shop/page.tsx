@@ -1,6 +1,6 @@
 import { getSession } from '#/utils/auth';
 import { getShopsForUser } from '#/utils/fetchers';
-import { Accented, Card, Heading } from '@nordcom/nordstar';
+import { Accented, Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -40,19 +40,17 @@ export default async function Overview() {
             <Heading level="h1">
                 Hi <Accented>{user.name.split(' ')[0]}</Accented> {user.name.split(' ').slice(1).join(' ')}
             </Heading>
-            <Heading level="h2">
-                You are currently assigned as a collaborator for <Accented>{shops.length}</Accented> shop(s), nicely
-                done
-            </Heading>
 
-            <div className={styles.shops}>
-                {shops.map(({ id, name }) => (
-                    <Link key={id} href={`/shop/${id}/`}>
-                        <Card className={styles.shop}>
-                            <div>{name}</div>
-                        </Card>
-                    </Link>
-                ))}
+            <div className={styles.blocks}>
+                <Card className={styles.block}>
+                    <Label>Your Shops</Label>
+
+                    {shops.map(({ id, name }) => (
+                        <Button key={id} variant="outline" as={Link} href={`/shop/${id}/`}>
+                            {name}
+                        </Button>
+                    ))}
+                </Card>
             </div>
         </section>
     );

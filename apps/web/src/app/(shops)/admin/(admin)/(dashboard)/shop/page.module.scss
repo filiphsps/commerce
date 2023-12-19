@@ -6,35 +6,70 @@
     gap: var(--layout-section-padding);
 }
 
-.shops {
+.settings {
     display: flex;
+    flex-direction: column;
+    gap: calc(var(--layout-block-padding) / 2);
 
-    .shop {
+    .setting {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--layout-block-padding);
         width: 100%;
 
-        @media (min-width: $breakpoint-mobile) {
-            width: auto;
+        &:is(a, button):is(:hover, :active) {
+            .action {
+                color: var(--color-accent-primary);
+            }
+        }
+
+        .action {
+            padding: 0;
+
+            background: none;
+
+            font-size: 1.15em;
+
+            border-width: 0;
+            border-radius: 0;
+
+            &:is(:hover, :active) {
+                background: none;
+
+                color: var(--color-accent-primary);
+            }
         }
     }
 }
 
-.collaborators {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--layout-block-padding) / 4);
+.split-view {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--layout-block-padding);
 
-    .collaborator {
-        width: 100%;
+    @media (min-width: $breakpoint-mobile) {
+        grid-template-columns: 1fr 20rem;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        gap: calc(var(--layout-block-padding) / 4);
     }
 }
 
 .blocks {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: calc(var(--layout-block-padding) * 2);
 
     .block {
         display: flex;
         flex-direction: column;
-        gap: calc(var(--layout-block-padding) / 2);
+        gap: calc(var(--layout-block-padding) / 4);
         width: 100%;
 
         @media (min-width: $breakpoint-mobile) {
