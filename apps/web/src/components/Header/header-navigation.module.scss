@@ -1,9 +1,10 @@
 @import '_globals.scss';
 
 .container {
-    display: none;
+    content-visibility: hidden;
 
     @media (min-width: $breakpoint-header) {
+        content-visibility: auto
         display: flex;
         justify-content: flex-start;
         align-items: center;
