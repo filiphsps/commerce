@@ -2,7 +2,6 @@
 
 import { createClient, linkResolver } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-
 import type { ApiConfig } from '@/api/client';
 import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
@@ -16,7 +15,7 @@ import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { PrismicProvider } from '@prismicio/react';
-import { useEffect, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
 export default function ProvidersRegistry({
@@ -31,13 +30,6 @@ export default function ProvidersRegistry({
     store: StoreModel;
     children: ReactNode;
 }) {
-    // Set the locale globally for the client.
-    useEffect(() => {
-        if (typeof window === 'undefined' || !locale) return;
-
-        window.locale = locale.code;
-    }, [, locale]);
-
     let domain, token, id;
     switch (shop.configuration.commerce.type) {
         case 'shopify':
@@ -70,9 +62,9 @@ export default function ProvidersRegistry({
                         countryCode={locale.country}
                     >
                         <ShopProvider shop={shop} currency={'USD'} locale={locale}>
-                            <HeaderProvider store={store} />
                             <AnalyticsProvider shop={shop}>
                                 <ThirdPartiesProvider shop={shop} locale={locale}>
+                                    <HeaderProvider store={store} />
                                     <Toaster
                                         theme="dark"
                                         position="bottom-left"
