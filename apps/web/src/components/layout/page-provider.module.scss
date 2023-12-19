@@ -18,11 +18,11 @@
         line-height: 1.1;
         text-align: center;
 
-        &[data-background='primary'] {
+        &.primary {
             background: var(--accent-primary);
             color: var(--accent-primary-text);
         }
-        &[data-background='secondary'] {
+        &.secondary {
             background: var(--accent-secondary);
             color: var(--accent-secondary-text);
         }

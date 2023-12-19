@@ -23,8 +23,8 @@ export type PageProviderProps = {
 const PageProvider = async ({ shop, store, locale, i18n, children }: PageProviderProps) => {
     const header = await HeaderApi({ shop, locale });
 
-    const above: any[] = header?.announcements?.filter((item: any) => item.location === 'above') || [];
-    const bellow: any[] = header?.announcements?.filter((item: any) => item.location === 'bellow') || [];
+    const above = header?.announcements?.filter((item) => item.location === 'above') || [];
+    const bellow = header?.announcements?.filter((item) => item.location === 'bellow') || [];
 
     return (
         <>
@@ -33,8 +33,9 @@ const PageProvider = async ({ shop, store, locale, i18n, children }: PageProvide
                     {above.map((item, index) => (
                         <Content
                             key={index}
-                            className={styles.announcement}
-                            data-background={item.background_color || 'primary'}
+                            className={`${styles.announcement} ${
+                                item.background_color === 'primary' ? styles.primary : styles.secondary
+                            }`}
                         >
                             <PrismicText data={item.content} />
                         </Content>
@@ -49,8 +50,9 @@ const PageProvider = async ({ shop, store, locale, i18n, children }: PageProvide
                     {bellow.map((item, index) => (
                         <Content
                             key={index}
-                            className={styles.announcement}
-                            data-background={item.background_color || 'primary'}
+                            className={`${styles.announcement} ${
+                                item.background_color === 'primary' ? styles.primary : styles.secondary
+                            }`}
                         >
                             <PrismicText data={item.content} />
                         </Content>
