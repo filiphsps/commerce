@@ -2,7 +2,8 @@ import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
-import { experimental_taintObjectReference as taintObjectReference } from 'react';
+
+//import { experimental_taintObjectReference as taintObjectReference } from 'react';
 
 export type ShopifyCommerceProvider = {
     type: 'shopify';
@@ -282,6 +283,7 @@ export const CommerceProviderAuthenticationApi = async ({
         }
     }
 
-    taintObjectReference('', res);
+    // TODO: Use the React taint API.
+    //taintObjectReference('', res);
     return res;
 };

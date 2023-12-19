@@ -34,7 +34,7 @@ const config = {
         optimizeServerReact: true,
         scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
-        taint: true,
+        //taint: true,
         turbo: {
             resolveAlias: {
                 '@/styles/': './src/scss/'
