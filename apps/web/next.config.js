@@ -158,8 +158,13 @@ export default withHighlightConfig(
     withPurgeCSSModules(
         /** @type {import('next-purge-css-modules').PurgeConfig} */
         {
-            content: [path.join(__dirname, 'src/components/**/*.{ts,tsx}')],
-            enableDevPurge: false,
+            content: [
+                path.join(__dirname, '**/*.{js,jsx,ts,tsx}'),
+
+                // Whitelist nordcom packages.
+                '../../node_modules/@nordcom/**/dist/**/*.{js,jsx,ts,tsx}'
+            ],
+            enableDevPurge: true,
             fontFace: false,
             keyframes: false,
             safelist: ['body', 'html', ':root', '[data-sonner-toaster]', '#nprogress', '#nordstar'],
