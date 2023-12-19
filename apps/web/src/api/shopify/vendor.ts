@@ -35,13 +35,15 @@ export const Convertor = (
     }));
 };
 
+type VendorsOptions = { api: AbstractApi };
+
 /**
  * Get all vendors from Shopify.
  *
  * @param {AbstractApi} api - The client to use for the query.
  * @returns {Promise<VendorModel[]>} The list of vendors.
  */
-export const VendorsApi = async ({ api }: { api: AbstractApi }): Promise<VendorModel[]> => {
+export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]> => {
     try {
         const { data } = await api.query<{ products: ProductConnection }>(gql`
             query products {
@@ -66,4 +68,14 @@ export const VendorsApi = async ({ api }: { api: AbstractApi }): Promise<VendorM
         console.error(error);
         throw error;
     }
+};
+
+/**
+ * Preload to speed up api calls.
+ *
+ * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
+ * @todo Generalize this for all API helpers.
+ */
+VendorsApi.preload = (data: VendorsOptions) => {
+    void VendorsApi(data);
 };

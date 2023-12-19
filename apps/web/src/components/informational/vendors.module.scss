@@ -1,0 +1,28 @@
+@import '_globals.scss';
+
+.vendor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--block-padding) var(--block-padding);
+    background: var(--accent-secondary);
+    color: var(--accent-secondary-text);
+
+    border-radius: var(--block-border-radius);
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+
+    &:is(:hover, :active):not(:disabled) {
+        background: var(--accent-secondary-dark);
+        color: var(--accent-secondary-text);
+    }
+
+    @media (max-width: 950px) {
+        margin-right: var(--block-spacer);
+    }
+}

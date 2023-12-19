@@ -1,7 +1,7 @@
+import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Link from './link';
 
 describe('components', () => {
     describe('Link', () => {

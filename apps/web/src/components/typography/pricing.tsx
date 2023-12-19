@@ -2,7 +2,7 @@
 
 import styles from '@/components/typography/pricing.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
-import type { As } from '@/utils/system';
+import type { As } from '@nordcom/nordstar';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 import { memo, type HTMLProps } from 'react';

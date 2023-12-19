@@ -1,7 +1,7 @@
 import '@/styles/app.scss';
 
 import { ShopApi, type Shop } from '@/api/shop';
-import { ShopifyApiConfig, ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { PageProvider } from '@/components/layout/page-provider';
 import ProvidersRegistry from '@/components/providers-registry';
@@ -19,10 +19,8 @@ import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
-/* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-/* c8 ignore stop */
 
 // TODO: Generalize this
 const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
@@ -92,7 +90,7 @@ export async function generateMetadata({
         if (!locale) return notFoundMetadata;
 
         const shop = await ShopApi({ domain });
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         const store = await StoreApi({ api });
 
@@ -239,7 +237,7 @@ export default async function RootLayout({
                     <head />
                     <body data-scrolled="false">
                         <SocialProfileJsonLd
-                            useAppDir
+                            useAppDir={true}
                             type="Organization"
                             name={store.name}
                             description={store.description}
@@ -248,26 +246,26 @@ export default async function RootLayout({
                             foundingDate="2023"
                             founders={[
                                 {
-                                    '@type': 'Person',
+                                    type: 'Person',
                                     name: 'Dennis Sahlin',
                                     email: 'dennis@nordcom.io',
-                                    jobTitle: 'CEO'
+                                    jobTitle: 'Chief Executive Officer'
                                 },
                                 {
-                                    '@type': 'Person',
+                                    type: 'Person',
                                     name: 'Filiph Siitam Sandström',
                                     email: 'filiph@nordcom.io',
-                                    jobTitle: 'CTO'
+                                    jobTitle: 'Chief Technology Officer'
                                 },
                                 {
-                                    '@type': 'Person',
+                                    type: 'Person',
                                     name: 'Albin Dahlqvist',
                                     email: 'albin@nordcom.io',
                                     jobTitle: 'Founder'
                                 }
                             ]}
                             address={{
-                                '@type': 'PostalAddress',
+                                type: 'PostalAddress',
                                 streetAddress: 'Bergsgatan 7F',
                                 addressLocality: 'Mellerud',
                                 addressRegion: 'Västra Götaland',
@@ -275,7 +273,7 @@ export default async function RootLayout({
                                 addressCountry: 'SE'
                             }}
                             contactPoint={{
-                                '@type': 'ContactPoint',
+                                type: 'ContactPoint',
                                 contactType: 'Customer relations and support',
                                 email: 'hello@sweetsideofsweden.com',
                                 telephone: '+1 866 502 5580',
@@ -285,7 +283,7 @@ export default async function RootLayout({
                             sameAs={store?.social?.map(({ url }) => url)}
                         />
                         <SiteLinksSearchBoxJsonLd
-                            useAppDir
+                            useAppDir={true}
                             name={store.name}
                             url={`https://${domain}/${locale.code}/`}
                             potentialActions={[

@@ -1,5 +1,5 @@
+import { BuiltinError } from '@/utils/error';
 import { NotFoundError as PrismicNotFoundError } from '@prismicio/client';
-import { BuiltinError } from './error';
 
 export class Error<T = unknown> extends BuiltinError {
     public readonly name: string = 'Error';

@@ -26,6 +26,9 @@ const Prefetch = ({
     initialData?: PrefetchData;
 }) => {
     return new Promise<PrefetchData>(async (resolve, reject) => {
+        // Next.js Preloading pattern.
+        VendorsApi.preload({ api });
+
         if (!page) {
             // No page data to go of was supplied to prefetch.
             return resolve({});
@@ -48,11 +51,6 @@ const Prefetch = ({
 
                         // Next.js Preloading pattern.
                         CollectionApi.preload({ api, handle, limit });
-                    }
-                    case 'vendors': {
-                        if (vendors && vendors?.length > 0) continue;
-
-                        vendors = await VendorsApi({ api });
                         continue;
                     }
                 }

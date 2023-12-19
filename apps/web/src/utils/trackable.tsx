@@ -4,6 +4,7 @@ import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
 import type { Nullable } from '@/utils/abstract-api';
+import { BuildConfig } from '@/utils/build-config';
 import { MissingContextProviderError } from '@/utils/errors';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -23,7 +24,6 @@ import { track as vercelTrack } from '@vercel/analytics/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { BuildConfig } from './build-config';
 
 /**
  * Analytics events.

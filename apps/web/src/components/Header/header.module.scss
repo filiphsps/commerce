@@ -62,48 +62,35 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
-        height: var(--header-height);
-        user-select: none;
+
+        width: fit-content;
+        height: calc(var(--header-height) - calc(calc(var(--block-padding) - 0.25rem) * 2));
+        padding: calc(var(--block-padding) - 0.25rem);
+
         text-align: left;
 
-        .background {
-            height: 5.5rem;
-            padding: var(--block-padding-small) var(--block-padding);
-            background-color: var(--accent-primary);
-            border-radius: var(--block-border-radius);
+        outline: none;
+        border: none;
+        border-radius: var(--block-border-radius);
+
+        transition: 150ms ease-in-out background-color;
+        user-select: none;
+
+        @media (min-width: $breakpoint-header) {
+            height: 4rem;
+            transform: translateX(calc(calc(var(--block-padding) - 0.25rem) * -1));
+
+            &:is(:hover, :active) {
+                background-color: var(--accent-secondary);
+            }
         }
 
-        a {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        img {
+            backface-visibility: visible;
+            height: 100%;
             width: auto;
-            height: calc(var(--header-height) - calc(calc(var(--block-padding) - 0.25rem) * 2));
-            padding: calc(var(--block-padding) - 0.25rem);
-            outline: none;
-            border-radius: var(--block-border-radius);
-            transition: 150ms ease-in-out background-color;
-
-            @media (min-width: $breakpoint-header) {
-                &:is(:hover, :focus, :focus-within) {
-                    background-color: var(--accent-secondary);
-                    outline: none;
-                }
-            }
-
-            @media (min-width: $breakpoint-header) {
-                height: 4rem;
-                transform: translateX(calc(calc(var(--block-padding) - 0.25rem) * -1));
-            }
-
-            img {
-                backface-visibility: visible;
-                height: 100%;
-                width: auto;
-                object-fit: contain;
-                object-position: left;
-            }
+            object-fit: contain;
+            object-position: left;
         }
     }
 

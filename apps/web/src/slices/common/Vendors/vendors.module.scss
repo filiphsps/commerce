@@ -1,5 +1,17 @@
-section.container {
+@import '_globals.scss';
+
+.container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: var(--block-spacer);
+
+    @media (max-width: $breakpoint-mobile) {
+        display: flex;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        gap: 0;
+        padding: var(--block-padding);
+        margin: calc(var(--block-padding) * -1);
+    }
 }

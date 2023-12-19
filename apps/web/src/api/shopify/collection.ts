@@ -189,14 +189,14 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
             ...data.collection,
             descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
         };
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
         throw error;
     }
 };
 
 /**
- * Preload a page to speed up api calls.
+ * Preload to speed up api calls.
  *
  * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
  * @todo Generalize this for all API helpers.

@@ -7,7 +7,10 @@ import type { ApiConfig } from '@/api/client';
 import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
 import { HeaderProvider } from '@/components/Header/header-provider';
+import { AnalyticsProvider } from '@/components/analytics-provider';
+import { ShopProvider } from '@/components/shop/provider';
 import StyledComponentsProvider from '@/components/styled-components-provider';
+import { ThirdPartiesProvider } from '@/components/thirdparties-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
@@ -15,9 +18,6 @@ import { Locale } from '@/utils/locale';
 import { PrismicProvider } from '@prismicio/react';
 import { useEffect, type ReactNode } from 'react';
 import { Toaster } from 'sonner';
-import { AnalyticsProvider } from './analytics-provider';
-import { ShopProvider } from './shop/provider';
-import { ThirdPartiesProvider } from './thirdparties-provider';
 
 export default function ProvidersRegistry({
     shop,

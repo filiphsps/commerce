@@ -1,18 +1,21 @@
-import VendorsComponent from '@/components/Vendors';
+import 'server-only';
+
+import Vendors from '@/components/informational/vendors';
 import PageContent from '@/components/page-content';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { Suspense } from 'react';
 import styles from './vendors.module.scss';
 
 /**
  * Props for `Vendors`.
  */
-export type VendorsProps = SliceComponentProps<Content.VendorsSlice>;
+export type VendorsProps = SliceComponentProps<Content.VendorsSlice, any>;
 
 /**
  * Component for "Vendors" Slices.
  */
-const Vendors = ({ slice, context }: VendorsProps): JSX.Element => {
+const VendorsSlice = async ({ slice, context: { shop, locale } }: VendorsProps) => {
     return (
         <PageContent
             as="section"
@@ -20,9 +23,12 @@ const Vendors = ({ slice, context }: VendorsProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            <VendorsComponent data={(context as any)?.prefetch?.vendors} />
+            <Suspense fallback={<Vendors.skeleton />}>
+                <Vendors shop={shop} locale={locale} />
+            </Suspense>
         </PageContent>
     );
 };
 
-export default Vendors;
+VendorsSlice.displayName = 'Nordcom.Slices.Vendors';
+export default VendorsSlice;

@@ -10,7 +10,7 @@
 
     // See https://web.dev/articles/content-visibility
     content-visibility: auto;
-    contain-intrinsic-size: 48rem;
+    contain-intrinsic-size: auto;
 
     &:empty {
         display: none;

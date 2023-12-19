@@ -214,7 +214,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
 };
 
 /**
- * Preload a page to speed up api calls.
+ * Preload to speed up api calls.
  *
  * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
  * @todo Generalize this for all API helpers.

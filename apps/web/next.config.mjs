@@ -32,7 +32,7 @@ const config = {
             'react-icons'
         ],
         optimizeServerReact: true,
-        scrollRestoration: true,
+        //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
         //taint: true,
         turbo: {

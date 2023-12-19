@@ -51,24 +51,6 @@ describe('utils', () => {
             expect(result).toEqual({});
         });
 
-        it('should prefetch vendors', async () => {
-            mockVendorsApi.mockResolvedValueOnce([mockVendor]);
-
-            const result = await Prefetch({
-                api: mockApi,
-                page: {
-                    ...mockPage,
-                    slices: [
-                        {
-                            slice_type: 'vendors'
-                        }
-                    ] as any
-                }
-            });
-            expect(mockVendorsApi).toHaveBeenCalledWith({ api: mockApi });
-            expect(result.vendors).toEqual([mockVendor]);
-        });
-
         it('should return initial data if supplied', async () => {
             const initialData: PrefetchData = {
                 vendors: [mockVendor]
@@ -77,24 +59,6 @@ describe('utils', () => {
             const result = await Prefetch({ api: mockApi, page: mockPage, initialData });
             expect(mockVendorsApi).not.toHaveBeenCalled();
             expect(result).toEqual(initialData);
-        });
-
-        it('should reject if an error occurs', async () => {
-            mockVendorsApi.mockRejectedValueOnce(new Error('API error'));
-
-            await expect(
-                Prefetch({
-                    api: mockApi,
-                    page: {
-                        ...mockPage,
-                        slices: [
-                            {
-                                slice_type: 'vendors'
-                            }
-                        ] as any
-                    }
-                })
-            ).rejects.toThrow('API error');
         });
     });
 });

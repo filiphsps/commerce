@@ -2,13 +2,13 @@ import 'server-only';
 
 import { FooterApi } from '@/api/footer';
 import type { Shop } from '@/api/shop';
+import styles from '@/components/Footer/footer.module.scss';
+import { PrismicText } from '@/components/typography/prismic-text';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from '../link';
-import { PrismicText } from '../typography/prismic-text';
-import styles from './footer.module.scss';
 
 const FooterContent = dynamic(() => import('@/components/Footer/footer-content'));
 

@@ -1,5 +1,6 @@
 'use client';
 
+import styles from '@/components/Footer/footer.module.scss';
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
@@ -9,7 +10,6 @@ import { useTranslation } from '@/utils/locale';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import styles from './footer.module.scss';
 
 const LegalAndCopyright = styled.div`
     display: flex;

@@ -2,17 +2,19 @@ import 'server-only';
 
 import { NavigationApi } from '@/api/navigation';
 import type { Shop } from '@/api/shop';
+import { CartButton } from '@/components/Header/cart-button';
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
 import { HeaderNavigation } from '@/components/Header/header-navigation';
+import headerNavigationStyles from '@/components/Header/header-navigation.module.scss';
 import styles from '@/components/Header/header.module.scss';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
 import Link from '@/components/link';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
-import { Suspense, type HTMLProps } from 'react';
-import { CartButton } from './cart-button';
+import type { HTMLProps } from 'react';
+import { Suspense } from 'react';
 
 export type HeaderProps = {
     shop: Shop;
@@ -33,21 +35,19 @@ const HeaderComponent = async ({ shop, store, locale, i18n, ...props }: HeaderPr
             <HeaderContainer {...props}>
                 <HamburgerMenu />
 
-                <div className={styles.logo}>
-                    <Link href={'/'}>
-                        {logo?.src ? (
-                            <Image
-                                src={logo.src}
-                                width={175}
-                                height={50}
-                                alt={logo.alt || `Store logo`}
-                                sizes="(max-width: 1024px) 165px, 175px"
-                                loading="eager"
-                                priority={true}
-                            />
-                        ) : null}
-                    </Link>
-                </div>
+                <Link href={'/'} className={styles.logo}>
+                    {logo?.src ? (
+                        <Image
+                            src={logo.src}
+                            width={175}
+                            height={50}
+                            alt={logo.alt || `Store logo`}
+                            sizes="(max-width: 1024px) 165px, 175px"
+                            loading="eager"
+                            priority={true}
+                        />
+                    ) : null}
+                </Link>
 
                 <HeaderNavigation menu={navigation} locale={locale} />
 
@@ -64,10 +64,13 @@ const HeaderComponent = async ({ shop, store, locale, i18n, ...props }: HeaderPr
 };
 
 HeaderComponent.skeleton = () => (
-    <section className={styles.wrapper}>
+    <section className={`${styles.wrapper} ${styles.skeleton}`}>
         <header className={styles.container}>
             <div className={styles.content}>
                 <div className={styles.logo} />
+
+                <nav className={headerNavigationStyles.container} />
+                <div className={styles.actions} />
             </div>
         </header>
     </section>

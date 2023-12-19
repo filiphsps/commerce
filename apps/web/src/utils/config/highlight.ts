@@ -3,11 +3,11 @@ export const highlightConfig = {
     version: process.env.GIT_COMMIT_SHA || 'dev',
     privacySetting: 'none' as const,
     storageMode: 'localStorage' as const,
-    inlineStylesheet: true,
+    inlineStylesheet: false,
     tracingOrigins: true,
     reportConsoleErrors: true,
     enableSegmentIntegration: true,
-    enablePerformanceRecording: true,
+    enablePerformanceRecording: false,
     networkRecording: {
         enabled: true,
         recordHeadersAndBody: true,

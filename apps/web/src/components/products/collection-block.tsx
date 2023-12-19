@@ -77,21 +77,19 @@ const CollectionBlock = async ({
     );
 };
 
-CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => {
-    return (
-        <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''} ${styles.skeleton}`}>
-            <div className={styles.content}>
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-                <ProductCard.skeleton />
-            </div>
-        </section>
-    );
-};
+CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => (
+    <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''} ${styles.skeleton}`}>
+        <div className={styles.content}>
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+            <ProductCard.skeleton />
+        </div>
+    </section>
+);
 
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 export default CollectionBlock;

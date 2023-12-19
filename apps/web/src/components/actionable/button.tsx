@@ -1,17 +1,21 @@
 import styles from '@/components/actionable/button.module.scss';
+import type { As } from '@nordcom/nordstar';
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
-export type ButtonProps<T extends ElementType = 'button'> = {
+export type ButtonProps<T extends As> = {
+    as?: As;
+
     children: ReactNode;
-    as?: T;
-} & Omit<ComponentProps<T>, 'as'>;
-
-export const Button = <T extends ElementType = 'button'>({ children, as, className, ...props }: ButtonProps<T>) => {
-    const AsComponent: ElementType = (as || 'button') as any;
-
+} & ComponentProps<T>;
+export const Button = <T extends As = ElementType<'button'>>({
+    as: Tag = 'button' as T,
+    children,
+    className,
+    ...props
+}: ButtonProps<T>) => {
     return (
-        <AsComponent {...props} draggable={false} className={`${styles.container} ${className || ''}`}>
+        <Tag draggable={false} {...props} className={`${styles.container}${className ? ` ${className}` : ''}`}>
             {children}
-        </AsComponent>
+        </Tag>
     );
 };
