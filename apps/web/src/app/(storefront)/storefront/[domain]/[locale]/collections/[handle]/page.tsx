@@ -13,10 +13,10 @@ import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
@@ -166,10 +166,6 @@ export default async function CollectionPage({
         const collection = await CollectionApi({ api, handle });
 
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
-        const prefetch = await Prefetch({
-            api,
-            page
-        });
 
         return (
             <Page className={styles.container}>
@@ -181,14 +177,16 @@ export default async function CollectionPage({
                     ) : null}
 
                     {!page || page.enable_collection === undefined || page.enable_collection ? (
-                        <>
+                        <Suspense fallback={<CollectionBlock.skeleton />}>
                             <CollectionBlock
-                                data={collection as any}
+                                shop={shop}
+                                locale={locale}
                                 i18n={i18n}
+                                handle={handle}
                                 // TODO: Pagination.
                                 limit={250}
                             />
-                        </>
+                        </Suspense>
                     ) : null}
 
                     {page?.slices && page?.slices.length > 0 ? (
@@ -197,7 +195,6 @@ export default async function CollectionPage({
                             store={store}
                             locale={locale}
                             page={page}
-                            prefetch={prefetch}
                             i18n={i18n}
                             handle={handle}
                             type={'collection_page'}

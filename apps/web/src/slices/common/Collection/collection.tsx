@@ -1,13 +1,15 @@
+import 'server-only';
+
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
+import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { CollectionSliceDefault } from '@/prismic/types';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { PrefetchData } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
-import { type ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import styles from './collection.module.scss';
 
 export type CollectionContainerProps = {
@@ -18,10 +20,11 @@ export type CollectionContainerProps = {
     } & CollectionSliceDefault;
     locale: Locale;
     i18n: LocaleDictionary;
-    prefetch?: PrefetchData;
     children: ReactNode;
 };
-export const CollectionContainer = ({ slice, locale, children }: CollectionContainerProps) => {
+const CollectionContainer = async ({ slice, locale, children }: CollectionContainerProps) => {
+    const horizontal = slice.primary.direction === 'horizontal';
+
     return (
         <PageContent
             as="section"
@@ -47,7 +50,10 @@ export const CollectionContainer = ({ slice, locale, children }: CollectionConta
                 </div>
             )}
 
-            {children}
+            <Suspense fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}>{children}</Suspense>
         </PageContent>
     );
 };
+
+CollectionContainer.displayName = 'Nordcom.Slices.Collection.Container';
+export default CollectionContainer;

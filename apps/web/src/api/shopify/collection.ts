@@ -3,6 +3,7 @@ import type { AbstractApi, ApiOptions, Identifiable, Nullable } from '@/utils/ab
 import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@/utils/errors';
 import type {
+    Collection,
     CollectionEdge,
     CollectionSortKeys,
     ProductCollectionSortKeys,
@@ -101,7 +102,7 @@ type CollectionOptions = ApiOptions &
  * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
  * @returns {Promise<Collection>} The collection.
  */
-export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions) => {
+export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions): Promise<Collection> => {
     if (!handle) throw new Error('400: Invalid handle');
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
@@ -186,7 +187,7 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
 
         return {
             ...data.collection,
-            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || undefined
+            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
         };
     } catch (error) {
         console.error(error);

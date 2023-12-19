@@ -1,10 +1,10 @@
+import 'server-only';
+
 import CollectionBlock from '@/components/products/collection-block';
-import { deepEqual } from '@/utils/deep-equal';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { memo } from 'react';
 import { FullCollection } from './FullCollection';
-import { CollectionContainer } from './collection';
+import CollectionContainer from './collection';
 
 /**
  * Props for `Collection`.
@@ -14,31 +14,26 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 /**
  * Component for "Collection" Slices.
  */
-const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => {
+const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }: CollectionProps) => {
     switch (slice.variation) {
         case 'default': {
             return (
-                <CollectionContainer
-                    slice={slice}
-                    prefetch={context.prefetch}
-                    locale={context.locale}
-                    i18n={context.i18n}
-                >
+                <CollectionContainer slice={slice} locale={locale} i18n={i18n}>
                     <CollectionBlock
+                        shop={shop}
+                        locale={locale}
+                        handle={slice.primary.handle as string}
                         isHorizontal={slice.primary.direction === 'horizontal'}
                         limit={slice.primary.limit || 16}
-                        data={context?.prefetch?.collections?.[slice.primary.handle!]}
                         showViewAll={true}
-                        i18n={context.i18n}
+                        i18n={i18n}
                         priority={index < 3}
                     />
                 </CollectionContainer>
             );
         }
         case 'full': {
-            return (
-                <FullCollection slice={slice} prefetch={context.prefetch} locale={context.locale} i18n={context.i18n} />
-            );
+            return <FullCollection slice={slice} shop={shop} locale={locale} i18n={i18n} />;
         }
         default: {
             throw new Error('500: Invalid variant');
@@ -46,4 +41,5 @@ const Collection = ({ slice, index, context }: CollectionProps): JSX.Element => 
     }
 };
 
-export default memo(Collection, deepEqual);
+CollectionSlice.displayName = 'Nordcom.Slices.Collection';
+export default CollectionSlice;

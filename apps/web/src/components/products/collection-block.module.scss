@@ -99,9 +99,9 @@
         }
 
         &.skeleton {
+            // TODO: Shimmer effect.
             .content {
-                display: flex;
-                overflow-x: hidden;
+                overflow-x: visible;
             }
         }
     }

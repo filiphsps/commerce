@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type { PageData, PageType } from '@/api/page';
 import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
@@ -19,9 +21,9 @@ type PageParams<T extends PageType> = {
     /**
      * @deprecated Migrate to the preloading pattern ({@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}).
      */
-    prefetch: PrefetchData;
+    prefetch?: PrefetchData;
 };
-export default function PrismicPage<T extends PageType = 'custom_page'>({
+function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
     store,
     locale,
@@ -32,12 +34,17 @@ export default function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T
 }: PageParams<T>) {
     return (
-        <Suspense>
+        <Suspense fallback={<PrismicPage.skeleton />}>
             <SliceZone
                 slices={page?.slices || []}
                 components={slices}
-                context={{ shop, store, prefetch, i18n, locale, type, uid: handle }}
+                context={{ shop, store, prefetch, i18n, locale, type, uid: handle, handle }}
             />
         </Suspense>
     );
 }
+
+PrismicPage.skeleton = () => <div></div>; // TODO: Add a skeleton with a shimmer animation.
+
+PrismicPage.displayName = 'Nordcom.PrismicPage';
+export default PrismicPage;
