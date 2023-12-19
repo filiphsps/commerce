@@ -16,7 +16,7 @@ export type PageProviderProps = {
     i18n: LocaleDictionary;
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
-const PageProvider = async ({ shop, store, locale, i18n, children }: PageProviderProps) => {
+const PageProvider = ({ shop, store, locale, i18n, children }: PageProviderProps) => {
     return (
         <>
             <Suspense fallback={<Header.skeleton />}>
