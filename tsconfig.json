@@ -10,7 +10,7 @@
         "inlineSourceMap": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "lib": ["dom", "dom.iterable", "ESNext"],
+        "lib": ["DOM", "DOM.iterable", "ESNext"],
         "module": "ESNext",
         "moduleResolution": "Node10",
         "noEmit": true,

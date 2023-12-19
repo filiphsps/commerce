@@ -4,9 +4,11 @@ import { parseGid } from '@shopify/hydrogen-react';
 /**
  * This function is used to generate a unique ID for a product in the Merchants Center.
  *
- * @param {Locale} locale - The locale of the product.
- * @param {string} productId - The Shopify GID of the product.
- * @param {string} variantId - The Shopify GID of the variant.
+ * @param {object} options - The options.
+ * @param {Locale} [options.locale] - The locale of the product.
+ * @param {object} [options.product] - The product.
+ * @param {string} [options.product.productGid] - The Shopify GID of the product.
+ * @param {string} [options.product.variantGid] - The Shopify GID of the variant.
  * @returns {string} A unique ID for the product in the Merchants Center.
  */
 export const ProductToMerchantsCenterId = ({

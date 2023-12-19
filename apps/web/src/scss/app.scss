@@ -190,10 +190,3 @@ svg .primary {
     color: inherit !important;
     fill: inherit !important;
 }
-
-* {
-    box-sizing: border-box;
-    -moz-backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}

@@ -18,6 +18,15 @@
         line-height: 1.1;
         text-align: center;
 
+        &[data-background='primary'] {
+            background: var(--accent-primary);
+            color: var(--accent-primary-text);
+        }
+        &[data-background='secondary'] {
+            background: var(--accent-secondary);
+            color: var(--accent-secondary-text);
+        }
+
         @media (min-width: $breakpoint-mobile) {
             font-size: 0.85em;
         }

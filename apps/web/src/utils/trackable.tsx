@@ -100,40 +100,35 @@ export type ShopifyPageType =
     | 'search';
 
 // TODO: Move this to a generic utility.
-const pathToShopifyPageType = (pathName: string): ShopifyPageType => {
-    let path = pathName;
-
-    // Remove locale prefix if it exists using regex.
-    path = path.replace(/^\/[a-z]{2}-[a-z]{2}\//, '');
-
+const pathToShopifyPageType = (path: string): ShopifyPageType => {
     switch (true) {
         case /^\/$/.test(path):
             return 'index';
-        case /^\/blogs\/[a-z0-9-]+\/articles\/[a-z0-9-]+$/.test(path):
+        case /^\/blogs\/[a-z0-9-]+\/articles\/[a-z0-9-]+\/$/.test(path):
             return 'article';
-        case /^\/blogs\/[a-z0-9-]+$/.test(path):
+        case /^\/blogs\/[a-z0-9-]+\/$/.test(path):
             return 'blog';
-        case /^\/cart$/.test(path):
+        case /^\/cart\/$/.test(path):
             return 'cart';
-        case /^\/collections\/[a-z0-9-]+$/.test(path):
+        case /^\/collections\/[a-z0-9-]+\/$/.test(path):
             return 'collection';
-        case /^\/account\/addresses$/.test(path):
+        case /^\/account\/addresses\/$/.test(path):
             return 'customers/addresses';
-        case /^\/account\/login$/.test(path):
+        case /^\/account\/login\/$/.test(path):
             return 'customer/login';
-        case /^\/account\/orders\/[a-z0-9-]+$/.test(path):
+        case /^\/account\/orders\/[a-z0-9-]+\/$/.test(path):
             return 'customers/order';
-        case /^\/account\/register$/.test(path):
+        case /^\/account\/register\/$/.test(path):
             return 'customers/register';
-        case /^\/account\/reset_password$/.test(path):
+        case /^\/account\/reset_password\/$/.test(path):
             return 'customers/reset_password';
-        case /^\/gift_cards\/[a-z0-9-]+$/.test(path):
+        case /^\/gift_cards\/[a-z0-9-]+\/$/.test(path):
             return 'gift_card';
-        case /^\/products\/[a-z0-9-]+$/.test(path):
+        case /^\/products\/[a-z0-9-]+\/$/.test(path):
             return 'product';
-        case /^\/policies\/[a-z0-9-]+$/.test(path):
+        case /^\/policies\/[a-z0-9-]+\/$/.test(path):
             return 'policy';
-        case /^\/search$/.test(path):
+        case /^\/search\/$/.test(path):
             return 'search';
         default:
             return 'page';
@@ -162,7 +157,7 @@ const shopifyEventHandler = async (
     }
 
     const commerce = shop.configuration.commerce as ShopifyCommerceProvider;
-    const pageType = pathToShopifyPageType(data.path!);
+    const pageType = pathToShopifyPageType((data.path || '').replace(`/${locale.code}/`, '/'));
 
     const products = data.gtm?.ecommerce?.items || [];
     const value = data.gtm?.ecommerce?.value || 0;
@@ -180,8 +175,8 @@ const shopifyEventHandler = async (
         currency: currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true, // TODO: Cookie consent.
-        ...pageAnalytics,
         ...getClientBrowserParameters(),
+        ...pageAnalytics,
         path: data.path!.replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
         navigationType: 'navigate', // TODO: do this properly.
 
@@ -199,14 +194,14 @@ const shopifyEventHandler = async (
         }))
     };
 
-    if (
-        BuildConfig.environment === 'development' ||
-        sharedPayload.userAgent.includes('Googlebot') ||
-        sharedPayload.userAgent.includes('Lighthouse')
-    ) {
+    if (BuildConfig.environment === 'development') {
+        // Don't actually send events in development.
         console.debug('Shopify analytics', event, sharedPayload);
         return;
     }
+
+    const ua = (sharedPayload.userAgent || navigator.userAgent).toLowerCase();
+    if (ua.includes('googlebot') || ua.includes('lighthouse')) return;
 
     // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {
@@ -238,7 +233,7 @@ const shopifyEventHandler = async (
             }
         }
     } catch (error: unknown) {
-        console.error(error);
+        console.warn(error);
     }
 };
 
@@ -247,13 +242,11 @@ const postEvent = async (
     data: AnalyticsEventData,
     { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
 ) => {
-    if (BuildConfig.environment === 'development') {
-        // Don't actually send events in development.
-        return;
-    }
-
     if (!window.dataLayer) {
-        console.debug('window.dataLayer not found, creating it.');
+        if (BuildConfig.environment === 'development') {
+            console.debug('window.dataLayer not found, creating it.');
+        }
+
         window.dataLayer = [];
     }
 
@@ -261,6 +254,11 @@ const postEvent = async (
         case 'shopify': {
             await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
         }
+    }
+
+    if (BuildConfig.environment === 'development') {
+        // Don't actually send events in development.
+        return;
     }
 
     let additionalData = {};

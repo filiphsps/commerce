@@ -1,3 +1,4 @@
+import withPurgeCSSModules from '@filiphsandstrom/next-purge-css-modules';
 import { withHighlightConfig } from '@highlight-run/next/config';
 import withMarkdoc from '@markdoc/next.js';
 import path, { dirname } from 'node:path';
@@ -154,14 +155,25 @@ const config = {
 };
 
 export default withHighlightConfig(
-    withMarkdoc({
-        mode: 'static',
-        schemaPath: './src/utils/markdoc',
-        tokenizerOptions: {
-            allowComments: true,
-            slots: true
-        }
-    })(config),
+    withPurgeCSSModules(
+        /** @type {import('next-purge-css-modules').PurgeConfig} */
+        {
+            content: [path.join(__dirname, 'src/components/**/*.{ts,tsx}')],
+            enableDevPurge: false,
+            fontFace: false,
+            keyframes: false,
+            safelist: ['body', 'html', ':root', '[data-sonner-toaster]', '#nprogress', '#nordstar'],
+            variables: false
+        },
+        withMarkdoc({
+            mode: 'static',
+            schemaPath: './src/utils/markdoc',
+            tokenizerOptions: {
+                allowComments: true,
+                slots: true
+            }
+        })(config)
+    ),
     {
         apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
         appVersion: process.env.VERCEL_GIT_COMMIT_SHA,

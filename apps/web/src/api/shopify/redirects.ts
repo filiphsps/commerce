@@ -27,8 +27,10 @@ export const Convertor = (redirects: UrlRedirect[]): Array<RedirectModel> => {
 /**
  * Get all redirects from Shopify.
  *
- * @param {AbstractApi} client - The client to use for the query.
- * @param {string} cursor - The cursor to use for the query.
+ * @param {object} options - The options.
+ * @param {AbstractApi} options.client - The client to use for the query.
+ * @param {string} [options.cursor] - The cursor to use for the query.
+ * @param {UrlRedirect[]} [options.redirects]
  * @returns {Promise<RedirectModel[]>} The list of redirects.
  */
 export const RedirectsApi = async ({
@@ -85,8 +87,9 @@ export const RedirectsApi = async ({
 /**
  * Get specific redirect from Shopify.
  *
- * @param {AbstractApi} client - The client to use for the query.
- * @param {string} path - The path to get the redirect for.
+ * @param {object} options - The options.
+ * @param {AbstractApi} options.client - The client to use for the query.
+ * @param {string} options.path - The path to get the redirect for.
  * @returns {Promise<string | null>} The redirect target.
  */
 export const RedirectApi = async ({ client, path }: { client: AbstractApi; path: string }): Promise<string | null> => {

@@ -156,7 +156,9 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  * Get dictionary for locale.
  * @todo Handle templates.
  *
- * @param {Locale} locale - Locale to get dictionary for.
+ * @param {object} props - The data
+ * @param {Locale} props.locale - Locale to get dictionary for.
+ * @param {Shop} props.shop - Shop to get dictionary for.
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
 export const getDictionary = async (props: { shop: Shop; locale: Locale } | Locale): Promise<LocaleDictionary> => {

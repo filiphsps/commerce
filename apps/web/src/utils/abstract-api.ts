@@ -49,8 +49,8 @@ export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient
  * @param {object} options - The api options.
  * @param {ApolloClient<any>} options.api - The Apollo client to use.
  * @param {Locale} options.locale - The locale to use.
+ * @param {Shop} options.shop - The locale to use.
  * @param {FetchPolicy | undefined} options.fetchPolicy - The fetch policy to use.
- * @param {string[] | undefined} options.tags - The nextjs fetch tags to use.
  * @returns {AbstractApiBuilder} The AbstractApiBuilder.
  */
 export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, any>> = ({

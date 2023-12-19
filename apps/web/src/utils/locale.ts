@@ -167,7 +167,7 @@ export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode;
  *
  * @deprecated Use {@link Locale.from} instead.
  *
- * @param {string} locale - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
+ * @param {string} code - The `ISO 639-1` + `ISO 3166-1 Alpha-2` or pure `ISO 639-1` locale string.
  * @returns {Locale} `Locale` object.
  */
 export const NextLocaleToLocale = (code: string): Locale | null => {

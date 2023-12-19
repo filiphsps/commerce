@@ -31,7 +31,11 @@ const PageProvider = async ({ shop, store, locale, i18n, children }: PageProvide
             {above.length > 0 && (
                 <section className={styles.announcements}>
                     {above.map((item, index) => (
-                        <Content key={index} className={`${styles.announcement} background-${item.background_color}`}>
+                        <Content
+                            key={index}
+                            className={styles.announcement}
+                            data-background={item.background_color || 'primary'}
+                        >
                             <PrismicText data={item.content} />
                         </Content>
                     ))}
@@ -43,7 +47,11 @@ const PageProvider = async ({ shop, store, locale, i18n, children }: PageProvide
             {bellow.length > 0 && (
                 <section className={styles.announcements}>
                     {bellow.map((item, index) => (
-                        <Content key={index} className={`${styles.announcement} background-${item.background_color}`}>
+                        <Content
+                            key={index}
+                            className={styles.announcement}
+                            data-background={item.background_color || 'primary'}
+                        >
                             <PrismicText data={item.content} />
                         </Content>
                     ))}
