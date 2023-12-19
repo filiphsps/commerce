@@ -2,7 +2,6 @@
 
 import type { Product, ProductVariant } from '@/api/product';
 import AddToCart from '@/components/products/add-to-cart';
-import { InfoLines } from '@/components/products/info-lines';
 import styles from '@/components/products/product-actions-container.module.scss';
 import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
@@ -56,8 +55,6 @@ export const ProductActionsContainer = ({
             </div>
 
             <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
-            {product ? <InfoLines product={product} /> : null}
-
             {children}
         </ProductProvider>
     );

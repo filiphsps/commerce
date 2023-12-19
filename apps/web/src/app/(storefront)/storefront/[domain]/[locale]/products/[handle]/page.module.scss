@@ -2,6 +2,9 @@
 
 .container {
     padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
+
+    font-size: 16px;
+
     @media (min-width: $breakpoint-mobile) {
         padding: 0;
     }
@@ -12,18 +15,22 @@
         justify-content: flex-start;
         align-items: flex-end;
         gap: var(--block-spacer-large);
+        flex-grow: 1;
+
         height: 100%;
-        font-size: 1.25rem;
+        padding-top: var(--block-spacer-large);
 
-        padding-top: var(--block-spacer-huge);
+        font-size: 1.75em;
+
         @media (min-width: $breakpoint-mobile) {
-            padding-top: 0;
-
             flex-direction: column-reverse;
             justify-content: center;
             align-items: flex-end;
             gap: 0;
-            font-size: 1rem;
+
+            padding-top: 0;
+
+            font-size: 1.45em;
         }
     }
 

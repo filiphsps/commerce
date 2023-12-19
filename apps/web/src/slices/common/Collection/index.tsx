@@ -4,7 +4,7 @@ import CollectionBlock from '@/components/products/collection-block';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { Suspense } from 'react';
-import { FullCollection } from './FullCollection';
+import FullCollection from './FullCollection';
 import CollectionContainer from './collection';
 
 /**

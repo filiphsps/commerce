@@ -10,7 +10,7 @@
     gap: calc(var(--block-spacer-small) / 2);
 
     height: 100%;
-    min-height: 40rem;
+    min-height: 39.5rem;
     width: 100%;
     min-width: var(--component-product-card-width);
     padding: calc(var(--block-padding) - var(--block-border-width));
@@ -113,11 +113,15 @@
 
     .quantity-action {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template: 'previous-pricing quantity' 'pricing quantity';
+        grid-template-columns: 1fr auto;
         justify-content: flex-end;
         align-items: flex-end;
         align-self: flex-end;
+
         margin-top: var(--block-spacer-small);
+        gap: 0 var(--block-spacer);
+        width: 100%;
     }
 
     .variants {
@@ -170,6 +174,7 @@
     }
 
     .quantity {
+        grid-area: quantity;
         overflow: hidden;
         display: flex;
         align-items: center;
@@ -268,8 +273,10 @@
         font-size: 0.75rem;
     }
 
-    &.skeleton {
+    &:is([data-skeleton]),
+    [data-skeleton] & {
         box-shadow: none;
+        background-color: var(--color-block-dark);
 
         .image {
             box-shadow: none;

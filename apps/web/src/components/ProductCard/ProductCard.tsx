@@ -30,7 +30,7 @@ const ProductCard = ({ className, i18n, data, priority }: ProductCardProps) => {
 };
 
 ProductCard.skeleton = () => (
-    <div className={`${styles.container} ${styles.skeleton}`}>
+    <div className={styles.container} data-skeleton>
         <div className={styles.image}></div>
         <div></div>
         <div></div>

@@ -8,7 +8,7 @@ import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { CollectionSliceDefault } from '@/prismic/types';
 import { asText } from '@prismicio/client';
-import { Suspense, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import styles from './collection.module.scss';
 
 type Slice = {
@@ -52,9 +52,7 @@ const CollectionContainer = async ({ slice, children }: CollectionContainerProps
         >
             <CollectionContainerHeader slice={slice} />
 
-            <Suspense fallback={<CollectionBlock.skeleton isHorizontal={slice.primary.direction === 'horizontal'} />}>
-                {children}
-            </Suspense>
+            {children}
         </PageContent>
     );
 };
@@ -68,6 +66,7 @@ CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
             className={styles.container}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
+            data-skeleton
         >
             <CollectionContainerHeader slice={slice} />
 

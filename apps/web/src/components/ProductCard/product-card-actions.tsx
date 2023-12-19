@@ -22,11 +22,7 @@ const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
     return (
         <div className={styles.actions}>
             <div className={styles['quantity-action']}>
-                <Pricing
-                    className={styles.pricing}
-                    price={selectedVariant.price as any}
-                    compareAtPrice={selectedVariant.compareAtPrice as any}
-                />
+                <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
 
                 <QuantitySelector
                     className={styles.quantity}

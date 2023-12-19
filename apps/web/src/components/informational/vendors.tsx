@@ -38,7 +38,7 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
 };
 
 Vendors.skeleton = () => (
-    <div className={`${styles.container} ${styles.skeleton}`}>
+    <div className={styles.container} data-skeleton>
         <div className={styles.vendor} />
         <div className={styles.vendor} />
         <div className={styles.vendor} />

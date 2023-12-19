@@ -5,7 +5,7 @@ import type { FunctionComponent } from 'react';
 import { FiPackage } from 'react-icons/fi';
 
 interface StockStatusProps {
-    product: Product;
+    product?: Product;
 }
 export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) => {
     if (!product || !product.availableForSale) return null;

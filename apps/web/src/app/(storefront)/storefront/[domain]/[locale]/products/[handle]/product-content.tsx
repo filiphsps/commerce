@@ -11,6 +11,7 @@ import { useTrackable } from '@/utils/trackable';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import * as NProgress from 'nprogress';
+import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import styles from './page.module.scss';
 
@@ -28,8 +29,10 @@ export type ProductContentProps = {
     product: Product;
     initialVariant: ProductVariant;
     i18n: LocaleDictionary;
+
+    children?: ReactNode;
 };
-export function ProductContent({ product, initialVariant, i18n }: ProductContentProps) {
+export function ProductContent({ product, initialVariant, i18n, children }: ProductContentProps) {
     const { replace } = useRouter();
     const path = usePathname();
     const searchParams = useSearchParams();
@@ -94,7 +97,9 @@ export function ProductContent({ product, initialVariant, i18n }: ProductContent
                 product={product as any}
                 initialVariant={initialVariant!}
                 selectedVariant={variant}
-            />
+            >
+                {children || null}
+            </ProductActionsContainer>
         </>
     );
 }
@@ -103,5 +108,5 @@ export function ProductPricing({ product, initialVariant }: Omit<ProductContentP
     const searchParams = useSearchParams();
     const variant = getVariant(product, searchParams) || initialVariant;
 
-    return <Pricing className={styles.pricing} price={variant.price} compareAtPrice={variant.compareAtPrice as any} />;
+    return <Pricing price={variant.price} compareAtPrice={variant.compareAtPrice as any} />;
 }

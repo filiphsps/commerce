@@ -1,3 +1,5 @@
+import 'server-only';
+
 import PageContent from '@/components/page-content';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
@@ -12,7 +14,9 @@ export type IconGridProps = SliceComponentProps<Content.IconGridSlice>;
 /**
  * Component for "IconGrid" Slices.
  */
-const IconGrid = ({ slice, index: order }: IconGridProps): JSX.Element => {
+const IconGrid = ({ slice, index: order }: IconGridProps) => {
+    if (!slice) return null;
+
     return (
         <PageContent
             as="section"
@@ -20,13 +24,13 @@ const IconGrid = ({ slice, index: order }: IconGridProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            {slice.items.map((item, index) => (
+            {slice.items.map(({ icon, title }, index) => (
                 <div key={index} className={styles.item}>
-                    {item.icon?.url ? (
+                    {icon?.url ? (
                         <Image
                             className={styles.icon}
-                            src={item.icon.url}
-                            alt={item.icon.alt || ''}
+                            src={icon.url}
+                            alt={icon.alt || ''}
                             width={35}
                             height={35}
                             decoding="async"
@@ -36,7 +40,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps): JSX.Element => {
                     ) : (
                         <div className={styles.icon} />
                     )}
-                    <div className={styles.title}>{item.title}</div>
+                    <div className={styles.title}>{title}</div>
                 </div>
             ))}
         </PageContent>
@@ -52,7 +56,14 @@ IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
             className={styles.container}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-        />
+        >
+            {(slice.items || []).map(({ title }, index) => (
+                <div key={index} className={styles.item}>
+                    <div className={styles.icon} />
+                    <div className={styles.title}>{title}</div>
+                </div>
+            ))}
+        </PageContent>
     );
 };
 

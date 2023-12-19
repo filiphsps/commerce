@@ -3,11 +3,9 @@
 import styles from '@/components/Header/cart-button.module.scss';
 import Link from '@/components/link';
 import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
-import { deepEqual } from '@/utils/deep-equal';
 import { useTranslation, type Locale, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import dynamic from 'next/dynamic';
-import { memo } from 'react';
 
 const Lottie = dynamic(() => import('react-lottie-player'), {
     ssr: false,
@@ -19,7 +17,7 @@ export type CartButtonProps = {
     locale: Locale;
     i18n: LocaleDictionary;
 };
-const CartButton = memo(({ locale, i18n }: CartButtonProps) => {
+const CartButton = ({ locale, i18n }: CartButtonProps) => {
     const { totalQuantity /*, status*/ } = useCart();
     const { t } = useTranslation('cart', i18n);
 
@@ -47,7 +45,7 @@ const CartButton = memo(({ locale, i18n }: CartButtonProps) => {
             />
         </Link>
     );
-}, deepEqual);
+};
 
 CartButton.displayName = 'Nordcom.Header.CartButton';
 export { CartButton };

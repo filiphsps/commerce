@@ -78,7 +78,7 @@ const CollectionBlock = async ({
 };
 
 CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => (
-    <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''} ${styles.skeleton}`}>
+    <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''}`} data-skeleton>
         <div className={styles.content}>
             <ProductCard.skeleton />
             <ProductCard.skeleton />

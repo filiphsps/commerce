@@ -1,24 +1,20 @@
-'use client';
-
 import styles from '@/components/typography/pricing.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
-import type { As } from '@nordcom/nordstar';
 import { Money } from '@shopify/hydrogen-react';
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import { memo, type HTMLProps } from 'react';
+import { memo } from 'react';
 
-type PricingProps = {
-    as?: As;
+export type PricingProps = {
     price?: MoneyV2 | null;
     compareAtPrice?: MoneyV2 | null;
-} & HTMLProps<HTMLDivElement>;
-const Pricing = ({ as: Tag = 'div', price, compareAtPrice, className, ...props }: PricingProps) => {
+};
+const Pricing = ({ price, compareAtPrice }: PricingProps) => {
     return (
-        <Tag {...props} className={`${styles.container} ${className || ''}`}>
+        <>
             {price ? (
                 <Money
-                    data={price}
                     as={'div'}
+                    data={price}
                     className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
                     suppressHydrationWarning={true}
                 />
@@ -33,7 +29,7 @@ const Pricing = ({ as: Tag = 'div', price, compareAtPrice, className, ...props }
                     />
                 </div>
             ) : null}
-        </Tag>
+        </>
     );
 };
 

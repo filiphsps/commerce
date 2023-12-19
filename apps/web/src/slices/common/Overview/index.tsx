@@ -1,9 +1,10 @@
-import type { SliceComponentProps } from '@prismicio/react';
+import 'server-only';
 
 import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { Content } from '@prismicio/client';
+import type { SliceComponentProps } from '@prismicio/react';
 import styles from './overview.module.scss';
 
 /**
@@ -14,11 +15,13 @@ export type OverviewProps = SliceComponentProps<Content.TextBlockSlice>;
 /**
  * Component for "Overview" Slices.
  */
-const OverviewSlice = ({ slice }: OverviewProps): JSX.Element => {
+const OverviewSlice = ({ slice }: OverviewProps) => {
+    if (!slice || !slice.items || slice.items.length <= 0) return null;
+
     return (
         <PageContent
             as="section"
-            className={styles.content}
+            className={styles.container}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
@@ -48,4 +51,20 @@ const OverviewSlice = ({ slice }: OverviewProps): JSX.Element => {
     );
 };
 
+OverviewSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
+    if (!slice || !slice.items || slice.items.length <= 0) return null;
+
+    return (
+        <PageContent
+            as="section"
+            className={styles.container}
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+
+            // TODO: Proper skeleton.
+        />
+    );
+};
+
+OverviewSlice.displayName = 'Nordcom.Slices.Overview';
 export default OverviewSlice;

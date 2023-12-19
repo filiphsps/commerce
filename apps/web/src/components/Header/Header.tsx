@@ -66,7 +66,7 @@ const HeaderComponent = async ({ shop, store, locale, i18n, ...props }: HeaderPr
 };
 
 HeaderComponent.skeleton = () => (
-    <section className={`${styles.wrapper} ${styles.skeleton}`}>
+    <section className={styles.wrapper} data-skeleton>
         <header className={styles.container}>
             <div className={styles.content}>
                 <div className={styles.logo} />

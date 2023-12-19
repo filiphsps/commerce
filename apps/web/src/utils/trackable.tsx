@@ -312,7 +312,7 @@ export const TrackableContext = createContext<TrackableContextValue | null>(null
 export type TrackableProps = {
     children: ReactNode;
 };
-export function Trackable({ children }: TrackableProps) {
+function Trackable({ children }: TrackableProps) {
     const path = usePathname();
     const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
@@ -436,3 +436,6 @@ export const useTrackable = (): TrackableContextValue => {
 
     return context;
 };
+
+Trackable.displayName = 'Nordcom.Trackable';
+export { Trackable };

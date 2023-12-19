@@ -9,6 +9,7 @@ import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PrismicPage from '@/components/prismic-page';
+import { InfoLines } from '@/components/products/info-lines';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -237,9 +238,9 @@ export default async function ProductPage({
                             asideDesktopWidth={'14rem'}
                             asideClassName={styles.headingAside}
                             aside={
-                                <Suspense>
+                                <div className={styles.pricing}>
                                     <ProductPricing product={product} initialVariant={initialVariant} />
-                                </Suspense>
+                                </div>
                             }
                             style={{ gap: '0', paddingBottom: 'var(--block-spacer-large)' }}
                             reverse
@@ -255,7 +256,9 @@ export default async function ProductPage({
                         </SplitView>
 
                         <Suspense>
-                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n} />
+                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n}>
+                                <InfoLines product={product} />
+                            </ProductContent>
                         </Suspense>
 
                         {content ? (
