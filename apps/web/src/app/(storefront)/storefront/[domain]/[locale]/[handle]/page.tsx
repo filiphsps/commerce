@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { PageApi, PagesApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
@@ -9,14 +11,11 @@ import { getDictionary } from '@/i18n/dictionary';
 import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../not-found';
 
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
 export async function generateStaticParams() {
     const shops = await ShopsApi();
@@ -57,8 +56,12 @@ export async function generateMetadata({
         // Next.js Preloading pattern.
         PageApi.preload({ shop, locale, handle });
 
+        // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
+
+        // Do the actual API calls.
         const store = await StoreApi({ api });
+
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFoundMetadata;
 
@@ -92,7 +95,7 @@ export async function generateMetadata({
         throw error;
     }
 }
-/* c8 ignore stop */
+
 export default async function CustomPage({
     params: { domain, locale: localeCode, handle }
 }: {
@@ -111,33 +114,31 @@ export default async function CustomPage({
         // Next.js Preloading pattern.
         PageApi.preload({ shop, locale, handle });
 
-        // Get dictionary of strings for the current locale.
-        const i18n = await getDictionary({ shop, locale });
-
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Do the actual API calls.
         const store = await StoreApi({ api });
-        const { page } = await PageApi({ shop, locale, handle });
 
+        const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFound(); // TODO: Return proper error.
-        const prefetch = await Prefetch({ api, page });
+
+        // Get dictionary of strings for the current locale.
+        const i18n = await getDictionary({ shop, locale });
 
         return (
             <Page>
                 <PageContent primary={true}>
-                    {page?.slices && page?.slices.length > 0 ? (
+                    <Suspense key={`${shop.id}.page.${handle}`}>
                         <PrismicPage
                             shop={shop}
                             store={store}
                             locale={locale}
                             page={page}
-                            prefetch={prefetch}
                             i18n={i18n}
                             handle={handle}
                         />
-                    ) : null}
+                    </Suspense>
                 </PageContent>
             </Page>
         );
