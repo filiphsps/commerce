@@ -199,7 +199,11 @@ const shopifyEventHandler = async (
         }))
     };
 
-    if (BuildConfig.environment === 'development') {
+    if (
+        BuildConfig.environment === 'development' ||
+        sharedPayload.userAgent.includes('Googlebot') ||
+        sharedPayload.userAgent.includes('Lighthouse')
+    ) {
         console.debug('Shopify analytics', event, sharedPayload);
         return;
     }
