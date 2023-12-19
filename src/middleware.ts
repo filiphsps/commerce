@@ -16,6 +16,9 @@ export const config = {
 export default function middleware(req: NextRequest) {
     if (
         req.nextUrl.pathname.startsWith('/_next') ||
+        req.nextUrl.pathname.startsWith('/_static') ||
+        req.nextUrl.pathname.startsWith('/_vercel') ||
+        req.nextUrl.pathname.startsWith('/instrumentation') ||
         req.nextUrl.pathname.startsWith('/api') ||
         req.nextUrl.pathname.startsWith('/assets') ||
         req.nextUrl.pathname.startsWith('/locales') ||
