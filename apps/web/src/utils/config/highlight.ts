@@ -1,3 +1,5 @@
+import { AppRouterHighlight } from '@highlight-run/next/server';
+
 export const highlightConfig = {
     projectID: process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID!,
     version: process.env.GIT_COMMIT_SHA || 'dev',
@@ -6,7 +8,7 @@ export const highlightConfig = {
     inlineStylesheet: false,
     tracingOrigins: true,
     reportConsoleErrors: true,
-    enableSegmentIntegration: true,
+    enableSegmentIntegration: false,
     enablePerformanceRecording: false,
     networkRecording: {
         enabled: true,
@@ -15,3 +17,7 @@ export const highlightConfig = {
     },
     enableCanvasRecording: false
 };
+
+export const withAppRouterHighlight = AppRouterHighlight({
+	...(highlightConfig as any)
+});
