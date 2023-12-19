@@ -85,7 +85,7 @@
                     margin-bottom: var(--block-spacer);
                 }
 
-                @media (min-width: 950px) {
+                @media (min-width: $breakpoint-mobile) {
                     display: grid;
 
                     justify-content: flex-start;
@@ -132,17 +132,11 @@
             display: grid;
             grid-template-columns: 1fr;
             padding-top: var(--block-spacer-large);
-            gap: var(--block-spacer-small);
+            gap: calc(var(--block-spacer-large) * 2);
 
             @media (min-width: $breakpoint-mobile) {
                 grid-template-columns: 1fr 1fr;
             }
         }
     }
-}
-
-.status-badge {
-    display: block;
-    height: 3rem;
-    transform: translateX(-4px);
 }

@@ -17,9 +17,9 @@
     .current {
         position: relative;
         display: inline-block;
-        font-size: 3em;
+        font-size: 2.75em;
         line-height: 1;
-        font-weight: 700;
+        font-weight: 600;
 
         &.sale {
             color: var(--color-sale);

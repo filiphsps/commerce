@@ -26,7 +26,7 @@
         color: var(--color-dark);
         border-radius: var(--block-border-radius);
 
-        @media (max-width: 950px) {
+        @media (max-width: $breakpoint-mobile) {
             grid-template-columns: 8rem 1fr 14rem;
             grid-template-areas:
                 'image meta meta'

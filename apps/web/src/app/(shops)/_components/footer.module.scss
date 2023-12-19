@@ -39,7 +39,7 @@
             &.beside {
                 grid-template-columns: 1fr;
 
-                @media (min-width: 950px) {
+                @media (min-width: $breakpoint-mobile) {
                     grid-template-columns: auto 1fr;
                 }
             }
@@ -86,7 +86,7 @@
         }
 
         &.beside {
-            @media (max-width: 950px) {
+            @media (max-width: $breakpoint-mobile) {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -106,14 +106,14 @@
 
     .section {
         &:is(:last-child) {
-            @media (min-width: 950px) {
+            @media (min-width: $breakpoint-mobile) {
                 justify-self: flex-end;
                 text-align: right;
             }
         }
     }
 
-    @media (min-width: 950px) {
+    @media (min-width: $breakpoint-mobile) {
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-content: flex-start;

@@ -1,3 +1,5 @@
+@import '../../../../_scss/global';
+
 .container {
     display: flex;
     flex-direction: column;
@@ -10,7 +12,7 @@
     .shop {
         width: 100%;
 
-        @media (min-width: 950px) {
+        @media (min-width: $breakpoint-mobile) {
             width: auto;
         }
     }
@@ -35,7 +37,7 @@
         gap: calc(var(--layout-block-padding) / 2);
         width: 100%;
 
-        @media (min-width: 950px) {
+        @media (min-width: $breakpoint-mobile) {
             width: auto;
         }
     }

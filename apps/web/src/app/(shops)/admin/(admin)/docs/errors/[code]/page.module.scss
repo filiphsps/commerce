@@ -1,3 +1,5 @@
+@import '../../../../../_scss/global';
+
 .container {
     .heading {
         overflow: hidden;
@@ -9,7 +11,7 @@
         h1 {
             margin: calc(var(--layout-block-padding) / 4) 0 var(--layout-block-padding) 0;
 
-            @media (max-width: 950px) {
+            @media (max-width: $breakpoint-mobile) {
                 font-size: 3.25rem !important;
             }
         }

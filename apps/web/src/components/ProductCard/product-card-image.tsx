@@ -25,11 +25,12 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
             src={image.url}
             alt={image.altText!}
             title={image.altText!}
-            height={100}
-            width={100}
+            height={image.height || 100}
+            width={image.width || 100}
             quality={75}
-            sizes="(max-width: 950px) 25vw, 150px"
+            sizes="(max-width: 950px) 25vw, 100px"
             decoding="async"
+            draggable={false}
             loading={priority ? 'eager' : 'lazy'}
             priority={priority}
         />

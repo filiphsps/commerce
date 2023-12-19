@@ -8,16 +8,17 @@ import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const LegalAndCopyright = styled.div`
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-self: flex-end;
-    margin: var(--block-spacer-large) 0;
+    margin: var(--block-spacer) 0;
 
     @media (min-width: 950px) {
+        align-items: flex-end;
+
         height: 4rem;
         margin: 0;
     }
@@ -26,13 +27,15 @@ const FooterBottomSectionBlock = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-start;
-    gap: var(--block-spacer);
+    align-items: center;
+    gap: var(--block-spacer-small);
 
     &:nth-child(2) {
-        align-items: flex-start;
+        align-items: center;
+        gap: var(--block-spacer-small);
 
         @media (min-width: 950px) {
+            gap: var(--block-spacer);
             align-items: flex-end;
         }
     }
@@ -47,12 +50,13 @@ const FooterBottomSectionBlock = styled.div`
 const ImportantLinks = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: var(--block-spacer);
+    gap: var(--block-spacer-large);
+    justify-content: center;
+    align-items: center;
 
     @media (min-width: 950px) {
         display: grid;
         grid-template-columns: auto auto auto;
-        gap: var(--block-spacer-large);
         height: 3rem;
         align-items: flex-end;
         justify-self: flex-end;
@@ -128,35 +132,12 @@ export type FooterContentProps = {
 const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
 
-    const [deferred, setDeferred] = useState<any>(null);
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setDeferred(
-                <>
-                    <iframe
-                        title="Nordcom Status"
-                        src="https://status.nordcom.io/badge?theme=dark"
-                        width="auto"
-                        height="30"
-                        frameBorder="0"
-                        scrolling="no"
-                        loading="lazy"
-                    />
-                </>
-            );
-        }, 6750);
-
-        () => clearTimeout(timeout);
-    }, []);
-
     const year = new Date().getFullYear();
-
     return (
         <>
             {/* TODO: This should be configurable in prismic. */}
             <div className={styles.legal}>
                 <FooterBottomSectionBlock>
-                    <div className={styles['status-badge']}>{deferred}</div>
                     <AcceptedPaymentMethods store={store!} />
                     <LegalAndCopyright>
                         <ImportantLinks>
@@ -183,6 +164,8 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                                         alt={social.name}
                                         title={social.name}
                                         sizes="35px"
+                                        draggable={false}
+                                        decoding="async"
                                     />
                                 </Social>
                             ))}

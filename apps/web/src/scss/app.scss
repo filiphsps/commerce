@@ -46,15 +46,15 @@ body {
     padding: 0;
     margin: 0;
 
-    font-size: 0.65rem;
+    font-size: 0.55rem; // FIXME: Refactor all of the styling so we can use '16px' as the base font size.
+    @media (min-width: 950px) {
+        font-size: 0.6rem;
+    }
+
     font-family: var(--font-primary, var(--fallback-font));
 
     color: var(--color-foreground, var(--color-dark));
     background: var(--color-background, var(--color-bright));
-
-    @media screen and (max-width: 950px) {
-        font-size: 0.55rem;
-    }
 
     // Deal with font rendering
     -moz-osx-font-smoothing: auto;
@@ -106,10 +106,10 @@ body {
     }
 
     ol li:is([data-sonner-toaster], .toast-notification):is([data-styled='true'], [data-styled='false']) {
-        padding: var(--block-padding-large);
+        padding: var(--block-padding-large) calc(var(--block-padding-large));
 
         font-family: var(--font-primary);
-        font-size: 1.25rem;
+        font-size: 1.75rem;
         line-height: normal;
 
         background-color: var(--color-accent-primary);

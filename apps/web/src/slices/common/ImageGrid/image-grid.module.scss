@@ -35,7 +35,7 @@ section.container {
             border-top-left-radius: 0;
             background: var(--accent-secondary-light);
 
-            @media (max-width: 950px) {
+            @media (max-width: $breakpoint-mobile) {
                 align-items: center;
             }
 

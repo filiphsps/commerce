@@ -19,8 +19,9 @@ export default async function Header({ className, ...props }: HeaderProps) {
                         alt="Nordcom Group Inc.'s Logo"
                         height={75}
                         width={150}
-                        priority
                         draggable={false}
+                        decoding="async"
+                        priority={true}
                     />
                 </Link>
 

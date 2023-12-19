@@ -2,56 +2,43 @@
 
 .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    flex-direction: column;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    align-items: center;
     gap: var(--block-spacer-large);
 
-    .content {
-        display: flex;
-        flex-direction: column;
+    min-height: calc(var(--block-padding-large) * 4);
+
+    @media (min-width: $breakpoint-mobile) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .item {
+        display: grid;
+        grid-template-columns: auto 1fr;
         justify-content: center;
-        align-items: center;
-        gap: calc(var(--block-spacer-large) * 2);
+        align-items: flex-start;
+        gap: var(--block-spacer-large);
 
-        padding: calc(var(--block-padding-large) * 2);
+        padding: var(--block-padding-large);
+
         border-radius: var(--block-border-radius);
-        background: var(--accent-primary);
-        color: var(--accent-primary-text);
+        background-color: var(--color-accent-secondary-light);
+        color: var(--accent-secondary-text);
 
-        @media (min-width: $breakpoint-mobile) {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            justify-content: center;
-            align-items: center;
+        .icon {
+            width: 4rem;
+            padding: var(--block-padding-small) 0;
+
+            object-position: center;
+            object-fit: contain;
         }
 
-        .item {
-            display: grid;
-            grid-template-columns: calc(var(--block-padding-large) * 2) auto;
-            justify-content: center;
-            align-items: center;
-            gap: var(--block-spacer-large);
-
-            .icon {
-                position: relative;
-                width: calc(var(--block-padding-large) * 2);
-                height: calc(var(--block-padding-large) * 2);
-
-                // TODO: Remove this when the icons are fixed.
-                filter: invert(1);
-                img {
-                    object-fit: contain;
-                    object-position: center;
-                    height: 100%;
-                    width: 100%;
-                }
-            }
-
-            .title {
-                font-size: 1.35rem;
-                font-weight: 500;
-                text-transform: uppercase;
-                text-align: left;
-            }
+        .title {
+            font-size: 0.95em;
+            font-weight: 600;
+            text-align: left;
         }
     }
 }

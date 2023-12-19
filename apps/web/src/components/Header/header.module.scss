@@ -77,7 +77,7 @@
         user-select: none;
 
         @media (min-width: $breakpoint-header) {
-            height: 4rem;
+            height: 4.75rem;
             transform: translateX(calc(calc(var(--block-padding) - 0.25rem) * -1));
 
             &:is(:hover, :active) {

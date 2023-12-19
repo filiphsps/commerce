@@ -1,3 +1,5 @@
+@import '../_scss/global';
+
 .container {
     z-index: 10;
     position: sticky;
@@ -14,7 +16,7 @@
     background-color: rgba(0, 0, 0, 0.75);
     box-shadow: rgb(51, 51, 51) 0px 0px 0px 1px;
 
-    @media (min-width: 950px) {
+    @media (min-width: $breakpoint-mobile) {
         padding: 0;
     }
 
@@ -28,7 +30,7 @@
         padding: 0 var(--layout-page-spacing);
         gap: var(--layout-block-padding);
 
-        @media (min-width: 950px) {
+        @media (min-width: $breakpoint-mobile) {
             grid-template-columns: 1fr auto;
             padding: var(--layout-block-padding) 0;
         }
@@ -43,12 +45,12 @@
             [data-logo-placement='center'] & {
                 justify-self: flex-start;
 
-                @media (min-width: 950px) {
+                @media (min-width: $breakpoint-mobile) {
                     justify-self: unset;
                 }
             }
 
-            @media (min-width: 950px) {
+            @media (min-width: $breakpoint-mobile) {
                 height: 2.5rem;
             }
 
@@ -76,7 +78,7 @@
                 align-items: center;
                 gap: var(--layout-block-padding);
 
-                @media (min-width: 950px) {
+                @media (min-width: $breakpoint-mobile) {
                     justify-content: center;
                     gap: calc(var(--layout-section-spacing) * 2);
                 }
@@ -87,7 +89,7 @@
                 text-transform: uppercase;
             }
 
-            @media (max-width: 950px) {
+            @media (max-width: $breakpoint-mobile) {
                 .button {
                     padding: 0;
                     border: none;
@@ -96,7 +98,7 @@
                 }
             }
 
-            @media (min-width: 950px) {
+            @media (min-width: $breakpoint-mobile) {
                 overflow-x: unset;
                 justify-content: flex-end;
                 gap: calc(var(--layout-section-spacing) * 2);

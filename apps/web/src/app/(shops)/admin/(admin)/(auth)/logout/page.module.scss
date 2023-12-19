@@ -1,3 +1,5 @@
+@import '../../../../_scss/global';
+
 .container {
     display: flex;
     flex-direction: column;
@@ -11,7 +13,7 @@
         align-items: flex-start;
         gap: calc(var(--layout-block-padding) / 2);
 
-        @media (min-width: 950px) {
+        @media (min-width: $breakpoint-mobile) {
             grid-auto-columns: auto;
         }
     }

@@ -114,6 +114,8 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                                         fill
                                         aria-label={country.country}
                                         sizes="35px"
+                                        draggable={false}
+                                        decoding="async"
                                     />
                                 </Flag>
                                 <Label>

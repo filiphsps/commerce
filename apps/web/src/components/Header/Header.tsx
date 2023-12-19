@@ -43,8 +43,10 @@ const HeaderComponent = async ({ shop, store, locale, i18n, ...props }: HeaderPr
                             height={50}
                             alt={logo.alt || `Store logo`}
                             sizes="(max-width: 1024px) 165px, 175px"
+                            draggable={false}
                             loading="eager"
                             priority={true}
+                            decoding="async"
                         />
                     ) : null}
                 </Link>
