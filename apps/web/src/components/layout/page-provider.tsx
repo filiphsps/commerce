@@ -60,16 +60,7 @@ const PageProvider = async ({ shop, store, locale, i18n, children }: PageProvide
                 </section>
             )}
 
-            <Suspense
-                // TODO: Find a prettier way to do this.
-                fallback={
-                    <Page>
-                        <PageContent></PageContent>
-                    </Page>
-                }
-            >
-                {children}
-            </Suspense>
+            {children}
 
             <Suspense>
                 <Footer shop={shop} store={store} locale={locale} i18n={i18n} />
