@@ -1,4 +1,5 @@
-import type { FooterModel } from '@/models/FooterModel';
+import { FooterApi } from '@/api/footer';
+import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import dynamic from 'next/dynamic';
@@ -9,13 +10,17 @@ import styles from './footer.module.scss';
 
 const FooterContent = dynamic(() => import('@/components/Footer/footer-content'));
 
-type FooterProps = {
-    store: StoreModel;
-    data: FooterModel;
+export type FooterProps = {
+    shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
+
+    /** @deprecated */
+    store: StoreModel;
 };
-const Footer = ({ store, data: footer, locale, i18n }: FooterProps) => {
+const Footer = async ({ store, shop, locale, i18n }: FooterProps) => {
+    const footer = await FooterApi({ shop, locale });
+
     // TODO: Dynamic copyright copy and content.
     return (
         <footer className={styles.container}>
@@ -58,4 +63,11 @@ const Footer = ({ store, data: footer, locale, i18n }: FooterProps) => {
     );
 };
 
+Footer.skeleton = () => (
+    <footer className={styles.container}>
+        <div className={styles.content} />
+    </footer>
+);
+
+Footer.displayName = 'Nordcom.Footer';
 export default Footer;

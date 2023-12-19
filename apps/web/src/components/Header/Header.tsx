@@ -1,3 +1,6 @@
+import 'server-only';
+
+import { NavigationApi } from '@/api/navigation';
 import type { Shop } from '@/api/shop';
 import { HamburgerMenu } from '@/components/Header/hamburger-menu';
 import { HeaderContainer } from '@/components/Header/header-container';
@@ -11,19 +14,22 @@ import Image from 'next/image';
 import { Suspense, type HTMLProps } from 'react';
 import { CartButton } from './cart-button';
 
-type HeaderProps = {
-    shop?: Shop;
-    store: StoreModel;
-    navigation: any;
+export type HeaderProps = {
+    shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
-} & HTMLProps<HTMLDivElement>;
-const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...props }: HeaderProps) => {
+
+    /** @deprecated */
+    store: StoreModel;
+} & Omit<HTMLProps<HTMLDivElement>, 'className'>;
+const HeaderComponent = async ({ shop, store, locale, i18n, ...props }: HeaderProps) => {
+    const navigation = await NavigationApi({ shop, locale });
+
     const logo =
         shop?.configuration?.design?.branding?.logos?.primary || store?.logos?.alternative || store?.logos?.primary;
 
     return (
-        <section className={`${styles.wrapper} ${className || ''}`}>
+        <section className={styles.wrapper}>
             <HeaderContainer {...props}>
                 <HamburgerMenu />
 
@@ -57,4 +63,15 @@ const HeaderComponent = ({ shop, store, navigation, locale, i18n, className, ...
     );
 };
 
+HeaderComponent.skeleton = () => (
+    <section className={styles.wrapper}>
+        <header className={styles.container}>
+            <div className={styles.content}>
+                <div className={styles.logo} />
+            </div>
+        </header>
+    </section>
+);
+
+HeaderComponent.displayName = 'Nordcom.Header';
 export default HeaderComponent;

@@ -275,11 +275,13 @@
     grid-area: product-actions;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr minmax(4rem, 1fr);
+    grid-template-rows: 1fr 4rem;
     grid-auto-flow: dense;
     gap: var(--block-spacer);
-    justify-content: space-between;
-    align-items: end;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    height: 100%;
 }
 
 /* TODO: Move these into it's own component. */

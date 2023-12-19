@@ -8,6 +8,7 @@ type StoreImageModel = {
     width: number;
 };
 
+/** @deprecated */
 export interface StoreModel {
     id: string;
     name: string;

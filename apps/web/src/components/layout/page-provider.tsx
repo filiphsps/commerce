@@ -1,12 +1,14 @@
-import type { NavigationItem } from '@/api/navigation';
+import 'server-only';
+
+import { HeaderApi } from '@/api/header';
 import type { Shop } from '@/api/shop';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import { Page } from '@/components/layout/page';
 import styles from '@/components/layout/page-provider.module.scss';
+import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import { PrismicText } from '@/components/typography/prismic-text';
-import type { FooterModel } from '@/models/FooterModel';
-import type { HeaderModel } from '@/models/HeaderModel';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense, type HTMLProps, type ReactNode } from 'react';
@@ -16,21 +18,11 @@ export type PageProviderProps = {
     store: StoreModel;
     locale: Locale;
     i18n: LocaleDictionary;
-    data: {
-        navigation: NavigationItem[];
-        header: HeaderModel;
-        footer: FooterModel;
-    };
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
-export const PageProvider = ({
-    shop,
-    store,
-    locale,
-    i18n,
-    data: { header, navigation, footer },
-    children
-}: PageProviderProps) => {
+const PageProvider = async ({ shop, store, locale, i18n, children }: PageProviderProps) => {
+    const header = await HeaderApi({ shop, locale });
+
     const above: any[] = header?.announcements?.filter((item: any) => item.location === 'above') || [];
     const bellow: any[] = header?.announcements?.filter((item: any) => item.location === 'bellow') || [];
 
@@ -45,8 +37,8 @@ export const PageProvider = ({
                     ))}
                 </section>
             )}
-            <Suspense>
-                <Header shop={shop} store={store} navigation={navigation} locale={locale} i18n={i18n} />
+            <Suspense fallback={<Header.skeleton />}>
+                <Header shop={shop} store={store} locale={locale} i18n={i18n} />
             </Suspense>
             {bellow.length > 0 && (
                 <section className={styles.announcements}>
@@ -61,8 +53,22 @@ export const PageProvider = ({
             {children}
 
             <Suspense>
-                <Footer store={store} locale={locale} i18n={i18n} data={footer} />
+                <Footer shop={shop} store={store} locale={locale} i18n={i18n} />
             </Suspense>
         </>
     );
 };
+
+PageProvider.skeleton = () => (
+    <>
+        <Header.skeleton />
+        <Page>
+            <PageContent></PageContent>
+        </Page>
+
+        <Footer.skeleton />
+    </>
+);
+
+PageProvider.displayName = 'Nordcom.PageProvider';
+export { PageProvider };

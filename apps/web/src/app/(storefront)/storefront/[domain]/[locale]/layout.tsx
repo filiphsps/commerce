@@ -1,8 +1,5 @@
 import '@/styles/app.scss';
 
-import { FooterApi } from '@/api/footer';
-import { HeaderApi } from '@/api/header';
-import { NavigationApi } from '@/api/navigation';
 import { ShopApi, type Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
@@ -151,10 +148,6 @@ export default async function RootLayout({
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const i18n = await getDictionary(locale);
-
-        const navigation = await NavigationApi({ shop, locale });
-        const header = await HeaderApi({ shop, locale });
-        const footer = await FooterApi({ shop, locale });
 
         const store = await StoreApi({ api });
         const branding = getBrandingColors(shop.configuration.design);
@@ -306,23 +299,19 @@ export default async function RootLayout({
                         />
 
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
-                            <PageProvider
-                                shop={shop}
-                                store={store}
-                                locale={locale}
-                                i18n={i18n}
-                                data={{ navigation, header, footer }}
-                            >
-                                <Suspense
-                                    fallback={
-                                        <Page>
-                                            <PageContent></PageContent>
-                                        </Page>
-                                    }
-                                >
-                                    {children}
-                                </Suspense>
-                            </PageProvider>
+                            <Suspense fallback={<PageProvider.skeleton />}>
+                                <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
+                                    <Suspense
+                                        fallback={
+                                            <Page>
+                                                <PageContent></PageContent>
+                                            </Page>
+                                        }
+                                    >
+                                        {children}
+                                    </Suspense>
+                                </PageProvider>
+                            </Suspense>
                         </ProvidersRegistry>
                     </body>
                 </html>
