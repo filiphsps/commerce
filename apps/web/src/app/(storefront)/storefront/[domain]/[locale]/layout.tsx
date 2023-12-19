@@ -78,27 +78,20 @@ export async function generateViewport({
 }
 
 export async function generateMetadata({
-    params: { domain, locale: localeData }
+    params: { domain, locale }
 }: {
     params: LayoutParams;
 }): Promise<Metadata> {
     try {
-        const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
-
         const shop = await ShopApi({ domain });
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
-        const store = await StoreApi({ api });
-
         return {
-            metadataBase: new URL(`https://${domain}/${locale.code}/`),
+            metadataBase: new URL(`https://${domain}/${locale}/`),
             title: {
-                default: store.name,
+                default: shop.name,
                 // Allow tenants to customize this.
                 // For example allow them to use other separators
                 // like `·`, `—` etc.
-                template: `%s - ${store.name}`
+                template: `%s - ${shop.name}`
             },
             icons: {
                 icon: ['/favicon.png'],
@@ -136,13 +129,13 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi({ domain, locale });
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
-        const i18n = await getDictionary(locale);
-
         const store = await StoreApi({ api });
+
+        const i18n = await getDictionary(locale);
         const branding = getBrandingColors(shop.configuration.design);
 
         return (
@@ -292,9 +285,9 @@ export default async function RootLayout({
                         />
 
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
-                            <Suspense fallback={<PageProvider.skeleton />}>
+                            <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
-                                    <Suspense fallback={<PageProvider.skeleton />}>
+                                    <Suspense key={`${shop.id}.layout.PageProvider`} fallback={<PageProvider.skeleton />}>
                                         {children}
                                     </Suspense>
                                 </PageProvider>
