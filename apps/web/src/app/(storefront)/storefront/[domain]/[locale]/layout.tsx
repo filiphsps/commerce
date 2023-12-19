@@ -3,9 +3,7 @@ import '@/styles/app.scss';
 import { ShopApi, type Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import { Page } from '@/components/layout/page';
 import { PageProvider } from '@/components/layout/page-provider';
-import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
@@ -301,15 +299,7 @@ export default async function RootLayout({
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
-                                    <Suspense
-                                        fallback={
-                                            <Page>
-                                                <PageContent></PageContent>
-                                            </Page>
-                                        }
-                                    >
-                                        {children}
-                                    </Suspense>
+                                    {children}
                                 </PageProvider>
                             </Suspense>
                         </ProvidersRegistry>

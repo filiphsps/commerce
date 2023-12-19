@@ -1,6 +1,6 @@
 import { PageApi, PagesApi } from '@/api/page';
 import { ShopApi, ShopsApi } from '@/api/shop';
-import { ShopifyApiClient, StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
@@ -39,9 +39,7 @@ export async function generateStaticParams() {
         })
     );
 }
-/* c8 ignore stop */
 
-/* c8 ignore start */
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
@@ -51,14 +49,15 @@ export async function generateMetadata({
     try {
         if (!isValidHandle(handle)) return notFoundMetadata;
 
-        const shop = await ShopApi({ domain });
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
+
+        const shop = await ShopApi({ domain, locale });
 
         // Next.js Preloading pattern.
         PageApi.preload({ shop, locale, handle });
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFoundMetadata;
@@ -102,21 +101,21 @@ export default async function CustomPage({
     try {
         if (!isValidHandle(handle)) return notFound();
 
-        // Fetch the current shop.
-        const shop = await ShopApi({ domain });
-
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeCode);
         if (!locale) return notFound();
+
+        // Fetch the current shop.
+        const shop = await ShopApi({ domain, locale });
+
+        // Next.js Preloading pattern.
+        PageApi.preload({ shop, locale, handle });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
 
         // Setup the AbstractApi client.
-        const api = await StorefrontApiClient({ shop, locale });
-
-        // Next.js Preloading pattern.
-        PageApi.preload({ shop, locale, handle });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Do the actual API calls.
         const store = await StoreApi({ api });

@@ -195,6 +195,16 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
     }
 };
 
+/**
+ * Preload a page to speed up api calls.
+ *
+ * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
+ * @todo Generalize this for all API helpers.
+ */
+CollectionApi.preload = (data: CollectionOptions) => {
+    void CollectionApi(data);
+};
+
 export const CollectionsApi = async (
     options:
         | {

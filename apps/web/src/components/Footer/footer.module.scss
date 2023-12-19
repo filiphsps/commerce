@@ -127,6 +127,17 @@
         .social-icon {
             aspect-ratio: 1 / 1;
         }
+
+        .legal {
+            display: grid;
+            grid-template-columns: 1fr;
+            padding-top: var(--block-spacer-large);
+            gap: var(--block-spacer-small);
+
+            @media (min-width: $breakpoint-mobile) {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     }
 }
 

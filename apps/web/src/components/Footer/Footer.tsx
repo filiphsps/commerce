@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { FooterApi } from '@/api/footer';
 import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
@@ -65,7 +67,15 @@ const Footer = async ({ store, shop, locale, i18n }: FooterProps) => {
 
 Footer.skeleton = () => (
     <footer className={styles.container}>
-        <div className={styles.content} />
+        <div className={styles.content}>
+            <div className={styles.blocks}>
+                <div className={styles.block}>
+                    <div className={styles.logo}></div>
+                </div>
+            </div>
+
+            <div className={styles.legal}></div>
+        </div>
     </footer>
 );
 

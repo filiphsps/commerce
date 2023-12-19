@@ -1,7 +1,9 @@
-import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
+import 'server-only';
 
+import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
 import type { VendorModel } from '@/models/VendorModel';
+import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { CollectionEdge, ProductEdge } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -40,6 +42,13 @@ const Prefetch = ({
 
             try {
                 switch (type) {
+                    case 'collection': {
+                        const handle = slice.primary.handle as string;
+                        const limit = slice.variation === 'full' ? 250 : (slice.primary as any).limit || 16;
+
+                        // Next.js Preloading pattern.
+                        CollectionApi.preload({ api, handle, limit });
+                    }
                     case 'vendors': {
                         if (vendors && vendors?.length > 0) continue;
 

@@ -44,7 +44,9 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     );
 }
 
-PrismicPage.skeleton = () => <div></div>; // TODO: Add a skeleton with a shimmer animation.
+// TODO: Add a skeleton with a shimmer animation.
+// TODO: Add {slice}.skeleton components as children.
+PrismicPage.skeleton = () => <div></div>;
 
 PrismicPage.displayName = 'Nordcom.PrismicPage';
 export default PrismicPage;

@@ -22,16 +22,6 @@ const LegalAndCopyright = styled.div`
         margin: 0;
     }
 `;
-const FooterBottomSection = styled.section`
-    display: grid;
-    grid-template-columns: 1fr;
-    padding-top: var(--block-spacer-large);
-    gap: var(--block-spacer-small);
-
-    @media (min-width: 950px) {
-        grid-template-columns: 1fr 1fr;
-    }
-`;
 const FooterBottomSectionBlock = styled.div`
     display: flex;
     flex-direction: column;
@@ -164,7 +154,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     return (
         <>
             {/* TODO: This should be configurable in prismic. */}
-            <FooterBottomSection>
+            <div className={styles.legal}>
                 <FooterBottomSectionBlock>
                     <div className={styles['status-badge']}>{deferred}</div>
                     <AcceptedPaymentMethods store={store!} />
@@ -209,7 +199,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                         </Copyright>
                     </LegalAndCopyright>
                 </FooterBottomSectionBlock>
-            </FooterBottomSection>
+            </div>
         </>
     );
 };
