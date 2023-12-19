@@ -48,8 +48,8 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
     if (BuildConfig.environment === 'development') return <>{children}</>;
 
     return (
-        <LiveChat shop={shop} locale={locale}>
+        <>
             {children}
-        </LiveChat>
+        </>
     );
 };
