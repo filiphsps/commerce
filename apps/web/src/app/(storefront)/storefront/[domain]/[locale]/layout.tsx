@@ -19,9 +19,6 @@ import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
-export const revalidate = 28_800; // 8hrs.
-export const dynamicParams = true;
-
 // TODO: Generalize this
 const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
     if (!branding?.colors) return null;
@@ -297,7 +294,9 @@ export default async function RootLayout({
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
-                                    {children}
+                                    <Suspense fallback={<PageProvider.skeleton />}>
+                                        {children}
+                                    </Suspense>
                                 </PageProvider>
                             </Suspense>
                         </ProvidersRegistry>
