@@ -3,6 +3,8 @@ import { getAuthOptions } from '@/auth';
 import NextAuth from 'next-auth';
 import { type NextRequest } from 'next/server';
 
+export const runtime = 'nodejs';
+
 export type AuthApiRouteParams = {
     domain: string;
     nextauth: string[];
