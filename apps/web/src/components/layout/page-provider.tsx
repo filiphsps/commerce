@@ -19,13 +19,11 @@ export type PageProviderProps = {
 const PageProvider = ({ shop, store, locale, i18n, children }: PageProviderProps) => {
     return (
         <>
-            <Suspense fallback={<Header.skeleton />}>
-                <Header shop={shop} store={store} locale={locale} i18n={i18n} />
+            <Suspense key={`${shop.id}.header`} fallback={<Header.skeleton />}>
+                <Header shop={shop} locale={locale} i18n={i18n} />
             </Suspense>
-
             {children}
-
-            <Suspense>
+            <Suspense key={`${shop.id}.footer`}>
                 <Footer shop={shop} store={store} locale={locale} i18n={i18n} />
             </Suspense>
         </>
@@ -36,7 +34,7 @@ PageProvider.skeleton = () => (
     <>
         <Header.skeleton />
         <Page>
-            <PageContent></PageContent>
+            <PageContent />
         </Page>
         <Footer.skeleton />
     </>
