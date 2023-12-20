@@ -79,7 +79,6 @@ export default async function SearchPage({ params: { domain, locale: localeData 
         if (!locale) return notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         
         void Prefetch({ api, page });
