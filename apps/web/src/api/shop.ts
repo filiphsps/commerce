@@ -131,6 +131,42 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                         height: 512
                     }
                 },
+                design: {
+                    branding: {
+                        colors: [
+                            {
+                                type: 'primary',
+                                variant: 'default',
+                                accent: '#274690',
+                                background: '#fefefe',
+                                foreground: '#101418'
+                            },
+                            {
+                                type: 'secondary',
+                                variant: 'default',
+                                accent: '#EDD382',
+                                background: '#fefefe',
+                                foreground: '#101418'
+                            }
+                        ],
+                        logos: {
+                            primary: {
+                                src: 'https://candy-by-sweden.cdn.prismic.io/candy-by-sweden/6e41b8c9-106c-44f8-a5fc-741d9c74f2d6_sweet-side-of-sweden-logo-alt.svg',
+                                alt: 'Sweet Side of Sweden Logo',
+                                width: 1986,
+                                height: 441
+                            },
+                            alternatives: {
+                                square: {
+                                    src: 'https://cdn.shopify.com/s/files/1/0761/8848/3889/files/logo-square.png?v=1701401938',
+                                    alt: 'Sweet Side of Sweden Logo',
+                                    width: 512,
+                                    height: 512
+                                }
+                            }
+                        }
+                    }
+                },
                 content: {
                     type: 'prismic' as const,
                     id: !!process.env.PRISMIC_REPO
