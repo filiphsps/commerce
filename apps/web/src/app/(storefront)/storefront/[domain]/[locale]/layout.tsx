@@ -110,21 +110,21 @@ const CssVariablesProvider = async (domain: string) => {
         :root {
             --color-background: ${branding.primary.background};
             --color-foreground: ${branding.primary.foreground};
-            
+
             --color-accent-primary: ${branding.primary.accent};
             --color-accent-primary-text: ${branding.primary.foreground};
             --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
             --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
-    
+
             --color-accent-secondary: ${branding.secondary.accent};
             --color-accent-secondary-text: ${branding.secondary.foreground};
-            --color-accent-secondary-light: ${colord(store.accent.secondary).lighten(0.15).toHex()};
-            --color-accent-secondary-dark: ${colord(store.accent.secondary).darken(0.15).toHex()};
-    
+            --color-accent-secondary-light: ${colord(branding.secondary.accent).lighten(0.15).toHex()};
+            --color-accent-secondary-dark: ${colord(branding.secondary.accent).darken(0.15).toHex()};
+
+            /* TODO: Remove these legacy variables. */
             --accent-primary: var(--color-accent-primary);
             --accent-primary-light: var(--color-accent-primary-light);
             --accent-primary-dark: var(--color-accent-primary-dark);
-    
             --accent-secondary: var(--color-accent-secondary);
             --accent-secondary-light: var(--color-accent-secondary-light);
             --accent-secondary-dark: var(--color-accent-secondary-dark);
