@@ -2,10 +2,10 @@ import 'server-only';
 
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
-import { ShopApi, ShopsApi } from '@/api/shop';
+import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi, ProductsApi } from '@/api/shopify/product';
-import { StoreApi } from '@/api/store';
+import { ProductApi } from '@/api/shopify/product';
+import { LocalesApi } from '@/api/store';
 import Gallery from '@/components/Gallery';
 import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
@@ -29,60 +29,10 @@ import type { Metadata } from 'next';
 import { ProductJsonLd } from 'next-seo';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 import { ProductContent, ProductPricing } from './product-content';
 
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-export async function generateStaticParams() {
-    //const locale = Locale.default;
-    const shops = await ShopsApi();
-
-    const pages = (
-        await Promise.all(
-            shops
-                .filter((shop) => shop.domains.primary !== 'demo.nordcom.io') // TEMP
-                .map(async (shop) => {
-                    try {
-                        //const api = await ShopifyApolloApiClient({ shop, locale });
-                        //const locales = await LocalesApi({ api });
-
-                        return await Promise.all(
-                            ['en-US', 'de-DE', 'en-GB', 'en-CA', 'en-AU'] // TODO: Don't hardcode these ones.
-                                .map(async (locale) => {
-                                    try {
-                                        const api = await ShopifyApolloApiClient({ shop, locale: Locale.from(locale) });
-                                        const { products } = await ProductsApi({ api });
-
-                                        // TODO: This is a hack to prevent us from building way too many pages.
-                                        return products.slice(0, 25).map(({ node: { handle } }) => ({
-                                            domain: shop.domains.primary,
-                                            locale: locale,
-                                            handle
-                                        }));
-                                    } catch {
-                                        return null;
-                                    }
-                                })
-                                .filter((_) => _)
-                        );
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    // FIXME: We have already looped through all pages when we get here which is really inefficient.
-    if (BuildConfig.build.limit_pages) {
-        return pages.slice(0, BuildConfig.build.limit_pages);
-    }
-
-    return pages;
-}
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
@@ -160,25 +110,19 @@ export default async function ProductPage({
 
         // Fetch the current shop.
         const shop = await ShopApi({ domain, locale });
-
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        // Next.js Preloading pattern.
-        ProductApi.preload({ api, handle });
-        PageApi.preload({ shop, locale, handle });
-
-        // Get dictionary of strings for the current locale.
-        const i18n = await getDictionary({ shop, locale });
-
         // Do the actual API calls.
-        const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const reviews = await ProductReviewsApi({ api, product });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Next.js Preloading pattern.
         void Prefetch({ api, page }); // TODO: Figure out a nicer way.
+
+        // Get dictionary of strings for the current locale.
+        const i18n = await getDictionary({ shop, locale });
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
@@ -267,15 +211,16 @@ export default async function ProductPage({
                             <>
                                 <div className={styles.contentDivider} />
 
-                                <PrismicPage
-                                    shop={shop}
-                                    store={store}
-                                    locale={locale}
-                                    page={page}
-                                    i18n={i18n}
-                                    handle={handle}
-                                    type={'product_page'}
-                                />
+                                <Suspense fallback={<PrismicPage.skeleton page={page} />}>
+                                    <PrismicPage
+                                        shop={shop}
+                                        locale={locale}
+                                        page={page}
+                                        i18n={i18n}
+                                        handle={handle}
+                                        type={'product_page'}
+                                    />
+                                </Suspense>
                             </>
                         ) : null}
                     </div>
@@ -317,7 +262,7 @@ export default async function ProductPage({
                             },
                             publisher: {
                                 type: 'Organization',
-                                name: store.name
+                                name: shop.name
                             }
                         })) || undefined
                     }
@@ -338,7 +283,7 @@ export default async function ProductPage({
                                 parseGid(variant.id).id
                             }`,
                             seller: {
-                                name: store.name
+                                name: shop.name
                             },
                             priceSpecification: {
                                 type: 'PriceSpecification',
