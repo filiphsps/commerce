@@ -1,11 +1,12 @@
 import { ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
+import { withAppRouterHighlight } from '@/utils/config/highlight.app';
 import { Locale } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export type HeartbeatApiRouteParams = {};
-export async function GET(_req: NextRequest, {}: { params: HeartbeatApiRouteParams }) {
+export const runtime = 'node';
+export const GET = withAppRouterHighlight(async (_req: NextRequest, _context) => {
     // TODO: Verify that the request is coming from vercel otherwise just return a 200.
 
     const shops = await ShopsApi();
@@ -34,4 +35,4 @@ export async function GET(_req: NextRequest, {}: { params: HeartbeatApiRoutePara
         },
         { status: 200 }
     );
-}
+});

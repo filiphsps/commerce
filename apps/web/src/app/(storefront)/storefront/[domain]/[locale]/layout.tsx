@@ -19,14 +19,15 @@ import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
+export const runtime = 'experimental-edge';
+
 // TODO: Generalize this
 const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
-    if (!branding?.colors) return null;
-    const { colors } = branding;
+    const { colors } = branding!;
 
     // TODO: Deal with variants.
-    const primary = colors.find(({ type }) => type === 'primary');
-    const secondary = colors.find(({ type }) => type === 'secondary');
+    const primary = colors!.find(({ type }) => type === 'primary')!;
+    const secondary = colors!.find(({ type }) => type === 'secondary')!;
 
     return {
         primary,
@@ -43,23 +44,13 @@ const fontPrimary = Public_Sans({
 });
 
 export type LayoutParams = { domain: string; locale: string };
-export async function generateViewport({
-    params: { domain, locale: localeData }
-}: {
-    params: LayoutParams;
-}): Promise<Viewport> {
+export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
     try {
-        const locale = Locale.from(localeData);
-        if (!locale) return {};
-
         const shop = await ShopApi({ domain });
-        const api = await ShopifyApolloApiClient({ shop, locale });
-
-        const store = await StoreApi({ api });
         const branding = getBrandingColors(shop.configuration.design);
 
         return {
-            themeColor: (branding?.primary?.accent || store.accent.secondary) as string,
+            themeColor: branding?.primary?.accent as string,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
@@ -77,13 +68,10 @@ export async function generateViewport({
     }
 }
 
-export async function generateMetadata({
-    params: { domain, locale }
-}: {
-    params: LayoutParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
+
         return {
             metadataBase: new URL(`https://${domain}/${locale}/`),
             title: {
@@ -152,19 +140,6 @@ export default async function RootLayout({
                         {
                             ...(branding?.primary
                                 ? {
-                                      '--color-accent-primary': branding?.primary?.accent,
-                                      '--color-accent-primary-text': branding?.primary?.foreground,
-                                      '--color-background': branding?.primary?.background,
-                                      '--color-foreground': branding?.primary?.foreground,
-
-                                      // TODO: This should probably be handled by the API.
-                                      '--color-accent-primary-light': colord(branding.primary.accent)
-                                          .lighten(0.15)
-                                          .toHex(),
-                                      '--color-accent-primary-dark': colord(branding.primary.accent)
-                                          .darken(0.15)
-                                          .toHex(),
-
                                       // TODO: Figure out how to deal with `color-block`.
 
                                       ...(branding?.secondary
@@ -210,21 +185,34 @@ export default async function RootLayout({
                                       '--color-accent-secondary-dark': colord(store?.accent?.secondary)
                                           .darken(0.15)
                                           .toHex()
-                                  }),
-
-                            // Legacy
-                            '--accent-primary': 'var(--color-accent-primary)',
-                            '--accent-primary-light': 'var(--color-accent-primary-light)',
-                            '--accent-primary-dark': 'var(--color-accent-primary-dark)',
-
-                            '--accent-secondary': 'var(--color-accent-secondary)',
-                            '--accent-secondary-light': 'var(--color-accent-secondary-light)',
-                            '--accent-secondary-dark': 'var(--color-accent-secondary-dark)'
+                                  })
                         } as React.CSSProperties
                     }
                     suppressHydrationWarning={true}
                 >
-                    <head />
+                    <head>
+                        <style>
+                            {`
+                            :root {
+                                --color-accent-primary: ${branding?.primary?.accent};
+                                --color-accent-primary-text: ${branding?.primary?.foreground};
+                                --color-background: ${branding?.primary?.background};
+                                --color-foreground: ${branding?.primary?.foreground};
+
+                                --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
+                                --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
+
+                                --accent-primary: var(--color-accent-primary);
+                                --accent-primary-light: var(--color-accent-primary-light);
+                                --accent-primary-dark: var(--color-accent-primary-dark);
+
+                                --accent-secondary: var(--color-accent-secondary);
+                                --accent-secondary-light: var(--color-accent-secondary-light);
+                                --accent-secondary-dark: var(--color-accent-secondary-dark);
+                            }
+                        `}
+                        </style>
+                    </head>
                     <body data-scrolled="false">
                         <SocialProfileJsonLd
                             useAppDir={true}
@@ -287,7 +275,10 @@ export default async function RootLayout({
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
-                                    <Suspense key={`${shop.id}.layout.PageProvider`} fallback={<PageProvider.skeleton />}>
+                                    <Suspense
+                                        key={`${shop.id}.layout.PageProvider`}
+                                        fallback={<PageProvider.skeleton />}
+                                    >
                                         {children}
                                     </Suspense>
                                 </PageProvider>
