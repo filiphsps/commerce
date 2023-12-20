@@ -145,7 +145,7 @@ const config = {
 
     generateBuildId: async () => {
         if (process.env.NODE_ENV === 'development') return 'dev';
-        return process.env.VERCEL_GIT_COMMIT_SHA;
+        return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
     // While I wish we could use this we must handle it
