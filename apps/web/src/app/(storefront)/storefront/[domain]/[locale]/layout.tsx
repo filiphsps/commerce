@@ -13,17 +13,15 @@ import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
 import { colord } from 'colord';
 import type { Metadata, Viewport } from 'next';
-import { SiteLinksSearchBoxJsonLd, SocialProfileJsonLd } from 'next-seo';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
-export const runtime = 'experimental-edge';
-
 // TODO: Generalize this
-const getBrandingColors = ({ branding }: Shop['configuration']['design'] = {}) => {
-    const { colors } = branding!;
+const getBrandingColors = async (domain: string) => {
+    const shop = await ShopApi({ domain });
+    const { colors } = shop.configuration!.design!;
 
     // TODO: Deal with variants.
     const primary = colors!.find(({ type }) => type === 'primary')!;
@@ -46,11 +44,10 @@ const fontPrimary = Public_Sans({
 export type LayoutParams = { domain: string; locale: string };
 export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
     try {
-        const shop = await ShopApi({ domain });
-        const branding = getBrandingColors(shop.configuration.design);
+        const branding = await getBrandingColors(domain);
 
         return {
-            themeColor: branding?.primary?.accent as string,
+            themeColor: branding.primary.accent as string,
             width: 'device-width',
             initialScale: 1,
             interactiveWidget: 'resizes-visual'
@@ -106,6 +103,31 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
     }
 }
 
+const CssVariablesProvider = async ({ branding }) => <style>{`
+    :root {
+        --color-background: ${branding.primary.background};
+        --color-foreground: ${branding.primary.foreground};
+        
+        --color-accent-primary: ${branding.primary.accent};
+        --color-accent-primary-text: ${branding.primary.foreground};
+        --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
+        --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
+
+        --color-accent-secondary: ${branding.secondary.accent};
+        --color-accent-secondary-text: ${branding.secondary.foreground};
+        --color-accent-secondary-light: ${colord(store.accent.secondary).lighten(0.15).toHex()};
+        --color-accent-secondary-dark: ${colord(store.accent.secondary).darken(0.15).toHex()};
+
+        --accent-primary: var(--color-accent-primary);
+        --accent-primary-light: var(--color-accent-primary-light);
+        --accent-primary-dark: var(--color-accent-primary-dark);
+
+        --accent-secondary: var(--color-accent-secondary);
+        --accent-secondary-light: var(--color-accent-secondary-light);
+        --accent-secondary-dark: var(--color-accent-secondary-dark);
+    }
+`}</style>;
+
 export default async function RootLayout({
     children,
     params: { domain, locale: localeData }
@@ -117,170 +139,34 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi({ domain });
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const store = await StoreApi({ api });
+        const branding = await getBrandingColors(domain);
 
         const i18n = await getDictionary(locale);
-        const branding = getBrandingColors(shop.configuration.design);
 
         return (
             <>
-                <HighlightInit
-                    {...highlightConfig}
-                    serviceName={`Nordcom Commerce Storefront`}
-                    excludedHostnames={['localhost']}
-                />
+                <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
+
                 <html
                     lang={locale.code}
                     className={`${fontPrimary.variable}`}
-                    style={
-                        {
-                            ...(branding?.primary
-                                ? {
-                                      // TODO: Figure out how to deal with `color-block`.
-
-                                      ...(branding?.secondary
-                                          ? {
-                                                '--color-accent-secondary': branding?.secondary?.accent,
-                                                '--color-accent-secondary-text': branding?.secondary?.foreground,
-
-                                                // TODO: This should probably be handled by the API.
-                                                '--color-accent-secondary-light': colord(store.accent.secondary)
-                                                    .lighten(0.15)
-                                                    .toHex(),
-                                                '--color-accent-secondary-dark': colord(store.accent.secondary)
-                                                    .darken(0.15)
-                                                    .toHex()
-                                            }
-                                          : {
-                                                // Fallback.
-                                                '--color-accent-secondary': branding.primary.accent,
-                                                '--color-accent-secondary-text': branding.primary.foreground,
-
-                                                // TODO: This should probably be handled by the API.
-                                                '--color-accent-secondary-light': colord(branding.primary.accent)
-                                                    .lighten(0.15)
-                                                    .toHex(),
-                                                '--color-accent-secondary-dark': colord(branding.primary.accent)
-                                                    .darken(0.15)
-                                                    .toHex()
-                                            })
-                                  }
-                                : {
-                                      // Legacy code-path.
-                                      '--color-accent-primary': store?.accent?.primary,
-                                      '--color-accent-primary-light': colord(store?.accent?.primary)
-                                          .lighten(0.175)
-                                          .toHex(),
-                                      '--color-accent-primary-dark': colord(store?.accent?.primary)
-                                          .darken(0.1)
-                                          .toHex(),
-                                      '--color-accent-secondary': store?.accent?.secondary,
-                                      '--color-accent-secondary-light': colord(store?.accent?.secondary)
-                                          .lighten(0.15)
-                                          .toHex(),
-                                      '--color-accent-secondary-dark': colord(store?.accent?.secondary)
-                                          .darken(0.15)
-                                          .toHex()
-                                  })
-                        } as React.CSSProperties
-                    }
                     suppressHydrationWarning={true}
                 >
-                    <head>
-                        <style>
-                            {`
-                            :root {
-                                --color-accent-primary: ${branding?.primary?.accent};
-                                --color-accent-primary-text: ${branding?.primary?.foreground};
-                                --color-background: ${branding?.primary?.background};
-                                --color-foreground: ${branding?.primary?.foreground};
-
-                                --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
-                                --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
-
-                                --accent-primary: var(--color-accent-primary);
-                                --accent-primary-light: var(--color-accent-primary-light);
-                                --accent-primary-dark: var(--color-accent-primary-dark);
-
-                                --accent-secondary: var(--color-accent-secondary);
-                                --accent-secondary-light: var(--color-accent-secondary-light);
-                                --accent-secondary-dark: var(--color-accent-secondary-dark);
-                            }
-                        `}
-                        </style>
-                    </head>
+                    <head />
                     <body data-scrolled="false">
-                        <SocialProfileJsonLd
-                            useAppDir={true}
-                            type="Organization"
-                            name={store.name}
-                            description={store.description}
-                            url={`https://${domain}/${locale.code}/`}
-                            logo={store?.favicon?.src || store.logos?.primary?.src}
-                            foundingDate="2023"
-                            founders={[
-                                {
-                                    type: 'Person',
-                                    name: 'Dennis Sahlin',
-                                    email: 'dennis@nordcom.io',
-                                    jobTitle: 'Chief Executive Officer'
-                                },
-                                {
-                                    type: 'Person',
-                                    name: 'Filiph Siitam Sandström',
-                                    email: 'filiph@nordcom.io',
-                                    jobTitle: 'Chief Technology Officer'
-                                },
-                                {
-                                    type: 'Person',
-                                    name: 'Albin Dahlqvist',
-                                    email: 'albin@nordcom.io',
-                                    jobTitle: 'Founder'
-                                }
-                            ]}
-                            address={{
-                                type: 'PostalAddress',
-                                streetAddress: 'Bergsgatan 7F',
-                                addressLocality: 'Mellerud',
-                                addressRegion: 'Västra Götaland',
-                                postalCode: '464 30',
-                                addressCountry: 'SE'
-                            }}
-                            contactPoint={{
-                                type: 'ContactPoint',
-                                contactType: 'Customer relations and support',
-                                email: 'hello@sweetsideofsweden.com',
-                                telephone: '+1 866 502 5580',
-                                url: `https://${domain}/${locale.code}/about/`,
-                                availableLanguage: ['English', 'Swedish']
-                            }}
-                            sameAs={store?.social?.map(({ url }) => url)}
-                        />
-                        <SiteLinksSearchBoxJsonLd
-                            useAppDir={true}
-                            name={store.name}
-                            url={`https://${domain}/${locale.code}/`}
-                            potentialActions={[
-                                {
-                                    target: `https://${domain}/${locale.code}/search/?q`,
-                                    queryInput: 'search_term_string'
-                                }
-                            ]}
-                        />
+                        <Suspense key={`${shop.id}.styling`}>
+                            <CssVariablesProvider branding={branding} />
+                        </Suspense>
 
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
-                                <PageProvider shop={shop} store={store} locale={locale} i18n={i18n}>
-                                    <Suspense
-                                        key={`${shop.id}.layout.PageProvider`}
-                                        fallback={<PageProvider.skeleton />}
-                                    >
-                                        {children}
-                                    </Suspense>
+                                <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
+                                    {children}
                                 </PageProvider>
                             </Suspense>
                         </ProvidersRegistry>
