@@ -90,10 +90,6 @@ const config = {
     env: {
         // Settings.
         LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-        DOMAIN: process.env.DOMAIN,
-        STORE_LOCALES: process.env.STORE_LOCALES,
-        STORE_DEFAULT_LOCALE: process.env.STORE_DEFAULT_LOCALE,
-        STORE_CURRENCIES: process.env.STORE_CURRENCIES,
         GTM: process.env.GTM,
 
         // Shopify.
