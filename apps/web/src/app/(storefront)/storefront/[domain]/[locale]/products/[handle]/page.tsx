@@ -211,7 +211,7 @@ export default async function ProductPage({
                             <>
                                 <div className={styles.contentDivider} />
 
-                                <Suspense fallback={<PrismicPage.skeleton page={page} />}>
+                                <Suspense fallback={<PrismicPage.skeleton page={page as any} />}>
                                     <PrismicPage
                                         shop={shop}
                                         locale={locale}
