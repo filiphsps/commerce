@@ -13,6 +13,7 @@ import { metadata as notFoundMetadata } from '../../not-found';
 
 // Make sure this page is always dynamic.
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export type AccountPageParams = { domain: string; locale: string };
 export async function generateMetadata({
