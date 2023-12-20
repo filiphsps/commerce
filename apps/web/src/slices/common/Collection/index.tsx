@@ -18,15 +18,24 @@ export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
 const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }: CollectionProps) => {
     switch (slice.variation) {
         case 'default': {
+            const handle = slice.primary.handle as string;
+            const horizontal = slice.primary.direction === 'horizontal';
+
             return (
-                <Suspense fallback={<CollectionSlice.skeleton slice={slice} />}>
+                <Suspense
+                    key={`${shop}.collection.${handle}.container`}
+                    fallback={<CollectionSlice.skeleton slice={slice} />}
+                >
                     <CollectionContainer slice={slice}>
-                        <Suspense fallback={<CollectionBlock.skeleton />}>
+                        <Suspense
+                            key={`${shop}.collection.${handle}`}
+                            fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}
+                        >
                             <CollectionBlock
                                 shop={shop}
                                 locale={locale}
-                                handle={slice.primary.handle as string}
-                                isHorizontal={slice.primary.direction === 'horizontal'}
+                                handle={handle}
+                                isHorizontal={horizontal}
                                 limit={slice.primary.limit || 16}
                                 showViewAll={true}
                                 i18n={i18n}
