@@ -2,7 +2,6 @@ import 'server-only';
 
 import type { PageData, PageType } from '@/api/page';
 import type { Shop } from '@/api/shop';
-import type { StoreModel } from '@/models/StoreModel';
 import { components, components as slices } from '@/slices';
 import type { Optional } from '@/utils/abstract-api';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -12,23 +11,15 @@ import { Suspense } from 'react';
 
 type PageParams<T extends PageType> = {
     shop: Shop;
-    store: StoreModel;
     locale: Locale;
     i18n: LocaleDictionary;
     page: PageData<T>;
     handle: string;
     type?: T;
-
-    /**
-     * @deprecated Migrate to the preloading pattern ({@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}).
-     */
-    prefetch?: PrefetchData | undefined;
 };
 function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
-    store,
     locale,
-    prefetch,
     i18n,
     page,
     handle,
@@ -39,7 +30,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
             <SliceZone
                 slices={page?.slices || []}
                 components={slices}
-                context={{ shop, store, prefetch, i18n, locale, type, uid: handle, handle }}
+                context={{ shop, i18n, locale, type, uid: handle, handle }}
             />
         </Suspense>
     );
