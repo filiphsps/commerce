@@ -103,7 +103,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
     }
 }
 
-const CssVariablesProvider = async (domain: string) => {
+const CssVariablesProvider = async ({ domain }: { domain: string }) => {
     const branding = await getBrandingColors(domain);
 
     return <style>{`
