@@ -15,46 +15,10 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
-import { metadata as notFoundMetadata } from '../not-found';
 import LocaleSelector from './locale-selector';
 
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-export async function generateStaticParams() {
-    const locale = Locale.default;
-    const shops = await ShopsApi();
 
-    const pages = (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        const api = await StorefrontApiClient({ shop, locale });
-                        const locales = await LocalesApi({ api });
-
-                        return locales.map(({ code }) => ({
-                            domain: shop.domains.primary,
-                            locale: code
-                        }));
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    // FIXME: We have already looped through all pages when we get here which is really inefficient.
-    if (BuildConfig.build.limit_pages) {
-        return pages.slice(0, BuildConfig.build.limit_pages);
-    }
-
-    return pages;
-}
-/* c8 ignore stop */
-
-/* c8 ignore start */
 export type CountriesPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
@@ -63,14 +27,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) return notFound();
 
         const shop = await ShopApi({ domain, locale });
 
         const api = await StorefrontApiClient({ shop, locale });
-        const store = await StoreApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
-        const locales = store.i18n?.locales || [Locale.default];
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
 
@@ -81,21 +43,14 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/countries/`,
-                languages: locales.reduce(
-                    (prev, { code }) => ({
-                        ...prev,
-                        [code]: `https://${domain}/${code}/countries/`
-                    }),
-                    {}
-                )
+                canonical: `https://${shop.domains.primary}/${locale.code}/countries/`,
             },
             openGraph: {
                 url: `/countries/`,
                 type: 'website',
                 title,
                 description,
-                siteName: store?.name,
+                siteName: shop?.name,
                 locale: locale.code,
                 images:
                     (page?.meta_image && [
@@ -112,13 +67,12 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            return notFound();
         }
 
         throw error;
     }
 }
-/* c8 ignore stop */
 
 export default async function CountriesPage({
     params: { domain, locale: localeData }
@@ -130,15 +84,13 @@ export default async function CountriesPage({
         if (!locale) return notFound();
 
         const shop = await ShopApi({ domain, locale });
-
-        const i18n = await getDictionary(locale);
-
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
-        const countries = await CountriesApi({ api });
 
+        const countries = await CountriesApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
-        const prefetch = await Prefetch({ api, page });
+        
+        void Prefetch({ api, page });
+        const i18n = await getDictionary(locale);
 
         return (
             <Page>
@@ -176,10 +128,8 @@ export default async function CountriesPage({
                     {page?.slices && page?.slices.length > 0 && (
                         <PrismicPage
                             shop={shop}
-                            store={store}
                             locale={locale}
                             page={page}
-                            prefetch={prefetch}
                             i18n={i18n}
                             handle={'countries'}
                             type={'custom_page'}
