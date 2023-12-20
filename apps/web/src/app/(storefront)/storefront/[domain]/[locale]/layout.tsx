@@ -163,13 +163,13 @@ export default async function RootLayout({
                             <CssVariablesProvider domain={domain} />
                         </Suspense>
 
-                        <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
-                            <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
+                        <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
+                            <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
                                     <Suspense key={`${shop.id}.layout.page`}>{children}</Suspense>
                                 </PageProvider>
-                            </ProvidersRegistry>
-                        </Suspense>
+                            </Suspense>
+                        </ProvidersRegistry>
                     </body>
                 </html>
             </>
