@@ -1,7 +1,7 @@
 import { PageApi } from '@/api/page';
-import { ShopApi, ShopsApi } from '@/api/shop';
+import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
-import { CountriesApi, LocalesApi, StoreApi } from '@/api/store';
+import { CountriesApi, LocalesApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -121,7 +121,7 @@ export default async function CountriesPage({
                                 redirect(`/${locale}/`);
                             }}
                         >
-                            <LocaleSelector shop={shop} countries={countries} store={store} locale={locale} />
+                            <LocaleSelector shop={shop} countries={countries} locale={locale} />
                         </form>
                     </PageContent>
 
