@@ -1,6 +1,6 @@
 import '@/styles/app.scss';
 
-import { ShopApi, type Shop } from '@/api/shop';
+import { ShopApi } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { PageProvider } from '@/components/layout/page-provider';
@@ -17,6 +17,8 @@ import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
+
+export const runtime = 'experimental-edge';
 
 // TODO: Generalize this
 const getBrandingColors = async (domain: string) => {
@@ -130,7 +132,7 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
             --accent-secondary-dark: var(--color-accent-secondary-dark);
         }
     `}</style>;
-}
+};
 
 export default async function RootLayout({
     children,
