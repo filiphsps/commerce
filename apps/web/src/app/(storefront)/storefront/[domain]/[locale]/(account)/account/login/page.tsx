@@ -11,6 +11,8 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../../not-found';
 import LoginContent from './login-content';
 
+export const runtime = 'nodejs';
+
 export type LoginAccountPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }
