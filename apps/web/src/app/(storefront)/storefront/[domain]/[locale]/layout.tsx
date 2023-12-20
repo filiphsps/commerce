@@ -110,13 +110,13 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
 
     return <style>{`
         :root {
-            --color-background: ${branding.primary.background};
-            --color-foreground: ${branding.primary.foreground};
+            --color-background: #fefefe;
+            --color-foreground: #101418; /* TODO: These. */
 
             --color-accent-primary: ${branding.primary.accent};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
-            --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.10).toHex()};
+            --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
 
             --color-accent-secondary: ${branding.secondary.accent};
             --color-accent-secondary-text: ${branding.secondary.foreground};
