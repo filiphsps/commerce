@@ -10,6 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const config = {
     pageExtensions: ['ts', 'tsx', 'md'],
     poweredByHeader: false,
+    generateEtags: false,
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
@@ -17,12 +18,10 @@ const config = {
     compress: true,
     transpilePackages: ['react-icons'],
     experimental: {
-        appDocumentPreloading: true,
+        caseSensitiveRoutes: true,
         esmExternals: true,
-        //fallbackNodePolyfills: false, // We rely on `process.env`.
         gzipSize: true,
         instrumentationHook: true,
-        optimisticClientCache: true,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
@@ -32,9 +31,11 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
-        optimizeServerReact: true,
+        //optimizeServerReact: true,
         //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
+        serverSourceMaps: true,
+        staticWorkerRequestDeduping: true,
         //taint: true,
         turbo: {
             resolveAlias: {
@@ -42,7 +43,7 @@ const config = {
             }
         },
         webpackBuildWorker: true,
-        windowHistorySupport: true
+        //windowHistorySupport: true
     },
     images: {
         //loader: 'custom',
@@ -81,7 +82,11 @@ const config = {
         formats: ['image/webp', 'image/avif']
     },
     compiler: {
-        styledComponents: true
+        styledComponents: {
+            ssr: true,
+            minify: true,
+            pure: true
+        }
     },
     eslint: {
         ignoreDuringBuilds: true
