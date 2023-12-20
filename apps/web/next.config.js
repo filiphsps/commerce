@@ -19,9 +19,8 @@ const config = {
     transpilePackages: ['react-icons'],
     experimental: {
         caseSensitiveRoutes: true,
-        esmExternals: true,
-        gzipSize: true,
         instrumentationHook: true,
+        //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
@@ -31,19 +30,12 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
-        //optimizeServerReact: true,
         //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
-        serverSourceMaps: true,
-        staticWorkerRequestDeduping: true,
+        serverSourceMaps: false,
+        serverMinification: false,
         //taint: true,
-        turbo: {
-            resolveAlias: {
-                '@/styles/': './src/scss/'
-            }
-        },
         webpackBuildWorker: true,
-        //windowHistorySupport: true
     },
     images: {
         //loader: 'custom',
@@ -149,6 +141,11 @@ const config = {
                 permanent: false
             }
         ];
+    },
+
+    generateBuildId: async () => {
+        if (process.env.NODE_ENV === 'development') return 'dev';
+        return process.env.process.env.VERCEL_GIT_COMMIT_SHA;
     },
 
     // While I wish we could use this we must handle it
