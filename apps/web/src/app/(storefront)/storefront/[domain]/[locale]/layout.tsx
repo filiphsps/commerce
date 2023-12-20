@@ -21,7 +21,7 @@ import { metadata as notFoundMetadata } from './not-found';
 // TODO: Generalize this
 const getBrandingColors = async (domain: string) => {
     const shop = await ShopApi({ domain });
-    const { colors } = shop.configuration!.design!;
+    const { colors } = shop.configuration!.design!.branding!;
 
     // TODO: Deal with variants.
     const primary = colors!.find(({ type }) => type === 'primary')!;
