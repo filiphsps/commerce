@@ -103,30 +103,34 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
     }
 }
 
-const CssVariablesProvider = async ({ branding }) => <style>{`
-    :root {
-        --color-background: ${branding.primary.background};
-        --color-foreground: ${branding.primary.foreground};
-        
-        --color-accent-primary: ${branding.primary.accent};
-        --color-accent-primary-text: ${branding.primary.foreground};
-        --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
-        --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
+const CssVariablesProvider = async (domain: string) => {
+    const branding = await getBrandingColors(domain);
 
-        --color-accent-secondary: ${branding.secondary.accent};
-        --color-accent-secondary-text: ${branding.secondary.foreground};
-        --color-accent-secondary-light: ${colord(store.accent.secondary).lighten(0.15).toHex()};
-        --color-accent-secondary-dark: ${colord(store.accent.secondary).darken(0.15).toHex()};
-
-        --accent-primary: var(--color-accent-primary);
-        --accent-primary-light: var(--color-accent-primary-light);
-        --accent-primary-dark: var(--color-accent-primary-dark);
-
-        --accent-secondary: var(--color-accent-secondary);
-        --accent-secondary-light: var(--color-accent-secondary-light);
-        --accent-secondary-dark: var(--color-accent-secondary-dark);
-    }
-`}</style>;
+    return <style>{`
+        :root {
+            --color-background: ${branding.primary.background};
+            --color-foreground: ${branding.primary.foreground};
+            
+            --color-accent-primary: ${branding.primary.accent};
+            --color-accent-primary-text: ${branding.primary.foreground};
+            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
+            --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.15).toHex()};
+    
+            --color-accent-secondary: ${branding.secondary.accent};
+            --color-accent-secondary-text: ${branding.secondary.foreground};
+            --color-accent-secondary-light: ${colord(store.accent.secondary).lighten(0.15).toHex()};
+            --color-accent-secondary-dark: ${colord(store.accent.secondary).darken(0.15).toHex()};
+    
+            --accent-primary: var(--color-accent-primary);
+            --accent-primary-light: var(--color-accent-primary-light);
+            --accent-primary-dark: var(--color-accent-primary-dark);
+    
+            --accent-secondary: var(--color-accent-secondary);
+            --accent-secondary-light: var(--color-accent-secondary-light);
+            --accent-secondary-dark: var(--color-accent-secondary-dark);
+        }
+    `}</style>;
+}
 
 export default async function RootLayout({
     children,
@@ -144,32 +148,29 @@ export default async function RootLayout({
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const store = await StoreApi({ api });
-        const branding = await getBrandingColors(domain);
-
         const i18n = await getDictionary(locale);
 
         return (
             <>
                 <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
-
                 <html
                     lang={locale.code}
                     className={`${fontPrimary.variable}`}
-                    suppressHydrationWarning={true}
                 >
-                    <head />
-                    <body data-scrolled="false">
+                    <body>
                         <Suspense key={`${shop.id}.styling`}>
-                            <CssVariablesProvider branding={branding} />
+                            <CssVariablesProvider domain={domain} />
                         </Suspense>
 
-                        <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
-                            <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
+                        <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
+                            <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                                 <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
-                                    {children}
+                                    <Suspense key={`${shop.id}.layout.page`}>
+                                        {children}
+                                    </Suspense>
                                 </PageProvider>
-                            </Suspense>
-                        </ProvidersRegistry>
+                            </ProvidersRegistry>
+                        </Suspense>
                     </body>
                 </html>
             </>
