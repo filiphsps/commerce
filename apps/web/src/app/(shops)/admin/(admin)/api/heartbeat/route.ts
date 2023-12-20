@@ -5,7 +5,7 @@ import { Locale } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export const runtime = 'node';
+export const runtime = 'nodejs';
 export const GET = withAppRouterHighlight(async (_req: NextRequest, _context) => {
     // TODO: Verify that the request is coming from vercel otherwise just return a 200.
 
