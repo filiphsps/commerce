@@ -139,7 +139,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                                 variant: 'default',
                                 accent: '#274690',
                                 background: '#fefefe',
-                                foreground: '#101418'
+                                foreground: '#fefefe'
                             },
                             {
                                 type: 'secondary',
