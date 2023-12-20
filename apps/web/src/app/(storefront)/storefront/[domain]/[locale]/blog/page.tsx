@@ -1,6 +1,6 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
@@ -83,7 +83,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         if (!locale) return notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' })
+        const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
         const blog = await BlogApi({ api, handle: 'news' });
 
         void Prefetch({ api, page });

@@ -36,7 +36,8 @@ describe('app', () => {
                 locales: ['en-US', 'de-DE', 'en-GB']
             }
         }),
-        useShop: vi.fn().mockReturnValue({})
+        useShop: vi.fn().mockReturnValue({}),
+        LocalesApi: vi.fn().mockResolvedValue([])
     }));
 
     vi.mock('next/navigation', () => ({

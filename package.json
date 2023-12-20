@@ -9,6 +9,7 @@
         "node": ">=18 <=21"
     },
     "cacheDirectories": [
+        ".next/cache",
         "apps/**/.next/cache"
     ],
     "prettier": "@nordcom/prettier",
@@ -22,6 +23,7 @@
         "lint": "turbo run lint",
         "todo:lint:all": "eslint ./{apps,packages}/**/src/**/*.{ts,tsx} --no-error-on-unmatched-pattern",
         "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
+        "fix": "turbo run fix",
         "fix:prettier": "prettier **/src/**/*.{ts,tsx,scss} --write",
         "typecheck": "turbo run typecheck",
         "test": "turbo run test",

@@ -8,7 +8,6 @@ import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
@@ -47,7 +46,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`
             },
             openGraph: {
                 url: `/collections/${handle}/`,

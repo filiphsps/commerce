@@ -17,6 +17,8 @@
         "prebuild": "prisma generate --schema=../../prisma/schema.prisma",
         "build": "next build",
         "lint": "next lint",
+        "fix:lint": "next lint --fix",
+        "fix": "concurrently npm:fix:*",
         "typecheck": "tsc -noEmit",
         "test": "vitest run --coverage",
         "slicemachine": "start-slicemachine",
@@ -96,16 +98,17 @@
         "swr": "2.2.4"
     },
     "devDependencies": {
+        "@filiphsandstrom/next-purge-css-modules": "0.0.0-unstable.1",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.31",
         "@types/accept-language-parser": "1.5.6",
         "@types/convert-units": "2.3.9",
         "@types/styled-components": "5.1.34",
+        "concurrently": "8.2.2",
         "critters": "0.0.20",
         "eslint": "8.56.0",
         "eslint-config-next": "14.0.4",
         "graphql": "16.8.1",
-        "@filiphsandstrom/next-purge-css-modules": "0.0.0-unstable.1",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.22.1"
     }

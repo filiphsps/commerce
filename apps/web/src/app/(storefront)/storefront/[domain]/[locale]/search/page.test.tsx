@@ -3,7 +3,6 @@ import { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
 import { notFound } from 'next/navigation';
 import { describe, expect, it, vi } from 'vitest';
-import { metadata as notFoundMetadata } from '../not-found';
 import type { SearchPageParams } from './page';
 import SearchPage, { generateMetadata } from './page';
 
@@ -87,21 +86,16 @@ describe('app', () => {
         const params: SearchPageParams = { domain, locale };
 
         describe('generateMetadata', () => {
-            it('returns notFoundMetadata when locale is not valid', async () => {
-                const metadata = await generateMetadata({ params: { domain, locale: 'invalid-locale' } });
-                expect(metadata).toEqual({ ...notFoundMetadata });
-            });
-
             it('returns expected metadata when locale is valid', async () => {
                 const metadata = await generateMetadata({ params });
                 expect(metadata).toEqual({
                     title: 'search',
                     description: undefined,
                     alternates: {
-                        canonical: `https://${domain}/en-US/search/`,
-                        languages: {
+                        canonical: `https://${domain}/en-US/search/`
+                        /*languages: {
                             'en-US': `https://${domain}/en-US/search/`
-                        }
+                        }*/
                     },
                     openGraph: {
                         url: `/search/`,

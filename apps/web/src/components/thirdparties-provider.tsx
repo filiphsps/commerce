@@ -21,7 +21,7 @@ export const LiveChat = ({ shop, locale, children }: LiveChatProps) => {
     return (
         <IntercomProvider
             appId={intercom.appId}
-            autoBoot={true}
+            autoBoot={false}
             shouldInitialize={true}
             autoBootProps={{
                 alignment: 'right',
@@ -48,8 +48,8 @@ export const ThirdPartiesProvider = ({ shop, locale, children }: ThirdPartiesPro
     if (BuildConfig.environment === 'development') return <>{children}</>;
 
     return (
-        <>
+        <LiveChat shop={shop} locale={locale}>
             {children}
-        </>
+        </LiveChat>
     );
 };

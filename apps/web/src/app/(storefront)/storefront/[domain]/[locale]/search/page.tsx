@@ -1,6 +1,6 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -29,7 +29,6 @@ export async function generateMetadata({
 
         const shop = await ShopApi({ domain, locale });
 
-        const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
@@ -80,7 +79,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
-        
+
         void Prefetch({ api, page });
         const i18n = await getDictionary(locale);
 

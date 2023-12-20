@@ -15,7 +15,6 @@ import { InfoLines } from '@/components/products/info-lines';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
@@ -79,11 +78,15 @@ export async function generateMetadata({
                 description,
                 siteName: shop.name,
                 locale: locale.code,
-                images: page?.meta_image?.dimensions ? [{
-                    url: page.meta_image.url!,
-                    width: page.meta_image.dimensions.width!,
-                    height: page.meta_image.dimensions.height!
-                }] : undefined
+                images: page?.meta_image?.dimensions
+                    ? [
+                          {
+                              url: page.meta_image.url!,
+                              width: page.meta_image.dimensions.width!,
+                              height: page.meta_image.dimensions.height!
+                          }
+                      ]
+                    : undefined
             }
         };
     } catch (error: unknown) {

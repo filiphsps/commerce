@@ -108,14 +108,15 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
     const branding = await getBrandingColors(domain);
 
-    return <style>{`
+    return (
+        <style>{`
         :root {
             --color-background: #fefefe;
             --color-foreground: #101418; /* TODO: These. */
 
             --color-accent-primary: ${branding.primary.accent};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.10).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.1).toHex()};
             --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
 
             --color-accent-secondary: ${branding.secondary.accent};
@@ -131,7 +132,8 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
             --accent-secondary-light: var(--color-accent-secondary-light);
             --accent-secondary-dark: var(--color-accent-secondary-dark);
         }
-    `}</style>;
+    `}</style>
+    );
 };
 
 export default async function RootLayout({
@@ -155,10 +157,7 @@ export default async function RootLayout({
         return (
             <>
                 <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
-                <html
-                    lang={locale.code}
-                    className={`${fontPrimary.variable}`}
-                >
+                <html lang={locale.code} className={`${fontPrimary.variable}`}>
                     <body>
                         <Suspense key={`${shop.id}.styling`}>
                             <CssVariablesProvider domain={domain} />
@@ -167,9 +166,7 @@ export default async function RootLayout({
                         <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                             <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                                 <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
-                                    <Suspense key={`${shop.id}.layout.page`}>
-                                        {children}
-                                    </Suspense>
+                                    <Suspense key={`${shop.id}.layout.page`}>{children}</Suspense>
                                 </PageProvider>
                             </ProvidersRegistry>
                         </Suspense>

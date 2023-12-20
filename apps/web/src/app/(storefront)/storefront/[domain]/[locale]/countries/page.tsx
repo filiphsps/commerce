@@ -1,13 +1,12 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { ShopifyApolloApiClient, StorefrontApiClient } from '@/api/shopify';
-import { CountriesApi, LocalesApi } from '@/api/store';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { CountriesApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { Error, UnknownLocaleError } from '@/utils/errors';
 import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
@@ -31,7 +30,6 @@ export async function generateMetadata({
 
         const shop = await ShopApi({ domain, locale });
 
-        const api = await StorefrontApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
@@ -43,7 +41,7 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/countries/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/countries/`
             },
             openGraph: {
                 url: `/countries/`,
@@ -88,7 +86,7 @@ export default async function CountriesPage({
 
         const countries = await CountriesApi({ api });
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
-        
+
         void Prefetch({ api, page });
         const i18n = await getDictionary(locale);
 

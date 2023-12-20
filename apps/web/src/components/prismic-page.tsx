@@ -5,7 +5,6 @@ import type { Shop } from '@/api/shop';
 import { components, components as slices } from '@/slices';
 import type { Optional } from '@/utils/abstract-api';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { PrefetchData } from '@/utils/prefetch';
 import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
 

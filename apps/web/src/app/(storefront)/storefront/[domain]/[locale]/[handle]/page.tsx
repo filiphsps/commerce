@@ -2,7 +2,7 @@ import 'server-only';
 
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
@@ -83,8 +83,6 @@ export default async function CustomPage({
 
         // Fetch the current shop.
         const shop = await ShopApi({ domain, locale });
-        // Setup the AbstractApi client.
-        const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) return notFound(); // TODO: Return proper error.
@@ -96,13 +94,7 @@ export default async function CustomPage({
             <Page>
                 <PageContent primary={true}>
                     <Suspense key={`${shop.id}.page.${handle}`} fallback={<PrismicPage.skeleton page={page} />}>
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={handle}
-                        />
+                        <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
                     </Suspense>
                 </PageContent>
             </Page>

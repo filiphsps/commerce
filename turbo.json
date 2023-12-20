@@ -11,6 +11,7 @@
         "prettier": { "cache": false },
         "test": { "cache": false, "outputs": ["**/coverage/**"] },
         "typecheck": { "cache": false },
+        "fix": { "cache": false },
         "dev": {
             "cache": false,
             "persistent": true
