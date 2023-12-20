@@ -1,8 +1,7 @@
 import { PageApi } from '@/api/page';
-import { ShopApi, ShopsApi } from '@/api/shop';
+import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionApi, CollectionsApi } from '@/api/shopify/collection';
-import { StoreApi } from '@/api/store';
+import { CollectionApi } from '@/api/shopify/collection';
 import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
@@ -17,59 +16,9 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
 export const dynamicParams = true;
-export async function generateStaticParams() {
-    //const locale = Locale.default;
-    const shops = await ShopsApi();
-
-    const pages = (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        //const api = await ShopifyApolloApiClient({ shop, locale });
-                        //const locales = await LocalesApi({ api });
-
-                        return await Promise.all(
-                            ['en-US', 'de-DE', 'en-GB', 'en-CA', 'en-AU'] // TODO: Don't hardcode these ones.
-                                .map(async (locale) => {
-                                    try {
-                                        const api = await ShopifyApolloApiClient({ shop, locale: Locale.from(locale) });
-                                        const collections = await CollectionsApi({ client: api });
-
-                                        return collections
-                                            .filter(({ hasProducts }) => hasProducts)
-                                            .map(({ handle }) => ({
-                                                domain: shop.domains.primary,
-                                                locale: locale,
-                                                handle
-                                            }));
-                                    } catch {
-                                        return null;
-                                    }
-                                })
-                                .filter((_) => _)
-                        );
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    // FIXME: We have already looped through all pages when we get here which is really inefficient.
-    if (BuildConfig.build.limit_pages) {
-        return pages.slice(0, BuildConfig.build.limit_pages);
-    }
-
-    return pages;
-}
 
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
@@ -78,17 +27,15 @@ export async function generateMetadata({
     params: CollectionPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
-        if (!isValidHandle(handle)) return notFoundMetadata;
+        if (!isValidHandle(handle)) return notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) return notFound();
 
+        const shop = await ShopApi({ domain });
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
-        const locales = store.i18n?.locales || [Locale.default];
 
         const title = page?.meta_title || collection.seo?.title || collection.title;
         const description: string | undefined =
@@ -101,20 +48,13 @@ export async function generateMetadata({
             description,
             alternates: {
                 canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`,
-                languages: locales.reduce(
-                    (prev, { code }) => ({
-                        ...prev,
-                        [code]: `https://${shop.domains.primary}/${code}/collections/${handle}/`
-                    }),
-                    {}
-                )
             },
             openGraph: {
                 url: `/collections/${handle}/`,
                 type: 'website',
                 title,
                 description,
-                siteName: store?.name,
+                siteName: shop?.name,
                 locale: locale.code,
                 images:
                     (page?.meta_image && [
@@ -131,7 +71,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            return notFound();
         }
 
         throw error;
@@ -154,18 +94,13 @@ export default async function CollectionPage({
         // Fetch the current shop.
         const shop = await ShopApi({ domain, locale });
 
-        // Next.js Preloading pattern.
-        PageApi.preload({ shop, locale, handle });
+        // Do the actual API calls.
+        const api = await ShopifyApolloApiClient({ shop, locale });
+        const collection = await CollectionApi({ api, handle });
+        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
-
-        // Do the actual API calls.
-        const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
-        const collection = await CollectionApi({ api, handle });
-
-        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         return (
             <Page className={styles.container}>
@@ -192,7 +127,6 @@ export default async function CollectionPage({
                     {page?.slices && page?.slices.length > 0 ? (
                         <PrismicPage
                             shop={shop}
-                            store={store}
                             locale={locale}
                             page={page}
                             i18n={i18n}
