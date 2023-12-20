@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopApi, ShopsApi } from '@/api/shop';
@@ -91,9 +93,8 @@ export async function generateMetadata({
     try {
         if (!isValidHandle(handle)) return notFound();
 
-        // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) return notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi({ domain, locale });
@@ -101,28 +102,13 @@ export async function generateMetadata({
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        // Next.js Preloading pattern.
-        ProductApi.preload({ api, handle });
-        PageApi.preload({ shop, locale, handle });
-
         // Do the actual API calls.
-        const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const locales = store.i18n?.locales || [Locale.default]; // TODO: Handle this better since the fallback may not include the current locale.
+        const locales = await LocalesApi({ api });
 
-        const title = page?.meta_title || `${product.vendor} ${product.title}`;
-        const description = asText(page?.meta_description) || product.description;
-        // TODO: Add Product Image as fallback.
-        const image =
-            (page?.meta_image &&
-                page.meta_image.dimensions && {
-                    url: page.meta_image.url,
-                    width: page.meta_image.dimensions.width,
-                    height: page.meta_image.dimensions.height
-                }) ||
-            undefined;
-
+        const title = page?.meta_title || product.seo?.title || `${product.vendor} ${product.title}`;
+        const description = asText(page?.meta_description) || product.seo?.description || product.description;
         return {
             title,
             description,
@@ -141,14 +127,18 @@ export async function generateMetadata({
                 type: 'website',
                 title,
                 description,
-                siteName: store?.name,
+                siteName: shop.name,
                 locale: locale.code,
-                images: image
+                images: page?.meta_image?.dimensions ? [{
+                    url: page.meta_image.url!,
+                    width: page.meta_image.dimensions.width!,
+                    height: page.meta_image.dimensions.height!
+                }] : undefined
             }
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            return notFound();
         }
 
         throw error;
@@ -185,9 +175,10 @@ export default async function ProductPage({
         const store = await StoreApi({ api });
         const product = await ProductApi({ api, handle });
         const reviews = await ProductReviewsApi({ api, product });
-
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-        const prefetch = await Prefetch({ api, page });
+
+        // Next.js Preloading pattern.
+        void Prefetch({ api, page }); // TODO: Figure out a nicer way.
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
@@ -281,7 +272,6 @@ export default async function ProductPage({
                                     store={store}
                                     locale={locale}
                                     page={page}
-                                    prefetch={prefetch}
                                     i18n={i18n}
                                     handle={handle}
                                     type={'product_page'}
