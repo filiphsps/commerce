@@ -166,7 +166,9 @@ export default async function RootLayout({
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
-                                    <Suspense key={`${shop.id}.layout.page`}>{children}</Suspense>
+                                    <Suspense key={`${shop.id}.layout.page`} fallback={<PageProvider.skeleton />}>
+                                        {children}
+                                    </Suspense>
                                 </PageProvider>
                             </Suspense>
                         </ProvidersRegistry>

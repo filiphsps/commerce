@@ -7,7 +7,7 @@ import styles from '@/components/cart/cart-lines.module.scss';
 import { Label } from '@/components/typography/label';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
 const Container = styled.table`
     display: block;

@@ -25,7 +25,13 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
     if (!slice || !slice.primary || asText(slice.primary.title)?.length <= 0) return null;
 
     return (
-        <div className={`${styles.header} ${styles[`align-${slice.primary.alignment || 'center'}`]}`}>
+        <div
+            className={`${styles.header} ${
+                (slice.primary.alignment === 'left' && styles['align-left']) ||
+                (slice.primary.alignment === 'right' && styles['align-right']) ||
+                styles['align-center']
+            }`}
+        >
             <Link
                 href={`/collections/${slice.primary.handle!}`}
                 title={`View all products in "${asText(slice.primary.title)}"`} // TODO: i18n.

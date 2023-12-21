@@ -6,7 +6,7 @@ import { Locale } from '@/utils/locale';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import { useRef } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import styles from './countries.module.scss';
 
 const List = styled.article`

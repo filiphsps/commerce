@@ -69,6 +69,10 @@
         --product-card-color-image-background: var(--color-block);
     }
 
+    &.vertical {
+        display: block;
+    }
+
     &.horizontal {
         margin: 0 calc(var(--block-padding-large) * -1);
         width: calc(100% + var(--block-padding-large) * 2);

@@ -35,7 +35,7 @@ const config = {
         serverSourceMaps: false,
         serverMinification: false,
         //taint: true,
-        webpackBuildWorker: true,
+        webpackBuildWorker: true
     },
     images: {
         //loader: 'custom',
@@ -184,7 +184,7 @@ export default withHighlightConfig(
     {
         apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
         appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
-        uploadSourceMaps: true,
+        uploadSourceMaps: process.env.CI && process.env.CI === 'true',
         sourceMapsBasePath: './apps/web/'
     }
 );

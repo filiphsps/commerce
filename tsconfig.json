@@ -12,7 +12,7 @@
         "jsx": "preserve",
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "module": "ESNext",
-        "moduleResolution": "Node10",
+        "moduleResolution": "Node",
         "noEmit": true,
         "noImplicitAny": true,
         "removeComments": true,
