@@ -54,16 +54,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
 OverviewSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
     if (!slice || !slice.items || slice.items.length <= 0) return null;
 
-    return (
-        <PageContent
-            as="section"
-            className={styles.container}
-            data-slice-type={slice.slice_type}
-            data-slice-variation={slice.variation}
-
-            // TODO: Proper skeleton.
-        />
-    );
+    return <OverviewSlice {...({ slice } as any)} />;
 };
 
 OverviewSlice.displayName = 'Nordcom.Slices.Overview';
