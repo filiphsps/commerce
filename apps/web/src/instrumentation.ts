@@ -6,7 +6,7 @@ export async function register() {
 
     registerOTel('Nordcom Commerce');
     registerHighlight({
-        ...highlightConfig,
+        ...(highlightConfig as any),
         serviceName: 'Nordcom Commerce'
     });
 }

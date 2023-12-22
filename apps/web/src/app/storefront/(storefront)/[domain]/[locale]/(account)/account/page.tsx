@@ -2,7 +2,6 @@ import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { getAuthSession } from '@/auth';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { Error } from '@/utils/errors';
@@ -70,13 +69,11 @@ export default async function AccountPage({ params: { domain, locale: localeData
         }
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <PageContent>
-                        <Heading title={`Hi ${session.user?.name || 'there'}!`} subtitle={null} />
-                    </PageContent>
+            <>
+                <PageContent>
+                    <Heading title={`Hi ${session.user?.name || 'there'}!`} subtitle={null} />
                 </PageContent>
-            </Page>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

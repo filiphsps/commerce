@@ -4,8 +4,6 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
-import { Page } from '@/components/layout/page';
-import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { Error } from '@/utils/errors';
@@ -91,13 +89,11 @@ export default async function CustomPage({
         const i18n = await getDictionary({ shop, locale });
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <Suspense key={`${shop.id}.page.${handle}.content`} fallback={<PrismicPage.skeleton page={page} />}>
-                        <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
-                    </Suspense>
-                </PageContent>
-            </Page>
+            <>
+                <Suspense key={`${shop.id}.page.${handle}.content`} fallback={<PrismicPage.skeleton page={page} />}>
+                    <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
+                </Suspense>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

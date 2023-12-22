@@ -123,7 +123,7 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
         <Button
             {...props}
             className={`${styles['add-to-cart']} ${className || ''}`}
-            disabled={!selectedVariant!.availableForSale || quantity < 1}
+            disabled={!ready || !selectedVariant!.availableForSale || quantity < 1}
             as="button"
             type={type || ('button' as const)}
             data-ready={ready}

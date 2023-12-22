@@ -8,6 +8,8 @@
     width: 100%;
     margin: 0 auto;
 
+    font-size: 16px;
+
     // See https://web.dev/articles/content-visibility
     content-visibility: auto;
     contain-intrinsic-size: auto;
@@ -19,5 +21,13 @@
     &.primary {
         padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
         gap: calc(var(--block-spacer-large) * 1.5);
+    }
+}
+
+body .container.primary:first-of-type {
+    min-height: calc(100vh - 10rem);
+
+    @media (min-width: $breakpoint-mobile) {
+        min-height: calc(100vh - 18rem);
     }
 }

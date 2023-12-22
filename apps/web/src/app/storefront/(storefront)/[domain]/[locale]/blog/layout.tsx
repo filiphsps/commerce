@@ -1,7 +1,6 @@
 import { ShopApi } from '@/api/shop';
 import { StorefrontApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
-import { Page } from '@/components/layout/page';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';
@@ -39,34 +38,32 @@ export default async function BlogLayout({
         );
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <div className={styles.container}>
-                        <main className={styles.content}>{children}</main>
+            <PageContent primary={true}>
+                <div className={styles.container}>
+                    <main className={styles.content}>{children}</main>
 
-                        <div className={styles['sidebar-wrapper']}>
-                            <aside className={styles.sidebar}>
-                                <section className={styles.section}>
-                                    <Label>Latest Articles</Label>
-                                    {latest.map(({ id, handle, title }) => (
-                                        <Link key={id} href={`/blog/${handle}/`}>
-                                            {title}
-                                        </Link>
-                                    ))}
-                                </section>
-                                <section className={styles.section}>
-                                    <Label>Popular Posts</Label>
-                                    {popular.map(({ id, handle, title }) => (
-                                        <Link key={id} href={`/blog/${handle}/`}>
-                                            {title}
-                                        </Link>
-                                    ))}
-                                </section>
-                            </aside>
-                        </div>
+                    <div className={styles['sidebar-wrapper']}>
+                        <aside className={styles.sidebar}>
+                            <section className={styles.section}>
+                                <Label>Latest Articles</Label>
+                                {latest.map(({ id, handle, title }) => (
+                                    <Link key={id} href={`/blog/${handle}/`}>
+                                        {title}
+                                    </Link>
+                                ))}
+                            </section>
+                            <section className={styles.section}>
+                                <Label>Popular Posts</Label>
+                                {popular.map(({ id, handle, title }) => (
+                                    <Link key={id} href={`/blog/${handle}/`}>
+                                        {title}
+                                    </Link>
+                                ))}
+                            </section>
+                        </aside>
                     </div>
-                </PageContent>
-            </Page>
+                </div>
+            </PageContent>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

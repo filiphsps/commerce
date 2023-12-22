@@ -59,7 +59,7 @@ IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
             data-slice-variation={slice.variation}
         >
             {(slice.items || []).map(({ title }, index) => (
-                <div key={index} className={styles.item}>
+                <div key={index} className={styles.item} data-skeleton>
                     <div className={styles.icon} />
                     <div className={styles.title}>{title}</div>
                 </div>

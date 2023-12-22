@@ -2,7 +2,6 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi } from '@/api/store';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
@@ -91,50 +90,48 @@ export default async function CountriesPage({
         const i18n = await getDictionary(locale);
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <PageContent>
-                        <Heading title={page?.title} subtitle={page?.description} />
-                        <form
-                            action={async (formData: FormData) => {
-                                'use server';
-                                const locale = formData.get('locale') as string | null;
+            <PageContent primary={true}>
+                <PageContent>
+                    <Heading title={page?.title} subtitle={page?.description} />
+                    <form
+                        action={async (formData: FormData) => {
+                            'use server';
+                            const locale = formData.get('locale') as string | null;
 
-                                // Make sure we got a locale.
-                                if (!locale) {
-                                    // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
-                                    throw new UnknownLocaleError();
-                                }
+                            // Make sure we got a locale.
+                            if (!locale) {
+                                // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#error-handling.
+                                throw new UnknownLocaleError();
+                            }
 
-                                // Validate the locale.
-                                try {
-                                    const { code } = Locale.from(locale);
-                                    cookies().set('LOCALE', code);
-                                } catch (error: unknown) {
-                                    throw error; // TODO: Proper nordcom error.
-                                }
+                            // Validate the locale.
+                            try {
+                                const { code } = Locale.from(locale);
+                                cookies().set('LOCALE', code);
+                            } catch (error: unknown) {
+                                throw error; // TODO: Proper nordcom error.
+                            }
 
-                                // Needs to happen outside of the try and catch block.
-                                // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
-                                redirect(`/${locale}/`);
-                            }}
-                        >
-                            <LocaleSelector shop={shop} countries={countries} locale={locale} />
-                        </form>
-                    </PageContent>
-
-                    {page?.slices && page?.slices.length > 0 && (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'countries'}
-                            type={'custom_page'}
-                        />
-                    )}
+                            // Needs to happen outside of the try and catch block.
+                            // See https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#redirecting.
+                            redirect(`/${locale}/`);
+                        }}
+                    >
+                        <LocaleSelector shop={shop} countries={countries} locale={locale} />
+                    </form>
                 </PageContent>
-            </Page>
+
+                {page?.slices && page?.slices.length > 0 && (
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        page={page}
+                        i18n={i18n}
+                        handle={'countries'}
+                        type={'custom_page'}
+                    />
+                )}
+            </PageContent>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

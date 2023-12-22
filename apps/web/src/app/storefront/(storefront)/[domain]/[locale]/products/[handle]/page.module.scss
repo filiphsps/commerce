@@ -1,97 +1,87 @@
 @import '_globals.scss';
 
-.container {
-    padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
+.pricing {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: var(--block-spacer-large);
+    flex-grow: 1;
 
-    font-size: 16px;
+    height: 100%;
+    padding-top: var(--block-spacer-large);
 
+    font-size: 1.75em;
+
+    @media (min-width: $breakpoint-mobile) {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 0;
+
+        padding-top: 0;
+
+        font-size: 1.45em;
+    }
+}
+
+.gallery {
+    position: sticky;
+    top: 10rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer-large);
+    height: 100%;
+
+    @media (min-width: $breakpoint-mobile) {
+        gap: var(--block-spacer-huge);
+    }
+}
+
+.contentDivider {
+    width: 90%;
+    height: var(--block-border-width-small);
+    margin: var(--block-spacer) 5%;
+    background: var(--color-block);
+}
+
+.description {
+    font-size: 1.95rem;
+
+    padding-top: var(--block-spacer-huge);
     @media (min-width: $breakpoint-mobile) {
         padding: 0;
     }
 
-    .pricing {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: flex-end;
-        gap: var(--block-spacer-large);
-        flex-grow: 1;
-
-        height: 100%;
-        padding-top: var(--block-spacer-large);
-
-        font-size: 1.75em;
+    h2 {
+        margin-bottom: var(--block-spacer-large);
+        font-size: 2em;
 
         @media (min-width: $breakpoint-mobile) {
-            flex-direction: column-reverse;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 0;
-
-            padding-top: 0;
-
-            font-size: 1.45em;
-        }
-    }
-
-    .gallery {
-        position: sticky;
-        top: 10rem;
-    }
-
-    .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--block-spacer-large);
-        height: 100%;
-
-        @media (min-width: $breakpoint-mobile) {
-            gap: var(--block-spacer-huge);
-        }
-    }
-
-    .contentDivider {
-        width: 90%;
-        height: var(--block-border-width-small);
-        margin: var(--block-spacer) 5%;
-        background: var(--color-block);
-    }
-
-    .description {
-        font-size: 1.95rem;
-
-        padding-top: var(--block-spacer-huge);
-        @media (min-width: $breakpoint-mobile) {
-            padding: 0;
-        }
-
-        h2 {
-            margin-bottom: var(--block-spacer-large);
             font-size: 2em;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 2em;
-            }
         }
     }
+}
 
-    @media (min-width: $breakpoint-mobile) {
-        .prismicDivider {
-            width: 80%;
-            margin: var(--block-spacer-large) 10%;
-        }
-        .content {
-            gap: var(--block-spacer-large);
-        }
+@media (min-width: $breakpoint-mobile) {
+    .prismicDivider {
+        width: 80%;
+        margin: var(--block-spacer-large) 10%;
+    }
+    .content {
+        gap: var(--block-spacer-large);
+    }
 
-        .headingPrimary {
-            gap: var(--block-spacer-large);
-        }
+    .headingPrimary {
+        gap: var(--block-spacer-large);
+    }
 
-        .headingAside {
-            display: flex;
-            align-self: flex-start;
-            justify-content: flex-end;
-        }
+    .headingAside {
+        display: flex;
+        align-self: flex-start;
+        justify-content: flex-end;
     }
 }

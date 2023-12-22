@@ -66,7 +66,7 @@ const Footer = async ({ store, shop, locale, i18n }: FooterProps) => {
 };
 
 Footer.skeleton = () => (
-    <footer className={styles.container}>
+    <footer className={styles.container} data-skeleton>
         <div className={styles.content}>
             <div className={styles.blocks}>
                 <div className={styles.block}>

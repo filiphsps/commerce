@@ -6,36 +6,28 @@ import { ShopApi } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import { PageProvider } from '@/components/layout/page-provider';
+import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { highlightConfig } from '@/utils/config/highlight';
+import { CssVariablesProvider } from '@/utils/css-variables';
 import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
-import { colord } from 'colord';
 import type { Metadata, Viewport } from 'next';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { Suspense, type ReactNode } from 'react';
-import { metadata as notFoundMetadata } from './not-found';
+import type { ReactNode } from 'react';
+import { Suspense } from 'react';
 
 //export const runtime = 'experimental-edge';
 export const dynamicParams = true;
 
-// TODO: Generalize this
-const getBrandingColors = async (domain: string) => {
-    const shop = await ShopApi({ domain });
-    const { colors } = shop.configuration!.design!.branding!;
-
-    // TODO: Deal with variants.
-    const primary = colors!.find(({ type }) => type === 'primary')!;
-    const secondary = colors!.find(({ type }) => type === 'secondary')!;
-
-    return {
-        primary,
-        secondary
-    };
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    interactiveWidget: 'resizes-visual'
 };
 
 const fontPrimary = Public_Sans({
@@ -47,29 +39,6 @@ const fontPrimary = Public_Sans({
 });
 
 export type LayoutParams = { domain: string; locale: string };
-export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
-    try {
-        const branding = await getBrandingColors(domain);
-
-        return {
-            themeColor: branding.primary.accent as string,
-            width: 'device-width',
-            initialScale: 1,
-            interactiveWidget: 'resizes-visual'
-        };
-    } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
-            return {
-                width: 'device-width',
-                initialScale: 1,
-                interactiveWidget: 'resizes-visual'
-            };
-        }
-
-        throw error;
-    }
-}
-
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
         const shop = await ShopApi({ domain });
@@ -101,44 +70,12 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            return notFound();
         }
 
         throw error;
     }
 }
-
-const CssVariablesProvider = async ({ domain }: { domain: string }) => {
-    const branding = await getBrandingColors(domain);
-
-    // TODO: Background and foreground colors.
-    return (
-        <style>{`
-        :root {
-            --color-background: #fefefe;
-            --color-foreground: #101418;
-
-            --color-accent-primary: ${branding.primary.accent};
-            --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.175).saturate(0.25).toHex()};
-            --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
-
-            --color-accent-secondary: ${branding.secondary.accent};
-            --color-accent-secondary-text: ${branding.secondary.foreground};
-            --color-accent-secondary-light: ${colord(branding.secondary.accent).lighten(0.15).toHex()};
-            --color-accent-secondary-dark: ${colord(branding.secondary.accent).darken(0.15).toHex()};
-
-            /* TODO: Remove these legacy variables. */
-            --accent-primary: var(--color-accent-primary);
-            --accent-primary-light: var(--color-accent-primary-light);
-            --accent-primary-dark: var(--color-accent-primary-dark);
-            --accent-secondary: var(--color-accent-secondary);
-            --accent-secondary-light: var(--color-accent-secondary-light);
-            --accent-secondary-dark: var(--color-accent-secondary-dark);
-        }
-    `}</style>
-    );
-};
 
 export default async function RootLayout({
     children,
@@ -167,18 +104,20 @@ export default async function RootLayout({
                     /* A bunch of extensions add classes to the `html` element. */
                     suppressHydrationWarning={true}
                 >
-                    <head />
-                    <body>
+                    <head>
                         <Suspense key={`${shop.id}.styling`}>
                             <CssVariablesProvider domain={domain} />
                         </Suspense>
-
+                    </head>
+                    <body suppressHydrationWarning={true}>
                         <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
                             <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                 <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
-                                    <Suspense key={`${shop.id}.layout.page`} fallback={<PageProvider.skeleton />}>
-                                        {children}
-                                    </Suspense>
+                                    <PageContent as="main" primary={true}>
+                                        <Suspense key={`${shop.id}.layout.page`} fallback={<PageProvider.skeleton />}>
+                                            {children}
+                                        </Suspense>
+                                    </PageContent>
                                 </PageProvider>
                             </Suspense>
                         </ProvidersRegistry>
