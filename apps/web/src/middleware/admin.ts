@@ -1,5 +1,4 @@
 import { commonValidations } from '@/middleware/common-validations';
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -23,18 +22,15 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
         console.warn('User accessed the `/errors` path directly');
     }
 
-    // Check if were trying to access the shop dashboard section.
-    if (newUrl.pathname.startsWith('/shop')) {
-        const session = await getToken({ req });
-
-        // User is not logged in, so let's redirect them to the login page.
-        if (!session) {
-            return NextResponse.rewrite(new URL('/login/', req.url));
-        }
-    }
-
     // Validate the url against our common issues.
     newUrl = commonValidations(newUrl);
+
+    // Add trailing slash to index.
+    if (newUrl.pathname === '') {
+        newUrl.pathname = '/';
+    }
+
+    // TODO: Redirect to path if we're no already there.
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
