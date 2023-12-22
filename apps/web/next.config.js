@@ -21,7 +21,7 @@ const config = {
         caseSensitiveRoutes: true,
         instrumentationHook: true,
         //nextScriptWorkers: true,
-        optimizeCss: true,
+        optimizeCss: false,
         optimizePackageImports: [
             '@apollo/client',
             '@prismicio/client',
@@ -32,7 +32,7 @@ const config = {
         ],
         //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
-        serverSourceMaps: false,
+        serverSourceMaps: true,
         serverMinification: false,
         //taint: true,
         webpackBuildWorker: true
@@ -184,7 +184,7 @@ export default withHighlightConfig(
     {
         apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
         appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
-        uploadSourceMaps: process.env.CI && process.env.CI === 'true',
+        uploadSourceMaps: !!process.env.VERCEL_ENV,
         sourceMapsBasePath: './apps/web/'
     }
 );
