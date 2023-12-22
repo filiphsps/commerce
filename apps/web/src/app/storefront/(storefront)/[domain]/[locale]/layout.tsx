@@ -19,6 +19,7 @@ import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
 //export const runtime = 'experimental-edge';
+export const dynamicParams = true;
 
 // TODO: Generalize this
 const getBrandingColors = async (domain: string) => {

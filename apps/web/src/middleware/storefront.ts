@@ -8,18 +8,23 @@ import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-/* c8 ignore start */
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
+    let newUrl = req.nextUrl.clone();
+
+    // Prevent direct access.
+    if (newUrl.pathname.startsWith('/storefront')) {
+        return new NextResponse(null, { status: 404 });
+    }
+
+    const searchParams = newUrl.searchParams.toString();
     const hostname = await getHostname(req);
     const shop = await ShopApi({ domain: hostname });
 
-    let newUrl = req.nextUrl.clone();
-
     // API.
-    if (newUrl.pathname.includes('/api/') && !newUrl.pathname.includes('/storefront/')) {
+    if (newUrl.pathname.includes('/api/')) {
         // Do not mess with status or headers here.
         return NextResponse.rewrite(
             new URL(`/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`, req.url)
@@ -27,17 +32,16 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Check if we're dealing with a file, or other specially-handled resource.
-    if (newUrl.pathname.match(FILE_TEST) && !newUrl.pathname.includes('/storefront/')) {
+    if (newUrl.pathname.match(FILE_TEST)) {
         if (newUrl.pathname.startsWith('/assets/')) {
             return NextResponse.next();
         }
 
-        let target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
+        let target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${
+            searchParams.length > 0 ? `?${searchParams}` : ''
+        }`;
         return NextResponse.rewrite(new URL(target, req.url), {
-            status: 200,
-            headers: {
-                'Cache-Control': 's-maxage=28800, stale-while-revalidate'
-            }
+            status: 200
         });
 
         // TODO: Handle Handle tenant-specific files/assets.
@@ -106,17 +110,17 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
+        console.log(`Redirecting "${req.nextUrl.href}" -> "${newUrl.href}"`);
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 
     // Rewrite index to use the `homepage` handle.
     if (newUrl.pathname.split('/')[2] === '' && !newUrl.pathname.includes('slice-simulator')) {
-        newUrl.pathname = `${newUrl.pathname}homepage/`;
+        newUrl.pathname += `homepage/`;
     }
 
-    const target = `/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`;
-    return NextResponse.rewrite(new URL(target, req.url), {
-        headers: { 'Cache-Control': 's-maxage=28800, stale-while-revalidate' }
-    });
+    const target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${
+        searchParams.length > 0 ? `?${searchParams}` : ''
+    }`;
+    return NextResponse.rewrite(new URL(target, req.url));
 };
-/* c8 ignore stop */

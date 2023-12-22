@@ -4,12 +4,6 @@ import { commonValidations } from './common-validations';
 
 describe('middleware', () => {
     describe('commonValidations', () => {
-        it('should remove "admin/" from the URL pathname', () => {
-            const url: NextURL = { pathname: '/admin/products' } as any;
-            const result = commonValidations(url);
-            expect(result.pathname).toBe('/products/');
-        });
-
         it('should remove "x-default/" from the URL pathname', () => {
             const url: NextURL = { pathname: '/x-default/products' } as any;
             const result = commonValidations(url);

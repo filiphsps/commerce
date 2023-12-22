@@ -1,11 +1,15 @@
 import { commonValidations } from '@/middleware/common-validations';
+import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
-/* c8 ignore start */
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
+
+    // Prevent direct access.
+    if (newUrl.pathname.startsWith('/admin')) {
+        return new NextResponse(null, { status: 404 });
+    }
 
     // Check if we're dealing with a file or a route.
     if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi)) {
@@ -40,4 +44,3 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
     const target = `/admin${newUrl.pathname}${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
-/* c8 ignore stop */

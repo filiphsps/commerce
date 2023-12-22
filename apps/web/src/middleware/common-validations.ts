@@ -11,9 +11,6 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
         path = url.pathname;
     }
 
-    // Remove `/admin/` and `/storefront/` paths.
-    path = path.replace(/\/(admin|storefront)\//, '/');
-
     // Remove `x-default` if it's still there.
     path = path.replaceAll('x-default/', '');
 

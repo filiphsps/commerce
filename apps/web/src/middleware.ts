@@ -3,7 +3,8 @@ import { type NextRequest } from 'next/server';
 
 export const runtime = 'experimental-edge';
 export const config = {
-    matcher: ['/((?!storefront|admin|unknown|_next|_static|_vercel|instrumentation|highlight-events).*)'],
+    // TODO: [\\w-]+\\.\\w+
+    matcher: ['/((?!api/|_next|_static|_vercel|instrumentation|highlight-events).*)'],
     missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' }

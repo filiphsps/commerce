@@ -127,21 +127,6 @@ const config = {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
-    async redirects() {
-        return [
-            // TODO: Point these to the multi-tenant admin app once that is built.
-            {
-                source: '/:locale/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin/`,
-                permanent: false
-            },
-            {
-                source: '/admin/',
-                destination: `https://${process.env.SHOPIFY_DOMAIN}/admin/`,
-                permanent: false
-            }
-        ];
-    },
 
     generateBuildId: async () => {
         if (process.env.NODE_ENV === 'development') return 'dev';
