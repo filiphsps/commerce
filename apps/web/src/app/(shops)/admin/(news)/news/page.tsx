@@ -21,7 +21,7 @@ export default async function DocsPage({ params: {} }: { params: NewsPageParams 
             </div>
 
             <article className={styles.content}>
-                {articles.map(({ year, month, slug, meta: { title, description, date } }) => (
+                {articles.map(({ year, month, slug, meta: { title, description } }) => (
                     <Card
                         key={`/${year}/${month}/${slug}`}
                         as={Link}
@@ -29,8 +29,8 @@ export default async function DocsPage({ params: {} }: { params: NewsPageParams 
                         className={styles.section}
                         draggable={false}
                     >
-                        <Heading level="h4" as="h3">
-                            {title} {date ? `- ${date.toLocaleDateString('en-US')}` : ''}
+                        <Heading level="h4" as="h3" className={styles.heading}>
+                            {title}
                         </Heading>
                         <p>{description}.</p>
                     </Card>

@@ -132,7 +132,6 @@ body {
 }
 
 a:not(:disabled) {
-    cursor: pointer;
     transition:
         150ms ease-in-out color,
         150ms ease-in-out text-decoration;

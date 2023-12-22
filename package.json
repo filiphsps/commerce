@@ -94,9 +94,9 @@
         "vitest": "1.1.0"
     },
     "nextBundleAnalysis": {
-        "budget": 248400,
+        "budget": 198400,
         "budgetPercentIncreaseRed": 20,
-        "minimumChangeThreshold": 0,
+        "minimumChangeThreshold": 0.025,
         "showDetails": false,
         "buildOutputDirectory": "apps/web/.next"
     },
