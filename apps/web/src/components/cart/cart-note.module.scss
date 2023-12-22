@@ -1,9 +1,10 @@
+@import '_globals.scss';
+
 .container {
     overflow: hidden;
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    -ms-flex-direction: column;
     flex-direction: column;
     gap: var(--block-spacer);
 

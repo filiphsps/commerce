@@ -1,17 +1,16 @@
-import { CartCost, Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
-import { useEffect, useState } from 'react';
-import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
-
-import { CartCoupons } from '@/components/CartCoupons';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import { Button } from '@/components/actionable/button';
+import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
 import styles from '@/components/cart/cart-summary.module.scss';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
+import { CartCost, Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
 import type { FunctionComponent } from 'react';
+import { useEffect, useState } from 'react';
+import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -202,14 +201,6 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
         setShowNote(showNote);
     }, [note]);
 
-    if (['creating', 'fetching'].includes(status)) {
-        return (
-            <Container>
-                <Block>{/* TODO: Shimmer */}</Block>
-            </Container>
-        );
-    }
-
     const sale =
         lines?.reduce(
             (sum, line) =>
@@ -258,119 +249,119 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                 </SmallBlock>
             ) : null}
 
-            {['idle', 'uninitialized'].includes(status) ? (
-                <Block>
-                    <div className={styles.breakdowns}>
-                        <BreakdownItem className={`${styles.breakdown}`}>
-                            <Label className={styles.label}>{t('subtotal')}</Label>
-                            {cost?.subtotalAmount ? (
-                                <Money
-                                    as={BreakdownItemMoney}
-                                    className={styles.money}
-                                    data={{
-                                        currencyCode: cost?.subtotalAmount?.currencyCode,
-                                        amount:
-                                            (sale &&
-                                                (Number.parseFloat(cost?.subtotalAmount?.amount!) + sale).toString()) ||
-                                            cost?.subtotalAmount?.amount
-                                    }}
-                                />
-                            ) : null}
-                        </BreakdownItem>
-
-                        {sale ? (
-                            <BreakdownDiscountItem
-                                title={`${salePercentage}% OFF`}
-                                className={`${styles.breakdown} ${styles.discount}`}
-                            >
-                                <Label className={styles.label}>{t('sale-discount')}</Label>
-                                <Money
-                                    as={BreakdownItemMoney}
-                                    className={styles.money}
-                                    data={{
-                                        currencyCode: cost?.totalAmount?.currencyCode,
-                                        amount: sale.toString()
-                                    }}
-                                />
-                            </BreakdownDiscountItem>
+            <Block>
+                <div className={styles.breakdowns}>
+                    <BreakdownItem className={`${styles.breakdown}`}>
+                        <Label className={styles.label}>{t('subtotal')}</Label>
+                        {cost?.subtotalAmount ? (
+                            <Money
+                                as={BreakdownItemMoney}
+                                className={styles.money}
+                                data={{
+                                    currencyCode: cost?.subtotalAmount?.currencyCode,
+                                    amount:
+                                        (sale &&
+                                            (Number.parseFloat(cost?.subtotalAmount?.amount!) + sale).toString()) ||
+                                        cost?.subtotalAmount?.amount
+                                }}
+                            />
                         ) : null}
+                    </BreakdownItem>
 
-                        {promos ? (
-                            <BreakdownDiscountItem className={`${styles.breakdown} ${styles.discount}`}>
-                                <Label className={styles.label}>{t('promo-codes')}</Label>
-                                <Money
-                                    as={BreakdownItemMoney}
-                                    className={styles.money}
-                                    data={{
-                                        currencyCode: cost?.totalAmount?.currencyCode,
-                                        amount: promos.toString()
-                                    }}
-                                />
-                            </BreakdownDiscountItem>
-                        ) : null}
-
-                        <BreakdownItem className={`${styles.breakdown} ${freeShipping ? styles.discount : ''}`}>
-                            <Label className={styles.label}>{t('shipping')}</Label>
-
-                            {freeShipping ? (
-                                <Money
-                                    as={BreakdownItemMoney}
-                                    className={styles.money}
-                                    data={{
-                                        currencyCode: cost?.subtotalAmount?.currencyCode,
-                                        amount: (0).toString()
-                                    }}
-                                />
-                            ) : (
-                                <BreakdownItemMoney>{'TBD*'}</BreakdownItemMoney>
-                            )}
-                        </BreakdownItem>
-
-                        <BreakdownTotalItem>
-                            <Label className={`${styles.label} ${styles.total}`}>{t('estimated-total')}</Label>
-                            <CartCost as={BreakdownItemMoney} />
-                        </BreakdownTotalItem>
-
-                        {!freeShipping ? (
-                            <BreakdownItem style={{ display: 'flex' }}>
-                                <Notice>{`*${t('shipping-calculated-at-checkout')}`}</Notice>
-                            </BreakdownItem>
-                        ) : null}
-                    </div>
-
-                    <CheckoutButton disabled={loading || (totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
-                        <Label>{t('continue-to-checkout')}</Label>
-                        <CheckoutButtonIcon>
-                            <FiChevronRight />
-                        </CheckoutButtonIcon>
-                    </CheckoutButton>
-
-                    {lines && lines.length > 0 ? (
-                        <ShopPayButton
-                            // TODO: Only show this if we're using Shopify.
-                            width="100%"
-                            className={styles['shop-button']}
-                            variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
-                                quantity,
-                                id
-                            }))}
-                            channel="hydrogen"
-                        />
+                    {sale ? (
+                        <BreakdownDiscountItem
+                            title={`${salePercentage}% OFF`}
+                            className={`${styles.breakdown} ${styles.discount}`}
+                        >
+                            <Label className={styles.label}>{t('sale-discount')}</Label>
+                            <Money
+                                as={BreakdownItemMoney}
+                                className={styles.money}
+                                data={{
+                                    currencyCode: cost?.totalAmount?.currencyCode,
+                                    amount: sale.toString()
+                                }}
+                            />
+                        </BreakdownDiscountItem>
                     ) : null}
 
-                    <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
-                        <Notice>
-                            <FiLock className="icon" />
-                            Safely complete your purchase through our secure and
-                            <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
-                                {' '}
-                                PCI DSS compliant{' '}
-                            </Link>
-                            checkout powered by Stripe and/or Shopify.
-                        </Notice>
+                    {promos ? (
+                        <BreakdownDiscountItem className={`${styles.breakdown} ${styles.discount}`}>
+                            <Label className={styles.label}>{t('promo-codes')}</Label>
+                            <Money
+                                as={BreakdownItemMoney}
+                                className={styles.money}
+                                data={{
+                                    currencyCode: cost?.totalAmount?.currencyCode,
+                                    amount: promos.toString()
+                                }}
+                            />
+                        </BreakdownDiscountItem>
+                    ) : null}
+
+                    <BreakdownItem
+                        className={`${styles.breakdown} ${freeShipping ? `${styles.discount} ${styles.shipping}` : ''}`}
+                    >
+                        <Label className={styles.label}>{t('shipping')}</Label>
+
+                        {freeShipping ? (
+                            <Money
+                                as={BreakdownItemMoney}
+                                className={styles.money}
+                                data={{
+                                    currencyCode: cost?.subtotalAmount?.currencyCode,
+                                    amount: (0).toString()
+                                }}
+                            />
+                        ) : (
+                            <BreakdownItemMoney>{'TBD*'}</BreakdownItemMoney>
+                        )}
                     </BreakdownItem>
-                </Block>
-            ) : null}
+
+                    <BreakdownTotalItem>
+                        <Label className={`${styles.label} ${styles.total}`}>{t('estimated-total')}</Label>
+                        <CartCost as={BreakdownItemMoney} />
+                    </BreakdownTotalItem>
+
+                    {!freeShipping ? (
+                        <BreakdownItem style={{ display: 'flex' }}>
+                            <Notice>{`*${t('shipping-calculated-at-checkout')}`}</Notice>
+                        </BreakdownItem>
+                    ) : null}
+                </div>
+
+                <CheckoutButton disabled={loading || (totalQuantity || 0) <= 0 || !lines} onClick={onCheckout}>
+                    <Label>{t('continue-to-checkout')}</Label>
+                    <CheckoutButtonIcon>
+                        <FiChevronRight />
+                    </CheckoutButtonIcon>
+                </CheckoutButton>
+
+                {!loading && lines && lines.length > 0 ? (
+                    <ShopPayButton
+                        // TODO: Only show this if we're using Shopify.
+                        width="100%"
+                        className={styles['shop-button']}
+                        variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
+                            quantity,
+                            id
+                        }))}
+                        channel="hydrogen"
+                    />
+                ) : null}
+
+                <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
+                    <Notice>
+                        <FiLock className="icon" />
+                        Safely complete your purchase through our secure and
+                        <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
+                            {' '}
+                            PCI DSS compliant{' '}
+                        </Link>
+                        checkout powered by Stripe and/or Shopify.
+                    </Notice>
+                </BreakdownItem>
+            </Block>
         </Container>
     );
 };

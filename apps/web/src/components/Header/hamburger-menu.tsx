@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState, type HTMLProps } from 'react';
-import { TbMenuDeep, TbX } from 'react-icons/tb';
-
 import styles from '@/components/Header/hamburger-menu.module.scss';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState, type HTMLProps } from 'react';
+import { CgClose, CgMenuLeftAlt } from 'react-icons/cg';
 
 type HamburgerMenuProps = {} & HTMLProps<HTMLDivElement>;
 export const HamburgerMenu = ({ className, ...props }: HamburgerMenuProps) => {
@@ -30,7 +29,7 @@ export const HamburgerMenu = ({ className, ...props }: HamburgerMenuProps) => {
             }}
             className={`${styles.container} ${(open && styles.open) || ''} ${className || ''}`}
         >
-            {open ? <TbX className={styles.icon} /> : <TbMenuDeep className={styles.icon} />}
+            {open ? <CgClose className={styles.icon} /> : <CgMenuLeftAlt className={styles.icon} />}
         </div>
     );
 };

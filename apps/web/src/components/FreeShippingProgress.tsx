@@ -1,8 +1,8 @@
-import { Money, useCart } from '@shopify/hydrogen-react';
-import styled, { css } from 'styled-components';
-
+import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
+import { Money, useCart } from '@shopify/hydrogen-react';
 import type { FunctionComponent } from 'react';
+import styled, { css } from 'styled-components';
 
 const Container = styled.section<{ $active?: boolean }>`
     display: flex;
@@ -15,12 +15,6 @@ const Container = styled.section<{ $active?: boolean }>`
     &.success {
         color: var(--color-green);
     }
-`;
-const Label = styled.div`
-    gap: var(--block-spacer-small);
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1.25;
 `;
 const Target = styled.span`
     font-weight: 700;

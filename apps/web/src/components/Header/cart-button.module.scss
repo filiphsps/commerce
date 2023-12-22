@@ -29,12 +29,21 @@
     .icon {
         overflow: hidden;
         display: block;
-        width: 100%;
+        min-width: 0.85em;
         height: 2.75rem;
+        padding: 0.15rem 0.15rem 0.3rem 0.15rem;
+
+        stroke-width: 0.2em;
+
+        font-size: 1em;
+        line-height: 1;
+        text-align: center;
     }
 
     .quantity {
         width: 0;
+
+        font-size: 0.75em;
     }
 
     &:is([data-items='0']):not(:disabled):is(:hover, :active) {

@@ -79,6 +79,9 @@ export default defineConfig({
                 // TODO: Eh?
                 '**/src/locales/*.*',
                 '**/src/middleware.ts',
+                '**/src/middleware/admin.ts',
+                '**/src/middleware/storefront.ts',
+                '**/src/middleware/unknown.ts',
                 '**/src/models/*.ts',
                 '**/src/utils/prismic.ts',
                 '**/src/api/shopify/cart.ts',

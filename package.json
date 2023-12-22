@@ -56,6 +56,10 @@
     "browserslist": [
         ">0.5%",
         "defaults",
+        "not ie 11",
+        "not ie <= 10",
+        "not and_ff <= 119",
+        "not firefox <= 121",
         "supports es6-module",
         "supports css-grid"
     ],

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
 import { gzipSizeSync } from 'gzip-size';
+import fs from 'node:fs';
 import path from 'node:path';
 
 // Pull options from `package.json`
@@ -14,7 +14,7 @@ try {
     fs.accessSync(nextMetaRoot, fs.constants.R_OK);
 } catch (err) {
     console.error(
-        `No build output found at "${nextMetaRoot}" - you may not have your working directory set correctly, or not have run "next build".`,
+        `No build output found at "${nextMetaRoot}" - you may not have your working directory set correctly, or not have run "next build".`
     );
     process.exit(1);
 }
@@ -36,9 +36,7 @@ const globalBundleSizes = getScriptSizes(globalBundle);
 // subtracting out the global scripts
 const allPageSizes = Object.values(buildMeta.pages).reduce((acc, scriptPaths, i) => {
     const pagePath = Object.keys(buildMeta.pages)[i];
-    const scriptSizes = getScriptSizes(
-        scriptPaths.filter((scriptPath) => !globalBundle.includes(scriptPath)),
-    );
+    const scriptSizes = getScriptSizes(scriptPaths.filter((scriptPath) => !globalBundle.includes(scriptPath)));
 
     acc[`/app${pagePath}`] = scriptSizes;
     return acc;
@@ -49,24 +47,25 @@ const globalAppDirBundleSizes = getScriptSizes(globalAppDirBundle);
 
 const allAppDirSizes = Object.values(appDirMeta.pages).reduce((acc, scriptPaths, i) => {
     const pagePath = Object.keys(appDirMeta.pages)[i];
-    const scriptSizes = getScriptSizes(
-        scriptPaths.filter((scriptPath) => !globalAppDirBundle.includes(scriptPath)),
-    );
+    const scriptSizes = getScriptSizes(scriptPaths.filter((scriptPath) => !globalAppDirBundle.includes(scriptPath)));
 
     acc[`/pages${pagePath}`] = scriptSizes;
     return acc;
 }, {});
 
 // format and write the output
-const rawData = JSON.stringify({
-    ...allPageSizes,
-    ...allAppDirSizes,
-    __global: globalAppDirBundleSizes
-
-}, null, 4);
+const rawData = JSON.stringify(
+    {
+        ...allPageSizes,
+        ...allAppDirSizes,
+        __global: globalAppDirBundleSizes
+    },
+    null,
+    4
+);
 
 // log ouputs to the gh actions panel
-console.log(rawData);
+console.debug(rawData);
 
 mkdirp(path.join(nextMetaRoot, 'analyze/'));
 if (!fs.existsSync(path.join(nextMetaRoot, 'analyze'))) {
@@ -88,7 +87,7 @@ function getScriptSizes(scriptPaths) {
 
             return acc;
         },
-        { raw: 0, gzip: 0 },
+        { raw: 0, gzip: 0 }
     );
 
     return res;

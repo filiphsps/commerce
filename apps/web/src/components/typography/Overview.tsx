@@ -1,7 +1,7 @@
 import { Content } from '@/components/typography/content';
+import styles from '@/components/typography/overview.module.scss';
 import { PrismicNextImage } from '@prismicio/next';
 import type { FunctionComponent } from 'react';
-import styles from './overview.module.scss';
 
 interface OverviewProps {
     body?: React.ReactNode;

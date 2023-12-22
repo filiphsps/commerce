@@ -30,6 +30,7 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
+        //ppr: true,
         //scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
         serverSourceMaps: true,
@@ -154,7 +155,7 @@ export default withHighlightConfig(
             enableDevPurge: true,
             fontFace: false,
             keyframes: false,
-            safelist: ['body', 'html', ':root', '[data-sonner-toaster]', '#nprogress', '#nordstar'],
+            safelist: ['html', 'body', ':root', '[data-sonner-toaster]', '[data-skeleton]', '#nprogress', '#nordstar'],
             variables: false
         },
         withMarkdoc({

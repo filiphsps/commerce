@@ -1,3 +1,5 @@
+import 'the-new-css-reset';
+
 import '@/styles/app.scss';
 
 import { ShopApi } from '@/api/shop';
@@ -118,7 +120,7 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
 
             --color-accent-primary: ${branding.primary.accent};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.175).saturate(0.25).toHex()};
             --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
 
             --color-accent-secondary: ${branding.secondary.accent};
