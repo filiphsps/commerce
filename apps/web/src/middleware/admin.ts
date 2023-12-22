@@ -25,7 +25,7 @@ export const admin = async (req: NextRequest): Promise<NextResponse> => {
 
         // User is not logged in, so let's redirect them to the login page.
         if (!session) {
-            return NextResponse.redirect(new URL('/login/', req.url));
+            return NextResponse.rewrite(new URL('/login/', req.url));
         }
     }
 
