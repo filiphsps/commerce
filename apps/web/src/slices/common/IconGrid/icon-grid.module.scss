@@ -1,8 +1,8 @@
 @import '_globals.scss';
 
-.container {
-    display: grid;
-    flex-direction: column;
+section.container {
+    display: flex;
+    flex-direction: row;
     grid-template-columns: 1fr;
     justify-content: center;
     align-items: center;
