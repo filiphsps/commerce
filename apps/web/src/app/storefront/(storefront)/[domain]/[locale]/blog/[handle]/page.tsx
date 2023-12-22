@@ -15,7 +15,6 @@ import styles from './page.module.scss';
 
 /* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
-export const dynamicParams = true;
 export async function generateStaticParams() {
     const locale = Locale.default;
     const shops = await ShopsApi();

@@ -14,8 +14,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-export const dynamicParams = true;
-
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }

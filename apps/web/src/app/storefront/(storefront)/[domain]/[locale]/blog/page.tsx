@@ -14,8 +14,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import BlogContent from './blog-content';
 
-export const dynamicParams = true;
-
 export type BlogPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

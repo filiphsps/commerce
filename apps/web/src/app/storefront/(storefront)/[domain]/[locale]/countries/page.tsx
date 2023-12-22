@@ -15,8 +15,6 @@ import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import LocaleSelector from './locale-selector';
 
-export const dynamicParams = true;
-
 export type CountriesPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

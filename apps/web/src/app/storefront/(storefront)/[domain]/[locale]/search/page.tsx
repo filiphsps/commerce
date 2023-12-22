@@ -14,8 +14,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import SearchContent from './search-content';
 
-export const dynamicParams = true;
-
 export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

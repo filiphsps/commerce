@@ -32,8 +32,6 @@ import styles from './page.module.scss';
 import { ProductContent, ProductPricing } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
-export const dynamicParams = true;
-
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }

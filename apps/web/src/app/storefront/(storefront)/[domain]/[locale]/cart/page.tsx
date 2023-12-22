@@ -12,8 +12,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CartContent from './cart-content';
 
-export const dynamicParams = true;
-
 export type CartPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

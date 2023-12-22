@@ -1,6 +1,7 @@
 import type { Props as HighlightOptions } from '@highlight-run/next/client';
 
 export const highlightConfig: HighlightOptions = {
+    ...({ projectID: process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID! } as any),
     projectId: process.env.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID!,
     version: process.env.GIT_COMMIT_SHA || 'dev',
 

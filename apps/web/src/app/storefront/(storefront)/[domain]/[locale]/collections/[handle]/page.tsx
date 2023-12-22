@@ -16,8 +16,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
 
-export const dynamicParams = true;
-
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }

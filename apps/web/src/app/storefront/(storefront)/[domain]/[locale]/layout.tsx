@@ -22,7 +22,8 @@ import type { ReactNode } from 'react';
 import { Suspense } from 'react';
 
 //export const runtime = 'experimental-edge';
-export const dynamicParams = true;
+export const revalidate = 3600;
+export const dynamic = 'force-static';
 
 export const viewport: Viewport = {
     width: 'device-width',
