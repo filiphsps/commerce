@@ -23,12 +23,12 @@ article.container {
     [data-level='h2'] {
         margin: var(--layout-block-padding) 0 calc(var(--small-spacing) / 2) 0;
         font-weight: 500;
-        font-size: 2.5em;
+        font-size: 2em;
         line-height: 1.1;
         color: var(--color-foreground);
 
         @media (min-width: $breakpoint-mobile) {
-            font-size: 3.25em;
+            font-size: 2.5em;
         }
 
         &::after {
@@ -39,14 +39,14 @@ article.container {
     h3,
     [data-level='h3'] {
         margin: var(--small-spacing) 0 0 0;
-        font-size: 1.5em;
+        font-size: 1.25em;
         font-weight: 800;
         line-height: 1.1;
         text-transform: uppercase;
         color: var(--color-foreground);
 
         @media (min-width: $breakpoint-mobile) {
-            font-size: 2em;
+            font-size: 1.75em;
         }
 
         &:after {
@@ -78,6 +78,19 @@ article.container {
 
     a {
         text-decoration: underline;
+        text-decoration-thickness: 0.075em;
+
+        ::before,
+        ::after {
+            text-decoration: underline;
+            text-decoration-color: var(--color-foreground);
+            transition: 150ms ease-in-out;
+        }
+
+        &:hover ::before,
+        &:hover ::after {
+            text-decoration-color: var(--color-accent-primary);
+        }
     }
 
     ul {
