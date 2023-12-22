@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-
-export const Input = styled.input`
+.input {
+    -webkit-appearance: none;
     appearance: none;
     width: 100%;
     padding: var(--block-padding) var(--block-padding-large);
@@ -22,10 +21,10 @@ export const Input = styled.input`
     &:focus,
     &:hover {
         outline: none;
-        border-color: var(--accent-primary);
+        border-color: var(--color-accent-primary);
     }
 
-    ::placeholder {
+    &::placeholder {
         color: var(--color-dark);
         opacity: 0.5;
         font-weight: 500;
@@ -53,9 +52,10 @@ export const Input = styled.input`
         cursor: not-allowed;
         opacity: 0.75;
     }
-`;
+}
 
-export const MultilineInput = styled.textarea`
+.textarea {
+    -webkit-appearance: none;
     appearance: none;
     width: 100%;
     padding: var(--block-padding-small);
@@ -64,7 +64,7 @@ export const MultilineInput = styled.textarea`
     color: var(--color-dark);
     background: var(--color-bright);
     font-size: 1.25rem;
-    line-height: 1.5rem;
+    line-height: 1.25;
     font-weight: 600;
     outline: none;
     resize: none;
@@ -78,10 +78,10 @@ export const MultilineInput = styled.textarea`
     &:focus,
     &:hover {
         outline: none;
-        border-color: var(--accent-primary);
+        border-color: var(--color-accent-primary);
     }
 
-    ::placeholder {
+    &::placeholder {
         color: var(--color-dark);
         opacity: 0.5;
         font-weight: 500;
@@ -109,4 +109,4 @@ export const MultilineInput = styled.textarea`
         cursor: not-allowed;
         opacity: 0.75;
     }
-`;
+}

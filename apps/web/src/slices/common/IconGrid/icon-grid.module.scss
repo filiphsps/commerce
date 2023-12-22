@@ -15,7 +15,7 @@ section.container {
     }
 
     .item {
-        display: grid;
+        display: inline-grid;
         grid-template-columns: auto 1fr;
         justify-content: center;
         align-items: flex-start;

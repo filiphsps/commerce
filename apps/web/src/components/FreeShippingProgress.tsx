@@ -20,7 +20,7 @@ const Label = styled.div`
     gap: var(--block-spacer-small);
     font-weight: 500;
     font-size: 1.5rem;
-    line-height: 1.5rem;
+    line-height: 1.25;
 `;
 const Target = styled.span`
     font-weight: 700;
