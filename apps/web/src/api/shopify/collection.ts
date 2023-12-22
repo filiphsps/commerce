@@ -176,6 +176,9 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
                     before: before,
                     after: after
                 }))(filters)
+            },
+            {
+                tags: [`collection`]
             }
         );
 
@@ -345,6 +348,9 @@ export const CollectionsPaginationApi = async ({
                         before: before,
                         after: after
                     }))(filters)
+                },
+                {
+                    tags: [`pagination.collections`]
                 }
             );
 
