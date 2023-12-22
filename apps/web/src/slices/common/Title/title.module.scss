@@ -1,0 +1,33 @@
+@import '_globals.scss';
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: var(--block-spacer);
+
+    .content {
+        display: flex;
+        flex-direction: column;
+
+        font-size: 3.25rem;
+        line-height: 3.5rem;
+
+        &.align-left {
+            align-items: flex-end;
+            text-align: left;
+        }
+        &.align-center {
+            align-items: center;
+            text-align: center;
+        }
+        &.align-right {
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 3.75rem;
+            line-height: 4rem;
+        }
+    }
+}

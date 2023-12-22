@@ -1,13 +1,12 @@
 import type { Product } from '@/api/product';
 import styles from '@/components/products/info-lines.module.scss';
 import { Label } from '@/components/typography/label';
-import type { FunctionComponent } from 'react';
 import { FiPackage } from 'react-icons/fi';
 
-interface StockStatusProps {
+export type StockStatusProps = {
     product?: Product;
-}
-export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) => {
+};
+const StockStatus = ({ product }: StockStatusProps) => {
     if (!product || !product.availableForSale) return null;
 
     // TODO: Proper i18n.
@@ -22,11 +21,12 @@ export const StockStatus: FunctionComponent<StockStatusProps> = ({ product }) =>
         </section>
     );
 };
+StockStatus.displayName = 'Nordcom.Products.StockStatus';
 
-interface InfoLinesProps {
-    product: Product;
-}
-export const InfoLines: FunctionComponent<InfoLinesProps> = ({ product }) => {
+export type InfoLinesProps = {
+    product?: Product;
+};
+const InfoLines = ({ product }: InfoLinesProps) => {
     if (!product) return null;
 
     return (
@@ -35,3 +35,6 @@ export const InfoLines: FunctionComponent<InfoLinesProps> = ({ product }) => {
         </div>
     );
 };
+InfoLines.displayName = 'Nordcom.Products.InfoLines';
+
+export { InfoLines, StockStatus };

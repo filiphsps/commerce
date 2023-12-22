@@ -115,5 +115,5 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
     );
 };
 
-QuantitySelector.displayName = 'Nordcom.QuantitySelector';
+QuantitySelector.displayName = 'Nordcom.Products.QuantitySelector';
 export { QuantitySelector };
