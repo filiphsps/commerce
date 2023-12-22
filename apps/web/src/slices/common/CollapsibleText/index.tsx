@@ -1,72 +1,12 @@
-'use client';
-
-import { Content } from '@prismicio/client';
+import 'server-only';
 
 import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import { PrismicText } from '@/components/typography/prismic-text';
+import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { FiChevronUp } from 'react-icons/fi';
-import styled from 'styled-components';
-
-const Container = styled.section`
-    width: 100%;
-    padding: 0;
-    margin: 0;
-`;
-
-const Content = styled.div`
-    color: var(--foreground);
-    padding: var(--block-padding-large);
-    background: var(--color-block);
-    border-radius: var(--block-border-radius);
-    background: linear-gradient(320deg, var(--background) 0%, var(--background-dark) 100%);
-`;
-
-const Summary = styled.summary`
-    display: flex;
-    gap: var(--block-spacer);
-    justify-self: flex-start;
-    align-items: center;
-    font-size: 2rem;
-    line-height: 2.5rem;
-    font-weight: 700;
-    cursor: pointer;
-    user-select: none;
-    transition: 150ms all ease-in-out;
-
-    @media (hover: hover) and (pointer: fine) {
-        &:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-
-            .Icon {
-                color: var(--accent-primary);
-            }
-        }
-    }
-
-    .Icon {
-        width: 2rem;
-        font-size: 2rem;
-        line-height: 2rem;
-        transition: 150ms ease-in-out;
-    }
-`;
-const Details = styled.details`
-    transition: 150ms ease-in-out;
-    font-size: 1.5rem;
-    line-height: 1.75rem;
-    font-weight: 500;
-
-    &[open] ${Summary} {
-        margin-bottom: 1rem;
-
-        .Icon {
-            rotate: 180deg;
-        }
-    }
-`;
+import styles from './collapsible-text.module.scss';
 
 /**
  * Props for `CollapsibleText`.
@@ -78,7 +18,9 @@ export type CollapsibleTextProps = SliceComponentProps<Content.CollapsibleTextSl
  */
 const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     return (
-        <Container
+        <PageContent
+            as="section"
+            className={styles.container}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
             style={{
@@ -87,19 +29,21 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                 '--foreground': 'var(--color-text-primary)'
             }}
         >
-            <PageContent>
-                <Content>
-                    <Details className={`Slice-Collapse-Body`}>
-                        <Summary>
-                            <FiChevronUp className="Icon" /> {slice?.primary?.title}
-                        </Summary>
+            <details className={styles.details}>
+                <summary className={styles.summary}>
+                    <FiChevronUp className={styles.icon} /> {slice?.primary?.title}
+                </summary>
 
-                        <Overview body={<PrismicText data={slice?.primary?.text} />} />
-                    </Details>
-                </Content>
-            </PageContent>
-        </Container>
+                <Overview body={<PrismicText data={slice?.primary?.text} />} />
+            </details>
+        </PageContent>
     );
 };
+CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
+    if (!slice || !slice.items || slice.items.length <= 0) return null;
 
+    return <CollapsibleText {...({ slice } as any)} />;
+};
+
+CollapsibleText.displayName = 'Nordcom.Slices.CollapsibleText';
 export default CollapsibleText;
