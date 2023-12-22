@@ -1,10 +1,11 @@
 import 'server-only';
 
+import { Content as ContentContainer } from '#/components/content';
 import PageContent from '@/components/page-content';
-import { Overview } from '@/components/typography/Overview';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
+import { Suspense } from 'react';
 import { FiChevronUp } from 'react-icons/fi';
 import styles from './collapsible-text.module.scss';
 
@@ -34,7 +35,13 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                     <FiChevronUp className={styles.icon} /> {slice?.primary?.title}
                 </summary>
 
-                <Overview body={<PrismicText data={slice?.primary?.text} />} />
+                <Suspense>
+                    <ContentContainer>
+                        <Suspense>
+                            <PrismicText data={slice?.primary?.text} />
+                        </Suspense>
+                    </ContentContainer>
+                </Suspense>
             </details>
         </PageContent>
     );
