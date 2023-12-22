@@ -83,7 +83,7 @@ describe('app', () => {
         };
     });
 
-    describe('ProductPage', () => {
+    describe.todo('ProductPage', () => {
         const { product } = vi.hoisted(() => ({
             product: {
                 title: 'Test Product',

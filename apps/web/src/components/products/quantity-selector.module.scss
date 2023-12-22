@@ -1,7 +1,6 @@
 @import '_globals.scss';
 
 .container {
-    overflow: hidden;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -40,7 +39,7 @@
 
     .button {
         height: 100%;
-        aspect-ratio: 1.1 / 1;
+        width: 5rem;
         line-height: 1;
         font-weight: 400;
         font-size: 2.5rem;
@@ -59,8 +58,10 @@
             background-color: var(--accent-primary-light);
         }
 
-        &:disabled {
+        &:is(:disabled) {
             color: var(--color-block);
+
+            cursor: not-allowed;
         }
 
         @media (pointer: fine) {

@@ -1,7 +1,6 @@
 'use client';
 
 import type { Product } from '@/api/product';
-import { AppendShopifyParameters } from '@/components/ProductCard/ProductCard';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
@@ -59,14 +58,11 @@ const ProductCardImage = memo(({ data: product, priority = false, children }: Pr
     if (!image) return null;
 
     // TODO: Hotlink to variant.
-    const href = AppendShopifyParameters({
-        url: `/products/${product.handle}/`,
-        params: (product as any).trackingParameters
-    });
+    // TODO: `product.trackingParameters`.
 
     const title = `${product.vendor} ${product.title} by ${shop.name}`;
     return (
-        <Link href={href} className={styles['image-container']}>
+        <Link href={`/products/${product.handle}/`} className={styles['image-container']}>
             <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
 
             {children}

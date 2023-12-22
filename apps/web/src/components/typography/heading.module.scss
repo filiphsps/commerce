@@ -22,9 +22,12 @@
         }
     }
 
-    &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {
+    a:is(:hover, :focus, :focus-within) & {
         text-decoration: underline;
+        text-decoration-style: dotted;
         text-decoration-thickness: 0.2rem;
+        text-underline-offset: var(--block-border-width);
+
         color: var(--accent-primary-light);
     }
 }

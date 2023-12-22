@@ -33,6 +33,9 @@
 
             object-position: center;
             object-fit: contain;
+
+            user-select: none;
+            pointer-events: none;
         }
 
         .title {

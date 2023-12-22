@@ -24,15 +24,17 @@ const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
             <div className={styles['quantity-action']}>
                 <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
 
-                <QuantitySelector
-                    className={styles.quantity}
-                    i18n={i18n}
-                    value={quantity}
-                    update={(value) => {
-                        if (value === quantity) return;
-                        setQuantity(value);
-                    }}
-                />
+                {selectedVariant.availableForSale ? (
+                    <QuantitySelector
+                        className={styles.quantity}
+                        i18n={i18n}
+                        value={quantity}
+                        update={(value) => {
+                            if (value === quantity) return;
+                            setQuantity(value);
+                        }}
+                    />
+                ) : null}
             </div>
 
             <AddToCart

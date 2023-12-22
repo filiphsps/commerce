@@ -1,26 +1,27 @@
+import 'server-only';
+
 import type { Product } from '@/api/product';
+import type { Shop } from '@/api/shop';
 import ProductCardBody from '@/components/ProductCard/product-card-body';
 import ProductCardTitle from '@/components/ProductCard/product-card-title';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import { type LocaleDictionary } from '@/utils/locale';
 import { Suspense } from 'react';
 
-export const AppendShopifyParameters = ({ params, url }: { params?: string | null; url: string }): string => {
-    if (!params) return url;
-
-    return `${url}${(url.includes('?') && '&') || '?'}${params}`;
-};
-
 export type ProductCardProps = {
-    className?: string;
+    shop: Shop;
     i18n: LocaleDictionary;
-    data: Product; // TODO: This is only a subset of the data is passed to the ProductCard.
+
+    // TODO: Use satisfied.
+    data: Product;
     priority?: boolean;
+
+    className?: string;
 };
-const ProductCard = ({ className, i18n, data, priority }: ProductCardProps) => {
+const ProductCard = ({ shop, i18n, data, priority, className, ...props }: ProductCardProps) => {
     return (
-        <Suspense fallback={<ProductCard.skeleton />}>
-            <div className={`${styles.container} ${className || ''}`} data-available={data.availableForSale}>
+        <Suspense key={`${shop.id}.product.${data.handle}.card`} fallback={<ProductCard.skeleton />}>
+            <div className={`${styles.container} ${className || ''}`} data-available={data.availableForSale} {...props}>
                 <ProductCardBody data={data} i18n={i18n} priority={priority}>
                     <ProductCardTitle data={data} />
                 </ProductCardBody>

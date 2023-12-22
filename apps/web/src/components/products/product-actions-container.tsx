@@ -10,7 +10,7 @@ import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import { useState, type HTMLProps } from 'react';
+import { Suspense, useState, type HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;
@@ -54,8 +54,11 @@ export const ProductActionsContainer = ({
                 />
             </div>
 
-            <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
-            {children}
+            <Suspense>
+                <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
+            </Suspense>
+
+            <Suspense>{children}</Suspense>
         </ProductProvider>
     );
 };

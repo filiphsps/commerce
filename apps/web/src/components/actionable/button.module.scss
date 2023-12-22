@@ -1,8 +1,8 @@
 @import '_globals.scss';
 
 .container {
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -26,10 +26,11 @@
     color: var(--accent-primary-text);
 
     transition:
-        250ms ease-in-out background-color,
-        250ms ease-in-out border-color,
-        250ms ease-in-out color,
-        250ms ease-in-out font-weight;
+        $animation-duration ease-in-out background-color,
+        $animation-duration ease-in-out border-color,
+        $animation-duration ease-in-out color,
+        $animation-duration ease-in-out font-weight;
+
     cursor: pointer;
     user-select: none;
 
@@ -37,10 +38,6 @@
         gap: var(--block-spacer-small);
         padding: calc(var(--block-padding) - var(--block-border-width))
             calc(var(--block-padding) - var(--block-border-width));
-    }
-
-    &:hover {
-        background-color: var(--accent-primary-light);
     }
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
@@ -54,20 +51,21 @@
         background-color: var(--accent-primary);
 
         &:is(:hover) {
-            background-color: var(--accent-primary-light);
-            border-color: var(--accent-primary-light);
+            background-color: var(--color-accent-primary-light);
+            border-color: var(--color-accent-primary-light);
         }
         &:is(:active, :focus, :focus-within) {
-            background-color: var(--accent-primary-dark);
-            border-color: var(--accent-primary-dark);
+            background-color: var(--color-accent-primary-dark);
+            border-color: var(--color-accent-primary-dark);
         }
     }
 
-    &:is(:disabled):not([data-success], [data-ready]) {
-        border-color: var(--color-block);
-        background-color: var(--color-block);
+    &:is(:disabled):not([data-success]) {
+        border-color: var(--color-block-dark);
+        background-color: var(--color-block-dark);
         color: var(--color-block-black);
         box-shadow: none;
+
         cursor: not-allowed;
 
         svg {
@@ -78,7 +76,6 @@
     svg {
         font-size: 1.15em;
         height: 100%;
-        aspect-ratio: 1 / 1;
         vertical-align: middle;
     }
 }

@@ -3,7 +3,6 @@
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
 import { useShop } from '@/components/shop/provider';
-import { deepEqual } from '@/utils/deep-equal';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
@@ -12,7 +11,7 @@ import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { memo, useState, type HTMLProps } from 'react';
+import { useCallback, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 
 export type AddToCartProps = {
@@ -35,6 +34,74 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
 
     const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
 
+    const add = useCallback(() => {
+        if (!ready || !product || !selectedVariant) {
+            // TODO: i18n.
+            toast.warning(`The cart is still loading, please try again in a few seconds!`);
+            return;
+        }
+
+        clearTimeout(animation);
+        setAnimation(
+            setTimeout(() => {
+                clearTimeout(animation);
+                setAnimation(() => undefined);
+            }, 3000)
+        );
+
+        linesAdd([
+            {
+                merchandiseId: selectedVariant!.id!,
+                quantity
+            }
+        ]);
+
+        queueEvent('add_to_cart', {
+            path,
+            gtm: {
+                ecommerce: {
+                    currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                    value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity ?? undefined,
+                    items: [
+                        {
+                            item_id: ProductToMerchantsCenterId({
+                                locale,
+                                product: {
+                                    productGid: product!.id!,
+                                    variantGid: selectedVariant!.id!
+                                }
+                            }),
+                            item_name: product.title,
+                            item_variant: selectedVariant.title,
+                            item_brand: product.vendor,
+                            item_category: product.productType,
+                            product_id: product.id,
+                            variant_id: selectedVariant.id,
+                            sku: selectedVariant.sku || undefined,
+                            currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                            price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
+                            quantity: quantity ?? 0
+                        }
+                    ]
+                }
+            }
+        });
+
+        // TODO: Move the toast to the provider.
+        // TODO: i18n.
+        toast.success(
+            <>
+                <p>
+                    Added{' '}
+                    <b>
+                        <span>{quantity}x</span> {selectedVariant!.title} - {product!.title}
+                    </b>{' '}
+                    to the cart!
+                </p>
+            </>
+        );
+    }, [selectedVariant]);
+
     let label: ReactNode = t('add-to-cart');
     if (animation) {
         // 1. Have we just successfully added to cart, if so, show a checkmark.
@@ -56,78 +123,12 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
         <Button
             {...props}
             className={`${styles['add-to-cart']} ${className || ''}`}
-            data-ready={ready}
             disabled={!selectedVariant!.availableForSale || quantity < 1}
             as="button"
-            type={type || ('button' as any)}
+            type={type || ('button' as const)}
+            data-ready={ready}
             data-success={(animation && 'true') || undefined}
-            onClick={() => {
-                if (!ready || !product || !selectedVariant) {
-                    // TODO: i18n.
-                    toast.warning(`The cart is still loading, please try again in a few seconds`);
-                    return;
-                }
-
-                clearTimeout(animation);
-                setAnimation(
-                    setTimeout(() => {
-                        clearTimeout(animation);
-                        setAnimation(() => undefined);
-                    }, 3000)
-                );
-
-                linesAdd([
-                    {
-                        merchandiseId: selectedVariant!.id!,
-                        quantity
-                    }
-                ]);
-
-                queueEvent('add_to_cart', {
-                    path,
-                    gtm: {
-                        ecommerce: {
-                            currency: selectedVariant.price?.currencyCode || currency || 'USD',
-                            value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity ?? undefined,
-                            items: [
-                                {
-                                    item_id: ProductToMerchantsCenterId({
-                                        locale,
-                                        product: {
-                                            productGid: product!.id!,
-                                            variantGid: selectedVariant!.id!
-                                        }
-                                    }),
-                                    item_name: product.title,
-                                    item_variant: selectedVariant.title,
-                                    item_brand: product.vendor,
-                                    item_category: product.productType,
-                                    product_id: product.id,
-                                    variant_id: selectedVariant.id,
-                                    sku: selectedVariant.sku || undefined,
-                                    currency: selectedVariant.price?.currencyCode || currency || 'USD',
-                                    price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
-                                    quantity: quantity ?? 0
-                                }
-                            ]
-                        }
-                    }
-                });
-
-                // TODO: Move the toast to the provider.
-                // TODO: i18n.
-                toast.success(
-                    <>
-                        <p>
-                            Added{' '}
-                            <b>
-                                <span>{quantity}x</span> {selectedVariant!.title} - {product!.title}
-                            </b>{' '}
-                            to the cart!
-                        </p>
-                    </>
-                );
-            }}
+            onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
         >
             {label}
@@ -135,4 +136,5 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
     );
 };
 
-export default memo(AddToCart, deepEqual);
+AddToCart.displayName = 'Nordcom.Products.AddToCart';
+export default AddToCart;

@@ -3,6 +3,7 @@
 import styles from '@/components/products/quantity-selector.module.scss';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
+import type { KeyboardEventHandler } from 'react';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
@@ -39,8 +40,27 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
             else if (value === quantity) return;
             update(typeof value === 'string' ? Number.parseInt(value) : value);
         },
-        [update, quantity]
+        [update]
     );
+
+    const onKeyDown = useCallback(
+        ({ key, preventDefault }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
+            if (key === 'Enter') {
+                updateQuantity(quantityValue);
+                return;
+            } else if (['.', ',', '-', '+'].includes(key)) {
+                preventDefault();
+                return;
+            }
+        },
+        [updateQuantity]
+    );
+
+    const decrease = useCallback(() => {
+        if (quantity <= 1) return;
+
+        updateQuantity(quantity - 1);
+    }, [updateQuantity]);
 
     useEffect(() => {
         if (quantity.toString() === quantityValue) return;
@@ -53,7 +73,7 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
                 type="button"
                 className={`${styles.button} ${styles.add}`}
                 disabled={quantity <= 1}
-                onClick={() => quantity > 1 && updateQuantity(quantity - 1)}
+                onClick={decrease}
                 title="Decrease quantity" // TODO: i18n.
                 data-quantity-decrease
             >
@@ -72,15 +92,7 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
                     if (!quantityValue) updateQuantity('1');
                     updateQuantity(quantityValue);
                 }}
-                onKeyDown={({ key, preventDefault }) => {
-                    if (key === 'Enter') {
-                        updateQuantity(quantityValue);
-                        return;
-                    } else if (['.', ',', '-', '+'].includes(key)) {
-                        preventDefault();
-                        return;
-                    }
-                }}
+                onKeyDown={onKeyDown}
                 onChange={(e) => {
                     const value = QuantityInputFilter(e?.target?.value, quantityValue);
                     if (value == quantityValue) return;

@@ -163,11 +163,39 @@ export const PRODUCT_FRAGMENT = `
     originalName: metafield(namespace: "store", key: "original-name") {
         value
     }
-    ingredients: metafield(namespace: "store", key: "ingredients") {
-        value
-    }
+
     keywords: metafield(namespace: "store", key: "keywords") {
         value
+    }
+
+    nutritionalContent: metafield(namespace: "store", key: "nutritional_content") {
+        id
+        namespace
+
+        value
+        type
+    }
+    allergyInformation: metafield(namespace: "store", key: "allergy_information") {
+        id
+        namespace
+
+        value
+        type
+    }
+
+    ingredients: metafield(namespace: "store", key: "ingredients") {
+        id
+        namespace
+
+        value
+        type
+    }
+    flavors: metafield(namespace: "store", key: "flavors") {
+        id
+        namespace
+
+        value
+        type
     }
 `;
 
@@ -206,7 +234,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
         return {
             ...product,
             descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || undefined
-        };
+        } as Product;
     } catch (error: unknown) {
         console.error(error);
         throw error;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import type { FunctionComponent } from 'react';
 import { MultilineInput } from '@/components/Input';
-import styled from 'styled-components';
 import { useCart } from '@shopify/hydrogen-react';
+import type { FunctionComponent } from 'react';
+import styled from 'styled-components';
 
 const Label = styled.div`
     display: grid;
@@ -21,6 +21,8 @@ const Label = styled.div`
 `;
 
 const Container = styled.section<{ open?: boolean }>`
+    overflow: hidden;
+
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -31,6 +33,8 @@ const Container = styled.section<{ open?: boolean }>`
         height: 8rem;
         border-width: 0;
         padding: var(--block-padding);
+
+        text-transform: initial;
     }
 `;
 

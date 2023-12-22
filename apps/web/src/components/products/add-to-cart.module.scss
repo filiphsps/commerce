@@ -10,3 +10,7 @@
         font-size: 1.35rem;
     }
 }
+
+.add-to-cart[data-ready='false'] {
+    cursor: progress;
+}

@@ -95,6 +95,7 @@ const Container = styled.div`
     height: 30vh;
     max-height: 100%;
     transition: 150ms ease-in-out;
+    user-select: none;
 
     @media (min-width: 950px) {
         grid-template-areas: 'primary' 'previews';
@@ -150,7 +151,7 @@ const Gallery = ({ initialImageId, images, ...props }: GalleryProps) => {
 
     const image = images.edges.find((image) => image.node && image.node.id === selected)?.node || images.edges[0].node;
     return (
-        <Container {...props}>
+        <Container draggable={false} {...props}>
             <Primary>
                 <ImageWrapper>
                     <Image

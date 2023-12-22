@@ -18,7 +18,7 @@ import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { metadata as notFoundMetadata } from './not-found';
 
-export const runtime = 'experimental-edge';
+//export const runtime = 'experimental-edge';
 
 // TODO: Generalize this
 const getBrandingColors = async (domain: string) => {
@@ -108,15 +108,16 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
     const branding = await getBrandingColors(domain);
 
+    // TODO: Background and foreground colors.
     return (
         <style>{`
         :root {
             --color-background: #fefefe;
-            --color-foreground: #101418; /* TODO: These. */
+            --color-foreground: #101418;
 
             --color-accent-primary: ${branding.primary.accent};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.1).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.15).toHex()};
             --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
 
             --color-accent-secondary: ${branding.secondary.accent};
@@ -157,7 +158,13 @@ export default async function RootLayout({
         return (
             <>
                 <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
-                <html lang={locale.code} className={`${fontPrimary.variable}`}>
+                <html
+                    lang={locale.code}
+                    className={`${fontPrimary.variable}`}
+                    /* A bunch of extensions add classes to the `html` element. */
+                    suppressHydrationWarning={true}
+                >
+                    <head />
                     <body>
                         <Suspense key={`${shop.id}.styling`}>
                             <CssVariablesProvider domain={domain} />

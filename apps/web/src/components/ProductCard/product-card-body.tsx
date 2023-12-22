@@ -9,7 +9,7 @@ import styles from '@/components/ProductCard/product-card.module.scss';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { LocaleDictionary } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 export type ProductCardBodyProps = {
     data?: Product;
@@ -31,7 +31,9 @@ const ProductCardBody = ({ data: product, priority, i18n, children }: ProductCar
                 <ProductCardOptions i18n={i18n} />
             </div>
 
-            <ProductCardActions i18n={i18n} />
+            <Suspense>
+                <ProductCardActions i18n={i18n} />
+            </Suspense>
         </ProductProvider>
     );
 };

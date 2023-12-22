@@ -4,7 +4,7 @@ import type { Product } from '@/api/product';
 import type { Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/ProductCard/product-card';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -61,7 +61,13 @@ const CollectionBlock = async ({
         >
             <div className={styles.content}>
                 {products.map((product, index) => (
-                    <ProductCard key={product.id} i18n={i18n} data={product} priority={priority && index < 2} />
+                    <ProductCard
+                        key={product.id}
+                        shop={shop}
+                        i18n={i18n}
+                        data={product}
+                        priority={priority && index < 2}
+                    />
                 ))}
 
                 {showViewAll ? (

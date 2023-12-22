@@ -358,11 +358,12 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                     <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
                         <Notice>
                             <FiLock className="Lock" />
-                            Safely complete your purchase through our secure and{' '}
+                            Safely complete your purchase through our secure and
                             <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
-                                PCI DSS compliant
-                            </Link>{' '}
-                            checkout powered by Stripe & Shopify.
+                                {' '}
+                                PCI DSS compliant{' '}
+                            </Link>
+                            checkout powered by Stripe and/or Shopify.
                         </Notice>
                     </BreakdownItem>
                 </Block>

@@ -1,6 +1,8 @@
 import 'server-only';
 
+import type { Shop } from '@/api/shop';
 import CollectionBlock from '@/components/products/collection-block';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { Suspense } from 'react';
@@ -10,7 +12,14 @@ import CollectionContainer from './collection';
 /**
  * Props for `Collection`.
  */
-export type CollectionProps = SliceComponentProps<Content.CollectionSlice, any>;
+export type CollectionProps = SliceComponentProps<
+    Content.CollectionSlice,
+    {
+        shop: Shop;
+        locale: Locale;
+        i18n: LocaleDictionary;
+    }
+>;
 
 /**
  * Component for "Collection" Slices.
@@ -23,12 +32,12 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }
 
             return (
                 <Suspense
-                    key={`${shop}.collection.${handle}.container`}
+                    key={`${shop.id}.collection.${handle}.container`}
                     fallback={<CollectionSlice.skeleton slice={slice} />}
                 >
                     <CollectionContainer slice={slice}>
                         <Suspense
-                            key={`${shop}.collection.${handle}`}
+                            key={`${shop.id}.collection.${handle}`}
                             fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}
                         >
                             <CollectionBlock

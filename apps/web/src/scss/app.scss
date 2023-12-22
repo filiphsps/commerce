@@ -1,4 +1,4 @@
-@import 'destyle.css';
+@import 'the-new-css-reset';
 
 @import './globals.scss';
 //@use '_globals.scss' as *;
@@ -142,12 +142,12 @@ a:not(:disabled) {
 }
 
 input[type='number'] {
-    appearance: textfield;
     -moz-appearance: textfield !important;
+    appearance: textfield;
 
     &::-webkit-inner-spin-button {
-        appearance: none;
         -webkit-appearance: none;
+        appearance: none;
         margin: 0;
     }
 }
@@ -158,8 +158,8 @@ input[type='search']:is(
         ::-webkit-search-results-button,
         ::-webkit-search-results-decoration
     ) {
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 @media (max-width: 950px) {

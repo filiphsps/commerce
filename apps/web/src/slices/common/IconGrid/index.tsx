@@ -36,6 +36,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                             decoding="async"
                             loading={order < 2 && index < 1 ? 'eager' : 'lazy'}
                             priority={order < 2 && index < 1}
+                            draggable={false}
                         />
                     ) : (
                         <div className={styles.icon} />

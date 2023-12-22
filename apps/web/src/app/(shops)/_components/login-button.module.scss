@@ -3,7 +3,7 @@
         opacity: 0.5;
     }
 
-    :is([data-content], [data-icon]) {
+    &:is([data-content], [data-icon]) {
         align-self: center;
         justify-self: center;
         height: 100%;

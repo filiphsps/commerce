@@ -76,7 +76,6 @@
         "accept-language-parser": "1.5.0",
         "colord": "2.9.3",
         "convert-units": "2.3.4",
-        "destyle.css": "4.0.0",
         "geist": "1.2.0",
         "glob": "10.3.10",
         "gravatar.js": "2.0.0",
@@ -95,7 +94,8 @@
         "sharp": "0.33.1",
         "sonner": "1.2.4",
         "styled-components": "6.1.1",
-        "swr": "2.2.4"
+        "swr": "2.2.4",
+        "the-new-css-reset": "1.11.2"
     },
     "devDependencies": {
         "@filiphsandstrom/next-purge-css-modules": "0.0.0-unstable.1",

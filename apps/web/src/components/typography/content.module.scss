@@ -17,7 +17,7 @@
             text-underline-offset: var(--block-border-width);
         }
 
-        :is(b, strong) {
+        &:is(b, strong) {
             font-weight: 800;
         }
     }

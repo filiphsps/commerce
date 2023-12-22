@@ -93,7 +93,7 @@ export default async function CustomPage({
         return (
             <Page>
                 <PageContent primary={true}>
-                    <Suspense key={`${shop.id}.page.${handle}`} fallback={<PrismicPage.skeleton page={page} />}>
+                    <Suspense key={`${shop.id}.page.${handle}.content`} fallback={<PrismicPage.skeleton page={page} />}>
                         <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
                     </Suspense>
                 </PageContent>

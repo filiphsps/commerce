@@ -99,5 +99,9 @@
         "minimumChangeThreshold": 0,
         "showDetails": false,
         "buildOutputDirectory": "apps/web/.next"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-darwin-arm64": "4.9.1",
+        "@rollup/rollup-linux-x64-gnu": "4.9.1"
     }
 }

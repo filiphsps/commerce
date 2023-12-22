@@ -10,6 +10,7 @@ import Gallery from '@/components/Gallery';
 import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
+import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { InfoLines } from '@/components/products/info-lines';
 import { Content } from '@/components/typography/content';
@@ -30,6 +31,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
 import { ProductContent, ProductPricing } from './product-content';
+import { ImportantProductDetails, ProductDetails } from './product-details';
 
 export const dynamicParams = true;
 
@@ -214,7 +216,10 @@ export default async function ProductPage({
                             <>
                                 <div className={styles.contentDivider} />
 
-                                <Suspense fallback={<PrismicPage.skeleton page={page as any} />}>
+                                <Suspense
+                                    key={`${shop.id}.products.${handle}.content`}
+                                    fallback={<PrismicPage.skeleton page={page as any} />}
+                                >
                                     <PrismicPage
                                         shop={shop}
                                         locale={locale}
@@ -226,8 +231,18 @@ export default async function ProductPage({
                                 </Suspense>
                             </>
                         ) : null}
+
+                        <Suspense>
+                            <ImportantProductDetails data={product} />
+                        </Suspense>
                     </div>
                 </SplitView>
+
+                <PageContent primary={true}>
+                    <Suspense>
+                        <ProductDetails data={product} />
+                    </Suspense>
+                </PageContent>
 
                 <ProductJsonLd
                     useAppDir={true}

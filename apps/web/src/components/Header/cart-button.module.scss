@@ -9,17 +9,21 @@
     gap: 0;
     justify-content: center;
     align-items: center;
+
     height: calc(100% - var(--block-padding) * 2);
     max-height: 3.75rem;
     padding: var(--block-padding-small) 0;
+
+    background-color: transparent;
+
     font-size: 2.25rem;
     font-weight: 400;
     line-height: 1;
     text-align: center;
 
     &,
-    svg {
-        transition: 250ms ease-in-out all;
+    & svg {
+        transition: $animation-duration ease-in-out;
     }
 
     .icon {
@@ -57,9 +61,11 @@
     &[data-items]:not([data-items='0'], :disabled) {
         gap: calc(var(--block-spacer-small) / 2);
         padding: var(--block-padding-small) calc(var(--block-padding) * 1.25);
-        background-color: var(--accent-primary);
+        background-color: var(--color-accent-primary);
         color: var(--accent-primary-text);
         border-radius: 5rem;
+
+        transition: $animation-duration ease-in-out;
 
         @media (min-width: $breakpoint-mobile) {
             padding: var(--block-padding-small) var(--block-padding);
