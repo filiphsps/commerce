@@ -29,7 +29,7 @@ const Title = ({ slice }: TitleProps): JSX.Element => {
     );
 };
 
-Title.skeleton = ({ slice }: { slice: Content.TitleSlice }) => <Title {...(slice as any)} />;
+Title.skeleton = ({ slice }: { slice: Content.TitleSlice }) => <Title {...({ slice } as any)} />;
 
 Title.displayName = 'Nordcom.Slices.Collection';
 export default Title;
