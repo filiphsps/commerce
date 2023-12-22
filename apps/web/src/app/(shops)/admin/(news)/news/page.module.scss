@@ -2,7 +2,6 @@
     .heading {
         overflow: hidden;
         display: flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         gap: calc(var(--layout-block-padding) / 2);
         width: 100%;
@@ -33,6 +32,7 @@
             }
 
             &:is(a) {
+                -webkit-user-select: none;
                 user-select: none;
 
                 &,
@@ -71,6 +71,7 @@
             h3,
             p {
                 white-space: pre-wrap;
+                -webkit-hyphens: auto;
                 hyphens: auto;
                 line-height: normal;
             }

@@ -1,0 +1,20 @@
+{
+    "extends": ["development"],
+    "browserslist": ["defaults", "not ie 11", "not ie <= 10", "not and_ff <= 119", "not firefox <= 121"],
+    "hints": {
+        "compat-api/css": [
+            "default",
+            {
+                "ignore": [
+                    "font-smooth",
+                    "-webkit-overflow-scrolling",
+                    "text-size-adjust",
+                    "overscroll-behavior",
+                    "scrollbar-width",
+                    "scrollbar-color",
+                    "text-underline-position"
+                ]
+            }
+        ]
+    }
+}

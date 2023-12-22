@@ -110,7 +110,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
-        console.log(`Redirecting "${req.nextUrl.href}" -> "${newUrl.href}"`);
         return NextResponse.redirect(newUrl, { status: 302 });
     }
 

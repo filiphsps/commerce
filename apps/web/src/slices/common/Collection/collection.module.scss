@@ -2,7 +2,6 @@
 
 .container {
     display: flex;
-    -ms-flex-direction: column;
     flex-direction: column;
     gap: var(--block-spacer-large);
 
@@ -15,7 +14,6 @@
 
     .header {
         display: flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;

@@ -1,7 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-/* c8 ignore start */
 export const unknown = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
 
@@ -23,4 +22,3 @@ export const unknown = async (req: NextRequest): Promise<NextResponse> => {
     const target = `/admin/errors/unknown-storefront/${newUrl.search}`;
     return NextResponse.rewrite(new URL(target, req.url), { status: 404 });
 };
-/* c8 ignore stop */

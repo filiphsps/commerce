@@ -47,6 +47,7 @@
         width: 100%;
 
         border-radius: var(--block-border-radius-small);
+        -webkit-user-select: none;
         user-select: none;
 
         background-color: var(--product-card-color-image-background, var(--color-bright));
@@ -90,6 +91,7 @@
         height: 100%;
         font-size: 2.25rem;
         line-height: 1.05;
+        -webkit-hyphens: auto;
         hyphens: auto;
 
         @media (min-width: $breakpoint-mobile) {
@@ -99,6 +101,7 @@
         .title {
             font-size: inherit;
             font-weight: 650;
+            -webkit-hyphens: auto;
             hyphens: auto;
         }
 
@@ -106,6 +109,7 @@
             font-weight: 500;
             font-size: 0.75em;
             line-height: 1;
+            -webkit-hyphens: auto;
             hyphens: auto;
         }
     }
@@ -164,6 +168,7 @@
     }
 
     .quantity {
+        overflow: hidden;
         overflow: clip;
         grid-area: quantity;
         display: inline-grid;
@@ -171,7 +176,7 @@
         grid-template-rows: 3.25rem;
         align-items: center;
         justify-content: center;
-        justify-self: end;
+        justify-self: flex-end;
         flex-wrap: nowrap;
 
         height: 3.25rem;
@@ -190,6 +195,7 @@
             $animation-duration ease-in-out color,
             $animation-duration ease-in-out background-color,
             $animation-duration ease-in-out border-radius;
+        -webkit-user-select: none;
         user-select: none;
 
         & > *:is([data-quantity-decrease], [data-quantity-increase]) {
@@ -197,7 +203,6 @@
 
             width: 3rem;
             height: 3.25rem;
-            padding: 0 0.35rem 0 0;
 
             cursor: pointer;
             transition:
@@ -224,11 +229,6 @@
                 background-color: transparent;
                 pointer-events: none;
             }
-        }
-
-        [data-quantity-decrease] {
-            // Hack: Padding bottom shouldn't be here.
-            padding: 0 0 0.3rem 0.35rem;
         }
 
         [data-quantity-input] {

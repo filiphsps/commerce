@@ -1,17 +1,23 @@
 @import '_globals.scss';
 
 .container {
+    overflow: hidden;
     overflow: clip;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+
     height: 100%;
+
     border: var(--block-border-width) solid var(--color-block);
+
     border-radius: var(--block-border-radius);
     transition: 150ms ease-in-out border-color;
+    -webkit-user-select: none;
+    user-select: none;
+
     text-transform: uppercase;
     font-weight: 600;
-    user-select: none;
 
     @media (max-width: $breakpoint-mobile) {
         margin-bottom: var(--block-spacer-large);
@@ -28,6 +34,7 @@
         align-items: center;
         appearance: none;
         height: 100%;
+        max-height: 100%;
         min-height: calc(5rem - var(--block-border-width) * 2);
         font-size: 1.75rem;
         font-variant: common-ligatures tabular-nums slashed-zero;
@@ -41,6 +48,7 @@
     .button {
         height: 100%;
         width: 5rem;
+
         line-height: 1;
         font-weight: 400;
         font-size: 2.5rem;
@@ -49,7 +57,7 @@
             font-size: 2rem;
         }
 
-        &:is(:not(:disabled)) {
+        &:is(:hover, :active):not(:disabled) {
             cursor: pointer;
         }
 
@@ -59,16 +67,36 @@
             background-color: var(--accent-primary-light);
         }
 
-        &:is(:disabled) {
-            color: var(--color-block);
-
-            cursor: not-allowed;
-        }
-
         @media (pointer: fine) {
             &:is(:hover):not(:disabled, :active) {
                 background-color: var(--color-block);
             }
+        }
+    }
+
+    .button,
+    .input {
+        -webkit-appearance: none;
+        appearance: none;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        border: none;
+        outline: none;
+
+        svg {
+            height: 100%;
+
+            font-size: 0.75em;
+            stroke-width: 1.25;
+        }
+
+        &:is(:disabled) {
+            color: var(--color-block);
+
+            cursor: progress;
         }
     }
 

@@ -100,7 +100,7 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
                 </p>
             </>
         );
-    }, [selectedVariant]);
+    }, [selectedVariant, quantity]);
 
     let label: ReactNode = t('add-to-cart');
     if (animation) {

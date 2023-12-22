@@ -1,8 +1,6 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { Page } from '@/components/layout/page';
-import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -84,32 +82,29 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const i18n = await getDictionary(locale);
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <CartContent
-                        shop={shop}
-                        locale={locale}
-                        header={
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--block-spacer-small)' }}>
-                                <Heading title={page?.title} subtitle={page?.description} />
-                            </div>
-                        }
-                        slices={
-                            page ? (
-                                <PrismicPage
-                                    shop={shop}
-                                    locale={locale}
-                                    page={page}
-                                    i18n={i18n}
-                                    handle={'cart'}
-                                    type={'custom_page'}
-                                />
-                            ) : null
-                        }
-                        i18n={i18n}
-                    />
-                </PageContent>
-            </Page>
+            <CartContent
+                shop={shop}
+                locale={locale}
+                header={
+                    <>
+                        <Heading title={page?.title} subtitle={page?.description} />
+                        <hr />
+                    </>
+                }
+                slices={
+                    page ? (
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            page={page}
+                            i18n={i18n}
+                            handle={'cart'}
+                            type={'custom_page'}
+                        />
+                    ) : null
+                }
+                i18n={i18n}
+            />
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

@@ -1,5 +1,3 @@
-@import 'the-new-css-reset';
-
 @import './globals.scss';
 //@use '_globals.scss' as *;
 
@@ -39,33 +37,14 @@
     --accent-secondary: #118ab2; // Gets replaced by the brand secondary color in the layout.
 }
 
-html,
-body {
-    width: 100%;
-    max-width: 100vw;
-    padding: 0;
-    margin: 0;
-
-    font-size: 0.55rem; // FIXME: Refactor all of the styling so we can use '16px' as the base font size.
-    @media (min-width: 950px) {
-        font-size: 0.6rem;
-    }
-
+html {
     font-family: var(--font-primary, var(--fallback-font));
 
-    color: var(--color-foreground, var(--color-dark));
-    background: var(--color-background, var(--color-bright));
-
-    -webkit-overflow-scrolling: touch;
-
-    // Deal with font rendering
-    -moz-osx-font-smoothing: auto;
-    -webkit-font-smoothing: subpixel-antialiased;
-    font-smooth: always;
-    font-optical-sizing: auto;
-    font-size-adjust: ex-height ch-width from-font;
-    text-rendering: optimizeLegibility;
-    text-size-adjust: auto;
+    // FIXME: Refactor all of the styling so we can use '16px' as the base font size.
+    font-size: 0.55rem;
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 0.6rem;
+    }
 
     &:root {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
@@ -94,7 +73,7 @@ body {
         --block-spacer-large: 1.5rem;
         --block-spacer-huge: 2rem;
 
-        @media (max-width: 950px) {
+        @media (max-width: $breakpoint-mobile) {
             --block-border-width: 0.3rem;
 
             --block-padding: 1rem;
@@ -106,6 +85,25 @@ body {
             --block-spacer-large: 1rem;
         }
     }
+}
+
+body {
+    width: 100%;
+    max-width: 100vw;
+
+    font-size: inherit;
+
+    -webkit-overflow-scrolling: touch;
+
+    // Deal with font rendering
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
+    font-smooth: always;
+    font-optical-sizing: auto;
+    font-size-adjust: ex-height ch-width from-font;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: auto;
+    text-size-adjust: auto;
 
     ol li:is([data-sonner-toaster], .toast-notification):is([data-styled='true'], [data-styled='false']) {
         padding: var(--block-padding-large) calc(var(--block-padding-large));
@@ -129,6 +127,15 @@ body {
             width: 2rem;
         }
     }
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+
+    color: var(--color-foreground, var(--color-dark));
+    background: var(--color-background, var(--color-bright));
 }
 
 a:not(:disabled) {
@@ -163,10 +170,13 @@ input[type='search']:is(
     appearance: none;
 }
 
-@media (max-width: 950px) {
+@media (max-width: $breakpoint-mobile) {
     body[data-menu-open='true'] {
+        overflow: visible;
+
         height: 100vh;
-        overflow: hidden;
+        margin-top: 7.25rem;
+
         overscroll-behavior: none none;
     }
 }
@@ -190,4 +200,35 @@ svg .primary {
     stroke: inherit !important;
     color: inherit !important;
     fill: inherit !important;
+}
+
+a,
+button {
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &:is(:hover, :active) {
+            cursor: pointer;
+        }
+    }
+}
+
+hr {
+    background: var(--color-block-dark);
+    height: calc(var(--block-border-width) / 1.25);
+}
+
+[data-skeleton] {
+    background: var(--color-block);
+    background-image: linear-gradient(
+        to right,
+        var(--color-block) 0%,
+        var(--color-block-light) 20%,
+        var(--color-block) 40%,
+        var(--color-block) 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 800px 104px;
+
+    animation: shimmer 1s infinite linear forwards;
 }

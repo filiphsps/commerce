@@ -1,7 +1,7 @@
 @import '_globals.scss';
 
 .container {
-    min-height: 100vh;
+    min-height: calc(100vh - 4rem);
 
     font-size: 16px;
 }

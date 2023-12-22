@@ -6,6 +6,9 @@
 }
 
 .container {
+    position: sticky;
+    top: 8rem;
+
     .breakdowns {
         display: flex;
         flex-direction: column;
@@ -54,6 +57,10 @@
                         border-radius: var(--block-border-radius-tiny);
                         pointer-events: none;
                     }
+                }
+
+                &.shipping .money::before {
+                    content: '';
                 }
             }
         }

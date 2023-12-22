@@ -5,6 +5,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import type { KeyboardEventHandler } from 'react';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
+import { CgMathMinus, CgMathPlus } from 'react-icons/cg';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
@@ -28,9 +29,19 @@ export type QuantitySelectorProps = {
     i18n: LocaleDictionary;
     update: (quantity: number) => void;
     value?: number;
+    disabled?: boolean;
+    allowDecreaseToZero?: boolean;
 } & HTMLProps<HTMLDivElement>;
 
-const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...props }: QuantitySelectorProps) => {
+const QuantitySelector = ({
+    className,
+    i18n,
+    value: quantity = 0,
+    update,
+    disabled,
+    allowDecreaseToZero,
+    ...props
+}: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
 
@@ -38,9 +49,10 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
         (value: string | number) => {
             if (typeof value === 'string' && value === '') return;
             else if (value === quantity) return;
+
             update(typeof value === 'string' ? Number.parseInt(value) : value);
         },
-        [update]
+        [update, quantity]
     );
 
     const onKeyDown = useCallback(
@@ -53,14 +65,18 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
                 return;
             }
         },
-        [updateQuantity]
+        [updateQuantity, quantityValue]
     );
 
     const decrease = useCallback(() => {
-        if (quantity <= 1) return;
+        if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) return;
 
         updateQuantity(quantity - 1);
-    }, [updateQuantity]);
+    }, [updateQuantity, quantity]);
+
+    const increase = useCallback(() => {
+        updateQuantity(quantity + 1);
+    }, [updateQuantity, quantity]);
 
     useEffect(() => {
         if (quantity.toString() === quantityValue) return;
@@ -72,12 +88,12 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
             <button
                 type="button"
                 className={`${styles.button} ${styles.add}`}
-                disabled={quantity <= 1}
+                disabled={disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1)}
                 onClick={decrease}
                 title="Decrease quantity" // TODO: i18n.
                 data-quantity-decrease
             >
-                -
+                <CgMathMinus />
             </button>
             <input
                 type="number"
@@ -86,10 +102,15 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
                 step={1}
                 pattern="[0-9]"
                 className={styles.input}
+                disabled={disabled}
                 value={quantityValue}
                 placeholder={t('quantity')}
                 onBlur={(_) => {
-                    if (!quantityValue) updateQuantity('1');
+                    if (!quantityValue) {
+                        updateQuantity(allowDecreaseToZero ? '0' : '1');
+                        return;
+                    }
+
                     updateQuantity(quantityValue);
                 }}
                 onKeyDown={onKeyDown}
@@ -105,11 +126,12 @@ const QuantitySelector = ({ className, i18n, value: quantity = 0, update, ...pro
             <button
                 type="button"
                 className={`${styles.button} ${styles.remove}`}
-                onClick={() => updateQuantity(quantity + 1)}
+                disabled={disabled}
+                onClick={increase}
                 title="Increase quantity" // TODO: i18n.
                 data-quantity-increase
             >
-                +
+                <CgMathPlus />
             </button>
         </section>
     );
