@@ -56,6 +56,8 @@ body {
     color: var(--color-foreground, var(--color-dark));
     background: var(--color-background, var(--color-bright));
 
+    -webkit-overflow-scrolling: touch;
+
     // Deal with font rendering
     -moz-osx-font-smoothing: auto;
     -webkit-font-smoothing: subpixel-antialiased;

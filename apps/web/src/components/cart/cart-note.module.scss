@@ -1,0 +1,17 @@
+.container {
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: var(--block-spacer);
+
+    .input {
+        height: 8rem;
+        border-width: 0;
+        padding: var(--block-padding);
+
+        text-transform: initial;
+    }
+}

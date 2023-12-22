@@ -7,7 +7,7 @@
     gap: var(--block-spacer);
     width: 100%;
 
-    @media (min-width: $breakpoint-tablet-medium) {
+    @media (min-width: $breakpoint-mobile) {
         grid-template-columns: 1fr 1fr;
     }
 

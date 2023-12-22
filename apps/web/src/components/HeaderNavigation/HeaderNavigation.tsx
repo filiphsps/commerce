@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
-const Navigation = styled.div`
+const Navigation = styled.nav`
     overflow-y: scroll;
     overscroll-behavior-y: auto;
     display: flex;

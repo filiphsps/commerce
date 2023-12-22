@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 
 import { CartCoupons } from '@/components/CartCoupons';
-import { CartNote } from '@/components/CartNote';
 import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import { Button } from '@/components/actionable/button';
+import { CartNote } from '@/components/cart/cart-note';
 import styles from '@/components/cart/cart-summary.module.scss';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
@@ -37,16 +37,19 @@ const SmallBlock = styled(Block)`
 `;
 
 const Notice = styled(Label)`
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: normal;
+    font-size: 1.45rem;
+    font-weight: 400;
+    line-height: 1.25;
     text-transform: initial;
 
-    .Lock {
+    .icon {
         display: inline-block;
-        font-size: 1.25rem;
-        line-height: 0;
-        margin: 0 0.25rem 0.15rem 0;
+        margin-right: 0.25rem;
+
+        font-size: 1rem;
+        line-height: 1;
+        font-weight: 700;
+        stroke-width: 3;
     }
 
     a {
@@ -63,7 +66,7 @@ const Notice = styled(Label)`
 `;
 const Action = styled.div`
     font-size: 1.25rem;
-    line-height: 1.5rem;
+    line-height: 1.25;
     font-weight: 600;
     cursor: pointer;
     opacity: 0.75;
@@ -128,7 +131,7 @@ const FreeShipping = styled(FreeShippingProgress)`
 const BreakdownItemMoney = styled.div`
     font-weight: 500;
     font-size: 1.5rem;
-    line-height: 1.5rem;
+    line-height: 1.25;
     align-self: start;
 `;
 const BreakdownItem = styled.div`
@@ -232,9 +235,9 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
             <Block>
                 <Header>
                     <Label>{t('order-summary')}</Label>
-                    <Label>
+                    <div>
                         {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
-                    </Label>
+                    </div>
                 </Header>
 
                 <CartCoupons />
@@ -357,7 +360,7 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
 
                     <BreakdownItem style={{ marginTop: 'var(--block-spacer-small)', display: 'flex' }}>
                         <Notice>
-                            <FiLock className="Lock" />
+                            <FiLock className="icon" />
                             Safely complete your purchase through our secure and
                             <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
                                 {' '}
