@@ -1,6 +1,7 @@
 @import '_globals.scss';
 
 .container {
+    overflow: clip;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;

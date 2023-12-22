@@ -19,7 +19,7 @@
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
 
     border-radius: var(--block-border-radius);
-    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+    box-shadow: 0 0 1rem -0.35rem var(--color-block-shadow);
     scroll-snap-align: center;
 
     //contain-intrinsic-size: var(--component-product-card-width) 40rem;
