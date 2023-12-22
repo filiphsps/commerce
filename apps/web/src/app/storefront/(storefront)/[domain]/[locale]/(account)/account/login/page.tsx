@@ -1,7 +1,6 @@
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { Error } from '@/utils/errors';
@@ -67,15 +66,13 @@ export default async function LoginAccountPage({
         const shop = await ShopApi({ domain, locale });
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <PageContent>
-                        <Heading title="Login" subtitle={null} />
+            <>
+                <PageContent>
+                    <Heading title="Login" subtitle={null} />
 
-                        <LoginContent shop={shop} locale={locale} />
-                    </PageContent>
+                    <LoginContent shop={shop} locale={locale} />
                 </PageContent>
-            </Page>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

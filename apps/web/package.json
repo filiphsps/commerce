@@ -11,10 +11,10 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "predev": "prisma generate --schema=../../prisma/schema.prisma",
+        "predev": "prisma generate --schema=../../prisma/schema.prisma > /dev/null",
         "dev": "next dev",
         "dev:turbo": "next dev --turbo",
-        "prebuild": "prisma generate --schema=../../prisma/schema.prisma",
+        "prebuild": "prisma generate --schema=../../prisma/schema.prisma > /dev/null",
         "build": "next build",
         "lint": "next lint",
         "fix:lint": "next lint --fix",

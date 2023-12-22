@@ -2,7 +2,6 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
@@ -102,39 +101,37 @@ export default async function CollectionPage({
         const i18n = await getDictionary(locale);
 
         return (
-            <Page className={styles.container}>
-                <PageContent primary={true}>
-                    {!page || page.enable_header === undefined || page.enable_header ? (
-                        <div>
-                            <Heading title={collection.title} subtitle={null} />
-                        </div>
-                    ) : null}
+            <PageContent primary={true} className={styles.container}>
+                {!page || page.enable_header === undefined || page.enable_header ? (
+                    <div>
+                        <Heading title={collection.title} subtitle={null} />
+                    </div>
+                ) : null}
 
-                    {!page || page.enable_collection === undefined || page.enable_collection ? (
-                        <Suspense fallback={<CollectionBlock.skeleton />}>
-                            <CollectionBlock
-                                shop={shop}
-                                locale={locale}
-                                i18n={i18n}
-                                handle={handle}
-                                // TODO: Pagination.
-                                limit={250}
-                            />
-                        </Suspense>
-                    ) : null}
-
-                    {page?.slices && page?.slices.length > 0 ? (
-                        <PrismicPage
+                {!page || page.enable_collection === undefined || page.enable_collection ? (
+                    <Suspense fallback={<CollectionBlock.skeleton />}>
+                        <CollectionBlock
                             shop={shop}
                             locale={locale}
-                            page={page}
                             i18n={i18n}
                             handle={handle}
-                            type={'collection_page'}
+                            // TODO: Pagination.
+                            limit={250}
                         />
-                    ) : null}
-                </PageContent>
-            </Page>
+                    </Suspense>
+                ) : null}
+
+                {page?.slices && page?.slices.length > 0 ? (
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        page={page}
+                        i18n={i18n}
+                        handle={handle}
+                        type={'collection_page'}
+                    />
+                ) : null}
+            </PageContent>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

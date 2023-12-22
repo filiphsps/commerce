@@ -3,10 +3,11 @@
 .container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-auto-rows: auto;
+    grid-auto-rows: 1fr;
     gap: var(--block-spacer-small);
 
     width: 100%;
+    height: 100%;
 
     @media (min-width: $breakpoint-tablet-medium) {
         grid-template-columns: 1fr 1fr;

@@ -26,8 +26,8 @@
     --color-green-rgb: 27, 111, 27;
     --color-green-light: #e1faea;
 
-    --color-block-success: #cce2cb;
-    --color-block-success-dark: #7c9c7c;
+    --color-block-success: #95c394;
+    --color-block-success-dark: #658a65;
     --color-block-success-text: var(--color-dark);
     --color-block-info: #6dc0d5;
     --color-block-info-dark: #1c5d99;
@@ -202,14 +202,11 @@ svg .primary {
     fill: inherit !important;
 }
 
-a,
-button {
-    &:not(:disabled) {
-        cursor: pointer;
+:is(a, button):not(:disabled) {
+    cursor: pointer;
 
-        &:is(:hover, :active) {
-            cursor: pointer;
-        }
+    &:is(:hover, :active) {
+        cursor: pointer;
     }
 }
 
@@ -219,16 +216,7 @@ hr {
 }
 
 [data-skeleton] {
-    background: var(--color-block);
-    background-image: linear-gradient(
-        to right,
-        var(--color-block) 0%,
-        var(--color-block-light) 20%,
-        var(--color-block) 40%,
-        var(--color-block) 100%
-    );
-    background-repeat: no-repeat;
-    background-size: 800px 104px;
-
-    animation: shimmer 1s infinite linear forwards;
+    animation: shimmer 2s linear infinite;
+    background: linear-gradient(to right, var(--color-bright) 0%, var(--color-block) 25%, var(--color-bright) 50%);
+    background-size: 200% 100%;
 }

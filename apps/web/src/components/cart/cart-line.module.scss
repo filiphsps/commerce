@@ -4,12 +4,13 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: 1fr;
     grid-template-areas: 'image details quantity';
+    grid-template-columns: auto 1fr auto;
     gap: var(--block-spacer);
 
     padding: calc(var(--block-padding) / 1.25);
+    height: 100%;
+    width: 100%;
 
     background-color: var(--color-block);
 
@@ -71,7 +72,7 @@
 
         object-fit: contain;
         object-position: center;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1;
         border-radius: var(--block-border-radius);
     }
 
@@ -82,6 +83,8 @@
         justify-content: center;
         align-items: flex-start;
         gap: var(--block-spacer);
+        flex-grow: 1;
+        flex-wrap: nowrap;
 
         height: 100%;
 

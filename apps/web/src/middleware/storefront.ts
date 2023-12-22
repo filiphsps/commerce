@@ -10,50 +10,35 @@ import { NextResponse } from 'next/server';
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
+const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
-    let newUrl = req.nextUrl.clone();
-
-    // Prevent direct access.
-    if (newUrl.pathname.startsWith('/storefront')) {
-        return new NextResponse(null, { status: 404 });
-    }
-
-    const searchParams = newUrl.searchParams.toString();
     const hostname = await getHostname(req);
     const shop = await ShopApi({ domain: hostname });
+    let newUrl = req.nextUrl.clone();
+    const params = newUrl.searchParams.toString();
+    const search = params.length > 0 ? `?${params}` : '';
 
     // API.
-    if (newUrl.pathname.includes('/api/')) {
-        // Do not mess with status or headers here.
-        return NextResponse.rewrite(
-            new URL(`/storefront/${shop.domains.primary}${newUrl.pathname}${newUrl.search}`, req.url)
-        );
-    }
-
-    // Check if we're dealing with a file, or other specially-handled resource.
-    if (newUrl.pathname.match(FILE_TEST)) {
+    if (
+        newUrl.pathname.match(FILE_TEST) ||
+        newUrl.pathname.includes('/api') ||
+        newUrl.pathname.includes('/slice-simulator')
+    ) {
         if (newUrl.pathname.startsWith('/assets/')) {
             return NextResponse.next();
         }
 
-        let target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${
-            searchParams.length > 0 ? `?${searchParams}` : ''
-        }`;
-        return NextResponse.rewrite(new URL(target, req.url), {
-            status: 200
-        });
+        // Do not mess with status or headers here.
+        let target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${search}`;
+        return NextResponse.rewrite(new URL(target, req.url));
 
         // TODO: Handle Handle tenant-specific files/assets.
     }
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (
-        !newUrl.pathname.match(LOCALE_TEST) &&
-        !newUrl.pathname.includes('/api/') &&
-        !newUrl.pathname.includes('slice-simulator')
-    ) {
+    if (!newUrl.pathname.match(LOCALE_TEST)) {
         let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
@@ -92,8 +77,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // be `/en-US/about/`. This can occur for numerous reasons; for example
     // invalid back-links, a user manually messing up or another thousands
     // of possible reasons.
-    const localeRegex = /([a-zA-Z]{2}-[a-zA-Z]{2})\//gi;
-    const trailingLocales = newUrl.pathname.match(localeRegex);
+    const trailingLocales = newUrl.pathname.match(LOCALE_SLASH_TEST);
     if (trailingLocales && trailingLocales.length > 1) {
         for (const locale of trailingLocales.slice(1)) {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
@@ -103,6 +87,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         if (newUrl.pathname !== req.nextUrl.pathname) {
             console.warn(`Fixed locale duplication "${req.nextUrl.href}" -> "${newUrl.href}"`);
         }
+    }
+
+    // Make sure the path is lowercase, except for the locale of course.
+    const withoutLocale = newUrl.pathname.split('/').slice(2).join('/');
+    if (withoutLocale.match(/[A-Z]/g)) {
+        newUrl.pathname = `/${newUrl.pathname.split('/')[1]}/${withoutLocale.toLowerCase()}/`;
     }
 
     // Validate the url against our common issues.
@@ -118,8 +108,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${
-        searchParams.length > 0 ? `?${searchParams}` : ''
-    }`;
+    const target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };

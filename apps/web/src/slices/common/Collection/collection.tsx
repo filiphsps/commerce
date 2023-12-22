@@ -25,26 +25,30 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
     if (!slice || !slice.primary || asText(slice.primary.title)?.length <= 0) return null;
 
     return (
-        <div
-            className={`${styles.header} ${
-                (slice.primary.alignment === 'left' && styles['align-left']) ||
-                (slice.primary.alignment === 'right' && styles['align-right']) ||
-                styles['align-center']
-            }`}
-        >
-            <Link
+        <>
+            <Title
+                as={Link}
                 href={`/collections/${slice.primary.handle!}`}
-                title={`View all products in "${asText(slice.primary.title)}"`} // TODO: i18n.
-                prefetch={false}
+                // TODO: i18n.
+                title={`View all products in "${asText(slice.primary.title)}"`}
+                className={`${styles.title} ${
+                    (slice.primary.alignment === 'left' && styles['align-left']) ||
+                    (slice.primary.alignment === 'right' && styles['align-right']) ||
+                    styles['align-center']
+                }`}
             >
-                <Title className={styles.title} as={'div'}>
-                    <PrismicText data={slice.primary.title} />
-                </Title>
-            </Link>
-            <Content className={styles.body}>
+                <PrismicText data={slice.primary.title} />
+            </Title>
+            <Content
+                className={`${styles.body} ${
+                    (slice.primary.alignment === 'left' && styles['align-left']) ||
+                    (slice.primary.alignment === 'right' && styles['align-right']) ||
+                    styles['align-center']
+                }`}
+            >
                 <PrismicText data={slice.primary.body} />
             </Content>
-        </div>
+        </>
     );
 };
 

@@ -1,10 +1,15 @@
 import { router } from '@/middleware/router';
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export const runtime = 'experimental-edge';
 export const config = {
-    // TODO: [\\w-]+\\.\\w+
-    matcher: ['/((?!api/|_next|_static|_vercel|instrumentation|highlight-events).*)'],
+    matcher: [
+        '/((?!_next|_static|_vercel|instrumentation|highlight-events|[\\w-]+\\.\\w+).*)',
+        // Handle assets we generate dynamically per-tenant.
+        '/:path*/favicon.png',
+        '/:path*/sitemap:type*.xml',
+        '/:path*/robots.txt'
+    ],
     missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' }
@@ -12,5 +17,11 @@ export const config = {
 };
 
 export default async function middleware(req: NextRequest) {
+    const path = req.nextUrl.pathname;
+    // Prevent direct access.
+    if (path.startsWith('/admin') || path.startsWith('/storefront')) {
+        return new NextResponse(null, { status: 404 });
+    }
+
     return router(req);
 }

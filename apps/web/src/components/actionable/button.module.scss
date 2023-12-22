@@ -29,7 +29,8 @@
         $animation-duration ease-in-out background-color,
         $animation-duration ease-in-out border-color,
         $animation-duration ease-in-out color,
-        $animation-duration ease-in-out font-weight;
+        $animation-duration ease-in-out font-weight,
+        $animation-duration ease-in-out opacity;
 
     -webkit-user-select: none;
     user-select: none;
@@ -47,7 +48,7 @@
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
         background-color: var(--color-block-success);
-        border-color: var(--color-block-success-dark);
+        border-color: var(--color-block-success);
         color: var(--color-block-success-text);
         font-weight: 600;
     }
@@ -66,9 +67,16 @@
     }
 
     &:is(:disabled):not([data-success]) {
-        border-color: var(--color-block-dark);
-        background-color: var(--color-block-dark);
-        color: var(--color-block-black);
+        &:not([data-ready='false']) {
+            border-color: var(--color-block-dark);
+            background-color: var(--color-block-dark);
+            color: var(--color-block-black);
+        }
+        &:is([data-ready='false']) {
+            background-color: var(--color-accent-primary-dark);
+            opacity: 0.5;
+        }
+
         box-shadow: none;
 
         cursor: not-allowed;

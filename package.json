@@ -15,7 +15,7 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "prepare": "husky install",
-        "postinstall": "prisma generate",
+        "postinstall": "prisma generate > /dev/null",
         "start": "turbo run start",
         "dev": "turbo run dev",
         "build:vercel": "prisma migrate deploy",

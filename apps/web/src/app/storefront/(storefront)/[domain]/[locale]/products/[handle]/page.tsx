@@ -7,7 +7,6 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import Gallery from '@/components/Gallery';
-import { Page } from '@/components/layout/page';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
@@ -158,7 +157,7 @@ export default async function ProductPage({
         const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
 
         return (
-            <Page className={styles.container}>
+            <>
                 <SplitView
                     primaryDesktopWidth={0.46}
                     primaryClassName={styles.headingPrimary}
@@ -350,7 +349,7 @@ export default async function ProductPage({
                         }
                     ]}
                 />
-            </Page>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

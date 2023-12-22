@@ -3,7 +3,6 @@ import 'server-only';
 import type { Shop } from '@/api/shop';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -33,9 +32,7 @@ const PageProvider = ({ shop, store, locale, i18n, children }: PageProviderProps
 PageProvider.skeleton = () => (
     <>
         <Header.skeleton />
-        <Page>
-            <PageContent />
-        </Page>
+        <PageContent />
         <Footer.skeleton />
     </>
 );

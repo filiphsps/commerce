@@ -5,11 +5,6 @@ import { NextResponse } from 'next/server';
 export const admin = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
 
-    // Prevent direct access.
-    if (newUrl.pathname.startsWith('/admin')) {
-        return new NextResponse(null, { status: 404 });
-    }
-
     // Check if we're dealing with a file or a route.
     if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi)) {
         const target = `/admin${newUrl.pathname}${newUrl.search}`;

@@ -2,7 +2,6 @@ import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi, StoreApi } from '@/api/store';
-import { Page } from '@/components/layout/page';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { BuildConfig } from '@/utils/build-config';
@@ -130,7 +129,7 @@ export default async function ArticlePage({
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
-            <Page className={styles.container}>
+            <>
                 <div className={styles.header}>
                     <Heading title={article.title} subtitle={null} />
                 </div>
@@ -152,7 +151,7 @@ export default async function ArticlePage({
                 />
 
                 <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
-            </Page>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

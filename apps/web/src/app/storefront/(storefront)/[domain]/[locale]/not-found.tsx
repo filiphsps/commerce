@@ -1,5 +1,3 @@
-import { Page } from '@/components/layout/page';
-import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import type { Metadata } from 'next';
@@ -21,27 +19,25 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
     return (
-        <Page>
-            <PageContent primary={true}>
-                <Heading title="Page not found" subtitle="Error 404" />
+        <>
+            <Heading title="Page not found" subtitle="Error 404" />
 
-                <Content>
-                    <p>Sorry, we could not find the page you were looking for.</p>
-                    <p>
-                        Are you sure you typed the correct URL?
-                        <br />
-                        If you followed a link from another site,
-                        <br />
-                        please let them know one of their links are broken.
-                        <br />
-                        <br />
-                        Or if you think this is a mistake,
-                        <br />
-                        please reach out to our support.
-                    </p>
-                </Content>
-            </PageContent>
-        </Page>
+            <Content>
+                <p>Sorry, we could not find the page you were looking for.</p>
+                <p>
+                    Are you sure you typed the correct URL?
+                    <br />
+                    If you followed a link from another site,
+                    <br />
+                    please let them know one of their links are broken.
+                    <br />
+                    <br />
+                    Or if you think this is a mistake,
+                    <br />
+                    please reach out to our support.
+                </p>
+            </Content>
+        </>
     );
 }
 /* c8 ignore stop */

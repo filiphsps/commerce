@@ -1,13 +1,14 @@
-import type { CSSProperties, ElementType, HTMLProps, ReactNode } from 'react';
+import type { CSSProperties, ComponentProps, ElementType, HTMLProps, ReactNode } from 'react';
 
 import styles from '@/components/typography/heading.module.scss';
+import type { As } from '@nordcom/nordstar';
 
-export type TitleProps = {
+export type TitleProps<T extends As> = {
+    as?: As;
     children?: ReactNode;
-    as?: ElementType;
     bold?: boolean;
-} & HTMLProps<HTMLDivElement>;
-export const Title = ({ as, bold, className, ...props }: TitleProps) => {
+} & ComponentProps<T>;
+export const Title = <T extends As = ElementType<'h1'>>({ as, bold, className, ...props }: TitleProps<T>) => {
     const AsComponent = as || ('h1' as keyof JSX.IntrinsicElements);
     return <AsComponent {...props} className={`${styles.title} ${(bold && styles.bold) || ''} ${className || ''}`} />;
 };

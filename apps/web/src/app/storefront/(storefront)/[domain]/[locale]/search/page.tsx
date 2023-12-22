@@ -1,7 +1,6 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { Page } from '@/components/layout/page';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
@@ -84,26 +83,24 @@ export default async function SearchPage({ params: { domain, locale: localeData 
         const i18n = await getDictionary(locale);
 
         return (
-            <Page>
-                <PageContent primary={true}>
-                    <Heading title={page?.title} subtitle={page?.description} />
+            <PageContent primary={true}>
+                <Heading title={page?.title} subtitle={page?.description} />
 
-                    {page?.slices && page?.slices.length > 0 && (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'search'}
-                            type={'custom_page'}
-                        />
-                    )}
+                {page?.slices && page?.slices.length > 0 && (
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        page={page}
+                        i18n={i18n}
+                        handle={'search'}
+                        type={'custom_page'}
+                    />
+                )}
 
-                    <Suspense>
-                        <SearchContent shop={shop} locale={locale} />
-                    </Suspense>
-                </PageContent>
-            </Page>
+                <Suspense>
+                    <SearchContent shop={shop} locale={locale} />
+                </Suspense>
+            </PageContent>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
