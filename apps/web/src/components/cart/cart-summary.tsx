@@ -2,7 +2,6 @@ import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
 import styles from '@/components/cart/cart-summary.module.scss';
-import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import type { StoreModel } from '@/models/StoreModel';
@@ -54,12 +53,6 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
 
     return (
         <div className={styles.container}>
-            <section className={styles.section}>
-                <Suspense>
-                    <FreeShippingProgress i18n={i18n} />
-                </Suspense>
-            </section>
-
             <section className={styles.section}>
                 <header className={styles.header}>
                     <Label>{t('label-cart-note')}</Label>

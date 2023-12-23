@@ -98,7 +98,8 @@
         "typecheck",
         "Västra",
         "Vercel",
-        "webp"
+        "webp",
+        "Woohoo"
     ],
     "markdownlint.config": {
         "single-title": false,

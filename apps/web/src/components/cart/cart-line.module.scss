@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     grid-template-areas: 'image details quantity';
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr 8.5rem;
     gap: var(--block-spacer);
 
     padding: calc(var(--block-padding) / 1.25);
@@ -19,13 +19,14 @@
     border-radius: var(--block-border-radius);
 
     @media (min-width: $breakpoint-mobile) {
+        grid-template-columns: auto 1fr auto;
         gap: var(--block-spacer);
 
         padding: var(--block-padding);
     }
 
     .badges {
-        display: flex;
+        display: inline-flex;
         gap: calc(var(--block-spacer-small) / 1.5);
 
         .badge {
@@ -34,9 +35,10 @@
             align-items: center;
             flex-wrap: nowrap;
 
-            padding: calc(var(--block-padding-small) / 1.5) var(--block-padding-small);
+            padding: 0.25rem var(--block-padding-small);
+            transform: translateY(-0.25rem) translateX(var(--block-spacer-small));
 
-            font-size: 0.65em;
+            font-size: 0.55em;
             font-weight: 600;
             text-align: center;
 
@@ -54,6 +56,7 @@
 
             @media (min-width: $breakpoint-mobile) {
                 padding: calc(var(--block-padding-small) / 1.35) calc(var(--block-padding) / 1.5);
+                transform: none;
 
                 font-size: 0.6em;
             }
@@ -84,24 +87,29 @@
         align-items: flex-start;
         gap: var(--block-spacer);
         flex-grow: 1;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
 
         height: 100%;
+        width: 100%;
 
         font-size: 0.85em;
+
         @media (min-width: $breakpoint-mobile) {
             font-size: 0.9em;
+            flex-wrap: nowrap;
         }
 
         .title {
-            display: flex;
-            flex-direction: column;
             gap: calc(var(--block-spacer-small) / 1.75);
 
             font-size: 1.25em;
             font-weight: 650;
+            line-height: 1;
 
             @media (min-width: $breakpoint-mobile) {
+                display: flex;
+                flex-direction: column;
+
                 font-size: 1.25em;
             }
         }
@@ -111,11 +119,11 @@
             align-items: flex-end;
             justify-content: flex-end;
 
-            font-size: 0.9em;
+            font-size: 0.75em;
             line-height: 1;
 
             @media (min-width: $breakpoint-mobile) {
-                font-size: 1em;
+                font-size: 0.9em;
             }
 
             > div {
@@ -127,7 +135,7 @@
                 padding-bottom: 0;
 
                 s {
-                    display: block;
+                    display: none;
 
                     height: 1.1em;
 
@@ -138,6 +146,7 @@
                     }
 
                     @media (min-width: $breakpoint-mobile) {
+                        display: block;
                         height: 1.05em;
                     }
                 }
@@ -146,13 +155,14 @@
     }
 
     .quantity-actions {
+        overflow: hidden;
         grid-area: quantity;
         display: flex;
         justify-content: center;
         align-items: flex-end;
         flex-direction: column;
         gap: var(--block-spacer);
-        width: 8.5rem;
+        width: 100%;
 
         @media (min-width: $breakpoint-mobile) {
             flex-direction: row;
@@ -179,10 +189,7 @@
             button {
                 height: 100%;
                 min-height: 100%;
-            }
-
-            button {
-                width: 5rem;
+                width: 100%;
             }
 
             button:hover:not(:active) {

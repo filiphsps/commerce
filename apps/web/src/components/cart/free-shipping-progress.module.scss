@@ -1,17 +1,25 @@
+@import '_globals.scss';
+
 .container {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     gap: var(--block-spacer-small);
-    color: var(--color-dark);
+
+    padding: var(--block-padding-large);
+
+    color: var(--accent-secondary-text);
+    background-color: var(--color-accent-secondary-light);
+
     transition: 150ms ease-in-out;
+    border-radius: var(--block-border-radius);
 
     .progress {
         overflow: hidden;
         width: 100%;
-        height: var(--block-padding);
-        background: var(--color-bright);
-        border-radius: var(--block-border-radius);
+        height: var(--block-padding-large);
+        background: var(--color-block);
+        border-radius: var(--block-border-radius-large);
 
         .line {
             height: 100%;
@@ -25,9 +33,24 @@
 
     .label {
         text-transform: none;
+
+        font-size: 1em;
+        font-weight: 500;
+        line-height: 1.15;
+
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 1.15em;
+        }
     }
 
     &.success {
+        padding: var(--block-padding-large);
+
+        background-color: var(--color-green-light);
+        border: var(--block-border-width-large) solid var(--color-green);
+
+        border-radius: var(--block-border-radius);
+
         &,
         .label {
             color: var(--color-green);

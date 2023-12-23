@@ -2,6 +2,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 import { type Shop } from '@/api/shop';
 import { CartLines } from '@/components/cart/cart-lines';
+import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import type { StoreModel } from '@/models/StoreModel';
@@ -27,15 +28,21 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                     {header}
 
                     <Suspense>
+                        <FreeShippingProgress i18n={i18n} />
+                    </Suspense>
+
+                    <Suspense>
                         <CartLines i18n={i18n} />
+                    </Suspense>
+
+                    <Suspense>
+                        <Breadcrumbs shop={shop} />
                     </Suspense>
                 </div>
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
             <Suspense>{slices}</Suspense>
-
-            <Breadcrumbs shop={shop} />
         </PageContent>
     );
 }
