@@ -96,6 +96,7 @@ export default defineConfig({
                 '**/src/app/**/*favicon.png*',
                 '**/src/components/**/*-provider*.tsx',
                 '**/src/components/**/providers-registry.tsx',
+                '**/src/app/**/*-content.*',
 
                 // TODO: Remove these once we do some work on the admin dashboard.
                 '**/src/app/({admin,extra,news})/**/*.*'

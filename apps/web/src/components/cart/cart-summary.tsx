@@ -21,7 +21,7 @@ type CartSummaryProps = {
 };
 const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
-    const { totalQuantity, status, lines, cost, note } = useCart();
+    const { totalQuantity, status, lines, cost, note, discountCodes } = useCart();
     const [showNote, setShowNote] = useState(false);
     const loading = status !== 'idle';
 
@@ -153,11 +153,13 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                 </div>
             </section>
 
-            <section className={styles.section}>
-                <Suspense>
-                    <CartCoupons />
-                </Suspense>
-            </section>
+            {discountCodes && discountCodes.length > 0 ? (
+                <section className={styles.section}>
+                    <Suspense>
+                        <CartCoupons />
+                    </Suspense>
+                </section>
+            ) : null}
 
             <section className={`${styles.section} ${styles['section-actions']}`}>
                 <Button

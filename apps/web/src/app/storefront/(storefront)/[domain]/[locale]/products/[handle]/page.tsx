@@ -6,12 +6,12 @@ import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
-import Gallery from '@/components/Gallery';
 import SplitView from '@/components/layout/split-view';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { InfoLines } from '@/components/products/info-lines';
+import { ProductGallery } from '@/components/products/product-gallery';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -161,9 +161,9 @@ export default async function ProductPage({
                     primaryClassName={styles.headingPrimary}
                     asideDesktopWidth={0.54}
                     aside={
-                        <Gallery
+                        <ProductGallery
                             initialImageId={variant?.image?.id || product.images?.edges?.[0].node.id}
-                            images={product.images}
+                            images={product.images.edges.map((edge) => edge.node)}
                             className={styles.gallery}
                         />
                     }
