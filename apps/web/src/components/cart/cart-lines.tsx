@@ -3,44 +3,22 @@
 import { CartLine } from '@/components/cart/cart-line';
 import styles from '@/components/cart/cart-lines.module.scss';
 import { Label } from '@/components/typography/label';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { Suspense } from 'react';
-import styled from 'styled-components';
-
-const NoItems = styled.div`
-    display: flex;
-    flex-shrink: 1;
-    font-size: 1.25rem;
-    color: var(--color-dark-secondary);
-
-    & > div {
-        padding: var(--block-padding) var(--block-padding-large);
-        background: var(--color-block);
-        border-radius: var(--block-border-radius);
-        border: var(--block-border-width) solid var(--color-block-dark);
-    }
-`;
 
 type CartContentProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
 };
-export default function CartLines({ locale, i18n }: CartContentProps) {
+const CartLines = ({ i18n }: CartContentProps) => {
     const { status, lines } = useCart();
 
     const noItems = !lines || lines.length <= 0;
 
     if (['fetching', 'creating', 'uninitialized'].includes(status) && noItems) {
-        return <CartLinesSkeleton />;
+        return <CartLines.skeleton />;
     } else if (['idle'].includes(status) && noItems) {
-        return (
-            <NoItems>
-                <div>
-                    <Label>There are no items in your cart.</Label>
-                </div>
-            </NoItems>
-        );
+        return <Label>There are no items in your cart.</Label>;
     }
 
     return (
@@ -57,16 +35,20 @@ export default function CartLines({ locale, i18n }: CartContentProps) {
                         {lines?.map((item) => {
                             if (!item) return null;
 
-                            return <CartLine key={item.id} i18n={i18n} data={item as any} />;
+                            return (
+                                <Suspense key={item.id} fallback={<CartLine.skeleton />}>
+                                    <CartLine i18n={i18n} data={item as any} />
+                                </Suspense>
+                            );
                         })}
                     </>
                 ) : null}
             </Suspense>
         </div>
     );
-}
+};
 
-export const CartLinesSkeleton = () => {
+CartLines.skeleton = () => {
     return (
         <section className={styles.container}>
             {[...Array(3).keys()].map((i) => (
@@ -75,3 +57,6 @@ export const CartLinesSkeleton = () => {
         </section>
     );
 };
+
+CartLines.displayName = 'Nordcom.Cart.Lines';
+export { CartLines };

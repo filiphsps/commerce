@@ -1,15 +1,15 @@
-import { FreeShippingProgress } from '@/components/FreeShippingProgress';
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
 import styles from '@/components/cart/cart-summary.module.scss';
+import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { useTranslation, type LocaleDictionary } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
 import { CartCost, Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
 import type { FunctionComponent } from 'react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { FiChevronRight, FiEdit, FiLock } from 'react-icons/fi';
 import styled from 'styled-components';
 
@@ -231,9 +231,13 @@ export const CartSummary: FunctionComponent<CartSummaryProps> = ({ onCheckout, i
                     </div>
                 </Header>
 
-                <CartCoupons />
+                <Suspense>
+                    <CartCoupons />
+                </Suspense>
 
-                <FreeShipping i18n={i18n} />
+                <Suspense>
+                    <FreeShipping i18n={i18n} />
+                </Suspense>
 
                 {!showNote ? (
                     <Action onClick={() => setShowNote(true)} className={styles['add-note']}>

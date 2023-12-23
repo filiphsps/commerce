@@ -127,6 +127,17 @@ body {
             width: 2rem;
         }
     }
+
+    a:not(:disabled) {
+        transition:
+            150ms ease-in-out color,
+            150ms ease-in-out text-decoration;
+
+        &:is(:hover, :active, :focus) {
+            color: var(--accent-primary-light);
+            text-decoration-color: var(--accent-primary-light);
+        }
+    }
 }
 
 html,
@@ -136,17 +147,6 @@ body {
 
     color: var(--color-foreground, var(--color-dark));
     background: var(--color-background, var(--color-bright));
-}
-
-a:not(:disabled) {
-    transition:
-        150ms ease-in-out color,
-        150ms ease-in-out text-decoration;
-
-    &:is(:hover, :active, :focus) {
-        color: var(--accent-primary-light);
-        text-decoration-color: var(--accent-primary-light);
-    }
 }
 
 input[type='number'] {

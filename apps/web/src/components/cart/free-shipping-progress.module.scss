@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    gap: var(--block-spacer-small);
+    color: var(--color-dark);
+    transition: 150ms ease-in-out;
+
+    .progress {
+        overflow: hidden;
+        width: 100%;
+        height: var(--block-padding);
+        background: var(--color-bright);
+        border-radius: var(--block-border-radius);
+
+        .line {
+            height: 100%;
+            background: var(--accent-secondary-dark);
+        }
+
+        &.full .line {
+            background: var(--color-green);
+        }
+    }
+
+    .label {
+        text-transform: none;
+    }
+
+    &.success {
+        &,
+        .label {
+            color: var(--color-green);
+        }
+    }
+}

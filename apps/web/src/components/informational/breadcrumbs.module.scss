@@ -1,0 +1,84 @@
+@import '_globals.scss';
+
+.breadcrumbs {
+    display: flex;
+    overflow: hidden;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--block-spacer-small);
+
+    margin: var(--block-spacer) 0 0 0;
+    color: var(--color-dark);
+
+    list-style-type: none;
+
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+
+    .item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--block-spacer-small);
+        -webkit-user-select: none;
+        user-select: none;
+        height: 3.5rem;
+
+        &:last-child {
+            .link {
+                font-weight: 800;
+                color: var(--color-accent-primary-light);
+            }
+        }
+
+        .icon,
+        .link {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            height: 3.5rem;
+            padding: var(--block-padding);
+
+            background-color: var(--color-block);
+            color: var(--color-dark);
+
+            border-radius: var(--block-border-radius-small);
+            transition:
+                $animation-duration ease-in-out color,
+                $animation-duration ease-in-out background-color;
+
+            text-align: center;
+        }
+
+        .icon {
+            min-width: 3.5rem;
+
+            font-size: 2em;
+
+            stroke-width: 0.15em;
+        }
+
+        .link {
+            cursor: pointer;
+
+            span {
+                display: contents;
+            }
+
+            &:is(:hover, :active) {
+                background-color: var(--color-accent-secondary-light);
+                color: var(--accent-secondary-text);
+            }
+        }
+
+        &:not(:first-child) {
+            text-transform: capitalize;
+        }
+    }
+}
