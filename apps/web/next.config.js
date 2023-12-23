@@ -1,4 +1,3 @@
-import withPurgeCSSModules from '@filiphsandstrom/next-purge-css-modules';
 import { withHighlightConfig } from '@highlight-run/next/config';
 import withMarkdoc from '@markdoc/next.js';
 import path, { dirname } from 'node:path';
@@ -8,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
-    pageExtensions: ['ts', 'tsx', 'md'],
+    pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
     poweredByHeader: false,
     generateEtags: false,
     reactStrictMode: true,
@@ -31,7 +30,7 @@ const config = {
             'react-icons'
         ],
         //ppr: true,
-        //scrollRestoration: true,
+        scrollRestoration: true,
         serverComponentsExternalPackages: ['@highlight-run/node'],
         serverSourceMaps: true,
         serverMinification: false,
@@ -134,39 +133,19 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    // While I wish we could use this we must handle it
-    // ourselves as a part of the locale redirection.
-    // This is due to the limited amount of redirects
-    // we're allowed to use if we want to be on the HSTS
-    // preload list.
+    // Let us handle trailing slashes in the middleware instead.
     skipTrailingSlashRedirect: true
 };
 
 export default withHighlightConfig(
-    withPurgeCSSModules(
-        /** @type {import('next-purge-css-modules').PurgeConfig} */
-        {
-            content: [
-                path.join(__dirname, '**/*.{js,jsx,ts,tsx}'),
-
-                // Whitelist nordcom packages.
-                '../../node_modules/@nordcom/**/dist/**/*.{js,jsx,ts,tsx}'
-            ],
-            enableDevPurge: true,
-            fontFace: false,
-            keyframes: false,
-            safelist: ['html', 'body', ':root', '[data-sonner-toaster]', '[data-skeleton]', '#nprogress', '#nordstar'],
-            variables: false
-        },
-        withMarkdoc({
-            mode: 'static',
-            schemaPath: './src/utils/markdoc',
-            tokenizerOptions: {
-                allowComments: true,
-                slots: true
-            }
-        })(config)
-    ),
+    withMarkdoc({
+        mode: 'static',
+        schemaPath: './src/utils/markdoc',
+        tokenizerOptions: {
+            allowComments: true,
+            slots: true
+        }
+    })(config),
     {
         apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
         appVersion: process.env.VERCEL_GIT_COMMIT_SHA,

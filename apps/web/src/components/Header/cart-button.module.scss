@@ -31,13 +31,13 @@
         display: block;
         min-width: 0.85em;
         height: 2.75rem;
-        padding: 0.15rem 0.15rem 0.3rem 0.15rem;
+        padding: 0.15rem 0 0.3rem 0.3rem;
 
         stroke-width: 0.2em;
 
         font-size: 1em;
         line-height: 1;
-        text-align: center;
+        text-align: right;
     }
 
     .quantity {
@@ -89,7 +89,7 @@
         .quantity {
             font-weight: 500;
             width: fit-content;
-            padding: 0 0.25rem;
+            padding: 0.15rem 0 0 0.3rem;
         }
 
         &:is(:hover, :active) {

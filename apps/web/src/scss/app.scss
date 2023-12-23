@@ -15,11 +15,11 @@
 
     --color-lights-out: #051821;
 
-    --color-block: #ececec;
+    --color-block: #efefef;
     --color-block-light: #f5f5f5;
     --color-block-dark: #bebebe;
-    --color-block-black: #6e6e6e;
-    --color-block-shadow: rgba(0, 0, 0, 0.35);
+    --color-block-black: #616161;
+    --color-block-shadow: rgba(0, 0, 0, 0.4);
 
     --color-gray: #989898;
     --color-green: #1b6e1b;
@@ -43,7 +43,7 @@ html {
     // FIXME: Refactor all of the styling so we can use '16px' as the base font size.
     font-size: 0.55rem;
     @media (min-width: $breakpoint-mobile) {
-        font-size: 0.6rem;
+        font-size: 0.59rem;
     }
 
     &:root {
@@ -105,11 +105,12 @@ body {
     -webkit-text-size-adjust: auto;
     text-size-adjust: auto;
 
-    ol li:is([data-sonner-toaster], .toast-notification):is([data-styled='true'], [data-styled='false']) {
-        padding: var(--block-padding-large) calc(var(--block-padding-large));
+    [data-sonner-toaster] .toast-notification:is([data-styled]) {
+        padding: var(--block-padding-large);
 
         font-family: var(--font-primary);
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        font-weight: 500;
         line-height: normal;
 
         background-color: var(--color-accent-primary);
@@ -117,6 +118,16 @@ body {
         border-width: var(--block-border-width);
         border-color: var(--color-accent-primary-dark);
         border-radius: var(--block-border-radius);
+
+        strong,
+        b {
+            font-weight: 700;
+        }
+
+        p {
+            font-size: inherit;
+            font-weight: inherit;
+        }
 
         &[data-type='error'] {
             background-color: var(--color-danger);
@@ -128,14 +139,16 @@ body {
         }
     }
 
-    a:not(:disabled) {
-        transition:
-            150ms ease-in-out color,
-            150ms ease-in-out text-decoration;
+    a {
+        :not(:disabled) {
+            transition:
+                150ms ease-in-out color,
+                150ms ease-in-out text-decoration;
 
-        &:is(:hover, :active, :focus) {
-            color: var(--accent-primary-light);
-            text-decoration-color: var(--accent-primary-light);
+            &:is(:hover, :active, :focus) {
+                color: var(--accent-primary-light);
+                text-decoration-color: var(--accent-primary-light);
+            }
         }
     }
 }

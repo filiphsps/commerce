@@ -19,10 +19,10 @@
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
 
     border-radius: var(--block-border-radius);
-    box-shadow: 0 0 1rem -0.35rem var(--color-block-shadow);
+    box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, 0.3);
     scroll-snap-align: center;
 
-    //contain-intrinsic-size: var(--component-product-card-width) 40rem;
+    contain-intrinsic-size: var(--component-product-card-width) 40rem;
 
     &[data-available='false'] {
         opacity: 0.75;

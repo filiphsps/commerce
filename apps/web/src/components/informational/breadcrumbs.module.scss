@@ -31,8 +31,10 @@
 
         &:last-child {
             .link {
+                background: var(--color-accent-primary-light);
+                color: var(--accent-primary-text);
+
                 font-weight: 800;
-                color: var(--color-accent-primary-light);
             }
         }
 
@@ -42,13 +44,13 @@
             justify-content: flex-start;
             align-items: center;
 
-            height: 3.5rem;
+            height: 3.25rem;
             padding: var(--block-padding);
 
             background-color: var(--color-block);
-            color: var(--color-dark);
+            color: var(--color-block-black);
 
-            border-radius: var(--block-border-radius-small);
+            border-radius: var(--block-border-radius);
             transition:
                 $animation-duration ease-in-out color,
                 $animation-duration ease-in-out background-color;
@@ -57,9 +59,10 @@
         }
 
         .icon {
-            min-width: 3.5rem;
+            min-width: 3.25rem;
+            padding: calc(var(--block-padding-small) * 1.5);
 
-            font-size: 2em;
+            font-size: 1.5em;
 
             stroke-width: 0.15em;
         }

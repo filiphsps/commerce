@@ -15,7 +15,7 @@ describe('components', () => {
         });
 
         it('should render', () => {
-            const wrapper = render(<Breadcrumbs />);
+            const wrapper = render(<Breadcrumbs shop={{ name: 'Mock Store' } as any} />);
 
             expect(() => wrapper.unmount()).not.toThrow();
         });

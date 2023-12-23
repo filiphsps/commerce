@@ -1,7 +1,5 @@
 'use client';
 
-import { createClient, linkResolver } from '@/utils/prismic';
-import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import type { ApiConfig } from '@/api/client';
 import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
@@ -9,12 +7,13 @@ import { HeaderProvider } from '@/components/Header/header-provider';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { ShopProvider } from '@/components/shop/provider';
 import StyledComponentsProvider from '@/components/styled-components-provider';
-import { ThirdPartiesProvider } from '@/components/thirdparties-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { createClient, linkResolver } from '@/utils/prismic';
 import { PrismicProvider } from '@prismicio/react';
+import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
@@ -63,23 +62,21 @@ export default function ProvidersRegistry({
                     >
                         <ShopProvider shop={shop} currency={'USD'} locale={locale}>
                             <AnalyticsProvider shop={shop}>
-                                <ThirdPartiesProvider shop={shop} locale={locale}>
-                                    <HeaderProvider store={store} />
-                                    <Toaster
-                                        theme="dark"
-                                        position="bottom-left"
-                                        closeButton={true}
-                                        expand={true}
-                                        duration={5000}
-                                        gap={4}
-                                        toastOptions={{
-                                            classNames: {
-                                                toast: 'toast-notification'
-                                            }
-                                        }}
-                                    />
-                                    {children}
-                                </ThirdPartiesProvider>
+                                <HeaderProvider store={store} />
+                                <Toaster
+                                    theme="dark"
+                                    position="bottom-left"
+                                    closeButton={true}
+                                    expand={true}
+                                    duration={5000}
+                                    gap={4}
+                                    toastOptions={{
+                                        classNames: {
+                                            toast: 'toast-notification'
+                                        }
+                                    }}
+                                />
+                                {children}
                             </AnalyticsProvider>
                         </ShopProvider>
                     </CartProvider>

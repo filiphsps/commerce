@@ -12,7 +12,8 @@
                     "overscroll-behavior",
                     "scrollbar-width",
                     "scrollbar-color",
-                    "text-underline-position"
+                    "text-underline-position",
+                    "contain-intrinsic-size"
                 ]
             }
         ]

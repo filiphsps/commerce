@@ -10,7 +10,7 @@ type FreeShippingProgressProps = {
     i18n: LocaleDictionary;
 };
 const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => {
-    const { cost, status } = useCart();
+    const { cost, status, lines } = useCart();
     const { currency } = useShop();
     const { t } = useTranslation('cart', i18n);
     const ready = status === 'idle';
@@ -48,6 +48,8 @@ const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => 
         currencyCode: cost?.totalAmount?.currencyCode || currency,
         amount: amountLeft.toString()
     });
+
+    if (!lines || lines.length < 1) return null;
 
     return (
         <section {...props} className={`${styles.container} ${freeShipping ? styles.success : ''}`}>
