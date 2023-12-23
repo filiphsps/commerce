@@ -195,8 +195,12 @@
             max-height: 100%;
             padding: calc(var(--block-spacer-small) / 1.5);
 
-            background-color: var(--color-block-black);
+            background-color: transparent;
+            color: var(--color-dark);
             border: none;
+
+            box-shadow: none;
+            aspect-ratio: 1;
 
             @media (min-width: $breakpoint-mobile) {
                 height: 3.25rem;
@@ -204,9 +208,8 @@
 
             &:is(:hover, :active, :focus) {
                 background-color: var(--color-danger);
+                color: var(--color-bright);
             }
-
-            aspect-ratio: 1 / 1;
         }
     }
 }

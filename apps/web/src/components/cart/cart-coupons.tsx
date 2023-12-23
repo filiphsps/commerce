@@ -13,7 +13,7 @@ const CartCoupons = ({}) => {
 
     return (
         <div className={styles.container}>
-            <Label>Applied Promo</Label>
+            <Label>Active discounts</Label>
             <div className={styles.coupons}>
                 {(discountCodes as CartDiscountCode[])?.map(
                     ({ code }) =>

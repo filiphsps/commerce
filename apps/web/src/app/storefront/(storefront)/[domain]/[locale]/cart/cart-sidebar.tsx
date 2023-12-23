@@ -1,8 +1,9 @@
 'use client';
 
 import type { Shop } from '@/api/shop';
-import { CartSummary } from '@/components/CartSummary';
+import { CartSummary } from '@/components/cart/cart-summary';
 import styles from '@/components/typography/label.module.scss';
+import type { StoreModel } from '@/models/StoreModel';
 import { Checkout } from '@/utils/checkout';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTrackable } from '@/utils/trackable';
@@ -15,8 +16,11 @@ export type CartSidebarProps = {
     shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
+
+    /** @deprecated */
+    store: StoreModel;
 } & HTMLProps<HTMLDivElement>;
-export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSidebarProps) => {
+export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: CartSidebarProps) => {
     const cart = useCart();
     const trackable = useTrackable();
 
@@ -42,6 +46,7 @@ export const CartSidebar = ({ shop, i18n, locale, className, ...props }: CartSid
                     }
                 }}
                 i18n={i18n}
+                store={store}
             />
         </aside>
     );

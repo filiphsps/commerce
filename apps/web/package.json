@@ -97,7 +97,6 @@
         "the-new-css-reset": "1.11.2"
     },
     "devDependencies": {
-        "@filiphsandstrom/next-purge-css-modules": "0.0.0-unstable.1",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.31",
         "@types/accept-language-parser": "1.5.6",

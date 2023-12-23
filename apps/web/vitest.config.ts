@@ -75,6 +75,7 @@ export default defineConfig({
                 '**/src/**/config/*.*',
                 '**/build-config.*',
                 '**/instrumentation.*',
+                '**/not-found.*',
 
                 // TODO: Eh?
                 '**/src/locales/*.*',
@@ -84,6 +85,7 @@ export default defineConfig({
                 '**/src/middleware/unknown.ts',
                 '**/src/models/*.ts',
                 '**/src/utils/prismic.ts',
+                '**/src/utils/css-variables.tsx',
                 '**/src/api/shopify/cart.ts',
                 '**/src/api/shopify.ts',
                 '**/src/api/client.ts',

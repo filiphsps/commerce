@@ -4,6 +4,7 @@ import { type Shop } from '@/api/shop';
 import { CartLines } from '@/components/cart/cart-lines';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
+import type { StoreModel } from '@/models/StoreModel';
 import { Suspense, type ReactNode } from 'react';
 import styles from './cart-content.module.scss';
 import { CartSidebar } from './cart-sidebar';
@@ -14,8 +15,11 @@ export type CartContentProps = {
     i18n: LocaleDictionary;
     header: ReactNode;
     slices: ReactNode;
+
+    /** @deprecated */
+    store: StoreModel;
 };
-export default function CartContent({ shop, locale, i18n, header, slices }: CartContentProps) {
+export default function CartContent({ shop, locale, i18n, header, slices, store }: CartContentProps) {
     return (
         <PageContent className={styles.container} primary={true}>
             <section className={styles.content}>
@@ -26,7 +30,7 @@ export default function CartContent({ shop, locale, i18n, header, slices }: Cart
                         <CartLines i18n={i18n} />
                     </Suspense>
                 </div>
-                <CartSidebar shop={shop} locale={locale} i18n={i18n} className={styles.sidebar} />
+                <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
             <Suspense>{slices}</Suspense>

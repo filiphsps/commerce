@@ -1,6 +1,7 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -78,17 +79,13 @@ export default async function CartPage({ params: { domain, locale: localeData } 
 
         void Prefetch({ api, page });
         const i18n = await getDictionary(locale);
+        const store = await StoreApi({ locale, api });
 
         return (
             <CartContent
                 shop={shop}
                 locale={locale}
-                header={
-                    <>
-                        <Heading title={page?.title} subtitle={page?.description} />
-                        <hr />
-                    </>
-                }
+                header={<Heading title={page?.title} subtitle={page?.description} />}
                 slices={
                     page ? (
                         <PrismicPage
@@ -102,6 +99,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                     ) : null
                 }
                 i18n={i18n}
+                store={store}
             />
         );
     } catch (error: unknown) {

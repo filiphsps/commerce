@@ -1,18 +1,12 @@
 @import '_globals.scss';
 
-.container {
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    gap: var(--block-spacer);
+.input {
+    height: 8rem;
+    padding: var(--block-padding);
 
-    .input {
-        height: 8rem;
-        border-width: 0;
-        padding: var(--block-padding);
+    text-transform: initial;
 
-        text-transform: initial;
-    }
+    border-width: 0;
+
+    border-radius: var(--block-border-radius-tiny);
 }

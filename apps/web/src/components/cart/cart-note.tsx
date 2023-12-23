@@ -1,10 +1,11 @@
 import { MultilineInput } from '@/components/actionable/input';
 import styles from '@/components/cart/cart-note.module.scss';
-import { Label } from '@/components/typography/label';
+import { useTranslation, type LocaleDictionary } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 import { useEffect, useState } from 'react';
 
-const CartNote = ({}) => {
+const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
+    const { t } = useTranslation('cart', i18n);
     const { status, note, noteUpdate } = useCart();
     const [text, setText] = useState('');
 
@@ -17,19 +18,16 @@ const CartNote = ({}) => {
     if (status === 'uninitialized' || status === 'creating') return null;
 
     return (
-        <section className={styles.container}>
-            <Label>Special Request or Instructions</Label>
+        <>
             <MultilineInput
                 className={styles.input}
                 value={text}
-                // TODO: Make this customizable.
-                placeholder="How can we make this experience memorable for you?"
+                placeholder={t('placeholder-cart-note')}
                 onChange={(e: any) => setText(e.target.value)}
                 onBlur={() => text !== note && noteUpdate((text.length > 0 && text) || '')}
                 disabled={status !== 'idle'}
-                autoFocus={true}
             />
-        </section>
+        </>
     );
 };
 
