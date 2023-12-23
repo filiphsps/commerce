@@ -25,7 +25,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
 
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
         const i18n = await getDictionary(locale);
@@ -78,7 +78,7 @@ export default async function CountriesPage({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const countries = await CountriesApi({ api });

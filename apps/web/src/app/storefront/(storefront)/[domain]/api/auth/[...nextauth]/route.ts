@@ -14,7 +14,7 @@ async function handler(req: NextRequest, context: { params: AuthApiRouteParams }
         params: { domain }
     } = context;
 
-    const shop = await ShopApi({ domain });
+    const shop = await ShopApi(domain);
 
     const authOptions = await getAuthOptions({ shop });
     const auth = await NextAuth(authOptions);

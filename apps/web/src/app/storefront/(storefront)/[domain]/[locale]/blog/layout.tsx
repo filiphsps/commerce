@@ -24,7 +24,7 @@ export default async function BlogLayout({
     params: BlogLayoutParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 

@@ -21,7 +21,7 @@ export async function generateMetadata({
     params: BlogPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
@@ -76,7 +76,7 @@ export async function generateMetadata({
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 

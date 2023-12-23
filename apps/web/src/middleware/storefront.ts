@@ -14,7 +14,7 @@ const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const hostname = await getHostname(req);
-    const shop = await ShopApi({ domain: hostname });
+    const shop = await ShopApi(hostname);
     let newUrl = req.nextUrl.clone();
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';

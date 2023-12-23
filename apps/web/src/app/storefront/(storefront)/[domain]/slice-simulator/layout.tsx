@@ -36,7 +36,7 @@ export default async function RootLayout({
     children: ReactNode;
     params: { domain: string };
 }) {
-    const shop = await ShopApi({ domain });
+    const shop = await ShopApi(domain);
     const locale = Locale.default;
     const shopifyApi = await ShopifyApiConfig({ shop });
     const api = await ShopifyApiClient({ shop, locale });

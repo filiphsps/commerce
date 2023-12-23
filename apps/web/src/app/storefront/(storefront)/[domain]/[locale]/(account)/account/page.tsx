@@ -24,7 +24,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const store = await StoreApi({ api });
@@ -61,7 +61,7 @@ export default async function AccountPage({ params: { domain, locale: localeData
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
 
         const session = await getAuthSession(shop);
         if (!session) {

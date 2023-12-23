@@ -24,7 +24,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const i18n = await getDictionary(locale);
@@ -70,7 +70,7 @@ export async function generateMetadata({
 
 export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 

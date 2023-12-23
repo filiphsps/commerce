@@ -41,10 +41,13 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
 
     if (hostname === 'shops.nordcom.io') {
         return 'admin';
+    } else if (hostname.includes('sweetsideofsweden.com')) {
+        // Fast-path for the storefront.
+        return 'storefront';
     }
 
     try {
-        await ShopApi({ domain: hostname });
+        await ShopApi(hostname);
         return 'storefront';
     } catch (error) {
         console.warn(error);

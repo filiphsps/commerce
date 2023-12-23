@@ -9,7 +9,7 @@ export type PreviewApiRouteParams = {
     domain: string;
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: PreviewApiRouteParams }) {
-    const shop = await ShopApi({ domain });
+    const shop = await ShopApi(domain);
     const client = createClient({ shop, locale: Locale.default });
 
     draftMode().enable();

@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
-import type { Locale } from '@/utils/locale';
 
 //import { experimental_taintObjectReference as taintObjectReference } from 'react';
 
@@ -255,7 +254,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 };
 
 export type ShopResponse = {} & Shop;
-export const ShopApi = async ({ domain }: { domain: string; locale?: Locale }): Promise<ShopResponse> => {
+export const ShopApi = async (domain: string): Promise<ShopResponse> => {
     // TODO: This should be a cache-able database query.
     const shops = await ShopsApi();
     const shop =
@@ -265,7 +264,7 @@ export const ShopApi = async ({ domain }: { domain: string; locale?: Locale }): 
     if (!shop) {
         if (domain.endsWith('.vercel.app')) {
             // TODO: Figure out what we should do here.
-            return await ShopApi({ domain: 'www.sweetsideofsweden.com' });
+            return await ShopApi('www.sweetsideofsweden.com');
         }
 
         throw new UnknownShopDomainError();

@@ -42,7 +42,7 @@ const fontPrimary = Public_Sans({
 export type LayoutParams = { domain: string; locale: string };
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
 
         return {
             metadataBase: new URL(`https://${domain}/${locale}/`),
@@ -89,7 +89,7 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 

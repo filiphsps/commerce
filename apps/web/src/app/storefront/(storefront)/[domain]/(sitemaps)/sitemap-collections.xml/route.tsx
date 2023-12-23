@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 /* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
         const api = await StorefrontApiClient({ shop, locale, apiConfig });

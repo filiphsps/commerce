@@ -3,7 +3,7 @@ import { colord } from 'colord';
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
-    const shop = await ShopApi({ domain });
+    const shop = await ShopApi(domain);
     const { colors } = shop.configuration!.design!.branding!;
 
     // TODO: Deal with variants.

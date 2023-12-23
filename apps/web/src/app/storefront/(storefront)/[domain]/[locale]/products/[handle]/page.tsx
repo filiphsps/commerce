@@ -45,7 +45,7 @@ export async function generateMetadata({
         if (!locale) return notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -111,7 +111,7 @@ export default async function ProductPage({
         if (!locale) return notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi({ domain, locale });
+        const shop = await ShopApi(domain);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 

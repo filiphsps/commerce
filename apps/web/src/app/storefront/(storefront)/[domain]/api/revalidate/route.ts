@@ -13,7 +13,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
     // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         //TODO: Do this in the correct place.
         revalidateTag(`shopify`);
         revalidateTag('prismic');

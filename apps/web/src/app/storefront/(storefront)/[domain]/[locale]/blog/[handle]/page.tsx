@@ -70,7 +70,7 @@ export async function generateMetadata({
     params: ArticlePageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFoundMetadata;
 
@@ -119,7 +119,7 @@ export default async function ArticlePage({
     params: ArticlePageParams;
 }) {
     try {
-        const shop = await ShopApi({ domain });
+        const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
