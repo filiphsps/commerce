@@ -1,0 +1,177 @@
+@import '_globals.scss';
+
+.banner {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--background);
+    color: var(--content-color);
+    border-radius: var(--block-border-radius-large);
+
+    .content {
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        grid-template-rows: 1fr;
+        gap: var(--block-padding-large);
+        padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
+        min-height: 30vh;
+        max-width: 1465px;
+
+        @media (min-width: $breakpoint-mobile) {
+            gap: calc(var(--block-padding-large) * 2);
+        }
+        @media (min-width: 1465px) {
+            padding: 4rem 10rem;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+
+            p {
+                padding-top: var(--block-padding-large);
+                font-size: 2rem;
+                line-height: 2.5rem;
+                font-weight: 400;
+
+                @media (min-width: $breakpoint-mobile) {
+                    font-size: 2.5rem;
+                    line-height: 3rem;
+                }
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: var(--heading-color);
+                font-size: 2.75rem;
+                line-height: 3.25rem;
+                font-weight: 500;
+
+                @media (min-width: $breakpoint-mobile) {
+                    font-size: 3rem;
+                    line-height: 3.5rem;
+                }
+
+                strong,
+                a {
+                    font-weight: inherit;
+                    color: var(--heading-selected-color);
+                }
+            }
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--block-padding-large);
+
+            &:empty {
+                display: none;
+            }
+
+            @media (min-width: 950px) {
+                gap: calc(var(--block-padding-large) * 2);
+            }
+
+            .action {
+                padding: var(--block-padding) calc(var(--block-padding-large) * 1.75);
+
+                border: var(--block-border-width) solid var(--color-block-dark);
+                color: var(--heading-selected-color);
+
+                font-weight: 500;
+                font-size: 1.5rem;
+                line-height: 1.75rem;
+                text-align: center;
+
+                border-radius: calc(var(--block-border-radius-large) * 2);
+                transition: 150ms ease-in-out;
+                -webkit-user-select: none;
+                user-select: none;
+
+                &[data-type='primary'] {
+                    background-color: var(--heading-selected-color);
+                    color: var(--accent-primary-text);
+                    font-weight: 700;
+                }
+
+                &:is(:hover, :active) {
+                    border-color: var(--accent-secondary-light);
+                    background: var(--accent-secondary-light);
+                    color: var(--accent-secondary-text);
+                }
+
+                @media (min-width: 950px) {
+                    padding: var(--block-padding-large) calc(var(--block-padding-large) * 4);
+                    font-size: 1.75rem;
+                    line-height: 2rem;
+                }
+            }
+        }
+    }
+
+    &[data-slice-variation='simpleSlim'] {
+        .content {
+            min-height: unset;
+            gap: calc(var(--block-padding-large) * 1.5);
+
+            @media (min-width: $breakpoint-mobile) {
+                gap: var(--block-padding-large);
+            }
+            @media (min-width: 1465px) {
+                padding: calc(var(--block-padding-large) * 1.5) var(--block-padding-large);
+            }
+
+            .header {
+                p {
+                    padding-top: 0;
+                    font-size: 1.75rem;
+                    line-height: 2.25rem;
+
+                    @media (min-width: 950px) {
+                        font-size: 2rem;
+                        line-height: 2.5rem;
+                    }
+                }
+
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6 {
+                    font-size: 2.5rem;
+                    line-height: 3rem;
+
+                    @media (min-width: $breakpoint-mobile) {
+                        font-size: 3rem;
+                        line-height: 3.5rem;
+                    }
+                }
+            }
+
+            .actions {
+                .action {
+                    font-size: 1.25rem;
+                    line-height: 1;
+                    padding: var(--block-padding) var(--block-padding-large);
+
+                    @media (min-width: $breakpoint-mobile) {
+                        padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 2);
+                        font-size: 1.5rem;
+                        line-height: 1.1;
+                    }
+                }
+            }
+        }
+    }
+}
