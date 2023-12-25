@@ -2,7 +2,8 @@
 
 import type { ProductVariant } from '@/api/product';
 import Link from '@/components/link';
-import styles from '@/components/products/product-actions-container.module.scss';
+import actionsStyles from '@/components/products/product-actions-container.module.scss';
+import styles from '@/components/products/product-options.module.scss';
 import { Label } from '@/components/typography/label';
 import type { Locale } from '@/utils/locale';
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
@@ -52,7 +53,7 @@ export const ProductOptions = ({
         <>
             <div
                 {...props}
-                className={`${styles.actionsStyles} ${className || ''}`}
+                className={`${actionsStyles['product-options']} ${className || ''}`}
                 style={{ gridArea: 'options', ...(style || {}) }}
             >
                 {options?.map((option, index) =>
@@ -95,28 +96,23 @@ export const ProductOptions = ({
                                                 )) ||
                                         undefined;
                                     let href = `/products/${handle}/`;
-                                    let asComponent: any = Link;
+                                    let asComponent: any = undefined;
 
                                     if (matchingVariant?.id) {
                                         if (matchingVariant.id !== initialVariant.id)
                                             href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
-
-                                        if (selectedVariant && selectedVariant.id === matchingVariant.id)
-                                            asComponent = 'div';
                                     }
 
-                                    const extraProps =
-                                        (asComponent !== 'div' && {
-                                            locale: locale,
-                                            href: href,
-                                            replace: true,
-                                            onClick: () =>
-                                                setSelectedOptions({
-                                                    ...(selectedOptions as any),
-                                                    [option.name!]: value!
-                                                })
-                                        }) ||
-                                        {};
+                                    const extraProps = {
+                                        locale: locale,
+                                        href: href,
+                                        replace: true,
+                                        onClick: () =>
+                                            setSelectedOptions({
+                                                ...(selectedOptions as any),
+                                                [option.name!]: value!
+                                            })
+                                    };
 
                                     const inStock = isOptionInStock(option.name!, value!);
                                     return (
@@ -126,7 +122,7 @@ export const ProductOptions = ({
                                             title={`${product?.vendor} ${product?.title} - ${
                                                 title || matchingVariant?.title
                                             }`}
-                                            className={`${styles.options} ${
+                                            className={`${styles.option} ${
                                                 selectedOptions?.[option.name!] === value ? styles.selected : ''
                                             } ${!inStock ? styles.disabled : ''} ${
                                                 asComponent !== 'div' ? styles.clickable : ''

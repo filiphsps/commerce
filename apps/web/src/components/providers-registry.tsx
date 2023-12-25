@@ -6,7 +6,6 @@ import { CartFragment } from '@/api/shopify/cart';
 import { HeaderProvider } from '@/components/Header/header-provider';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { ShopProvider } from '@/components/shop/provider';
-import StyledComponentsProvider from '@/components/styled-components-provider';
 import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
@@ -45,43 +44,37 @@ export default function ProvidersRegistry({
     }
 
     return (
-        <StyledComponentsProvider>
-            <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
-                <ShopifyProvider
-                    storefrontId={id}
-                    storeDomain={`https://${domain}`}
-                    storefrontApiVersion={BuildConfig.shopify.api}
-                    storefrontToken={token}
-                    countryIsoCode={(locale.country || Locale.default.country)!}
-                    languageIsoCode={locale.language}
-                >
-                    <CartProvider
-                        cartFragment={CartFragment}
-                        languageCode={locale.language}
-                        countryCode={locale.country}
-                    >
-                        <ShopProvider shop={shop} currency={'USD'} locale={locale}>
-                            <AnalyticsProvider shop={shop}>
-                                <HeaderProvider store={store} />
-                                <Toaster
-                                    theme="dark"
-                                    position="bottom-left"
-                                    closeButton={true}
-                                    expand={true}
-                                    duration={5000}
-                                    gap={4}
-                                    toastOptions={{
-                                        classNames: {
-                                            toast: 'toast-notification'
-                                        }
-                                    }}
-                                />
-                                {children}
-                            </AnalyticsProvider>
-                        </ShopProvider>
-                    </CartProvider>
-                </ShopifyProvider>
-            </PrismicProvider>
-        </StyledComponentsProvider>
+        <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
+            <ShopifyProvider
+                storefrontId={id}
+                storeDomain={`https://${domain}`}
+                storefrontApiVersion={BuildConfig.shopify.api}
+                storefrontToken={token}
+                countryIsoCode={(locale.country || Locale.default.country)!}
+                languageIsoCode={locale.language}
+            >
+                <CartProvider cartFragment={CartFragment} languageCode={locale.language} countryCode={locale.country}>
+                    <ShopProvider shop={shop} currency={'USD'} locale={locale}>
+                        <AnalyticsProvider shop={shop}>
+                            <HeaderProvider store={store} />
+                            <Toaster
+                                theme="dark"
+                                position="bottom-left"
+                                closeButton={true}
+                                expand={true}
+                                duration={5000}
+                                gap={4}
+                                toastOptions={{
+                                    classNames: {
+                                        toast: 'toast-notification'
+                                    }
+                                }}
+                            />
+                            {children}
+                        </AnalyticsProvider>
+                    </ShopProvider>
+                </CartProvider>
+            </ShopifyProvider>
+        </PrismicProvider>
     );
 }

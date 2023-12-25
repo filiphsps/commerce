@@ -1,59 +1,9 @@
 'use client';
 
+import styles from '@/components/HeaderNavigation/header-navigation.module.scss';
 import Link from '@/components/link';
 import { usePathname } from 'next/navigation';
 import type { FunctionComponent } from 'react';
-import styled from 'styled-components';
-
-const Navigation = styled.nav`
-    overflow-y: scroll;
-    overscroll-behavior-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--block-spacer-large) * 2);
-    height: 100%;
-    width: 100%;
-    padding: var(--block-padding);
-`;
-const NavigationItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: calc(var(--block-spacer-large) * 1.5);
-    width: 100%;
-    font-size: 2.5rem;
-    line-height: 2.75rem;
-    font-weight: 700;
-
-    a {
-        transition: 150ms ease-in-out;
-    }
-
-    a.Active {
-        color: var(--accent-primary);
-        font-weight: 700;
-    }
-`;
-const NavigationSubItem = styled.div`
-    padding-left: calc(var(--block-spacer-large) * 1.5);
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-
-    &:last-child {
-        padding-bottom: 0.5rem;
-    }
-`;
-const NavigationSubItemTitle = styled.div`
-    font-weight: 500;
-`;
-const NavigationSubItemDescription = styled.div`
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1.75rem;
-    opacity: 0.75;
-    margin-top: 0.25rem;
-    max-width: 60vw;
-`;
 
 interface HeaderNavigationProps {
     navigation: any;
@@ -62,44 +12,44 @@ const HeaderNavigation: FunctionComponent<HeaderNavigationProps> = ({ navigation
     const route = usePathname();
 
     return (
-        <Navigation>
+        <nav className={styles.navigation}>
             {navigation?.map((item: any, index: number) => {
                 return (
-                    <NavigationItem key={item.handle + `_${index}`}>
+                    <div key={item.handle + `_${index}`} className={styles.item}>
                         <Link
                             href={`/${item.handle || ''}`}
                             title={item.title}
                             className={
-                                (route === '/' && item?.handle === null) || `/${item?.handle}` === route ? 'Active' : ''
+                                (route === '/' && item?.handle === null) || `/${item?.handle}` === route
+                                    ? styles.active
+                                    : ''
                             }
                             onClick={() => document.body.removeAttribute('data-menu-open')}
                         >
                             {item.title}
                         </Link>
                         {item.children.map((item: any, index: number) => (
-                            <NavigationSubItem key={item.handle + `_${index}`}>
+                            <div key={item.handle + `_${index}`} className={styles['sub-item']}>
                                 <Link
                                     href={`/${item.handle || ''}`}
                                     title={item.title}
                                     className={
                                         (route === '/' && item?.handle === null) || `/${item?.handle}` === route
-                                            ? 'Active'
+                                            ? styles.active
                                             : ''
                                     }
                                     onClick={() => document.body.removeAttribute('data-menu-open')}
                                 >
-                                    <NavigationSubItemTitle>{item.title}</NavigationSubItemTitle>
+                                    <div className={styles.title}>{item.title}</div>
 
-                                    {item.description && (
-                                        <NavigationSubItemDescription>{item.description}</NavigationSubItemDescription>
-                                    )}
+                                    {item.description && <div className={styles.description}>{item.description}</div>}
                                 </Link>
-                            </NavigationSubItem>
+                            </div>
                         ))}
-                    </NavigationItem>
+                    </div>
                 );
             })}
-        </Navigation>
+        </nav>
     );
 };
 
