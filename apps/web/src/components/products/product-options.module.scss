@@ -1,0 +1,56 @@
+@import '_globals.scss';
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--block-spacer-small);
+    padding-bottom: var(--block-spacer-small);
+
+    .option {
+        display: flex;
+        flex-direction: column;
+        gap: var(--block-spacer-small);
+        justify-content: center;
+        align-items: center;
+        min-height: 5rem;
+        padding: var(--block-padding-small) var(--block-padding);
+        border: var(--block-border-width) solid var(--color-block);
+        border-radius: var(--block-border-radius);
+        color: var(--color-dark);
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        transition: 150ms ease-in-out;
+        -webkit-user-select: none;
+        user-select: none;
+
+        &.clickable {
+            cursor: pointer;
+        }
+
+        &:is(:active, :focus, :focus-within, :hover:not(.selected)):not(:disabled) {
+            border-color: var(--color-block-dark);
+        }
+
+        &.selected {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        &:is(.disabled, :disabled) {
+            opacity: 0.5;
+            pointer-events: none;
+
+            background-color: var(--color-block);
+            color: var(--color-dark);
+
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: inherit;
+                    background: inherit;
+                }
+            }
+        }
+    }
+}

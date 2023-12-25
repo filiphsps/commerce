@@ -8,62 +8,6 @@ import type { Locale } from '@/utils/locale';
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 import { Fragment, type HTMLProps } from 'react';
-import styled from 'styled-components';
-
-const OptionValues = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--block-spacer-small);
-    padding-bottom: var(--block-spacer-small);
-`;
-
-const OptionValue = styled(Link)`
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-small);
-    justify-content: center;
-    align-items: center;
-    min-height: 5rem;
-    padding: var(--block-padding-small) var(--block-padding);
-    border: var(--block-border-width) solid var(--color-block);
-    border-radius: var(--block-border-radius);
-    color: var(--color-dark);
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    transition: 150ms ease-in-out;
-    user-select: none;
-
-    &.clickable {
-        cursor: pointer;
-    }
-
-    &:is(:active, :focus, :focus-within, :hover:not(.selected)):not(:disabled) {
-        border-color: var(--color-block-dark);
-    }
-
-    &.selected {
-        border-color: var(--accent-primary);
-        color: var(--accent-primary);
-        font-weight: 700;
-    }
-
-    &.disabled,
-    &:disabled {
-        opacity: 0.5;
-        pointer-events: none;
-
-        background-color: var(--color-block);
-        color: var(--color-dark);
-
-        @media (hover: hover) and (pointer: fine) {
-            &:hover {
-                color: inherit;
-                background: inherit;
-            }
-        }
-    }
-`;
 
 export type ProductOptionProps = {
     locale: Locale;
@@ -108,7 +52,7 @@ export const ProductOptions = ({
         <>
             <div
                 {...props}
-                className={`${styles.productOptions} ${className || ''}`}
+                className={`${styles.actionsStyles} ${className || ''}`}
                 style={{ gridArea: 'options', ...(style || {}) }}
             >
                 {options?.map((option, index) =>
@@ -121,7 +65,11 @@ export const ProductOptions = ({
                             >
                                 {option.name}
                             </Label>
-                            <OptionValues data-options={option.values.length} suppressHydrationWarning={true}>
+                            <div
+                                className={styles.options}
+                                data-options={option.values.length}
+                                suppressHydrationWarning={true}
+                            >
                                 {option.values.map((value) => {
                                     if (!value) return null;
                                     let title = value;
@@ -172,26 +120,26 @@ export const ProductOptions = ({
 
                                     const inStock = isOptionInStock(option.name!, value!);
                                     return (
-                                        <OptionValue
+                                        <Link
                                             key={value}
                                             as={asComponent}
                                             title={`${product?.vendor} ${product?.title} - ${
                                                 title || matchingVariant?.title
                                             }`}
-                                            className={`${
-                                                (selectedOptions?.[option.name!] === value && 'selected') || ''
-                                            } ${(!inStock && 'disabled') || ''} ${
-                                                (asComponent !== 'div' && 'clickable') || ''
+                                            className={`${styles.options} ${
+                                                selectedOptions?.[option.name!] === value ? styles.selected : ''
+                                            } ${!inStock ? styles.disabled : ''} ${
+                                                asComponent !== 'div' ? styles.clickable : ''
                                             }`}
-                                            disabled={!inStock}
+                                            {...({ disabled: !inStock } as any)}
                                             {...extraProps}
                                             suppressHydrationWarning={true}
                                         >
                                             {title}
-                                        </OptionValue>
+                                        </Link>
                                     );
                                 })}
-                            </OptionValues>
+                            </div>
                         </Fragment>
                     ) : (
                         <div key={option?.name || index} /> // Empty div to keep the grid layout
