@@ -64,6 +64,7 @@ const CollectionBlock = async ({
                     <ProductCard
                         key={product.id}
                         shop={shop}
+                        locale={locale}
                         i18n={i18n}
                         data={product}
                         priority={priority && index < 2}

@@ -1,18 +1,13 @@
-'use client';
-
+import type { Product } from '@/api/product';
 import styles from '@/components/ProductCard/product-card.module.scss';
-import { deepEqual } from '@/utils/deep-equal';
-import type { LocaleDictionary } from '@/utils/locale';
-import { useProduct } from '@shopify/hydrogen-react';
-import { memo } from 'react';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
 export type ProductCardBadgesProps = {
-    i18n: LocaleDictionary;
+    data: Product;
 };
 
-const ProductCardBadges = memo(({}: ProductCardBadgesProps) => {
-    const { selectedVariant, product } = useProduct();
-
+const ProductCardBadges = ({ data: product }: ProductCardBadgesProps) => {
+    const selectedVariant = FirstAvailableVariant(product);
     if (!selectedVariant) return null;
 
     const isNewProduct =
@@ -52,7 +47,7 @@ const ProductCardBadges = memo(({}: ProductCardBadgesProps) => {
             ) : null}
         </>
     );
-}, deepEqual);
+};
 
 ProductCardBadges.displayName = 'Nordcom.ProductCard.Badges';
 export default ProductCardBadges;

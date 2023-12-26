@@ -20,7 +20,7 @@ describe('components', () => {
             });
 
             it('renders without crashing when no image is supplied', () => {
-                expect(() => render(<ProductCardImage />)).not.toThrow();
+                expect(() => render(<ProductCardImage shop={{} as any} />)).not.toThrow();
             });
         });
     });

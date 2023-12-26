@@ -55,7 +55,7 @@ export const ProductActionsContainer = ({
             </div>
 
             <Suspense>
-                <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
+                <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
             </Suspense>
 
             <Suspense>{children}</Suspense>

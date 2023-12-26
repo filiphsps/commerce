@@ -1,11 +1,9 @@
-'use client';
-
 import type { Product } from '@/api/product';
+import type { Shop } from '@/api/shop';
 import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
-import { useShop } from '@/components/shop/provider';
 import { deepEqual } from '@/utils/deep-equal';
-import { useProduct } from '@shopify/hydrogen-react';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -38,14 +36,14 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
 VariantImage.displayName = 'Nordcom.ProductCard.Image.VariantImage';
 
 export type ProductCardImageProps = {
+    shop: Shop;
     data?: Product;
     priority?: boolean;
     children?: ReactNode;
 };
 
-const ProductCardImage = memo(({ data: product, priority = false, children }: ProductCardImageProps) => {
-    const { selectedVariant } = useProduct();
-    const { shop } = useShop();
+const ProductCardImage = ({ shop, data: product, priority = false, children }: ProductCardImageProps) => {
+    const selectedVariant = FirstAvailableVariant(product);
     if (!product || !selectedVariant) return null;
 
     const image = useMemo(
@@ -68,7 +66,7 @@ const ProductCardImage = memo(({ data: product, priority = false, children }: Pr
             {children}
         </Link>
     );
-}, deepEqual);
+};
 
 ProductCardImage.displayName = 'Nordcom.ProductCard.Image';
 export default ProductCardImage;

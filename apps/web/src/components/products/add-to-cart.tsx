@@ -1,9 +1,9 @@
 'use client';
 
+import type { Product, ProductVariant } from '@/api/product';
 import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
-import { useShop } from '@/components/shop/provider';
-import type { LocaleDictionary } from '@/utils/locale';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
@@ -15,21 +15,24 @@ import { useCallback, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 
 export type AddToCartProps = {
+    locale: Locale;
     i18n: LocaleDictionary;
     quantity: number;
-    showIcon?: boolean;
-} & HTMLProps<HTMLButtonElement>;
+
+    data?: Product;
+    variant?: ProductVariant;
+} & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...props }: AddToCartProps) => {
+const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
     const { queueEvent } = useTrackable();
     const path = usePathname();
-    const { locale, currency } = useShop();
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
-    const { selectedVariant, product } = useProduct();
+    // This is a bit of a hack, but it works.
+    const { selectedVariant, product } = data ? { selectedVariant: variant, product: data } : useProduct();
     const { status, linesAdd } = useCart();
 
     const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
@@ -60,7 +63,7 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
             path,
             gtm: {
                 ecommerce: {
-                    currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                    currency: selectedVariant.price?.currencyCode!,
                     value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity ?? undefined,
                     items: [
                         {
@@ -78,7 +81,7 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
                             product_id: product.id,
                             variant_id: selectedVariant.id,
                             sku: selectedVariant.sku || undefined,
-                            currency: selectedVariant.price?.currencyCode || currency || 'USD',
+                            currency: selectedVariant.price?.currencyCode!,
                             price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
                             quantity: quantity ?? 0
                         }

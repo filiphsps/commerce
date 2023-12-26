@@ -322,7 +322,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-small);
+    gap: calc(var(--block-spacer-small) / 2);
     padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
         var(--block-padding);
 
@@ -342,7 +342,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: var(--block-padding-small) var(--block-padding);
         z-index: 1;
         pointer-events: none;
         font-weight: 500;

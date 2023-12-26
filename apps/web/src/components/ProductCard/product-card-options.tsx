@@ -1,21 +1,23 @@
 'use client';
 
-import type { ProductVariant } from '@/api/product';
+import type { Product, ProductVariant } from '@/api/product';
 import styles from '@/components/ProductCard/product-card.module.scss';
-import { useShop } from '@/components/shop/provider';
-import { deepEqual } from '@/utils/deep-equal';
-import { ConvertToLocalMeasurementSystem, type LocaleDictionary } from '@/utils/locale';
-import { useProduct } from '@shopify/hydrogen-react';
-import { memo } from 'react';
+import type { Locale } from '@/utils/locale';
+import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 
 export type ProductCardOptionsProps = {
-    i18n: LocaleDictionary;
+    locale: Locale;
+    data: Product;
+    selectedVariant: ProductVariant;
+    setSelectedVariant(variant: ProductVariant): void;
 };
 
-const ProductCardOptions = memo(({}: ProductCardOptionsProps) => {
-    const { selectedVariant, setSelectedVariant, product } = useProduct();
-    const { locale } = useShop();
-
+const ProductCardOptions = ({
+    locale,
+    data: product,
+    selectedVariant,
+    setSelectedVariant
+}: ProductCardOptionsProps) => {
     if (!selectedVariant || (product?.variants?.edges?.length || 0) <= 1) return null;
 
     // TODO: Use options rather than variants.
@@ -55,7 +57,7 @@ const ProductCardOptions = memo(({}: ProductCardOptionsProps) => {
                 })}
         </div>
     );
-}, deepEqual);
+};
 
 ProductCardOptions.displayName = 'Nordcom.ProductCard.Options';
 export default ProductCardOptions;

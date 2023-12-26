@@ -1,51 +1,44 @@
 'use client';
 
+import type { Product } from '@/api/product';
+import ProductCardFooter from '@/components/ProductCard/product-card-footer';
+import ProductCardOptions from '@/components/ProductCard/product-card-options';
 import styles from '@/components/ProductCard/product-card.module.scss';
-import AddToCart from '@/components/products/add-to-cart';
-import { QuantitySelector } from '@/components/products/quantity-selector';
-import Pricing from '@/components/typography/pricing';
-import { deepEqual } from '@/utils/deep-equal';
-import type { LocaleDictionary } from '@/utils/locale';
-import { useProduct } from '@shopify/hydrogen-react';
-import { memo, useState } from 'react';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { Suspense, useState, type ReactNode } from 'react';
 
 export type ProductCardActionsProps = {
+    data?: Product;
+    locale: Locale;
     i18n: LocaleDictionary;
+    children?: ReactNode;
 };
+const ProductCardActions = ({ data: product, i18n, locale, children }: ProductCardActionsProps) => {
+    const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
 
-const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
-    const { selectedVariant, product } = useProduct();
-    const [quantity, setQuantity] = useState(1);
-
-    if (!selectedVariant) return null;
+    if (!product) return null;
 
     return (
-        <div className={styles.actions}>
-            <div className={styles['quantity-action']}>
-                <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
-
-                {selectedVariant.availableForSale ? (
-                    <QuantitySelector
-                        className={styles.quantity}
-                        i18n={i18n}
-                        value={quantity}
-                        update={(value) => {
-                            if (value === quantity) return;
-                            setQuantity(value);
-                        }}
+        <>
+            <div className={styles.details}>
+                {children}
+                <Suspense>
+                    <ProductCardOptions
+                        locale={locale}
+                        data={product}
+                        selectedVariant={selectedVariant}
+                        setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
                     />
-                ) : null}
+                </Suspense>
             </div>
 
-            <AddToCart
-                className={styles.button}
-                quantity={quantity}
-                i18n={i18n}
-                disabled={!product?.availableForSale || !selectedVariant.availableForSale}
-            />
-        </div>
+            <Suspense>
+                <ProductCardFooter locale={locale} i18n={i18n} data={product} selectedVariant={selectedVariant} />
+            </Suspense>
+        </>
     );
-}, deepEqual);
+};
 
 ProductCardActions.displayName = 'Nordcom.ProductCard.Actions';
 export default ProductCardActions;
