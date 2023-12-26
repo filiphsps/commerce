@@ -10,7 +10,7 @@ export type ProductGalleryProps = {
     images: Image[] | null;
 } & HTMLProps<HTMLDivElement>;
 const ProductGallery = ({ initialImageId, images, className, ...props }: ProductGalleryProps) => {
-    const [selected, setSelected] = useState(initialImageId || images?.[0].id);
+    const [selected, setSelected] = useState(initialImageId || images?.[0]?.id);
 
     useEffect(() => {
         if (!initialImageId) return;
@@ -22,6 +22,8 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
     if (!images || images.length <= 0) return null;
 
     const image = images.find((image) => image && image.id === selected) || images[0];
+    if (!image) return null;
+
     return (
         <div draggable={false} className={`${styles.gallery}${className ? ` ${className}` : ''}`} {...props}>
             <section>

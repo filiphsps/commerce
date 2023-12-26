@@ -7,10 +7,10 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import SplitView from '@/components/layout/split-view';
+import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
-import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
@@ -162,12 +162,11 @@ export default async function ProductPage({
                     asideDesktopWidth={0.54}
                     aside={
                         <ProductGallery
-                            initialImageId={variant?.image?.id || product.images?.edges?.[0].node.id}
+                            initialImageId={variant?.image?.id || product.images?.edges?.[0]?.node.id}
                             images={product.images.edges.map((edge) => edge.node)}
                             className={styles.gallery}
                         />
                     }
-                    padding
                 >
                     <div className={styles.content}>
                         <SplitView
@@ -193,53 +192,68 @@ export default async function ProductPage({
                         </SplitView>
 
                         <Suspense>
-                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n}>
-                                <InfoLines product={product} />
-                            </ProductContent>
+                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n} />
                         </Suspense>
 
-                        {content ? (
-                            <>
-                                <Content
-                                    className={styles.description}
-                                    dangerouslySetInnerHTML={{
-                                        __html: content
-                                    }}
-                                />
-                            </>
-                        ) : null}
-
-                        {page?.slices && page?.slices.length > 0 ? (
-                            <>
-                                <div className={styles.contentDivider} />
-
-                                <Suspense
-                                    key={`${shop.id}.products.${handle}.content`}
-                                    fallback={<PrismicPage.skeleton page={page as any} />}
-                                >
-                                    <PrismicPage
-                                        shop={shop}
-                                        locale={locale}
-                                        page={page}
-                                        i18n={i18n}
-                                        handle={handle}
-                                        type={'product_page'}
-                                    />
-                                </Suspense>
-                            </>
-                        ) : null}
-
                         <Suspense>
-                            <ImportantProductDetails data={product} />
+                            <Tabs
+                                data={[
+                                    {
+                                        id: 'information',
+                                        label: 'Information',
+                                        children: (
+                                            <>
+                                                <Content
+                                                    className={styles.description}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: content
+                                                    }}
+                                                />
+
+                                                <Suspense>
+                                                    <ImportantProductDetails data={product} />
+                                                </Suspense>
+
+                                                {page?.slices && page?.slices.length > 0 ? (
+                                                    <>
+                                                        <div className={styles.contentDivider} />
+
+                                                        <Suspense
+                                                            key={`${shop.id}.products.${handle}.content`}
+                                                            fallback={<PrismicPage.skeleton page={page as any} />}
+                                                        >
+                                                            <PrismicPage
+                                                                shop={shop}
+                                                                locale={locale}
+                                                                page={page}
+                                                                i18n={i18n}
+                                                                handle={`product-${handle}`}
+                                                                type={'product_page'}
+                                                            />
+                                                        </Suspense>
+                                                    </>
+                                                ) : null}
+                                            </>
+                                        )
+                                    },
+                                    {
+                                        id: 'details',
+                                        label: 'Details',
+                                        children: (
+                                            <>
+                                                <Suspense>
+                                                    <ProductDetails data={product} />
+                                                </Suspense>
+                                            </>
+                                        )
+                                    }
+                                ]}
+                            />
                         </Suspense>
                     </div>
                 </SplitView>
 
-                <PageContent primary={true}>
-                    <Suspense>
-                        <ProductDetails data={product} />
-                    </Suspense>
-                </PageContent>
+                <PageContent primary={true}></PageContent>
 
                 <ProductJsonLd
                     useAppDir={true}

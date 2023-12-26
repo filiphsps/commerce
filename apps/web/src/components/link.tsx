@@ -53,7 +53,7 @@ export default function Link({ locale, href, prefetch, ...props }: Props) {
             // if it does, remove it.
             if (href.startsWith('https://') || href.startsWith('http://')) {
                 // Add the first slash since that would be removed by the `slice`.
-                href = `/${href.split('://')[1].split('/').slice(1).join('/')}`;
+                href = `/${href.split('://')[1]!.split('/').slice(1).join('/')}`;
             }
 
             // Perform some common fixups.

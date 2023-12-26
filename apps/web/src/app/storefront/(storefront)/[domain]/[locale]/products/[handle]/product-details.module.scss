@@ -1,0 +1,33 @@
+@import '_globals.scss';
+
+.badges {
+    display: flex;
+    gap: var(--block-spacer);
+
+    .badge {
+        flex-shrink: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: var(--block-spacer-small);
+        padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
+            var(--block-padding);
+
+        background: var(--accent-primary-light);
+        color: var(--accent-primary-text);
+
+        border-radius: var(--block-border-radius);
+
+        font-weight: 500;
+        font-size: 1.25rem;
+        line-height: normal;
+        text-align: center;
+    }
+}
+
+.block {
+    .label {
+        font-size: 1em;
+    }
+}

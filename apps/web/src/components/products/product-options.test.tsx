@@ -92,7 +92,7 @@ describe('components', () => {
                     selectedVariant={variants[0] as any}
                 />
             );
-            const target = screen.getByText(variants[1].title);
+            const target = screen.getByText(variants[1]!.title);
             expect(target.getAttribute('href')).toBeNull();
         });
 
@@ -121,7 +121,7 @@ describe('components', () => {
             );
 
             await waitFor(() => {
-                const target = screen.getByText(variants[0].title);
+                const target = screen.getByText(variants[0]!.title);
                 expect(target).toBeDefined();
                 expect(target.getAttribute('href')).toBeNull();
                 expect(target.getAttribute('disabled')).toBeDefined();

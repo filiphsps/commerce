@@ -169,7 +169,7 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                 content: {
                     type: 'prismic' as const,
                     id: !!process.env.PRISMIC_REPO
-                        ? process.env.PRISMIC_REPO.split('://')[1].split('.')[0]!
+                        ? process.env.PRISMIC_REPO.split('://')[1]?.split('.')[0]!
                         : 'candy-by-sweden',
                     repository: process.env.prismic_repository || 'https://candy-by-sweden.cdn.prismic.io/api/v2',
                     authentication: {

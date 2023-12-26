@@ -18,7 +18,7 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
     // in the protocol.
     if (path.includes('://')) {
         const chunks = path.split('://');
-        path = `${chunks[0]}://${chunks[1].replaceAll(DOUBLE_SLASHES, '/')}`;
+        path = `${chunks[0]}://${chunks[1]!.replaceAll(DOUBLE_SLASHES, '/')}`;
     } else {
         path = path.replaceAll(DOUBLE_SLASHES, '/');
     }
@@ -31,7 +31,7 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
     ) {
         if (path.includes('?')) {
             const [pathname, query] = path.split('?');
-            if (!pathname.endsWith('/')) {
+            if (!pathname!.endsWith('/')) {
                 path = `${pathname}/?${query}`;
             }
         } else {

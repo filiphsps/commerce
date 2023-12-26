@@ -21,13 +21,13 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     if (errors.length > 0) {
         return NextResponse.json(
             {
-                status: errors[0].statusCode,
+                status: errors[0]!.statusCode,
                 tenant: domain,
                 data: null,
                 errors
             },
             {
-                status: errors[0].statusCode
+                status: errors[0]!.statusCode
             }
         );
     }

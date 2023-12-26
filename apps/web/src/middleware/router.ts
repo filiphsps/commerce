@@ -9,7 +9,7 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
     let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
 
     // Remove port from hostname.
-    hostname = hostname.split(':')[0];
+    hostname = hostname.split(':')[0]!;
 
     // Deal with development server and Vercel's preview URLs.
     if (hostname === 'localhost' || hostname.endsWith('.vercel.app') || hostname.endsWith('app.github.dev')) {

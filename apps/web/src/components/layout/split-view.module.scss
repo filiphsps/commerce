@@ -16,15 +16,15 @@
     @media (min-width: $breakpoint-mobile) {
         flex-direction: row;
         justify-content: center;
-        align-items: stretch;
+        align-items: flex-start;
 
         .side {
             width: 100%;
+            height: 100%;
             max-width: calc(calc(var(--max-width) * var(--desktop-width)) - calc(var(--block-spacer-large) * 2));
 
             &.specific {
                 max-width: var(--desktop-width);
-                height: 100%;
             }
         }
     }

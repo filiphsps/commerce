@@ -41,7 +41,9 @@ const Prefetch = ({
 
         for (let i = 0; i < slices?.length; i++) {
             const slice = slices[i];
-            const type = slice?.slice_type;
+            if (!slice) continue;
+
+            const type = slice.slice_type;
 
             try {
                 switch (type) {

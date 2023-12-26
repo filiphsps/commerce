@@ -3,11 +3,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
+        "plugins": [{ "name": "next" }],
+        "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
         "paths": {
             // Storefront.

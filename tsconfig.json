@@ -3,32 +3,32 @@
     "compilerOptions": {
         "allowJs": true,
         "composite": true,
+        "declarationMap": true,
         "downlevelIteration": false,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "incremental": true,
-        "inlineSourceMap": true,
+        "inlineSourceMap": false,
         "isolatedModules": true,
         "jsx": "preserve",
-        "lib": ["DOM", "DOM.iterable", "ESNext"],
+        "lib": ["ESNext"],
         "module": "ESNext",
         "moduleResolution": "Node",
+        "moduleDetection": "force",
         "noEmit": true,
         "noImplicitAny": true,
+        "noUncheckedIndexedAccess": true,
         "removeComments": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
+        "sourceMap": true,
         "strict": true,
         "strictBindCallApply": false,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
-        "target": "ESNext"
+        "target": "ESNext",
+        "verbatimModuleSyntax": true
     },
     "exclude": [
         "**/node_modules",

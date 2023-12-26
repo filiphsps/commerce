@@ -51,13 +51,13 @@ const SplitView = ({
         if (primaryDesktopWidth && (primaryDesktopWidth >= 1 || primaryDesktopWidth <= 0))
             throw new Error('primaryDesktopWidth must be between 0 and 1'); // TODO: FRO-14: Proper `Error` type
 
-        primaryDesktopWidth = (primaryDesktopWidth ?? 0.5).toString();
+        _primaryDesktopWidth = (primaryDesktopWidth ?? 0.5).toString();
     }
     if (typeof asideDesktopWidth === 'number') {
         if (asideDesktopWidth && (asideDesktopWidth >= 1 || asideDesktopWidth <= 0))
             throw new Error('asideDesktopWidth must be between 0 and 1'); // TODO: FRO-14: Proper `Error` type
 
-        asideDesktopWidth = (asideDesktopWidth ?? 0.5).toString();
+        _asideDesktopWidth = (asideDesktopWidth ?? 0.5).toString();
     }
 
     const primaryComponent = (

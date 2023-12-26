@@ -99,7 +99,7 @@ export const RedirectApi = async ({ client, path }: { client: AbstractApi; path:
             for (let i = 0; i < redirects.length; i++) {
                 const redirect = redirects[i];
 
-                if (redirect.path !== path) continue;
+                if (!redirect || redirect.path !== path) continue;
 
                 return resolve(redirect.target);
             }

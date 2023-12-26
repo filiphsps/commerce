@@ -218,7 +218,7 @@ export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleD
 
             // Replace `{n}` with the literal at index `n`.
             return literals
-                ? string.replace(/{(\d+)}/g, (match, number) => literals[number].toString() || match)
+                ? string.replace(/{(\d+)}/g, (match, number) => literals[number]?.toString() || match)
                 : string;
         }
 
