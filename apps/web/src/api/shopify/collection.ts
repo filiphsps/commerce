@@ -10,6 +10,7 @@ import type {
     QueryRoot
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
+import { unstable_cache as cache } from 'next/cache';
 
 /** @todo TODO: Type-library this so we can use it in other places. */
 type LimitFilters = { limit?: Nullable<number> } | { first?: Nullable<number>; last?: Nullable<number> };
@@ -104,98 +105,105 @@ type CollectionOptions = ApiOptions &
  */
 export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions): Promise<Collection> => {
     if (!handle) throw new Error('400: Invalid handle');
+    const shop = api.shop();
+    const locale = api.locale();
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
 
-    try {
-        const { data, errors } = await api.query<{
-            collection: QueryRoot['collection'];
-        }>(
-            gql`
-                    query collection(
-                        $handle: String!
-                        $first: Int
-                        $last: Int
-                        $sorting: ProductCollectionSortKeys
-                        $before: String
-                        $after: String
-                    ) {
-                        collection(handle: $handle) {
-                            id
-                            handle
-                            title
-                            description
-                            descriptionHtml
-                            image {
+    return cache(
+        async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
+            try {
+                const { data, errors } = await api.query<{
+                    collection: QueryRoot['collection'];
+                }>(
+                    gql`
+                        query collection(
+                            $handle: String!
+                            $first: Int
+                            $last: Int
+                            $sorting: ProductCollectionSortKeys
+                            $before: String
+                            $after: String
+                        ) {
+                            collection(handle: $handle) {
                                 id
-                                altText
-                                url
-                                height
-                                width
-                            }
-                            seo {
+                                handle
                                 title
                                 description
-                            }
-                            products(
-                                first: $first
-                                last: $last
-                                sortKey: $sorting
-                                before: $before
-                                after: $after
-                            ) {
-                                edges {
-                                    node {
-                                        ${PRODUCT_FRAGMENT_MINIMAL}
+                                descriptionHtml
+                                image {
+                                    id
+                                    altText
+                                    url
+                                    height
+                                    width
+                                }
+                                seo {
+                                    title
+                                    description
+                                }
+                                products(
+                                    first: $first
+                                    last: $last
+                                    sortKey: $sorting
+                                    before: $before
+                                    after: $after
+                                ) {
+                                    edges {
+                                        node {
+                                            ${PRODUCT_FRAGMENT_MINIMAL}
+                                        }
+                                    }
+                                    pageInfo {
+                                        startCursor
+                                        endCursor
+                                        hasNextPage
+                                        hasPreviousPage
                                     }
                                 }
-                                pageInfo {
-                                    startCursor
-                                    endCursor
-                                    hasNextPage
-                                    hasPreviousPage
+                                keywords: metafield(namespace: "store", key: "keywords") {
+                                    value
+                                }
+                                isBrand: metafield(namespace: "store", key: "is_brand") {
+                                    value
+                                }
+                                shortDescription: metafield(namespace: "store", key: "short_description") {
+                                    value
                                 }
                             }
-                            keywords: metafield(namespace: "store", key: "keywords") {
-                                value
-                            }
-                            isBrand: metafield(namespace: "store", key: "is_brand") {
-                                value
-                            }
-                            shortDescription: metafield(namespace: "store", key: "short_description") {
-                                value
-                            }
                         }
+                    `,
+                    {
+                        handle: handle,
+                        ...extractLimitLikeFilters(filters),
+                        ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
+                            sorting: sorting,
+                            before: before,
+                            after: after
+                        }))(filters)
+                    },
+                    {
+                        tags: [`collection`]
                     }
-                `,
-            {
-                handle: handle,
-                ...extractLimitLikeFilters(filters),
-                ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                    sorting: sorting,
-                    before: before,
-                    after: after
-                }))(filters)
-            },
-            {
-                tags: [`collection`]
+                );
+
+                if (errors) {
+                    throw new UnknownApiError();
+                } else if (!data?.collection) {
+                    throw new NotFoundError(`"Collection" with the handle "${handle}"`);
+                }
+
+                return {
+                    ...data.collection,
+                    descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
+                };
+            } catch (error: unknown) {
+                console.error(error);
+                throw error;
             }
-        );
-
-        if (errors) {
-            throw new UnknownApiError();
-        } else if (!data?.collection) {
-            throw new NotFoundError(`"Collection" with the handle "${handle}"`);
-        }
-
-        return {
-            ...data.collection,
-            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
-        };
-    } catch (error: unknown) {
-        console.error(error);
-        throw error;
-    }
+        },
+        [shop.id, locale.code, 'collection', handle, JSON.stringify(filters, null, 0)]
+    )({ api, handle }, filters);
 };
 
 /**

@@ -4,6 +4,7 @@ import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { NotFoundError } from '@/utils/errors';
 import type { ProductConnection, ProductEdge, ProductSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
+import { unstable_cache as cache } from 'next/cache';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id
@@ -202,43 +203,50 @@ export const PRODUCT_FRAGMENT = `
 type ProductOptions = ApiOptions & Identifiable;
 export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Product> => {
     if (!handle) throw new Error('400: Invalid handle');
+    const shop = api.shop();
+    const locale = api.locale();
 
-    try {
-        const { data, errors } = await api.query<{ product: Product }>(
-            gql`
-                    query product($handle: String!) {
-                        product(handle: $handle) {
-                            ${PRODUCT_FRAGMENT}
+    return cache(
+        async ({ api, handle }: ProductOptions) => {
+            try {
+                const { data, errors } = await api.query<{ product: Product }>(
+                    gql`
+                        query product($handle: String!) {
+                            product(handle: $handle) {
+                                ${PRODUCT_FRAGMENT}
+                            }
                         }
+                    `,
+                    {
+                        handle
+                    },
+                    {
+                        tags: [`product.${handle}`]
                     }
-                `,
-            {
-                handle
-            },
-            {
-                tags: [`product.${handle}`]
+                );
+
+                if (errors) {
+                    throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
+                } else if (!data?.product?.handle) {
+                    throw new NotFoundError(`"Product" with the handle "${handle}"`);
+                } else if (data.product?.handle !== handle) {
+                    throw new Error(
+                        `500: Product handle doesn't match requested handle ("${data.product?.handle}" !== "${handle}")`
+                    );
+                }
+
+                const product = data.product;
+                return {
+                    ...product,
+                    descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || undefined
+                } as Product;
+            } catch (error: unknown) {
+                console.error(error);
+                throw error;
             }
-        );
-
-        if (errors) {
-            throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
-        } else if (!data?.product?.handle) {
-            throw new NotFoundError(`"Product" with the handle "${handle}"`);
-        } else if (data.product?.handle !== handle) {
-            throw new Error(
-                `500: Product handle doesn't match requested handle ("${data.product?.handle}" !== "${handle}")`
-            );
-        }
-
-        const product = data.product;
-        return {
-            ...product,
-            descriptionHtml: cleanShopifyHtml(product.descriptionHtml) || undefined
-        } as Product;
-    } catch (error: unknown) {
-        console.error(error);
-        throw error;
-    }
+        },
+        [shop.id, locale.code, 'product', handle]
+    )({ api, handle });
 };
 
 /**

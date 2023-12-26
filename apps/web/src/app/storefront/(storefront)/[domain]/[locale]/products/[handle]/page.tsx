@@ -116,13 +116,14 @@ export default async function ProductPage({
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        // Do the actual API calls.
-        const product = await ProductApi({ api, handle });
-        const reviews = await ProductReviewsApi({ api, product });
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Next.js Preloading pattern.
         void Prefetch({ api, page }); // TODO: Figure out a nicer way.
+
+        // Do the actual API calls.
+        const product = await ProductApi({ api, handle });
+        const reviews = await ProductReviewsApi({ api, product });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });

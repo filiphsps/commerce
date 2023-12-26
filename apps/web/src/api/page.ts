@@ -4,6 +4,7 @@ import { Error, NotFoundError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
 
 export const PagesApi = async ({
     shop,
@@ -65,13 +66,7 @@ export type Preloadable<T = unknown> = T & {
 /**
  * @todo Generalize api helpers.
  */
-export const PageApi = async <T extends PageType = 'custom_page'>({
-    shop,
-    locale,
-    client: _client,
-    handle,
-    type = 'custom_page' as T
-}: {
+export const PageApi = async <T extends PageType = 'custom_page'>(props: {
     shop: Shop;
     locale: Locale;
     handle: string;
@@ -80,35 +75,38 @@ export const PageApi = async <T extends PageType = 'custom_page'>({
 }): Promise<{
     page: PageData<T> | null;
 }> => {
-    if (shop.configuration.content.type !== 'prismic') {
+    if (props.shop.configuration.content.type !== 'prismic') {
         return { page: null };
     }
 
-    return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ shop, locale });
+    return cache(
+        async ({ shop, locale, client: _client, handle, type = 'custom_page' as T }) => {
+            const client = _client || createClient({ shop, locale });
 
-        try {
-            const { data: page } = await client.getByUID<PageDocument<T>>(type, handle, {
-                lang: locale.code
-            });
+            try {
+                const { data: page } = await client.getByUID(type, handle, {
+                    lang: locale.code
+                });
 
-            if (!page) return resolve({ page: null });
+                if (!page) return { page: null };
 
-            return resolve({ page });
-        } catch (error) {
-            if (Error.isNotFound(error)) {
-                if (!Locale.isDefault(locale)) {
-                    return resolve(await PageApi({ shop, locale: Locale.default, handle, type, client })); // Try again with default locale.
+                return { page };
+            } catch (error) {
+                if (Error.isNotFound(error)) {
+                    if (!Locale.isDefault(locale)) {
+                        return await PageApi({ shop, locale: Locale.default, handle, type, client }); // Try again with default locale.
+                    }
+
+                    // Don't throw on 404.
+                    // TODO: In the future we absolutely should.
+                    return { page: null };
                 }
 
-                // Don't throw on 404.
-                // TODO: In the future we absolutely should.
-                return resolve({ page: null });
+                throw error;
             }
-
-            return reject(error);
-        }
-    });
+        },
+        [props.shop.id, props.locale.code, 'page', props.handle, props.type || 'custom_page']
+    )(props);
 };
 
 /**
