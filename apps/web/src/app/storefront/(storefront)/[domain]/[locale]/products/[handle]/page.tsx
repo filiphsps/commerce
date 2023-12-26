@@ -6,6 +6,7 @@ import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
 import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
@@ -157,9 +158,9 @@ export default async function ProductPage({
         return (
             <>
                 <SplitView
-                    primaryDesktopWidth={0.46}
+                    primaryDesktopWidth={0.42}
                     primaryClassName={styles.headingPrimary}
-                    asideDesktopWidth={0.54}
+                    asideDesktopWidth={0.58}
                     aside={
                         <ProductGallery
                             initialImageId={variant?.image?.id || product.images?.edges?.[0]?.node.id}
@@ -254,6 +255,10 @@ export default async function ProductPage({
                 </SplitView>
 
                 <PageContent primary={true}></PageContent>
+
+                <Suspense>
+                    <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
+                </Suspense>
 
                 <ProductJsonLd
                     useAppDir={true}

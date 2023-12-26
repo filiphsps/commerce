@@ -9,11 +9,13 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    gap: var(--block-spacer-small);
 
     margin: var(--block-spacer) 0 0 0;
+
+    background-color: var(--color-block);
     color: var(--color-dark);
 
+    border-radius: var(--block-border-radius);
     list-style-type: none;
 
     font-size: 1.5rem;
@@ -24,15 +26,13 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        gap: var(--block-spacer-small);
         -webkit-user-select: none;
         user-select: none;
         height: 3.5rem;
 
         &:last-child {
             .link {
-                background: var(--color-accent-primary-light);
-                color: var(--accent-primary-text);
+                color: var(--color-accent-primary-light);
 
                 font-weight: 800;
             }
@@ -59,8 +59,8 @@
         }
 
         .icon {
-            min-width: 3.25rem;
-            padding: calc(var(--block-padding-small) * 1.5);
+            width: 1.5rem;
+            padding: 0;
 
             font-size: 1.5em;
 
@@ -68,11 +68,13 @@
         }
 
         .link {
-            cursor: pointer;
-
             span {
                 display: contents;
             }
+        }
+
+        &:not(:last-child) .link {
+            cursor: pointer;
 
             &:is(:hover, :active) {
                 background-color: var(--color-accent-secondary-light);

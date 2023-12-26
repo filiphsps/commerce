@@ -8,8 +8,9 @@ import { FiChevronRight } from 'react-icons/fi';
 
 type BreadcrumbsProps = {
     shop: Shop;
+    title?: string;
 };
-const Breadcrumbs = ({ shop }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
     const route = usePathname();
     const path = route?.split('/').slice(2, -1);
 
@@ -38,7 +39,7 @@ const Breadcrumbs = ({ shop }: BreadcrumbsProps) => {
                         itemType="https://schema.org/Thing"
                         itemProp="item"
                     >
-                        <span itemProp="name">{entry}</span>
+                        <span itemProp="name">{index === path.length - 1 ? title || entry : entry}</span>
                     </Link>
                     <meta itemProp="position" content={`${index + 2}`} />
                     {(index + 1 < path.length && <FiChevronRight className={styles.icon} />) || false}

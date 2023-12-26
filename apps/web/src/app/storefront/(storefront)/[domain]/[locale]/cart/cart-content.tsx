@@ -34,15 +34,15 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                     <Suspense>
                         <CartLines i18n={i18n} />
                     </Suspense>
-
-                    <Suspense>
-                        <Breadcrumbs shop={shop} />
-                    </Suspense>
                 </div>
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
             <Suspense>{slices}</Suspense>
+
+            <Suspense>
+                <Breadcrumbs shop={shop} />
+            </Suspense>
         </PageContent>
     );
 }

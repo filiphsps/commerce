@@ -61,7 +61,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         return new ImageResponse(
             (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img width={width!} height={height!} src={src} />
+                <img width={width!} height={height!} src={src} title="favicon" />
             ),
             {
                 width: width!,
