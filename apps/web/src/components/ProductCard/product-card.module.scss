@@ -216,6 +216,10 @@
             font-weight: 600;
             line-height: 1;
 
+            // https://stackoverflow.com/a/30533339/3142553
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+
             &:not(:disabled, [data-disabled]):is(:hover) {
                 background: var(--accent-secondary);
                 color: var(--accent-secondary-text);
@@ -227,7 +231,6 @@
             }
             &:is(:disabled, [data-disabled]) {
                 background-color: transparent;
-                pointer-events: none;
             }
         }
 

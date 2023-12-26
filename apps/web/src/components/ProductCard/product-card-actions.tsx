@@ -14,7 +14,7 @@ export type ProductCardActionsProps = {
 };
 
 const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
-    const { selectedVariant } = useProduct();
+    const { selectedVariant, product } = useProduct();
     const [quantity, setQuantity] = useState(1);
 
     if (!selectedVariant) return null;
@@ -41,7 +41,7 @@ const ProductCardActions = memo(({ i18n }: ProductCardActionsProps) => {
                 className={styles.button}
                 quantity={quantity}
                 i18n={i18n}
-                disabled={!!selectedVariant.availableForSale}
+                disabled={!product?.availableForSale || !selectedVariant.availableForSale}
             />
         </div>
     );

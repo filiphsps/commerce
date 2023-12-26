@@ -106,7 +106,7 @@ const AddToCart = ({ i18n, className, quantity = 0, showIcon = false, type, ...p
     if (animation) {
         // 1. Have we just successfully added to cart, if so, show a checkmark.
         label = t('added-to-cart');
-    } else if (selectedVariant && !selectedVariant.availableForSale) {
+    } else if (!selectedVariant?.availableForSale) {
         // 2. If out of stock, show the relevant label.
         label = t('out-of-stock');
         // eslint-disable-next-line brace-style
