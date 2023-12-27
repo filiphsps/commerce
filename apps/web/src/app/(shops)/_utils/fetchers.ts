@@ -8,7 +8,9 @@ export async function getShopsForUser(userId: string) {
         async () => {
             return prisma.shop.findMany({
                 where: {
-                    collaborators: { some: { userId } }
+                    collaborators: {
+                        some: { userId }
+                    }
                 },
                 select: {
                     id: true,
@@ -30,21 +32,17 @@ export async function getShopsForUser(userId: string) {
     )();
 }
 
-export async function getShop(userId: string | null, shopId: string) {
+export async function getShop(userId: string, shopId: string) {
     return await cache(
         async () => {
-            return prisma.shop.findUnique({
+            return prisma.shop.findFirst({
                 where: {
                     id: shopId,
-                    ...(userId
-                        ? {
-                              collaborators: {
-                                  some: {
-                                      userId
-                                  }
-                              }
-                          }
-                        : {})
+                    collaborators: {
+                        some: {
+                            userId
+                        }
+                    }
                 },
                 select: {
                     id: true,
@@ -52,7 +50,14 @@ export async function getShop(userId: string | null, shopId: string) {
                     domain: true,
                     collaborators: {
                         select: {
-                            user: true
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    image: true,
+                                    email: true
+                                }
+                            }
                         }
                     }
                 }
@@ -74,7 +79,11 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
         const response = await prisma.shop.update({
             where: {
                 id: shopId,
-                collaborators: { some: { userId } }
+                collaborators: {
+                    some: {
+                        userId
+                    }
+                }
             },
             data: data
         });
@@ -126,7 +135,8 @@ export async function getCommerceProvider(userId: string, shopId: string) {
                     },
                     select: {
                         commerceProvider: true
-                    }
+                    },
+                    cacheStrategy: { ttl: 120, swr: 3600 }
                 })
             )?.commerceProvider;
         },
@@ -175,7 +185,8 @@ export async function getContentProvider(userId: string, shopId: string) {
                     },
                     select: {
                         contentProvider: true
-                    }
+                    },
+                    cacheStrategy: { ttl: 120, swr: 3600 }
                 })
             )?.contentProvider;
         },
@@ -224,7 +235,8 @@ export async function getCheckoutProvider(userId: string, shopId: string) {
                     },
                     select: {
                         checkoutProvider: true
-                    }
+                    },
+                    cacheStrategy: { ttl: 120, swr: 3600 }
                 })
             )?.checkoutProvider;
         },

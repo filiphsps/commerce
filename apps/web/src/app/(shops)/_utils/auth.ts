@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
         verifyRequest: `/login/`,
         error: '/login/' // Error code passed in query string as ?error=
     },
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma as any),
     session: { strategy: 'jwt' },
     cookies: {
         sessionToken: {
