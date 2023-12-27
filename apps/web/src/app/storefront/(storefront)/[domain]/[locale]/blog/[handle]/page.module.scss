@@ -1,11 +1,12 @@
 @import '_globals.scss';
 
-/*max-width: 72rem;
-margin: 0 auto;*/
-
 .header {
+    width: $breakpoint-mobile;
+    max-width: 100%;
     padding-bottom: var(--block-padding-large);
+    margin: 0 auto;
     margin-bottom: var(--block-padding-large);
+
     border-bottom: var(--block-border-width) solid var(--color-block);
 
     h1 {
@@ -19,6 +20,12 @@ margin: 0 auto;*/
 }
 
 .content {
+    width: $breakpoint-mobile;
+    max-width: 100%;
+    margin: 0 auto;
+
+    font-size: 18px;
+
     img {
         margin-bottom: 0;
     }

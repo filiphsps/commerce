@@ -149,7 +149,11 @@ export default async function ArticlePage({
                     publisherLogo={store.favicon?.src!}
                 />
 
-                <Content className={styles.content} dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }} />
+                <Content
+                    className={styles.content}
+                    dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }}
+                    suppressHydrationWarning={true}
+                />
             </>
         );
     } catch (error: unknown) {

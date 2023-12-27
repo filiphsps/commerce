@@ -11,7 +11,6 @@ import { PageProvider } from '@/components/layout/page-provider';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { highlightConfig } from '@/utils/config/highlight';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Error } from '@/utils/errors';
@@ -62,7 +61,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
             },
             robots: {
                 follow: true,
-                index: BuildConfig.environment === 'production' ? true : false
+                index: true
             },
             referrer: 'origin',
             formatDetection: {

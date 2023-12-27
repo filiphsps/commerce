@@ -49,7 +49,10 @@ export default async function BlogContent({ shop, locale, blog }: BlogContentPro
                                     </Link>
                                 </div>
                                 <div className={styles.excerpt}>
-                                    <Content dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }} />
+                                    <Content
+                                        dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }}
+                                        suppressHydrationWarning={true}
+                                    />
                                 </div>
 
                                 <div className={styles.authors}>
