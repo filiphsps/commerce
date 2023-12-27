@@ -257,10 +257,11 @@ export const ConvertToLocalMeasurementSystem = ({
     //        more countries out there using imperial.
     const metric = locale.country && locale.country.toLowerCase() !== 'us';
     const unit = weightUnitToConvertUnits(weightUnit);
+
     // TODO: Do this properly.
     const targetUnit = (metric && 'g') || 'oz';
+    if (unit === targetUnit) return `${Math.ceil(weight)}${targetUnit}`; // TODO: Precision should be depending on unit.
 
     const res = ConvertUnits(weight).from(unit).to(targetUnit);
-    // TODO: Precision should be depending on unit.
-    return `${Math.ceil(res)}${targetUnit}`;
+    return `${Math.ceil(res)}${targetUnit}`; // TODO: Precision should be depending on unit.
 };

@@ -13,16 +13,8 @@ import { Fragment, type HTMLProps } from 'react';
 export type ProductOptionProps = {
     locale: Locale;
     initialVariant: ProductVariant;
-    selectedVariant: ProductVariant;
 } & HTMLProps<HTMLDivElement>;
-export const ProductOptions = ({
-    locale,
-    initialVariant,
-    selectedVariant,
-    style,
-    className,
-    ...props
-}: ProductOptionProps) => {
+export const ProductOptions = ({ locale, initialVariant, style, className, ...props }: ProductOptionProps) => {
     const {
         options: productOptions,
         variants,
@@ -75,10 +67,10 @@ export const ProductOptions = ({
                                     if (!value) return null;
                                     let title = value;
 
-                                    if (option.name === 'Size' && value?.toLowerCase().endsWith('g')) {
+                                    if (option.name === 'Size' && value && value.toLowerCase().endsWith('g')) {
                                         title = ConvertToLocalMeasurementSystem({
                                             locale,
-                                            weight: Number.parseFloat(value!.slice(0, -1)),
+                                            weight: Number.parseFloat(value.replaceAll(' ', '')!.slice(0, -1)),
                                             weightUnit: 'GRAMS'
                                         });
                                     }
@@ -129,6 +121,7 @@ export const ProductOptions = ({
                                             }`}
                                             {...({ disabled: !inStock } as any)}
                                             {...extraProps}
+                                            // The user's locale might differ from ours.
                                             suppressHydrationWarning={true}
                                         >
                                             {title}

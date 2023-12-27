@@ -10,8 +10,7 @@ import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
-import { useCallback, useState, type HTMLProps } from 'react';
+import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
 
 export type AddToCartProps = {
@@ -105,22 +104,30 @@ const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant,
         );
     }, [selectedVariant, quantity]);
 
-    let label: ReactNode = t('add-to-cart');
-    if (animation) {
-        // 1. Have we just successfully added to cart, if so, show a checkmark.
-        label = t('added-to-cart');
-    } else if (!selectedVariant?.availableForSale) {
-        // 2. If out of stock, show the relevant label.
-        label = t('out-of-stock');
-        // eslint-disable-next-line brace-style
-    } /* else if (!ready) {
-        // 3. Cart is not ready, tell the user.
-        label = t('cart-not-ready');
-    } */ else if (!quantity || quantity < 1) {
-        // 4. Quantity is either invalid or 0.
-        // TODO: This should not be a disabled state.
-        label = t('quantity-too-low');
-    }
+    const [label, setLabel] = useState<string>(t('add-to-cart'));
+    useEffect(() => {
+        if (animation) {
+            const newLabel = t('added-to-cart');
+
+            // 1. Have we just successfully added to cart, if so, show a checkmark.
+            if (label !== newLabel) setLabel(newLabel);
+        } else if (!selectedVariant?.availableForSale) {
+            const newLabel = t('out-of-stock');
+
+            // 2. If out of stock, show the relevant label.
+            if (label !== newLabel) setLabel(newLabel);
+        } else if (!quantity || quantity < 1) {
+            const newLabel = t('quantity-too-low');
+
+            // 3. Quantity is either invalid or 0.
+            if (label !== newLabel) setLabel(newLabel);
+        } else {
+            const newLabel = t('add-to-cart');
+
+            // 4. Default state.
+            if (label !== newLabel) setLabel(newLabel);
+        }
+    }, [animation, selectedVariant]);
 
     return (
         <Button

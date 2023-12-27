@@ -6,7 +6,7 @@ import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import Pricing from '@/components/typography/pricing';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export type ProductCardFooterProps = {
     locale: Locale;
@@ -17,7 +17,14 @@ export type ProductCardFooterProps = {
 };
 
 const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState<number>(1);
+    const update = useCallback(
+        (value: number) => {
+            if (value === quantity) return;
+            setQuantity(value);
+        },
+        [quantity]
+    );
 
     if (!selectedVariant) return null;
 
@@ -27,15 +34,7 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
                 <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
 
                 {selectedVariant.availableForSale ? (
-                    <QuantitySelector
-                        className={styles.quantity}
-                        i18n={i18n}
-                        value={quantity}
-                        update={(value) => {
-                            if (value === quantity) return;
-                            setQuantity(value);
-                        }}
-                    />
+                    <QuantitySelector className={styles.quantity} i18n={i18n} value={quantity} update={update} />
                 ) : null}
             </div>
 

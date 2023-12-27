@@ -66,13 +66,7 @@ vi.mock('next/link', async () => ({
 describe('components', () => {
     describe('ProductOptions', () => {
         it('renders all options and values', () => {
-            render(
-                <ProductOptions
-                    locale={Locale.from('en-GB')!}
-                    initialVariant={variants[0] as any}
-                    selectedVariant={variants[0] as any}
-                />
-            );
+            render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
             options.forEach((option) => {
                 const optionTitle = screen.getByText(option.name);
                 expect(optionTitle).toBeDefined();
@@ -85,25 +79,13 @@ describe('components', () => {
         });
 
         it('calls setSelectedOptions when an option is clicked', () => {
-            render(
-                <ProductOptions
-                    locale={Locale.from('en-GB')!}
-                    initialVariant={variants[0] as any}
-                    selectedVariant={variants[0] as any}
-                />
-            );
+            render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
             const target = screen.getByText(variants[1]!.title);
             expect(target.getAttribute('href')).toBeNull();
         });
 
         it('converts grams to ounces when locale is en-US', () => {
-            render(
-                <ProductOptions
-                    locale={Locale.from('en-US')!}
-                    initialVariant={variants[0] as any}
-                    selectedVariant={variants[0] as any}
-                />
-            );
+            render(<ProductOptions locale={Locale.from('en-US')!} initialVariant={variants[0] as any} />);
             // We can't use sizeOptionValues[0] because it's in grams.
             const sizeOptionValueElement = screen.getByText('4oz');
 
@@ -112,13 +94,7 @@ describe('components', () => {
         });
 
         it('disables options that are out of stock or unavailable', async () => {
-            render(
-                <ProductOptions
-                    locale={Locale.from('en-GB')!}
-                    initialVariant={variants[0] as any}
-                    selectedVariant={variants[0] as any}
-                />
-            );
+            render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
 
             await waitFor(() => {
                 const target = screen.getByText(variants[0]!.title);

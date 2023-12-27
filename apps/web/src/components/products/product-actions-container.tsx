@@ -46,17 +46,11 @@ export const ProductActionsContainer = ({
                     i18n={i18n}
                     style={{ gridArea: 'quantity' }}
                 />
-                <ProductOptions
-                    locale={locale}
-                    initialVariant={initialVariant}
-                    selectedVariant={selectedVariant || initialVariant}
-                    style={{ gridArea: 'options' }}
-                />
+
+                <ProductOptions locale={locale} initialVariant={initialVariant} style={{ gridArea: 'options' }} />
             </div>
 
-            <Suspense>
-                <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
-            </Suspense>
+            <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
 
             <Suspense>{children}</Suspense>
         </ProductProvider>
