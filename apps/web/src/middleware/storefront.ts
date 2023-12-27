@@ -106,7 +106,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {
-        return NextResponse.redirect(newUrl, { status: 302 });
+        return NextResponse.redirect(newUrl, { status: 301 });
     }
 
     // Rewrite index to use the `homepage` handle.

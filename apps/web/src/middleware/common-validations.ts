@@ -14,6 +14,9 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
     // Remove `x-default` if it's still there.
     path = path.replaceAll('x-default/', '');
 
+    // Remove double hyphens.
+    path = path.replaceAll('--', '-');
+
     // Make sure we don't have any double slashes, except for the ones
     // in the protocol.
     if (path.includes('://')) {

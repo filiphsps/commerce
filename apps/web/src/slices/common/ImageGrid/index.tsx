@@ -40,7 +40,6 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
                         width={300}
                         height={200}
                         sizes="(max-width: 950px) 250px, 25vw"
-                        fallbackAlt=""
                         loader={undefined}
                         // If we're positioned high up in the page, we want to load the image
                         // immediately. Otherwise, we can wait until the browser decides to.
