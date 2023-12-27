@@ -25,10 +25,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname.includes('/api') ||
         newUrl.pathname.includes('/slice-simulator')
     ) {
-        if (newUrl.pathname.startsWith('/assets/')) {
-            return NextResponse.next();
-        }
-
         // Do not mess with status or headers here.
         let target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${search}`;
         return NextResponse.rewrite(new URL(target, req.url));
