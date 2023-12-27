@@ -2,7 +2,7 @@ import 'server-only';
 
 import { getSession } from '#/utils/auth';
 import { getShop } from '#/utils/fetchers';
-import { Card, Label } from '@nordcom/nordstar';
+import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -27,7 +27,9 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
 
     return (
         <section>
-            <Label>Overview</Label>
+            <Heading level="h2" as="h2">
+                Overview
+            </Heading>
             <Card></Card>
         </section>
     );

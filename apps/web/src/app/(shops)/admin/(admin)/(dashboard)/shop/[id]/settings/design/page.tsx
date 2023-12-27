@@ -2,7 +2,7 @@ import 'server-only';
 
 import { getSession } from '#/utils/auth';
 import { getShop, updateShop } from '#/utils/fetchers';
-import { Button, Card, Label } from '@nordcom/nordstar';
+import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -30,7 +30,9 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
     return (
         <>
             <section>
-                <Label>Branding</Label>
+                <Heading level="h2" as="h2">
+                    Branding
+                </Heading>
                 <Card
                     as="form"
                     action={async (form: FormData) => {
@@ -59,7 +61,9 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
             </section>
 
             <section>
-                <Label>Design</Label>
+                <Heading level="h2" as="h2">
+                    Design
+                </Heading>
                 <Card></Card>
             </section>
         </>

@@ -111,6 +111,10 @@
                 text-align: right;
             }
         }
+
+        a.git-ref {
+            text-transform: lowercase;
+        }
     }
 
     @media (min-width: $breakpoint-mobile) {
@@ -119,4 +123,8 @@
         justify-content: flex-start;
         align-items: center;
     }
+}
+
+.status-iframe {
+    margin-left: -8px;
 }

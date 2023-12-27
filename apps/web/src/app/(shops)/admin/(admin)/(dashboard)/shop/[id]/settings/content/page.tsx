@@ -10,7 +10,7 @@ import {
     updateCommerceProvider,
     updateContentProvider
 } from '#/utils/fetchers';
-import { Button, Card, Label } from '@nordcom/nordstar';
+import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -74,7 +74,9 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
     return (
         <>
             <section>
-                <Label>Commerce</Label>
+                <Heading level="h2" as="h2">
+                    Commerce
+                </Heading>
                 <Card
                     as="form"
                     action={async (form: FormData) => {
@@ -120,7 +122,9 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
             </section>
 
             <section>
-                <Label>Content</Label>
+                <Heading level="h2" as="h2">
+                    Content
+                </Heading>
                 <Card
                     as="form"
                     action={async (form: FormData) => {
@@ -166,7 +170,9 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
             </section>
 
             <section>
-                <Label>Checkout</Label>
+                <Heading level="h2" as="h2">
+                    Checkout
+                </Heading>
                 <Card
                     as="form"
                     action={async (form: FormData) => {

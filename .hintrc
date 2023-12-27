@@ -20,7 +20,8 @@
                     "scrollbar-width",
                     "scrollbar-color",
                     "text-underline-position",
-                    "contain-intrinsic-size"
+                    "contain-intrinsic-size",
+                    "backdrop-filter"
                 ]
             }
         ]

@@ -2,7 +2,7 @@ import 'server-only';
 
 import { getSession } from '#/utils/auth';
 import { getShop } from '#/utils/fetchers';
-import { Card, Label } from '@nordcom/nordstar';
+import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -27,7 +27,9 @@ export default async function ShopSettingsBillingPage({ params: { id: shopId } }
 
     return (
         <section>
-            <Label>Billing</Label>
+            <Heading level="h2" as="h2">
+                Billing
+            </Heading>
             <Card></Card>
         </section>
     );
