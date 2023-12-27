@@ -315,7 +315,7 @@ function Trackable({ children }: TrackableProps) {
     const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
 
-    // TODO: Break these out into a separate hook, for tenants using Shopify.
+    // TODO: Break these out into a separate hook, to support other providers.
     const shopify = useShopify();
     const cart = useCart();
 
