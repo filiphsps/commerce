@@ -16,6 +16,7 @@ const Pricing = ({ price, compareAtPrice }: PricingProps) => {
                     as={'div'}
                     data={price}
                     className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
+                    data-sale={compareAtPrice ? true : undefined}
                     suppressHydrationWarning={true}
                 />
             ) : null}

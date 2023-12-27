@@ -70,6 +70,48 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
     return cache(callback, [shop.id, 'locales'])(api);
 };
 
+export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
+    const shop = api.shop();
+    const locale = api.locale();
+
+    if (shop?.configuration?.commerce?.type !== 'shopify') {
+        // TODO: Do this properly.
+        return null;
+    }
+
+    return cache(
+        async (api: AbstractApi) => {
+            const { data } = await api.query<{ localization: Localization }>(gql`
+                query localization {
+                    localization {
+                        country {
+                            currency {
+                                isoCode
+                                name
+                                symbol
+                            }
+                            isoCode
+                            name
+                            unitSystem
+                        }
+                        language {
+                            isoCode
+                            name
+                        }
+                        market {
+                            id
+                            handle
+                        }
+                    }
+                }
+            `);
+
+            return data?.localization!;
+        },
+        [shop.id, locale.code, 'locale']
+    )(api);
+};
+
 /**
  * Get store details.
  *

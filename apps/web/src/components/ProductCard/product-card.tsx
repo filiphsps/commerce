@@ -7,13 +7,13 @@ import ProductCardBadges from '@/components/ProductCard/product-card-badges';
 import ProductCardImage from '@/components/ProductCard/product-card-image';
 import ProductCardTitle from '@/components/ProductCard/product-card-title';
 import styles from '@/components/ProductCard/product-card.module.scss';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { getDictionary } from '@/utils/dictionary';
+import type { Locale } from '@/utils/locale';
 import { Suspense } from 'react';
 
 export type ProductCardProps = {
     shop: Shop;
     locale: Locale;
-    i18n: LocaleDictionary;
 
     // TODO: Use satisfied.
     data: Product;
@@ -21,7 +21,9 @@ export type ProductCardProps = {
 
     className?: string;
 };
-const ProductCard = ({ shop, locale, i18n, data, priority, className, ...props }: ProductCardProps) => {
+const ProductCard = async ({ shop, locale, data, priority, className, ...props }: ProductCardProps) => {
+    const i18n = await getDictionary({ shop, locale });
+
     return (
         <Suspense key={`${shop.id}.product.${data.handle}.card`} fallback={<ProductCard.skeleton />}>
             <div className={`${styles.container} ${className || ''}`} data-available={data.availableForSale} {...props}>

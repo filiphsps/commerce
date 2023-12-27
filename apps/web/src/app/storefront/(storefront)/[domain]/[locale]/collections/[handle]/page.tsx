@@ -111,7 +111,6 @@ export default async function CollectionPage({
                         <CollectionBlock
                             shop={shop}
                             locale={locale}
-                            i18n={i18n}
                             handle={handle}
                             // TODO: Pagination.
                             limit={250}

@@ -14,6 +14,9 @@
     font-weight: 600;
 
     &.sale {
+        font-weight: 800;
+        font-size: 1.35em;
+
         color: var(--color-sale);
     }
 }

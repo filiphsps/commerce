@@ -29,7 +29,7 @@ export const SubTitle = ({ as, bold, className, ...props }: SubTitleProps) => {
 
 type HeadingProps = {
     title: ReactNode;
-    subtitle: ReactNode;
+    subtitle?: ReactNode;
     reverse?: boolean;
     bold?: boolean;
     titleAs?: ElementType;
@@ -58,11 +58,11 @@ const Heading = ({
             {title}
         </Title>
     );
-    const subtitleComponent = (
+    const subtitleComponent = subtitle ? (
         <SubTitle bold={bold} as={subtitleAs as any} style={subtitleStyle} className={subtitleClassName}>
             {subtitle}
         </SubTitle>
-    );
+    ) : null;
 
     return (
         <>

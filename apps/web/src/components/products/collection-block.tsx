@@ -7,7 +7,7 @@ import { CollectionApi } from '@/api/shopify/collection';
 import ProductCard from '@/components/ProductCard/product-card';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {
@@ -17,7 +17,6 @@ export type CollectionBlockCommonProps = {
 export type CollectionBlockProps = {
     shop: Shop;
     locale: Locale;
-    i18n: LocaleDictionary;
 
     handle: string;
 
@@ -33,7 +32,6 @@ const CollectionBlock = async ({
     limit,
     isHorizontal,
     showViewAll,
-    i18n,
     priority,
     className,
     ...props
@@ -65,7 +63,6 @@ const CollectionBlock = async ({
                         key={product.id}
                         shop={shop}
                         locale={locale}
-                        i18n={i18n}
                         data={product}
                         priority={priority && index < 2}
                     />

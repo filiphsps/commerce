@@ -13,6 +13,7 @@ import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { ProductGallery } from '@/components/products/product-gallery';
+import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -260,7 +261,29 @@ export default async function ProductPage({
                     </div>
                 </SplitView>
 
-                <PageContent primary={true}></PageContent>
+                <PageContent primary={true}>
+                    {page?.slices2 && page?.slices2.length > 0 ? (
+                        <Suspense
+                            key={`${shop.id}.products.${handle}.content`}
+                            fallback={<PrismicPage.skeleton page={page as any} />}
+                        >
+                            <PrismicPage
+                                shop={shop}
+                                locale={locale}
+                                page={
+                                    {
+                                        slices: page.slices2
+                                    } as any
+                                }
+                                i18n={i18n}
+                                handle={`product-${handle}-secondary`}
+                                type={'product_page'}
+                            />
+                        </Suspense>
+                    ) : null}
+
+                    <RecommendedProducts shop={shop} locale={locale} product={product} />
+                </PageContent>
 
                 <Suspense>
                     <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />

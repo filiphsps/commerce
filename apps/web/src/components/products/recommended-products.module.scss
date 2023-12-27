@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer);
+
+    padding: var(--block-padding-large) 0;
+
+    background-color: var(--color-block);
+
+    border-radius: var(--block-border-radius);
+
+    h3 {
+        padding: 0 var(--block-padding-large);
+    }
+}

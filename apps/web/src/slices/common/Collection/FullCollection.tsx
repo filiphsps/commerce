@@ -41,7 +41,6 @@ const FullCollection = ({
                     className={styles['full-collection']}
                     shop={shop}
                     locale={locale}
-                    i18n={i18n}
                     handle={handle as string}
                     limit={250}
                     showViewAll={false}

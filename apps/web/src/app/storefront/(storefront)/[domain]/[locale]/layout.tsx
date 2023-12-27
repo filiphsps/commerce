@@ -3,7 +3,8 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiConfig } from '@/api/shopify';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { LocaleApi } from '@/api/store';
 import { HeaderProvider } from '@/components/Header/header-provider';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { PageProvider } from '@/components/layout/page-provider';
@@ -92,9 +93,11 @@ export default async function RootLayout({
 
         const shop = await ShopApi(domain);
         const apiConfig = await ShopifyApiConfig({ shop });
+        const api = await ShopifyApolloApiClient({ shop });
 
         const branding = await getBrandingColors(domain);
         const i18n = await getDictionary(locale);
+        const localization = await LocaleApi({ api });
 
         return (
             <>
@@ -111,7 +114,12 @@ export default async function RootLayout({
                     </head>
 
                     <body suppressHydrationWarning={true}>
-                        <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()}>
+                        <ProvidersRegistry
+                            shop={shop}
+                            localization={localization || undefined}
+                            locale={locale}
+                            apiConfig={apiConfig.public()}
+                        >
                             <AnalyticsProvider shop={shop}>
                                 <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
                                     <PageProvider shop={shop} locale={locale} i18n={i18n}>

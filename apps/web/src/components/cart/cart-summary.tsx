@@ -175,19 +175,25 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                     <FiChevronRight className={styles.icon} />
                 </Button>
 
-                {!loading && lines && lines.length > 0 ? (
-                    <Suspense>
-                        <ShopPayButton
-                            // TODO: Only show this if we're using Shopify.
-                            width="100%"
-                            className={`${styles.button} ${styles['shop-button']}`}
-                            variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
-                                quantity,
-                                id
-                            }))}
-                            channel="hydrogen"
-                        />
-                    </Suspense>
+                {lines && lines.length > 0 ? (
+                    <>
+                        {!loading ? (
+                            <Suspense>
+                                <ShopPayButton
+                                    // TODO: Only show this if we're using Shopify.
+                                    width="100%"
+                                    className={`${styles.button} ${styles['shop-button']}`}
+                                    variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
+                                        quantity,
+                                        id
+                                    }))}
+                                    channel="hydrogen"
+                                />
+                            </Suspense>
+                        ) : (
+                            <Button className={`${styles.button} ${styles['shop-button']}`} disabled={true} />
+                        )}
+                    </>
                 ) : null}
             </section>
 

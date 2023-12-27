@@ -1,16 +1,16 @@
+import type { Product } from '@/api/product';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 
 // TODO: Migrate to the new recommendations api.
-export const RecommendationApi = async ({ client, id }: { client: AbstractApi; id: string }): Promise<Product[]> => {
+export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: string }): Promise<Product[]> => {
     return new Promise(async (resolve, reject) => {
         // TODO: Use `parseGid` from `@shopify/hydrogen-react` to validate the id.
         if (!id || !id.includes('gid://shopify')) return reject(new Error('Invalid ID'));
 
         try {
-            const { data, errors } = await client.query<{ productRecommendations: Product[] }>(
+            const { data, errors } = await api.query<{ productRecommendations: Product[] }>(
                 gql`
                     query productRecommendations($productId: ID!) {
                         productRecommendations(productId: $productId, intent: RELATED) {

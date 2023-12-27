@@ -47,7 +47,6 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }
                                 isHorizontal={horizontal}
                                 limit={slice.primary.limit || 16}
                                 showViewAll={true}
-                                i18n={i18n}
                                 priority={index < 3}
                             />
                         </Suspense>
