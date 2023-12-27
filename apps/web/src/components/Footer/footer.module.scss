@@ -15,7 +15,7 @@
         display: grid;
         grid-template-rows: auto 1fr;
         gap: 1.5rem;
-        width: 1465px;
+        width: var(--page-width);
         max-width: 100%;
         padding: var(--block-padding-large);
 

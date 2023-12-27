@@ -2,26 +2,26 @@ import 'server-only';
 
 import { FooterApi } from '@/api/footer';
 import type { Shop } from '@/api/shop';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { StoreApi } from '@/api/store';
+import FooterContent from '@/components/Footer/footer-content';
 import styles from '@/components/Footer/footer.module.scss';
 import { PrismicText } from '@/components/typography/prismic-text';
-import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from '../link';
-
-const FooterContent = dynamic(() => import('@/components/Footer/footer-content'));
 
 export type FooterProps = {
     shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
-
-    /** @deprecated */
-    store: StoreModel;
 };
-const Footer = async ({ store, shop, locale, i18n }: FooterProps) => {
+const Footer = async ({ shop, locale, i18n }: FooterProps) => {
+    const apiConfig = await ShopifyApiConfig({ shop });
+    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+
     const footer = await FooterApi({ shop, locale });
+    const store = await StoreApi({ api, locale });
 
     // TODO: Dynamic copyright copy and content.
     return (
@@ -36,6 +36,9 @@ const Footer = async ({ store, shop, locale, i18n }: FooterProps) => {
                                     alt={store.logos.primary.alt || 'Logo'}
                                     fill
                                     sizes="(max-width: 950px) 75px, 225px"
+                                    priority={false}
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             )}
                         </div>

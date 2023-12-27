@@ -28,7 +28,7 @@
             cursor: pointer;
         }
 
-        &:is(:active, :focus, :focus-within, :hover:not(.selected)):not(:disabled) {
+        &:is(:active, :focus, :focus-within, :hover):not(:disabled, .selected) {
             border-color: var(--color-block-dark);
         }
 

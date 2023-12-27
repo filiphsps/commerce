@@ -3,8 +3,7 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { ShopifyApiConfig } from '@/api/shopify';
 import ProvidersRegistry from '@/components/providers-registry';
 import { CssVariablesProvider } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
@@ -39,8 +38,6 @@ export default async function RootLayout({
     const shop = await ShopApi(domain);
     const locale = Locale.default;
     const shopifyApi = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApiClient({ shop, locale });
-    const store = await StoreApi({ api });
 
     return (
         <html lang={locale.code} className={`${fontPrimary.variable}`} suppressHydrationWarning={true}>
@@ -50,7 +47,7 @@ export default async function RootLayout({
                 </Suspense>
             </head>
             <body suppressHydrationWarning={true}>
-                <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()} store={store}>
+                <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()}>
                     {children}
                 </ProvidersRegistry>
             </body>

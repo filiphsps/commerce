@@ -25,5 +25,6 @@
 
     @media (max-width: $breakpoint-mobile) {
         margin-right: var(--block-spacer);
+        padding: var(--block-padding) var(--block-padding-large);
     }
 }

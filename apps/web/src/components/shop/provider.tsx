@@ -1,3 +1,5 @@
+'use client';
+
 import type { Shop } from '@/api/shop';
 import { MissingContextProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';

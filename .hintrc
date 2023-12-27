@@ -1,6 +1,13 @@
 {
     "extends": ["development"],
-    "browserslist": ["defaults", "not ie 11", "not ie <= 10", "not and_ff <= 119", "not firefox <= 121"],
+    "browserslist": [
+        "defaults",
+        "not ie 11",
+        "not ie <= 10",
+        "not and_ff <= 119",
+        "not firefox <= 121",
+        "not opera <= 104"
+    ],
     "hints": {
         "compat-api/css": [
             "default",

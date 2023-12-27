@@ -1,5 +1,4 @@
 @import './globals.scss';
-//@use '_globals.scss' as *;
 
 :root {
     --fallback-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
@@ -56,7 +55,7 @@ html {
         --component-product-card-width: 22rem;
 
         // Layouting:
-        --page-width: 1465px;
+        --page-width: #{$page-width};
 
         --block-border-radius-large: 2rem;
         --block-border-radius: 1.25rem;

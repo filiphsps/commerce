@@ -1,19 +1,25 @@
 import { ShopApi } from '@/api/shop';
 import { colord } from 'colord';
+import { unstable_cache as cache } from 'next/cache';
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
-    const shop = await ShopApi(domain);
-    const { colors } = shop.configuration!.design!.branding!;
+    return cache(
+        async (domain: string) => {
+            const shop = await ShopApi(domain);
+            const { colors } = shop.configuration!.design!.branding!;
 
-    // TODO: Deal with variants.
-    const primary = colors!.find(({ type }) => type === 'primary')!;
-    const secondary = colors!.find(({ type }) => type === 'secondary')!;
+            // TODO: Deal with variants.
+            const primary = colors!.find(({ type }) => type === 'primary')!;
+            const secondary = colors!.find(({ type }) => type === 'secondary')!;
 
-    return {
-        primary,
-        secondary
-    };
+            return {
+                primary,
+                secondary
+            };
+        },
+        [domain, 'branding']
+    )(domain);
 };
 
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
@@ -21,7 +27,7 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
 
     // TODO: Background and foreground colors.
     return (
-        <style>{`
+        <style suppressHydrationWarning={true}>{`
         :root {
             --color-background: #fefefe;
             --color-foreground: #101418;

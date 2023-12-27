@@ -20,7 +20,8 @@ const Title = ({ slice }: TitleProps): JSX.Element => {
                 className={`${styles.content} ${
                     (slice.primary.alignment === 'left' && styles['align-left']) ||
                     (slice.primary.alignment === 'right' && styles['align-right']) ||
-                    styles['align-center']
+                    (slice.primary.alignment === 'center' && styles['align-center']) ||
+                    styles['align-left']
                 }`}
             >
                 <PrismicText data={slice.primary.content} />

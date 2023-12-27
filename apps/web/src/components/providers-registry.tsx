@@ -3,10 +3,7 @@
 import type { ApiConfig } from '@/api/client';
 import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
-import { HeaderProvider } from '@/components/Header/header-provider';
-import { AnalyticsProvider } from '@/components/analytics-provider';
 import { ShopProvider } from '@/components/shop/provider';
-import type { StoreModel } from '@/models/StoreModel';
 import { BuildConfig } from '@/utils/build-config';
 import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
@@ -19,13 +16,11 @@ import { Toaster } from 'sonner';
 export default function ProvidersRegistry({
     shop,
     locale,
-    store,
     children
 }: {
     shop: Shop;
     locale: Locale;
     apiConfig: ApiConfig;
-    store: StoreModel;
     children: ReactNode;
 }) {
     let domain, token, id;
@@ -45,36 +40,38 @@ export default function ProvidersRegistry({
 
     return (
         <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
-            <ShopifyProvider
-                storefrontId={id}
-                storeDomain={`https://${domain}`}
-                storefrontApiVersion={BuildConfig.shopify.api}
-                storefrontToken={token}
-                countryIsoCode={(locale.country || Locale.default.country)!}
-                languageIsoCode={locale.language}
-            >
-                <CartProvider cartFragment={CartFragment} languageCode={locale.language} countryCode={locale.country}>
-                    <ShopProvider shop={shop} currency={'USD'} locale={locale}>
-                        <AnalyticsProvider shop={shop}>
-                            <HeaderProvider store={store} />
-                            <Toaster
-                                theme="dark"
-                                position="bottom-left"
-                                closeButton={true}
-                                expand={true}
-                                duration={5000}
-                                gap={4}
-                                toastOptions={{
-                                    classNames: {
-                                        toast: 'toast-notification'
-                                    }
-                                }}
-                            />
-                            {children}
-                        </AnalyticsProvider>
-                    </ShopProvider>
-                </CartProvider>
-            </ShopifyProvider>
+            <ShopProvider shop={shop} currency={'USD'} locale={locale}>
+                <ShopifyProvider
+                    storefrontId={id}
+                    storeDomain={`https://${domain}`}
+                    storefrontApiVersion={BuildConfig.shopify.api}
+                    storefrontToken={token}
+                    countryIsoCode={(locale.country || Locale.default.country)!}
+                    languageIsoCode={locale.language}
+                >
+                    <CartProvider
+                        cartFragment={CartFragment}
+                        languageCode={locale.language}
+                        countryCode={locale.country}
+                    >
+                        {children}
+
+                        <Toaster
+                            theme="dark"
+                            position="bottom-left"
+                            closeButton={true}
+                            expand={true}
+                            duration={5000}
+                            gap={4}
+                            toastOptions={{
+                                classNames: {
+                                    toast: 'toast-notification'
+                                }
+                            }}
+                        />
+                    </CartProvider>
+                </ShopifyProvider>
+            </ShopProvider>
         </PrismicProvider>
     );
 }

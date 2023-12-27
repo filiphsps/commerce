@@ -3,15 +3,16 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { ShopifyApiConfig } from '@/api/shopify';
+import { HeaderProvider } from '@/components/Header/header-provider';
+import { AnalyticsProvider } from '@/components/analytics-provider';
 import { PageProvider } from '@/components/layout/page-provider';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
 import { BuildConfig } from '@/utils/build-config';
 import { highlightConfig } from '@/utils/config/highlight';
-import { CssVariablesProvider } from '@/utils/css-variables';
+import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
@@ -91,9 +92,8 @@ export default async function RootLayout({
 
         const shop = await ShopApi(domain);
         const apiConfig = await ShopifyApiConfig({ shop });
-        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
-        const store = await StoreApi({ api });
+        const branding = await getBrandingColors(domain);
         const i18n = await getDictionary(locale);
 
         return (
@@ -101,26 +101,28 @@ export default async function RootLayout({
                 <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
                 <html
                     lang={locale.code}
-                    className={`${fontPrimary.variable}`}
-                    /* A bunch of extensions add classes to the `html` element. */
+                    className={fontPrimary.variable || undefined}
+                    // A bunch of extensions add classes to the `html` element.
                     suppressHydrationWarning={true}
                 >
-                    <head>
-                        <Suspense key={`${shop.id}.styling`}>
-                            <CssVariablesProvider domain={domain} />
-                        </Suspense>
+                    <head suppressHydrationWarning={true}>
+                        <meta name="theme-color" content={branding.secondary.accent} />
+                        <CssVariablesProvider domain={domain} />
                     </head>
+
                     <body suppressHydrationWarning={true}>
-                        <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()} store={store}>
-                            <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
-                                <PageProvider shop={shop} locale={locale} i18n={i18n} store={store}>
-                                    <PageContent as="main" primary={true}>
-                                        <Suspense key={`${shop.id}.layout.page`} fallback={<PageProvider.skeleton />}>
+                        <ProvidersRegistry shop={shop} locale={locale} apiConfig={apiConfig.public()}>
+                            <AnalyticsProvider shop={shop}>
+                                <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
+                                    <PageProvider shop={shop} locale={locale} i18n={i18n}>
+                                        <PageContent as="main" primary={true}>
                                             {children}
-                                        </Suspense>
-                                    </PageContent>
-                                </PageProvider>
-                            </Suspense>
+                                        </PageContent>
+                                    </PageProvider>
+                                </Suspense>
+                            </AnalyticsProvider>
+
+                            <HeaderProvider loaderColor={branding.secondary.accent} />
                         </ProvidersRegistry>
                     </body>
                 </html>

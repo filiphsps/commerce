@@ -1,3 +1,5 @@
+@import '_globals.scss';
+
 .container {
     display: flex;
     flex-direction: column;
@@ -8,7 +10,7 @@
 
     border-radius: var(--block-border-radius);
 
-    @media (min-width: 765px) {
+    @media (min-width: $breakpoint-mobile-small) {
         display: grid;
         justify-content: stretch;
         align-items: stretch;
@@ -19,6 +21,10 @@
             grid-template-areas: 'overview-content overview-banner';
             grid-template-columns: auto minmax(32rem, 1fr);
         }
+    }
+
+    .content {
+        padding: calc(var(--block-padding-large) * 2);
     }
 
     .image {
@@ -51,8 +57,11 @@
             object-fit: cover;
         }
     }
+}
 
-    .content {
-        padding: calc(var(--block-padding-large) * 2);
+.content {
+    &.plain {
+        width: $breakpoint-tablet;
+        max-width: 100%;
     }
 }

@@ -10,7 +10,7 @@
     gap: calc(var(--block-spacer-small) / 2);
 
     height: 100%;
-    min-height: 36.5rem;
+    min-height: 37.5rem;
     width: 100%;
     min-width: var(--component-product-card-width);
     padding: calc(var(--block-padding) - var(--block-border-width));
@@ -23,6 +23,7 @@
     scroll-snap-align: center;
 
     contain-intrinsic-size: var(--component-product-card-width) 40rem;
+    content-visibility: auto;
 
     &[data-available='false'] {
         opacity: 0.75;
@@ -278,7 +279,7 @@
         }
     }
 
-    &:is([data-skeleton]),
+    &[data-skeleton],
     [data-skeleton] & {
         box-shadow: none;
         background-color: var(--color-block-dark);

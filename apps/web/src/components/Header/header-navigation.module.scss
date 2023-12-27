@@ -114,7 +114,7 @@
                 grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
                 gap: var(--block-spacer-large);
                 padding: 2rem 2rem 1rem 2rem;
-                max-width: 1465px;
+                max-width: var(--page-width);
                 margin: 0 auto;
 
                 .subitem {

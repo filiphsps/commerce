@@ -67,6 +67,8 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                                         aria-label={country.country}
                                         sizes="35px"
                                         draggable={false}
+                                        priority={false}
+                                        loading="lazy"
                                         decoding="async"
                                     />
                                 </div>

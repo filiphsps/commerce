@@ -49,7 +49,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
                 if (!Slice) return null;
 
                 if (Slice.skeleton) {
-                    return <Slice.skeleton key={slice.id} slice={slice} />;
+                    return <Slice.skeleton key={slice.id} slice={slice} data-skeleton />;
                 }
 
                 return <div key={slice.id} data-slice={slice.id} />;

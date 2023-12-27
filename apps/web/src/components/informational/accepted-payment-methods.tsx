@@ -25,6 +25,7 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
                     sizes="35px"
                     priority={false}
                     loading="lazy"
+                    decoding="async"
                 />
             ))}
             {wallets?.map((method) => (

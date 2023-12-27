@@ -17,12 +17,12 @@
         gap: var(--block-padding-large);
         padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
         min-height: 30vh;
-        max-width: 1465px;
+        max-width: var(--page-width);
 
         @media (min-width: $breakpoint-mobile) {
             gap: calc(var(--block-padding-large) * 2);
         }
-        @media (min-width: 1465px) {
+        @media (min-width: $page-width) {
             padding: 4rem 10rem;
         }
 
@@ -127,7 +127,7 @@
             @media (min-width: $breakpoint-mobile) {
                 gap: var(--block-padding-large);
             }
-            @media (min-width: 1465px) {
+            @media (min-width: $page-width) {
                 padding: calc(var(--block-padding-large) * 1.5) var(--block-padding-large);
             }
 

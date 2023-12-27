@@ -1,15 +1,14 @@
 'use client';
 
-import type { StoreModel } from '@/models/StoreModel';
 import { usePathname, useRouter } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import { useEffect } from 'react';
 
 export type HeaderProviderProps = {
-    store: StoreModel;
+    loaderColor: string;
 };
-export const HeaderProvider = ({ store }: HeaderProviderProps) => {
+export const HeaderProvider = ({ loaderColor }: HeaderProviderProps) => {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -40,7 +39,7 @@ export const HeaderProvider = ({ store }: HeaderProviderProps) => {
 
     return (
         <>
-            <NextTopLoader color={store.accent.primary} showSpinner={true} crawl={true} />
+            <NextTopLoader color={loaderColor} showSpinner={true} crawl={true} />
         </>
     );
 };

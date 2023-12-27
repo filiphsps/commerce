@@ -10,7 +10,6 @@ export type CurrentLocaleFlagProps = {
 export const CurrentLocaleFlag = ({
     locale,
     className,
-    priority,
     width,
     height,
     alt = locale.country,
@@ -24,7 +23,9 @@ export const CurrentLocaleFlag = ({
             aria-label={alt}
             width={width || '24'}
             height={height || '16'}
-            priority={priority !== undefined ? priority : true}
+            priority={false}
+            loading="lazy"
+            decoding="async"
             // TODO: Don't hardcode to some random github pages repo.
             src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${locale.country}.svg`}
         />

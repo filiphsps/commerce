@@ -16,13 +16,6 @@
         grid-auto-rows: 1fr;
         grid-template-columns: 1fr 1fr;
 
-        // https://stackoverflow.com/a/30533339/3142553
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-
-        // Attempt at fixing performance on iOS/iPadOS webkit
-        -webkit-overflow-scrolling: touch;
-
         @media (min-width: $breakpoint-mobile) {
             justify-content: start;
             gap: var(--block-spacer);
@@ -71,7 +64,9 @@
         }
     }
 
-    &.skeleton {
+    &[data-skeleton],
+    [data-skeleton] & {
+        background: unset;
         --product-card-color-background: var(--color-bright);
         --product-card-color-image-background: var(--color-block);
     }
@@ -96,6 +91,13 @@
 
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
+
+            // https://stackoverflow.com/a/30533339/3142553
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+
+            // Attempt at fixing performance on iOS/iPadOS webkit
+            -webkit-overflow-scrolling: touch;
         }
     }
 }

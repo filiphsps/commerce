@@ -8,7 +8,7 @@ import ProductCard from '@/components/ProductCard/product-card';
 import Link from '@/components/link';
 import styles from '@/components/products/collection-block.module.scss';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {
     isHorizontal?: boolean;

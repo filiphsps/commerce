@@ -11,15 +11,13 @@
     width: auto;
     height: auto;
     max-height: 100%;
-    padding: calc(var(--block-padding-large) - var(--block-border-width))
-        calc(var(--block-padding) - var(--block-border-width));
+    padding: var(--block-padding-large) var(--block-padding);
 
     font-size: 1.5rem;
     font-weight: 500;
     text-align: center;
     line-height: 1;
 
-    border: var(--block-border-width) solid var(--accent-primary);
     border-radius: var(--block-border-radius-large);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     background-color: var(--accent-primary);
@@ -27,7 +25,6 @@
 
     transition:
         $animation-duration ease-in-out background-color,
-        $animation-duration ease-in-out border-color,
         $animation-duration ease-in-out color,
         $animation-duration ease-in-out font-weight,
         $animation-duration ease-in-out opacity;
@@ -42,13 +39,11 @@
 
     @media (min-width: $breakpoint-mobile) {
         gap: var(--block-spacer-small);
-        padding: calc(var(--block-padding) - var(--block-border-width))
-            calc(var(--block-padding) - var(--block-border-width));
+        padding: var(--block-padding) var(--block-padding);
     }
 
     &:is([data-success], :is([data-success]):is(:enabled:active, :enabled:hover, :disabled:active, :disabled:hover)) {
         background-color: var(--color-block-success);
-        border-color: var(--color-block-success);
         color: var(--color-block-success-text);
         font-weight: 600;
     }
@@ -58,17 +53,14 @@
 
         &:is(:hover) {
             background-color: var(--color-accent-primary-light);
-            border-color: var(--color-accent-primary-light);
         }
         &:is(:active, :focus, :focus-within) {
             background-color: var(--color-accent-primary-dark);
-            border-color: var(--color-accent-primary-dark);
         }
     }
 
     &:is(:disabled):not([data-success]) {
         &:not([data-ready='false']) {
-            border-color: var(--color-block-dark);
             background-color: var(--color-block-dark);
             color: var(--color-block-black);
         }

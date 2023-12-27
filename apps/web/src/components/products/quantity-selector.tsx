@@ -3,7 +3,7 @@
 import styles from '@/components/products/quantity-selector.module.scss';
 import type { LocaleDictionary } from '@/utils/locale';
 import { useTranslation } from '@/utils/locale';
-import type { KeyboardEventHandler } from 'react';
+import type { ChangeEvent, KeyboardEventHandler } from 'react';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 import { CgMathMinus, CgMathPlus } from 'react-icons/cg';
 
@@ -55,6 +55,23 @@ const QuantitySelector = ({
         [update, quantity]
     );
 
+    const decrease = useCallback(() => {
+        if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) return;
+
+        updateQuantity(quantity - 1);
+    }, [quantity]);
+    const increase = useCallback(() => {
+        updateQuantity(quantity + 1);
+    }, [quantity]);
+
+    const onBlur = useCallback(() => {
+        if (!quantityValue) {
+            updateQuantity(allowDecreaseToZero ? '0' : '1');
+            return;
+        }
+
+        updateQuantity(quantityValue);
+    }, [quantityValue]);
     const onKeyDown = useCallback(
         ({ key, preventDefault }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
             if (key === 'Enter') {
@@ -67,16 +84,15 @@ const QuantitySelector = ({
         },
         [quantityValue]
     );
+    const onChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const value = QuantityInputFilter(e?.target?.value, quantityValue);
+            if (value == quantityValue) return;
 
-    const decrease = useCallback(() => {
-        if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) return;
-
-        updateQuantity(quantity - 1);
-    }, [quantity]);
-
-    const increase = useCallback(() => {
-        updateQuantity(quantity + 1);
-    }, [quantity]);
+            setQuantityValue(value);
+        },
+        [quantityValue]
+    );
 
     useEffect(() => {
         if (quantity.toString() === quantityValue) return;
@@ -87,7 +103,7 @@ const QuantitySelector = ({
         <section {...props} className={`${styles.container} ${className || ''}`}>
             <button
                 type="button"
-                className={`${styles.button} ${styles.add}`}
+                className={styles.button}
                 disabled={disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1)}
                 onClick={decrease}
                 title="Decrease quantity" // TODO: i18n.
@@ -105,27 +121,15 @@ const QuantitySelector = ({
                 disabled={disabled}
                 value={quantityValue}
                 placeholder={t('quantity')}
-                onBlur={(_) => {
-                    if (!quantityValue) {
-                        updateQuantity(allowDecreaseToZero ? '0' : '1');
-                        return;
-                    }
-
-                    updateQuantity(quantityValue);
-                }}
+                onBlur={onBlur}
                 onKeyDown={onKeyDown}
-                onChange={(e) => {
-                    const value = QuantityInputFilter(e?.target?.value, quantityValue);
-                    if (value == quantityValue) return;
-
-                    setQuantityValue(value);
-                }}
+                onChange={onChange}
                 data-quantity-input
                 suppressHydrationWarning={true}
             />
             <button
                 type="button"
-                className={`${styles.button} ${styles.remove}`}
+                className={styles.button}
                 disabled={disabled}
                 onClick={increase}
                 title="Increase quantity" // TODO: i18n.

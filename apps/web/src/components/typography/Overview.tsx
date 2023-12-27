@@ -15,15 +15,17 @@ interface OverviewProps {
     };
     imageStyle?: 'normal' | 'cover';
     layout?: 'left' | 'right';
+
+    className?: string;
     style?: React.CSSProperties;
 }
-export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, style }) => {
-    if (!image) return <Content className="plain">{body}</Content>;
+export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, className, style }) => {
+    if (!image) return <Content className={`${styles.content} ${styles.plain}`}>{body}</Content>;
 
     return (
         <section
             {...(style ? { style } : {})}
-            className={`${styles.container} ${layout === 'right' ? styles['align-right'] : ''}`}
+            className={`${styles.container} ${layout === 'right' ? styles['align-right'] : ''} ${className || ''}`}
         >
             <PrismicNextImage
                 className={`${styles.image} ${imageStyle === 'cover' ? styles.expand : ''}`}
