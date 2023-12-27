@@ -6,7 +6,7 @@
     overflow-x: auto;
     overscroll-behavior-x: contain;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 
     margin: var(--block-spacer) 0 0 0;
@@ -20,6 +20,10 @@
     font-size: 1.5rem;
     line-height: 1.75rem;
     font-weight: 600;
+
+    @media (min-width: $breakpoint-mobile) {
+        justify-content: flex-start;
+    }
 
     .item {
         display: flex;

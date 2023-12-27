@@ -114,26 +114,30 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                             title={`${salePercentage}% OFF`}
                         >
                             <Label className={styles.label}>{t('sale-discount')}</Label>
-                            <Money
-                                className={styles.money}
-                                data={{
-                                    currencyCode: cost?.totalAmount?.currencyCode,
-                                    amount: sale.toString()
-                                }}
-                            />
+                            {!loading ? (
+                                <Money
+                                    className={styles.money}
+                                    data={{
+                                        currencyCode: cost?.totalAmount?.currencyCode,
+                                        amount: sale.toString()
+                                    }}
+                                />
+                            ) : null}
                         </div>
                     ) : null}
 
                     {promos ? (
                         <div className={`${styles['line-item']} ${styles.breakdown} ${styles.discounted}`}>
                             <Label className={styles.label}>{t('promo-codes')}</Label>
-                            <Money
-                                className={styles.money}
-                                data={{
-                                    currencyCode: cost?.totalAmount?.currencyCode,
-                                    amount: promos.toString()
-                                }}
-                            />
+                            {!loading ? (
+                                <Money
+                                    className={styles.money}
+                                    data={{
+                                        currencyCode: cost?.totalAmount?.currencyCode,
+                                        amount: promos.toString()
+                                    }}
+                                />
+                            ) : null}
                         </div>
                     ) : null}
 

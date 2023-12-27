@@ -5,10 +5,10 @@
     justify-content: center;
     align-items: center;
     grid-template-areas: 'image details quantity';
-    grid-template-columns: auto 1fr 8.5rem;
+    grid-template-columns: auto 1fr 10rem;
     gap: var(--block-spacer);
 
-    padding: calc(var(--block-padding) / 1.25);
+    padding: var(--block-padding);
     height: 100%;
     width: 100%;
 
@@ -19,47 +19,42 @@
     border-radius: var(--block-border-radius);
 
     @media (min-width: $breakpoint-mobile) {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto 1fr 10rem;
         gap: var(--block-spacer);
 
         padding: var(--block-padding);
     }
 
-    .badges {
+    .badge {
         display: inline-flex;
-        gap: calc(var(--block-spacer-small) / 1.5);
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        vertical-align: middle;
 
-        .badge {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: nowrap;
+        padding: calc(var(--block-padding-small) / 1.35) calc(var(--block-padding) / 1.5);
 
-            padding: 0.25rem var(--block-padding-small);
-            transform: translateY(-0.25rem) translateX(var(--block-spacer-small));
+        font-size: 0.55em;
+        font-weight: 600;
+        text-align: center;
+        line-height: 1;
 
-            font-size: 0.55em;
-            font-weight: 600;
-            text-align: center;
+        background: var(--color-accent-primary-light);
+        color: var(--accent-primary-text);
 
-            background: var(--color-accent-primary-light);
-            color: var(--accent-primary-text);
+        border-radius: var(--block-border-radius);
 
-            border-radius: var(--block-border-radius);
+        &.discount {
+            background-color: var(--color-sale);
+            color: var(--color-bright);
 
-            &.discount {
-                background-color: var(--color-sale);
-                color: var(--color-bright);
+            text-transform: uppercase;
+        }
 
-                text-transform: uppercase;
-            }
+        @media (min-width: $breakpoint-mobile) {
+            padding: calc(var(--block-padding-small) / 1.25) calc(var(--block-padding) / 1.5);
 
-            @media (min-width: $breakpoint-mobile) {
-                padding: calc(var(--block-padding-small) / 1.35) calc(var(--block-padding) / 1.5);
-                transform: none;
-
-                font-size: 0.6em;
-            }
+            font-size: 0.6em;
         }
     }
 
@@ -68,62 +63,69 @@
         display: block;
 
         height: 100%;
-        width: 100%;
+        width: auto;
         padding: var(--block-padding-small);
 
         background-color: var(--color-bright);
 
         object-fit: contain;
         object-position: center;
-        aspect-ratio: 1;
         border-radius: var(--block-border-radius);
+
+        aspect-ratio: 1 / 1;
     }
 
     .details {
         grid-area: details;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-start;
-        gap: var(--block-spacer);
+        gap: var(--block-spacer-small);
         flex-grow: 1;
         flex-wrap: wrap;
 
         height: 100%;
         width: 100%;
+        padding: var(--block-spacer-small) 0;
 
         font-size: 0.85em;
 
         @media (min-width: $breakpoint-mobile) {
             font-size: 0.9em;
-            flex-wrap: nowrap;
         }
 
         .title {
-            gap: calc(var(--block-spacer-small) / 1.75);
+            gap: calc(var(--block-spacer-small) / 4);
 
             font-size: 1.25em;
-            font-weight: 650;
-            line-height: 1;
+            font-weight: 700;
+            line-height: 1.15;
 
             @media (min-width: $breakpoint-mobile) {
-                display: flex;
-                flex-direction: column;
+                font-size: 1.23em;
+            }
 
-                font-size: 1.25em;
+            span {
+                margin-right: calc(var(--block-spacer-small) / 2);
+            }
+
+            &:is(:hover, :active) {
+                color: var(--color-accent-primary-light);
             }
         }
+
         .pricing {
             display: flex;
             gap: calc(var(--block-spacer-small) / 4);
             align-items: flex-end;
             justify-content: flex-end;
 
-            font-size: 0.75em;
+            font-size: 0.9em;
             line-height: 1;
 
             @media (min-width: $breakpoint-mobile) {
-                font-size: 0.9em;
+                font-size: 1em;
             }
 
             > div {
@@ -135,8 +137,7 @@
                 padding-bottom: 0;
 
                 s {
-                    display: none;
-
+                    display: block;
                     height: 1.1em;
 
                     line-height: inherit;
@@ -146,7 +147,6 @@
                     }
 
                     @media (min-width: $breakpoint-mobile) {
-                        display: block;
                         height: 1.05em;
                     }
                 }
@@ -164,13 +164,6 @@
         gap: var(--block-spacer);
         width: 100%;
 
-        @media (min-width: $breakpoint-mobile) {
-            flex-direction: row;
-            align-items: center;
-
-            width: 14.5rem;
-        }
-
         .quantity {
             height: 3.5rem;
             max-height: 100%;
@@ -185,11 +178,14 @@
                 max-height: 3.75rem;
             }
 
+            input {
+                width: 100%;
+            }
+
             input,
             button {
                 height: 100%;
                 min-height: 100%;
-                width: 100%;
             }
 
             button:hover:not(:active) {
@@ -202,7 +198,7 @@
             max-height: 100%;
             padding: calc(var(--block-spacer-small) / 1.5);
 
-            background-color: transparent;
+            background-color: rgba(0, 0, 0, 0.1);
             color: var(--color-dark);
             border: none;
 

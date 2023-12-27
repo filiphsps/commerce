@@ -6,6 +6,7 @@ import Pricing from '@/components/typography/pricing';
 import type { LocaleDictionary } from '@/utils/locale';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 interface CartLineProps {
@@ -28,7 +29,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     }
 
     return (
-        <section className={`${styles.container} ${discount > 0 ? styles.sale : ''}`}>
+        <div className={`${styles.container} ${discount > 0 ? styles.sale : ''}`}>
             {variant.image ? (
                 <Image
                     className={styles.image}
@@ -42,19 +43,20 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
 
             <div className={styles.details}>
                 <Heading
-                    titleAs={'div'}
+                    titleAs={Link}
                     title={
                         <>
-                            {product.vendor} {product.title}
-                            <div className={styles.badges}>
-                                <span className={styles.badge}>{variant.title}</span>
-                                {discount ? (
-                                    <span className={`${styles.badge} ${styles.discount}`}>{discount}% off</span>
-                                ) : null}
-                            </div>
+                            <span>
+                                {product.vendor} {product.title}
+                            </span>
+                            <span className={styles.badge}>{variant.title}</span>
+                            {discount ? (
+                                <span className={`${styles.badge} ${styles.discount}`}>{discount}% off</span>
+                            ) : null}
                         </>
                     }
                     titleClassName={styles.title}
+                    titleProps={{ href: `/products/${line.merchandise.product.handle}` }}
                     subtitleAs={'div'}
                     subtitle={<Pricing price={variant.price} compareAtPrice={variant.compareAtPrice} />}
                     subtitleClassName={styles.pricing}
@@ -66,7 +68,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                     <CartLineActions i18n={i18n} data={line} />
                 </Suspense>
             </div>
-        </section>
+        </div>
     );
 };
 

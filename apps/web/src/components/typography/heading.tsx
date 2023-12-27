@@ -35,6 +35,7 @@ type HeadingProps = {
     titleAs?: ElementType;
     titleStyle?: CSSProperties;
     titleClassName?: string;
+    titleProps?: ComponentProps<any>;
     subtitleAs?: ElementType;
     subtitleStyle?: CSSProperties;
     subtitleClassName?: string;
@@ -47,12 +48,13 @@ const Heading = ({
     titleAs,
     titleStyle,
     titleClassName,
+    titleProps,
     subtitleAs,
     subtitleStyle,
     subtitleClassName
 }: HeadingProps) => {
     const titleComponent = (
-        <Title bold={bold} as={titleAs as any} style={titleStyle} className={titleClassName}>
+        <Title bold={bold} as={titleAs as any} style={titleStyle} className={titleClassName} {...(titleProps || {})}>
             {title}
         </Title>
     );
