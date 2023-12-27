@@ -63,7 +63,6 @@
         display: block;
 
         height: 100%;
-        width: auto;
         padding: var(--block-padding-small);
 
         background-color: var(--color-bright);
@@ -71,8 +70,6 @@
         object-fit: contain;
         object-position: center;
         border-radius: var(--block-border-radius);
-
-        aspect-ratio: 1 / 1;
     }
 
     .details {
