@@ -83,6 +83,7 @@ model Shop {
     name               String             @db.Text
     domain             String             @unique @db.Text
     alternativeDomains String[]           @default([])
+    branding           ShopBranding?
     commerceProvider   CommerceProvider?
     contentProvider    ContentProvider?
     checkoutProvider   CheckoutProvider?
@@ -121,6 +122,17 @@ model CheckoutProvider {
     updatedAt DateTime @updatedAt
     type      String
     data      Json
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shopId    String
+
+    @@unique([shopId])
+    @@index([shopId])
+}
+
+model ShopBranding {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
     shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
 

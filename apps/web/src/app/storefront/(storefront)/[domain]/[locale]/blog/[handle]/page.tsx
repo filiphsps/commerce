@@ -126,7 +126,6 @@ export default async function ArticlePage({
         if (!locale) return notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (

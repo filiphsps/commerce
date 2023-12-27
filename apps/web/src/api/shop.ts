@@ -275,7 +275,13 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
                 select: {
                     id: true,
                     name: true,
-                    domain: true
+                    domain: true,
+                    commerceProvider: {
+                        select: {
+                            type: true,
+                            data: true
+                        }
+                    }
                 },
                 cacheStrategy: { ttl: 120, swr: 3600 }
             });
@@ -306,6 +312,25 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
                       domains: {
                           primary: shop.domain,
                           alternatives: hardcodedShop.domains.alternatives || []
+                      },
+                      configuration: {
+                          ...hardcodedShop.configuration,
+                          ...(shop.commerceProvider
+                              ? {
+                                    commerce: {
+                                        ...(() => {
+                                            const data = JSON.parse(shop.commerceProvider.data!.toString());
+                                            return {
+                                                ...data,
+                                                authentication: {
+                                                    publicToken: data.authentication.publicToken
+                                                }
+                                            };
+                                        })(),
+                                        type: shop.commerceProvider.type as any
+                                    } as CommerceProvider
+                                }
+                              : {})
                       }
                   }
                 : {})
