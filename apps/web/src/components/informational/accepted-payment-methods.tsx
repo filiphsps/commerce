@@ -23,6 +23,7 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
                     height={15}
                     width={35}
                     sizes="35px"
+                    title={method.replaceAll('_', ' ')}
                     priority={false}
                     loading="lazy"
                     decoding="async"
@@ -37,8 +38,10 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
                     height={15}
                     width={35}
                     sizes="35px"
+                    title={method.replaceAll('_', ' ')}
                     priority={false}
                     loading="lazy"
+                    decoding="async"
                 />
             ))}
         </div>

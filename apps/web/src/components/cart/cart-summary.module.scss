@@ -49,6 +49,7 @@
         height: var(--button-height);
     }
     .shop-button {
+        --button-height: 4.5rem;
         --shop-pay-button-height: var(--button-height);
 
         overflow: hidden;

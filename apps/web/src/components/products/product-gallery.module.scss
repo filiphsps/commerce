@@ -26,8 +26,6 @@
         justify-content: center;
         align-items: center;
 
-        max-height: 80vh;
-
         @media (min-width: $breakpoint-mobile) {
             justify-content: flex-start;
             align-items: flex-start;
@@ -39,7 +37,7 @@
             object-fit: contain;
 
             @media (min-width: $breakpoint-mobile) {
-                height: 100%;
+                height: auto;
                 padding: 0 0 calc(var(--block-padding-large) * 2) 0;
                 object-position: top center;
 
