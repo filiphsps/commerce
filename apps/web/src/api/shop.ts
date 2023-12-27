@@ -257,6 +257,32 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 export type ShopResponse = {} & Shop;
 export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopResponse> => {
     const callback = async (domain: string) => {
+        let shop = null;
+        try {
+            shop = await prisma.shop.findFirst({
+                where: {
+                    OR: [
+                        {
+                            domain: domain
+                        },
+                        {
+                            alternativeDomains: {
+                                has: domain
+                            }
+                        }
+                    ]
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    domain: true
+                },
+                cacheStrategy: { ttl: 120, swr: 3600 }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
         const shops = await ShopsApi();
         const hardcodedShop =
             shops.find((shop) => shop.domains.primary === domain) ||
@@ -271,56 +297,25 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
             throw new UnknownShopDomainError();
         }
 
-        return hardcodedShop;
+        return {
+            ...hardcodedShop,
+            ...(shop
+                ? {
+                      id: shop.id,
+                      name: shop.name,
+                      domain: shop.domain
+                  }
+                : {})
+        };
     };
 
     if (noCache) {
         return await callback(domain);
     }
 
-    return cache(
-        async (domain: string) => {
-            let shop = null;
-            try {
-                shop = await prisma.shop.findFirst({
-                    where: {
-                        OR: [
-                            {
-                                domain: domain
-                            },
-                            {
-                                alternativeDomains: {
-                                    has: domain
-                                }
-                            }
-                        ]
-                    },
-                    select: {
-                        id: true,
-                        name: true,
-                        domain: true
-                    }
-                });
-            } catch (e) {
-                console.error(e);
-            }
-
-            return {
-                ...(await callback(domain)),
-                ...(shop
-                    ? {
-                          id: shop.id,
-                          name: shop.name,
-                          domain: shop.domain
-                      }
-                    : {})
-            };
-        },
-        [domain, `cache=${!!noCache}`],
-        {
-            tags: [domain]
-        }
-    )(domain);
+    return cache(async (domain: string) => callback(domain), [domain, `cache=${!!noCache}`], {
+        tags: [domain]
+    })(domain);
 };
 
 export const CommerceProviderAuthenticationApi = async ({
