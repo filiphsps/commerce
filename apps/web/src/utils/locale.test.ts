@@ -160,7 +160,6 @@ describe('utils', () => {
             } as StoreModel;
 
             const currencyCode = NextLocaleToCurrency({ country: 'CA', store });
-
             expect(currencyCode).toEqual('USD');
         });
     });

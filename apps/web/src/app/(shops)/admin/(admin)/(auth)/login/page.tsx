@@ -29,7 +29,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                 </div>
 
                 <div className={styles.actions}>
-                    <Suspense fallback={<>Loading...</>}>
+                    <Suspense>
                         <LoginButton provider="github" className={styles.button} />
                     </Suspense>
                 </div>

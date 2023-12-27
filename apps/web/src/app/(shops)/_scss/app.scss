@@ -38,8 +38,8 @@ body {
 
 input {
     &[type='number'] {
-        appearance: textfield;
         -moz-appearance: textfield !important;
+        appearance: textfield;
 
         &::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -53,7 +53,7 @@ input {
             ::-webkit-search-results-button,
             ::-webkit-search-results-decoration
         ) {
-        appearance: none;
         -webkit-appearance: none;
+        appearance: none;
     }
 }

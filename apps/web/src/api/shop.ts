@@ -1,7 +1,8 @@
 import 'server-only';
 
+import prisma from '#/utils/prisma';
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/errors';
-
+import { unstable_cache as cache } from 'next/cache';
 //import { experimental_taintObjectReference as taintObjectReference } from 'react';
 
 export type ShopifyCommerceProvider = {
@@ -254,25 +255,72 @@ export const ShopsApi = async (): Promise<Shop[]> => {
 };
 
 export type ShopResponse = {} & Shop;
-export const ShopApi = async (domain: string): Promise<ShopResponse> => {
-    // TODO: This should be a cache-able database query.
-    const shops = await ShopsApi();
-    const shop =
-        shops.find((shop) => shop.domains.primary === domain) ||
-        shops.find((shop) => shop.domains.alternatives.includes(domain));
+export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopResponse> => {
+    const callback = async (domain: string) => {
+        const shops = await ShopsApi();
+        const hardcodedShop =
+            shops.find((shop) => shop.domains.primary === domain) ||
+            shops.find((shop) => shop.domains.alternatives.includes(domain));
 
-    if (!shop) {
-        if (domain.endsWith('.vercel.app')) {
-            // TODO: Figure out what we should do here.
-            return await ShopApi('www.sweetsideofsweden.com');
+        if (!hardcodedShop) {
+            if (domain.endsWith('.vercel.app')) {
+                // TODO: Figure out what we should do here.
+                return await ShopApi('www.sweetsideofsweden.com');
+            }
+
+            throw new UnknownShopDomainError();
         }
 
-        throw new UnknownShopDomainError();
+        return hardcodedShop;
+    };
+
+    if (noCache) {
+        return await callback(domain);
     }
 
-    return {
-        ...shop
-    };
+    return cache(
+        async (domain: string) => {
+            let shop = null;
+            try {
+                shop = await prisma.shop.findFirst({
+                    where: {
+                        OR: [
+                            {
+                                domain: domain
+                            },
+                            {
+                                alternativeDomains: {
+                                    has: domain
+                                }
+                            }
+                        ]
+                    },
+                    select: {
+                        id: true,
+                        name: true,
+                        domain: true
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+            }
+
+            return {
+                ...(await callback(domain)),
+                ...(shop
+                    ? {
+                          id: shop.id,
+                          name: shop.name,
+                          domain: shop.domain
+                      }
+                    : {})
+            };
+        },
+        [domain, `cache=${!!noCache}`],
+        {
+            tags: [domain]
+        }
+    )(domain);
 };
 
 export const CommerceProviderAuthenticationApi = async ({

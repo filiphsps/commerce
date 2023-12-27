@@ -1,6 +1,5 @@
 import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
-import { BuildConfig } from '@/utils/build-config';
 import { TodoError, UnknownLocaleError } from '@/utils/errors';
 import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 import ConvertUnits from 'convert-units';
@@ -53,7 +52,7 @@ export class Locale implements SerializableLocale {
      */
     static get default(): Readonly<SerializableLocale> {
         // FIXME: Don't hardcode `en-US` as the fallback.
-        return Locale.from(BuildConfig?.i18n?.default || ('en-US' as Code));
+        return Locale.from('en-US' as Code);
     }
 
     /**
@@ -155,8 +154,7 @@ export const NextLocaleToLanguage = (locale?: string): LanguageCode => {
  * @returns {CurrencyCode} `CurrencyCode` string.
  */
 export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode; store: StoreModel }): CurrencyCode =>
-    (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode ||
-        BuildConfig.i18n.currencies[0]) as CurrencyCode;
+    (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode! || 'USD') as CurrencyCode;
 
 /**
  * Converts a locale string to a Locale.
