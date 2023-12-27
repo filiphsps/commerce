@@ -21,7 +21,7 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
 
-export const runtime = 'experimental-edge';
+//export const runtime = 'experimental-edge';
 export const revalidate = 3600;
 export const dynamic = 'force-static';
 

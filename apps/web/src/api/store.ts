@@ -8,6 +8,7 @@ import { createClient } from '@/utils/prismic';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
+import { unstable_cache as cache } from 'next/cache';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     const { data: localData } = await api.query<{ localization: Localization }>(gql`
@@ -34,31 +35,39 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     return localData?.localization?.availableCountries! || [];
 };
 
-export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
+export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?: boolean }): Promise<Locale[]> => {
     const shop = api.shop();
     if (shop?.configuration?.commerce?.type !== 'shopify') {
         // TODO: Do this properly.
         return [Locale.from('en-US')];
     }
 
-    const countries = await CountriesApi({ api });
-    const locales = countries.flatMap((country) =>
-        country.availableLanguages
-            .map((language) => {
-                try {
-                    return Locale.from({ language: language.isoCode, country: country.isoCode });
-                } catch {
-                    return null;
-                }
-            })
-            .filter((_) => _)
-    ) as Locale[];
+    const callback = async (api: AbstractApi) => {
+        const countries = await CountriesApi({ api });
+        const locales = countries.flatMap((country) =>
+            country.availableLanguages
+                .map((language) => {
+                    try {
+                        return Locale.from({ language: language.isoCode, country: country.isoCode });
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
+        ) as Locale[];
 
-    if (!locales || locales.length <= 0) {
-        throw new NoLocalesAvailableError();
+        if (!locales || locales.length <= 0) {
+            throw new NoLocalesAvailableError();
+        }
+
+        return locales;
+    };
+
+    if (noCache) {
+        return callback(api);
     }
 
-    return locales;
+    return cache(callback, [shop.id, 'locales'])(api);
 };
 
 /**
@@ -77,170 +86,179 @@ export const StoreApi = async ({
 }): Promise<StoreModel> => {
     const shop = api.shop();
     const locale = _locale || api.locale();
-    const client = _client || createClient({ shop, locale });
 
     if (shop?.configuration?.commerce?.type !== 'shopify') {
         // FIXME: Do this properly.
         return _mockShopApi(shop);
     }
 
-    try {
-        const { data: shopData } = await api.query<{ shop: ShopifyStore }>(gql`
-            query store {
-                shop {
-                    id
-                    brand {
-                        logo {
-                            image {
-                                url
-                            }
-                        }
+    return cache(
+        async (api: AbstractApi, locale: Locale, _client?: PrismicClient) => {
+            const client = _client || createClient({ shop, locale });
 
-                        squareLogo {
-                            image {
-                                url
-                            }
-                        }
-
-                        colors {
-                            primary {
-                                background
-                                foreground
-                            }
-                            secondary {
-                                background
-                                foreground
-                            }
-                        }
-                    }
-
-                    paymentSettings {
-                        acceptedCardBrands
-                        enabledPresentmentCurrencies
-                        supportedDigitalWallets
-                    }
-                }
-            }
-        `);
-
-        const { data: store }: StoreDocument = await (async () => {
             try {
-                return await client.getSingle('store', {
-                    lang: locale.code,
-                    fetchOptions: {
-                        cache: undefined,
-                        next: {
-                            revalidate: 28_800, // 8hrs.
-                            tags: ['prismic']
+                const { data: shopData } = await api.query<{ shop: ShopifyStore }>(gql`
+                    query store {
+                        shop {
+                            id
+                            brand {
+                                logo {
+                                    image {
+                                        url
+                                    }
+                                }
+
+                                squareLogo {
+                                    image {
+                                        url
+                                    }
+                                }
+
+                                colors {
+                                    primary {
+                                        background
+                                        foreground
+                                    }
+                                    secondary {
+                                        background
+                                        foreground
+                                    }
+                                }
+                            }
+
+                            paymentSettings {
+                                acceptedCardBrands
+                                enabledPresentmentCurrencies
+                                supportedDigitalWallets
+                            }
                         }
+                    }
+                `);
+
+                const { data: store }: StoreDocument = await (async () => {
+                    try {
+                        return await client.getSingle('store', {
+                            lang: locale.code,
+                            fetchOptions: {
+                                cache: undefined,
+                                next: {
+                                    revalidate: 28_800, // 8hrs.
+                                    tags: ['prismic']
+                                }
+                            },
+                            fetchLinks: []
+                        });
+                    } catch {
+                        return await client.getSingle('store', {
+                            fetchOptions: {
+                                cache: undefined,
+                                next: {
+                                    revalidate: 28_800, // 8hrs.
+                                    tags: ['prismic']
+                                }
+                            },
+                            fetchLinks: []
+                        });
+                    }
+                })();
+
+                const extraStoreDetails = shopData?.shop;
+                const currencies: string[] = store.currencies?.map((item: any) => item.currency) || [];
+
+                return {
+                    id: extraStoreDetails?.id || '',
+                    name: store.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
+                    description:
+                        (store.description && asText(store.description)) || extraStoreDetails?.description || undefined,
+                    i18n: {
+                        locales: await LocalesApi({ api })
                     },
-                    fetchLinks: []
-                });
-            } catch {
-                return await client.getSingle('store', {
-                    fetchOptions: {
-                        cache: undefined,
-                        next: {
-                            revalidate: 28_800, // 8hrs.
-                            tags: ['prismic']
-                        }
+                    logos: {
+                        primary: (() => {
+                            const logo = {
+                                src:
+                                    store.logos_primary?.url ||
+                                    store.logo ||
+                                    extraStoreDetails?.brand?.logo?.image?.url ||
+                                    undefined,
+                                alt:
+                                    store.logos_primary?.alt ||
+                                    extraStoreDetails?.brand?.logo?.image?.altText ||
+                                    undefined,
+                                height:
+                                    store.logos_primary?.dimensions?.height ||
+                                    extraStoreDetails?.brand?.logo?.image?.height ||
+                                    undefined,
+                                width:
+                                    store.logos_primary?.dimensions?.width ||
+                                    extraStoreDetails?.brand?.logo?.image?.width ||
+                                    undefined
+                            };
+
+                            return logo.src ? logo : undefined;
+                        })(),
+                        alternative: (() => {
+                            const logo = {
+                                src: store.logos_alternative?.url || undefined,
+                                alt: store.logos_alternative?.alt || undefined,
+                                height: store.logos_alternative?.dimensions?.height || undefined,
+                                width: store.logos_alternative?.dimensions?.height || undefined
+                            };
+
+                            return logo.src ? logo : undefined;
+                        })()
                     },
-                    fetchLinks: []
-                });
-            }
-        })();
+                    favicon: (() => {
+                        const logo = {
+                            src:
+                                store.logos_favicon?.url ||
+                                store.favicon ||
+                                extraStoreDetails?.brand?.squareLogo?.image?.url ||
+                                undefined,
+                            alt: store.logos_alternative?.alt || undefined,
+                            height: store.logos_alternative?.dimensions?.height || undefined,
+                            width: store.logos_alternative?.dimensions?.height || undefined
+                        };
 
-        const extraStoreDetails = shopData?.shop;
-        const currencies: string[] = store.currencies?.map((item: any) => item.currency) || [];
-
-        return {
-            id: extraStoreDetails?.id || '',
-            name: store.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
-            description:
-                (store.description && asText(store.description)) || extraStoreDetails?.description || undefined,
-            i18n: {
-                locales: await LocalesApi({ api })
-            },
-            logos: {
-                primary: (() => {
-                    const logo = {
-                        src:
-                            store.logos_primary?.url ||
-                            store.logo ||
-                            extraStoreDetails?.brand?.logo?.image?.url ||
-                            undefined,
-                        alt: store.logos_primary?.alt || extraStoreDetails?.brand?.logo?.image?.altText || undefined,
-                        height:
-                            store.logos_primary?.dimensions?.height ||
-                            extraStoreDetails?.brand?.logo?.image?.height ||
-                            undefined,
-                        width:
-                            store.logos_primary?.dimensions?.width ||
-                            extraStoreDetails?.brand?.logo?.image?.width ||
-                            undefined
-                    };
-
-                    return logo.src ? logo : undefined;
-                })(),
-                alternative: (() => {
-                    const logo = {
-                        src: store.logos_alternative?.url || undefined,
-                        alt: store.logos_alternative?.alt || undefined,
-                        height: store.logos_alternative?.dimensions?.height || undefined,
-                        width: store.logos_alternative?.dimensions?.height || undefined
-                    };
-
-                    return logo.src ? logo : undefined;
-                })()
-            },
-            favicon: (() => {
-                const logo = {
-                    src:
-                        store.logos_favicon?.url ||
-                        store.favicon ||
-                        extraStoreDetails?.brand?.squareLogo?.image?.url ||
-                        undefined,
-                    alt: store.logos_alternative?.alt || undefined,
-                    height: store.logos_alternative?.dimensions?.height || undefined,
-                    width: store.logos_alternative?.dimensions?.height || undefined
+                        return logo.src ? logo : undefined;
+                    })(),
+                    accent: {
+                        primary:
+                            store.colors_primary ||
+                            store.primary ||
+                            extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
+                            '', // FIXME: Throw error instead of empty string.
+                        secondary:
+                            store.colors_secondary ||
+                            store.secondary ||
+                            extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
+                            '' // FIXME: Throw error instead of empty string.
+                    },
+                    color: {
+                        primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.
+                        secondary: extraStoreDetails?.brand?.colors.secondary?.[0]?.foreground || '' // FIXME: Throw error instead of empty string.
+                    },
+                    currencies: extraStoreDetails?.paymentSettings?.enabledPresentmentCurrencies || currencies,
+                    social: (store.social as any) || [],
+                    payment: {
+                        methods: extraStoreDetails?.paymentSettings?.acceptedCardBrands || [],
+                        wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
+                    }
                 };
+            } catch (error: unknown) {
+                if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
+                    return await StoreApi({
+                        locale: Locale.default,
+                        client,
+                        api
+                    });
+                }
 
-                return logo.src ? logo : undefined;
-            })(),
-            accent: {
-                primary:
-                    store.colors_primary ||
-                    store.primary ||
-                    extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
-                    '', // FIXME: Throw error instead of empty string.
-                secondary:
-                    store.colors_secondary ||
-                    store.secondary ||
-                    extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
-                    '' // FIXME: Throw error instead of empty string.
-            },
-            color: {
-                primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.
-                secondary: extraStoreDetails?.brand?.colors.secondary?.[0]?.foreground || '' // FIXME: Throw error instead of empty string.
-            },
-            currencies: extraStoreDetails?.paymentSettings?.enabledPresentmentCurrencies || currencies,
-            social: (store.social as any) || [],
-            payment: {
-                methods: extraStoreDetails?.paymentSettings?.acceptedCardBrands || [],
-                wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
+                throw error;
             }
-        };
-    } catch (error: unknown) {
-        if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
-            return await StoreApi({
-                locale: Locale.default,
-                client,
-                api
-            });
-        }
-
-        throw error;
-    }
+        },
+        [shop.id, locale.code, 'store']
+    )(api, locale, _client);
 };
 
 export const _mockShopApi = ({ id }: Shop): StoreModel => ({
