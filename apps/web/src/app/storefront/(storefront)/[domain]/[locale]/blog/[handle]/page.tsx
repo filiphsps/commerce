@@ -2,8 +2,10 @@ import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi, StoreApi } from '@/api/store';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
+import { Label } from '@/components/typography/label';
 import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
@@ -128,13 +130,33 @@ export default async function ArticlePage({
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
 
         return (
-            <>
+            <article>
                 <div className={styles.header}>
-                    <Heading title={article.title} subtitle={null} />
+                    <Heading
+                        title={article.title}
+                        subtitle={
+                            <Label className={styles.date}>
+                                {new Date(article.publishedAt).toLocaleDateString(locale as any, {
+                                    weekday: undefined,
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </Label>
+                        }
+                    />
                 </div>
 
+                <Content
+                    className={styles.content}
+                    dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }}
+                    suppressHydrationWarning={true}
+                />
+
+                <Breadcrumbs shop={shop} title={article.title} />
+
                 <NewsArticleJsonLd
-                    useAppDir
+                    useAppDir={true}
                     url={`https://${shop.domains.primary}/${locale.code}/blog/${handle}/`}
                     description={article.seo?.description || article.excerpt || ''}
                     body={article.content}
@@ -145,16 +167,10 @@ export default async function ArticlePage({
                     dateCreated={article.publishedAt}
                     datePublished={article.publishedAt}
                     authorName={article.authorV2?.name!}
-                    publisherName={store.name}
-                    publisherLogo={store.favicon?.src!}
+                    publisherName={shop.name}
+                    publisherLogo={shop.configuration.icons?.favicon?.src!}
                 />
-
-                <Content
-                    className={styles.content}
-                    dangerouslySetInnerHTML={{ __html: article.contentHtml || '' }}
-                    suppressHydrationWarning={true}
-                />
-            </>
+            </article>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

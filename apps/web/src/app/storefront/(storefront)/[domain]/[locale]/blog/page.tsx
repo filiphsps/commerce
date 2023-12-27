@@ -12,6 +12,7 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import BlogContent from './blog-content';
 
 export type BlogPageParams = { domain: string; locale: string };
@@ -82,9 +83,10 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-        const blog = await BlogApi({ api, handle: 'news' });
 
         void Prefetch({ api, page });
+
+        const blog = await BlogApi({ api, handle: 'news' });
         const i18n = await getDictionary(locale);
 
         return (
@@ -93,14 +95,16 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                 <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
 
                 {page?.slices && page?.slices.length > 0 && (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        i18n={i18n}
-                        handle={'blog'}
-                        type={'custom_page'}
-                    />
+                    <Suspense>
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            page={page}
+                            i18n={i18n}
+                            handle={'blog'}
+                            type={'custom_page'}
+                        />
+                    </Suspense>
                 )}
             </>
         );

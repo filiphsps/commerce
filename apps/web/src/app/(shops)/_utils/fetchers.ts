@@ -90,6 +90,7 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
 
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
         await revalidateTag(data.domain);
+        await revalidateTag(shopId);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -165,6 +166,7 @@ export async function updateCommerceProvider(userId: string, shopId: string, dat
         });
 
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        await revalidateTag(shopId);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -215,6 +217,7 @@ export async function updateContentProvider(userId: string, shopId: string, data
         });
 
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        await revalidateTag(shopId);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -265,6 +268,7 @@ export async function updateCheckoutProvider(userId: string, shopId: string, dat
         });
 
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        await revalidateTag(shopId);
         return response;
     } catch (error: any) {
         console.error(error);

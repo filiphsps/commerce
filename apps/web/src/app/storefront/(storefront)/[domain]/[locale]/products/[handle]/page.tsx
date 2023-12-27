@@ -63,11 +63,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${domain}/${locale.code}/products/${handle}/`,
+                canonical: `https://${shop.domains.primary}/${locale.code}/products/${handle}/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${domain}/${code}/products/${handle}/`
+                        [code]: `https://${shop.domains.primary}/${code}/products/${handle}/`
                     }),
                     {}
                 )
@@ -79,15 +79,22 @@ export async function generateMetadata({
                 description,
                 siteName: shop.name,
                 locale: locale.code,
-                images: page?.meta_image?.dimensions
-                    ? [
-                          {
-                              url: page.meta_image.url!,
-                              width: page.meta_image.dimensions.width!,
-                              height: page.meta_image.dimensions.height!
-                          }
-                      ]
-                    : undefined
+                images: [
+                    ...(page?.meta_image?.dimensions
+                        ? [
+                              {
+                                  url: page.meta_image.url!,
+                                  width: page.meta_image.dimensions.width!,
+                                  height: page.meta_image.dimensions.height!
+                              }
+                          ]
+                        : []),
+                    ...product.images?.edges?.map?.(({ node }) => ({
+                        url: node.url,
+                        width: node.width!,
+                        height: node.height!
+                    }))
+                ]
             }
         };
     } catch (error: unknown) {
@@ -265,7 +272,7 @@ export default async function ProductPage({
                     {page?.slices2 && page?.slices2.length > 0 ? (
                         <Suspense
                             key={`${shop.id}.products.${handle}.content`}
-                            fallback={<PrismicPage.skeleton page={page as any} />}
+                            fallback={<PrismicPage.skeleton page={{ slices: page.slices2 } as any} />}
                         >
                             <PrismicPage
                                 shop={shop}

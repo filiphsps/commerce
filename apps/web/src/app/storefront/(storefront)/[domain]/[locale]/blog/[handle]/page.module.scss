@@ -3,15 +3,16 @@
 .header {
     width: $breakpoint-mobile;
     max-width: 100%;
-    padding-bottom: var(--block-padding-large);
+    padding-bottom: var(--block-padding);
     margin: 0 auto;
-    margin-bottom: var(--block-padding-large);
+    margin-bottom: var(--block-spacer-large);
 
     border-bottom: var(--block-border-width) solid var(--color-block);
 
     h1 {
-        line-height: 1.1;
+        line-height: normal;
         font-size: 3.5rem;
+        margin-bottom: var(--block-spacer);
 
         @media (min-width: $breakpoint-mobile) {
             max-width: 62rem;
@@ -24,7 +25,11 @@
     max-width: 100%;
     margin: 0 auto;
 
-    font-size: 18px;
+    font-size: 16px;
+
+    p {
+        font-size: 1.15em;
+    }
 
     img {
         margin-bottom: 0;

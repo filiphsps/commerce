@@ -297,16 +297,21 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
             throw new UnknownShopDomainError();
         }
 
-        return {
+        const res: Shop = {
             ...hardcodedShop,
             ...(shop
                 ? {
                       id: shop.id,
                       name: shop.name,
-                      domain: shop.domain
+                      domains: {
+                          primary: shop.domain,
+                          alternatives: hardcodedShop.domains.alternatives || []
+                      }
                   }
                 : {})
         };
+
+        return res;
     };
 
     if (noCache) {
@@ -318,50 +323,52 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
     })(domain);
 };
 
-export const CommerceProviderAuthenticationApi = async ({
-    shop
-}: {
-    shop: Shop;
-}): Promise<ShopifyCommerceProvider['authentication']> => {
-    let res;
+export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { shop: Shop; noCache?: boolean }) => {
+    const callback = async (shop: Shop) => {
+        // TODO: Use the React taint API.
+        //taintObjectReference('', res);
 
-    switch (shop.configuration.commerce.type) {
-        case 'dummy': {
-            res = {
-                token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
-                publicToken: 'public-auth-token',
+        switch (shop.configuration.commerce.type) {
+            case 'dummy': {
+                return {
+                    token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
+                    publicToken: 'public-auth-token',
 
-                customers: null
-            };
-            break;
-        }
-        case 'shopify': {
-            switch (shop.id) {
-                case 'sweet-side-of-sweden': {
-                    res = {
-                        ...shop.configuration.commerce.authentication,
-                        token: process.env.SHOPIFY_PRIVATE_TOKEN || null,
-
-                        customers: {
-                            id: '76188483889',
-                            clientId: 'shp_9e8fb873-df9e-4a46-9842-293df6d2f2a4',
-                            clientSecret: 'f2a0e4d3cd8c4457d4eda94b1bf2442209d973246a380a5dac1557f54a059753'
-                        }
-                    };
-                    break;
-                }
-                default: {
-                    throw new UnknownShopDomainError();
-                }
+                    customers: null
+                } as ShopifyCommerceProvider['authentication'];
             }
-            break;
+            case 'shopify': {
+                const data = (
+                    await prisma.shop.findFirst({
+                        where: {
+                            domain: shop.domains.primary
+                        },
+                        select: {
+                            commerceProvider: {
+                                select: {
+                                    data: true
+                                }
+                            }
+                        },
+                        cacheStrategy: { ttl: 120, swr: 3600 }
+                    })
+                )?.commerceProvider?.data;
+                if (!data) throw new UnknownShopDomainError();
+
+                const { authentication } = JSON.parse(data.toString()) as ShopifyCommerceProvider;
+                return authentication;
+            }
+            default: {
+                throw new UnknownCommerceProviderError();
+            }
         }
-        default: {
-            throw new UnknownCommerceProviderError();
-        }
+    };
+
+    if (noCache) {
+        return await callback(shop);
     }
 
-    // TODO: Use the React taint API.
-    //taintObjectReference('', res);
-    return res;
+    return cache(callback, [shop.id, 'commerce', 'authentication'], {
+        tags: [shop.id, `${shop.id}.commerce.authentication`]
+    })(shop);
 };

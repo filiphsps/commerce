@@ -19,6 +19,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
+    // Redirect to the primary domain if the hostname doesn't match.
+    if (hostname !== shop.domains.primary) {
+        newUrl.hostname = shop.domains.primary;
+    }
+
     // API.
     if (
         newUrl.pathname.match(FILE_TEST) ||
@@ -38,7 +43,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false });
+            const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false, noCache: true });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api, noCache: true })).map(({ code }) => code);
 
@@ -56,7 +61,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         // In a perfect world we'd just set `newUrl.locale` here but
         // since we want to support fully dynamic locales we need to
         // set the locale in the path instead.
-        newUrl.pathname = `/${locale}${newUrl.pathname}`;
+        newUrl.pathname = `/${locale}${newUrl.pathname || '/'}`;
     }
 
     // Replace locale with locale from cookie if it doesn't match.
@@ -93,6 +98,11 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Validate the url against our common issues.
     newUrl = commonValidations(newUrl);
+
+    // Make sure the url ends with a trailing slash.
+    if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
+        newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
+    }
 
     // Redirect if `newURL` is different from `req.nextUrl`.
     if (newUrl.href !== req.nextUrl.href) {

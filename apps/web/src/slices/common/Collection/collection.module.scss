@@ -3,32 +3,39 @@
 .container {
     display: flex;
     flex-direction: column;
+    justify-self: flex-start;
+    align-self: flex-start;
+    align-items: flex-start;
     gap: var(--block-spacer-large);
 
     &:not(.full) {
-        padding: var(--block-padding-large);
-        background: var(--color-block);
-        border-radius: var(--block-border-radius);
-        color: var(--foreground);
+        @media (min-width: $breakpoint-mobile) {
+            padding: var(--block-padding-large);
+            background: var(--color-block);
+            border-radius: var(--block-border-radius);
+            color: var(--foreground);
+        }
     }
 
-    .align-left {
-        justify-self: flex-start;
-        align-self: flex-start;
-        align-items: flex-start;
-        text-align: left;
-    }
-    .align-center {
-        justify-self: center;
-        align-self: center;
-        align-items: center;
-        text-align: center;
-    }
-    .align-right {
-        justify-self: flex-end;
-        align-self: flex-end;
-        align-items: flex-end;
-        text-align: right;
+    @media (min-width: $breakpoint-mobile) {
+        .align-left {
+            justify-self: flex-start;
+            align-self: flex-start;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .align-center {
+            justify-self: center;
+            align-self: center;
+            align-items: center;
+            text-align: center;
+        }
+        .align-right {
+            justify-self: flex-end;
+            align-self: flex-end;
+            align-items: flex-end;
+            text-align: right;
+        }
     }
 
     a:is(:hover):not(:disabled) {
@@ -41,7 +48,7 @@
     }
 
     .title {
-        font-size: 2.5rem;
+        font-size: 1.5em;
         font-weight: 500;
 
         @media (min-width: $breakpoint-mobile) {
@@ -52,7 +59,6 @@
     .body {
         max-width: 64rem;
     }
-    //}
 
     &.full {
         .full-collection {

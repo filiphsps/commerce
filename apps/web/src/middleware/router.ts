@@ -17,7 +17,7 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
             return 'shops.nordcom.io';
         }
 
-        return 'sweetsideofsweden.com';
+        return 'www.sweetsideofsweden.com';
     }
 
     return hostname;

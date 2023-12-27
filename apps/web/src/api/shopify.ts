@@ -10,15 +10,17 @@ import { headers } from 'next/headers';
 
 export const ShopifyApiConfig = async ({
     shop,
-    noHeaders = true
+    noHeaders = true,
+    noCache
 }: {
     shop: Shop;
     noHeaders?: boolean;
+    noCache?: boolean;
 }): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
 }> => {
-    const { token, publicToken } = await CommerceProviderAuthenticationApi({ shop });
+    const { token, publicToken } = await CommerceProviderAuthenticationApi({ shop, noCache });
     const api = createStorefrontClient({
         publicStorefrontToken: publicToken,
         privateStorefrontToken: token || undefined,
