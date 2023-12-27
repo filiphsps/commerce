@@ -67,6 +67,7 @@ export default defineConfig({
                 '**/__tests__/**/*.*',
                 '**/*.d.*',
                 '**/*.test.*',
+                '**/utils/test/**/*.*',
                 '**/app/**/{layout,route}.*',
                 '**/app/**/*slice-simulator*',
                 '**/src/**/index.*',
@@ -75,7 +76,9 @@ export default defineConfig({
                 '**/src/**/config/*.*',
                 '**/build-config.*',
                 '**/instrumentation.*',
+                '**/error.*',
                 '**/not-found.*',
+                '**/loading.*',
 
                 // TODO: Eh?
                 '**/src/locales/*.*',
@@ -99,7 +102,7 @@ export default defineConfig({
                 '**/src/app/**/*-content.*',
 
                 // TODO: Remove these once we do some work on the admin dashboard.
-                '**/src/app/({admin,extra,news})/**/*.*'
+                '**/src/app/(shops)/**/*.*'
             ]
         }
     }
