@@ -105,7 +105,10 @@ export const PageApi = async <T extends PageType = 'custom_page'>(props: {
                 throw error;
             }
         },
-        [props.shop.id, props.locale.code, 'page', props.handle, props.type || 'custom_page']
+        [props.shop.id, props.locale.code, 'page', props.handle, props.type || 'custom_page'],
+        {
+            tags: [props.shop.id, props.locale.code, 'page', props.handle]
+        }
     )(props);
 };
 

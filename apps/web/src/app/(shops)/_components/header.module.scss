@@ -57,6 +57,8 @@
             .logo {
                 height: 100%;
                 width: 100%;
+
+                -webkit-user-select: none;
                 user-select: none;
                 object-fit: contain;
                 object-position: left center;
@@ -68,7 +70,10 @@
             justify-content: space-between;
             align-items: center;
             gap: var(--layout-block-padding);
+
             width: 100%;
+
+            -webkit-user-select: none;
             user-select: none;
             overflow-x: auto;
 

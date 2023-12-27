@@ -17,8 +17,10 @@ const ProductCardTitle = memo(({ data: product }: ProductCardTitleProps) => {
 
     return (
         <Link href={`/products/${product.handle}/`} className={styles.header}>
-            {product?.vendor ? <div className={styles.brand}>{product.vendor}</div> : null}
-            {product?.title ? <div className={styles.title}>{product.title}</div> : null}
+            <h3 className={styles.title}>
+                {product?.vendor ? <span className={styles.brand}>{product.vendor}</span> : null}
+                {product?.title ? product.title : null}
+            </h3>
         </Link>
     );
 }, deepEqual);

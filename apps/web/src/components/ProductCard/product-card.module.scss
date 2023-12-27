@@ -88,10 +88,13 @@
         display: flex;
         flex-direction: column;
         gap: 0.15rem;
+
         width: 100%;
         height: 100%;
+
         font-size: 2.25rem;
         line-height: 1.05;
+
         -webkit-hyphens: auto;
         hyphens: auto;
 
@@ -107,6 +110,10 @@
         }
 
         .brand {
+            display: block;
+
+            width: 100%;
+
             font-weight: 500;
             font-size: 0.75em;
             line-height: 1;
