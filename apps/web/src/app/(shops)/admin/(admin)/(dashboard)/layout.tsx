@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { getSession } from 'next-auth/react';
 import type { ReactNode } from 'react';
+import DashboardProviders from './dashboard-providers';
 import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
@@ -10,5 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopLayout({ children }: { children: ReactNode }) {
-    return <main className={`${styles.content}`}>{children}</main>;
+    const session = await getSession();
+
+    return (
+        <DashboardProviders session={session}>
+            <main className={`${styles.content}`}>{children}</main>
+        </DashboardProviders>
+    );
 }

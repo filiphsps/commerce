@@ -30,13 +30,21 @@ export async function getShopsForUser(userId: string) {
     )();
 }
 
-export async function getShopForUser(userId: string, shopId: string) {
+export async function getShop(userId: string | null, shopId: string) {
     return await cache(
         async () => {
             return prisma.shop.findUnique({
                 where: {
                     id: shopId,
-                    collaborators: { some: { userId } }
+                    ...(userId
+                        ? {
+                              collaborators: {
+                                  some: {
+                                      userId
+                                  }
+                              }
+                          }
+                        : {})
                 },
                 select: {
                     id: true,
@@ -44,11 +52,7 @@ export async function getShopForUser(userId: string, shopId: string) {
                     domain: true,
                     collaborators: {
                         select: {
-                            user: {
-                                select: {
-                                    name: true
-                                }
-                            }
+                            user: true
                         }
                     }
                 }
@@ -61,7 +65,30 @@ export async function getShopForUser(userId: string, shopId: string) {
         }
     )();
 }
+export type UpdateShopData = {
+    name: string;
+    domain: string;
+};
+export async function updateShop(userId: string, shopId: string, data: UpdateShopData) {
+    try {
+        const response = await prisma.shop.update({
+            where: {
+                id: shopId,
+                collaborators: { some: { userId } }
+            },
+            data: data
+        });
 
+        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        await revalidateTag(data.domain);
+        return response;
+    } catch (error: any) {
+        console.error(error);
+        return {
+            error: error.message
+        };
+    }
+}
 export async function createShop(userId: string) {
     try {
         const response = await prisma.shop.create({
@@ -79,6 +106,153 @@ export async function createShop(userId: string) {
         });
 
         await revalidateTag(`admin.user.${userId}.shops`);
+        return response;
+    } catch (error: any) {
+        console.error(error);
+        return {
+            error: error.message
+        };
+    }
+}
+
+export async function getCommerceProvider(userId: string, shopId: string) {
+    return await cache(
+        async () => {
+            return (
+                await prisma.shop.findUnique({
+                    where: {
+                        id: shopId,
+                        collaborators: { some: { userId } }
+                    },
+                    select: {
+                        commerceProvider: true
+                    }
+                })
+            )?.commerceProvider;
+        },
+        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.commerce-provider`],
+        {
+            revalidate: 120,
+            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.commerce-provider`]
+        }
+    )();
+}
+export async function updateCommerceProvider(userId: string, shopId: string, data: any) {
+    try {
+        const response = await prisma.shop.update({
+            where: {
+                id: shopId,
+                collaborators: { some: { userId } }
+            },
+            data: {
+                commerceProvider: {
+                    upsert: {
+                        update: data,
+                        create: data
+                    }
+                }
+            }
+        });
+
+        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        return response;
+    } catch (error: any) {
+        console.error(error);
+        return {
+            error: error.message
+        };
+    }
+}
+
+export async function getContentProvider(userId: string, shopId: string) {
+    return await cache(
+        async () => {
+            return (
+                await prisma.shop.findUnique({
+                    where: {
+                        id: shopId,
+                        collaborators: { some: { userId } }
+                    },
+                    select: {
+                        contentProvider: true
+                    }
+                })
+            )?.contentProvider;
+        },
+        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`],
+        {
+            revalidate: 120,
+            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`]
+        }
+    )();
+}
+export async function updateContentProvider(userId: string, shopId: string, data: any) {
+    try {
+        const response = await prisma.shop.update({
+            where: {
+                id: shopId,
+                collaborators: { some: { userId } }
+            },
+            data: {
+                contentProvider: {
+                    upsert: {
+                        update: data,
+                        create: data
+                    }
+                }
+            }
+        });
+
+        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        return response;
+    } catch (error: any) {
+        console.error(error);
+        return {
+            error: error.message
+        };
+    }
+}
+
+export async function getCheckoutProvider(userId: string, shopId: string) {
+    return await cache(
+        async () => {
+            return (
+                await prisma.shop.findUnique({
+                    where: {
+                        id: shopId,
+                        collaborators: { some: { userId } }
+                    },
+                    select: {
+                        checkoutProvider: true
+                    }
+                })
+            )?.checkoutProvider;
+        },
+        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`],
+        {
+            revalidate: 120,
+            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`]
+        }
+    )();
+}
+export async function updateCheckoutProvider(userId: string, shopId: string, data: any) {
+    try {
+        const response = await prisma.shop.update({
+            where: {
+                id: shopId,
+                collaborators: { some: { userId } }
+            },
+            data: {
+                checkoutProvider: {
+                    upsert: {
+                        update: data,
+                        create: data
+                    }
+                }
+            }
+        });
+
+        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
         return response;
     } catch (error: any) {
         console.error(error);

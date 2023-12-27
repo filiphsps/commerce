@@ -9,6 +9,8 @@
 .settings {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: calc(var(--layout-block-padding) / 2);
 
     .setting {
@@ -47,24 +49,77 @@
 .split-view {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--layout-block-padding);
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: calc(var(--layout-block-padding) * 2);
 
     @media (min-width: $breakpoint-mobile) {
         grid-template-columns: 1fr 20rem;
+        gap: var(--layout-block-padding);
     }
 
-    main {
+    main,
+    .content {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
-        gap: calc(var(--layout-block-padding) / 4);
+        gap: var(--layout-block-padding);
+
+        .section,
+        & > section {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            gap: calc(var(--layout-block-padding) / 4);
+
+            form {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                gap: calc(var(--layout-block-padding) / 2);
+
+                input,
+                textarea,
+                select,
+                button {
+                    &:not(:last-child) {
+                        margin-bottom: calc(var(--layout-block-padding) / 2);
+                    }
+                }
+            }
+
+            input,
+            textarea,
+            select {
+                padding: 0.45rem 0.5rem;
+
+                border: var(--border-width) solid var(--color-foreground);
+            }
+
+            input,
+            select {
+                width: 18rem;
+                max-width: 100%;
+            }
+
+            textarea {
+                width: 100%;
+                min-height: 18rem;
+
+                resize: vertical;
+            }
+        }
     }
 }
 
 .blocks {
     display: grid;
     grid-template-columns: 1fr;
-    gap: calc(var(--layout-block-padding) * 2);
+    gap: var(--layout-block-padding);
+
+    @media (min-width: $breakpoint-mobile) {
+        gap: calc(var(--layout-block-padding) * 2);
+    }
 
     .block {
         display: flex;

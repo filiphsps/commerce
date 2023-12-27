@@ -49,7 +49,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
         return {
             metadataBase: new URL(`https://${domain}/${locale}/`),
             title: {
-                default: shop.name,
+                absolute: shop.name,
                 // Allow tenants to customize this.
                 // For example allow them to use other separators
                 // like `·`, `—` etc.

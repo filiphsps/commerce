@@ -6,17 +6,17 @@ import { Card, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export type ShopPageProps = {
+export type ShopSettingsBillingPageProps = {
     params: {
         id: string;
     };
 };
 
 export const metadata: Metadata = {
-    title: 'Overview'
+    title: 'Billing'
 };
 
-export default async function ShopPage({ params: { id: shopId } }: ShopPageProps) {
+export default async function ShopSettingsBillingPage({ params: { id: shopId } }: ShopSettingsBillingPageProps) {
     const session = await getSession();
     if (!session) return null;
 
@@ -27,7 +27,7 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
 
     return (
         <section>
-            <Label>Overview</Label>
+            <Label>Billing</Label>
             <Card></Card>
         </section>
     );

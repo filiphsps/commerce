@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
-    return <>{children}</>;
+    return <main>{children}</main>;
 }

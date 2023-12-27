@@ -15,12 +15,5 @@ export const BuildConfig = {
         name: (process.env.PRISMIC_REPO || 'candy-by-sweden')
             .replace('https://', '')
             .replace('.cdn.prismic.io/api/v2', '')
-    },
-
-    /** @deprecated */
-    i18n: {
-        locales: process.env.STORE_LOCALES?.split?.(',') || ['en-US'],
-        default: process.env.STORE_DEFAULT_LOCALE || 'en-US',
-        currencies: process.env.STORE_CURRENCIES?.split(',') || ['USD']
     }
 };
