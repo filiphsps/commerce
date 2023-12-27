@@ -1,8 +1,12 @@
+import 'server-only';
+
 import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 
 const prismaClientSingleton = () => {
-    return new PrismaClient().$extends(withAccelerate());
+    return new PrismaClient({
+        datasourceUrl: process.env.POSTGRES_PRISMA_ACCELERATE_URL
+    }).$extends(withAccelerate());
 };
 
 declare global {
