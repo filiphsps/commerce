@@ -33,10 +33,6 @@ export default function ProvidersRegistry({
             id = shop.configuration.commerce.storefrontId;
             token = shop.configuration.commerce.authentication.publicToken;
             break;
-        case 'dummy':
-            domain = 'mock.shop';
-            (id = 'hello-world'), (token = 'mock-token');
-            break;
         default:
             throw new UnknownCommerceProviderError();
     }

@@ -22,11 +22,7 @@ export type ShopifyCommerceProvider = {
         } | null;
     };
 };
-export type DummyCommerceProvider = {
-    type: 'dummy';
-    domain: 'mock.shop';
-};
-export type CommerceProvider = ShopifyCommerceProvider | DummyCommerceProvider;
+export type CommerceProvider = ShopifyCommerceProvider;
 
 export type ShopifyContentProvider = {
     type: 'shopify';
@@ -186,70 +182,6 @@ export const ShopsApi = async (): Promise<Shop[]> => {
                     }
                 }
             }
-        },
-        {
-            id: 'nordcom-commerce-demo',
-            name: 'Nordcom Commerce Demo',
-            domains: {
-                primary: 'demo.nordcom.io',
-                alternatives: ['staging.demo.nordcom.io']
-            },
-            configuration: {
-                commerce: {
-                    type: 'dummy' as const,
-                    domain: 'mock.shop' as const
-                },
-                icons: {
-                    favicon: {
-                        src: 'https://nordcom.io/favicon.png',
-                        alt: 'Nordcom Commerce',
-                        width: 512,
-                        height: 512
-                    }
-                },
-                design: {
-                    branding: {
-                        colors: [
-                            {
-                                type: 'primary',
-                                variant: 'default',
-                                accent: '#ed1e79',
-                                background: '#000000',
-                                foreground: '#fefefe'
-                            },
-                            {
-                                type: 'secondary',
-                                variant: 'default',
-                                accent: '#ed1e79',
-                                background: '#000000',
-                                foreground: '#fefefe'
-                            }
-                        ],
-                        logos: {
-                            primary: {
-                                src: 'https://nordcom.io/logo-light.svg',
-                                alt: 'Nordcom Commerce',
-                                width: 500,
-                                height: 250
-                            },
-                            alternatives: {
-                                square: {
-                                    src: 'https://nordcom.io/favicon.png',
-                                    alt: 'Nordcom Commerce',
-                                    width: 500,
-                                    height: 250
-                                }
-                            }
-                        }
-                    }
-                },
-                content: {
-                    type: 'dummy' as const
-                },
-                thirdParty: {
-                    googleTagManager: 'GTM-N6TLG8MX'
-                }
-            }
         }
     ];
 };
@@ -294,7 +226,7 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
             shops.find((shop) => shop.domains.primary === domain) ||
             shops.find((shop) => shop.domains.alternatives.includes(domain));
 
-        if (!hardcodedShop) {
+        if (!hardcodedShop && !shop) {
             if (domain.endsWith('.vercel.app')) {
                 // TODO: Figure out what we should do here.
                 return await ShopApi('www.sweetsideofsweden.com');
@@ -304,17 +236,17 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
         }
 
         const res: Shop = {
-            ...hardcodedShop,
+            ...((hardcodedShop || {}) as any),
             ...(shop
                 ? {
                       id: shop.id,
                       name: shop.name,
                       domains: {
                           primary: shop.domain,
-                          alternatives: hardcodedShop.domains.alternatives || []
+                          alternatives: hardcodedShop?.domains?.alternatives || []
                       },
                       configuration: {
-                          ...hardcodedShop.configuration,
+                          ...hardcodedShop?.configuration,
                           ...(shop.commerceProvider
                               ? {
                                     commerce: {
@@ -354,14 +286,6 @@ export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { sho
         //taintObjectReference('', res);
 
         switch (shop.configuration.commerce.type) {
-            case 'dummy': {
-                return {
-                    token: '!!!-FAKE-PRIVATE-TOKEN-!!!-DO-NOT-INCLUDE-IN-CLIENT-BUNDLE-!!!',
-                    publicToken: 'public-auth-token',
-
-                    customers: null
-                } as ShopifyCommerceProvider['authentication'];
-            }
             case 'shopify': {
                 const data = (
                     await prisma.shop.findFirst({
