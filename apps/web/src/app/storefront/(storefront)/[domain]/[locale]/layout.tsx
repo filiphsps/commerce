@@ -122,7 +122,7 @@ export default async function RootLayout({
                                 </Suspense>
                             </AnalyticsProvider>
 
-                            <HeaderProvider loaderColor={branding.secondary.accent} />
+                            <HeaderProvider loaderColor={branding.primary.accent} />
                         </ProvidersRegistry>
                     </body>
                 </html>
