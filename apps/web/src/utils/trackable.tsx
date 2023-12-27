@@ -23,7 +23,7 @@ import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /**
  * Analytics events.
@@ -237,7 +237,7 @@ const shopifyEventHandler = async (
     }
 };
 
-const postEvent = async (
+const handleEvent = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
     { shop, currency, locale, shopify, cart }: AnalyticsEventActionProps
@@ -326,17 +326,23 @@ function Trackable({ children }: TrackableProps) {
         }[]
     >([]);
 
-    const queueEvent = useCallback((type: AnalyticsEventType, event: AnalyticsEventData) => {
-        setQueue((queue) => {
-            // Don't add duplicate events. This is a very naive implementation.
-            const eventHash = JSON.stringify({ type, event });
-            if (JSON.stringify(queue.at(-1)) === eventHash || JSON.stringify(queue.at(-2)) === eventHash) {
-                return queue;
-            }
+    const queueEvent = useCallback(
+        (type: AnalyticsEventType, event: AnalyticsEventData) => {
+            setQueue((queue) => {
+                // Don't add duplicate events. This is a very naive implementation.
+                const eventHash = JSON.stringify({ type, event });
+                if (JSON.stringify(queue.at(-1)) === eventHash || JSON.stringify(queue.at(-2)) === eventHash) {
+                    return queue;
+                }
 
-            return [...queue, { type, event }];
-        });
-        return;
+                return [...queue, { type, event }];
+            });
+            return;
+        },
+        [queue]
+    );
+    const postEvent = useCallback(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
+        return handleEvent(type, event, { shop, currency, locale, shopify, cart });
     }, []);
 
     // Page view.
@@ -388,7 +394,7 @@ function Trackable({ children }: TrackableProps) {
         // Flush the queue.
         Promise.allSettled(
             events.map(({ type, event }) => {
-                return postEvent(
+                return handleEvent(
                     type,
                     {
                         ...event,
@@ -406,18 +412,14 @@ function Trackable({ children }: TrackableProps) {
         });
     }, [shop, currency, queue]);
 
-    return (
-        <TrackableContext.Provider
-            value={{
-                queueEvent,
-                postEvent: async (type, event) => {
-                    return postEvent(type, event, { shop, currency, locale, shopify, cart });
-                }
-            }}
-        >
-            {children}
-        </TrackableContext.Provider>
+    const store = useMemo(
+        () => ({
+            queueEvent,
+            postEvent
+        }),
+        []
     );
+    return <TrackableContext.Provider value={store}>{children}</TrackableContext.Provider>;
 }
 
 /**
