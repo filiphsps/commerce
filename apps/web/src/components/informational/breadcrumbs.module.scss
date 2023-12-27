@@ -5,7 +5,6 @@
     overflow: hidden;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
@@ -24,11 +23,15 @@
 
     .item {
         display: flex;
+        flex-wrap: nowrap;
         justify-content: flex-start;
         align-items: center;
+        white-space: nowrap;
+
+        height: 3.5rem;
+
         -webkit-user-select: none;
         user-select: none;
-        height: 3.5rem;
 
         &:last-child {
             .link {

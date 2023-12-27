@@ -34,6 +34,8 @@ export const HeaderProvider = ({ store }: HeaderProviderProps) => {
     // Next.js to deopt into client-side rendering. :(
     useEffect(() => {
         NProgress.done();
+
+        document.body.removeAttribute('data-menu-open');
     }, [pathname, router]);
 
     return (

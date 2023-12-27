@@ -186,7 +186,12 @@ export default async function ProductPage({
                             <Heading
                                 title={product.title}
                                 subtitle={
-                                    <Link href={`/collections/${TitleToHandle(product.vendor)}`}>{product.vendor}</Link>
+                                    <Link
+                                        href={`/collections/${TitleToHandle(product.vendor)}`}
+                                        className={styles.vendor}
+                                    >
+                                        {product.vendor}
+                                    </Link>
                                 }
                                 reverse
                                 bold

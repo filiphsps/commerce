@@ -54,19 +54,19 @@
 div.description {
     font-size: 18px;
 
-    padding-top: var(--block-spacer-huge);
-    @media (min-width: $breakpoint-mobile) {
-        padding: 0;
-    }
-
     h2 {
         padding-bottom: var(--block-spacer-large);
-        font-size: 2em;
+        font-size: 1.75em;
 
         @media (min-width: $breakpoint-mobile) {
             font-size: 2em;
         }
     }
+}
+
+.vendor {
+    display: block;
+    width: 100%;
 }
 
 @media (min-width: $breakpoint-mobile) {

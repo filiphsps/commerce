@@ -65,18 +65,18 @@ const QuantitySelector = ({
                 return;
             }
         },
-        [updateQuantity, quantityValue]
+        [quantityValue]
     );
 
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) return;
 
         updateQuantity(quantity - 1);
-    }, [updateQuantity, quantity]);
+    }, [quantity]);
 
     const increase = useCallback(() => {
         updateQuantity(quantity + 1);
-    }, [updateQuantity, quantity]);
+    }, [quantity]);
 
     useEffect(() => {
         if (quantity.toString() === quantityValue) return;
