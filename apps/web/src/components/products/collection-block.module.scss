@@ -76,8 +76,12 @@
     }
 
     &.horizontal {
-        margin: 0 calc(var(--block-padding-large) * -1);
-        width: calc(100% + var(--block-padding-large) * 2);
+        width: 100%;
+
+        @media (min-width: $breakpoint-mobile) {
+            margin: 0 calc(var(--block-padding-large) * -1);
+            width: calc(100% + var(--block-padding-large) * 2);
+        }
 
         .content {
             display: grid;
