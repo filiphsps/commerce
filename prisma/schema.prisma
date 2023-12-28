@@ -1,7 +1,8 @@
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_ACCELERATE_URL")
-    directUrl = env("POSTGRES_URL_NON_POOLING")
+    provider     = "postgresql"
+    url          = env("POSTGRES_PRISMA_ACCELERATE_URL")
+    directUrl    = env("POSTGRES_URL_NON_POOLING")
+    relationMode = "prisma"
 }
 
 generator client {
@@ -129,12 +130,29 @@ model CheckoutProvider {
     @@index([shopId])
 }
 
+model BrandColor {
+    id             String       @id @default(cuid())
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    type           String
+    variant        String
+    accent         String
+    background     String
+    foreground     String
+    shopBrandingId String
+    shopBranding   ShopBranding @relation(fields: [shopBrandingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([shopBrandingId])
+    @@index([shopBrandingId])
+}
+
 model ShopBranding {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    shopId    String
+    id          String       @id @default(cuid())
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    shopId      String
+    shop        Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    brandColors BrandColor[]
 
     @@unique([shopId])
     @@index([shopId])
