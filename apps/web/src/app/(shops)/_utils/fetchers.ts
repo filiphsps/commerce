@@ -63,7 +63,7 @@ export async function getShop(userId: string, shopId: string) {
                 }
             });
         },
-        [`admin.user.${userId}.shop.${shopId}`],
+        [`admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
         {
             revalidate: 120,
             tags: [`admin.user.${userId}.shop.${shopId}`]
@@ -91,6 +91,7 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
         await revalidateTag(data.domain);
         await revalidateTag(shopId);
+        await revalidateTag(`admin.user.${userId}`);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -99,6 +100,7 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
         };
     }
 }
+
 export async function createShop(userId: string) {
     try {
         const response = await prisma.shop.create({
@@ -187,8 +189,7 @@ export async function getContentProvider(userId: string, shopId: string) {
                     },
                     select: {
                         contentProvider: true
-                    },
-                    cacheStrategy: { ttl: 120, swr: 3600 }
+                    }
                 })
             )?.contentProvider;
         },
@@ -238,8 +239,7 @@ export async function getCheckoutProvider(userId: string, shopId: string) {
                     },
                     select: {
                         checkoutProvider: true
-                    },
-                    cacheStrategy: { ttl: 120, swr: 3600 }
+                    }
                 })
             )?.checkoutProvider;
         },

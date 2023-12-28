@@ -91,26 +91,35 @@ model Shop {
     collaborators      ShopCollaborator[]
 }
 
+enum CommerceProviderType {
+    shopify
+}
+
 model CommerceProvider {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    type      String
+    id        String               @id @default(cuid())
+    createdAt DateTime             @default(now())
+    updatedAt DateTime             @updatedAt
+    type      CommerceProviderType @default(shopify)
     data      Json
-    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shop      Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
 
     @@unique([shopId])
     @@index([shopId])
 }
 
+enum ContentProviderType {
+    prismic
+    shopify
+}
+
 model ContentProvider {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    type      String
+    id        String              @id @default(cuid())
+    createdAt DateTime            @default(now())
+    updatedAt DateTime            @updatedAt
+    type      ContentProviderType @default(shopify)
     data      Json
-    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shop      Shop                @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
 
     @@unique([shopId])

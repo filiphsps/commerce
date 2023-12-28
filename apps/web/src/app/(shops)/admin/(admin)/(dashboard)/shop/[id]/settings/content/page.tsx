@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { SettingsBlock } from '#/components/settings-block';
 import { getSession } from '#/utils/auth';
 import {
     getCheckoutProvider,
@@ -10,9 +11,12 @@ import {
     updateCommerceProvider,
     updateContentProvider
 } from '#/utils/fetchers';
+import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
+import { ContentProviderType } from '@prisma/client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { CommerceSettings } from './commerce-settings';
 
 export type ShopSettingsContentPageProps = {
     params: {
@@ -36,24 +40,6 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
     }
 
     const commerceProvider = await getCommerceProvider(user.id, shopId);
-    const defaultCommerceData = JSON.stringify(
-        {
-            domain: '',
-            storefrontId: '',
-            authentication: {
-                token: '',
-                publicToken: '',
-
-                customers: {
-                    id: '',
-                    clientId: '',
-                    clientSecret: ''
-                }
-            }
-        },
-        null,
-        0
-    );
 
     const contentProvider = await getContentProvider(user.id, shopId);
     const defaultContentData = JSON.stringify(
@@ -77,48 +63,43 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                 <Heading level="h2" as="h2">
                     Commerce
                 </Heading>
-                <Card
-                    as="form"
-                    action={async (form: FormData) => {
+                <SettingsBlock
+                    save={async (form: FormData) => {
                         'use server';
 
-                        const type = form.get('type')?.toString().toLowerCase();
-                        const data = JSON.stringify(
-                            JSON.parse(form.get('data')?.toString() || defaultCommerceData),
-                            null,
-                            0
-                        );
+                        const type = form.get('type')?.toString().toLowerCase() as ContentProviderType;
 
-                        console.debug(`Updating commerce provider`, { type, data });
+                        let data;
+                        switch (type) {
+                            case 'shopify': {
+                                data = {
+                                    domain: form.get('domain')?.toString() || undefined,
+                                    storefrontId: form.get('storefrontId')?.toString() || undefined,
+                                    authentication: {
+                                        token: form.get('token')?.toString() || undefined,
+                                        publicToken: form.get('publicToken')?.toString() || undefined,
+
+                                        customers: {
+                                            id: form.get('customersShopifyAccountsId')?.toString() || undefined,
+                                            clientId: form.get('customersClientId')?.toString() || undefined,
+                                            clientSecret: form.get('customersClientSecret')?.toString() || undefined
+                                        }
+                                    }
+                                };
+                                break;
+                            }
+
+                            default: {
+                                throw new UnknownCommerceProviderError();
+                            }
+                        }
+
+                        console.debug(`Updating commerce provider`, JSON.stringify({ type, data }, null, 4));
                         await updateCommerceProvider(user.id, shopId, { type, data });
                     }}
                 >
-                    <Label as="label" htmlFor="type">
-                        Type
-                    </Label>
-                    <Card as="select" name="type" title="Type" defaultValue={commerceProvider?.type || 'shopify'}>
-                        <option value="shopify">Shopify</option>
-                        <option value="stripe">Stripe</option>
-                    </Card>
-
-                    <Label as="label" htmlFor="data">
-                        Data
-                    </Label>
-                    <Card
-                        as="textarea"
-                        name="data"
-                        title="Data"
-                        defaultValue={JSON.stringify(
-                            JSON.parse(commerceProvider?.data?.toString() || defaultCommerceData),
-                            null,
-                            4
-                        )}
-                    />
-
-                    <Button type="submit" color="primary" variant="outline">
-                        Save
-                    </Button>
-                </Card>
+                    <CommerceSettings data={commerceProvider || null} />
+                </SettingsBlock>
             </section>
 
             <section>
@@ -144,9 +125,12 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                     <Label as="label" htmlFor="type">
                         Type
                     </Label>
-                    <Card as="select" name="type" title="Type" defaultValue={contentProvider?.type || 'prismic'}>
-                        <option value="prismic">Prismic</option>
-                        <option value="shopify">Shopify</option>
+                    <Card as="select" name="type" title="Type" defaultValue={contentProvider?.type}>
+                        {Object.values(ContentProviderType).map((e) => (
+                            <option key={e} value={e}>
+                                {e}
+                            </option>
+                        ))}
                     </Card>
 
                     <Label as="label" htmlFor="data">
