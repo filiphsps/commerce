@@ -73,27 +73,9 @@
             gap: calc(var(--layout-block-padding) / 4);
 
             form {
-                display: grid;
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
+                display: flex;
+                flex-direction: column;
                 gap: calc(var(--layout-block-padding) / 2);
-
-                input,
-                textarea,
-                select,
-                button {
-                    &:not(:last-child) {
-                        margin-bottom: calc(var(--layout-block-padding) / 2);
-                    }
-                }
-            }
-
-            input,
-            textarea,
-            select {
-                padding: 0.45rem 0.5rem;
-
-                border: var(--border-width) solid var(--color-foreground);
             }
 
             textarea {

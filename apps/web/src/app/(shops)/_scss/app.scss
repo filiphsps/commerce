@@ -17,6 +17,7 @@ body {
 
     font-family: var(--font-primary);
     font-weight: 500;
+    font-size: 16px;
 
     [data-sonner-toaster] {
         font-family: inherit;
@@ -39,8 +40,6 @@ body {
 input,
 textarea,
 select {
-    font-family: var(--font-geist-mono, inherit) !important;
-
     &[type='number'] {
         -moz-appearance: textfield !important;
         appearance: textfield;

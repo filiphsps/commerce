@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Label } from '@nordcom/nordstar';
+import { Card, Input, Label } from '@nordcom/nordstar';
 import { CommerceProviderType, type CommerceProvider } from '@prisma/client/edge';
 import { useState } from 'react';
 import styles from './settings.module.scss';
@@ -28,58 +28,53 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
 
     return (
         <Card className={styles.section}>
-            <Label as="label" htmlFor="domain">
-                Domain
-            </Label>
-            <Card
-                as="input"
+            <Input
+                type="text"
                 name="domain"
+                label="Domain"
                 placeholder="store-name.myshopify.com"
                 defaultValue={data?.domain}
                 required={true}
             />
 
-            <Label as="label" htmlFor="storefrontId">
-                Storefront ID
-            </Label>
-            <Card as="input" name="storefrontId" defaultValue={data?.storefrontId} required={true} />
+            <Input
+                type="text"
+                name="storefrontId"
+                label="Storefront ID"
+                defaultValue={data?.storefrontId}
+                required={true}
+            />
 
-            <Label as="label" htmlFor="token">
-                Token
-            </Label>
-            <Card as="input" name="token" defaultValue={data?.authentication?.token} required={true} />
+            <Input type="text" name="token" label="Token" defaultValue={data?.authentication?.token} required={true} />
 
-            <Label as="label" htmlFor="publicToken">
-                Public Token
-            </Label>
-            <Card as="input" name="publicToken" defaultValue={data?.authentication?.publicToken} required={true} />
+            <Input
+                type="text"
+                name="publicToken"
+                label="Public Token"
+                defaultValue={data?.authentication?.publicToken}
+                required={true}
+            />
 
-            <Label as="label" htmlFor="customersShopifyAccountsId">
-                Shopify Accounts ID
-            </Label>
-            <Card
-                as="input"
+            <Input
+                type="text"
                 name="customersShopifyAccountsId"
+                label="Shopify Accounts ID"
                 defaultValue={data?.authentication?.customers?.id}
                 required={true}
             />
 
-            <Label as="label" htmlFor="customersClientId">
-                Client ID
-            </Label>
-            <Card
-                as="input"
+            <Input
+                type="text"
                 name="customersClientId"
+                label="Client ID"
                 defaultValue={data?.authentication?.customers?.clientId}
                 required={true}
             />
 
-            <Label as="label" htmlFor="customersClientSecret">
-                Client Secret
-            </Label>
-            <Card
-                as="input"
+            <Input
+                type="text"
                 name="customersClientSecret"
+                label="Client Secret"
                 defaultValue={data?.authentication?.customers?.clientSecret}
                 required={true}
             />
@@ -96,8 +91,9 @@ const CommerceSettings = ({ data }: CommerceSettingsProps) => {
             <Label as="label" htmlFor="type">
                 Type
             </Label>
-            <Card
+            <Input
                 as="select"
+                type=""
                 name="type"
                 title="Type"
                 onChange={(e: any) => setType(() => e.target.value)}
@@ -108,7 +104,7 @@ const CommerceSettings = ({ data }: CommerceSettingsProps) => {
                         {e}
                     </option>
                 ))}
-            </Card>
+            </Input>
 
             {type === CommerceProviderType.shopify && <ShopifySettings data={data} />}
         </>

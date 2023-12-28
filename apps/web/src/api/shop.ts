@@ -251,7 +251,10 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
                               ? {
                                     commerce: {
                                         ...(() => {
-                                            const data = JSON.parse(shop.commerceProvider.data!.toString());
+                                            const data =
+                                                typeof shop.commerceProvider.data === 'object'
+                                                    ? shop.commerceProvider.data
+                                                    : JSON.parse(shop.commerceProvider.data!.toString());
                                             return {
                                                 ...data,
                                                 authentication: {
@@ -304,7 +307,9 @@ export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { sho
                 )?.commerceProvider?.data;
                 if (!data) throw new UnknownShopDomainError();
 
-                const { authentication } = JSON.parse(data.toString()) as ShopifyCommerceProvider;
+                const { authentication } = (
+                    typeof data === 'object' ? data : JSON.parse(data.toString())
+                ) as ShopifyCommerceProvider;
                 return authentication;
             }
             default: {
