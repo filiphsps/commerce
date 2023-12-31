@@ -10,14 +10,6 @@
                     "jsx": true
                 }
             }
-        },
-        {
-            "files": ["*.ts", "*.tsx"],
-            "rules": {}
-        },
-        {
-            "files": ["*.js", "*.jsx"],
-            "rules": {}
         }
     ]
 }

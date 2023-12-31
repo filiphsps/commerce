@@ -42,10 +42,12 @@ const ProductDetails = async ({
                 </div>
             ) : null}
 
-            <div className={styles.block}>
-                <Label className={styles.label}>SKU(s)</Label>
-                <p>{variants.map(({ node: { sku, title } }) => `${title}: ${sku}`).join(', ')}.</p>
-            </div>
+            {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
+                <div className={styles.block}>
+                    <Label className={styles.label}>SKU(s)</Label>
+                    <p>{variants.map(({ node: { sku, title } }) => `${title}: ${sku}`).join(', ')}.</p>
+                </div>
+            ) : null}
         </>
     );
 };

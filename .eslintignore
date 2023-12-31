@@ -2,11 +2,12 @@ node_modules/
 
 build/
 coverage/
-dist
+dist/
 .next/
 .now/
 storybook-static/
 public/
+.vitest/
 
 *.json
 *.lock
