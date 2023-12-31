@@ -14,6 +14,13 @@ export const HeaderApi = async ({
     locale: Locale;
     client?: PrismicClient;
 }): Promise<HeaderModel> => {
+    if (shop.contentProvider?.type !== 'prismic') {
+        // TODO: Handle non-Prismic content providers.
+        return {
+            announcements: []
+        };
+    }
+
     return new Promise(async (resolve, reject) => {
         const client = _client || createClient({ shop, locale });
 

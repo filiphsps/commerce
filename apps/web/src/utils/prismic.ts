@@ -2,7 +2,7 @@ import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/clie
 
 import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
-import { TodoError } from '@/utils/errors';
+import { UnknownContentProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
@@ -85,8 +85,7 @@ export const createClient = ({
 
     // TODO: These cases should be dealt with before even arriving here.
     if (shop.contentProvider?.type !== 'prismic') {
-        // TODO: Deal with the `shopify` content provider.
-        throw new TodoError();
+        throw new UnknownContentProviderError();
     } else {
         // Work-around since `content.id` wouldn't exist on a `DummyContentProvider`.
         name = /*shop.configuration.content?.id ||*/ repositoryName;

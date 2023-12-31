@@ -23,6 +23,11 @@ export const NavigationApi = async ({
     locale: Locale;
     client?: PrismicClient;
 }): Promise<NavigationItem[]> => {
+    if (shop.contentProvider?.type !== 'prismic') {
+        // TODO: Handle non-Prismic content providers.
+        return [];
+    }
+
     const client = _client || createClient({ shop, locale });
 
     try {

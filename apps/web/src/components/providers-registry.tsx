@@ -22,9 +22,10 @@ const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Local
                     {children}
                 </PrismicProvider>
             );
-        default:
-            console.warn(new UnknownContentProviderError());
+        case 'shopify':
             return <>{children}</>;
+        default:
+            throw new UnknownContentProviderError();
     }
 };
 

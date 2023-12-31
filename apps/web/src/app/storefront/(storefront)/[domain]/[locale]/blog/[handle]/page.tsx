@@ -3,7 +3,7 @@ import 'server-only';
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
-import { LocalesApi, StoreApi } from '@/api/store';
+import { LocalesApi } from '@/api/store';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
@@ -77,8 +77,7 @@ export async function generateMetadata({
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
-        const store = await StoreApi({ api });
-        const locales = store.i18n?.locales || [Locale.default];
+        const locales = await LocalesApi({ api });
 
         const title = article.seo?.title || article.title;
         const description = article.seo?.description || '';
@@ -100,7 +99,7 @@ export async function generateMetadata({
                 type: 'website',
                 title,
                 description,
-                siteName: store?.name,
+                siteName: shop?.name,
                 locale: locale.code,
                 images: []
             }
