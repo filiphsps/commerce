@@ -35,10 +35,7 @@ export type PrismicContentProvider = {
         token: string | null;
     };
 };
-export type DummyContentProvider = {
-    type: 'dummy';
-};
-export type ContentProvider = ShopifyContentProvider | PrismicContentProvider | DummyContentProvider;
+export type ContentProvider = ShopifyContentProvider | PrismicContentProvider;
 
 export type Shop = Awaited<ReturnType<typeof ShopApi>>;
 
@@ -198,7 +195,7 @@ export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { sho
         return await callback(shop);
     }
 
-    return cache(callback, [shop.id, 'commerce', 'authentication', 'hello-world'], {
+    return cache(callback, [shop.id, 'commerce', 'authentication'], {
         tags: [shop.id, `${shop.id}.commerce.authentication`],
         revalidate: 28_800 // 8hrs.
     })(shop);

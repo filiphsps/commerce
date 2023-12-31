@@ -14,6 +14,38 @@ import type { Localization } from '@shopify/hydrogen-react/storefront-api-types'
 import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
+const CommerceProvider = ({
+    shop,
+    locale,
+    localization,
+    children
+}: {
+    shop: Shop;
+    locale: Locale;
+    localization?: Localization;
+    children: ReactNode;
+}) => {
+    switch (shop.commerceProvider?.type) {
+        case 'shopify':
+            return (
+                <ShopProvider shop={shop} currency={localization?.country.currency.isoCode || 'USD'} locale={locale}>
+                    <ShopifyProvider
+                        storefrontId={shop.commerceProvider.storefrontId}
+                        storeDomain={`https://${shop.commerceProvider.domain}`}
+                        storefrontApiVersion={BuildConfig.shopify.api}
+                        storefrontToken={shop.commerceProvider.authentication.publicToken}
+                        countryIsoCode={locale.country!}
+                        languageIsoCode={locale.language}
+                    >
+                        {children}
+                    </ShopifyProvider>
+                </ShopProvider>
+            );
+        default:
+            throw new UnknownCommerceProviderError();
+    }
+};
+
 const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
     switch (shop.contentProvider?.type) {
         case 'prismic':
@@ -22,7 +54,7 @@ const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Local
                     {children}
                 </PrismicProvider>
             );
-        case 'shopify':
+        case 'shopify': // TODO: Handle this.
             return <>{children}</>;
         default:
             throw new UnknownContentProviderError();
@@ -41,50 +73,26 @@ export default function ProvidersRegistry({
     apiConfig: ApiConfig;
     children: ReactNode;
 }) {
-    let domain, token, id;
-    switch (shop.commerceProvider.type) {
-        case 'shopify':
-            domain = shop.commerceProvider.domain;
-            id = shop.commerceProvider.storefrontId;
-            token = shop.commerceProvider.authentication.publicToken;
-            break;
-        default:
-            throw new UnknownCommerceProviderError();
-    }
-
     return (
         <ContentProvider shop={shop} locale={locale}>
-            <ShopProvider shop={shop} currency={localization?.country.currency.isoCode || 'USD'} locale={locale}>
-                <ShopifyProvider
-                    storefrontId={id}
-                    storeDomain={`https://${domain}`}
-                    storefrontApiVersion={BuildConfig.shopify.api}
-                    storefrontToken={token}
-                    countryIsoCode={locale.country!}
-                    languageIsoCode={locale.language}
-                >
-                    <CartProvider
-                        cartFragment={CartFragment}
-                        languageCode={locale.language}
-                        countryCode={locale.country}
-                    >
-                        {children}
+            <CommerceProvider shop={shop} locale={locale} localization={localization}>
+                <CartProvider cartFragment={CartFragment} languageCode={locale.language} countryCode={locale.country}>
+                    {children}
 
-                        <Toaster
-                            theme="dark"
-                            position="bottom-left"
-                            expand={true}
-                            duration={5000}
-                            gap={4}
-                            toastOptions={{
-                                classNames: {
-                                    toast: 'toast-notification'
-                                }
-                            }}
-                        />
-                    </CartProvider>
-                </ShopifyProvider>
-            </ShopProvider>
+                    <Toaster
+                        theme="dark"
+                        position="bottom-left"
+                        expand={true}
+                        duration={5000}
+                        gap={4}
+                        toastOptions={{
+                            classNames: {
+                                toast: 'toast-notification'
+                            }
+                        }}
+                    />
+                </CartProvider>
+            </CommerceProvider>
         </ContentProvider>
     );
 }

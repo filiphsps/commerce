@@ -245,7 +245,11 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
                 throw error;
             }
         },
-        [shop.id, locale.code, 'product', handle]
+        [shop.id, locale.code, 'product', handle],
+        {
+            tags: [shop.id, `${shop.id}.${locale.code}`, `${shop.id}.${locale.code}.product.${handle}`],
+            revalidate: 3600 // 1hr.
+        }
     )({ api, handle });
 };
 

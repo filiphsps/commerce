@@ -47,7 +47,7 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
     }
 
     try {
-        await ShopApi(hostname);
+        await ShopApi(hostname, true);
         return 'storefront';
     } catch (error) {
         console.warn(error);

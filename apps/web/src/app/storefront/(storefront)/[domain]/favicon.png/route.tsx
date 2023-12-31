@@ -42,7 +42,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     try {
         let src!: string;
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, true);
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {

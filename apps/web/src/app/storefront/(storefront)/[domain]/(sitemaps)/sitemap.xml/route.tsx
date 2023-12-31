@@ -7,7 +7,7 @@ export type DynamicSitemapRouteParams = {
     domain: string;
 };
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await ShopApi(domain);
+    const shop = await ShopApi(domain, true);
     const href = `https://${shop.domain}/sitemap`;
 
     return getServerSideSitemapIndex([

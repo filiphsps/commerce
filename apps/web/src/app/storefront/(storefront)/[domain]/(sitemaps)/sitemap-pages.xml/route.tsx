@@ -10,7 +10,7 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 
 /* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await ShopApi(domain);
+    const shop = await ShopApi(domain, true);
     const locale = Locale.default;
     const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await ShopifyApiClient({ shop, locale, apiConfig });
