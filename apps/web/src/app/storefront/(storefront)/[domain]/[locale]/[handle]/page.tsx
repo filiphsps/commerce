@@ -21,17 +21,17 @@ export async function generateMetadata({
     params: CustomPageParams;
 }): Promise<Metadata> {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
         const { page } = await PageApi({ shop, locale, handle });
-        if (!page) return notFound();
+        if (!page) notFound();
         // Extra calls,
         const locales = await LocalesApi({ api });
 
@@ -58,7 +58,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -71,17 +71,17 @@ export default async function CustomPage({
     params: CustomPageParams;
 }) {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeCode);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain);
 
         const { page } = await PageApi({ shop, locale, handle });
-        if (!page) return notFound(); // TODO: Return proper error.
+        if (!page) notFound(); // TODO: Return proper error.
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -95,7 +95,7 @@ export default async function CustomPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

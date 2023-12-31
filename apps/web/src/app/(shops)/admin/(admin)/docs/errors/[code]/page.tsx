@@ -11,7 +11,7 @@ export default async function DocsErrorPage({ params: { code } }: { params: Docs
     // TODO: Forward to uppercase version of code if not uppercase.
 
     const ErrorKind = getErrorFromCode(code.toUpperCase() as any);
-    if (!ErrorKind) return notFound();
+    if (!ErrorKind) notFound();
 
     // Trigger the error so we can access the data.
     const error = new ErrorKind();

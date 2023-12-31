@@ -72,7 +72,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -88,7 +88,7 @@ export default async function RootLayout({
 }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const apiConfig = await ShopifyApiConfig({ shop });
@@ -137,7 +137,7 @@ export default async function RootLayout({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

@@ -24,7 +24,7 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
 
     const shop = await getShop(session.user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     return (

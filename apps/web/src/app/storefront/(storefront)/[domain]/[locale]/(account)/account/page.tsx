@@ -8,7 +8,6 @@ import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { metadata as notFoundMetadata } from '../../not-found';
 
 // Make sure this page is always dynamic.
 export const dynamic = 'force-dynamic';
@@ -22,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
 
@@ -49,7 +48,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            notFound();
         }
 
         throw error;
@@ -59,7 +58,7 @@ export async function generateMetadata({
 export default async function AccountPage({ params: { domain, locale: localeData } }: { params: AccountPageParams }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
 
@@ -77,7 +76,7 @@ export default async function AccountPage({ params: { domain, locale: localeData
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

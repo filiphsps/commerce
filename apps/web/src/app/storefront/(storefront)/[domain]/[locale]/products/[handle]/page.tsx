@@ -87,10 +87,10 @@ export async function generateMetadata({
     params: ProductPageParams;
 }): Promise<Metadata> {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain);
@@ -145,7 +145,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -159,11 +159,11 @@ export default async function ProductPage({
     params: ProductPageParams;
 }) {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain);
@@ -205,7 +205,7 @@ export default async function ProductPage({
 
         const variant = initialVariant;
         if (!variant) {
-            return notFound();
+            notFound();
         }
 
         const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
@@ -452,7 +452,7 @@ export default async function ProductPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

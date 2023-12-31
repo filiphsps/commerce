@@ -36,7 +36,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
 
     const shop = await getShop(user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     const commerceProvider = await getCommerceProvider(user.id, shopId);

@@ -15,7 +15,6 @@ import type { Metadata } from 'next';
 import { NewsArticleJsonLd } from 'next-seo';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
 export async function generateStaticParams() {
@@ -73,7 +72,7 @@ export async function generateMetadata({
     try {
         const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
@@ -106,7 +105,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            notFound();
         }
 
         throw error;
@@ -121,7 +120,7 @@ export default async function ArticlePage({
     try {
         const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
@@ -185,7 +184,7 @@ export default async function ArticlePage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

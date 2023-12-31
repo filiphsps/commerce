@@ -22,7 +22,7 @@ export default async function ShopSettingsBillingPage({ params: { id: shopId } }
 
     const shop = await getShop(session.user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     return (

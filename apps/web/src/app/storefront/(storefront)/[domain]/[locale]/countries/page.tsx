@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -72,7 +72,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -86,7 +86,7 @@ export default async function CountriesPage({
 }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -143,7 +143,7 @@ export default async function CountriesPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

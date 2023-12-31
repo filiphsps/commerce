@@ -24,7 +24,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
 
     const shop = await getShop(user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     return (

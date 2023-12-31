@@ -24,10 +24,10 @@ export async function generateMetadata({
     params: CollectionPageParams;
 }): Promise<Metadata> {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -77,7 +77,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -91,11 +91,11 @@ export default async function CollectionPage({
     params: CollectionPageParams;
 }) {
     try {
-        if (!isValidHandle(handle)) return notFound();
+        if (!isValidHandle(handle)) notFound();
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain);
@@ -142,7 +142,7 @@ export default async function CollectionPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

@@ -24,7 +24,7 @@ export async function generateMetadata({
     try {
         const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
@@ -68,7 +68,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -79,7 +79,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     try {
         const shop = await ShopApi(domain);
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
@@ -110,7 +110,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

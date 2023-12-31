@@ -25,7 +25,7 @@ export async function generateMetadata({ params: { id: shopId } }: ShopLayoutPro
 
     const shop = await getShop(session.user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     return {
@@ -48,7 +48,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
 
     const shop = await getShop(session.user.id, shopId);
     if (!shop) {
-        return notFound();
+        notFound();
     }
 
     const basePath = `/shop/${shopId}`;

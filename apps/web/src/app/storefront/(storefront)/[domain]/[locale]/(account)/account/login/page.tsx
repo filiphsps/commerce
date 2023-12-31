@@ -7,7 +7,6 @@ import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { metadata as notFoundMetadata } from '../../../not-found';
 import LoginContent from './login-content';
 
 export const runtime = 'nodejs';
@@ -20,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFoundMetadata;
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
 
@@ -47,7 +46,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFoundMetadata;
+            notFound();
         }
 
         throw error;
@@ -61,7 +60,7 @@ export default async function LoginAccountPage({
 }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
 
@@ -76,7 +75,7 @@ export default async function LoginAccountPage({
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;

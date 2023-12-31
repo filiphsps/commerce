@@ -19,7 +19,7 @@ export default async function IndexUnknownPage({}: { params: IndexUnknownPagePar
 
     const originalUrl = headersList.get('x-original-uri');
     if (!originalUrl || originalUrl.startsWith('/errors')) {
-        return notFound();
+        notFound();
     }
 
     return (

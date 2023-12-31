@@ -21,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -70,7 +70,7 @@ export async function generateMetadata({
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
@@ -81,7 +81,7 @@ export async function generateMetadata({
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) return notFound();
+        if (!locale) notFound();
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -114,7 +114,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
-            return notFound();
+            notFound();
         }
 
         throw error;
