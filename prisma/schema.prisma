@@ -9,6 +9,19 @@ generator client {
     provider = "prisma-client-js"
 }
 
+// Enums. =============================================================================
+
+enum CommerceProviderType {
+    shopify
+}
+
+enum ContentProviderType {
+    prismic
+    shopify
+}
+
+// Auth Models. =======================================================================
+
 model User {
     id            String             @id @default(cuid())
     createdAt     DateTime           @default(now())
@@ -77,53 +90,65 @@ model ShopCollaborator {
     @@index([userId])
 }
 
+// Shop Models. =======================================================================
+
 model Shop {
-    id                 String             @id // Based on the name, for example `nordcom-demo`.
-    createdAt          DateTime           @default(now())
-    updatedAt          DateTime           @updatedAt
-    name               String             @db.Text
-    domain             String             @unique @db.Text
-    alternativeDomains String[]           @default([])
-    branding           ShopBranding?
-    icons              ShopIcons?
-    logos              ShopLogos?
-    thirdParty         ShopThirdParty?
-    commerceProvider   CommerceProvider?
-    contentProvider    ContentProvider?
-    checkoutProvider   CheckoutProvider?
-    collaborators      ShopCollaborator[]
+    id                 String   @id // Based on the name, for example `nordcom-demo`.
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+    name               String   @db.Text
+    domain             String   @unique @db.Text
+    alternativeDomains String[] @default([])
+
+    branding   ShopBranding?
+    theme      ShopTheme?
+    icons      ShopIcons?
+    logos      ShopLogos?
+    thirdParty ShopThirdParty?
+
+    commerceProvider CommerceProvider?
+    contentProvider  ContentProvider?
+    checkoutProvider CheckoutProvider?
+
+    collaborators ShopCollaborator[]
 }
 
-enum CommerceProviderType {
-    shopify
-}
-
-model CommerceProvider {
-    id        String               @id @default(cuid())
-    createdAt DateTime             @default(now())
-    updatedAt DateTime             @updatedAt
-    type      CommerceProviderType @default(shopify)
-    data      Json
-    shop      Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model ShopTheme {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
+
+    data Json
 
     @@unique([shopId])
     @@index([shopId])
 }
 
-enum ContentProviderType {
-    prismic
-    shopify
+model CommerceProvider {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shopId    String
+
+    type CommerceProviderType @default(shopify)
+    data Json
+
+    @@unique([shopId])
+    @@index([shopId])
 }
 
 model ContentProvider {
-    id        String              @id @default(cuid())
-    createdAt DateTime            @default(now())
-    updatedAt DateTime            @updatedAt
-    type      ContentProviderType @default(shopify)
-    data      Json
-    shop      Shop                @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
+
+    type ContentProviderType @default(shopify)
+    data Json
 
     @@unique([shopId])
     @@index([shopId])
@@ -133,10 +158,11 @@ model CheckoutProvider {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    type      String
-    data      Json
     shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopId    String
+
+    type String
+    data Json
 
     @@unique([shopId])
     @@index([shopId])
@@ -146,23 +172,25 @@ model BrandColor {
     id             String       @id @default(cuid())
     createdAt      DateTime     @default(now())
     updatedAt      DateTime     @updatedAt
-    type           String
-    variant        String
-    accent         String
-    background     String
-    foreground     String
     shopBrandingId String
     shopBranding   ShopBranding @relation(fields: [shopBrandingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    type       String
+    variant    String
+    accent     String
+    background String
+    foreground String
 
     @@index([shopBrandingId])
 }
 
 model ShopBranding {
-    id          String       @id @default(cuid())
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
-    shopId      String
-    shop        Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shopId    String
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
     brandColors BrandColor[]
 
     @@unique([shopId])
@@ -173,12 +201,13 @@ model ShopIconsImage {
     id          String    @id @default(cuid())
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
-    src         String
-    alt         String?
-    width       Int
-    height      Int
     shopIconsId String    @unique
     shopIcons   ShopIcons @relation(fields: [shopIconsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    src    String
+    alt    String?
+    width  Int
+    height Int
 
     @@index([shopIconsId])
 }
@@ -200,14 +229,15 @@ model ShopLogosImage {
     id             String     @id @default(cuid())
     createdAt      DateTime   @default(now())
     updatedAt      DateTime   @updatedAt
-    src            String
-    alt            String?
-    width          Int
-    height         Int
     shopLogosId    String?
     shopLogos      ShopLogos? @relation(name: "primary", fields: [shopLogosId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     shopLogoAltsId String?
     shopLogoAlts   ShopLogos? @relation(name: "alternative", fields: [shopLogoAltsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    src    String
+    alt    String?
+    width  Int
+    height Int
 
     @@unique([shopLogosId])
     @@unique([shopLogoAltsId])
@@ -230,11 +260,12 @@ model ShopLogos {
 }
 
 model ShopThirdParty {
-    id               String   @id @default(cuid())
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime @updatedAt
-    shopId           String
-    shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    shopId    String
+    shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
     googleTagManager String?
 
     @@unique([shopId])
