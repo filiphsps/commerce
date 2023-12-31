@@ -61,9 +61,9 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
                 template: `%s - ${shop.name}`
             },
             icons: {
-                icon: ['/favicon.png'],
+                icon: ['/favicon.ico', '/favicon.png'],
                 shortcut: ['/favicon.png'],
-                apple: ['/favicon.png']
+                apple: ['/apple-icon.png']
             },
             robots: {
                 follow: true,
@@ -107,13 +107,14 @@ export default async function RootLayout({
         return (
             <>
                 <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
+
                 <html
                     lang={locale.code}
-                    className={fontPrimary.variable || undefined}
+                    className={fontPrimary.variable || ''}
                     // A bunch of extensions add classes to the `html` element.
                     suppressHydrationWarning={true}
                 >
-                    <head>
+                    <head suppressHydrationWarning={true}>
                         <Suspense key={`${shop.id}.theme`}>
                             <CssVariablesProvider domain={domain} />
                         </Suspense>

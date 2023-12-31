@@ -6,7 +6,8 @@ export const config = {
     matcher: [
         '/((?!_next|_static|_vercel|instrumentation|highlight-events|assets|[\\w-]+\\.\\w+).*)',
         // Handle assets we generate dynamically per-tenant.
-        '/:path*/favicon.png',
+        '/:path*/favicon:type*',
+        '/:path*/apple-icon:type*',
         '/:path*/sitemap:type*.xml',
         '/:path*/robots.txt'
     ],

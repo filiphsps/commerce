@@ -96,7 +96,7 @@ export default defineConfig({
                 '**/src/api/shop.ts',
                 '**/src/app/**/route.*',
                 '**/src/app/**/layout.*',
-                '**/src/app/**/*favicon.png*',
+                '**/src/app/**/*favicon.*',
                 '**/src/components/**/*-provider*.tsx',
                 '**/src/components/**/providers-registry.tsx',
                 '**/src/app/**/*-content.*',

@@ -90,15 +90,7 @@ const config = {
     env: {
         // Settings.
         LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-        DOMAIN: process.env.DOMAIN,
         GTM: process.env.GTM,
-
-        // Shopify.
-        SHOPIFY_SHOP_ID: process.env.SHOPIFY_SHOP_ID,
-        SHOPIFY_STOREFRONT_ID: process.env.SHOPIFY_STOREFRONT_ID,
-        SHOPIFY_DOMAIN: process.env.SHOPIFY_DOMAIN,
-        SHOPIFY_CHECKOUT_DOMAIN: process.env.SHOPIFY_CHECKOUT_DOMAIN,
-        SHOPIFY_TOKEN: process.env.SHOPIFY_TOKEN,
 
         // Prismic.
         PRISMIC_REPO: process.env.PRISMIC_REPO,
@@ -113,9 +105,6 @@ const config = {
 
         // Settings.
         LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-
-        // Shopify.
-        SHOPIFY_PRIVATE_TOKEN: process.env.SHOPIFY_PRIVATE_TOKEN,
 
         // Prismic.
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,

@@ -2,7 +2,6 @@ import { ShopApi } from '@/api/shop';
 import type { MetadataRoute } from 'next';
 import { NextResponse, type NextRequest } from 'next/server';
 
-/* c8 ignore start */
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
 type Rule = Rules[number];
 const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {
@@ -85,4 +84,3 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Robo
         {}
     );
 }
-/* c8 ignore stop */
