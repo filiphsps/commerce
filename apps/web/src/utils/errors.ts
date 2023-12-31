@@ -49,6 +49,7 @@ export enum ApiErrorKind {
     API_UNKNOWN_ERROR = 'API_UNKNOWN_ERROR',
     API_UNKNOWN_SHOP_DOMAIN = 'API_UNKNOWN_SHOP_DOMAIN',
     API_UNKNOWN_COMMERCE_PROVIDER = 'API_UNKNOWN_COMMERCE_PROVIDER',
+    API_UNKNOWN_CONTENT_PROVIDER = 'API_UNKNOWN_CONTENT_PROVIDER',
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
@@ -92,6 +93,12 @@ export class UnknownCommerceProviderError extends UnknownApiError {
     details = 'Unknown commerce provider';
     description = 'Could not find a commerce provider with the given type';
     code = ApiErrorKind.API_UNKNOWN_COMMERCE_PROVIDER;
+}
+export class UnknownContentProviderError extends UnknownApiError {
+    name = 'UnknownContentProviderError';
+    details = 'Unknown content provider';
+    description = 'Could not find a content provider with the given type';
+    code = ApiErrorKind.API_UNKNOWN_CONTENT_PROVIDER;
 }
 export class UnknownLocaleError extends UnknownApiError {
     name = 'UnknownLocaleError';

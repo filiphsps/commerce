@@ -14,10 +14,9 @@ describe('app', () => {
 
     // Mock various API functions.
     vi.mock('@/api/shopify', () => ({
-        StorefrontApiClient: vi.fn().mockReturnValue({
+        ShopifyApolloApiClient: vi.fn().mockReturnValue({
             query: vi.fn().mockResolvedValue({})
-        }),
-        ShopifyApolloApiClient: vi.fn().mockReturnValue({})
+        })
     }));
     vi.mock('@/api/page', () => {
         let PageApi = vi.fn().mockResolvedValue({

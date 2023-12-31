@@ -22,7 +22,7 @@ export type HeaderProps = {
 const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
     const navigation = await NavigationApi({ shop, locale });
 
-    const logo = shop?.configuration?.design?.branding?.logos?.primary!;
+    const logo = shop?.logos?.primary!;
     return (
         <section className={styles.wrapper}>
             <HeaderContainer {...props}>

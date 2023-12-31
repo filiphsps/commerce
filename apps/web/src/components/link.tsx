@@ -21,7 +21,7 @@ const isInternal = (href: string, shop?: Shop): boolean => {
 
     // Next if shop is defined we can check if we're linking to ourselves.
     if (shop) {
-        if (href.startsWith(`https://${shop.domains.primary}`) || href.startsWith(`http://${shop.domains.primary}`)) {
+        if (href.startsWith(`https://${shop.domain}`) || href.startsWith(`http://${shop.domain}`)) {
             return true;
         }
     }
@@ -37,6 +37,8 @@ export default function Link({ locale, href, prefetch, ...props }: Props) {
     }
 
     const shop = useShop();
+
+    console.log('!!', shop);
 
     // Get the locale if it's not provided to us.
     try {

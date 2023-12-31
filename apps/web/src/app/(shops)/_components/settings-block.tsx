@@ -1,14 +1,17 @@
 import { Button, Card } from '@nordcom/nordstar';
 import type { ReactNode } from 'react';
+import styles from './settings-block.module.scss';
 
 export type SettingsBlockProps = {
     save: (data: FormData) => Promise<void>;
 
-    children: ReactNode;
+    actionButtonLabel?: string;
+    children?: ReactNode;
 };
-const SettingsBlock = ({ save, children }: SettingsBlockProps) => {
+const SettingsBlock = ({ save, actionButtonLabel, children }: SettingsBlockProps) => {
     return (
         <Card
+            className={styles.container}
             as="form"
             action={async (data: FormData) => {
                 'use server';
@@ -18,13 +21,8 @@ const SettingsBlock = ({ save, children }: SettingsBlockProps) => {
         >
             {children}
 
-            <Button
-                type="submit"
-                color="default"
-                variant="outline"
-                style={{ marginTop: 'var(--layout-block-padding)' }}
-            >
-                Save
+            <Button type="submit" color="default" variant="outline">
+                {actionButtonLabel || 'Save'}
             </Button>
         </Card>
     );

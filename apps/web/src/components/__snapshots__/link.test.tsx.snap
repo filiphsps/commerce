@@ -27,6 +27,5 @@ exports[`components > Link > should remove double slashes from the \`href\` 1`] 
 exports[`components > Link > should remove the current domain from the \`href\` 1`] = `
 <a
   href="/en-US/some/path"
-  shop="[object Object]"
 />
 `;

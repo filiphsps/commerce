@@ -17,7 +17,7 @@ export const PagesApi = async ({
     client?: PrismicClient;
     exclude?: string[];
 }): Promise<PrismicDocument[]> => {
-    if (shop.configuration.content.type !== 'prismic') {
+    if (shop.contentProvider?.type !== 'prismic') {
         // TODO: throw new NotFoundError();.
         return [];
     }
@@ -75,7 +75,7 @@ export const PageApi = async <T extends PageType = 'custom_page'>(props: {
 }): Promise<{
     page: PageData<T> | null;
 }> => {
-    if (props.shop.configuration.content.type !== 'prismic') {
+    if (props.shop.contentProvider?.type !== 'prismic') {
         return { page: null };
     }
 

@@ -10,12 +10,14 @@ const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 export const getAuthOptions = async ({ shop }: { shop?: Shop }): Promise<AuthOptions> => {
     if (!shop) throw new InvalidShopError();
 
-    const { customers } = await CommerceProviderAuthenticationApi({ shop });
+    const {
+        authentication: { customers }
+    } = await CommerceProviderAuthenticationApi({ shop });
     if (!customers) throw new InvalidShopifyCustomerAccountsApiConfiguration();
 
     const endpointBase = `https://shopify.com/${customers.id}/auth`;
 
-    const { hostname } = new URL(`https://${shop.domains.primary}`);
+    const { hostname } = new URL(`https://${shop.domain}`);
     const hostParts = hostname.split('.');
     const domain = `${hostParts.at(-2)}.${hostParts.at(-1)}`;
 

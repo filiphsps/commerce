@@ -1,7 +1,5 @@
 import { ShopsApi } from '@/api/shop';
-import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { withAppRouterHighlight } from '@/utils/config/highlight.app';
-import { Locale } from '@/utils/locale';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -12,12 +10,12 @@ export const GET = withAppRouterHighlight(async (_req: NextRequest, _context) =>
     const shops = await ShopsApi();
     await shops.map(async (shop) => {
         // TODO: Get the shop's default locale
-        const locale = Locale.default;
+        //const locale = Locale.default;
 
-        switch (shop.configuration.commerce.type) {
+        switch (shop.commerceProvider?.type) {
             case 'shopify': {
-                const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
-                const _api = await ShopifyApiClient({ shop, locale, apiConfig });
+                //const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
+                //const _api = await ShopifyApiClient({ shop, locale, apiConfig });
 
                 // TODO: Check if webhooks are set up. If not, set them up.
                 break;

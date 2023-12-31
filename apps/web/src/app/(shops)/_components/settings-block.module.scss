@@ -1,0 +1,8 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    button:not(:is(:first-child)):is(:last-child) {
+        margin: var(--layout-block-padding) 0 0 0;
+    }
+}

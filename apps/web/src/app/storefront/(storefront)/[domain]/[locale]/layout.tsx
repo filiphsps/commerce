@@ -46,7 +46,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
         const shop = await ShopApi(domain);
 
         return {
-            metadataBase: new URL(`https://${shop.domains.primary}/${locale}/`),
+            metadataBase: new URL(`https://${shop.domain}/${locale}/`),
             title: {
                 absolute: shop.name,
                 // Allow tenants to customize this.

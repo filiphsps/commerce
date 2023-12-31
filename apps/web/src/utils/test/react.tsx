@@ -6,10 +6,9 @@ import type { ReactNode } from 'react';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
-        domains: {
-            primary: 'example.com'
-        }
+        domain: 'example.com'
     } as any;
+
     return (
         <ShopProvider shop={shop} locale={Locale.default} currency={'USD'}>
             <Trackable>{children}</Trackable>

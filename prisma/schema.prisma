@@ -86,6 +86,8 @@ model Shop {
     alternativeDomains String[]           @default([])
     branding           ShopBranding?
     icons              ShopIcons?
+    logos              ShopLogos?
+    thirdParty         ShopThirdParty?
     commerceProvider   CommerceProvider?
     contentProvider    ContentProvider?
     checkoutProvider   CheckoutProvider?
@@ -152,7 +154,6 @@ model BrandColor {
     shopBrandingId String
     shopBranding   ShopBranding @relation(fields: [shopBrandingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@unique([shopBrandingId])
     @@index([shopBrandingId])
 }
 
@@ -173,12 +174,12 @@ model ShopIconsImage {
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
     src         String
+    alt         String?
     width       Int
     height      Int
-    shopIconsId String
+    shopIconsId String    @unique
     shopIcons   ShopIcons @relation(fields: [shopIconsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@unique([shopIconsId])
     @@index([shopIconsId])
 }
 
@@ -190,6 +191,51 @@ model ShopIcons {
     shop      Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     faviconId String?
     favicon   ShopIconsImage?
+
+    @@unique([shopId])
+    @@index([shopId])
+}
+
+model ShopLogosImage {
+    id             String     @id @default(cuid())
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+    src            String
+    alt            String?
+    width          Int
+    height         Int
+    shopLogosId    String?
+    shopLogos      ShopLogos? @relation(name: "primary", fields: [shopLogosId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    shopLogoAltsId String?
+    shopLogoAlts   ShopLogos? @relation(name: "alternative", fields: [shopLogoAltsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([shopLogosId])
+    @@unique([shopLogoAltsId])
+    @@index([shopLogosId, shopLogoAltsId])
+}
+
+model ShopLogos {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    shopId        String
+    shop          Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    primaryId     String?
+    primary       ShopLogosImage? @relation(name: "primary")
+    alternativeId String?
+    alternative   ShopLogosImage? @relation(name: "alternative")
+
+    @@unique([shopId])
+    @@index([shopId])
+}
+
+model ShopThirdParty {
+    id               String   @id @default(cuid())
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+    shopId           String
+    shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    googleTagManager String?
 
     @@unique([shopId])
     @@index([shopId])

@@ -1,6 +1,7 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -22,8 +23,11 @@ export async function generateMetadata({
         if (!locale) return notFound();
 
         const shop = await ShopApi(domain);
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
+        const locales = await LocalesApi({ api });
+
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
 
@@ -33,7 +37,14 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/products/`
+                canonical: `https://${shop.domain}/${locale.code}/products/`,
+                languages: locales.reduce(
+                    (prev, { code }) => ({
+                        ...prev,
+                        [code]: `https://${shop.domain}/${code}/products/`
+                    }),
+                    {}
+                )
             },
             openGraph: {
                 url: `/products/`,

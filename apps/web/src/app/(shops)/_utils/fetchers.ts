@@ -92,6 +92,7 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
         await revalidateTag(data.domain);
         await revalidateTag(shopId);
         await revalidateTag(`admin.user.${userId}`);
+        await revalidateTag('shops');
         return response;
     } catch (error: any) {
         console.error(error);
@@ -118,6 +119,7 @@ export async function createShop(userId: string) {
         });
 
         await revalidateTag(`admin.user.${userId}.shops`);
+        await revalidateTag('shops');
         return response;
     } catch (error: any) {
         console.error(error);
@@ -169,6 +171,7 @@ export async function updateCommerceProvider(userId: string, shopId: string, dat
 
         await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
         await revalidateTag(shopId);
+        await revalidateTag('shops');
         return response;
     } catch (error: any) {
         console.error(error);

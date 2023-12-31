@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { ShopifyApiConfig, StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Error, NotFoundError, UnknownApiError } from '@/utils/errors';
@@ -11,13 +11,12 @@ import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 
 export const dynamic = 'force-dynamic';
 
-/* c8 ignore start */
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
         const shop = await ShopApi(domain);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
-        const api = await StorefrontApiClient({ shop, locale, apiConfig });
+        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 
         // TODO: const blogs = await BlogsApi({ api });
@@ -32,13 +31,13 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                         (article) =>
                             ({
                                 // TODO: Support more than one blog.
-                                loc: `https://${shop.domains.primary}/${locale}/blog/${article.handle}/`,
+                                loc: `https://${shop.domain}/${locale}/blog/${article.handle}/`,
                                 changefreq: 'never',
                                 lastmod: article.publishedAt,
                                 alternateRefs: locales
                                     .filter(({ code: c }) => code !== c)
                                     .map(({ code }) => ({
-                                        href: `https://${shop.domains.primary}/${code}/blog/${article.handle}/`,
+                                        href: `https://${shop.domain}/${code}/blog/${article.handle}/`,
                                         hreflang: code,
                                         hrefIsAbsolute: true
                                     })),
@@ -74,4 +73,3 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         );
     }
 }
-/* c8 ignore stop */

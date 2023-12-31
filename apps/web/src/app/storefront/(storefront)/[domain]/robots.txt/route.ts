@@ -73,14 +73,14 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Robo
 
     return new NextResponse(
         nextRobotsSchemaParser({
-            host: `https://${shop.domains.primary}`,
+            host: `https://${shop.domain}`,
             rules: [
                 {
                     userAgent: '*',
                     disallow: ['/storefront/', '/slice-machine/', '/cdn-cgi/']
                 }
             ],
-            sitemap: [`https://${shop.domains.primary}/sitemap.xml`]
+            sitemap: [`https://${shop.domain}/sitemap.xml`]
         }),
         {}
     );

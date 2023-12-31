@@ -5,7 +5,7 @@ import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
 import { ShopProvider } from '@/components/shop/provider';
 import { BuildConfig } from '@/utils/build-config';
-import { UnknownCommerceProviderError } from '@/utils/errors';
+import { UnknownCommerceProviderError, UnknownContentProviderError } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
 import { createClient, linkResolver } from '@/utils/prismic';
 import { PrismicProvider } from '@prismicio/react';
@@ -13,6 +13,20 @@ import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import type { Localization } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 import { Toaster } from 'sonner';
+
+const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
+    switch (shop.contentProvider?.type) {
+        case 'prismic':
+            return (
+                <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
+                    {children}
+                </PrismicProvider>
+            );
+        default:
+            console.warn(new UnknownContentProviderError());
+            return <>{children}</>;
+    }
+};
 
 export default function ProvidersRegistry({
     shop,
@@ -27,18 +41,18 @@ export default function ProvidersRegistry({
     children: ReactNode;
 }) {
     let domain, token, id;
-    switch (shop.configuration.commerce.type) {
+    switch (shop.commerceProvider.type) {
         case 'shopify':
-            domain = shop.configuration.commerce.domain;
-            id = shop.configuration.commerce.storefrontId;
-            token = shop.configuration.commerce.authentication.publicToken;
+            domain = shop.commerceProvider.domain;
+            id = shop.commerceProvider.storefrontId;
+            token = shop.commerceProvider.authentication.publicToken;
             break;
         default:
             throw new UnknownCommerceProviderError();
     }
 
     return (
-        <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
+        <ContentProvider shop={shop} locale={locale}>
             <ShopProvider shop={shop} currency={localization?.country.currency.isoCode || 'USD'} locale={locale}>
                 <ShopifyProvider
                     storefrontId={id}
@@ -70,6 +84,6 @@ export default function ProvidersRegistry({
                     </CartProvider>
                 </ShopifyProvider>
             </ShopProvider>
-        </PrismicProvider>
+        </ContentProvider>
     );
 }

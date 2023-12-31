@@ -1,13 +1,15 @@
 import { ShopApi } from '@/api/shop';
 import { colord } from 'colord';
 import { unstable_cache as cache } from 'next/cache';
+import { TodoError } from './errors';
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
     return cache(
         async (domain: string) => {
             const shop = await ShopApi(domain);
-            const { colors } = shop.configuration!.design!.branding!;
+            if (!shop.branding?.brandColors) throw new TodoError();
+            const { brandColors: colors } = shop.branding;
 
             // TODO: Deal with variants.
             const primary = colors!.find(({ type }) => type === 'primary')!;

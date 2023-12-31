@@ -1,9 +1,11 @@
 import 'server-only';
 
+import { SettingsBlock } from '#/components/settings-block';
 import { getSession } from '#/utils/auth';
 import { getShop } from '#/utils/fetchers';
 import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import { revalidateTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 export type ShopPageProps = {
@@ -30,7 +32,16 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
             <Heading level="h2" as="h2">
                 Overview
             </Heading>
-            <Card></Card>
+            <Card>
+                <SettingsBlock
+                    save={async () => {
+                        'use server';
+                        revalidateTag(shop.id);
+                        revalidateTag(shop.domain);
+                    }}
+                    actionButtonLabel="Revalidate"
+                />
+            </Card>
         </section>
     );
 }

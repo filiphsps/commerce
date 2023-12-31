@@ -20,8 +20,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const search = params.length > 0 ? `?${params}` : '';
 
     // Redirect to the primary domain if the hostname doesn't match.
-    if (hostname !== shop.domains.primary) {
-        newUrl.hostname = shop.domains.primary;
+    if (hostname !== shop.domain) {
+        newUrl.hostname = shop.domain;
     }
 
     // API.
@@ -31,7 +31,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname.includes('/slice-simulator')
     ) {
         // Do not mess with status or headers here.
-        let target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${search}`;
+        let target = `${newUrl.origin}/storefront/${shop.domain}${newUrl.pathname}${search}`;
         return NextResponse.rewrite(new URL(target, req.url));
 
         // TODO: Handle Handle tenant-specific files/assets.
@@ -114,6 +114,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/storefront/${shop.domains.primary}${newUrl.pathname}${search}`;
+    const target = `${newUrl.origin}/storefront/${shop.domain}${newUrl.pathname}${search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };

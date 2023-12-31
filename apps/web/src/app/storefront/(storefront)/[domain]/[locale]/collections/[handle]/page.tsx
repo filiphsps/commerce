@@ -2,6 +2,7 @@ import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
+import { LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
@@ -30,8 +31,10 @@ export async function generateMetadata({
 
         const shop = await ShopApi(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
+
         const collection = await CollectionApi({ api, handle });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
+        const locales = await LocalesApi({ api });
 
         const title = page?.meta_title || collection.seo?.title || collection.title;
         const description: string | undefined =
@@ -43,7 +46,14 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/collections/${handle}/`
+                canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
+                languages: locales.reduce(
+                    (prev, { code }) => ({
+                        ...prev,
+                        [code]: `https://${shop.domain}/${code}/collections/${handle}/`
+                    }),
+                    {}
+                )
             },
             openGraph: {
                 url: `/collections/${handle}/`,

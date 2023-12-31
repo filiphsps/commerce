@@ -49,9 +49,8 @@ export const Checkout = async ({
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
     let url = cart.checkoutUrl;
-    if (shop.configuration.commerce.type === 'shopify') {
-        // Replace xxx.myshopify.com with `shop.configuration.commerce.domain` in an url
-        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, `${shop.configuration.commerce.domain}`);
+    if (shop.commerceProvider.type === 'shopify') {
+        url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, `${shop.commerceProvider.domain}`);
     }
 
     try {

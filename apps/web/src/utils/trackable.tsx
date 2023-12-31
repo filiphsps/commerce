@@ -151,19 +151,19 @@ const shopifyEventHandler = async (
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
         return;
-    } else if (shop.configuration.commerce.type !== 'shopify') {
+    } else if (shop.commerceProvider.type !== 'shopify') {
         console.error('shopifyEventHandler() called for non-Shopify shop.');
         return;
     }
 
-    const commerce = shop.configuration.commerce as ShopifyCommerceProvider;
+    const commerce = shop.commerceProvider as ShopifyCommerceProvider;
     const pageType = pathToShopifyPageType((data.path || '').replace(`/${locale.code}/`, '/'));
 
     const products = data.gtm?.ecommerce?.items || [];
     const value = data.gtm?.ecommerce?.value || 0;
 
     const pageAnalytics = {
-        canonicalUrl: `https://${shop.domains.primary}${data.path}`,
+        canonicalUrl: `https://${shop.domain}${data.path}`,
         resourceId: '',
         pageType
     };
@@ -250,7 +250,7 @@ const handleEvent = async (
         window.dataLayer = [];
     }
 
-    switch (shop.configuration.commerce.type) {
+    switch (shop.commerceProvider.type) {
         case 'shopify': {
             await shopifyEventHandler(event, data, { shop, currency, locale, shopify, cart });
         }

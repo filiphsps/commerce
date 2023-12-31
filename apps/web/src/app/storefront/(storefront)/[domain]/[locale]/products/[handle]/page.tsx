@@ -2,9 +2,9 @@ import 'server-only';
 
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
-import { ShopApi, ShopsApi } from '@/api/shop';
+import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
@@ -17,7 +17,6 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
@@ -35,8 +34,7 @@ import styles from './page.module.scss';
 import { ProductContent, ProductPricing } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
-export async function generateStaticParams() {
-    const locale = Locale.default;
+/*export async function generateStaticParams() {
     const shops = await ShopsApi();
 
     const pages = (
@@ -56,7 +54,7 @@ export async function generateStaticParams() {
                                         const products = await ProductsApi({ api });
 
                                         return products.products.map(({ node: { handle } }) => ({
-                                            domain: shop.domains.primary,
+                                            domain: shop.domain,
                                             locale: locale.code,
                                             handle
                                         }));
@@ -80,7 +78,7 @@ export async function generateStaticParams() {
     }
 
     return pages;
-}
+}*/
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
@@ -111,11 +109,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/products/${handle}/`,
+                canonical: `https://${shop.domain}/${locale.code}/products/${handle}/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${shop.domains.primary}/${code}/products/${handle}/`
+                        [code]: `https://${shop.domain}/${code}/products/${handle}/`
                     }),
                     {}
                 )
@@ -397,7 +395,7 @@ export default async function ProductPage({
                             availability: variant.availableForSale
                                 ? 'https://schema.org/InStock'
                                 : 'https://schema.org/SoldOut',
-                            url: `https://${shop.domains.primary}/${locale.code}/products/${product.handle}/?variant=${
+                            url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
                                 parseGid(variant.id).id
                             }`,
                             seller: {

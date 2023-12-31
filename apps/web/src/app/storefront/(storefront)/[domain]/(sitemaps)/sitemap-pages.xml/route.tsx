@@ -27,13 +27,13 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                 return pages.map(
                     (page) =>
                         ({
-                            loc: `https://${shop.domains.primary}/${code}/${page.url}`, // Trailing slash is already added.
+                            loc: `https://${shop.domain}/${code}/${page.url}`, // Trailing slash is already added.
                             changefreq: 'monthly',
                             lastmod: page.last_publication_date,
                             alternateRefs: locales
                                 .filter(({ code: c }) => code !== c)
                                 .map(({ code }) => ({
-                                    href: `https://${shop.domains.primary}/${code}/${page.url}`,
+                                    href: `https://${shop.domain}/${code}/${page.url}`,
                                     hreflang: code,
                                     hrefIsAbsolute: true
                                 })),

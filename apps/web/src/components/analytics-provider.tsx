@@ -18,8 +18,8 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
         const timeout = setTimeout(() => {
             setDeferred(
                 <>
-                    {shop?.configuration?.thirdParty?.googleTagManager ? (
-                        <GoogleTagManager gtmId={shop!.configuration!.thirdParty!.googleTagManager!} />
+                    {shop?.thirdParty?.googleTagManager ? (
+                        <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} />
                     ) : null}
                     <VercelAnalytics debug={false} />
                 </>

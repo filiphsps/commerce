@@ -84,14 +84,12 @@ export const createClient = ({
     let name: string = repositoryName;
 
     // TODO: These cases should be dealt with before even arriving here.
-    if (shop.configuration.content.type === 'dummy') {
-        // TODO: Deal with the `dummy` content provider.
-    } else if (shop.configuration.content.type !== 'prismic') {
+    if (shop.contentProvider?.type !== 'prismic') {
         // TODO: Deal with the `shopify` content provider.
         throw new TodoError();
     } else {
         // Work-around since `content.id` wouldn't exist on a `DummyContentProvider`.
-        name = shop.configuration.content?.id || repositoryName;
+        name = /*shop.configuration.content?.id ||*/ repositoryName;
     }
 
     // TODO: Remove `repositoryName` variable.

@@ -4,6 +4,7 @@ import type { ApiConfig } from '@/api/client';
 import { setupApollo } from '@/api/client';
 import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
+import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
@@ -20,11 +21,13 @@ export const ShopifyApiConfig = async ({
     public: () => ApiConfig;
     private: () => ApiConfig;
 }> => {
-    const { token, publicToken } = await CommerceProviderAuthenticationApi({ shop, noCache });
+    const commerceProvider = await CommerceProviderAuthenticationApi({ shop, noCache });
+    if (!shop.commerceProvider || !commerceProvider) throw new UnknownCommerceProviderError();
+
     const api = createStorefrontClient({
-        publicStorefrontToken: publicToken,
-        privateStorefrontToken: token || undefined,
-        storeDomain: shop.configuration.commerce.domain,
+        publicStorefrontToken: commerceProvider.authentication.publicToken,
+        privateStorefrontToken: commerceProvider.authentication.token || undefined,
+        storeDomain: commerceProvider.domain,
         contentType: 'json'
     });
 
@@ -112,8 +115,3 @@ export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfi
         } as any
     });
 };
-
-/**
- * @deprecated Use {@link ShopifyApolloApiClient} instead.
- */
-export const StorefrontApiClient = ShopifyApolloApiClient;

@@ -1,7 +1,7 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { LocalesApi, StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -24,7 +24,10 @@ export async function generateMetadata({
         if (!locale) return notFound();
 
         const shop = await ShopApi(domain);
+        const api = await ShopifyApolloApiClient({ shop, locale });
+
         const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
+        const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
@@ -36,7 +39,14 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/cart/`
+                canonical: `https://${shop.domain}/${locale.code}/cart/`,
+                languages: locales.reduce(
+                    (prev, { code }) => ({
+                        ...prev,
+                        [code]: `https://${shop.domain}/${code}/cart/`
+                    }),
+                    {}
+                )
             },
             openGraph: {
                 url: `/cart/`,

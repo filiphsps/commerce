@@ -15,9 +15,6 @@ describe('app', () => {
             getDictionary: vi.fn().mockResolvedValue({})
         }));
         vi.mock('@/api/shopify', () => ({
-            StorefrontApiClient: vi.fn().mockReturnValue({
-                query: vi.fn().mockResolvedValue({})
-            }),
             ShopifyApolloApiClient: vi.fn().mockReturnValue({
                 query: vi.fn().mockResolvedValue({})
             })

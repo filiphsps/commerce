@@ -37,11 +37,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/blog/`,
+                canonical: `https://${shop.domain}/${locale.code}/blog/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${shop.domains.primary}/${code}/blog/`
+                        [code]: `https://${shop.domain}/${code}/blog/`
                     }),
                     {}
                 )

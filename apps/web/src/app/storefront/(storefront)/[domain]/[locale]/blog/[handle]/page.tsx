@@ -35,7 +35,7 @@ export async function generateStaticParams() {
                                         const blog = await BlogApi({ api, handle: 'news' });
 
                                         return blog.articles.edges.map(({ node: { handle } }) => ({
-                                            domain: shop.domains.primary,
+                                            domain: shop.domain,
                                             locale: locale.code,
                                             handle
                                         }));
@@ -83,11 +83,11 @@ export async function generateMetadata({
             title,
             description,
             alternates: {
-                canonical: `https://${shop.domains.primary}/${locale.code}/blog/${handle}/`,
+                canonical: `https://${shop.domain}/${locale.code}/blog/${handle}/`,
                 languages: locales.reduce(
                     (prev, { code }) => ({
                         ...prev,
-                        [code]: `https://${shop.domains.primary}/${code}/blog/${handle}/`
+                        [code]: `https://${shop.domain}/${code}/blog/${handle}/`
                     }),
                     {}
                 )
@@ -152,7 +152,7 @@ export default async function ArticlePage({
 
                 <NewsArticleJsonLd
                     useAppDir={true}
-                    url={`https://${shop.domains.primary}/${locale.code}/blog/${handle}/`}
+                    url={`https://${shop.domain}/${locale.code}/blog/${handle}/`}
                     description={article.seo?.description || article.excerpt || ''}
                     body={article.content}
                     title={article.title}
@@ -163,7 +163,7 @@ export default async function ArticlePage({
                     datePublished={article.publishedAt}
                     authorName={article.authorV2?.name!}
                     publisherName={shop.name}
-                    publisherLogo={shop.configuration.icons?.favicon?.src!}
+                    publisherLogo={shop.icons?.favicon?.src!}
                 />
             </article>
         );

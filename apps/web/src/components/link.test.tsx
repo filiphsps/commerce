@@ -15,7 +15,9 @@ describe('components', () => {
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),
-                useShop: vi.fn().mockReturnValue({})
+                useShop: vi.fn().mockReturnValue({
+                    domain: 'example.com'
+                })
             };
         });
 
@@ -63,18 +65,7 @@ describe('components', () => {
             vi.spyOn(window, 'location', 'get').mockReturnValue({ host: 'example.com' } as any);
             window.location.host = 'example.com';
             const href = `https://example.com/some/path`;
-            const { container } = render(
-                <Link
-                    shop={
-                        {
-                            domains: {
-                                primary: 'example.com'
-                            }
-                        } as any
-                    }
-                    href={href}
-                />
-            );
+            const { container } = render(<Link href={href} />);
             const link = container.querySelector('a');
             expect(link?.getAttribute('href')).toBe('/en-US/some/path');
             expect(link).toMatchSnapshot();

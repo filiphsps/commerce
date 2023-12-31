@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { StorefrontApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
@@ -28,7 +28,7 @@ export default async function BlogLayout({
         const locale = Locale.from(localeData);
         if (!locale) return notFound();
 
-        const api = await StorefrontApiClient({ shop, locale });
+        const api = await ShopifyApolloApiClient({ shop, locale });
         const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(
             ({ node: article }) => article
         );
