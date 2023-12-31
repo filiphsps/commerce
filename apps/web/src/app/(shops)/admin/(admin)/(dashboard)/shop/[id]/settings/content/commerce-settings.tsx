@@ -1,9 +1,8 @@
 'use client';
 
-import { Card, Input, Label } from '@nordcom/nordstar';
+import { Input } from '@nordcom/nordstar';
 import { CommerceProviderType, type CommerceProvider } from '@prisma/client/edge';
 import { useState } from 'react';
-import styles from './settings.module.scss';
 
 export type CommerceSettingsProps = {
     data: CommerceProvider | null;
@@ -24,10 +23,12 @@ type ShopifyCommerceProviderData = {
 };
 
 const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
-    const data = JSON.parse(settings?.data?.toString() || 'null') as ShopifyCommerceProviderData | null;
+    const data = (
+        typeof settings?.data === 'object' ? settings?.data : JSON.parse(settings?.data?.toString() || 'null')
+    ) as ShopifyCommerceProviderData | null;
 
     return (
-        <Card className={styles.section}>
+        <>
             <Input
                 type="text"
                 name="domain"
@@ -78,7 +79,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 defaultValue={data?.authentication?.customers?.clientSecret}
                 required={true}
             />
-        </Card>
+        </>
     );
 };
 
@@ -88,14 +89,12 @@ const CommerceSettings = ({ data }: CommerceSettingsProps) => {
 
     return (
         <>
-            <Label as="label" htmlFor="type">
-                Type
-            </Label>
             <Input
                 as="select"
-                type=""
+                type="select"
                 name="type"
                 title="Type"
+                label="Type"
                 onChange={(e: any) => setType(() => e.target.value)}
                 value={type}
             >

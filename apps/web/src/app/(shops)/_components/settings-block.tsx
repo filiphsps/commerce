@@ -20,7 +20,7 @@ const SettingsBlock = ({ save, children }: SettingsBlockProps) => {
 
             <Button
                 type="submit"
-                color="primary"
+                color="default"
                 variant="outline"
                 style={{ marginTop: 'var(--layout-block-padding)' }}
             >
