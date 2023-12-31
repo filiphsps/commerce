@@ -1,4 +1,3 @@
-import type { Shop } from '@/api/shop';
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
@@ -136,15 +135,8 @@ export const StoreApi = async ({
     const shop = api.shop();
     const locale = _locale || api.locale();
 
-    if (shop.commerceProvider?.type !== 'shopify') {
-        // FIXME: Do this properly.
-        return _mockShopApi(shop);
-    }
-
     return cache(
         async (api: AbstractApi, locale: Locale, _client?: PrismicClient) => {
-            const client = _client || createClient({ shop, locale });
-
             try {
                 const { data: shopData } = await api.query<{ shop: ShopifyStore }>(gql`
                     query store {
@@ -184,41 +176,47 @@ export const StoreApi = async ({
                     }
                 `);
 
-                const { data: store }: StoreDocument = await (async () => {
-                    try {
-                        return await client.getSingle('store', {
-                            lang: locale.code,
-                            fetchOptions: {
-                                cache: undefined,
-                                next: {
-                                    revalidate: 28_800, // 8hrs.
-                                    tags: ['prismic']
-                                }
-                            },
-                            fetchLinks: []
-                        });
-                    } catch {
-                        return await client.getSingle('store', {
-                            fetchOptions: {
-                                cache: undefined,
-                                next: {
-                                    revalidate: 28_800, // 8hrs.
-                                    tags: ['prismic']
-                                }
-                            },
-                            fetchLinks: []
-                        });
-                    }
-                })();
+                let store: any | null = null;
+                if (shop.contentProvider?.type === 'prismic') {
+                    const client = _client || createClient({ shop, locale });
+                    store = (await (async () => {
+                        try {
+                            return await client.getSingle('store', {
+                                lang: locale.code,
+                                fetchOptions: {
+                                    cache: undefined,
+                                    next: {
+                                        revalidate: 28_800, // 8hrs.
+                                        tags: ['prismic']
+                                    }
+                                },
+                                fetchLinks: []
+                            });
+                        } catch {
+                            return await client.getSingle('store', {
+                                fetchOptions: {
+                                    cache: undefined,
+                                    next: {
+                                        revalidate: 28_800, // 8hrs.
+                                        tags: ['prismic']
+                                    }
+                                },
+                                fetchLinks: []
+                            });
+                        }
+                    })()) as StoreDocument;
+                }
 
                 const extraStoreDetails = shopData?.shop;
-                const currencies: string[] = store.currencies?.map((item: any) => item.currency) || [];
+                const currencies: string[] = store?.currencies?.map((item: any) => item.currency) || [];
 
                 return {
                     id: extraStoreDetails?.id || '',
-                    name: store.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
+                    name: store?.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
                     description:
-                        (store.description && asText(store.description)) || extraStoreDetails?.description || undefined,
+                        (store?.description && asText(store?.description)) ||
+                        extraStoreDetails?.description ||
+                        undefined,
                     i18n: {
                         locales: await LocalesApi({ api })
                     },
@@ -226,20 +224,20 @@ export const StoreApi = async ({
                         primary: (() => {
                             const logo = {
                                 src:
-                                    store.logos_primary?.url ||
-                                    store.logo ||
+                                    store?.logos_primary?.url ||
+                                    store?.logo ||
                                     extraStoreDetails?.brand?.logo?.image?.url ||
                                     undefined,
                                 alt:
-                                    store.logos_primary?.alt ||
+                                    store?.logos_primary?.alt ||
                                     extraStoreDetails?.brand?.logo?.image?.altText ||
                                     undefined,
                                 height:
-                                    store.logos_primary?.dimensions?.height ||
+                                    store?.logos_primary?.dimensions?.height ||
                                     extraStoreDetails?.brand?.logo?.image?.height ||
                                     undefined,
                                 width:
-                                    store.logos_primary?.dimensions?.width ||
+                                    store?.logos_primary?.dimensions?.width ||
                                     extraStoreDetails?.brand?.logo?.image?.width ||
                                     undefined
                             };
@@ -248,10 +246,10 @@ export const StoreApi = async ({
                         })(),
                         alternative: (() => {
                             const logo = {
-                                src: store.logos_alternative?.url || undefined,
-                                alt: store.logos_alternative?.alt || undefined,
-                                height: store.logos_alternative?.dimensions?.height || undefined,
-                                width: store.logos_alternative?.dimensions?.height || undefined
+                                src: store?.logos_alternative?.url || undefined,
+                                alt: store?.logos_alternative?.alt || undefined,
+                                height: store?.logos_alternative?.dimensions?.height || undefined,
+                                width: store?.logos_alternative?.dimensions?.height || undefined
                             };
 
                             return logo.src ? logo : undefined;
@@ -260,35 +258,35 @@ export const StoreApi = async ({
                     favicon: (() => {
                         const logo = {
                             src:
-                                store.logos_favicon?.url ||
-                                store.favicon ||
+                                store?.logos_favicon?.url ||
+                                store?.favicon ||
                                 extraStoreDetails?.brand?.squareLogo?.image?.url ||
                                 undefined,
-                            alt: store.logos_alternative?.alt || undefined,
-                            height: store.logos_alternative?.dimensions?.height || undefined,
-                            width: store.logos_alternative?.dimensions?.height || undefined
+                            alt: store?.logos_alternative?.alt || undefined,
+                            height: store?.logos_alternative?.dimensions?.height || undefined,
+                            width: store?.logos_alternative?.dimensions?.height || undefined
                         };
 
                         return logo.src ? logo : undefined;
                     })(),
                     accent: {
                         primary:
-                            store.colors_primary ||
-                            store.primary ||
+                            store?.colors_primary ||
+                            store?.primary ||
                             extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
                             '', // FIXME: Throw error instead of empty string.
                         secondary:
-                            store.colors_secondary ||
-                            store.secondary ||
+                            store?.colors_secondary ||
+                            store?.secondary ||
                             extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
                             '' // FIXME: Throw error instead of empty string.
                     },
                     color: {
-                        primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.
+                        primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.?
                         secondary: extraStoreDetails?.brand?.colors.secondary?.[0]?.foreground || '' // FIXME: Throw error instead of empty string.
                     },
                     currencies: extraStoreDetails?.paymentSettings?.enabledPresentmentCurrencies || currencies,
-                    social: (store.social as any) || [],
+                    social: (store?.social as any) || [],
                     payment: {
                         methods: extraStoreDetails?.paymentSettings?.acceptedCardBrands || [],
                         wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
@@ -298,7 +296,7 @@ export const StoreApi = async ({
                 if (Error.isNotFound(error) && !Locale.isDefault(locale)) {
                     return await StoreApi({
                         locale: Locale.default,
-                        client,
+                        client: _client,
                         api
                     });
                 }
@@ -309,32 +307,6 @@ export const StoreApi = async ({
         [shop.id, locale.code, 'store']
     )(api, locale, _client);
 };
-
-export const _mockShopApi = ({ id }: Shop): StoreModel => ({
-    id,
-    name: 'Demo Store',
-    description: 'This is a demo store for Nordcom Commerce.',
-    accent: {
-        primary: '#ed1e79',
-        secondary: '#ed1e79'
-    },
-    color: {
-        primary: '#fefefe',
-        secondary: '#fefefe'
-    },
-
-    logos: {
-        primary: {
-            src: 'https://nordcom.io/logo-light.svg'
-        }
-    },
-
-    i18n: {
-        locales: [Locale.from('en-US')]
-    },
-
-    social: []
-});
 
 export const CurrentLocaleApi = async ({ api }: { api: AbstractApi }) => {
     const { data } = await api.query<{ localization: Localization }>(gql`
