@@ -4,9 +4,8 @@
     display: flex;
     overflow: hidden;
     overflow-x: auto;
-    overscroll-behavior-x: contain;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     margin: var(--block-spacer) 0 0 0;
@@ -14,16 +13,15 @@
     background-color: var(--color-block);
     color: var(--color-dark);
 
+    white-space: nowrap;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
     border-radius: var(--block-border-radius);
     list-style-type: none;
 
     font-size: 1.5rem;
     line-height: 1.75rem;
     font-weight: 600;
-
-    @media (min-width: $breakpoint-mobile) {
-        justify-content: flex-start;
-    }
 
     .item {
         display: flex;

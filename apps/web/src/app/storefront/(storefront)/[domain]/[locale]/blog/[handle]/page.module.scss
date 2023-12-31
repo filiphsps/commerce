@@ -1,15 +1,22 @@
 @import '_globals.scss';
 
 .header {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-areas: 'banner' 'title' 'date';
+    grid-template-rows: 1fr;
 
     width: $breakpoint-mobile;
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: var(--block-padding);
 
+    @media (min-width: $breakpoint-mobile) {
+        grid-template-areas: 'title' 'date' 'banner';
+    }
+
     h1 {
+        grid-area: title;
+
         line-height: normal;
         font-size: 2em;
         line-height: 1;
@@ -21,23 +28,39 @@
     }
 
     .date {
-        margin-bottom: var(--block-spacer-large);
+        grid-area: date;
+
         padding-bottom: var(--block-padding);
 
         font-size: 1em;
 
         border-bottom: var(--block-border-width) solid var(--color-block);
+
+        @media (min-width: $breakpoint-mobile) {
+            margin-bottom: var(--block-spacer-large);
+        }
     }
 
     .banner {
-        width: 100%;
-        height: 16rem;
+        grid-area: banner;
+        display: block;
+
+        width: 100vw;
+        height: 18rem;
+        --margin-fix: calc(var(--block-spacer-large) * 2 * -1);
+        margin: calc(var(--margin-fix) * 2) var(--margin-fix) 0 var(--margin-fix);
 
         object-fit: cover;
         object-position: center;
 
+        @media (max-width: $breakpoint-mobile) {
+            max-inline-size: unset;
+        }
+
         @media (min-width: $breakpoint-mobile) {
+            width: 100%;
             height: 22rem;
+            margin: 0;
         }
     }
 }
