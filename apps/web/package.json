@@ -62,7 +62,7 @@
         "@markdoc/next.js": "0.3.6",
         "@next-auth/prisma-adapter": "1.0.7",
         "@next/third-parties": "14.0.4",
-        "@nordcom/nordstar": "0.0.29",
+        "@nordcom/nordstar": "0.0.30",
         "@prisma/client": "5.7.1",
         "@prisma/extension-accelerate": "0.6.2",
         "@prismicio/client": "7.3.1",
