@@ -34,7 +34,9 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                     width={250}
                     height={250}
                     sizes="(max-width: 920px) 125px, 500px"
-                    priority
+                    priority={true}
+                    loading="eager"
+                    decoding="async"
                 />
             </section>
 
@@ -54,7 +56,9 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                                 width={75}
                                 height={75}
                                 sizes="(max-width: 920px) 50px, 250px"
-                                priority
+                                priority={true}
+                                loading="eager"
+                                decoding="async"
                             />
                         </div>
                     ))}

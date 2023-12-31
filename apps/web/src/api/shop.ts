@@ -278,8 +278,9 @@ export const ShopApi = async (domain: string, noCache?: boolean): Promise<ShopRe
         return await callback(domain);
     }
 
-    return cache(async (domain: string) => callback(domain), [domain, `cache=${!!noCache}`], {
-        tags: [domain]
+    return cache(async (domain: string) => callback(domain), [domain], {
+        tags: [domain],
+        revalidate: 28_800 // 8hrs.
     })(domain);
 };
 
@@ -323,6 +324,7 @@ export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { sho
     }
 
     return cache(callback, [shop.id, 'commerce', 'authentication'], {
-        tags: [shop.id, `${shop.id}.commerce.authentication`]
+        tags: [shop.id, `${shop.id}.commerce.authentication`],
+        revalidate: 28_800 // 8hrs.
     })(shop);
 };

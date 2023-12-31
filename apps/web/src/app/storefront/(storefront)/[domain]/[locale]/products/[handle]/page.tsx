@@ -2,9 +2,9 @@ import 'server-only';
 
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
-import { ShopApi } from '@/api/shop';
+import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
@@ -17,6 +17,7 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
+import { BuildConfig } from '@/utils/build-config';
 import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
@@ -33,6 +34,53 @@ import { Suspense } from 'react';
 import styles from './page.module.scss';
 import { ProductContent, ProductPricing } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
+
+export async function generateStaticParams() {
+    const locale = Locale.default;
+    const shops = await ShopsApi();
+
+    const pages = (
+        await Promise.all(
+            shops
+                .map(async (shop) => {
+                    try {
+                        //const api = await ShopifyApiClient({ shop, locale });
+                        //await LocalesApi({ api });
+                        const locales = [Locale.from('en-US'), Locale.from('en-CA'), Locale.from('en-GB')]; // TODO: Prefetch all locales when it's feasible.
+
+                        return await Promise.all(
+                            locales
+                                .map(async (locale) => {
+                                    try {
+                                        const api = await ShopifyApolloApiClient({ shop, locale });
+                                        const products = await ProductsApi({ api });
+
+                                        return products.products.map(({ node: { handle } }) => ({
+                                            domain: shop.domains.primary,
+                                            locale: locale.code,
+                                            handle
+                                        }));
+                                    } catch {
+                                        return null;
+                                    }
+                                })
+                                .filter((_) => _)
+                        );
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
+        )
+    ).flat(2);
+
+    // FIXME: We have already looped through all pages when we get here which is really inefficient.
+    if (BuildConfig.build.limit_pages) {
+        return pages.slice(0, BuildConfig.build.limit_pages);
+    }
+
+    return pages;
+}
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({

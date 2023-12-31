@@ -67,7 +67,10 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
         return callback(api);
     }
 
-    return cache(callback, [shop.id, 'locales'])(api);
+    return cache(callback, [shop.id, 'locales'], {
+        tags: [shop.id, 'locales'],
+        revalidate: 28_800 // 8hrs.
+    })(api);
 };
 
 export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
@@ -108,7 +111,11 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 
             return data?.localization!;
         },
-        [shop.id, locale.code, 'locale']
+        [shop.id, locale.code, 'locale'],
+        {
+            tags: [shop.id, locale.code, 'locale'],
+            revalidate: 28_800 // 8hrs.
+        }
     )(api);
 };
 

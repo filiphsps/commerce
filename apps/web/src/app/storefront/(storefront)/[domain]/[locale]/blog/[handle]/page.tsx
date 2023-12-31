@@ -15,8 +15,6 @@ import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
 
-/* c8 ignore start */
-export const revalidate = 28_800; // 8hrs.
 export async function generateStaticParams() {
     const locale = Locale.default;
     const shops = await ShopsApi();
@@ -62,9 +60,7 @@ export async function generateStaticParams() {
 
     return pages;
 }
-/* c8 ignore stop */
 
-/* c8 ignore start */
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
@@ -179,4 +175,3 @@ export default async function ArticlePage({
         throw error;
     }
 }
-/* c8 ignore stop */
