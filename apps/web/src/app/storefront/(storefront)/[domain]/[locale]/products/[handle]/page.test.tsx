@@ -141,15 +141,10 @@ describe('app', () => {
         vi.mock('@/api/shop', () => ({
             ShopApi: vi.fn().mockResolvedValue({
                 id: 'mock-shop-id',
-                domains: {
-                    primary: 'staging.demo.nordcom.io',
-                    alternatives: []
-                },
-                configuration: {
-                    commerce: {
-                        type: 'dummy' as const,
-                        domain: 'mock.shop' as const
-                    }
+                domains: 'staging.demo.nordcom.io',
+                commerceProvider: {
+                    type: 'shopify' as const,
+                    domain: 'mock.shop' as const
                 }
             })
         }));

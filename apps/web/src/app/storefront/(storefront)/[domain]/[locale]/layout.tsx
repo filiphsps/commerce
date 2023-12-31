@@ -7,7 +7,7 @@ import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
-import { PageProvider } from '@/components/layout/page-provider';
+import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
@@ -23,14 +23,8 @@ import type { ReactNode } from 'react';
 import { Suspense } from 'react';
 
 //export const runtime = 'experimental-edge';
-export const revalidate = 3600;
+export const revalidate = 28_800; // 8hrs.
 export const dynamic = 'force-static';
-
-export const viewport: Viewport = {
-    width: 'device-width',
-    initialScale: 1,
-    interactiveWidget: 'resizes-visual'
-};
 
 const fontPrimary = Public_Sans({
     weight: 'variable',
@@ -41,6 +35,18 @@ const fontPrimary = Public_Sans({
 });
 
 export type LayoutParams = { domain: string; locale: string };
+
+export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
+    const branding = await getBrandingColors(domain);
+
+    return {
+        width: 'device-width',
+        initialScale: 1,
+        interactiveWidget: 'resizes-visual',
+        themeColor: branding.secondary.accent
+    };
+}
+
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
         const shop = await ShopApi(domain);
@@ -107,9 +113,10 @@ export default async function RootLayout({
                     // A bunch of extensions add classes to the `html` element.
                     suppressHydrationWarning={true}
                 >
-                    <head suppressHydrationWarning={true}>
-                        <meta name="theme-color" content={branding.secondary.accent} />
-                        <CssVariablesProvider domain={domain} />
+                    <head>
+                        <Suspense key={`${shop.id}.theme`}>
+                            <CssVariablesProvider domain={domain} />
+                        </Suspense>
                     </head>
 
                     <body suppressHydrationWarning={true}>
@@ -120,12 +127,12 @@ export default async function RootLayout({
                             apiConfig={apiConfig.public()}
                         >
                             <AnalyticsProvider shop={shop}>
-                                <Suspense key={`${shop.id}.layout`} fallback={<PageProvider.skeleton />}>
-                                    <PageProvider shop={shop} locale={locale} i18n={i18n}>
+                                <Suspense key={`${shop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
+                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                         <PageContent as="main" primary={true}>
                                             {children}
                                         </PageContent>
-                                    </PageProvider>
+                                    </ShopLayout>
                                 </Suspense>
                             </AnalyticsProvider>
 

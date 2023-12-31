@@ -1,9 +1,5 @@
-import { ShopifyApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
-
 import { ShopApi } from '@/api/shop';
 import { NotFoundError } from '@/utils/errors';
-import { Locale } from '@/utils/locale';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
@@ -46,15 +42,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {
-            const locale = Locale.default;
-            const api = await ShopifyApiClient({ shop, locale });
-            const store = await StoreApi({ api });
-
-            if (store?.favicon?.src) {
-                src = store.favicon.src;
-            } else {
-                throw new NotFoundError('favicon.png');
-            }
+            throw new NotFoundError('favicon.png');
         }
 
         /** @see {@link https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples#using-an-external-dynamic-image} */

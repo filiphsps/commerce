@@ -7,13 +7,13 @@ import PageContent from '@/components/page-content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense, type HTMLProps, type ReactNode } from 'react';
 
-export type PageProviderProps = {
+export type ShopLayoutProps = {
     shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
-const PageProvider = ({ shop, locale, i18n, children }: PageProviderProps) => {
+const ShopLayout = ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
             <Suspense key={`${shop.id}.header`} fallback={<Header.skeleton />}>
@@ -31,7 +31,7 @@ const PageProvider = ({ shop, locale, i18n, children }: PageProviderProps) => {
     );
 };
 
-PageProvider.skeleton = () => (
+ShopLayout.skeleton = () => (
     <>
         <Header.skeleton />
         <PageContent />
@@ -39,5 +39,5 @@ PageProvider.skeleton = () => (
     </>
 );
 
-PageProvider.displayName = 'Nordcom.PageProvider';
-export { PageProvider };
+ShopLayout.displayName = 'Nordcom.Layout.ShopLayout';
+export default ShopLayout;

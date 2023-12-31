@@ -1,8 +1,10 @@
 import type { Shop } from '@/api/shop';
-import { ApiError } from '@/utils/errors';
+import { buildCacheTagArray } from '@/utils/abstract-api';
+import { ApiError, NotFoundError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import type { Client as PrismicClient } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
 
 export type NavigationItem = {
     title: string;
@@ -28,27 +30,36 @@ export const NavigationApi = async ({
         return [];
     }
 
-    const client = _client || createClient({ shop, locale });
+    return cache(
+        async (shop: Shop, locale: Locale, _client?: PrismicClient) => {
+            const client = _client || createClient({ shop, locale });
 
-    try {
-        const navigation = await client.getSingle('navigation', {
-            lang: locale.code
-        });
+            try {
+                const navigation = await client.getSingle('navigation', {
+                    lang: locale.code
+                });
 
-        return (navigation?.data?.body as any)?.map((item: any) => ({
-            title: item.primary.title,
-            handle: item.primary.handle,
-            children: item.items
-        }));
-    } catch (error: unknown) {
-        if (ApiError.isNotFound(error)) {
-            if (!Locale.isDefault(locale)) {
-                return await NavigationApi({ shop, locale: Locale.default, client }); // Try again with default locale
+                return (navigation?.data?.body as any)?.map((item: any) => ({
+                    title: item.primary.title,
+                    handle: item.primary.handle,
+                    children: item.items
+                }));
+            } catch (error: unknown) {
+                if (ApiError.isNotFound(error)) {
+                    if (!Locale.isDefault(locale)) {
+                        return NavigationApi({ shop, locale: Locale.default, client }); // Try again with default locale.
+                    }
+
+                    throw new NotFoundError(`"Navigation" with the locale "${locale.code}"`);
+                }
+
+                throw error;
             }
-
-            throw new Error(`404: "Navigation" with the locale "${locale.code}" cannot be found`);
+        },
+        [shop.id, locale.code, 'navigation'],
+        {
+            tags: buildCacheTagArray(shop, locale, ['navigation']),
+            revalidate: 60 * 60 * 8 // 8 hours.
         }
-
-        throw error;
-    }
+    )(shop, locale, _client);
 };

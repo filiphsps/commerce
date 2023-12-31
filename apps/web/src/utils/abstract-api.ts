@@ -4,7 +4,6 @@ import type { Locale } from '@/utils/locale';
 import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
 import { DocumentTransform } from '@apollo/client';
 import { visit } from 'graphql';
-import { unstable_cache } from 'next/cache';
 
 export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
 export type Nullable<T> = T | null;
@@ -41,6 +40,18 @@ export type AbstractApiBuilder<K, Q> = ({
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
+export function buildCacheTagArray(shop: Shop, locale: Locale, tags: string[], env?: string) {
+    const prefix = env ? `${env}.` : '';
+
+    return [
+        ...(env ? [env] : []),
+        ...tags.map((tag) => `${prefix}${tag}`),
+        `${shop.id}${prefix.replace('.', '')}`,
+        `${shop.id}.${locale.code}${prefix.replace('.', '')}`,
+        ...tags.map((tag) => `${shop.id}.${locale.code}.${prefix}${tag}`)
+    ];
+}
+
 /**
  * Creates an AbstractApiBuilder for Shopify Apollo APIs.
  *
@@ -62,14 +73,6 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
     locale: () => locale,
     shop: () => shop,
     query: async (query, variables = {}, { tags = [], revalidate = undefined, fetchPolicy = undefined } = {}) => {
-        const processedTags = [
-            'shopify',
-            ...tags.map((tag) => `shopify.${tag}`),
-            `shopify.${shop.id}`,
-            `shopify.${shop.id}.${locale.code}`,
-            ...tags.map((tag) => `shopify.${shop.id}.${locale.code}.${tag}`)
-        ];
-
         const { data, errors, error } = await api.query({
             query,
             fetchPolicy,
@@ -78,7 +81,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
                     cache: fetchPolicy || revalidate ? undefined : 'force-cache',
                     next: {
                         revalidate,
-                        tags: processedTags
+                        tags: buildCacheTagArray(shop, locale, tags, 'shopify')
                     }
                 }
             },
@@ -92,20 +95,6 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
         return { data: data || null, errors, error };
     }
 });
-
-export const cache: typeof unstable_cache = (func, keyparts, options) => {
-    /*if (typeof (React as any).cache === 'undefined') {
-        console.warn('React cache is unavailable in this environment.');
-        return func;
-    }*/
-
-    if (typeof unstable_cache === 'undefined') {
-        console.warn('next/cache is unavailable in this environment.');
-        return func;
-    }
-
-    return unstable_cache(func, keyparts, options);
-};
 
 /**
  * @todo TODO: This should be replaced with a generalized shopify parser.

@@ -1,4 +1,5 @@
-import { ApiBuilder } from '@/utils/abstract-api';
+import type { Shop } from '@/api/shop';
+import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { ApolloClient } from '@apollo/client';
 import { describe, expect, it, vi } from 'vitest';
@@ -55,6 +56,54 @@ describe('utils', () => {
             expect(errors).toBeUndefined();
             expect(data?.product.id).toBe('123');
             expect(data?.product.title).toBe('Fake Product');
+        });
+    });
+
+    describe('buildCacheTagArray', () => {
+        it('should build the cache tag array correctly with env', () => {
+            const shop = {
+                id: '123'
+            } as Shop;
+
+            const locale = {
+                code: 'en-US'
+            } as Locale;
+
+            const tags = ['tag1', 'tag2'];
+
+            const env = 'dev';
+
+            const expectedCacheTags = [
+                'dev',
+                'dev.tag1',
+                'dev.tag2',
+                '123dev',
+                '123.en-USdev',
+                '123.en-US.dev.tag1',
+                '123.en-US.dev.tag2'
+            ];
+
+            const cacheTags = buildCacheTagArray(shop, locale, tags, env);
+
+            expect(cacheTags).toEqual(expectedCacheTags);
+        });
+
+        it('should build the cache tag array correctly without env', () => {
+            const shop = {
+                id: '123'
+            } as Shop;
+
+            const locale = {
+                code: 'en-US'
+            } as Locale;
+
+            const tags = ['tag1', 'tag2'];
+
+            const expectedCacheTags = ['tag1', 'tag2', '123', '123.en-US', '123.en-US.tag1', '123.en-US.tag2'];
+
+            const cacheTags = buildCacheTagArray(shop, locale, tags);
+
+            expect(cacheTags).toEqual(expectedCacheTags);
         });
     });
 });

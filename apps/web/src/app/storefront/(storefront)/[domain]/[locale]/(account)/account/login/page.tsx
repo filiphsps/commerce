@@ -1,6 +1,6 @@
 import { ShopApi } from '@/api/shop';
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { StoreApi } from '@/api/store';
+import { ShopifyApiClient } from '@/api/shopify';
+import { LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { Error } from '@/utils/errors';
@@ -23,9 +23,8 @@ export async function generateMetadata({
 
         const shop = await ShopApi(domain);
 
-        const api = await ShopifyApolloApiClient({ shop, locale });
-        const store = await StoreApi({ api });
-        const locales = store.i18n?.locales || [Locale.default];
+        const api = await ShopifyApiClient({ shop, locale });
+        const locales = await LocalesApi({ api });
 
         return {
             title: 'Login',

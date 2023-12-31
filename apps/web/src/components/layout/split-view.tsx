@@ -87,4 +87,5 @@ const SplitView = ({
     );
 };
 
+SplitView.displayName = 'Nordcom.Layout.SplitView';
 export default SplitView;
