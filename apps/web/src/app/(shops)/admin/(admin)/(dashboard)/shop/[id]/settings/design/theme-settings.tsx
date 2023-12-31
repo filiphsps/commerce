@@ -1,24 +1,18 @@
 'use client';
 
+import type { ShopTheme } from '@/api/shop';
 import { Card, Input, Label } from '@nordcom/nordstar';
-import type { ShopTheme } from '@prisma/client/edge';
+import type { ShopTheme as ShopThemeValue } from '@prisma/client/edge';
 import styles from './settings.module.scss';
 
 export type CommerceSettingsProps = {
-    data: ShopTheme | null;
-};
-
-type ShopThemeData = {
-    header: {
-        theme: 'primary' | 'secondary';
-        themeVariant: 'default' | 'light' | 'dark';
-    };
+    data: ShopThemeValue | null;
 };
 
 const ThemeSettings = ({ data: settings }: CommerceSettingsProps) => {
     const data = (
         typeof settings?.data === 'object' ? settings?.data : JSON.parse(settings?.data?.toString() || 'null')
-    ) as ShopThemeData | null;
+    ) as ShopTheme | null;
 
     return (
         <>

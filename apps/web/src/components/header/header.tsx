@@ -21,10 +21,15 @@ export type HeaderProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
     const navigation = await NavigationApi({ shop, locale });
+    const headerTheme = shop?.theme?.header;
 
     const logo = shop?.logos?.primary!;
     return (
-        <section className={styles.wrapper}>
+        <section
+            className={styles.wrapper}
+            data-theme={headerTheme?.theme || 'primary'}
+            data-theme-variant={headerTheme?.themeVariant || 'default'}
+        >
             <HeaderContainer {...props}>
                 <HamburgerMenu />
 

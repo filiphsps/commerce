@@ -5,6 +5,13 @@ import { UnknownCommerceProviderError, UnknownShopDomainError } from '@/utils/er
 import { unstable_cache as cache } from 'next/cache';
 //import { experimental_taintObjectReference as taintObjectReference } from 'react';
 
+export type ShopTheme = {
+    header: {
+        theme: 'primary' | 'secondary';
+        themeVariant: 'default' | 'light' | 'dark';
+    };
+};
+
 export type ShopifyCommerceProvider = {
     type: 'shopify';
     id: string;
@@ -95,6 +102,11 @@ export const ShopApi = async (domain: string, noCache?: boolean) => {
                             alternative: true
                         }
                     },
+                    theme: {
+                        select: {
+                            data: true
+                        }
+                    },
                     branding: {
                         select: {
                             brandColors: true
@@ -121,6 +133,11 @@ export const ShopApi = async (domain: string, noCache?: boolean) => {
 
             return {
                 ...res,
+                theme: {
+                    ...((typeof res.theme?.data === 'object'
+                        ? res.theme?.data
+                        : JSON.parse(res.theme!.data.toString())) as ShopTheme)
+                },
                 commerceProvider: {
                     ...res.commerceProvider,
                     data: (typeof res.commerceProvider?.data === 'object'
