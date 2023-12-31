@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
@@ -11,6 +13,7 @@ import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import type { Metadata } from 'next';
 import { NewsArticleJsonLd } from 'next-seo';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { metadata as notFoundMetadata } from '../../not-found';
 import styles from './page.module.scss';
@@ -140,6 +143,20 @@ export default async function ArticlePage({
                             </Label>
                         }
                     />
+
+                    {article.image ? (
+                        <Image
+                            className={styles.banner}
+                            src={article.image.url}
+                            alt={article.image.altText!}
+                            width={350}
+                            height={100}
+                            sizes="(max-width: 950px) 200px, 350px"
+                            priority={true}
+                            loading="eager"
+                            decoding="async"
+                        />
+                    ) : null}
                 </div>
 
                 <Content

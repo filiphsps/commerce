@@ -38,8 +38,6 @@ export default function Link({ locale, href, prefetch, ...props }: Props) {
 
     const shop = useShop();
 
-    console.log('!!', shop);
-
     // Get the locale if it's not provided to us.
     try {
         locale = locale || shop.locale || Locale.current || Locale.default;

@@ -1,21 +1,43 @@
 @import '_globals.scss';
 
 .header {
+    display: flex;
+    flex-direction: column;
+
     width: $breakpoint-mobile;
     max-width: 100%;
-    padding-bottom: var(--block-padding);
     margin: 0 auto;
-    margin-bottom: var(--block-spacer-large);
-
-    border-bottom: var(--block-border-width) solid var(--color-block);
+    padding-bottom: var(--block-padding);
 
     h1 {
         line-height: normal;
-        font-size: 3.5rem;
+        font-size: 2em;
+        line-height: 1;
         margin-bottom: var(--block-spacer);
 
         @media (min-width: $breakpoint-mobile) {
             max-width: 62rem;
+        }
+    }
+
+    .date {
+        margin-bottom: var(--block-spacer-large);
+        padding-bottom: var(--block-padding);
+
+        font-size: 1em;
+
+        border-bottom: var(--block-border-width) solid var(--color-block);
+    }
+
+    .banner {
+        width: 100%;
+        height: 16rem;
+
+        object-fit: cover;
+        object-position: center;
+
+        @media (min-width: $breakpoint-mobile) {
+            height: 22rem;
         }
     }
 }
