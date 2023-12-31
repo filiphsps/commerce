@@ -24,6 +24,12 @@
                     "backdrop-filter"
                 ]
             }
+        ],
+        "axe/forms": [
+            "default",
+            {
+                "select-name": "off"
+            }
         ]
     }
 }

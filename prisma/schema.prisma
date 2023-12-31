@@ -85,6 +85,7 @@ model Shop {
     domain             String             @unique @db.Text
     alternativeDomains String[]           @default([])
     branding           ShopBranding?
+    icons              ShopIcons?
     commerceProvider   CommerceProvider?
     contentProvider    ContentProvider?
     checkoutProvider   CheckoutProvider?
@@ -162,6 +163,33 @@ model ShopBranding {
     shopId      String
     shop        Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     brandColors BrandColor[]
+
+    @@unique([shopId])
+    @@index([shopId])
+}
+
+model ShopIconsImage {
+    id          String    @id @default(cuid())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    src         String
+    width       Int
+    height      Int
+    shopIconsId String
+    shopIcons   ShopIcons @relation(fields: [shopIconsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([shopIconsId])
+    @@index([shopIconsId])
+}
+
+model ShopIcons {
+    id        String          @id @default(cuid())
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+    shopId    String
+    shop      Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    faviconId String?
+    favicon   ShopIconsImage?
 
     @@unique([shopId])
     @@index([shopId])
