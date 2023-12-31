@@ -35,6 +35,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 label="Domain"
                 placeholder="store-name.myshopify.com"
                 defaultValue={data?.domain}
+                value={undefined}
                 required={true}
             />
 
@@ -43,6 +44,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 name="storefrontId"
                 label="Storefront ID"
                 defaultValue={data?.storefrontId}
+                value={undefined}
                 required={true}
             />
 
@@ -53,6 +55,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 name="publicToken"
                 label="Public Token"
                 defaultValue={data?.authentication?.publicToken}
+                value={undefined}
                 required={true}
             />
 
@@ -61,6 +64,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 name="customersShopifyAccountsId"
                 label="Shopify Accounts ID"
                 defaultValue={data?.authentication?.customers?.id}
+                value={undefined}
                 required={true}
             />
 
@@ -69,6 +73,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 name="customersClientId"
                 label="Client ID"
                 defaultValue={data?.authentication?.customers?.clientId}
+                value={undefined}
                 required={true}
             />
 
@@ -77,6 +82,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 name="customersClientSecret"
                 label="Client Secret"
                 defaultValue={data?.authentication?.customers?.clientSecret}
+                value={undefined}
                 required={true}
             />
         </>
@@ -95,8 +101,9 @@ const CommerceSettings = ({ data }: CommerceSettingsProps) => {
                 name="type"
                 title="Type"
                 label="Type"
-                onChange={(e: any) => setType(() => e.target.value)}
-                value={type}
+                onBlur={(e: any) => setType(() => e.target.value)}
+                defaultValue={type}
+                value={undefined}
             >
                 {Object.values(CommerceProviderType).map((e) => (
                     <option key={e} value={e}>

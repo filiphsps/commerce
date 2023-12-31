@@ -1,30 +1,50 @@
+'use client';
+
 import { Button, Card } from '@nordcom/nordstar';
-import type { ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
+import { useFormStatus } from 'react-dom';
 import styles from './settings-block.module.scss';
 
 export type SettingsBlockProps = {
+    as?: ElementType;
     save: (data: FormData) => Promise<void>;
 
+    actionButtonIcon?: ReactNode;
     actionButtonLabel?: string;
     children?: ReactNode;
 };
-const SettingsBlock = ({ save, actionButtonLabel, children }: SettingsBlockProps) => {
+const SettingsBlock = ({ as, save, ...props }: SettingsBlockProps) => {
+    const Tag = as || Card;
     return (
-        <Card
-            className={styles.container}
-            as="form"
-            action={async (data: FormData) => {
-                'use server';
+        <Tag className={styles.container} as="form" action={save}>
+            <SettingsBlockContent {...props} />
+        </Tag>
+    );
+};
 
-                return save(data);
-            }}
-        >
+const SettingsBlockContent = ({
+    actionButtonIcon,
+    actionButtonLabel,
+    children
+}: Pick<SettingsBlockProps, 'actionButtonLabel' | 'actionButtonIcon' | 'children'>) => {
+    const { pending } = useFormStatus();
+
+    const label = pending ? 'Working...' : actionButtonLabel || 'Save';
+    return (
+        <>
             {children}
 
-            <Button type="submit" color="default" variant="outline">
-                {actionButtonLabel || 'Save'}
+            <Button
+                disabled={pending}
+                aria-disabled={pending}
+                type="submit"
+                color="default"
+                variant="outline"
+                icon={actionButtonIcon || null}
+            >
+                {label}
             </Button>
-        </Card>
+        </>
     );
 };
 

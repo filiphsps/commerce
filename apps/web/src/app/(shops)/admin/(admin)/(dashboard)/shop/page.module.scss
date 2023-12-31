@@ -4,6 +4,65 @@
     display: flex;
     flex-direction: column;
     gap: var(--layout-section-padding);
+
+    .heading {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--layout-block-padding) / 2);
+        justify-content: center;
+        align-items: flex-start;
+
+        padding-bottom: var(--layout-block-padding);
+        margin-bottom: var(--layout-block-padding);
+
+        border-bottom: var(--border-width-half) solid var(--color-background-highlight);
+
+        @media (min-width: $breakpoint-mobile) {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: 1fr;
+            align-items: center;
+        }
+
+        .sidebar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            @media (min-width: $breakpoint-mobile) {
+                justify-content: flex-end;
+                align-items: flex-end;
+                height: 100%;
+            }
+
+            button,
+            input {
+                &,
+                form & {
+                    margin: 0;
+
+                    &:not(:is(:hover, :active)) {
+                        color: var(--color-foreground-secondary);
+                        border-color: var(--color-foreground-secondary);
+                    }
+
+                    div[data-content='true'] {
+                        font-weight: 600;
+                    }
+
+                    div[data-icon='true'] {
+                        font-size: 0.85em;
+
+                        svg {
+                            display: block;
+                            stroke-width: 0.05em;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 .settings {
@@ -100,11 +159,46 @@
     .block {
         display: flex;
         flex-direction: column;
-        gap: calc(var(--layout-block-padding) / 4);
+        gap: calc(var(--layout-block-padding) / 2);
+        flex-grow: 1;
+
         width: 100%;
 
-        @media (min-width: $breakpoint-mobile) {
-            width: auto;
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--layout-block-padding) / 4);
+            flex-grow: 1;
+
+            width: 100%;
+        }
+    }
+}
+
+.shop-selector {
+    display: flex;
+    flex-direction: column;
+    width: 24rem;
+    max-width: 100%;
+    margin: 0 auto;
+    gap: var(--layout-section-spacing);
+
+    .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--layout-block-padding) / 4);
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--layout-section-spacing) / 2);
+
+        .button {
+            width: 100%;
+            flex-grow: 1;
+
+            font-size: 0.9em;
         }
     }
 }

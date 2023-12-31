@@ -1,10 +1,12 @@
 import 'server-only';
 
+import { SettingsBlock } from '#/components/settings-block';
 import { getSession } from '#/utils/auth';
-import { getShop, updateShop } from '#/utils/fetchers';
-import { Button, Card, Heading, Label } from '@nordcom/nordstar';
+import { getShop, getShopTheme, updateShop, updateShopTheme } from '#/utils/fetchers';
+import { Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { ThemeSettings } from './theme-settings';
 
 export type ShopSettingsDesignPageProps = {
     params: {
@@ -27,16 +29,24 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
         notFound();
     }
 
+    const shopTheme = await getShopTheme(user.id, shopId);
+    const defaultShopTheme = {
+        header: {
+            theme: 'primary',
+            themeVariant: 'default'
+        }
+    };
+
     return (
         <>
             <section>
                 <Heading level="h2" as="h2">
                     Branding
                 </Heading>
-                <Card
-                    as="form"
-                    action={async (form: FormData) => {
+                <SettingsBlock
+                    save={async (form: FormData) => {
                         'use server';
+
                         const name = form.get('name')?.toString()!;
                         const domain = form.get('domain')?.toString()!;
 
@@ -53,18 +63,31 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         Domain
                     </Label>
                     <Card as="input" name="domain" title="Domain" defaultValue={shop.domain} />
-
-                    <Button type="submit" color="primary" variant="outline">
-                        Save
-                    </Button>
-                </Card>
+                </SettingsBlock>
             </section>
 
             <section>
                 <Heading level="h2" as="h2">
-                    Design
+                    Theme
                 </Heading>
-                <Card></Card>
+                <SettingsBlock
+                    save={async (form: FormData) => {
+                        'use server';
+
+                        const data = {
+                            header: {
+                                theme: form.get('header.theme')?.toString() || defaultShopTheme.header.theme,
+                                themeVariant:
+                                    form.get('header.themeVariant')?.toString() || defaultShopTheme.header.themeVariant
+                            }
+                        };
+
+                        console.debug(`Updating shop theme`, JSON.stringify({ data }, null, 4));
+                        await updateShopTheme(user.id, shopId, { data });
+                    }}
+                >
+                    <ThemeSettings data={shopTheme || null} />
+                </SettingsBlock>
             </section>
         </>
     );

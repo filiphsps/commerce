@@ -17,6 +17,7 @@
         .card-header {
             display: flex;
             flex-direction: column;
+            gap: calc(var(--layout-block-padding) / 4);
         }
 
         .actions {
@@ -27,6 +28,8 @@
             .button {
                 width: 100%;
                 flex-grow: 1;
+
+                font-size: 0.9em;
             }
         }
     }

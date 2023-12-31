@@ -1,13 +1,15 @@
 import 'server-only';
 
+import { SettingsBlock } from '#/components/settings-block';
 import { getSession } from '#/utils/auth';
 import { getShop } from '#/utils/fetchers';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import { revalidateTag } from 'next/cache';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage } from 'react-icons/bi';
+import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiUpload } from 'react-icons/bi';
 import styles from '../page.module.scss';
 
 export type ShopLayoutProps = {
@@ -55,12 +57,25 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
 
     return (
         <section className={`${styles.container}`}>
-            <div>
+            <div className={styles.heading}>
                 <Heading level="h1">
                     <Link href={`https://${shop.domain}/`} target="_blank">
                         {shop.name}
                     </Link>
                 </Heading>
+
+                <div className={styles.sidebar}>
+                    <SettingsBlock
+                        as="form"
+                        save={async () => {
+                            'use server';
+                            revalidateTag(shop.id);
+                            revalidateTag(shop.domain);
+                        }}
+                        actionButtonIcon={<BiUpload />}
+                        actionButtonLabel="Revalidate"
+                    />
+                </div>
             </div>
 
             <div className={styles['split-view']}>
@@ -84,17 +99,17 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                         <Label>Settings</Label>
 
                         <div className={styles.settings}>
-                            <Card className={styles.setting} as={Link} href={`${basePath}/settings/design/`}>
-                                Design & Branding
-                                <Button as="div" variant="outline" className={styles.action}>
-                                    <BiImage />
-                                </Button>
-                            </Card>
-
                             <Card className={styles.setting} as={Link} href={`${basePath}/settings/content/`}>
                                 Content
                                 <Button as="div" variant="outline" className={styles.action}>
                                     <BiBook />
+                                </Button>
+                            </Card>
+
+                            <Card className={styles.setting} as={Link} href={`${basePath}/settings/design/`}>
+                                Branding & Theme
+                                <Button as="div" variant="outline" className={styles.action}>
+                                    <BiImage />
                                 </Button>
                             </Card>
 
@@ -108,7 +123,10 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                     </div>
 
                     <div className={styles.block}>
-                        <Label>Collaborators</Label>
+                        <Label>
+                            <BiRocket />
+                            Collaborators
+                        </Label>
 
                         <div className={styles.settings}>
                             {shop.collaborators.map(({ user: { name } }) => (

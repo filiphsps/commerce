@@ -36,22 +36,37 @@ export default async function Overview() {
     }
 
     return (
-        <section className={`${styles.container}`}>
-            <Heading level="h1">
-                Hi <Accented>{user.name.split(' ')[0]}</Accented> {user.name.split(' ').slice(1).join(' ')}
-            </Heading>
+        <section className={styles.container}>
+            <div className={styles.heading}>
+                <Heading level="h1">
+                    Hi <Accented>{user.name.split(' ')[0]}</Accented> {user.name.split(' ').slice(1).join(' ')}
+                </Heading>
+                <div className={styles.sidebar}>
+                    <Button variant="outline">Logout</Button>
+                </div>
+            </div>
 
-            <div className={styles.blocks}>
-                <Card className={styles.block}>
-                    <Label>Your Shops</Label>
+            <Card className={styles['shop-selector']}>
+                <div className={styles['card-header']}>
+                    <Label as="h1">To start managing</Label>
+                    <Heading level="h3" as="h2">
+                        Pick a Shop
+                    </Heading>
+                </div>
 
+                <div className={styles.actions}>
                     {shops.map(({ id, name }) => (
-                        <Button key={id} variant="outline" as={Link} href={`/shop/${id}/`}>
+                        <Button key={id} variant="outline" as={Link} href={`/shop/${id}/`} className={styles.button}>
                             {name}
                         </Button>
                     ))}
-                </Card>
-            </div>
+                    <hr />
+
+                    <Button variant="outline" color="primary" className={styles.button}>
+                        Connect a new Shop
+                    </Button>
+                </div>
+            </Card>
         </section>
     );
 }

@@ -60,3 +60,10 @@ select {
         appearance: none;
     }
 }
+
+hr {
+    margin: var(--layout-block-padding-half) 0;
+
+    border: 0;
+    border-top: var(--border-width) solid var(--color-background-highlight);
+}

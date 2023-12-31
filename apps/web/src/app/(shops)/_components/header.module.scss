@@ -8,13 +8,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     width: 100%;
     padding: var(--layout-block-padding) 0;
     margin-bottom: var(--layout-block-padding);
-    border-bottom: var(--block-border-width) solid var(--color-background-highlight);
+
+    border-bottom: var(--border-width-half) solid var(--color-background-highlight);
     backdrop-filter: saturate(220%) blur(8px);
     background-color: rgba(0, 0, 0, 0.75);
-    box-shadow: rgb(51, 51, 51) 0px 0px 0px 1px;
 
     @media (min-width: $breakpoint-mobile) {
         padding: 0;

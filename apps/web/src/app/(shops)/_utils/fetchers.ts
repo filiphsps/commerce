@@ -280,3 +280,54 @@ export async function updateCheckoutProvider(userId: string, shopId: string, dat
         };
     }
 }
+
+export async function getShopTheme(userId: string, shopId: string) {
+    return await cache(
+        async () => {
+            return (
+                await prisma.shop.findUnique({
+                    where: {
+                        id: shopId,
+                        collaborators: { some: { userId } }
+                    },
+                    select: {
+                        theme: true
+                    }
+                })
+            )?.theme;
+        },
+        [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`],
+        {
+            revalidate: 120,
+            tags: [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`]
+        }
+    )();
+}
+export async function updateShopTheme(userId: string, shopId: string, data: any) {
+    try {
+        const response = await prisma.shop.update({
+            where: {
+                id: shopId,
+                collaborators: { some: { userId } }
+            },
+            data: {
+                theme: {
+                    upsert: {
+                        update: data,
+                        create: data
+                    }
+                }
+            }
+        });
+
+        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
+        await revalidateTag(shopId);
+        return response;
+    } catch (error: any) {
+        console.error(error);
+
+        return {
+            error: error.message
+        };
+    }
+}
