@@ -1,7 +1,7 @@
 import type { Product } from '@/api/product';
 import type { Shop } from '@/api/shop';
-import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
+import styles from '@/components/product-card/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';

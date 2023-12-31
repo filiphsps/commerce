@@ -35,10 +35,6 @@
 
         cursor: pointer;
         transition: $animation-duration ease-in-out;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 0.9em;
-        }
     }
 
     input:checked + .label {
@@ -55,11 +51,11 @@
     gap: var(--block-spacer-large);
 
     width: 100%;
-    padding-top: var(--block-padding);
+    padding-top: calc(var(--block-padding-large) * 1.5);
 
     border-top: var(--block-border-width) solid var(--color-block);
 
     @media (min-width: $breakpoint-mobile) {
-        padding-top: var(--block-padding-large);
+        padding-top: calc(var(--block-padding-large) * 2);
     }
 }

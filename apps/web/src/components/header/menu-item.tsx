@@ -1,7 +1,7 @@
 'use client';
 
 import type { NavigationItem } from '@/api/navigation';
-import styles from '@/components/Header/header-navigation.module.scss';
+import styles from '@/components/header/header-navigation.module.scss';
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';
 import { usePathname } from 'next/navigation';

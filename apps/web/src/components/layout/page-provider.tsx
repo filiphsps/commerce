@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { Shop } from '@/api/shop';
 import Footer from '@/components/Footer';
-import Header from '@/components/Header';
+import Header from '@/components/header/header';
 import PageContent from '@/components/page-content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { Suspense, type HTMLProps, type ReactNode } from 'react';

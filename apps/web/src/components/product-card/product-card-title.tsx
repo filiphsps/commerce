@@ -1,8 +1,8 @@
 import 'server-only';
 
 import type { Product } from '@/api/product';
-import styles from '@/components/ProductCard/product-card.module.scss';
 import Link from '@/components/link';
+import styles from '@/components/product-card/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
 import { memo } from 'react';
 

@@ -1,15 +1,19 @@
+@import '_globals.scss';
+
 .container {
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
 
-    padding: var(--block-padding-large) 0;
+    @media (min-width: $breakpoint-mobile) {
+        padding: var(--block-padding-large) 0 0 0;
 
-    background-color: var(--color-block);
+        background-color: var(--color-block);
 
-    border-radius: var(--block-border-radius);
+        border-radius: var(--block-border-radius);
 
-    h3 {
-        padding: 0 var(--block-padding-large);
+        & > h3 {
+            padding: 0 var(--block-padding-large);
+        }
     }
 }

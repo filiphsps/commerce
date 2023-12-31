@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '@/components/Header/cart-button.module.scss';
+import styles from '@/components/header/cart-button.module.scss';
 import Link from '@/components/link';
 import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
 import { useTranslation, type Locale, type LocaleDictionary } from '@/utils/locale';

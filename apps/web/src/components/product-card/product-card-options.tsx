@@ -1,7 +1,7 @@
 'use client';
 
 import type { Product, ProductVariant } from '@/api/product';
-import styles from '@/components/ProductCard/product-card.module.scss';
+import styles from '@/components/product-card/product-card.module.scss';
 import type { Locale } from '@/utils/locale';
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 

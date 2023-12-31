@@ -2,11 +2,11 @@ import 'server-only';
 
 import type { Product } from '@/api/product';
 import type { Shop } from '@/api/shop';
-import ProductCardActions from '@/components/ProductCard/product-card-actions';
-import ProductCardBadges from '@/components/ProductCard/product-card-badges';
-import ProductCardImage from '@/components/ProductCard/product-card-image';
-import ProductCardTitle from '@/components/ProductCard/product-card-title';
-import styles from '@/components/ProductCard/product-card.module.scss';
+import ProductCardActions from '@/components/product-card/product-card-actions';
+import ProductCardBadges from '@/components/product-card/product-card-badges';
+import ProductCardImage from '@/components/product-card/product-card-image';
+import ProductCardTitle from '@/components/product-card/product-card-title';
+import styles from '@/components/product-card/product-card.module.scss';
 import { getDictionary } from '@/utils/dictionary';
 import type { Locale } from '@/utils/locale';
 import { Suspense } from 'react';

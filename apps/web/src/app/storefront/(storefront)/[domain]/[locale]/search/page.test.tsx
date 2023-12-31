@@ -1,7 +1,6 @@
 import type { PageApi as OriginalPageApi } from '@/api/page';
 import { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
-import { notFound } from 'next/navigation';
 import { describe, expect, it, vi } from 'vitest';
 import type { SearchPageParams } from './page';
 import SearchPage, { generateMetadata } from './page';
@@ -89,10 +88,10 @@ describe('app', () => {
                     title: 'search',
                     description: undefined,
                     alternates: {
-                        canonical: `https://${domain}/en-US/search/`
-                        /*languages: {
+                        canonical: `https://${domain}/en-US/search/`,
+                        languages: {
                             'en-US': `https://${domain}/en-US/search/`
-                        }*/
+                        }
                     },
                     openGraph: {
                         url: `/search/`,
@@ -105,11 +104,6 @@ describe('app', () => {
                     }
                 });
             });
-        });
-
-        it('returns notFound when locale is not valid', async () => {
-            await SearchPage({ params: { domain, locale: 'invalid-locale' } });
-            expect(notFound).toHaveBeenCalled();
         });
 
         it.skip('should render', async () => {

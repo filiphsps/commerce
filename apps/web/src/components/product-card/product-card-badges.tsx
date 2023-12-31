@@ -1,5 +1,5 @@
 import type { Product } from '@/api/product';
-import styles from '@/components/ProductCard/product-card.module.scss';
+import styles from '@/components/product-card/product-card.module.scss';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
 export type ProductCardBadgesProps = {

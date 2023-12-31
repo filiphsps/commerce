@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '@/components/Header/hamburger-menu.module.scss';
+import styles from '@/components/header/hamburger-menu.module.scss';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type HTMLProps } from 'react';
 import { CgClose, CgMenuLeftAlt } from 'react-icons/cg';

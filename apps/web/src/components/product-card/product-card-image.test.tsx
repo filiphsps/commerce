@@ -1,4 +1,4 @@
-import ProductCardImage from '@/components/ProductCard/product-card-image';
+import ProductCardImage from '@/components/product-card/product-card-image';
 import { render } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';
 

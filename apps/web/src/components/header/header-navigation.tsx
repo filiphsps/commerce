@@ -1,7 +1,7 @@
 import type { HTMLProps, ReactNode } from 'react';
 
-import styles from '@/components/Header/header-navigation.module.scss';
-import { MenuItem, SubMenuItem } from '@/components/Header/menu-item';
+import styles from '@/components/header/header-navigation.module.scss';
+import { MenuItem, SubMenuItem } from '@/components/header/menu-item';
 import type { Locale } from '@/utils/locale';
 
 type HeaderNavigationChildItemsProps = {

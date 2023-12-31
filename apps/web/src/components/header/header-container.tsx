@@ -1,6 +1,6 @@
 import type { HTMLProps, ReactNode } from 'react';
 
-import styles from '@/components/Header/header.module.scss';
+import styles from '@/components/header/header.module.scss';
 
 type HeaderContainerProps = {
     children?: ReactNode;

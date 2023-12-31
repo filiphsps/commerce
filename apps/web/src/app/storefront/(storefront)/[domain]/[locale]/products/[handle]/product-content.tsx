@@ -81,13 +81,7 @@ export function ProductContent({ product, initialVariant, i18n, children }: Prod
             // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
             NProgress.done();
         }, 500);
-
-        if (!searchParams.get('variant')) return;
-        else if (!searchParams.get('variant')!.match(/^(?![0-9]+$).*/)) return;
-
-        const variantId = searchParams.get('variant')!.split('/').at(-1);
-        replace(`/products/${product.handle}/?variant=${variantId}`);
-    }, [searchParams]);
+    }, [, searchParams]);
 
     return (
         <>

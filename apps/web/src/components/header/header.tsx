@@ -2,12 +2,12 @@ import 'server-only';
 
 import { NavigationApi } from '@/api/navigation';
 import type { Shop } from '@/api/shop';
-import { CartButton } from '@/components/Header/cart-button';
-import { HamburgerMenu } from '@/components/Header/hamburger-menu';
-import { HeaderContainer } from '@/components/Header/header-container';
-import { HeaderNavigation } from '@/components/Header/header-navigation';
-import headerNavigationStyles from '@/components/Header/header-navigation.module.scss';
-import styles from '@/components/Header/header.module.scss';
+import { CartButton } from '@/components/header/cart-button';
+import { HamburgerMenu } from '@/components/header/hamburger-menu';
+import { HeaderContainer } from '@/components/header/header-container';
+import { HeaderNavigation } from '@/components/header/header-navigation';
+import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
+import styles from '@/components/header/header.module.scss';
 import { MobileMenu } from '@/components/HeaderNavigation/mobile-menu';
 import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -27,6 +27,7 @@ const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) =>
         <section className={styles.wrapper}>
             <HeaderContainer {...props}>
                 <HamburgerMenu />
+
                 <Link href={'/'} className={styles.logo}>
                     {logo?.src ? (
                         <Image
@@ -36,8 +37,8 @@ const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) =>
                             alt={logo?.alt || `${shop.name}'s logo`}
                             sizes="(max-width: 1024px) 125px, 175px"
                             draggable={false}
-                            loading="eager"
                             priority={true}
+                            loading="eager"
                             decoding="async"
                         />
                     ) : null}
