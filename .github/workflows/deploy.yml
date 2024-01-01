@@ -14,12 +14,13 @@ env:
     VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    POSTGRES_PRISMA_ACCELERATE_URL: ${{ secrets.POSTGRES_PRISMA_ACCELERATE_URL }}
+    POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL}}
 
 jobs:
     vercel:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
-        name: 🚚 Deploy Vercel
-        timeout-minutes: 5
+        name: 🚚 Deploy to Vercel
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
@@ -31,12 +32,26 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 📐 Install & Configure Vercel CLI
+            - name: 📦 Install Vercel CLI
               run: |
                   npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
 
             #- name: 🚚 Push to Vercel
             #  run: npx vercel deploy --prod --archive=tgz --token=${{ secrets.VERCEL_TOKEN }}
+
+    cloudflare:
+        needs: [vercel]
+        name: 🚚 Notify CloudFlare
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch }}
+                  fetch-depth: 0
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
             - name: 🔥 Purge CloudFlare cache
               if: false

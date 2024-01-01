@@ -2,11 +2,6 @@ name: CI
 
 on:
     pull_request:
-        paths-ignore:
-            - '**.md'
-            - '**.txt'
-            - 'LICENSE'
-
     push:
         branches:
             - master
@@ -21,10 +16,47 @@ env:
     LIMIT_STATIC_PAGES: 5
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    POSTGRES_PRISMA_ACCELERATE_URL: ${{ secrets.POSTGRES_PRISMA_ACCELERATE_URL }}
+    POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL}}
 
 jobs:
     build:
-        name: 📋 Lint, ✅ Typecheck, 🧪 Test, 🔨 Build
+        name: 🔨 Build
+        needs: [typecheck, lint]
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            - name: 🔨 Build
+              run: npm run build
+
+    test:
+        name: 🧪 Test
+        needs: [lint, typecheck]
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            - name: 🧪 Test
+              run: npm run test
+
+            - name: 🦺 Codecov Coverage Reports
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    lint:
+        name: 📋 Lint
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -37,100 +69,82 @@ jobs:
             - name: 📋 Lint
               run: npm run lint
 
-            - name: 📋 Prettier
-              run: npm run prettier
+    typecheck:
+        name: ✅ Typecheck
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
+
+            - name: ✅ Typecheck
+              run: npm run typecheck
+
+    analyze:
+        name: 🔬 Analyze
+        needs: [build]
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+
+            - name: 🚀 Bootstrap
+              uses: ./.github/common/bootstrap
 
             - name: 🔨 Build
               run: npm run build
 
-            - name: 📋 Typecheck
-              run: npm run typecheck
+            - name: 🔬 Analyze bundle
+              run: node ./.github/common/scripts/bundle-analyze-report.js
 
-            - name: 🧪 Test
-              run: npm run test
+            - name: 🌎 Upload bundle
+              uses: actions/upload-artifact@v4
+              with:
+                  name: bundle
+                  path: apps/web/.next/analyze/__bundle_analysis.json
 
-            - name: 🦺 Codecov Coverage Reports
-              uses: codecov/codecov-action@v3
-              env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-# NOTE: The following jobs are temporarily disabled as it's too expensive
-#       to run on every commit thanks to the startup cost and the fact
-#       that GitHub always charge for at least 1 minute of usage per job.
+            - name: 📦 Download base branch bundle stats
+              uses: dawidd6/action-download-artifact@v3
+              if: success() && github.event.number
+              with:
+                  workflow: nextjs_bundle_analysis.yml
+                  branch: ${{ github.event.pull_request.base.ref }}
+                  path: apps/web/.next/analyze/base
+                  if_no_artifact_found: warn
 
-# build:
-#     name: 🔨 Build
-#     timeout-minutes: 10
-#     runs-on: ubuntu-latest
-#     steps:
-#         - name: 🕶️ Checkout repository
-#           uses: actions/checkout@v4
+            - name: 📃 Compare with base branch bundle
+              if: success() && github.event.number
+              run: ls -laR apps/web/.next/analyze/base && npx -p nextjs-bundle-analysis compare
 
-#         - name: 🚀 Bootstrap
-#           uses: ./.github/common/bootstrap
+            - name: 💬 Get Comment Body
+              id: get-comment-body
+              if: success() && github.event.number
+              # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+              run: |
+                  echo "body<<EOF" >> $GITHUB_OUTPUT
+                  echo "$(cat apps/web/.next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
+                  echo EOF >> $GITHUB_OUTPUT
 
-#         - name: 🔨 Build
-#           run: npm run build
+            - name: 🗣️ Comment
+              uses: marocchino/sticky-pull-request-comment@v2
+              with:
+                  header: next-touched-pages
+                  message: ${{ steps.get-comment-body.outputs.body }}
 
-# test:
-#     name: 🔬 Test
-#     needs: [build]
-#     timeout-minutes: 10
-#     runs-on: ubuntu-latest
-#     steps:
-#         - name: 🕶️ Checkout repository
-#           uses: actions/checkout@v4
-
-#         - name: 🚀 Bootstrap
-#           uses: ./.github/common/bootstrap
-
-#         - name: 🧪 Test
-#           run: npm run test
-
-#         - name: 🦺 Codecov Coverage Reports
-#           uses: codecov/codecov-action@v3
-#           env:
-#               CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-# lint:
-#     name: 📋 Lint
-#     needs: [build]
-#     timeout-minutes: 5
-#     runs-on: ubuntu-latest
-#     steps:
-#         - name: 🕶️ Checkout repository
-#           uses: actions/checkout@v4
-
-#         - name: 🚀 Bootstrap
-#           uses: ./.github/common/bootstrap
-
-#         - name: 📋 Lint
-#           run: npm run lint
-
-# typecheck:
-#     name: ✅ Typecheck
-#     needs: [build]
-#     timeout-minutes: 5
-#     runs-on: ubuntu-latest
-#     steps:
-#         - name: 🕶️ Checkout repository
-#           uses: actions/checkout@v4
-
-#         - name: 🚀 Bootstrap
-#           uses: ./.github/common/bootstrap
-
-#         - name: ✅ Typecheck
-#           run: npm run typecheck
-
-# dispatch:
-#     name: 🗣️ Dispatch
-#     needs: [test, lint, typecheck]
-#     runs-on: ubuntu-latest
-#     steps:
-#         - name: 🕶️ Checkout repository
-#           uses: actions/checkout@v4
-
-#         # Deliberately empty as this is just used
-#         # to trigger other workflows when this one
-#         # completes successfully. Otherwise we can't
-#         # make sure that every test, lint and typecheck
-#         # job has validated and completed successfully.
+    dispatch:
+        name: 🗣️ Dispatch
+        needs: [build, test]
+        timeout-minutes: 15
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+            # Deliberately empty as this is just used
+            # to trigger other workflows when this one
+            # completes successfully. Otherwise we can't
+            # make sure that every test, lint and typecheck
+            # job has validated and completed successfully.
