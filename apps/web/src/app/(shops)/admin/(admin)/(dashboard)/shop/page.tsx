@@ -1,3 +1,4 @@
+import { SettingsBlock } from '#/components/settings-block';
 import { getSession } from '#/utils/auth';
 import { getShopsForUser } from '#/utils/fetchers';
 import { Accented, Button, Card, Heading, Label } from '@nordcom/nordstar';
@@ -23,14 +24,36 @@ export default async function Overview() {
 
     const shops = await getShopsForUser(user.id);
 
+    const firstName = user.name.split(' ').at(0) || null;
+    const lastName = user.name.split(' ').slice(1).join(' ') || null;
+
+    const headingSidebar = (
+        <div className={styles.sidebar}>
+            <SettingsBlock
+                as="form"
+                save={async () => {
+                    'use server';
+
+                    return redirect('/logout/');
+                }}
+                actionButtonLabel="Logout"
+            />
+        </div>
+    );
+
     if (shops.length <= 0) {
         return (
             <section className={`${styles.container}`}>
-                <Heading level="h1">Hi {user.name.split(' ')[0]}</Heading>
-                <Heading level="h2">
-                    You are currently not assigned as a collaborator for any shop, if you believe this to be an error
-                    please reach out to the Nordcom Commerce support team
-                </Heading>
+                <div className={styles.heading}>
+                    <div>
+                        <Heading level="h1">Hi {firstName}..</Heading>
+                        <Heading level="h2">
+                            You are currently not assigned as a collaborator for any shop, if you believe this to be an
+                            error please reach out to the Nordcom Commerce support team
+                        </Heading>
+                    </div>
+                    {headingSidebar}
+                </div>
             </section>
         );
     }
@@ -39,18 +62,17 @@ export default async function Overview() {
         <section className={styles.container}>
             <div className={styles.heading}>
                 <Heading level="h1">
-                    Hi <Accented>{user.name.split(' ')[0]}</Accented> {user.name.split(' ').slice(1).join(' ')}
+                    Hi <Accented>{firstName || 'there'}</Accented>
+                    {lastName ? ` ${lastName}` : ''}
                 </Heading>
-                <div className={styles.sidebar}>
-                    <Button variant="outline">Logout</Button>
-                </div>
+                {headingSidebar}
             </div>
 
             <Card className={styles['shop-selector']}>
                 <div className={styles['card-header']}>
-                    <Label as="h1">To start managing</Label>
+                    <Label as="h1">Choose a Shop</Label>
                     <Heading level="h3" as="h2">
-                        Pick a Shop
+                        Your Shops
                     </Heading>
                 </div>
 

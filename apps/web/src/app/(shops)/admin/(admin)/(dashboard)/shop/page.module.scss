@@ -195,10 +195,12 @@
         gap: calc(var(--layout-section-spacing) / 2);
 
         .button {
-            width: 100%;
             flex-grow: 1;
 
-            font-size: 0.9em;
+            width: 100%;
+            padding: var(--layout-block-padding) var(--layout-block-padding-half);
+
+            font-size: 1em;
         }
     }
 }
