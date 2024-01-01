@@ -12,6 +12,10 @@ import type { ReactNode } from 'react';
 import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiUpload } from 'react-icons/bi';
 import styles from '../page.module.scss';
 
+export const revalidate = 30;
+// FIXME: Find a better way than to make every child page dynamic.
+export const dynamic = 'force-dynamic';
+
 export type ShopLayoutProps = {
     children: ReactNode;
     params: {
@@ -71,6 +75,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                             'use server';
                             revalidateTag(shop.id);
                             revalidateTag(shop.domain);
+                            revalidateTag(session.user.id);
                         }}
                         actionButtonIcon={<BiUpload />}
                         actionButtonLabel="Revalidate"

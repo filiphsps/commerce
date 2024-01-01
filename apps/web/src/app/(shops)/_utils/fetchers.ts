@@ -3,6 +3,12 @@ import 'server-only';
 import prisma from '#/utils/prisma';
 import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
+const revalidateAll = async (userId: string, shopId: string, domain: string) => {
+    await revalidateTag(`admin.user.${userId}`);
+    await revalidateTag(domain);
+    await revalidateTag(shopId);
+};
+
 export async function getShopsForUser(userId: string) {
     return await cache(
         async () => {
@@ -24,10 +30,10 @@ export async function getShopsForUser(userId: string) {
                 ]
             });
         },
-        [`admin.user.${userId}.shops`],
+        [userId, `admin.user.${userId}.shops`],
         {
             revalidate: 120,
-            tags: [`admin.user.${userId}.shops`]
+            tags: [userId, `admin.user.${userId}.shops`]
         }
     )();
 }
@@ -63,10 +69,10 @@ export async function getShop(userId: string, shopId: string) {
                 }
             });
         },
-        [`admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
+        [shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
         {
             revalidate: 120,
-            tags: [`admin.user.${userId}.shop.${shopId}`]
+            tags: [shopId, `admin.user.${userId}.shop.${shopId}`]
         }
     )();
 }
@@ -88,11 +94,7 @@ export async function updateShop(userId: string, shopId: string, data: UpdateSho
             data: data
         });
 
-        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
-        await revalidateTag(data.domain);
-        await revalidateTag(shopId);
-        await revalidateTag(`admin.user.${userId}`);
-        await revalidateTag('shops');
+        await revalidateAll(userId, shopId, data.domain);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -118,8 +120,7 @@ export async function createShop(userId: string) {
             }
         });
 
-        await revalidateTag(`admin.user.${userId}.shops`);
-        await revalidateTag('shops');
+        await revalidateAll(userId, response.id, response.domain);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -145,10 +146,14 @@ export async function getCommerceProvider(userId: string, shopId: string) {
                 })
             )?.commerceProvider;
         },
-        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.commerce-provider`],
+        [shopId, 'admin', userId, 'commerce-provider'],
         {
             revalidate: 120,
-            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.commerce-provider`]
+            tags: [
+                shopId,
+                `admin.user.${userId}.shop.${shopId}`,
+                `admin.user.${userId}.shop.${shopId}.commerce-provider`
+            ]
         }
     )();
 }
@@ -169,12 +174,11 @@ export async function updateCommerceProvider(userId: string, shopId: string, dat
             }
         });
 
-        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
-        await revalidateTag(shopId);
-        await revalidateTag('shops');
+        await revalidateAll(userId, shopId, response.domain);
         return response;
     } catch (error: any) {
         console.error(error);
+
         return {
             error: error.message
         };
@@ -196,10 +200,14 @@ export async function getContentProvider(userId: string, shopId: string) {
                 })
             )?.contentProvider;
         },
-        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`],
+        [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`],
         {
             revalidate: 120,
-            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`]
+            tags: [
+                shopId,
+                `admin.user.${userId}.shop.${shopId}`,
+                `admin.user.${userId}.shop.${shopId}.content-provider`
+            ]
         }
     )();
 }
@@ -220,8 +228,7 @@ export async function updateContentProvider(userId: string, shopId: string, data
             }
         });
 
-        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
-        await revalidateTag(shopId);
+        await revalidateAll(userId, shopId, response.domain);
         return response;
     } catch (error: any) {
         console.error(error);
@@ -270,11 +277,11 @@ export async function updateCheckoutProvider(userId: string, shopId: string, dat
             }
         });
 
-        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
-        await revalidateTag(shopId);
+        await revalidateAll(userId, shopId, response.domain);
         return response;
     } catch (error: any) {
         console.error(error);
+
         return {
             error: error.message
         };
@@ -320,8 +327,7 @@ export async function updateShopTheme(userId: string, shopId: string, data: any)
             }
         });
 
-        await revalidateTag(`admin.user.${userId}.shop.${shopId}`);
-        await revalidateTag(shopId);
+        await revalidateAll(userId, shopId, response.domain);
         return response;
     } catch (error: any) {
         console.error(error);

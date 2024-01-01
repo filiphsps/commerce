@@ -6,6 +6,8 @@ import { Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+export const revalidate = 30;
+
 export type ShopSettingsBillingPageProps = {
     params: {
         id: string;

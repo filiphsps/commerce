@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import styles from './page.module.scss';
 
+export const revalidate = 30;
 // Make sure this page is always dynamic.
 export const dynamic = 'force-dynamic';
 

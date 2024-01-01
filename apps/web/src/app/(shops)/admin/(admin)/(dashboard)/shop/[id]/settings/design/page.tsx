@@ -8,6 +8,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ThemeSettings } from './theme-settings';
 
+export const revalidate = 30;
+
 export type ShopSettingsDesignPageProps = {
     params: {
         id: string;

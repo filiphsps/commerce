@@ -18,6 +18,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CommerceSettings } from './commerce-settings';
 
+export const revalidate = 30;
+
 export type ShopSettingsContentPageProps = {
     params: {
         id: string;
@@ -73,6 +75,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         switch (type) {
                             case 'shopify': {
                                 data = {
+                                    id: form.get('shopId')?.toString() || undefined,
                                     domain: form.get('domain')?.toString() || undefined,
                                     storefrontId: form.get('storefrontId')?.toString() || undefined,
                                     authentication: {

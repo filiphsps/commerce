@@ -11,6 +11,7 @@ export type CommerceSettingsProps = {
 type ShopifyCommerceProviderData = {
     domain: string;
     storefrontId: string;
+    id: string;
     authentication: {
         token: string;
         publicToken: string;
@@ -41,6 +42,15 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
 
             <Input
                 type="text"
+                name="shopId"
+                label="Shopify Shop ID"
+                defaultValue={data?.id}
+                value={undefined}
+                required={true}
+            />
+
+            <Input
+                type="text"
                 name="storefrontId"
                 label="Storefront ID"
                 defaultValue={data?.storefrontId}
@@ -48,7 +58,14 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
                 required={true}
             />
 
-            <Input type="text" name="token" label="Token" defaultValue={data?.authentication?.token} required={true} />
+            <Input
+                type="text"
+                name="token"
+                label="Token"
+                defaultValue={data?.authentication?.token}
+                value={undefined}
+                required={true}
+            />
 
             <Input
                 type="text"

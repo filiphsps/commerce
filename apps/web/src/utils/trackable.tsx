@@ -1,6 +1,6 @@
 'use client';
 
-import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
+import type { Shop } from '@/api/shop';
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
 import type { Nullable } from '@/utils/abstract-api';
@@ -156,7 +156,7 @@ const shopifyEventHandler = async (
         return;
     }
 
-    const commerce = shop.commerceProvider as ShopifyCommerceProvider;
+    const commerce = shop.commerceProvider;
     const pageType = pathToShopifyPageType((data.path || '').replace(`/${locale.code}/`, '/'));
 
     const products = data.gtm?.ecommerce?.items || [];

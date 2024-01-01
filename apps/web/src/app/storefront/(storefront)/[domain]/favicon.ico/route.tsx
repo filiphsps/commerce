@@ -1,4 +1,5 @@
 import { ShopApi } from '@/api/shop';
+import { UnknownShopDomainError } from '@/utils/errors';
 import { NextResponse, type NextRequest } from 'next/server';
 import pngToIco from 'png-to-ico';
 
@@ -11,11 +12,14 @@ export type FaviconRouteParams = {
 };
 export const GET = async (req: NextRequest, { params }: any) => {
     try {
-        const shop = await ShopApi((params as any).domain, true);
+        const domain = params.domain as string;
 
-        const favicon = await fetch(new URL('/favicon.png?width=32&height=32', req.nextUrl), {
+        const shop = await ShopApi(domain, true);
+        if (!shop) throw new UnknownShopDomainError(domain);
+
+        const favicon = await fetch(new URL(shop.icons?.favicon?.src!), {
             next: {
-                revalidate: 60 * 60 * 24 * 7, // 1 week.
+                revalidate: 60 * 60 * 24, // 24hrs.
                 tags: [shop.id, 'favicon', `${shop.id}.favicon`]
             }
         });
