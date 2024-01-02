@@ -41,7 +41,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                             Login
                         </Button>
                     ) : (
-                        <Button as={Link} href="/shop/" className={styles.button}>
+                        <Button as={Link} href="/admin/shop/" className={styles.button}>
                             Dashboard
                         </Button>
                     )}

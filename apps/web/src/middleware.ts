@@ -20,7 +20,7 @@ export const config = {
 export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
     // Prevent direct access.
-    if (path.startsWith('/admin') || path.startsWith('/storefront')) {
+    if (path.startsWith('/shops') || path.startsWith('/storefront')) {
         return new NextResponse(null, { status: 404 });
     }
 

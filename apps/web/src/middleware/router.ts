@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { admin } from '@/middleware/admin';
+import { shops } from '@/middleware/shops';
 import { storefront } from '@/middleware/storefront';
 import { unknown } from '@/middleware/unknown';
 import type { NextRequest } from 'next/server';
@@ -24,11 +24,11 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
 };
 
 /**
- * `admin` - Admin dashboard request.\
+ * `shops` - Marketing/admin dashboard request.\
  * `storefront` - Storefront request.\
  * `unknown` - Unknown request type.
  */
-export type RequestType = 'admin' | 'storefront' | 'unknown';
+export type RequestType = 'shops' | 'storefront' | 'unknown';
 
 /**
  * Determine the type of request we're dealing with.
@@ -40,7 +40,7 @@ export const getRequestType = async (req: NextRequest): Promise<RequestType> => 
     const hostname = await getHostname(req);
 
     if (hostname === 'shops.nordcom.io') {
-        return 'admin';
+        return 'shops';
     } else if (hostname.includes('sweetsideofsweden.com')) {
         // Fast-path for the storefront.
         return 'storefront';
@@ -61,8 +61,8 @@ export const router = async (req: NextRequest): Promise<NextResponse | undefined
     let type: RequestType;
     if (pathname.startsWith('/storefront')) {
         type = 'storefront';
-    } else if (pathname.startsWith('/admin')) {
-        type = 'admin';
+    } else if (pathname.startsWith('/shops')) {
+        type = 'shops';
     } else {
         type = await getRequestType(req);
     }
@@ -73,8 +73,8 @@ export const router = async (req: NextRequest): Promise<NextResponse | undefined
         case 'storefront': {
             return storefront(req);
         }
-        case 'admin': {
-            return admin(req);
+        case 'shops': {
+            return shops(req);
         }
         case 'unknown': {
             return unknown(req);

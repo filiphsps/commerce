@@ -1,0 +1,7 @@
+@import '../../../../../../../../_scss/global';
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--layout-block-padding) / 2);
+}

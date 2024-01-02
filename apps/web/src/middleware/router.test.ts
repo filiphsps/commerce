@@ -28,11 +28,11 @@ describe('middleware', () => {
                 expect(result).toBe('storefront');
             });
 
-            it('should return "admin" for the Nordcom admin hostname', async () => {
+            it('should return "shops" for the Nordcom shops hostname', async () => {
                 const req = createFakeRequest('shops.nordcom.io');
 
                 const result = await getRequestType(req);
-                expect(result).toBe('admin');
+                expect(result).toBe('shops');
             });
 
             it.fails('should return "unknown" for an unknown hostname', async () => {
