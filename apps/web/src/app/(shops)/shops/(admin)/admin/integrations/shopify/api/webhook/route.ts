@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export const GET = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.log('GET Shopify Webhook', req);
+    console.debug('GET Shopify Webhook', req);
 
     return NextResponse.json(
         {
@@ -17,7 +17,7 @@ export const GET = withAppRouterHighlight(async (req: NextRequest, _context) => 
 });
 
 export const POST = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.log('POST Shopify Webhook', req.json());
+    console.debug('POST Shopify Webhook', req.json());
 
     return NextResponse.json(
         {

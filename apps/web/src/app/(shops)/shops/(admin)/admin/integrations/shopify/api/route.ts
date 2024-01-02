@@ -5,7 +5,7 @@ import { shopifyAdminApi } from './shopify';
 export const dynamic = 'force-dynamic';
 
 export const GET = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.log('GET Shopify API', req);
+    console.debug('GET Shopify API', req);
 
     const searchParams = req.nextUrl.searchParams;
 
@@ -18,7 +18,7 @@ export const GET = withAppRouterHighlight(async (req: NextRequest, _context) => 
 });
 
 export const POST = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.log('POST Shopify API', req.json());
+    console.debug('POST Shopify API', req.json());
 
     return NextResponse.json(
         {
