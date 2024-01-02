@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
     return (
         <>
-            <Heading title="Page not found" subtitle="Error 404" />
+            <Heading title="Page not found" subtitle="Error 404" subtitleAs="h2" />
 
             <Content>
                 <p>Sorry, we could not find the page you were looking for.</p>

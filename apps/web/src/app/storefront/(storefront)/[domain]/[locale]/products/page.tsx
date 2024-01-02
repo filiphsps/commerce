@@ -11,6 +11,7 @@ import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
+import ProductsContent from './products-content';
 
 export type ProductsPageParams = { domain: string; locale: string };
 export async function generateMetadata({
@@ -91,6 +92,8 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         return (
             <PageContent primary={true}>
                 <Heading title={page?.title} subtitle={page?.description} />
+
+                <ProductsContent />
             </PageContent>
         );
     } catch (error: unknown) {

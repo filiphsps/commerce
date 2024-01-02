@@ -1,0 +1,54 @@
+@import '_globals.scss';
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--block-padding-large);
+    align-items: center;
+
+    .item,
+    .ellipsis,
+    .action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: var(--block-padding);
+
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.9em;
+
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    .action {
+        font-weight: 600;
+    }
+
+    .content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--block-spacer-small);
+        align-items: center;
+
+        .item {
+            height: 3.5rem;
+            width: 3.5rem;
+
+            border-radius: var(--block-border-width-large);
+
+            &:is([data-selected='true']) {
+                background: var(--color-accent-primary);
+                color: var(--color-accent-primary-text);
+            }
+
+            &:is(a):is(:hover) {
+                background: var(--color-accent-secondary-light);
+                color: var(--color-accent-secondary-text);
+            }
+        }
+    }
+}
