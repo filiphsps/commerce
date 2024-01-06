@@ -19,7 +19,7 @@ export default async function DocsPage({ params: {} }: { params: DocsPageParams 
 
             <article className={styles.content}>
                 <Card as={Link} href={`/docs/errors/`} className={styles.section} draggable={false}>
-                    <Heading level="h4" as="h3">
+                    <Heading level="h4" as="h3" className={styles.item}>
                         Error Codes
                     </Heading>
                     <p>A list of all error codes that can be returned by the API and what they mean.</p>

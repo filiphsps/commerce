@@ -39,6 +39,10 @@
                         200ms ease-in-out color;
                 }
 
+                h3.item {
+                    color: var(--color-foreground);
+                }
+
                 &:is(:hover):not(:disabled) {
                     border-color: var(--color-foreground);
                 }

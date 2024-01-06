@@ -44,7 +44,7 @@ export default async function DocsErrorsPage({ params: {} }: { params: DocsError
                             key={error.code}
                             draggable={false}
                         >
-                            <Heading level="h4" as="h3">
+                            <Heading level="h4" as="h3" className={styles.item}>
                                 {error.code}
                             </Heading>
                             <p>

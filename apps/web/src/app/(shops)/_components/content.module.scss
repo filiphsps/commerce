@@ -11,12 +11,9 @@ article.container {
     width: 100%;
     max-width: 100%;
     margin-top: calc(var(--layout-section-spacing) * 2);
-    font-size: 1.15em;
 
     @media (min-width: $breakpoint-mobile) {
         --small-spacing: calc(var(--layout-block-padding) / 2);
-
-        font-size: 1.25em;
     }
 
     h2,

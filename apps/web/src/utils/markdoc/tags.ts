@@ -9,3 +9,9 @@ export const spacer = {
         }
     }
 };
+
+export const card = {
+    render: 'Card',
+    selfClosing: false,
+    attributes: {}
+};

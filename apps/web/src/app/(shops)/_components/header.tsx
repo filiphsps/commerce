@@ -15,7 +15,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                 <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
                     <Image
                         className={`${styles.logo}`}
-                        src="https://nordcom.io/logo.svg"
+                        src="/logo.svg"
                         alt="Nordcom Group Inc.'s Logo"
                         height={75}
                         width={150}

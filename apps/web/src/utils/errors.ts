@@ -53,11 +53,9 @@ export enum ApiErrorKind {
     API_UNKNOWN_LOCALE = 'API_UNKNOWN_LOCALE',
     API_INVALID_SHOP = 'API_INVALID_SHOP',
     API_TOO_MANY_REQUESTS = 'API_TOO_MANY_REQUESTS',
-    API_METHOD_NOT_ALLOWED = 'API_METHOD_NOT_ALLOWED',
-    API_ICON_WIDTH_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
-    API_ICON_WIDTH_OUT_OF_BOUNDS = 'API_ICON_WIDTH_OUT_OF_BOUNDS',
-    API_ICON_HEIGHT_NO_FRACTIONAL = 'API_ICON_HEIGHT_NO_FRACTIONAL',
-    API_ICON_HEIGHT_OUT_OF_BOUNDS = 'API_ICON_HEIGHT_OUT_OF_BOUNDS',
+    API_METHOD_NOT_ALLOWED = 'API_IMAGE_NO_FRACTIONAL',
+    API_IMAGE_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
+    API_IMAGE_OUT_OF_BOUNDS = 'API_IMAGE_OUT_OF_BOUNDS',
     API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE',
     API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION'
 }
@@ -131,29 +129,17 @@ export class MethodNotAllowedError extends ApiError {
     code = ApiErrorKind.API_METHOD_NOT_ALLOWED;
 }
 
-export class IconWidthNoFractionalError extends ApiError {
-    name = 'IconWidthNoFractionalError';
-    details = 'Invalid width';
-    description = '`width` must be an integer';
-    code = ApiErrorKind.API_ICON_WIDTH_NO_FRACTIONAL;
+export class ImageNoFractionalError extends ApiError {
+    name = 'ImageNoFractionalError';
+    details = 'Invalid width/height';
+    description = '`width`/`height` must be an integer';
+    code = ApiErrorKind.API_IMAGE_NO_FRACTIONAL;
 }
-export class IconWidthOutOfBoundsError extends ApiError {
-    name = 'IconWidthOutOfBoundsError';
+export class ImageOutOfBoundsError extends ApiError {
+    name = 'ImageOutOfBoundsError';
     details = 'Width is out of bounds';
-    description = '`width` must be between `1` and `1024` or `undefined`';
-    code = ApiErrorKind.API_ICON_WIDTH_OUT_OF_BOUNDS;
-}
-export class IconHeightNoFractionalError extends ApiError {
-    name = 'IconHeightNoFractionalError';
-    details = 'Invalid width';
-    description = '`width` must be an integer';
-    code = ApiErrorKind.API_ICON_HEIGHT_NO_FRACTIONAL;
-}
-export class IconHeightOutOfBoundsError extends ApiError {
-    name = 'IconHeightOutOfBoundsError';
-    details = 'Height is out of bounds';
-    description = '`height` must be between `1` and `1024` or `undefined`';
-    code = ApiErrorKind.API_ICON_HEIGHT_OUT_OF_BOUNDS;
+    description = '`width`/`height` must be between `1` and `1024` or `undefined`';
+    code = ApiErrorKind.API_IMAGE_OUT_OF_BOUNDS;
 }
 
 export class NoLocalesAvailableError extends ApiError {
@@ -293,14 +279,10 @@ export const getErrorFromCode = (
             return TooManyRequestsError;
         case ApiErrorKind.API_METHOD_NOT_ALLOWED:
             return MethodNotAllowedError;
-        case ApiErrorKind.API_ICON_WIDTH_NO_FRACTIONAL:
-            return IconWidthNoFractionalError;
-        case ApiErrorKind.API_ICON_WIDTH_OUT_OF_BOUNDS:
-            return IconWidthOutOfBoundsError;
-        case ApiErrorKind.API_ICON_HEIGHT_NO_FRACTIONAL:
-            return IconHeightNoFractionalError;
-        case ApiErrorKind.API_ICON_HEIGHT_OUT_OF_BOUNDS:
-            return IconHeightOutOfBoundsError;
+        case ApiErrorKind.API_IMAGE_NO_FRACTIONAL:
+            return ImageNoFractionalError;
+        case ApiErrorKind.API_IMAGE_OUT_OF_BOUNDS:
+            return ImageOutOfBoundsError;
         case ApiErrorKind.API_NO_LOCALES_AVAILABLE:
             return NoLocalesAvailableError;
     }

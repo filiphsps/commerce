@@ -67,3 +67,9 @@ hr {
     border: 0;
     border-top: var(--border-width) solid var(--color-background-highlight);
 }
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-block-padding-half);
+}

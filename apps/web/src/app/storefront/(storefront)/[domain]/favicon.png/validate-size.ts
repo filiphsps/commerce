@@ -1,10 +1,5 @@
 import type { ApiError } from '@/utils/errors';
-import {
-    IconHeightNoFractionalError,
-    IconHeightOutOfBoundsError,
-    IconWidthNoFractionalError,
-    IconWidthOutOfBoundsError
-} from '@/utils/errors';
+import { ImageNoFractionalError, ImageOutOfBoundsError } from '@/utils/errors';
 
 /**
  * Validate invalid width/height, most likely by a malicious actor.
@@ -18,20 +13,20 @@ export const validateSize = ({ width, height }: { width?: number | null; height?
 
     if (width) {
         if (!Number.isInteger(width)) {
-            errors.push(new IconWidthNoFractionalError());
+            errors.push(new ImageNoFractionalError());
         }
         if (width <= 0 || width > 1024) {
-            errors.push(new IconWidthOutOfBoundsError());
+            errors.push(new ImageOutOfBoundsError());
         }
     }
 
     if (height) {
         if (!Number.isInteger(height)) {
-            errors.push(new IconHeightNoFractionalError());
+            errors.push(new ImageNoFractionalError());
         }
 
         if (height <= 0 || height > 1024) {
-            errors.push(new IconHeightOutOfBoundsError());
+            errors.push(new ImageOutOfBoundsError());
         }
     }
 
