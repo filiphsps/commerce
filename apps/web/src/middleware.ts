@@ -1,5 +1,6 @@
 import { router } from '@/middleware/router';
-import { NextResponse, type NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'experimental-edge';
 export const config = {
@@ -21,7 +22,10 @@ export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
     // Prevent direct access.
     if (path.startsWith('/shops') || path.startsWith('/storefront')) {
-        return new NextResponse(null, { status: 404 });
+        const url = req.nextUrl.clone();
+        url.pathname = url.pathname.replace(/^\/(shops|storefront)/, '');
+
+        return NextResponse.redirect(url, { status: 301 });
     }
 
     return router(req);
