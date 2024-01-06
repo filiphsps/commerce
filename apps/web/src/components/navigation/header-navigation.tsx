@@ -1,5 +1,5 @@
-import styles from '@/components/HeaderNavigation/header-navigation.module.scss';
 import Link from '@/components/link';
+import styles from '@/components/navigation/header-navigation.module.scss';
 import { type FunctionComponent } from 'react';
 
 interface HeaderNavigationProps {

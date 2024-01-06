@@ -1,5 +1,5 @@
-import HeaderNavigation from '@/components/HeaderNavigation';
-import styles from '@/components/HeaderNavigation/mobile-menu.module.scss';
+import HeaderNavigation from '@/components/navigation/header-navigation';
+import styles from '@/components/navigation/mobile-menu.module.scss';
 
 type MobileMenuProps = {
     navigation: any;
