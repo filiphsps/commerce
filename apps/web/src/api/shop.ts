@@ -124,7 +124,8 @@ export const ShopApi = async (domain: string, noCache?: boolean) => {
                             type: true
                         }
                     }
-                }
+                },
+                cacheStrategy: { ttl: 120, swr: 3600 }
             });
 
             if (!res) throw new UnknownShopDomainError();
@@ -192,7 +193,8 @@ export const CommerceProviderAuthenticationApi = async ({ shop, noCache }: { sho
                                         data: true
                                     }
                                 }
-                            }
+                            },
+                            cacheStrategy: { ttl: 120, swr: 3600 }
                         })
                     )?.commerceProvider || {};
                 if (!provider || !data) throw new UnknownShopDomainError();
