@@ -59,7 +59,7 @@
         "@apollo/experimental-nextjs-app-support": "0.6.0",
         "@highlight-run/next": "7.3.1",
         "@markdoc/markdoc": "0.4.0",
-        "@markdoc/next.js": "0.3.6",
+        "@markdoc/next.js": "0.3.7",
         "@next-auth/prisma-adapter": "1.0.7",
         "@next/third-parties": "14.0.4",
         "@nordcom/nordstar": "0.0.30",
