@@ -13,7 +13,7 @@ import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/app/(shops)/shops/docs/errors/content');
 
-export async function getErrorDocsContent({ slug }: { slug: string }) {
+async function getErrorDocsContent({ slug }: { slug: string }) {
     try {
         const filePath = path.join(CONTENT_DIR, `${slug}.md`);
         const source = fs.readFileSync(filePath, 'utf-8');

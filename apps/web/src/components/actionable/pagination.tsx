@@ -7,10 +7,22 @@ import type { ComponentProps } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbDots } from 'react-icons/tb';
 
-export type PaginationProps = ComponentProps<'nav'> & {};
-const Pagination = ({}: PaginationProps) => {
+export type PaginationProps = ComponentProps<'nav'> & {
+    knownFirstPage?: number;
+    knownLastPage?: number;
+    morePagesAfterKnownLastPage?: boolean;
+};
+const Pagination = ({
+    knownFirstPage = 0,
+    knownLastPage = 0,
+    morePagesAfterKnownLastPage = false
+}: PaginationProps) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
+    if (knownFirstPage === knownLastPage) {
+        return null;
+    }
 
     const currentPage = (() => {
         const page = searchParams.get('page');
@@ -18,9 +30,6 @@ const Pagination = ({}: PaginationProps) => {
 
         return Number.parseInt(page);
     })();
-    const knownFirstPage = 1;
-    const knownLastPage = 5;
-    const morePagesAfterKnownLastPage = true;
 
     let items = [];
     for (let i = knownFirstPage; i <= knownLastPage; i++) {

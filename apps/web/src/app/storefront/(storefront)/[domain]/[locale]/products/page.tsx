@@ -1,6 +1,7 @@
 import { PageApi } from '@/api/page';
 import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { ProductsCountApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
@@ -10,7 +11,7 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import ProductsContent from './products-content';
 
 export type ProductsPageParams = { domain: string; locale: string };
@@ -85,13 +86,13 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
 
-        void Prefetch({ api, page });
+        const {} = ProductsCountApi({ client: api });
 
-        redirect(`/${locale.code}/`);
+        void Prefetch({ api, page });
 
         return (
             <PageContent primary={true}>
-                <Heading title={page?.title} subtitle={page?.description} />
+                <Heading title={page?.title || 'Products'} subtitle={page?.description} />
 
                 <ProductsContent />
             </PageContent>
