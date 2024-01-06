@@ -1,31 +1,28 @@
-import { withAppRouterHighlight } from '@/utils/config/highlight.app';
 import { NextResponse, type NextRequest } from 'next/server';
 import { shopifyAdminApi } from './shopify';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.debug('GET Shopify API', req);
-
+export const GET = async (req: NextRequest, _context: any) => {
     const searchParams = req.nextUrl.searchParams;
 
-    return await shopifyAdminApi.auth.begin({
-        shop: searchParams.get('shop') as string,
-        callbackPath: '/admin/integrations/shopify/',
-        rawRequest: req,
-        isOnline: true
-    });
-});
+    try {
+        const res = await shopifyAdminApi.auth.begin({
+            shop: searchParams.get('shop') as string,
+            callbackPath: '/admin/integrations/shopify/',
+            rawRequest: req,
+            isOnline: true
+        });
 
-export const POST = withAppRouterHighlight(async (req: NextRequest, _context) => {
-    console.debug('POST Shopify API', req.json());
+        return res;
+    } catch (error) {
+        console.log('error', error);
 
-    return NextResponse.json(
-        {
-            status: 500,
-            data: null,
-            errors: null
-        },
-        { status: 500 }
-    );
-});
+        return NextResponse.json(
+            {},
+            {
+                status: 500
+            }
+        );
+    }
+};

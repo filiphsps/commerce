@@ -1,4 +1,4 @@
-import '@shopify/shopify-api/adapters/web-api';
+import '@shopify/shopify-api/adapters/node';
 
 import { LATEST_API_VERSION, shopifyApi } from '@shopify/shopify-api';
 

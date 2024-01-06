@@ -4,6 +4,7 @@ import prisma from '#/utils/prisma';
 import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
+    await revalidateTag('admin');
     await revalidateTag(`admin.user.${userId}`);
     await revalidateTag(domain);
     await revalidateTag(shopId);
@@ -69,10 +70,10 @@ export async function getShop(userId: string, shopId: string) {
                 }
             });
         },
-        [shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
+        ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
         {
             revalidate: 120,
-            tags: [shopId, `admin.user.${userId}.shop.${shopId}`]
+            tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
         }
     )();
 }
@@ -146,10 +147,11 @@ export async function getCommerceProvider(userId: string, shopId: string) {
                 })
             )?.commerceProvider;
         },
-        [shopId, 'admin', userId, 'commerce-provider'],
+        ['admin', shopId, userId, 'commerce-provider'],
         {
             revalidate: 120,
             tags: [
+                'admin',
                 shopId,
                 `admin.user.${userId}.shop.${shopId}`,
                 `admin.user.${userId}.shop.${shopId}.commerce-provider`
@@ -200,10 +202,16 @@ export async function getContentProvider(userId: string, shopId: string) {
                 })
             )?.contentProvider;
         },
-        [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.content-provider`],
+        [
+            'admin',
+            shopId,
+            `admin.user.${userId}.shop.${shopId}`,
+            `admin.user.${userId}.shop.${shopId}.content-provider`
+        ],
         {
             revalidate: 120,
             tags: [
+                'admin',
                 shopId,
                 `admin.user.${userId}.shop.${shopId}`,
                 `admin.user.${userId}.shop.${shopId}.content-provider`
@@ -253,10 +261,14 @@ export async function getCheckoutProvider(userId: string, shopId: string) {
                 })
             )?.checkoutProvider;
         },
-        [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`],
+        ['admin', `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`],
         {
             revalidate: 120,
-            tags: [`admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`]
+            tags: [
+                'admin',
+                `admin.user.${userId}.shop.${shopId}`,
+                `admin.user.${userId}.shop.${shopId}.checkout-provider`
+            ]
         }
     )();
 }
@@ -303,10 +315,10 @@ export async function getShopTheme(userId: string, shopId: string) {
                 })
             )?.theme;
         },
-        [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`],
+        ['admin', shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`],
         {
             revalidate: 120,
-            tags: [shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`]
+            tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`]
         }
     )();
 }

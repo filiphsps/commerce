@@ -73,6 +73,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                         as="form"
                         save={async () => {
                             'use server';
+                            revalidateTag('admin');
                             revalidateTag(shop.id);
                             revalidateTag(shop.domain);
                             revalidateTag(session.user.id);
