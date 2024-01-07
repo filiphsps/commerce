@@ -9,7 +9,6 @@ import { HeaderNavigation } from '@/components/header/header-navigation';
 import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
 import styles from '@/components/header/header.module.scss';
 import Link from '@/components/link';
-import { MobileMenu } from '@/components/navigation/mobile-menu';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import Image from 'next/image';
 import type { HTMLProps } from 'react';
@@ -55,8 +54,6 @@ const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) =>
                     <CartButton locale={locale} i18n={i18n} />
                 </div>
             </HeaderContainer>
-
-            <MobileMenu navigation={navigation} />
         </section>
     );
 };
