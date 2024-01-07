@@ -8,7 +8,6 @@ export const shops = async (req: NextRequest): Promise<NextResponse> => {
     // Check if we're dealing with a file or a route.
     if (newUrl.pathname.match(/\.[a-zA-Z]{2,6}$/gi) || newUrl.pathname.includes('.')) {
         const target = `/shops${newUrl.pathname}${newUrl.search}`;
-        console.log(target);
         return NextResponse.rewrite(new URL(target, req.url));
     }
 
