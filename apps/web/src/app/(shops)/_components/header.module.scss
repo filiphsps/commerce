@@ -32,8 +32,10 @@
         gap: var(--layout-block-padding);
 
         @media (min-width: $breakpoint-mobile) {
+            width: calc(var(--layout-page-width) + var(--layout-page-spacing) * 2);
+
             grid-template-columns: 1fr auto;
-            padding: var(--layout-block-padding) 0;
+            padding: var(--layout-block-padding) var(--layout-page-spacing);
         }
 
         .logo-wrapper {
@@ -68,7 +70,6 @@
 
         .nav {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             gap: var(--layout-block-padding);
 
@@ -77,6 +78,10 @@
             -webkit-user-select: none;
             user-select: none;
             overflow-x: auto;
+
+            @media (min-width: $breakpoint-mobile) {
+                justify-content: space-between;
+            }
 
             .links {
                 display: flex;
