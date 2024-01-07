@@ -14,14 +14,19 @@ const LOCALE_SLASH_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})\//g;
 
 export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const hostname = await getHostname(req);
-    const shop = await ShopApi(hostname, true);
     let newUrl = req.nextUrl.clone();
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
-    // Redirect to the primary domain if the hostname doesn't match.
-    if (hostname !== shop.domain) {
-        newUrl.hostname = shop.domain;
+    console.log(newUrl.pathname);
+
+    if (newUrl.pathname === '/') {
+        const shop = await ShopApi(hostname, true);
+
+        // Redirect to the primary domain if the hostname doesn't match.
+        if (hostname !== shop.domain) {
+            newUrl.hostname = shop.domain;
+        }
     }
 
     // API.
@@ -31,7 +36,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname.includes('/slice-simulator')
     ) {
         // Do not mess with status or headers here.
-        let target = `${newUrl.origin}/storefront/${shop.domain}${newUrl.pathname}${search}`;
+        let target = `${newUrl.origin}/storefront/${hostname}${newUrl.pathname}${search}`;
         return NextResponse.rewrite(new URL(target, req.url));
 
         // TODO: Handle Handle tenant-specific files/assets.
@@ -43,6 +48,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
+            const shop = await ShopApi(hostname, true);
+
             const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false, noCache: true });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api, noCache: true })).map(({ code }) => code);
@@ -117,6 +124,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/storefront/${shop.domain}${newUrl.pathname}${search}`;
+    const target = `${newUrl.origin}/storefront/${hostname}${newUrl.pathname}${search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };
