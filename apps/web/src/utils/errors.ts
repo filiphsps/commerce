@@ -131,13 +131,13 @@ export class MethodNotAllowedError extends ApiError {
 
 export class ImageNoFractionalError extends ApiError {
     name = 'ImageNoFractionalError';
-    details = 'Invalid width/height';
+    details = 'Invalid width or height';
     description = '`width`/`height` must be an integer';
     code = ApiErrorKind.API_IMAGE_NO_FRACTIONAL;
 }
 export class ImageOutOfBoundsError extends ApiError {
     name = 'ImageOutOfBoundsError';
-    details = 'Width is out of bounds';
+    details = 'Width or height is out of bounds';
     description = '`width`/`height` must be between `1` and `1024` or `undefined`';
     code = ApiErrorKind.API_IMAGE_OUT_OF_BOUNDS;
 }
@@ -186,7 +186,7 @@ export enum GenericErrorKind {
 export class GenericError extends Error<GenericErrorKind> {
     statusCode = 500;
     name = 'GenericError';
-    details = 'Unknown Error';
+    details = 'Unknown error';
     description = 'An unknown error occurred';
     code = GenericErrorKind.GENERIC_UNKNOWN_ERROR;
 
@@ -208,7 +208,7 @@ export class TodoError extends GenericError {
 export class NotFoundError extends GenericError {
     statusCode = 404;
     name = 'NotFoundError';
-    details = 'Not Found';
+    details = 'Not found';
     description = 'The requested resource could not be found';
     code = GenericErrorKind.NOT_FOUND;
 
@@ -222,19 +222,19 @@ export class NotFoundError extends GenericError {
 }
 export class UnreachableError extends GenericError {
     name = 'UnreachableError';
-    details = 'Unreachable code-path Taken';
+    details = 'Unreachable code-path taken';
     description = 'Supposedly unreachable code-path taken';
     code = GenericErrorKind.UNREACHABLE;
 }
 export class TypeError extends GenericError {
     name = 'TypeError';
-    details = 'Invalid Type';
+    details = 'Invalid type';
     description = 'Invalid type was passed to function';
     code = GenericErrorKind.INVALID_TYPE;
 }
 export class MissingContextProviderError extends GenericError {
     name = 'MissingContextProviderError';
-    details = 'Missing Context Provider';
+    details = 'Missing context provider';
     code = GenericErrorKind.MISSING_CONTEXT_PROVIDER;
 
     constructor(functionName: string, contextName: string) {

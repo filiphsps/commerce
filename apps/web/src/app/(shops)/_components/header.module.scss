@@ -41,8 +41,8 @@
             position: relative;
             display: block;
             justify-self: flex-start;
-            height: 100%;
             height: 4rem;
+            width: 100%;
 
             [data-logo-placement='center'] & {
                 justify-self: flex-start;
@@ -58,7 +58,6 @@
 
             .logo {
                 height: 100%;
-                width: 100%;
 
                 -webkit-user-select: none;
                 user-select: none;
