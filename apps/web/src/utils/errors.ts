@@ -222,7 +222,7 @@ export class NotFoundError extends GenericError {
 }
 export class UnreachableError extends GenericError {
     name = 'UnreachableError';
-    details = 'Unreachable Code-path Taken';
+    details = 'Unreachable code-path Taken';
     description = 'Supposedly unreachable code-path taken';
     code = GenericErrorKind.UNREACHABLE;
 }

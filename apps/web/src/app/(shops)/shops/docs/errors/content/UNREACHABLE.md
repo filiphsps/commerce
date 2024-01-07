@@ -20,7 +20,7 @@ An theoretical unreachable code path has been taken (eg, switch case fall throug
 
 ```tsx
 if (true) {
-    return 'hello'
+    return 'hello';
 }
 
 // This should be unreachable.

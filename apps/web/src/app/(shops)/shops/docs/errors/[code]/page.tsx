@@ -1,3 +1,4 @@
+import BackButton from '#/components/back-button';
 import { Content } from '#/components/content';
 import { getErrorFromCode } from '@/utils/errors';
 import { components, config } from '@/utils/markdoc';
@@ -44,7 +45,9 @@ export default async function DocsErrorPage({ params: { code } }: { params: Docs
     return (
         <article className={`${styles.container}`}>
             <div className={`${styles.heading}`}>
-                <Heading level="h3" as="div">
+                <BackButton href="/docs/errors/" />
+
+                <Heading level="h3" as="div" className={styles['status-code']}>
                     {error.statusCode}:
                 </Heading>
                 <Heading level="h1">{error.details}</Heading>

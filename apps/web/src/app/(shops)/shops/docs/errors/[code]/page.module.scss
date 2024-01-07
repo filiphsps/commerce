@@ -5,11 +5,16 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
+
         width: 100%;
         max-width: 100%;
 
+        .status-code {
+            padding-top: var(--layout-section-spacing);
+        }
+
         h1 {
-            margin: calc(var(--layout-block-padding) / 4) 0 var(--layout-block-padding) 0;
+            margin: calc(var(--layout-block-padding) / 4) 0 0 0;
 
             @media (max-width: $breakpoint-mobile) {
                 font-size: 3.25rem !important;

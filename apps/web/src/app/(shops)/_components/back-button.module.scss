@@ -1,0 +1,20 @@
+@import '_globals.scss';
+
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.15rem;
+
+    font-size: 1em;
+
+    svg {
+        display: inline-block;
+        vertical-align: middle;
+
+        height: 100%;
+
+        font-size: 1.5em;
+        line-height: inherit;
+    }
+}
