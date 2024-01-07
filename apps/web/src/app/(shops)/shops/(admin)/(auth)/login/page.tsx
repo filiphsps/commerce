@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     const session = await getSession();
     if (session) {
-        redirect('/shop/');
+        redirect('/admin/shop/');
     }
 
     return (

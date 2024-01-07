@@ -21,9 +21,12 @@ export const shops = async (req: NextRequest): Promise<NextResponse> => {
     // Validate the url against our common issues.
     newUrl = commonValidations(newUrl);
 
-    // Make sure the url ends with a trailing slash.
-    if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
-        newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
+    // Validations that doesn't apply to api routes.
+    if (!newUrl.pathname.includes('/api')) {
+        // Make sure the url ends with a trailing slash.
+        if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
+            newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;
+        }
     }
 
     // Redirect if `newURL` is different from `req.nextUrl`.
