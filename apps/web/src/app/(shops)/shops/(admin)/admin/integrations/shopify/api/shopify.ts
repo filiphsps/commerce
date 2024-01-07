@@ -4,11 +4,21 @@ import { ApiVersion, shopifyApi } from '@shopify/shopify-api';
 import { restResources } from '@shopify/shopify-api/rest/admin/2023-10';
 
 export const shopifyAdminApi = shopifyApi({
+    userAgentPrefix: 'nordcom',
+
     apiKey: process.env.SHOPIFY_API_KEY as string,
     apiSecretKey: process.env.SHOPIFY_API_SECRET_KEY as string,
-    scopes: ['read_products'],
-    hostName: 'nordcom-commerce',
-    apiVersion: ApiVersion.October23,
+    scopes: [
+        'read_products',
+        'read_orders',
+        'write_orders',
+        'read_all_orders',
+        'write_customer_payment_methods',
+        'read_own_subscription_contracts',
+        'write_own_subscription_contracts'
+    ],
+    hostName: process.env.NODE_ENV === 'development' ? 'shops.nordcom.io.localhost:3000' : 'shops.nordcom.io',
     isEmbeddedApp: true,
+    apiVersion: ApiVersion.October23,
     restResources
 });
