@@ -7,11 +7,22 @@
             "dependsOn": ["^build"],
             "outputs": ["**/.next/**", "!*/**/.next/cache/**", "!*/**/coverage/**", "!*/**/*.md", "!*/**/*.yml"]
         },
-        "lint": { "cache": false },
-        "prettier": { "cache": false },
-        "test": { "cache": false, "outputs": ["**/coverage/**"] },
-        "typecheck": { "cache": false },
-        "fix": { "cache": false },
+        "lint": {
+            "cache": false
+        },
+        "prettier": {
+            "cache": false
+        },
+        "test": {
+            "cache": false,
+            "outputs": ["**/coverage/**"]
+        },
+        "typecheck": {
+            "cache": false
+        },
+        "fix": {
+            "cache": false
+        },
         "dev": {
             "cache": false,
             "persistent": true

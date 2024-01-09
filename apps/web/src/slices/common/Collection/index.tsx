@@ -55,7 +55,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }
             );
         }
         case 'full': {
-            return <FullCollection slice={slice} shop={shop} locale={locale} i18n={i18n} />;
+            return <FullCollection slice={slice} shop={shop} locale={locale} />;
         }
         default: {
             throw new Error('500: Invalid variant');

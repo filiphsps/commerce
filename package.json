@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
-    "name": "@nordcom/ecommerce",
+    "name": "@nordcom/commerce",
     "version": "2.0.0",
     "private": true,
     "type": "module",
@@ -64,7 +64,8 @@
         "supports css-grid"
     ],
     "workspaces": [
-        "apps/*"
+        "apps/*",
+        "packages/*"
     ],
     "devDependencies": {
         "@happy-dom/global-registrator": "12.10.3",

@@ -31,10 +31,10 @@ export async function getShopsForUser(userId: string) {
                 ]
             });
         },
-        [userId, `admin.user.${userId}.shops`],
+        ['admin', userId, `admin.user.${userId}.shops`],
         {
             revalidate: 120,
-            tags: [userId, `admin.user.${userId}.shops`]
+            tags: ['admin', userId, `admin.user.${userId}.shops`]
         }
     )();
 }
@@ -261,11 +261,17 @@ export async function getCheckoutProvider(userId: string, shopId: string) {
                 })
             )?.checkoutProvider;
         },
-        ['admin', `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.checkout-provider`],
+        [
+            'admin',
+            shopId,
+            `admin.user.${userId}.shop.${shopId}`,
+            `admin.user.${userId}.shop.${shopId}.checkout-provider`
+        ],
         {
             revalidate: 120,
             tags: [
                 'admin',
+                shopId,
                 `admin.user.${userId}.shop.${shopId}`,
                 `admin.user.${userId}.shop.${shopId}.checkout-provider`
             ]

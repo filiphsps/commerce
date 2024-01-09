@@ -9,7 +9,7 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import * as NProgress from 'nprogress';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
@@ -33,7 +33,6 @@ export type ProductContentProps = {
     children?: ReactNode;
 };
 export function ProductContent({ product, initialVariant, i18n, children }: ProductContentProps) {
-    const { replace } = useRouter();
     const path = usePathname();
     const searchParams = useSearchParams();
     const variant = getVariant(product, searchParams) || initialVariant;

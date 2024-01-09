@@ -1,0 +1,45 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@nordcom/commerce-database",
+    "version": "0.0.0",
+    "private": true,
+    "sideEffects": false,
+    "type": "module",
+    "prettier": "@nordcom/prettier",
+    "scripts": {
+        "build": "exit 0",
+        "lint": "exit 0",
+        "typecheck": "tsc -noEmit",
+        "test": "vitest run --coverage",
+        "watch:test": "vitest watch"
+    },
+    "author": {
+        "name": "Nordcom Group Inc.",
+        "email": "opensource@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Siitam Sandström",
+            "email": "filiph@nordcom.io",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+    },
+    "homepage": "https://shops.nordcom.io/",
+    "dependencies": {
+        "mongoose": "8.0.4"
+    },
+    "devDependencies": {
+        "@nordcom/prettier": "0.1.1",
+        "concurrently": "8.2.2",
+        "eslint": "8.56.0"
+    }
+}

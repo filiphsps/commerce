@@ -4,7 +4,7 @@ import type { Shop } from '@/api/shop';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import type { CollectionSliceFull } from '@/prismic/types';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Locale } from '@/utils/locale';
 import { Suspense } from 'react';
 import styles from './collection.module.scss';
 
@@ -18,7 +18,6 @@ type FullCollectionProps = {
     slice: Slice;
     shop: Shop;
     locale: Locale;
-    i18n: LocaleDictionary;
 };
 const FullCollection = ({
     slice: {
@@ -26,8 +25,7 @@ const FullCollection = ({
         ...slice
     },
     shop,
-    locale,
-    i18n
+    locale
 }: FullCollectionProps) => {
     return (
         <PageContent
