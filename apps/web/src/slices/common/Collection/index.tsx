@@ -24,7 +24,7 @@ export type CollectionProps = SliceComponentProps<
 /**
  * Component for "Collection" Slices.
  */
-const CollectionSlice = async ({ slice, index, context: { shop, locale, i18n } }: CollectionProps) => {
+const CollectionSlice = async ({ slice, index, context: { shop, locale } }: CollectionProps) => {
     switch (slice.variation) {
         case 'default': {
             const handle = slice.primary.handle as string;

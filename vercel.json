@@ -6,15 +6,8 @@
     "framework": "nextjs",
     "buildCommand": "npm run build:vercel && turbo build",
     "devCommand": "turbo dev",
-    "outputDirectory": "apps/web/.next",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
-    },
-    "crons": [
-        {
-            "path": "/admin/api/heartbeat",
-            "schedule": "*/15 * * * *"
-        }
-    ]
+    }
 }

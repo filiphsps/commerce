@@ -1,5 +1,3 @@
-import { withHighlightConfig } from '@highlight-run/next/config';
-import withMarkdoc from '@markdoc/next.js';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,7 +5,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
-    pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
+    basePath: '/admin',
+
+    pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: false,
     reactStrictMode: true,
@@ -21,25 +21,16 @@ const config = {
         instrumentationHook: true,
         //nextScriptWorkers: true,
         optimizeCss: true,
-        optimizePackageImports: [
-            '@apollo/client',
-            '@prismicio/client',
-            '@prismicio/next',
-            '@prismicio/react',
-            '@shopify/hydrogen-react',
-            'react-icons'
-        ],
+        optimizePackageImports: ['react-icons'],
         //ppr: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: ['@highlight-run/node'],
+        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: false,
         //taint: true,
         webpackBuildWorker: true
     },
     images: {
-        //loader: 'custom',
-        //loaderFile: './src/utils/image-loader.ts',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {
@@ -88,30 +79,11 @@ const config = {
     },
 
     env: {
-        // Settings.
-        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-
-        // Prismic.
-        PRISMIC_REPO: process.env.PRISMIC_REPO,
-
-        // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
     serverRuntimeConfig: {
-        // Database.
         POSTGRES_PRISMA_ACCELERATE_URL: process.env.POSTGRES_PRISMA_ACCELERATE_URL,
-
-        // Settings.
-        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-
-        // Prismic.
-        PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
-
-        // Highlight.
-        HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
-
-        // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
@@ -125,19 +97,4 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withHighlightConfig(
-    withMarkdoc({
-        mode: 'static',
-        schemaPath: './src/utils/markdoc',
-        tokenizerOptions: {
-            allowComments: true,
-            slots: true
-        }
-    })(config),
-    {
-        apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
-        appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
-        uploadSourceMaps: !!process.env.VERCEL_ENV,
-        sourceMapsBasePath: './apps/web/'
-    }
-);
+export default config;
