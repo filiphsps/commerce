@@ -4,7 +4,7 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
-    "buildCommand": "npm run build:vercel && turbo build",
+    "buildCommand": "turbo build",
     "devCommand": "turbo dev",
     "github": {
         "enabled": true,
