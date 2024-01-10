@@ -1,4 +1,4 @@
-@import '_globals.scss';
+@import 'globals';
 
 .container {
     display: flex;
@@ -15,13 +15,13 @@
 
         width: 42rem;
         max-width: 95vw;
-        height: calc(100vh - 7.25rem);
-        height: calc(100dvh - 7.25rem);
+        height: calc(100vh - 7.15rem);
+        height: calc(100dvh - 7.15rem);
         padding: var(--block-padding) var(--block-padding-large) var(--block-padding-large) var(--block-padding-large);
 
-        background: var(--accent-secondary-light);
+        background-color: var(--background);
+        color: var(--color);
         border-right: var(--block-border-width) solid var(--accent-secondary-dark);
-        color: var(--color-dark);
         box-shadow: 1rem 1rem 1rem -0.5rem var(--color-block-shadow);
         transition: 150ms ease-in-out all;
         overflow-y: scroll;
@@ -157,8 +157,8 @@
             // Make the hit-box larger, could've been a padding but it obscures the logo
             // e.g., let's not `padding-top: 0.75rem;`.
             border-bottom: 0 solid transparent;
-            background: var(--accent-secondary-light);
-            color: var(--color-dark);
+            background-color: var(--background);
+            color: var(--color);
             line-height: normal;
             cursor: unset;
 
@@ -175,13 +175,16 @@
 
             .content {
                 gap: var(--block-spacer-large);
-                padding: 2rem 2rem 1rem 2rem;
+
                 max-width: var(--page-width);
+                padding: 1rem 2rem 1rem 2rem;
                 margin: 0 auto;
 
                 @media (min-width: $breakpoint-header) {
                     display: grid;
                     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+
+                    padding: 2rem 2rem 1rem 2rem;
                 }
 
                 .subitem {

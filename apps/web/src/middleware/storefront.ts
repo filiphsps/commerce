@@ -51,7 +51,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname.includes('/slice-simulator')
     ) {
         // Do not mess with status or headers here.
-        let target = `${newUrl.origin}/storefront/${hostname}${newUrl.pathname}${search}`;
+        let target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
         return NextResponse.rewrite(new URL(target, req.url));
 
         // TODO: Handle Handle tenant-specific files/assets.
@@ -139,6 +139,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname += `homepage/`;
     }
 
-    const target = `${newUrl.origin}/storefront/${hostname}${newUrl.pathname}${search}`;
+    const target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
     return NextResponse.rewrite(new URL(target, req.url));
 };

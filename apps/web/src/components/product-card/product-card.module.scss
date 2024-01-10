@@ -1,4 +1,4 @@
-@import '_globals.scss';
+@import 'globals';
 
 .container {
     position: relative;
@@ -19,7 +19,7 @@
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
 
     border-radius: var(--block-border-radius);
-    box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, 0.3);
+
     scroll-snap-align: center;
 
     contain-intrinsic-size: var(--component-product-card-width) 40rem;
@@ -31,6 +31,10 @@
 
         background: var(--color-block);
         color: var(--color-dark);
+    }
+
+    @media (min-width: $breakpoint-mobile) {
+        box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, 0.3);
     }
 
     .button {

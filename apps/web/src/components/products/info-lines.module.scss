@@ -1,4 +1,4 @@
-@import '_globals.scss';
+@import 'globals';
 
 .container {
     display: none;
@@ -23,6 +23,8 @@
         width: 100%;
         padding: 0 var(--block-padding-small);
         gap: 0.25rem;
+
+        -webkit-user-select: none;
         user-select: none;
 
         &[data-status='available'] {

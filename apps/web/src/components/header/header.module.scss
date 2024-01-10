@@ -1,4 +1,4 @@
-@import '_globals.scss';
+@import 'globals';
 
 .wrapper {
     position: sticky;
@@ -6,35 +6,40 @@
     inset: 0 0 auto 0;
 
     &[data-theme='primary'] {
-        color: var(--color-accent-primary-text);
+        --color: var(--color-accent-primary-text);
 
         &[data-theme-variant='default'] {
-            background: var(--accent-primary);
+            --background: var(--accent-primary);
         }
         &[data-theme-variant='light'] {
-            background: var(--accent-primary-light);
+            --background: var(--accent-primary-light);
         }
         &[data-theme-variant='dark'] {
-            background: var(--accent-primary-dark);
+            --background: var(--accent-primary-dark);
         }
     }
     &[data-theme='secondary'] {
-        color: var(--color-accent-secondary-text);
+        --color: var(--color-accent-secondary-text);
 
         &[data-theme-variant='default'] {
-            background: var(--accent-secondary);
+            --background: var(--accent-secondary);
         }
         &[data-theme-variant='light'] {
-            background: var(--accent-secondary-light);
+            --background: var(--accent-secondary-light);
         }
         &[data-theme-variant='dark'] {
-            background: var(--accent-secondary-dark);
+            --background: var(--accent-secondary-dark);
         }
     }
 
-    [data-menu-open='true'] & {
-        position: fixed;
+    @media (max-width: $breakpoint-header) {
+        [data-menu-open='true'] & {
+            position: fixed;
+        }
     }
+
+    background-color: var(--background);
+    color: var(--color);
 }
 
 .container {
@@ -52,11 +57,19 @@
     }
 }
 
-[data-scrolled='true'],
-[data-menu-open='true'] {
+[data-scrolled='true'] {
     .container {
         border-bottom-color: var(--accent-secondary-dark);
         box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
+    }
+}
+
+@media (max-width: $breakpoint-header) {
+    [data-menu-open='true'] {
+        .container {
+            border-bottom-color: var(--accent-secondary-dark);
+            box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
+        }
     }
 }
 

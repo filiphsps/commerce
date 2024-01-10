@@ -12,8 +12,8 @@
     },
     "rewrites": [
         {
-            "source": "/api/:path*",
-            "destination": "https://api.example.com/:path*"
+            "source": "/admin/:path*",
+            "destination": "https://admin.shops.nordcom.io/admin/:path*"
         }
     ]
 }

@@ -1,4 +1,4 @@
-@import '_globals.scss';
+@import 'globals';
 
 .container {
     position: relative;
@@ -85,13 +85,17 @@
 
         .content {
             display: grid;
-            overflow-x: scroll;
+            overflow-x: auto;
             grid-template-columns: repeat(auto-fill, minmax(1fr, var(--component-product-card-width)));
             grid-auto-columns: 1fr;
             grid-auto-rows: 1fr;
             grid-auto-flow: column;
 
-            padding: var(--block-padding-large);
+            padding: var(--block-padding-large) 0;
+
+            @media (min-width: $breakpoint-mobile) {
+                padding: var(--block-padding-large);
+            }
 
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;

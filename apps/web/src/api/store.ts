@@ -8,6 +8,7 @@ import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     const { data: localData } = await api.query<{ localization: Localization }>(gql`
@@ -210,6 +211,19 @@ export const StoreApi = async ({
                 const extraStoreDetails = shopData?.shop;
                 const currencies: string[] = store?.currencies?.map((item: any) => item.currency) || [];
 
+                let locales;
+                try {
+                    locales = await LocalesApi({ api });
+                } catch (error: unknown) {
+                    console.error(error);
+
+                    try {
+                        notFound();
+                    } catch {
+                        locales = [Locale.default];
+                    }
+                }
+
                 return {
                     id: extraStoreDetails?.id || '',
                     name: store?.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
@@ -218,7 +232,7 @@ export const StoreApi = async ({
                         extraStoreDetails?.description ||
                         undefined,
                     i18n: {
-                        locales: await LocalesApi({ api })
+                        locales
                     },
                     logos: {
                         primary: (() => {

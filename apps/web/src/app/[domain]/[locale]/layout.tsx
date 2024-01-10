@@ -17,6 +17,7 @@ import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
+import { SocialProfileJsonLd } from 'next-seo';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -139,6 +140,45 @@ export default async function RootLayout({
 
                             <HeaderProvider loaderColor={branding.primary.accent} />
                         </ProvidersRegistry>
+
+                        <SocialProfileJsonLd
+                            // TODO: Get all of this dynamically.
+                            useAppDir={true}
+                            type="Organization"
+                            name={shop.name}
+                            url={`https://${shop.domain}/${locale}/`}
+                            logo={shop.icons?.favicon?.src}
+                            foundingDate="2023"
+                            founders={[
+                                {
+                                    '@type': 'Person',
+                                    name: 'Dennis Sahlin',
+                                    email: 'dennis@nordcom.io',
+                                    jobTitle: 'CEO'
+                                },
+                                {
+                                    '@type': 'Person',
+                                    name: 'Filiph Siitam Sandström',
+                                    email: 'filiph@nordcom.io',
+                                    jobTitle: 'CTO'
+                                },
+                                {
+                                    '@type': 'Person',
+                                    name: 'Albin Dahlqvist',
+                                    email: 'albin@nordcom.io',
+                                    jobTitle: 'Founder'
+                                }
+                            ]}
+                            address={{
+                                '@type': 'PostalAddress',
+                                streetAddress: 'Bergsgatan 7F',
+                                addressLocality: 'Mellerud',
+                                addressRegion: 'Västra Götaland',
+                                postalCode: '464 30',
+                                addressCountry: 'Sweden'
+                            }}
+                            sameAs={[]}
+                        />
                     </body>
                 </html>
             </>

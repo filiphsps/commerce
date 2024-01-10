@@ -1,12 +1,16 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import type { PageApi as OriginalPageApi } from '@/api/page';
 import { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
-import { describe, expect, it, vi } from 'vitest';
 import type { SearchPageParams } from './page';
 import SearchPage, { generateMetadata } from './page';
 
 describe('app', () => {
     describe('SearchPage', () => {
+        vi.mock('@highlight-run/next/client', () => ({
+            ErrorBoundary: vi.fn().mockResolvedValue(({ children }) => <>{children}</>)
+        }));
         vi.mock('@/utils/prefetch', () => ({
             Prefetch: vi.fn().mockResolvedValue({})
         }));

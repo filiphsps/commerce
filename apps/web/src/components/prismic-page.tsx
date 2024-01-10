@@ -5,6 +5,7 @@ import type { Shop } from '@/api/shop';
 import { components, components as slices } from '@/slices';
 import type { Optional } from '@/utils/abstract-api';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { ErrorBoundary } from '@highlight-run/next/client';
 import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
 
@@ -25,13 +26,15 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T
 }: PageParams<T>) {
     return (
-        <Suspense key={`${shop.id}.page.${handle}.PrismicPage`} fallback={<PrismicPage.skeleton page={page} />}>
-            <SliceZone
-                slices={page?.slices || []}
-                components={slices}
-                context={{ shop, i18n, locale, type, uid: handle, handle }}
-            />
-        </Suspense>
+        <ErrorBoundary showDialog={false}>
+            <Suspense key={`${shop.id}.page.${handle}.PrismicPage`} fallback={<PrismicPage.skeleton page={page} />}>
+                <SliceZone
+                    slices={page?.slices || []}
+                    components={slices}
+                    context={{ shop, i18n, locale, type, uid: handle, handle }}
+                />
+            </Suspense>
+        </ErrorBoundary>
     );
 }
 

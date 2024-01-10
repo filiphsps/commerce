@@ -33,6 +33,7 @@ export async function generateMetadata({
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) notFound();
         // Extra calls,
+
         const locales = await LocalesApi({ api });
 
         // If the page is the homepage we shouldn't add the handle to path.
