@@ -66,7 +66,7 @@
         "@markdoc/markdoc": "0.4.0",
         "@markdoc/next.js": "0.3.7",
         "react-dom": "18.2.0",
-        "react-icons": "4.12.0",
+        "react-icons": "5.0.0",
         "gray-matter": "4.0.3",
         "gravatar.js": "2.0.0",
         "glob": "10.3.10",
