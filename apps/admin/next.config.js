@@ -83,7 +83,9 @@ const config = {
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    }
+    },
+
+    skipTrailingSlashRedirect: true
 };
 
 export default config;

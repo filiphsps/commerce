@@ -2,8 +2,9 @@ import 'server-only';
 
 import { getSession } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
-import { Card, Heading } from '@nordcom/nordstar';
+import { Button, Card, Heading } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
+import { revalidateTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 export type ShopPageProps = {
@@ -31,7 +32,18 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
                 Overview
             </Heading>
 
-            <Card></Card>
+            <Card>
+                <Button
+                    onClick={async () => {
+                        'use server';
+
+                        await revalidateTag(session.user.id);
+                        await revalidateTag(shop.id);
+                    }}
+                >
+                    Revalidate
+                </Button>
+            </Card>
         </section>
     );
 }

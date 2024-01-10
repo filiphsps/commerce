@@ -17,6 +17,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
         //TODO: Do this in the correct place.
         revalidateTag(`shopify`);
         revalidateTag('prismic');
+        revalidateTag(shop.id);
 
         switch (req.method) {
             case 'POST': {

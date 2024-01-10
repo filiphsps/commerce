@@ -9,11 +9,5 @@
     "github": {
         "enabled": true,
         "autoJobCancelation": true
-    },
-    "rewrites": [
-        {
-            "source": "/admin/:path*",
-            "destination": "https://admin.shops.nordcom.io/admin/:path*"
-        }
-    ]
+    }
 }
