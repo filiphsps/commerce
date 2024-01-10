@@ -39,7 +39,7 @@ jobs:
 
     test:
         name: 🧪 Test
-        needs: [lint]
+        needs: [build]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -88,7 +88,8 @@ jobs:
 
     dispatch:
         name: 🗣️ Dispatch
-        needs: [build, test]
+        needs: [build, test, typecheck, lint]
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
