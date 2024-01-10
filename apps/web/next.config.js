@@ -73,13 +73,6 @@ const config = {
         ],
         formats: ['image/webp', 'image/avif']
     },
-    compiler: {
-        styledComponents: {
-            ssr: true,
-            minify: true,
-            pure: true
-        }
-    },
     eslint: {
         ignoreDuringBuilds: true
     },
