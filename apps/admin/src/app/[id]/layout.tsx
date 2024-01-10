@@ -45,7 +45,7 @@ export async function generateMetadata({ params: { id: shopId } }: ShopLayoutPro
 export default async function ShopLayout({ children, params: { id: shopId } }: ShopLayoutProps) {
     const session = await getSession();
     if (!session) {
-        return redirect('/login/');
+        return redirect('/auth/login/');
     }
 
     const shop = await getShop(session.user.id, shopId);
@@ -57,7 +57,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
 
     return (
         <div className={styles.container}>
-            <Header />
+            <Header shopId={shopId} />
 
             <View className={styles.content}>
                 <div className={styles['split-view']}>

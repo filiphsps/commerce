@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export default async function Header({ className, ...props }: HeaderProps) {
+export default async function Header({ action, className, ...props }: HeaderProps) {
     return (
         <header {...props} className={`${styles.container} ${className || ''}`}>
             <div className={styles.content}>

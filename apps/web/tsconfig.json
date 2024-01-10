@@ -28,13 +28,7 @@
             "@/prismic/types": ["prismicio-types.d.ts"],
 
             // Assets.
-            "@/static/*": ["public/*"],
-
-            // Admin (shops.nordcom.io).
-            "#/components/*": ["src/app/(shops)/_components/*"],
-            "#/api/*": ["src/app/(shops)/_api/*"],
-            "#/utils/*": ["src/app/(shops)/_utils/*"],
-            "#/styles/*": ["src/app/(shops)/_scss/*"]
+            "@/static/*": ["public/*"]
         }
     },
     "include": [

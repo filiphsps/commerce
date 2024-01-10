@@ -2,11 +2,28 @@ import { ShopApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
-import { getHostname } from '@/middleware/router';
 import { Locale } from '@/utils/locale';
 import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+export const getHostname = async (req: NextRequest): Promise<string> => {
+    let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
+
+    // Remove port from hostname.
+    hostname = hostname.split(':')[0]!;
+
+    // Deal with development server and Vercel's preview URLs.
+    if (hostname === 'localhost' || hostname.endsWith('.vercel.app') || hostname.endsWith('app.github.dev')) {
+        if (process.env.SHOPS_DEV) {
+            return 'shops.nordcom.io';
+        }
+
+        return 'www.sweetsideofsweden.com';
+    }
+
+    return hostname;
+};
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
 const LOCALE_TEST = /\/([a-zA-Z]{2}-[a-zA-Z]{2})/g;
@@ -17,8 +34,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
-
-    console.log(newUrl.pathname);
 
     if (newUrl.pathname === '/') {
         const shop = await ShopApi(hostname, true);

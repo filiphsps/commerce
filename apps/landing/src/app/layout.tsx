@@ -58,9 +58,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body>
                 <Providers>
                     <Header />
+
                     <View className={styles.content} withoutWrapper={true}>
                         {children}
                     </View>
+
                     <Footer />
                 </Providers>
             </body>

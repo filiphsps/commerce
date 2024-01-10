@@ -66,6 +66,11 @@ export async function getShop(userId: string, shopId: string) {
                                 }
                             }
                         }
+                    },
+                    icons: {
+                        select: {
+                            favicon: true
+                        }
                     }
                 }
             });

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import prisma from '#/utils/prisma';
+import prisma from '@/api/prisma';
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import { unstable_cache as cache } from 'next/cache';
 //import { experimental_taintObjectReference as taintObjectReference } from 'react';

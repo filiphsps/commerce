@@ -1,14 +1,26 @@
 import styles from '@/components/header.module.scss';
 import logo from '@/static/logo.svg';
 import { getSession } from '@/utils/auth';
-import { Button } from '@nordcom/nordstar';
+import { getShop } from '@/utils/fetchers';
+import { Card, Label } from '@nordcom/nordstar';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 import type { HTMLProps } from 'react';
 
-export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export default async function Header({ className, ...props }: HeaderProps) {
+export type HeaderProps = {
+    shopId: string;
+} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+export default async function Header({ shopId, className, ...props }: HeaderProps) {
     const session = await getSession();
+    if (!session) {
+        return redirect('/auth/login/');
+    }
+
+    const shop = await getShop(session.user.id, shopId);
+    if (!shop) {
+        notFound();
+    }
 
     return (
         <header {...props} className={`${styles.container} ${className || ''}`}>
@@ -27,20 +39,13 @@ export default async function Header({ className, ...props }: HeaderProps) {
                 </Link>
 
                 <nav className={styles.nav} draggable={false}>
-                    <div className={styles.links}>
-                        <Link href="https://shops.nordcom.io/news/" prefetch={false}>
-                            News
-                        </Link>
-                        <Link href="https://shops.nordcom.io/docs/" prefetch={false}>
-                            Documentation
-                        </Link>
-                    </div>
+                    <Card as={Link} href="/" className={styles.button}>
+                        <Label className={styles.label}>{shop.name}</Label>
 
-                    {session ? (
-                        <Button as={Link} href="/" className={styles.button}>
-                            Dashboard
-                        </Button>
-                    ) : null}
+                        {shop.icons?.favicon?.src ? (
+                            <Image className={styles.icon} src={shop.icons.favicon.src} alt="" height={25} width={25} />
+                        ) : null}
+                    </Card>
                 </nav>
             </div>
         </header>
