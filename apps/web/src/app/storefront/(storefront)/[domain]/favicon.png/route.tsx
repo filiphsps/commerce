@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { NotFoundError } from '@/utils/errors';
+import { NotFoundError } from '@nordcom/commerce-errors';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';

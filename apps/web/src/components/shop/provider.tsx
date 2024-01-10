@@ -1,8 +1,8 @@
 'use client';
 
 import type { Shop } from '@/api/shop';
-import { MissingContextProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import type { CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';

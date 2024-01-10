@@ -2,7 +2,7 @@ import 'server-only';
 
 import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import ShopifyProvider from '@/auth/shopify-provider';
-import { InvalidShopError, InvalidShopifyCustomerAccountsApiConfiguration } from '@/utils/errors';
+import { InvalidShopError, InvalidShopifyCustomerAccountsApiConfiguration } from '@nordcom/commerce-errors';
 import { getServerSession, type AuthOptions } from 'next-auth';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;

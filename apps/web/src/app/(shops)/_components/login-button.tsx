@@ -3,7 +3,7 @@
 import styles from '#/components/login-button.module.scss';
 import type { AuthProvider } from '#/utils/auth';
 import GithubLight from '@/static/github-light.svg';
-import { UnknownApiError } from '@/utils/errors';
+import { UnknownApiError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';

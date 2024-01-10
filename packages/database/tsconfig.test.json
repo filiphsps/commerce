@@ -5,7 +5,7 @@
         "types": ["vitest/globals"]
     },
 
-    "include": ["packages", "apps", "@types/declaration.d.ts", "**/*.test.*", "plop/**/*.js"],
+    "include": ["src/**/*.test.*"],
     "exclude": [
         "**/node_modules",
         "**/dist",

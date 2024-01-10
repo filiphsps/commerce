@@ -1,7 +1,7 @@
 import type { Product } from '@/api/product';
 import type { AbstractApi, ApiOptions, Identifiable } from '@/utils/abstract-api';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { NotFoundError } from '@/utils/errors';
+import { NotFoundError } from '@nordcom/commerce-errors';
 import type { ProductConnection, ProductEdge, ProductSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 import { unstable_cache as cache } from 'next/cache';

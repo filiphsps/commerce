@@ -4,8 +4,8 @@ import { LocalesApi } from '@/api/store';
 import { getAuthSession } from '@/auth';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-import { Error } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { Error } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 

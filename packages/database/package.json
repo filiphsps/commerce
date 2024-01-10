@@ -6,16 +6,23 @@
     "sideEffects": false,
     "type": "module",
     "prettier": "@nordcom/prettier",
+    "exports": {
+        ".": "./dist/src/index.js",
+        "./*": [
+            "./dist/src/*.js",
+            "./dist/src/*/index.js"
+        ]
+    },
     "scripts": {
-        "build": "exit 0",
-        "lint": "exit 0",
+        "build": "rm -fr dist/* && tsc",
+        "lint": "eslint",
         "typecheck": "tsc -noEmit",
         "test": "vitest run --coverage",
         "watch:test": "vitest watch"
     },
     "author": {
         "name": "Nordcom Group Inc.",
-        "email": "opensource@nordcom.io",
+        "email": "hi@nordcom.io",
         "url": "https://nordcom.io/"
     },
     "contributors": [
@@ -34,6 +41,9 @@
         "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
     },
     "homepage": "https://shops.nordcom.io/",
+    "files": [
+        "dist"
+    ],
     "dependencies": {
         "mongoose": "8.0.4"
     },
@@ -41,6 +51,7 @@
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.56.0",
-        "typescript": "5.3.3"
+        "typescript": "5.3.3",
+        "vitest": "1.1.3"
     }
 }

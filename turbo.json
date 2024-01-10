@@ -1,11 +1,11 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": ["**/.env.*local", "tsconfig.json", "package.json"],
+    "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/package.json"],
     "pipeline": {
         "build": {
             "cache": true,
             "dependsOn": ["^build"],
-            "outputs": ["**/.next/**", "!*/**/.next/cache/**", "!*/**/coverage/**", "!*/**/*.md", "!*/**/*.yml"]
+            "outputs": [".next/**", "!.next/cache/**", "dist/**", "!coverage/**", "!**/*.yml"]
         },
         "lint": {
             "cache": false,

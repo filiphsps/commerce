@@ -1,5 +1,5 @@
-import type { Error } from '@/utils/errors';
 import type { Locale } from '@/utils/locale';
+import type { Error } from '@nordcom/commerce-errors';
 import { useCart } from '@shopify/hydrogen-react';
 import { useSearchParams } from 'next/navigation';
 //import { useSearchParams } from 'next/navigation';

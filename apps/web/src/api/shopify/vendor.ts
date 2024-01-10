@@ -2,8 +2,8 @@ import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefr
 
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { NotFoundError } from '@/utils/errors';
 import { TitleToHandle } from '@/utils/title-to-handle';
+import { NotFoundError } from '@nordcom/commerce-errors';
 import { gql } from 'graphql-tag';
 
 /**

@@ -64,13 +64,6 @@ const config = {
         ],
         formats: ['image/webp', 'image/avif']
     },
-    compiler: {
-        styledComponents: {
-            ssr: true,
-            minify: true,
-            pure: true
-        }
-    },
     eslint: {
         ignoreDuringBuilds: true
     },
@@ -91,10 +84,7 @@ const config = {
     generateBuildId: async () => {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    },
-
-    // Let us handle trailing slashes in the middleware instead.
-    skipTrailingSlashRedirect: true
+    }
 };
 
 export default config;

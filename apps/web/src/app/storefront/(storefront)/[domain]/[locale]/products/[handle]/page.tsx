@@ -17,13 +17,13 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
-import { Error } from '@/utils/errors';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
+import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';

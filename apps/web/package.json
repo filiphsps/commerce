@@ -26,7 +26,7 @@
     },
     "author": {
         "name": "Nordcom Group Inc.",
-        "email": "opensource@nordcom.io",
+        "email": "hi@nordcom.io",
         "url": "https://nordcom.io/"
     },
     "contributors": [
@@ -58,11 +58,10 @@
         "@apollo/client": "3.8.8",
         "@apollo/experimental-nextjs-app-support": "0.6.0",
         "@highlight-run/next": "7.3.3",
-        "@markdoc/markdoc": "0.4.0",
-        "@markdoc/next.js": "0.3.7",
         "@next-auth/prisma-adapter": "1.0.7",
         "@next/third-parties": "14.0.4",
-        "@nordcom/commerce-database": "0.0.0",
+        "@nordcom/commerce-database": "*",
+        "@nordcom/commerce-errors": "*",
         "@nordcom/nordstar": "0.0.33",
         "@prisma/client": "5.8.0",
         "@prisma/extension-accelerate": "0.6.2",
@@ -80,7 +79,6 @@
         "geist": "1.2.0",
         "glob": "10.3.10",
         "gravatar.js": "2.0.0",
-        "gray-matter": "4.0.3",
         "next": "14.0.4",
         "next-auth": "4.24.5",
         "next-seo": "6.4.0",
@@ -97,10 +95,14 @@
         "the-new-css-reset": "1.11.2"
     },
     "devDependencies": {
+        "@happy-dom/global-registrator": "12.10.3",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.31",
+        "@testing-library/react": "14.1.2",
         "@types/accept-language-parser": "1.5.6",
         "@types/convert-units": "2.3.9",
+        "@types/react-dom": "18.2.18",
+        "@types/react": "18.2.47",
         "concurrently": "8.2.2",
         "critters": "0.0.20",
         "eslint-config-next": "14.0.4",
@@ -109,6 +111,7 @@
         "happy-dom": "12.10.3",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.22.1",
-        "typescript": "5.3.3"
+        "typescript": "5.3.3",
+        "vitest": "1.1.3"
     }
 }

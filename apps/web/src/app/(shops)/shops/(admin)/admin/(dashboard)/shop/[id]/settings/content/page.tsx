@@ -11,7 +11,7 @@ import {
     updateCommerceProvider,
     updateContentProvider
 } from '#/utils/fetchers';
-import { UnknownCommerceProviderError } from '@/utils/errors';
+import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import { ContentProviderType } from '@prisma/client';
 import type { Metadata } from 'next';

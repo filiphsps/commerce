@@ -1,5 +1,5 @@
 import type { Product, ProductVariant } from '@/api/product';
-import { NotFoundError } from '@/utils/errors';
+import { NotFoundError } from '@nordcom/commerce-errors';
 
 /**
  * Find the first available and most suitable variant for a specific product.

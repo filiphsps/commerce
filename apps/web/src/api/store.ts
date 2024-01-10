@@ -1,9 +1,9 @@
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { Error, NoLocalesAvailableError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
+import { Error, NoLocalesAvailableError } from '@nordcom/commerce-errors';
 import { asText, type Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';

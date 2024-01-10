@@ -2,8 +2,8 @@
 
 import type { Shop } from '@/api/shop';
 import { commonValidations } from '@/middleware/common-validations';
-import { TypeError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { TypeError } from '@nordcom/commerce-errors';
 import BaseLink from 'next/link';
 import { type ComponentProps } from 'react';
 import { useShop } from './shop/provider';

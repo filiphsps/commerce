@@ -2,8 +2,8 @@ import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/clie
 
 import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
-import { UnknownContentProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';

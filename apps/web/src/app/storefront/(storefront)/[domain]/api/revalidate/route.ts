@@ -1,5 +1,5 @@
 import { ShopApi } from '@/api/shop';
-import { Error, MethodNotAllowedError, UnknownApiError } from '@/utils/errors';
+import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce-errors';
 import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 

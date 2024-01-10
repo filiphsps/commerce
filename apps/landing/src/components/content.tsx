@@ -1,4 +1,4 @@
-import styles from '#/components/content.module.scss';
+import styles from '@/components/content.module.scss';
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
 export type ContentProps<T extends ElementType = 'article'> = {

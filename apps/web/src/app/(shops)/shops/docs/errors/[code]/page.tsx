@@ -1,9 +1,9 @@
 import BackButton from '#/components/back-button';
 import { Content } from '#/components/content';
-import { getErrorFromCode } from '@/utils/errors';
 import { components, config } from '@/utils/markdoc';
 import type { Schema } from '@markdoc/markdoc';
 import Markdoc from '@markdoc/markdoc';
+import { getErrorFromCode } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
 import fs from 'fs';
 import Link from 'next/link';

@@ -1,6 +1,6 @@
 import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
-import { TodoError, UnknownLocaleError } from '@/utils/errors';
+import { TodoError, UnknownLocaleError } from '@nordcom/commerce-errors';
 import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
 import ConvertUnits from 'convert-units';
 

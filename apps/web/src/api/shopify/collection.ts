@@ -1,7 +1,7 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import type { AbstractApi, ApiOptions, Identifiable, Nullable } from '@/utils/abstract-api';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@/utils/errors';
+import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@nordcom/commerce-errors';
 import type {
     Collection,
     CollectionEdge,

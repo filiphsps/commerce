@@ -1,9 +1,9 @@
 import type { Shop } from '@/api/shop';
 import type { FooterModel } from '@/models/FooterModel';
 import { buildCacheTagArray } from '@/utils/abstract-api';
-import { ApiError, NotFoundError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
+import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 import type { Client as PrismicClient } from '@prismicio/client';
 import { unstable_cache as cache } from 'next/cache';
 

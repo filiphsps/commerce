@@ -7,12 +7,10 @@
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
         "paths": {
-            "@/components/*": ["src/components/*"],
-            "@/hooks/*": ["src/hooks/*"],
             "@/api/*": ["src/api/*"],
-            "@/models/*": ["src/models/*"],
-            "@/utils/*": ["src/utils/*"],
+            "@/components/*": ["src/components/*"],
             "@/styles/*": ["src/scss/*"],
+            "@/utils/*": ["src/utils/*"],
 
             // Assets.
             "@/static/*": ["public/*"]

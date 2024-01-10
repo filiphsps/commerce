@@ -1,0 +1,17 @@
+@import 'globals';
+
+.heading {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--layout-block-padding) / 2);
+    width: 100%;
+    max-width: 100%;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-section-padding);
+    margin-top: calc(var(--layout-section-spacing) * 2);
+}

@@ -1,4 +1,4 @@
-import { UnknownApiError } from '@/utils/errors';
+import { UnknownApiError } from '@nordcom/commerce-errors';
 import { NextResponse, type NextRequest } from 'next/server';
 import { shopifyAdminApi } from './shopify';
 

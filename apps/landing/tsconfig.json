@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "plugins": [{ "name": "next" }],
+        "lib": ["DOM", "DOM.iterable", "ESNext"],
+        "rootDir": "../../",
+        "paths": {
+            "@/api/*": ["src/api/*"],
+            "@/components/*": ["src/components/*"],
+            "@/markdoc": ["src/markdoc/index.ts"],
+            "@/markdoc/*": ["src/markdoc/*"],
+            "@/styles/*": ["src/scss/*"],
+            "@/utils/*": ["src/utils/*"],
+
+            // Assets.
+            "@/static/*": ["public/*"]
+        }
+    },
+    "include": ["src/@types/declarations.d.ts", "next-env.d.ts", ".next/types/**/*.ts", "src/@types", "src"]
+}

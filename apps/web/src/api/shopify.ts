@@ -4,8 +4,8 @@ import type { ApiConfig } from '@/api/client';
 import { setupApollo } from '@/api/client';
 import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
-import { UnknownCommerceProviderError } from '@/utils/errors';
 import { Locale } from '@/utils/locale';
+import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { headers } from 'next/headers';
 

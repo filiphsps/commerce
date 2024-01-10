@@ -1,0 +1,57 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "name": "@nordcom/commerce-errors",
+    "version": "0.0.0",
+    "private": true,
+    "sideEffects": false,
+    "type": "module",
+    "prettier": "@nordcom/prettier",
+    "types": "./dist/src/index.d.ts",
+    "module": "./dist/src/index.ts",
+    "exports": {
+        ".": "./dist/src/index.js",
+        "./*": [
+            "./dist/src/*.js",
+            "./dist/src/*/index.js"
+        ]
+    },
+    "scripts": {
+        "build": "rm -fr dist/* && tsc",
+        "lint": "eslint",
+        "typecheck": "tsc -noEmit",
+        "test": "vitest run --coverage",
+        "watch:test": "vitest watch"
+    },
+    "author": {
+        "name": "Nordcom Group Inc.",
+        "email": "hi@nordcom.io",
+        "url": "https://nordcom.io/"
+    },
+    "contributors": [
+        {
+            "name": "Filiph Siitam Sandström",
+            "email": "filiph@nordcom.io",
+            "url": "https://github.com/filiphsps/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+    },
+    "homepage": "https://shops.nordcom.io/docs/",
+    "files": [
+        "dist"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@nordcom/prettier": "0.1.1",
+        "concurrently": "8.2.2",
+        "eslint": "8.56.0",
+        "typescript": "5.3.3",
+        "vitest": "1.1.3"
+    }
+}

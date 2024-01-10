@@ -1,5 +1,5 @@
-import type { ApiError } from '@/utils/errors';
-import { ImageNoFractionalError, ImageOutOfBoundsError } from '@/utils/errors';
+import type { ApiError } from '@nordcom/commerce-errors';
+import { ImageNoFractionalError, ImageOutOfBoundsError } from '@nordcom/commerce-errors';
 
 /**
  * Validate invalid width/height, most likely by a malicious actor.

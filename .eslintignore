@@ -13,3 +13,4 @@ public/
 *.lock
 *.env
 *.log
+*.bak
