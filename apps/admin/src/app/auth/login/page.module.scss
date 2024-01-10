@@ -18,6 +18,27 @@
             display: flex;
             flex-direction: column;
             gap: calc(var(--layout-block-padding) / 4);
+
+            .logo {
+                position: relative;
+                display: block;
+                justify-self: flex-start;
+                height: 4rem;
+                width: 100%;
+
+                @media (min-width: $breakpoint-mobile) {
+                    height: 2.5rem;
+                }
+
+                .image {
+                    height: 100%;
+
+                    -webkit-user-select: none;
+                    user-select: none;
+                    object-fit: contain;
+                    object-position: left center;
+                }
+            }
         }
 
         .actions {

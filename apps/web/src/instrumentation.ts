@@ -7,6 +7,6 @@ export async function register() {
     registerOTel('Nordcom Commerce');
     registerHighlight({
         ...(highlightConfig as any),
-        serviceName: 'Nordcom Commerce'
+        serviceName: 'Nordcom Commerce - Storefront'
     });
 }
