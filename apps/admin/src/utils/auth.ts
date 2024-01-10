@@ -25,10 +25,10 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     pages: {
-        signIn: `/login/`,
-        signOut: `/logout/`,
-        verifyRequest: `/login/`,
-        error: '/login/' // Error code passed in query string as ?error=
+        signIn: `/auth/login/`,
+        signOut: `/auth/logout/`,
+        verifyRequest: `/auth/login/`,
+        error: '/auth/login/' // Error code passed in query string as ?error=
     },
     adapter: PrismaAdapter(prisma as any),
     session: { strategy: 'jwt' },

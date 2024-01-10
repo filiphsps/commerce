@@ -2,10 +2,10 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "public": false,
-    "trailingSlash": true,
     "framework": "nextjs",
     "buildCommand": "turbo build",
     "devCommand": "turbo dev",
+    "trailingSlash": true,
     "github": {
         "enabled": true,
         "autoJobCancelation": true

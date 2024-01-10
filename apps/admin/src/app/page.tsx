@@ -1,7 +1,8 @@
+import ActionableCard from '@/components/actionable-card';
 import logo from '@/static/logo.svg';
 import { getSession } from '@/utils/auth';
 import { getShopsForUser } from '@/utils/fetchers';
-import { Accented, Button, Card, Heading, Label, View } from '@nordcom/nordstar';
+import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,56 +29,50 @@ export default async function Overview() {
     return (
         <div className={styles.container}>
             <View className={styles.content}>
-                <Card className={styles['shop-selector']}>
-                    <div className={styles['card-header']}>
-                        <Link href="https://shops.nordcom.io/" title="Nordcom Commerce" className={styles.logo}>
-                            <Image
-                                className={styles.image}
-                                src={logo}
-                                alt="Nordcom Group Inc.'s Logo"
-                                height={75}
-                                width={150}
-                                draggable={false}
-                                decoding="async"
-                                priority={true}
-                            />
-                        </Link>
+                <ActionableCard
+                    header={
+                        <>
+                            <Link href="/" title="Nordcom Commerce">
+                                <Image
+                                    src={logo}
+                                    alt="Nordcom Group Inc.'s Logo"
+                                    height={75}
+                                    width={150}
+                                    draggable={false}
+                                    decoding="async"
+                                    priority={true}
+                                />
+                            </Link>
 
-                        <hr />
+                            <hr />
 
-                        <Label as="div">
-                            Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
-                        </Label>
+                            <section>
+                                <Label as="div">
+                                    Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
+                                </Label>
 
-                        <Heading level="h1">Choose a Shop</Heading>
-
-                        <hr />
-                    </div>
-
-                    <div className={styles.actions}>
-                        {shops.length > 0 ? (
-                            <>
-                                {shops.map(({ id, name }) => (
-                                    <Button
-                                        key={id}
-                                        variant="outline"
-                                        as={Link}
-                                        href={`/${id}/`}
-                                        className={styles.button}
-                                    >
-                                        {name}
-                                    </Button>
-                                ))}
-
-                                <hr />
-                            </>
-                        ) : null}
-
-                        <Button variant="solid" color="primary" className={styles.button}>
-                            Connect a new Shop
-                        </Button>
-                    </div>
-                </Card>
+                                <Heading level="h1">Choose a Shop</Heading>
+                            </section>
+                        </>
+                    }
+                    footer={
+                        <>
+                            <Button variant="solid" color="primary">
+                                Connect a new Shop
+                            </Button>
+                        </>
+                    }
+                >
+                    {shops.length > 0 ? (
+                        <>
+                            {shops.map(({ id, name }) => (
+                                <Button key={id} variant="outline" as={Link} href={`/${id}/`}>
+                                    {name}
+                                </Button>
+                            ))}
+                        </>
+                    ) : null}
+                </ActionableCard>
             </View>
         </div>
     );

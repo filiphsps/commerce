@@ -1,59 +1,52 @@
 @import 'globals';
 
-.container {
+.login-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    width: 24rem;
+    max-width: 100%;
+    margin: 0 auto;
+    gap: var(--layout-section-spacing);
 
-    .login-card {
+    .card-header {
         display: flex;
         flex-direction: column;
-        width: 24rem;
-        max-width: 100%;
-        margin: 0 auto;
-        gap: var(--layout-section-spacing);
+        gap: calc(var(--layout-block-padding) / 4);
 
-        .card-header {
-            display: flex;
-            flex-direction: column;
-            gap: calc(var(--layout-block-padding) / 4);
+        .logo {
+            position: relative;
+            display: block;
+            justify-self: flex-start;
+            height: 4rem;
+            width: 100%;
 
-            .logo {
-                position: relative;
-                display: block;
-                justify-self: flex-start;
-                height: 4rem;
-                width: 100%;
+            @media (min-width: $breakpoint-mobile) {
+                height: 2.5rem;
+            }
 
-                @media (min-width: $breakpoint-mobile) {
-                    height: 2.5rem;
-                }
+            .image {
+                height: 100%;
 
-                .image {
-                    height: 100%;
-
-                    -webkit-user-select: none;
-                    user-select: none;
-                    object-fit: contain;
-                    object-position: left center;
-                }
+                -webkit-user-select: none;
+                user-select: none;
+                object-fit: contain;
+                object-position: left center;
             }
         }
+    }
 
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: calc(var(--layout-section-spacing) / 2);
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--layout-section-spacing) / 2);
 
-            .button {
-                flex-grow: 1;
+        .button {
+            flex-grow: 1;
 
-                width: 100%;
-                padding: var(--layout-block-padding) var(--layout-block-padding-half);
+            width: 100%;
+            padding: var(--layout-block-padding) var(--layout-block-padding-half);
 
-                font-size: 1em;
-            }
+            font-size: 1em;
         }
     }
 }

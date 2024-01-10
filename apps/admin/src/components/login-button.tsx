@@ -66,7 +66,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 switch (provider) {
                     case 'github': {
                         setLoading(true);
-                        signIn('github', { callbackUrl: '/admin/shop/' });
+                        signIn('github', { callbackUrl: '/' });
                         break;
                     }
                     default: {

@@ -1,7 +1,9 @@
 @import 'globals';
 
 .container {
-    display: flex;
+    display: grid;
+    grid-template-columns: 100vw;
+    grid-template-rows: 100vh;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -11,4 +13,8 @@
     max-width: 100%;
     height: 100%;
     margin: 0;
+
+    .content {
+        height: 100%;
+    }
 }

@@ -80,21 +80,6 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
-    async rewrites() {
-        return {
-            beforeFiles: [
-                {
-                    source: '/admin',
-                    destination: 'https://nordcom-commerce-admin.vercel.app/admin/'
-                },
-                {
-                    source: '/admin/:path*',
-                    destination: 'https://nordcom-commerce-admin.vercel.app/admin/:path*'
-                }
-            ]
-        };
-    },
-
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
