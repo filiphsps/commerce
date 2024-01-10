@@ -1,5 +1,4 @@
 import styles from '@/components/header.module.scss';
-import logo from '@/static/logo.svg';
 import { getSession } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
 import { Card, Label } from '@nordcom/nordstar';
@@ -28,13 +27,14 @@ export default async function Header({ shopId, className, ...props }: HeaderProp
                 <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
                     <Image
                         className={styles.logo}
-                        src={logo}
+                        src="https://shops.nordcom.io/logo.svg"
                         alt="Nordcom Group Inc.'s Logo"
                         height={75}
                         width={150}
                         draggable={false}
                         decoding="async"
                         priority={true}
+                        loader={undefined}
                     />
                 </Link>
 

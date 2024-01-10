@@ -33,7 +33,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                         </Link>
                     </div>
 
-                    <Button as={Link} href="/admin/" prefetch={false} className={styles.button}>
+                    <Button as="a" href="/admin/" className={styles.button}>
                         Admin
                     </Button>
                 </nav>

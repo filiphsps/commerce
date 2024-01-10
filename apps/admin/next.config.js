@@ -5,6 +5,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
+    basePath: '/admin',
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: false,
@@ -81,7 +82,9 @@ const config = {
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    }
+    },
+
+    skipTrailingSlashRedirect: true
 };
 
 export default config;

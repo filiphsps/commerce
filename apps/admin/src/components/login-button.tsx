@@ -3,6 +3,7 @@
 import styles from '@/components/login-button.module.scss';
 import GithubLight from '@/static/icons/light/github.svg';
 import type { AuthProvider } from '@/utils/auth';
+import { UnknownApiError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
@@ -48,7 +49,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
             break;
         }
         default: {
-            throw new Error(''); // TODO: `UnknownApiError();`.
+            throw new UnknownApiError();
         }
     }
 
@@ -66,11 +67,11 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 switch (provider) {
                     case 'github': {
                         setLoading(true);
-                        signIn('github', { callbackUrl: '/' });
+                        signIn('github', { callbackUrl: 'https://shops.nordcom.io/admin' });
                         break;
                     }
                     default: {
-                        throw new Error(''); // TODO: `UnknownApiError();`.
+                        throw new UnknownApiError();
                     }
                 }
             }}

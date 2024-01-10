@@ -28,12 +28,14 @@
         max-width: 100%;
         margin: 0 var(--layout-page-spacing);
         padding: 0 var(--layout-page-spacing);
-        gap: var(--layout-block-padding);
+        gap: var(--layout-block-padding-half);
 
         @media (min-width: $breakpoint-mobile) {
+            grid-template-columns: 1fr auto;
+            gap: var(--layout-block-padding);
+
             width: calc(var(--layout-page-width) + var(--layout-page-spacing) * 2);
 
-            grid-template-columns: 1fr auto;
             padding: var(--layout-block-padding) var(--layout-page-spacing);
         }
 
@@ -107,9 +109,20 @@
             @media (max-width: $breakpoint-mobile) {
                 .button {
                     padding: 0;
+
                     border: none;
                     background: none;
                     color: var(--color-foreground);
+
+                    &:is(:hover, :active) {
+                        opacity: 1;
+                        color: var(--color-accent-primary);
+                        filter: unset;
+                    }
+
+                    [data-content] {
+                        font-weight: inherit;
+                    }
                 }
             }
 

@@ -25,6 +25,7 @@
         width: calc(var(--layout-page-width) + var(--layout-page-spacing) * 2);
         max-width: 100%;
         padding: var(--layout-section-padding) var(--layout-page-spacing);
+
         font-size: 1em;
 
         .section {
@@ -76,21 +77,26 @@
         margin: 0 var(--layout-page-spacing);
         padding: var(--layout-section-padding) 0;
 
-        text-transform: uppercase;
         font-weight: 600;
-        font-size: 1em;
 
         .links {
             display: flex;
             gap: var(--layout-block-padding);
+
+            text-transform: uppercase;
         }
 
         &.beside {
+            font-size: 1em;
+
             @media (max-width: $breakpoint-mobile) {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                align-items: flex-start;
+                align-items: center;
+
+                font-size: 0.85em;
+                font-weight: 600;
             }
         }
     }
@@ -102,7 +108,14 @@
     grid-template-columns: 1fr 1fr;
     justify-content: flex-start;
     align-items: center;
-    gap: calc(var(--layout-block-padding) / 4);
+    justify-content: center;
+    gap: calc(var(--layout-page-spacing) / 2);
+
+    font-size: 0.9em;
+
+    @media (min-width: $breakpoint-mobile) {
+        font-size: 1em;
+    }
 
     .section {
         &:is(:last-child) {

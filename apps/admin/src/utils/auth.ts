@@ -25,10 +25,10 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     pages: {
-        signIn: `/auth/login/`,
-        signOut: `/auth/logout/`,
-        verifyRequest: `/auth/login/`,
-        error: '/auth/login/' // Error code passed in query string as ?error=
+        signIn: `/admin/auth/login/`,
+        signOut: `/admin/auth/logout/`,
+        verifyRequest: `/admin/auth/login/`,
+        error: '/admin/auth/login/' // Error code passed in query string as ?error=
     },
     adapter: PrismaAdapter(prisma as any),
     session: { strategy: 'jwt' },
@@ -61,6 +61,13 @@ export const authOptions: NextAuthOptions = {
                 username: token?.user?.username || token?.user?.ghUsername
             };
             return session;
+        },
+        async redirect({ url, baseUrl }) {
+            // Allows relative callback URLs
+            if (url.startsWith('/')) return `${baseUrl}${url}`;
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) return url;
+            return baseUrl;
         }
     },
     debug: false

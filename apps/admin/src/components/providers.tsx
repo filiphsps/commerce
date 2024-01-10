@@ -20,13 +20,13 @@ export function Providers({ children, session }: ProvidersProps) {
 
     // https://github.com/TheSGJ/nextjs-toploader/issues/56#issuecomment-1820484781
     // this should also trigger on searchParams changes but listening to it would cause
-    // Next.js to deopt into client-side rendering. :(
+    // Next.js to de-opt into client-side rendering. :(
     useEffect(() => {
         NProgress.done();
     }, [pathname, router]);
 
     return (
-        <SessionProvider session={session}>
+        <SessionProvider session={session} basePath="/admin/api/auth">
             <NordstarProvider
                 theme={{
                     accents: {

@@ -1,6 +1,5 @@
 import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';
-import logo from '@/static/logo.svg';
 import { getSession } from '@/utils/auth';
 import { Heading, Label } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
@@ -28,13 +27,14 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                 <>
                     <Link href="/" title="Nordcom Commerce">
                         <Image
-                            src={logo}
+                            src="https://shops.nordcom.io/logo.svg"
                             alt="Nordcom Group Inc.'s Logo"
                             height={75}
                             width={150}
                             draggable={false}
                             decoding="async"
                             priority={true}
+                            loader={undefined}
                         />
                     </Link>
 

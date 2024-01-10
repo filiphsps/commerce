@@ -63,3 +63,17 @@ hr {
     flex-direction: column;
     gap: var(--layout-block-padding-half);
 }
+
+#nprogress {
+    pointer-events: none;
+
+    .bar {
+        background: var(--accent-primary-light);
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--block-spacer) !important;
+    }
+}
