@@ -60,7 +60,7 @@
         "@nordcom/nordstar": "0.0.33",
         "@prisma/client": "5.8.0",
         "@prisma/extension-accelerate": "0.6.2",
-        "@shopify/shopify-api": "8.1.1",
+        "@shopify/shopify-api": "9.0.0",
         "@vercel/otel": "0.3.0",
         "colord": "2.9.3",
         "geist": "1.2.0",
