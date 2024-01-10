@@ -6,7 +6,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const config = {
     basePath: '/admin',
-
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     generateEtags: false,
@@ -81,7 +80,7 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
-    generateBuildId: async () => {
+    async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     }

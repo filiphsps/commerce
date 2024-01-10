@@ -1,0 +1,19 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "version": 2,
+    "public": false,
+    "trailingSlash": true,
+    "framework": "nextjs",
+    "buildCommand": "turbo build",
+    "devCommand": "turbo dev",
+    "github": {
+        "enabled": true,
+        "autoJobCancelation": true
+    },
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://api.example.com/:path*"
+        }
+    ]
+}
