@@ -89,7 +89,7 @@ const config = {
                 },
                 {
                     source: '/admin/:path*',
-                    destination: 'https://nordcom-commerce-admin.vercel.app/admin/:path*/'
+                    destination: 'https://nordcom-commerce-admin.vercel.app/admin/:path*'
                 }
             ]
         };
