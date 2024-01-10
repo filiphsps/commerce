@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Ap
     try {
         let src!: string;
 
-        const shop = await ShopApi(domain, true);
+        const shop = await ShopApi(domain);
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {

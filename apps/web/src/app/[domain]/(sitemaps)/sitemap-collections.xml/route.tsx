@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await ShopApi(domain, true);
+        const shop = await ShopApi(domain);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });

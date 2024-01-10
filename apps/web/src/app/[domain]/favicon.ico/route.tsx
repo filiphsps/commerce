@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest, { params }: any) => {
     try {
         const domain = params.domain as string;
 
-        const shop = await ShopApi(domain, true);
+        const shop = await ShopApi(domain);
         if (!shop) throw new UnknownShopDomainError(domain);
 
         const favicon = await fetch(new URL(shop.icons?.favicon?.src!), {

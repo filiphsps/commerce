@@ -68,7 +68,7 @@ export type RobotsParams = {
     domain: string;
 };
 export async function GET(_: NextRequest, { params: { domain } }: { params: RobotsParams }): Promise<any> {
-    const shop = await ShopApi(domain, true);
+    const shop = await ShopApi(domain);
 
     return new NextResponse(
         nextRobotsSchemaParser({

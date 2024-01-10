@@ -10,7 +10,7 @@ import type { NextRequest } from 'next/server';
 import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await ShopApi(domain, true);
+    const shop = await ShopApi(domain);
     const locale = Locale.default;
     const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });

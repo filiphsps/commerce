@@ -134,7 +134,7 @@ export const ShopApi = async (domain: string, cache?: any) => {
         };
     };
 
-    if (!cache) {
+    if (!cache || typeof cache !== 'function') {
         return callback(domain);
     }
 
@@ -157,7 +157,7 @@ export const ShopsApi = async (cache?: any) => {
         return Promise.all(shops.map((shop) => ShopApi(shop.domain)));
     };
 
-    if (!cache) {
+    if (!cache || typeof cache !== 'function') {
         return callback();
     }
 
@@ -207,7 +207,7 @@ export const CommerceProviderAuthenticationApi = async ({ shop, cache }: { shop:
         }
     };
 
-    if (!cache) {
+    if (!cache || typeof cache !== 'function') {
         return await callback(shop);
     }
 
