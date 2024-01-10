@@ -24,7 +24,7 @@ env:
 jobs:
     build:
         name: 🔨 Build
-        needs: [typecheck, lint]
+        needs: [lint]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -39,7 +39,7 @@ jobs:
 
     test:
         name: 🧪 Test
-        needs: [lint, typecheck]
+        needs: [lint]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -73,6 +73,7 @@ jobs:
 
     typecheck:
         name: ✅ Typecheck
+        needs: [build]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
