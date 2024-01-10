@@ -1,5 +1,5 @@
-import type { Shop } from '@/api/shop';
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 
 const stub = { cart: {}, common: {} };
 

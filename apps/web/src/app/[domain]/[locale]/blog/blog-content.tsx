@@ -1,8 +1,8 @@
-import type { Shop } from '@/api/shop';
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 import gravatar from 'gravatar.js';
 import Image from 'next/image';

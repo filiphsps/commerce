@@ -1,6 +1,7 @@
-import { ShopApi } from '@/api/shop';
 import { getAuthOptions } from '@/auth';
+import { ShopApi } from '@nordcom/commerce-database';
 import NextAuth from 'next-auth';
+import { unstable_cache } from 'next/cache';
 import { type NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -14,7 +15,7 @@ async function handler(req: NextRequest, context: { params: AuthApiRouteParams }
         params: { domain }
     } = context;
 
-    const shop = await ShopApi(domain);
+    const shop = await ShopApi(domain, unstable_cache);
 
     const authOptions = await getAuthOptions({ shop });
     const auth = await NextAuth(authOptions);

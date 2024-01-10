@@ -1,7 +1,7 @@
 'use client';
 
-import type { Shop } from '@/api/shop';
 import { Trackable } from '@/utils/trackable';
+import type { Shop } from '@nordcom/commerce-database';
 import { useEffect, useState, type ReactNode } from 'react';
 //import { useReportWebVitals } from 'next/web-vitals';
 import { GoogleTagManager } from '@next/third-parties/google';

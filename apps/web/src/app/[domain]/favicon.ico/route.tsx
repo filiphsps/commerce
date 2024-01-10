@@ -1,4 +1,4 @@
-import { ShopApi } from '@/api/shop';
+import { ShopApi } from '@nordcom/commerce-database';
 import { UnknownShopDomainError } from '@nordcom/commerce-errors';
 import { NextResponse, type NextRequest } from 'next/server';
 import pngToIco from 'png-to-ico';

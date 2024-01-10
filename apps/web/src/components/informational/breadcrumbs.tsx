@@ -1,8 +1,8 @@
 'use client';
 
-import type { Shop } from '@/api/shop';
 import styles from '@/components/informational/breadcrumbs.module.scss';
 import Link from '@/components/link';
+import type { Shop } from '@nordcom/commerce-database';
 import { usePathname } from 'next/navigation';
 import { FiChevronRight } from 'react-icons/fi';
 

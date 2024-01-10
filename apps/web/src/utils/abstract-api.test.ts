@@ -1,7 +1,7 @@
-import type { Shop } from '@/api/shop';
 import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
 import type { Locale } from '@/utils/locale';
 import { ApolloClient } from '@apollo/client';
+import type { Shop } from '@nordcom/commerce-database';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {

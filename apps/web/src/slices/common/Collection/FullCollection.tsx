@@ -1,10 +1,10 @@
 import 'server-only';
 
-import type { Shop } from '@/api/shop';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import type { CollectionSliceFull } from '@/prismic/types';
 import type { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import { Suspense } from 'react';
 import styles from './collection.module.scss';
 

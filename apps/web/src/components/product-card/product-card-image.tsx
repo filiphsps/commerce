@@ -1,9 +1,9 @@
 import type { Product } from '@/api/product';
-import type { Shop } from '@/api/shop';
 import Link from '@/components/link';
 import styles from '@/components/product-card/product-card.module.scss';
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import type { Shop } from '@nordcom/commerce-database';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import type { ReactNode } from 'react';

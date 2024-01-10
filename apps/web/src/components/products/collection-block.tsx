@@ -1,13 +1,13 @@
 import 'server-only';
 
 import type { Product } from '@/api/product';
-import type { Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
 import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';
 import styles from '@/components/products/collection-block.module.scss';
 import type { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {

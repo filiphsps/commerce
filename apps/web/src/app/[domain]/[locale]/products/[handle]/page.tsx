@@ -2,7 +2,6 @@ import 'server-only';
 
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
@@ -23,11 +22,13 @@ import { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { ProductJsonLd } from 'next-seo';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
@@ -93,7 +94,7 @@ export async function generateMetadata({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -166,7 +167,7 @@ export default async function ProductPage({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 

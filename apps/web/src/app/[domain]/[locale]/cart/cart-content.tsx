@@ -1,11 +1,11 @@
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
-import { type Shop } from '@/api/shop';
 import { CartLines } from '@/components/cart/cart-lines';
 import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import type { StoreModel } from '@/models/StoreModel';
+import { type Shop } from '@nordcom/commerce-database';
 import { Suspense, type ReactNode } from 'react';
 import styles from './cart-content.module.scss';
 import { CartSidebar } from './cart-sidebar';

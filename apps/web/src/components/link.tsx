@@ -1,8 +1,8 @@
 'use client';
 
-import type { Shop } from '@/api/shop';
 import { commonValidations } from '@/middleware/common-validations';
 import { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import { TypeError } from '@nordcom/commerce-errors';
 import BaseLink from 'next/link';
 import { type ComponentProps } from 'react';

@@ -1,13 +1,13 @@
 import 'server-only';
 
 import { FooterApi } from '@/api/footer';
-import type { Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 import FooterContent from '@/components/Footer/footer-content';
 import styles from '@/components/Footer/footer.module.scss';
 import { PrismicText } from '@/components/typography/prismic-text';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import Image from 'next/image';
 import Link from '../link';
 

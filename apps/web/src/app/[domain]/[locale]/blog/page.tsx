@@ -1,5 +1,4 @@
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
@@ -8,9 +7,11 @@ import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import BlogContent from './blog-content';
@@ -22,7 +23,7 @@ export async function generateMetadata({
     params: BlogPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
@@ -77,7 +78,7 @@ export async function generateMetadata({
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     try {
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 

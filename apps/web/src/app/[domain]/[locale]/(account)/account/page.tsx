@@ -1,12 +1,13 @@
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getAuthSession } from '@/auth';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
 
 // Make sure this page is always dynamic.
@@ -23,7 +24,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
 
         const api = await ShopifyApiClient({ shop, locale });
         const locales = await LocalesApi({ api });
@@ -59,7 +60,7 @@ export default async function AccountPage({ params: { domain, locale: localeData
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
 
         const session = await getAuthSession(shop);
         if (!session) {

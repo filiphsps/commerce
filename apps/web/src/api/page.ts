@@ -1,7 +1,7 @@
-import type { Shop } from '@/api/shop';
 import type { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
+import type { Shop } from '@nordcom/commerce-database';
 import { Error, NotFoundError } from '@nordcom/commerce-errors';
 import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
 import { unstable_cache as cache } from 'next/cache';

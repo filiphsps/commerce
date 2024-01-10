@@ -1,8 +1,8 @@
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';

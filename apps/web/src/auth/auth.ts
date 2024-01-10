@@ -1,9 +1,10 @@
 import 'server-only';
 
-import { CommerceProviderAuthenticationApi, type Shop } from '@/api/shop';
 import ShopifyProvider from '@/auth/shopify-provider';
+import { CommerceProviderAuthenticationApi, type Shop } from '@nordcom/commerce-database';
 import { InvalidShopError, InvalidShopifyCustomerAccountsApiConfiguration } from '@nordcom/commerce-errors';
 import { getServerSession, type AuthOptions } from 'next-auth';
+import { unstable_cache } from 'next/cache';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 
@@ -12,7 +13,7 @@ export const getAuthOptions = async ({ shop }: { shop?: Shop }): Promise<AuthOpt
 
     const {
         authentication: { customers }
-    } = await CommerceProviderAuthenticationApi({ shop });
+    } = await CommerceProviderAuthenticationApi({ shop, cache: unstable_cache });
     if (!customers) throw new InvalidShopifyCustomerAccountsApiConfiguration();
 
     const endpointBase = `https://shopify.com/${customers.id}/auth`;

@@ -1,12 +1,12 @@
 'use client';
 
-import type { Shop } from '@/api/shop';
 import { CartSummary } from '@/components/cart/cart-summary';
 import styles from '@/components/typography/label.module.scss';
 import type { StoreModel } from '@/models/StoreModel';
 import { Checkout } from '@/utils/checkout';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import { useTrackable } from '@/utils/trackable';
+import type { Shop } from '@nordcom/commerce-database';
 import { useCart } from '@shopify/hydrogen-react';
 import type { HTMLProps } from 'react';
 

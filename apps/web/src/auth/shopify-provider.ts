@@ -1,5 +1,5 @@
-import type { Shop, ShopifyCommerceProvider } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
+import type { Shop, ShopifyCommerceProvider } from '@nordcom/commerce-database';
 import { InvalidShopifyCustomerAccountsApiConfiguration } from '@nordcom/commerce-errors';
 import type { OAuthConfig, OAuthUserConfig } from 'next-auth/providers/oauth';
 import { cookies } from 'next/headers';

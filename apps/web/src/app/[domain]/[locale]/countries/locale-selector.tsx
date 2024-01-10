@@ -1,9 +1,9 @@
 'use client';
 
-import type { Shop } from '@/api/shop';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
 import { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 import Image from 'next/image';
 import { useRef } from 'react';

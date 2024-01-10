@@ -1,4 +1,4 @@
-import { ShopApi } from '@/api/shop';
+import { ShopApi } from '@nordcom/commerce-database';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 import type { NextRequest } from 'next/server';
 

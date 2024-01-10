@@ -1,8 +1,8 @@
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';

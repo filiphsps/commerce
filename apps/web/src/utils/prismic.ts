@@ -1,8 +1,8 @@
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
-import type { Shop } from '@/api/shop';
 import { BuildConfig } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 import { createClient as prismicCreateClient } from '@prismicio/client';
 import type { CreateClientConfig } from '@prismicio/next';

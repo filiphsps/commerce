@@ -22,7 +22,7 @@ vi.mock('@/utils/build-config', () => ({
     }
 }));
 
-vi.mock('@/api/shop', () => ({
+vi.mock('@nordcom/commerce-database', () => ({
     ShopApi: vi.fn().mockResolvedValue({
         id: 'mock-shop-id',
         domain: 'staging.demo.nordcom.io',

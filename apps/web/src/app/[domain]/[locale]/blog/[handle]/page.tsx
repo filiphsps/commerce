@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { ShopApi, ShopsApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
@@ -10,9 +9,11 @@ import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 import { BuildConfig } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
+import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
 import { NewsArticleJsonLd } from 'next-seo';
+import { unstable_cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import styles from './page.module.scss';
@@ -70,7 +71,7 @@ export async function generateMetadata({
     params: ArticlePageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
@@ -118,7 +119,7 @@ export default async function ArticlePage({
     params: ArticlePageParams;
 }) {
     try {
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 

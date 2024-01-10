@@ -1,5 +1,4 @@
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
 import PageContent from '@/components/page-content';
@@ -8,9 +7,11 @@ import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import LocaleSelector from './locale-selector';
@@ -25,7 +26,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
@@ -88,7 +89,7 @@ export default async function CountriesPage({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const countries = await CountriesApi({ api });

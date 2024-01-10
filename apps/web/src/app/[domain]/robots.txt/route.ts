@@ -1,4 +1,4 @@
-import { ShopApi } from '@/api/shop';
+import { ShopApi } from '@nordcom/commerce-database';
 import type { MetadataRoute } from 'next';
 import { NextResponse, type NextRequest } from 'next/server';
 

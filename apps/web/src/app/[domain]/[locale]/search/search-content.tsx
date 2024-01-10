@@ -2,9 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import type { Shop } from '@/api/shop';
 import { Button } from '@/components/actionable/button';
 import type { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import styles from './search-content.module.scss';
 
 export type SearchContentProps = {

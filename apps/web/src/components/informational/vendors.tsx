@@ -1,12 +1,12 @@
 import 'server-only';
 
-import type { Shop } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';
 import styles from '@/components/informational/vendors.module.scss';
 import Link from '@/components/link';
 import type { VendorModel } from '@/models/VendorModel';
 import type { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 
 export type VendorsProps = {
     shop: Shop;

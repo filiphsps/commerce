@@ -142,7 +142,7 @@ describe('app', () => {
             };
         });
 
-        vi.mock('@/api/shop', () => ({
+        vi.mock('@nordcom/commerce-database', () => ({
             ShopApi: vi.fn().mockResolvedValue({
                 id: 'mock-shop-id',
                 domains: 'staging.demo.nordcom.io',

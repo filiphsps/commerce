@@ -1,7 +1,8 @@
-import { ShopApi } from '@/api/shop';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
+import { ShopApi } from '@nordcom/commerce-database';
 import { redirectToPreviewURL } from '@prismicio/next';
+import { unstable_cache } from 'next/cache';
 import { draftMode } from 'next/headers';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -9,7 +10,7 @@ export type PreviewApiRouteParams = {
     domain: string;
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: PreviewApiRouteParams }) {
-    const shop = await ShopApi(domain);
+    const shop = await ShopApi(domain, unstable_cache);
 
     if (shop.contentProvider?.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.

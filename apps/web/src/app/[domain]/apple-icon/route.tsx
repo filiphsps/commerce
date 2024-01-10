@@ -1,4 +1,4 @@
-import { ShopApi } from '@/api/shop';
+import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';

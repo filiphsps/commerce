@@ -1,8 +1,8 @@
 import { PagesApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import type { ISitemapField } from 'next-sitemap';
 import { getServerSideSitemap } from 'next-sitemap';
 import type { NextRequest } from 'next/server';

@@ -1,16 +1,17 @@
 import 'server-only';
 
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -26,7 +27,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
@@ -79,7 +80,7 @@ export default async function CustomPage({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
 
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) notFound(); // TODO: Return proper error.

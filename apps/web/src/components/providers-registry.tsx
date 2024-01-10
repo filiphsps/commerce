@@ -1,12 +1,12 @@
 'use client';
 
 import type { ApiConfig } from '@/api/client';
-import type { Shop } from '@/api/shop';
 import { CartFragment } from '@/api/shopify/cart';
 import { ShopProvider } from '@/components/shop/provider';
 import { BuildConfig } from '@/utils/build-config';
 import type { Locale } from '@/utils/locale';
 import { createClient, linkResolver } from '@/utils/prismic';
+import type { Shop } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 import { PrismicProvider } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';

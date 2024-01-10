@@ -1,8 +1,8 @@
 import 'server-only';
 
-import type { Shop } from '@/api/shop';
 import CollectionBlock from '@/components/products/collection-block';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { Suspense } from 'react';

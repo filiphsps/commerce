@@ -1,5 +1,4 @@
 import { PageApi } from '@/api/page';
-import { ShopApi } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
 import PrismicPage from '@/components/prismic-page';
@@ -7,9 +6,11 @@ import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { Prefetch } from '@/utils/prefetch';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import CartContent from './cart-content';
 
@@ -23,7 +24,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
@@ -83,7 +84,7 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
 

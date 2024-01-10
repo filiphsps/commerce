@@ -1,7 +1,7 @@
-import type { Shop } from '@/api/shop';
 import type { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import type { TrackableContextValue } from '@/utils/trackable';
+import type { Shop } from '@nordcom/commerce-database';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 

@@ -1,16 +1,9 @@
 'use client';
 
+import type { ShopTheme } from '@nordcom/commerce-database';
 import { Card, Input, Label } from '@nordcom/nordstar';
 import type { ShopTheme as ShopThemeValue } from '@prisma/client/edge';
 import styles from './settings.module.scss';
-
-// TODO: Get this from the database package.
-export type ShopTheme = {
-    header: {
-        theme: 'primary' | 'secondary';
-        themeVariant: 'default' | 'light' | 'dark';
-    };
-};
 
 export type CommerceSettingsProps = {
     data: ShopThemeValue | null;

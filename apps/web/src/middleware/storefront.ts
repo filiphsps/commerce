@@ -1,8 +1,8 @@
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
 import { Locale } from '@/utils/locale';
+import { ShopApi } from '@nordcom/commerce-database';
 import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';

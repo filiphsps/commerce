@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { NavigationApi } from '@/api/navigation';
-import type { Shop } from '@/api/shop';
 import { CartButton } from '@/components/header/cart-button';
 import { HamburgerMenu } from '@/components/header/hamburger-menu';
 import { HeaderContainer } from '@/components/header/header-container';
@@ -10,6 +9,7 @@ import headerNavigationStyles from '@/components/header/header-navigation.module
 import styles from '@/components/header/header.module.scss';
 import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import Image from 'next/image';
 import type { HTMLProps } from 'react';
 

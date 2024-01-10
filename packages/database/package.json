@@ -6,6 +6,8 @@
     "sideEffects": false,
     "type": "module",
     "prettier": "@nordcom/prettier",
+    "types": "./dist/src/index.d.ts",
+    "module": "./dist/src/index.ts",
     "exports": {
         ".": "./dist/src/index.js",
         "./*": [
@@ -45,12 +47,15 @@
         "dist"
     ],
     "dependencies": {
-        "mongoose": "8.0.4"
+        "@nordcom/commerce-errors": "*",
+        "@prisma/client": "5.8.0",
+        "@prisma/extension-accelerate": "0.6.2"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.56.0",
+        "server-only": "0.0.1",
         "typescript": "5.3.3",
         "vitest": "1.1.3"
     }

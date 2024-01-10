@@ -2,7 +2,6 @@ import 'the-new-css-reset';
 
 import '@/styles/app.scss';
 
-import { ShopApi } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -15,9 +14,11 @@ import { highlightConfig } from '@/utils/config/highlight';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
 import { SocialProfileJsonLd } from 'next-seo';
+import { unstable_cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -50,7 +51,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
 
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale}/`),
@@ -97,7 +98,7 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain);
+        const shop = await ShopApi(domain, unstable_cache);
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop });
 
