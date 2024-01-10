@@ -81,7 +81,7 @@
         "png-to-ico": "2.1.8",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-icons": "4.12.0",
+        "react-icons": "5.0.0",
         "react-lottie-player": "1.5.5",
         "sass": "1.69.7",
         "sharp": "0.33.1",
