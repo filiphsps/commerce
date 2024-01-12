@@ -175,6 +175,10 @@ input[type='number'] {
     }
 }
 
+* {
+    min-width: 0;
+}
+
 input[type='search']:is(
         ::-webkit-search-decoration,
         ::-webkit-search-cancel-button,
