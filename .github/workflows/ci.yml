@@ -24,7 +24,6 @@ env:
 jobs:
     build:
         name: 🔨 Build
-        needs: [lint]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -49,6 +48,9 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
+            - name: 🔨 Build (cache)
+              run: npm run build
+
             - name: 🧪 Test
               run: npm run test
 
@@ -59,6 +61,7 @@ jobs:
 
     lint:
         name: 📋 Lint
+        needs: [build]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -67,6 +70,9 @@ jobs:
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
+
+            - name: 🔨 Build (cache)
+              run: npm run build
 
             - name: 📋 Lint
               run: npm run lint
@@ -82,6 +88,9 @@ jobs:
 
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
+
+            - name: 🔨 Build (cache)
+              run: npm run build
 
             - name: ✅ Typecheck
               run: npm run typecheck
