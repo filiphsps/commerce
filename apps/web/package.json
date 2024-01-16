@@ -59,7 +59,7 @@
         "@next/third-parties": "14.0.4",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
-        "@prisma/client": "5.8.0",
+        "@prisma/client": "5.8.1",
         "@prisma/extension-accelerate": "0.6.2",
         "@prismicio/client": "7.3.1",
         "@prismicio/next": "1.5.0",
