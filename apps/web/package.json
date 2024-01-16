@@ -55,7 +55,7 @@
     "dependencies": {
         "@apollo/client": "3.8.8",
         "@apollo/experimental-nextjs-app-support": "0.6.0",
-        "@highlight-run/next": "7.3.3",
+        "@highlight-run/next": "7.3.4",
         "@next/third-parties": "14.0.4",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
