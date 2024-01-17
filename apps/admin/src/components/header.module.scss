@@ -1,138 +1,65 @@
 @import 'globals';
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.header {
+    z-index: 10;
+    position: sticky;
+    top: 0;
 
-    width: 100%;
-    padding: var(--layout-block-padding) 0;
+    .logo-wrapper {
+        position: relative;
+        display: block;
+        justify-self: flex-start;
+        height: 4rem;
+        width: 100%;
 
-    border-bottom: var(--border-width-half) solid var(--color-background-highlight);
-    backdrop-filter: saturate(220%) blur(8px);
-    background-color: rgba(0, 0, 0, 0.75);
-
-    @media (min-width: $breakpoint-mobile) {
-        padding: 0;
-    }
-
-    .content {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        width: var(--layout-page-width);
-        max-width: 100%;
-        margin: 0 var(--layout-page-spacing);
-        padding: 0 var(--layout-page-spacing);
-        gap: var(--layout-block-padding);
-
-        @media (min-width: $breakpoint-mobile) {
-            width: calc(var(--layout-page-width) + var(--layout-page-spacing) * 2);
-
-            grid-template-columns: 1fr auto;
-            padding: var(--layout-block-padding) var(--layout-page-spacing);
-        }
-
-        .logo-wrapper {
-            position: relative;
-            display: block;
+        [data-logo-placement='center'] & {
             justify-self: flex-start;
-            height: 4rem;
-            width: 100%;
-
-            [data-logo-placement='center'] & {
-                justify-self: flex-start;
-
-                @media (min-width: $breakpoint-mobile) {
-                    justify-self: unset;
-                }
-            }
 
             @media (min-width: $breakpoint-mobile) {
-                height: 2.5rem;
-            }
-
-            .logo {
-                height: 100%;
-
-                -webkit-user-select: none;
-                user-select: none;
-                object-fit: contain;
-                object-position: left center;
+                justify-self: unset;
             }
         }
 
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: var(--layout-block-padding);
+        @media (min-width: $breakpoint-mobile) {
+            height: 2.5rem;
+        }
 
-            width: 100vw;
-            margin: 0 calc(var(--layout-page-spacing) * -1);
-            padding: 0.25rem var(--layout-page-spacing);
+        .logo {
+            height: 100%;
 
             -webkit-user-select: none;
             user-select: none;
-            overflow-x: auto;
+            object-fit: contain;
+            object-position: left center;
+        }
+    }
 
-            @media (min-width: $breakpoint-mobile) {
-                justify-content: space-between;
+    .menu {
+        .button {
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
 
-                width: 100%;
-                margin: 0;
-                padding: 0;
+            padding: 0;
+
+            background: var(--color-background-highlight);
+            border-color: var(--color-background-highlight);
+            color: var(--color-foreground);
+
+            font-size: 0.85em;
+            font-weight: 500;
+
+            .label {
+                padding: var(--layout-block-padding-half) calc(var(--layout-block-padding) / 1.35);
             }
 
-            .links {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                gap: var(--layout-block-padding);
+            .icon {
+                height: 100%;
+                width: auto;
 
-                @media (min-width: $breakpoint-mobile) {
-                    justify-content: center;
-                    gap: calc(var(--layout-section-spacing) * 2);
-                }
-            }
-
-            a {
-                font-weight: 800;
-                text-transform: uppercase;
-            }
-
-            .button {
-                overflow: hidden;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-
-                padding: 0;
-
-                background: var(--color-background-highlight);
-                border-color: var(--color-background-highlight);
-                color: var(--color-foreground);
-
-                font-size: 0.85em;
-                font-weight: 500;
-
-                .label {
-                    padding: var(--layout-block-padding-half) calc(var(--layout-block-padding) / 1.35);
-                }
-
-                .icon {
-                    height: 100%;
-                    width: auto;
-
-                    aspect-ratio: 1 / 1;
-                }
-            }
-
-            @media (min-width: $breakpoint-mobile) {
-                overflow-x: unset;
-                justify-content: flex-end;
-                gap: calc(var(--layout-section-spacing) * 2);
+                aspect-ratio: 1 / 1;
             }
         }
     }

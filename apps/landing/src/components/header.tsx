@@ -1,15 +1,15 @@
 import styles from '@/components/header.module.scss';
 import logo from '@/static/logo.svg';
-import { Button } from '@nordcom/nordstar';
+import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { HTMLProps } from 'react';
 
-export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;
 export default async function Header({ className, ...props }: HeaderProps) {
     return (
-        <header {...props} className={`${styles.container} ${className || ''}`}>
-            <div className={styles.content}>
+        <NordstarHeader {...props} className={`${styles.header} ${className || ''}`}>
+            <NordstarHeader.Logo>
                 <Link href="/" title="Nordcom Commerce" className={styles['logo-wrapper']}>
                     <Image
                         className={styles.logo}
@@ -22,22 +22,20 @@ export default async function Header({ className, ...props }: HeaderProps) {
                         priority={true}
                     />
                 </Link>
+            </NordstarHeader.Logo>
 
-                <nav className={styles.nav} draggable={false}>
-                    <div className={styles.links}>
-                        <Link href="/news/" prefetch={false}>
-                            News
-                        </Link>
-                        <Link href="/docs/" prefetch={false}>
-                            Documentation
-                        </Link>
-                    </div>
+            <NordstarHeader.Menu className={styles.menu}>
+                <NordstarHeader.Menu.Link as={Link} href="/news/">
+                    News
+                </NordstarHeader.Menu.Link>
+                <NordstarHeader.Menu.Link as={Link} href="/docs/">
+                    Documentation
+                </NordstarHeader.Menu.Link>
 
-                    <Button as="a" href="/admin/" className={styles.button}>
-                        Admin
-                    </Button>
-                </nav>
-            </div>
-        </header>
+                <Button as="a" href="/admin/" className={styles.button}>
+                    Admin
+                </Button>
+            </NordstarHeader.Menu>
+        </NordstarHeader>
     );
 }

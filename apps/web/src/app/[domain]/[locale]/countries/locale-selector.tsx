@@ -36,49 +36,46 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                 Change locale
             </button>
 
-            {markets.flatMap(
-                (markets) =>
-                    markets?.map((country) => {
-                        return (
-                            <Link
-                                key={country.locale}
-                                href={`/${country.locale}/`} // TODO: Go to the previous route
-                                shop={shop}
-                                locale={Locale.from(country.locale)!}
-                                title={`${country.country} (${country.language})`}
-                                className={`${styles.locale} ${
-                                    (country.locale === locale.code && styles.active) || ''
-                                }`}
-                                scroll={false}
-                                replace={true}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    localeRef.current!.value = country.locale;
-                                    buttonRef.current?.click();
-                                }}
-                            >
-                                <div className={styles.flag}>
-                                    <Image
-                                        src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${country.locale
-                                            .split('-')
-                                            .at(-1)}.svg`}
-                                        alt={country.country}
-                                        fill
-                                        aria-label={country.country}
-                                        sizes="35px"
-                                        draggable={false}
-                                        priority={false}
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
-                                </div>
-                                <Label>
-                                    {country.country} ({country.language})
-                                </Label>
-                                <Label>{country.currency}</Label>
-                            </Link>
-                        );
-                    })
+            {markets.flatMap((markets) =>
+                markets?.map((country) => {
+                    return (
+                        <Link
+                            key={country.locale}
+                            href={`/${country.locale}/`} // TODO: Go to the previous route
+                            shop={shop}
+                            locale={Locale.from(country.locale)!}
+                            title={`${country.country} (${country.language})`}
+                            className={`${styles.locale} ${(country.locale === locale.code && styles.active) || ''}`}
+                            scroll={false}
+                            replace={true}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                localeRef.current!.value = country.locale;
+                                buttonRef.current?.click();
+                            }}
+                        >
+                            <div className={styles.flag}>
+                                <Image
+                                    src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${country.locale
+                                        .split('-')
+                                        .at(-1)}.svg`}
+                                    alt={country.country}
+                                    fill
+                                    aria-label={country.country}
+                                    sizes="35px"
+                                    draggable={false}
+                                    priority={false}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <Label>
+                                {country.country} ({country.language})
+                            </Label>
+                            <Label>{country.currency}</Label>
+                        </Link>
+                    );
+                })
             )}
         </div>
     );
