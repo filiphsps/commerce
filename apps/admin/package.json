@@ -57,7 +57,7 @@
         "@next/third-parties": "14.0.4",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
-        "@nordcom/nordstar": "0.0.34",
+        "@nordcom/nordstar": "0.0.35",
         "@prisma/client": "5.8.1",
         "@prisma/extension-accelerate": "0.6.2",
         "@shopify/shopify-api": "9.0.0",
