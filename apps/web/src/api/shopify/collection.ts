@@ -183,7 +183,7 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
                         }))(filters)
                     },
                     {
-                        tags: [`collection`]
+                        tags: [`collection`, handle, JSON.stringify(filters, null, 0)]
                     }
                 );
 

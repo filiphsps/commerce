@@ -13,7 +13,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
@@ -30,7 +30,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const collection = await CollectionApi({ api, handle });
@@ -99,7 +99,7 @@ export default async function CollectionPage({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         // Do the actual API calls.
         const api = await ShopifyApolloApiClient({ shop, locale });

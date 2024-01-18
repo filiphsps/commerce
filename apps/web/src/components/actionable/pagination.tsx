@@ -61,7 +61,7 @@ const Pagination = ({
 
     const previousHref = (() => {
         const query = new URLSearchParams(searchParams);
-        if (currentPage === 1) {
+        if (currentPage <= 2) {
             query.delete('page');
         } else {
             query.set('page', (currentPage - 1).toString());
