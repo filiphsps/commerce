@@ -109,6 +109,7 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
     const locale = api.locale();
 
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
+    const filtersTag = JSON.stringify(filters, null, 0);
 
     return cache(
         async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
@@ -183,7 +184,7 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
                         }))(filters)
                     },
                     {
-                        tags: [`collection`, handle, JSON.stringify(filters, null, 0)]
+                        tags: [shop.id, locale.code, `collection`, handle, filtersTag]
                     }
                 );
 
@@ -202,18 +203,112 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
                 throw error;
             }
         },
-        [shop.id, locale.code, 'collection', handle, JSON.stringify(filters, null, 0)]
+        [shop.id, locale.code, 'collection', handle, filtersTag]
     )({ api, handle }, filters);
 };
 
-/**
- * Preload to speed up api calls.
- *
- * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
- * @todo Generalize this for all API helpers.
- */
-CollectionApi.preload = (data: CollectionOptions) => {
-    void CollectionApi(data);
+export const CollectionPaginationCountApi = async ({
+    api,
+    handle,
+    ...props
+}: CollectionOptions): Promise<{
+    pages: number;
+    products: number;
+    cursors: string[];
+}> => {
+    if (!handle) throw new Error('400: Invalid handle');
+    const shop = api.shop();
+    const locale = api.locale();
+
+    const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
+    const filtersTag = JSON.stringify(filters, null, 0);
+
+    return cache(
+        async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
+            const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
+                const { data, errors } = await api.query<{
+                    collection: QueryRoot['collection'];
+                }>(
+                    gql`
+                        query collection(
+                            $handle: String!
+                            $first: Int
+                            $sorting: ProductCollectionSortKeys
+                            $before: String
+                            $after: String
+                        ) {
+                            collection(handle: $handle) {
+                                id
+                                handle
+                                products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+                                    edges {
+                                        cursor
+                                        node {
+                                            id
+                                        }
+                                    }
+                                    pageInfo {
+                                        hasNextPage
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    {
+                        handle: handle,
+                        ...extractLimitLikeFilters(filters),
+                        ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
+                            sorting: sorting,
+                            after: after
+                        }))(filters)
+                    },
+                    {
+                        fetchPolicy: 'no-cache',
+                        tags: [shop.id, locale.code, `collection`, 'pagination', handle, filtersTag, `pos=${count}`]
+                    }
+                );
+
+                if (errors) throw new UnknownApiError();
+                else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0)
+                    return {
+                        count,
+                        cursors
+                    };
+
+                const cursor = data.collection.products.edges.at(-1)!.cursor;
+                if (data.collection.products.pageInfo.hasNextPage) {
+                    const res = await countProducts(count, [cursor, ...cursors], cursor);
+
+                    count += res.count;
+                    cursors = res.cursors;
+                }
+
+                return {
+                    count: count + data.collection.products.edges.length,
+                    cursors
+                };
+            };
+
+            try {
+                const { count: products, cursors } = await countProducts(0);
+
+                const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+                const pages = Math.ceil(products / perPage);
+                return {
+                    pages,
+                    cursors: cursors.reverse(), // FIXME: This is a hack to reverse the cursors.
+                    products
+                };
+            } catch (error: unknown) {
+                console.error(error);
+                throw error;
+            }
+        },
+        [shop.id, locale.code, 'collection', 'pagination', handle, filtersTag],
+        {
+            tags: [shop.id, locale.code, `collection`, 'pagination', handle, filtersTag]
+        }
+    )({ api, handle }, filters);
 };
 
 export const CollectionsApi = async (

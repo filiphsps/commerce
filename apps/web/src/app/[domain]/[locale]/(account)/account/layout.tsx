@@ -8,6 +8,10 @@ import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+// Make sure this page is always dynamic.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export type LayoutParams = { domain: string; locale: string };
 
 export default async function AccountLayout({

@@ -21,6 +21,7 @@ export type CollectionBlockProps = {
     handle: string;
 
     limit?: number;
+    filters?: any;
     showViewAll?: boolean;
     priority?: boolean;
 } & CollectionBlockCommonProps &
@@ -30,6 +31,7 @@ const CollectionBlock = async ({
     locale,
     handle,
     limit,
+    filters,
     isHorizontal,
     showViewAll,
     priority,
@@ -43,7 +45,8 @@ const CollectionBlock = async ({
         api,
         handle,
         // TODO: Pagination for the full variation.
-        limit
+        first: limit,
+        ...filters
     });
 
     // TODO: Add collection type.

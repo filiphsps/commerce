@@ -15,10 +15,10 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 import { HighlightInit } from '@highlight-run/next/client';
 import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
+import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
 import { SocialProfileJsonLd } from 'next-seo';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -51,7 +51,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
 
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale}/`),
@@ -63,7 +63,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
                 template: `%s - ${shop.name}`
             },
             icons: {
-                icon: ['/favicon.ico', '/favicon.png'],
+                icon: ['/favicon.png'],
                 shortcut: ['/favicon.png'],
                 apple: ['/apple-icon.png']
             },
@@ -79,7 +79,7 @@ export async function generateMetadata({ params: { domain, locale } }: { params:
             }
         };
     } catch (error: unknown) {
-        if (Error.isNotFound(error)) {
+        if (Error.isNotFound(error) || error instanceof UnknownShopDomainError) {
             notFound();
         }
 
@@ -98,7 +98,7 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop });
 

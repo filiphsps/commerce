@@ -4,4 +4,11 @@
     @media (max-width: $breakpoint-mobile) {
         --component-product-card-width: auto;
     }
+
+    .collection {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: inherit;
+    }
 }

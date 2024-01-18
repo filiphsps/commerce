@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { CollectionApi } from '@/api/shopify/collection';
 import { VendorsApi } from '@/api/shopify/vendor';
 import type { VendorModel } from '@/models/VendorModel';
 import type { CollectionPageDocumentData, CustomPageDocumentData, ProductPageDocumentData } from '@/prismic/types';
@@ -52,7 +51,7 @@ const Prefetch = ({
                         const limit = slice.variation === 'full' ? 250 : (slice.primary as any).limit || 16;
 
                         // Next.js Preloading pattern.
-                        CollectionApi.preload({ api, handle, limit });
+                        //CollectionApi.preload({ api, handle, limit });
                         continue;
                     }
                 }

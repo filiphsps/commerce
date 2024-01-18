@@ -45,7 +45,7 @@ const Pagination = ({
 
         if (i === currentPage) {
             items.push(
-                <div className={styles.item} data-selected>
+                <div key={url} className={styles.item} data-selected>
                     {i}
                 </div>
             );
@@ -53,7 +53,7 @@ const Pagination = ({
         }
 
         items.push(
-            <Link className={styles.item} href={url}>
+            <Link key={url} className={styles.item} href={url}>
                 {i}
             </Link>
         );
