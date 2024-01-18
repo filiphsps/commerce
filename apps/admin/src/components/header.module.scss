@@ -5,6 +5,12 @@
     position: sticky;
     top: 0;
 
+    & > div {
+        @media (max-width: $breakpoint-mobile) {
+            grid-template-columns: 1fr auto !important;
+        }
+    }
+
     .logo-wrapper {
         position: relative;
         display: block;
@@ -53,6 +59,10 @@
 
             .label {
                 padding: var(--layout-block-padding-half) calc(var(--layout-block-padding) / 1.35);
+
+                @media (max-width: $breakpoint-mobile) {
+                    display: none;
+                }
             }
 
             .icon {

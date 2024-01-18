@@ -1,12 +1,15 @@
 @import 'globals';
 
-.container {
+section.container {
     display: flex;
     flex-direction: column;
+    gap: calc(var(--layout-block-padding) / 2);
+
     width: 24rem;
     max-width: 100%;
     margin: 0 auto;
-    gap: calc(var(--layout-block-padding) / 2);
+
+    border-width: var(--border-width);
 
     hr {
         margin-left: calc(var(--layout-block-padding) * -1);
