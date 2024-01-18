@@ -53,6 +53,7 @@
         "supports css-grid"
     ],
     "dependencies": {
+        "@clerk/nextjs": "4.29.3",
         "@next-auth/prisma-adapter": "1.0.7",
         "@next/third-parties": "14.0.4",
         "@nordcom/commerce-database": "*",
@@ -79,12 +80,12 @@
         "@happy-dom/global-registrator": "13.1.4",
         "@nordcom/prettier": "0.1.1",
         "@testing-library/react": "14.1.2",
-        "@types/react-dom": "18.2.18",
         "@types/react": "18.2.48",
+        "@types/react-dom": "18.2.18",
         "concurrently": "8.2.2",
         "critters": "0.0.20",
-        "eslint-config-next": "14.0.4",
         "eslint": "8.56.0",
+        "eslint-config-next": "14.0.4",
         "graphql": "16.8.1",
         "happy-dom": "13.1.4",
         "server-only": "0.0.1",

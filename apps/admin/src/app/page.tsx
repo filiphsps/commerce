@@ -1,6 +1,6 @@
 import ActionableCard from '@/components/actionable-card';
-import { getSession } from '@/utils/auth';
 import { getShopsForUser } from '@/utils/fetchers';
+import { UserButton, currentUser } from '@clerk/nextjs';
 import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -13,17 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Overview() {
-    const session = await getSession();
-    if (!session) {
+    const user = await currentUser();
+    if (!user) {
         return redirect('/auth/login/');
     }
 
-    const { user } = session;
-
     const shops = await getShopsForUser(user.id);
 
-    const firstName = user.name.split(' ').at(0) || null;
-    const lastName = user.name.split(' ').slice(1).join(' ') || null;
+    const { firstName, lastName } = user;
 
     return (
         <div className={styles.container}>
@@ -31,28 +28,32 @@ export default async function Overview() {
                 <ActionableCard
                     header={
                         <>
-                            <Link href="/" title="Nordcom Commerce">
-                                <Image
-                                    src="https://shops.nordcom.io/logo.svg"
-                                    alt="Nordcom Group Inc.'s Logo"
-                                    height={75}
-                                    width={150}
-                                    draggable={false}
-                                    decoding="async"
-                                    priority={true}
-                                    loader={undefined}
-                                />
-                            </Link>
+                            <div className={styles.header}>
+                                <Link href="/" title="Nordcom Commerce">
+                                    <Image
+                                        src="https://shops.nordcom.io/logo.svg"
+                                        alt="Nordcom Group Inc.'s Logo"
+                                        height={75}
+                                        width={150}
+                                        draggable={false}
+                                        decoding="async"
+                                        priority={true}
+                                        loader={undefined}
+                                    />
+                                </Link>
+
+                                <UserButton afterSignOutUrl="/admin/" />
+                            </div>
 
                             <hr />
 
-                            <section>
+                            <div>
                                 <Label as="div">
                                     Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
                                 </Label>
 
                                 <Heading level="h1">Choose a Shop</Heading>
-                            </section>
+                            </div>
                         </>
                     }
                     footer={

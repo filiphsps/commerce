@@ -77,3 +77,50 @@ hr {
         height: var(--block-spacer) !important;
     }
 }
+
+.cl-signIn-root {
+    display: contents;
+
+    :is(.cl-logoBox, .cl-header, .cl-footer),
+    .cl-card > div:last-child {
+        display: none !important;
+    }
+
+    :is(.cl-main, .cl-socialButtons, .cl-card) {
+        display: contents;
+    }
+
+    .cl-main {
+        button {
+            justify-content: center;
+            align-items: center;
+            gap: var(--layout-block-padding);
+
+            padding: var(--layout-block-padding);
+
+            color: var(--color-foreground-secondary);
+            border: var(--border-width) solid var(--color-background-highlight);
+
+            border-radius: var(--border-radius);
+            cursor: pointer;
+
+            text-transform: uppercase;
+            font-weight: 700;
+
+            div {
+                //display: contents;
+            }
+
+            .cl-socialButtonsBlockButtonText {
+                font-family: inherit;
+                font-weight: inherit;
+                font-size: inherit;
+            }
+
+            &:hover {
+                color: inherit;
+                border-color: var(--color-foreground-secondary);
+            }
+        }
+    }
+}
