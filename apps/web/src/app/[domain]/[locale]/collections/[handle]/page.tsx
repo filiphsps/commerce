@@ -1,7 +1,8 @@
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionApi } from '@/api/shopify/collection';
+import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
+import Pagination from '@/components/actionable/pagination';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
@@ -18,11 +19,23 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
 
+// Make sure this page is always dynamic.
+// TODO: Figure out a better way to deal with query params.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const revalidate = 0;
+
+type FilterParams = {
+    page?: string;
+};
+
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeData, handle },
+    searchParams
 }: {
     params: CollectionPageParams;
+    searchParams: FilterParams;
 }): Promise<Metadata> {
     try {
         if (!isValidHandle(handle)) notFound();
@@ -33,11 +46,12 @@ export async function generateMetadata({
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const collection = await CollectionApi({ api, handle });
+        const collection = await CollectionApi({ api, handle, first: 16, after: null }); // TODO: this.
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = await LocalesApi({ api });
 
-        const title = page?.meta_title || collection.seo?.title || collection.title;
+        // TODO: i18n.
+        const title = `${page?.meta_title || collection.seo?.title || collection.title}${searchParams.page ? ` -  Page ${searchParams.page}` : ''}`;
         const description: string | undefined =
             (page?.meta_description && asText(page.meta_description)) ||
             collection.seo.description ||
@@ -87,9 +101,11 @@ export async function generateMetadata({
 /* c8 ignore stop */
 
 export default async function CollectionPage({
-    params: { domain, locale: localeData, handle }
+    params: { domain, locale: localeData, handle },
+    searchParams
 }: {
     params: CollectionPageParams;
+    searchParams: FilterParams;
 }) {
     try {
         if (!isValidHandle(handle)) notFound();
@@ -97,13 +113,24 @@ export default async function CollectionPage({
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) notFound();
+        else if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
+
+        const productsPerPage = 16; // TODO: Make this configurable.
+        const query = {
+            page: searchParams.page ? Number.parseInt(searchParams.page) : 1
+        };
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
 
-        // Do the actual API calls.
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const collection = await CollectionApi({ api, handle });
+
+        // Pagination.
+        const pagesInfo = await CollectionPaginationCountApi({ api, handle, first: productsPerPage });
+        const after = pagesInfo.cursors[query.page - 2];
+
+        // Do the actual API calls.
+        const collection = await CollectionApi({ api, handle, first: productsPerPage, after });
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         // Get dictionary of strings for the current locale.
@@ -111,29 +138,42 @@ export default async function CollectionPage({
 
         return (
             <PageContent primary={true} className={styles.container}>
-                {!page || page.enable_header === undefined || page.enable_header ? (
-                    <div>
-                        <Heading title={collection.title} subtitle={null} />
-                    </div>
+                <Heading
+                    title={page?.meta_title || collection?.seo?.title || collection.title}
+                    subtitle={page?.meta_description ? asText(page?.meta_description) : null}
+                />
+
+                {true || !page || page?.enable_collection === undefined || page?.enable_collection ? (
+                    <section className={styles.collection}>
+                        <Suspense
+                            key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
+                            fallback={<CollectionBlock.skeleton />}
+                        >
+                            <CollectionBlock
+                                shop={shop}
+                                locale={locale}
+                                handle={handle}
+                                filters={{
+                                    first: productsPerPage,
+                                    after
+                                }}
+                            />
+                        </Suspense>
+
+                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                    </section>
                 ) : null}
 
-                {!page || page.enable_collection === undefined || page.enable_collection ? (
-                    <Suspense fallback={<CollectionBlock.skeleton />}>
-                        <CollectionBlock
-                            shop={shop}
-                            locale={locale}
-                            handle={handle}
-                            // TODO: Pagination.
-                            limit={250}
-                        />
-                    </Suspense>
-                ) : null}
-
-                {page?.slices && page?.slices.length > 0 ? (
+                {page?.slices && (page?.slices?.length || 0) > 0 ? (
                     <PrismicPage
                         shop={shop}
                         locale={locale}
-                        page={page}
+                        page={{
+                            ...page,
+                            slices: page.slices.filter(
+                                ({ slice_type, variation }) => !(slice_type === 'collection' && variation === 'full')
+                            ) as any
+                        }}
                         i18n={i18n}
                         handle={handle}
                         type={'collection_page'}
