@@ -102,7 +102,7 @@
         "eslint-config-next": "14.0.4",
         "eslint": "8.56.0",
         "graphql": "16.8.1",
-        "happy-dom": "13.0.0",
+        "happy-dom": "13.1.4",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.22.2",
         "typescript": "5.3.3",
