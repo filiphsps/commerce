@@ -54,16 +54,6 @@
         "url": "https://github.com/NordcomInc/ecommerce/issues"
     },
     "homepage": "https://shops.nordcom.io/",
-    "browserslist": [
-        ">0.5%",
-        "defaults",
-        "not ie 11",
-        "not ie <= 10",
-        "not and_ff <= 119",
-        "not firefox <= 121",
-        "supports es6-module",
-        "supports css-grid"
-    ],
     "workspaces": [
         "apps/*",
         "packages/*"
@@ -90,6 +80,7 @@
         "prettier": "3.2.4",
         "prisma": "5.8.1",
         "turbo": "1.11.3",
+        "turbo-ignore": "1.11.3",
         "typescript": "5.3.3"
     },
     "optionalDependencies": {
