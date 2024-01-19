@@ -14,7 +14,7 @@ const config = {
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
-    transpilePackages: ['react-icons'],
+    transpilePackages: [],
     experimental: {
         caseSensitiveRoutes: true,
         instrumentationHook: true,
@@ -22,6 +22,7 @@ const config = {
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
+            '@nordcom/nordstar',
             '@prismicio/client',
             '@prismicio/next',
             '@prismicio/react',
@@ -37,8 +38,6 @@ const config = {
         webpackBuildWorker: true
     },
     images: {
-        //loader: 'custom',
-        //loaderFile: './src/utils/image-loader.ts',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {

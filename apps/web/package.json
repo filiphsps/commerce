@@ -11,8 +11,7 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "next dev",
-        "dev:turbo": "next dev --turbo",
+        "dev": "next dev --turbo",
         "build": "next build",
         "lint": "next lint",
         "fix:lint": "next lint --fix",
@@ -46,17 +45,11 @@
         "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
     },
     "homepage": "https://shops.nordcom.io/",
-    "browserslist": [
-        ">0.5%",
-        "defaults",
-        "supports es6-module",
-        "supports css-grid"
-    ],
     "dependencies": {
         "@apollo/client": "3.8.10",
         "@apollo/experimental-nextjs-app-support": "0.6.0",
         "@highlight-run/next": "7.3.4",
-        "@next/third-parties": "14.0.4",
+        "@next/third-parties": "14.1.0",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
         "@prisma/client": "5.8.1",
@@ -73,7 +66,7 @@
         "convert-units": "2.3.4",
         "geist": "1.2.1",
         "gravatar.js": "2.0.0",
-        "next": "14.0.4",
+        "next": "14.1.0",
         "next-auth": "4.24.5",
         "next-seo": "6.4.0",
         "next-sitemap": "4.2.3",
@@ -99,7 +92,7 @@
         "@types/react": "18.2.48",
         "concurrently": "8.2.2",
         "critters": "0.0.20",
-        "eslint-config-next": "14.0.4",
+        "eslint-config-next": "14.1.0",
         "eslint": "8.56.0",
         "graphql": "16.8.1",
         "happy-dom": "13.2.0",
