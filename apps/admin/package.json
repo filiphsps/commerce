@@ -78,7 +78,7 @@
         "eslint-config-next": "14.1.0",
         "eslint": "8.56.0",
         "graphql": "16.8.1",
-        "happy-dom": "13.2.0",
+        "happy-dom": "13.2.1",
         "server-only": "0.0.1",
         "typescript": "5.3.3",
         "vitest": "1.2.1"
