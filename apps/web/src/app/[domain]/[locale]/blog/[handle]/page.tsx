@@ -96,7 +96,7 @@ export async function generateMetadata({
             },
             openGraph: {
                 url: `/blog/${handle}/`,
-                type: 'website',
+                type: 'article',
                 title,
                 description,
                 siteName: shop?.name,

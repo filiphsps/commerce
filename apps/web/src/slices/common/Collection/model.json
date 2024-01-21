@@ -81,24 +81,6 @@
         }
       },
       "items": {}
-    },
-    {
-      "id": "full",
-      "name": "Full",
-      "docURL": "...",
-      "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
-      "primary": {
-        "handle": {
-          "type": "Text",
-          "config": {
-            "label": "Collection handle",
-            "placeholder": "ahlgrens-bilar"
-          }
-        }
-      },
-      "items": {}
     }
   ]
 }

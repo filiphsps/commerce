@@ -5,7 +5,6 @@ import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
@@ -88,7 +87,6 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
 
-        void Prefetch({ api, page });
         const i18n = await getDictionary(locale);
         const store = await StoreApi({ locale, api });
 

@@ -13,38 +13,14 @@
                 },
                 "type": "UID"
             },
-            "enable_header": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Show built-in header",
-                    "placeholder_false": "false",
-                    "placeholder_true": "true",
-                    "default_value": true
-                }
-            },
-            "enable_collection": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Show built-in collection component",
-                    "placeholder_false": "false",
-                    "placeholder_true": "true",
-                    "default_value": true
-                }
-            },
-            "enable_body": {
-                "type": "Boolean",
-                "config": {
-                    "label": "Show built-in description/body",
-                    "placeholder_false": "false",
-                    "placeholder_true": "true",
-                    "default_value": true
-                }
-            },
             "slices": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
+                        "title": {
+                            "type": "SharedSlice"
+                        },
                         "alert": {
                             "type": "SharedSlice"
                         },
@@ -80,6 +56,13 @@
             }
         },
         "SEO & Metadata": {
+            "meta_title": {
+                "config": {
+                    "label": "Meta Title",
+                    "placeholder": "A title of the page used for social media and search engines"
+                },
+                "type": "Text"
+            },
             "meta_description": {
                 "config": {
                     "label": "Meta Description",
@@ -97,13 +80,6 @@
                     "thumbnails": []
                 },
                 "type": "Image"
-            },
-            "meta_title": {
-                "config": {
-                    "label": "Meta Title",
-                    "placeholder": "A title of the page used for social media and search engines"
-                },
-                "type": "Text"
             }
         }
     }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Content } from '@/components/content';
 import { components } from '@/markdoc';
 import Markdoc from '@markdoc/markdoc';
@@ -6,7 +8,6 @@ import gravatar from 'gravatar.js';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import { getArticleContent, getArticlePaths } from './articles';
 import styles from './page.module.scss';
 

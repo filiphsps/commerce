@@ -209,7 +209,7 @@ export const StoreApi = async ({
                 }
 
                 const extraStoreDetails = shopData?.shop;
-                const currencies: string[] = store?.currencies?.map((item: any) => item.currency) || [];
+                const currencies: string[] = store?.currencies?.map((item: any) => item.currency) || []; // TODO: Get these through an API call.
 
                 let locales;
                 try {
@@ -238,21 +238,21 @@ export const StoreApi = async ({
                         primary: (() => {
                             const logo = {
                                 src:
+                                    extraStoreDetails?.brand?.logo?.image?.url ||
                                     store?.logos_primary?.url ||
                                     store?.logo ||
-                                    extraStoreDetails?.brand?.logo?.image?.url ||
                                     undefined,
                                 alt:
-                                    store?.logos_primary?.alt ||
                                     extraStoreDetails?.brand?.logo?.image?.altText ||
+                                    store?.logos_primary?.alt ||
                                     undefined,
                                 height:
-                                    store?.logos_primary?.dimensions?.height ||
                                     extraStoreDetails?.brand?.logo?.image?.height ||
+                                    store?.logos_primary?.dimensions?.height ||
                                     undefined,
                                 width:
-                                    store?.logos_primary?.dimensions?.width ||
                                     extraStoreDetails?.brand?.logo?.image?.width ||
+                                    store?.logos_primary?.dimensions?.width ||
                                     undefined
                             };
 
@@ -272,9 +272,9 @@ export const StoreApi = async ({
                     favicon: (() => {
                         const logo = {
                             src:
+                                extraStoreDetails?.brand?.squareLogo?.image?.url ||
                                 store?.logos_favicon?.url ||
                                 store?.favicon ||
-                                extraStoreDetails?.brand?.squareLogo?.image?.url ||
                                 undefined,
                             alt: store?.logos_alternative?.alt || undefined,
                             height: store?.logos_alternative?.dimensions?.height || undefined,
@@ -285,14 +285,14 @@ export const StoreApi = async ({
                     })(),
                     accent: {
                         primary:
+                            extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
                             store?.colors_primary ||
                             store?.primary ||
-                            extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
                             '', // FIXME: Throw error instead of empty string.
                         secondary:
+                            extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
                             store?.colors_secondary ||
                             store?.secondary ||
-                            extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
                             '' // FIXME: Throw error instead of empty string.
                     },
                     color: {

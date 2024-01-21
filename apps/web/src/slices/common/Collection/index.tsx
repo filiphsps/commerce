@@ -1,13 +1,12 @@
 import 'server-only';
 
 import CollectionBlock from '@/components/products/collection-block';
+import CollectionContainer from '@/slices/common/Collection/collection';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Shop } from '@nordcom/commerce-database';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
 import { Suspense } from 'react';
-import FullCollection from './FullCollection';
-import CollectionContainer from './collection';
 
 /**
  * Props for `Collection`.
@@ -54,9 +53,6 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
                 </Suspense>
             );
         }
-        case 'full': {
-            return <FullCollection slice={slice} shop={shop} locale={locale} />;
-        }
         default: {
             throw new Error('500: Invalid variant');
         }
@@ -64,7 +60,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
 };
 
 CollectionSlice.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || slice.variation === 'full') return null; // TODO: Skeleton for full variant.
+    if (!slice) return null;
 
     return <CollectionContainer.skeleton slice={slice} />;
 };

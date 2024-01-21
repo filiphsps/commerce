@@ -53,22 +53,5 @@
 			}
 		},
 		"items": []
-	},
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "full",
-		"primary": {
-			"handle": {
-				"__TYPE__": "FieldContent",
-				"type": "Text",
-				"value": "marabou"
-			}
-		},
-		"items": [
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": []
-			}
-		]
 	}
 ]

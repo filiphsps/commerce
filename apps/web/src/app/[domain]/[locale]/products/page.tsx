@@ -6,7 +6,6 @@ import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
@@ -88,8 +87,6 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
 
         const {} = ProductsCountApi({ client: api });
-
-        void Prefetch({ api, page });
 
         return (
             <PageContent primary={true}>

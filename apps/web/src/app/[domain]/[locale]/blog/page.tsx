@@ -6,7 +6,6 @@ import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale } from '@/utils/locale';
-import { Prefetch } from '@/utils/prefetch';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
@@ -84,8 +83,6 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-
-        void Prefetch({ api, page });
 
         const blog = await BlogApi({ api, handle: 'news' });
         const i18n = await getDictionary(locale);

@@ -6,9 +6,6 @@ import type { ProductPageParams } from './page';
 import ProductPage, { generateMetadata } from './page';
 
 describe('app', () => {
-    vi.mock('@/utils/prefetch', () => ({
-        Prefetch: vi.fn().mockResolvedValue({})
-    }));
     vi.mock('@/i18n/dictionary', () => ({
         getDictionary: vi.fn().mockResolvedValue({})
     }));

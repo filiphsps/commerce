@@ -69,6 +69,7 @@ export type ArticlePageDocument<Lang extends string = string> = prismic.PrismicD
 >;
 
 type CollectionPageDocumentDataSlicesSlice =
+    | TitleSlice
     | AlertSlice
     | VendorsSlice
     | CollectionSlice
@@ -85,42 +86,6 @@ type CollectionPageDocumentDataSlicesSlice =
  */
 interface CollectionPageDocumentData {
     /**
-     * Show built-in header field in *Collection*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: true
-     * - **API ID Path**: collection_page.enable_header
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    enable_header: prismic.BooleanField;
-
-    /**
-     * Show built-in collection component field in *Collection*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: true
-     * - **API ID Path**: collection_page.enable_collection
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    enable_collection: prismic.BooleanField;
-
-    /**
-     * Show built-in description/body field in *Collection*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: true
-     * - **API ID Path**: collection_page.enable_body
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    enable_body: prismic.BooleanField;
-
-    /**
      * Slice Zone field in *Collection*
      *
      * - **Field Type**: Slice Zone
@@ -130,6 +95,17 @@ interface CollectionPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#slices
      */
     slices: prismic.SliceZone<CollectionPageDocumentDataSlicesSlice> /**
+     * Meta Title field in *Collection*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: A title of the page used for social media and search engines
+     * - **API ID Path**: collection_page.meta_title
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */;
+    meta_title: prismic.KeyTextField;
+
+    /**
      * Meta Description field in *Collection*
      *
      * - **Field Type**: Rich Text
@@ -137,7 +113,7 @@ interface CollectionPageDocumentData {
      * - **API ID Path**: collection_page.meta_description
      * - **Tab**: SEO & Metadata
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */;
+     */
     meta_description: prismic.RichTextField;
 
     /**
@@ -150,17 +126,6 @@ interface CollectionPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#image
      */
     meta_image: prismic.ImageField<never>;
-
-    /**
-     * Meta Title field in *Collection*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: A title of the page used for social media and search engines
-     * - **API ID Path**: collection_page.meta_title
-     * - **Tab**: SEO & Metadata
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    meta_title: prismic.KeyTextField;
 }
 
 /**
@@ -729,41 +694,6 @@ export interface StoreDocumentDataCurrenciesItem {
 }
 
 /**
- * Item in *Store → Social*
- */
-export interface StoreDocumentDataSocialItem {
-    /**
-     * Name field in *Store → Social*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: twitter
-     * - **API ID Path**: store.social[].name
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    name: prismic.KeyTextField;
-
-    /**
-     * Handle field in *Store → Social*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: @NordcomInc
-     * - **API ID Path**: store.social[].handle
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    handle: prismic.KeyTextField;
-
-    /**
-     * URL field in *Store → Social*
-     *
-     * - **Field Type**: Link
-     * - **Placeholder**: https://twitter.com/NordcomInc
-     * - **API ID Path**: store.social[].url
-     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-     */
-    url: prismic.LinkField;
-}
-
-/**
  * Content for Store documents
  */
 interface StoreDocumentData {
@@ -812,17 +742,6 @@ interface StoreDocumentData {
     favicon: prismic.KeyTextField;
 
     /**
-     * DEPRECATED - Corner radius field in *Store*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.border_radius
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    border_radius: prismic.KeyTextField;
-
-    /**
      * DEPRECATED - Currencies field in *Store*
      *
      * - **Field Type**: Group
@@ -831,18 +750,7 @@ interface StoreDocumentData {
      * - **Tab**: Main
      * - **Documentation**: https://prismic.io/docs/field#group
      */
-    currencies: prismic.GroupField<Simplify<StoreDocumentDataCurrenciesItem>>;
-
-    /**
-     * Social field in *Store*
-     *
-     * - **Field Type**: Group
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.social[]
-     * - **Tab**: Main
-     * - **Documentation**: https://prismic.io/docs/field#group
-     */
-    social: prismic.GroupField<Simplify<StoreDocumentDataSocialItem>> /**
+    currencies: prismic.GroupField<Simplify<StoreDocumentDataCurrenciesItem>> /**
      * Primary Logo field in *Store*
      *
      * - **Field Type**: Image
@@ -894,28 +802,6 @@ interface StoreDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     colors_secondary: prismic.ColorField;
-
-    /**
-     * DEPRECATED - Primary field in *Store*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.primary
-     * - **Tab**: Colors
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    primary: prismic.ColorField;
-
-    /**
-     * DEPRECATED - Secondary field in *Store*
-     *
-     * - **Field Type**: Color
-     * - **Placeholder**: *None*
-     * - **API ID Path**: store.secondary
-     * - **Tab**: Colors
-     * - **Documentation**: https://prismic.io/docs/field#color
-     */
-    secondary: prismic.ColorField;
 }
 
 /**
@@ -1407,33 +1293,9 @@ export type CollectionSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Primary content in *Collection → Primary*
- */
-export interface CollectionSliceFullPrimary {
-    /**
-     * Collection handle field in *Collection → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: ahlgrens-bilar
-     * - **API ID Path**: collection.primary.handle
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    handle: prismic.KeyTextField;
-}
-
-/**
- * Full variation for Collection Slice
- *
- * - **API ID**: `full`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type CollectionSliceFull = prismic.SharedSliceVariation<'full', Simplify<CollectionSliceFullPrimary>, never>;
-
-/**
  * Slice variation for *Collection*
  */
-type CollectionSliceVariation = CollectionSliceDefault | CollectionSliceFull;
+type CollectionSliceVariation = CollectionSliceDefault;
 
 /**
  * Collection Shared Slice
@@ -1904,7 +1766,6 @@ declare module '@prismicio/client' {
             StoreDocument,
             StoreDocumentData,
             StoreDocumentDataCurrenciesItem,
-            StoreDocumentDataSocialItem,
             AllDocumentTypes,
             AlertSlice,
             AlertSliceDefaultPrimary,
@@ -1929,10 +1790,8 @@ declare module '@prismicio/client' {
             CollapsibleTextSliceDefault,
             CollectionSlice,
             CollectionSliceDefaultPrimary,
-            CollectionSliceFullPrimary,
             CollectionSliceVariation,
             CollectionSliceDefault,
-            CollectionSliceFull,
             IconGridSlice,
             IconGridSliceDefaultItem,
             IconGridSliceVariation,

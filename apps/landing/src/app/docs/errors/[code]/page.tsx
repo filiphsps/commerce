@@ -1,3 +1,5 @@
+import React from 'react';
+
 import BackButton from '@/components/back-button';
 import { Content } from '@/components/content';
 import { components, config } from '@/markdoc';
@@ -9,7 +11,6 @@ import fs from 'fs';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import path from 'path';
-import React from 'react';
 import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'docs/errors');

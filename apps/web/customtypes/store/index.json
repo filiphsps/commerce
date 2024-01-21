@@ -34,13 +34,6 @@
                     "label": "DEPRECATED - Favicon"
                 }
             },
-            "border_radius": {
-                "type": "Text",
-                "config": {
-                    "label": "DEPRECATED - Corner radius",
-                    "placeholder": ""
-                }
-            },
             "currencies": {
                 "type": "Group",
                 "config": {
@@ -54,37 +47,6 @@
                         }
                     },
                     "label": "DEPRECATED - Currencies"
-                }
-            },
-            "social": {
-                "type": "Group",
-                "config": {
-                    "fields": {
-                        "name": {
-                            "type": "Text",
-                            "config": {
-                                "label": "Name",
-                                "placeholder": "twitter"
-                            }
-                        },
-                        "handle": {
-                            "type": "Text",
-                            "config": {
-                                "label": "Handle",
-                                "placeholder": "@NordcomInc"
-                            }
-                        },
-                        "url": {
-                            "type": "Link",
-                            "config": {
-                                "label": "URL",
-                                "placeholder": "https://twitter.com/NordcomInc",
-                                "allowTargetBlank": true,
-                                "select": null
-                            }
-                        }
-                    },
-                    "label": "Social"
                 }
             }
         },
@@ -126,18 +88,6 @@
                 "type": "Color",
                 "config": {
                     "label": "Secondary"
-                }
-            },
-            "primary": {
-                "type": "Color",
-                "config": {
-                    "label": "DEPRECATED - Primary"
-                }
-            },
-            "secondary": {
-                "type": "Color",
-                "config": {
-                    "label": "DEPRECATED - Secondary"
                 }
             }
         }

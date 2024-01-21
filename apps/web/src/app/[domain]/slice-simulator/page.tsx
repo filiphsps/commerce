@@ -13,7 +13,7 @@ export default function SliceSimulatorPage() {
     return (
         <SliceSimulator
             sliceZone={({ slices, ...props }) => (
-                <SliceZone {...props} components={slices as any} context={{ locale, i18n: english, prefetch: {} }} />
+                <SliceZone {...props} components={slices as any} context={{ locale, i18n: english }} />
             )}
         />
     );

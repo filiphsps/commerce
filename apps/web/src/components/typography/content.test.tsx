@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Content } from '@/components/typography/content';
 import { render } from '@/utils/test/react';
 import { describe, expect, it, vi } from 'vitest';

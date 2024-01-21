@@ -8,9 +8,6 @@ import SearchPage, { generateMetadata } from './page';
 
 describe('app', () => {
     describe('SearchPage', () => {
-        vi.mock('@/utils/prefetch', () => ({
-            Prefetch: vi.fn().mockResolvedValue({})
-        }));
         vi.mock('@/i18n/dictionary', () => ({
             getDictionary: vi.fn().mockResolvedValue({})
         }));

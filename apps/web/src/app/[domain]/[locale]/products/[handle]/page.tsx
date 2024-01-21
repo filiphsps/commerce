@@ -20,7 +20,6 @@ import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { Prefetch } from '@/utils/prefetch';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -173,8 +172,7 @@ export default async function ProductPage({
 
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
 
-        // Next.js Preloading pattern.
-        void Prefetch({ api, page }); // TODO: Figure out a nicer way.
+        // Next.js Preloading pattern. // TODO: Figure out a nicer way.
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });

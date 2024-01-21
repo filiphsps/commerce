@@ -6,6 +6,7 @@ import Pagination from '@/components/actionable/pagination';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
+import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -16,14 +17,14 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 import styles from './page.module.scss';
 
 // Make sure this page is always dynamic.
 // TODO: Figure out a better way to deal with query params.
-export const dynamic = 'force-dynamic';
+/*export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-export const revalidate = 0;
+export const revalidate = 0;*/
 
 type FilterParams = {
     page?: string;
@@ -136,33 +137,43 @@ export default async function CollectionPage({
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
 
+        const subtitle =
+            (page?.meta_description && asText(page?.meta_description)) || collection.seo?.description || null;
+
         return (
             <PageContent primary={true} className={styles.container}>
                 <Heading
                     title={page?.meta_title || collection?.seo?.title || collection.title}
-                    subtitle={page?.meta_description ? asText(page?.meta_description) : null}
-                />
-
-                {true || !page || page?.enable_collection === undefined || page?.enable_collection ? (
-                    <section className={styles.collection}>
-                        <Suspense
-                            key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
-                            fallback={<CollectionBlock.skeleton />}
-                        >
-                            <CollectionBlock
-                                shop={shop}
-                                locale={locale}
-                                handle={handle}
-                                filters={{
-                                    first: productsPerPage,
-                                    after
+                    subtitleAs={Fragment}
+                    subtitle={
+                        subtitle ? (
+                            <Content
+                                dangerouslySetInnerHTML={{
+                                    __html: subtitle
                                 }}
                             />
-                        </Suspense>
+                        ) : null
+                    }
+                />
 
-                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                    </section>
-                ) : null}
+                <section className={styles.collection}>
+                    <Suspense
+                        key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
+                        fallback={<CollectionBlock.skeleton />}
+                    >
+                        <CollectionBlock
+                            shop={shop}
+                            locale={locale}
+                            handle={handle}
+                            filters={{
+                                first: productsPerPage,
+                                after
+                            }}
+                        />
+                    </Suspense>
+
+                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                </section>
 
                 {page?.slices && (page?.slices?.length || 0) > 0 ? (
                     <PrismicPage
@@ -171,13 +182,27 @@ export default async function CollectionPage({
                         page={{
                             ...page,
                             slices: page.slices.filter(
-                                ({ slice_type, variation }) => !(slice_type === 'collection' && variation === 'full')
+                                ({ slice_type, variation }) =>
+                                    !(slice_type === 'collection' && (variation as any) === 'full') // Filter any left-over legacy collection slices.
                             ) as any
                         }}
                         i18n={i18n}
                         handle={handle}
                         type={'collection_page'}
                     />
+                ) : null}
+
+                {collection.descriptionHtml ? (
+                    <>
+                        <hr />
+                        <section>
+                            <Content
+                                dangerouslySetInnerHTML={{
+                                    __html: collection.descriptionHtml
+                                }}
+                            />
+                        </section>
+                    </>
                 ) : null}
             </PageContent>
         );

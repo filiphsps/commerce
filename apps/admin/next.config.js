@@ -16,7 +16,7 @@ const config = {
     transpilePackages: [],
     experimental: {
         caseSensitiveRoutes: true,
-        instrumentationHook: true,
+        instrumentationHook: process.env.NODE_ENV !== 'development' ? true : false, // Deliberately using a ternary here for clarity.
         //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: ['react-icons', '@nordcom/nordstar'],

@@ -11,14 +11,13 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "next dev --turbo",
+        "dev": "next dev",
         "build": "next build",
         "lint": "next lint",
         "fix:lint": "next lint --fix",
         "fix": "concurrently npm:fix:*",
         "typecheck": "tsc -noEmit",
         "test": "vitest run --coverage",
-        "slicemachine": "start-slicemachine",
         "watch:test": "vitest watch"
     },
     "author": {
