@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export const runtime = 'experimental-edge';
 export const config = {
     matcher: [
-        '/((?!_next|_static|_vercel|instrumentation|highlight-events|assets|[\\w-]+\\.\\w+).*)',
+        '/((?!_next|_static|_vercel|instrumentation|assets|[\\w-]+\\.\\w+).*)',
         // Handle assets we generate dynamically per-tenant.
         '/:path*/favicon:type*',
         '/:path*/apple-icon:type*',

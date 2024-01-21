@@ -10,10 +10,8 @@ import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 import { getDictionary } from '@/i18n/dictionary';
-import { highlightConfig } from '@/utils/config/highlight';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
-import { HighlightInit } from '@highlight-run/next/client';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import type { Metadata, Viewport } from 'next';
@@ -108,8 +106,6 @@ export default async function RootLayout({
 
         return (
             <>
-                <HighlightInit {...highlightConfig} serviceName={`Nordcom Commerce Storefront`} />
-
                 <html
                     lang={locale.code}
                     className={fontPrimary.variable || ''}

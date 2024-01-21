@@ -8,9 +8,6 @@ import SearchPage, { generateMetadata } from './page';
 
 describe('app', () => {
     describe('SearchPage', () => {
-        vi.mock('@highlight-run/next/client', () => ({
-            ErrorBoundary: vi.fn().mockResolvedValue(({ children }) => <>{children}</>)
-        }));
         vi.mock('@/utils/prefetch', () => ({
             Prefetch: vi.fn().mockResolvedValue({})
         }));

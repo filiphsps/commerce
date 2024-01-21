@@ -1,4 +1,3 @@
-import { withHighlightConfig } from '@highlight-run/next/config';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,7 +30,7 @@ const config = {
         ],
         //ppr: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: ['@highlight-run/node'],
+        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: false,
         //taint: true,
@@ -99,9 +98,6 @@ const config = {
         // Prismic.
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,
 
-        // Highlight.
-        HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
-
         // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
@@ -116,9 +112,4 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withHighlightConfig(config, {
-    apiKey: process.env.HIGHLIGHT_SOURCEMAP_UPLOAD_API_KEY,
-    appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
-    uploadSourceMaps: !!process.env.VERCEL_ENV,
-    sourceMapsBasePath: './apps/web/'
-});
+export default config;

@@ -6,9 +6,6 @@ import type { ProductPageParams } from './page';
 import ProductPage, { generateMetadata } from './page';
 
 describe('app', () => {
-    vi.mock('@highlight-run/next/client', () => ({
-        ErrorBoundary: vi.fn().mockResolvedValue(({ children }) => <>{children}</>)
-    }));
     vi.mock('@/utils/prefetch', () => ({
         Prefetch: vi.fn().mockResolvedValue({})
     }));
