@@ -98,6 +98,6 @@
         "server-only": "0.0.1",
         "slice-machine-ui": "1.23.1",
         "typescript": "5.3.3",
-        "vitest": "1.2.1"
+        "vitest": "1.2.2"
     }
 }
