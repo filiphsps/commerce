@@ -56,7 +56,7 @@
         "@prismicio/client": "7.3.1",
         "@prismicio/next": "1.5.0",
         "@prismicio/react": "2.7.3",
-        "@shopify/hydrogen-react": "2023.10.1",
+        "@shopify/hydrogen-react": "2024.1.0",
         "@vercel/analytics": "1.1.2",
         "@vercel/otel": "1.0.0",
         "@vercel/speed-insights": "1.0.5",
