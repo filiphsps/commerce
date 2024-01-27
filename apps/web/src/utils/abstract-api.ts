@@ -2,12 +2,8 @@
 import type { Locale } from '@/utils/locale';
 import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
 import { DocumentTransform } from '@apollo/client';
-import type { Shop } from '@nordcom/commerce-database';
+import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { visit } from 'graphql';
-
-export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
-export type Nullable<T> = T | null;
-export type Identifiable = { handle: string };
 
 export type OmitTypeName<T> = Omit<T, '__typename'>;
 

@@ -130,7 +130,6 @@ describe('app', () => {
             let ProductApi = vi.fn().mockResolvedValue({
                 ...product
             }) as any as typeof OriginalPageApi;
-            ProductApi.preload = vi.fn().mockResolvedValue({});
             return {
                 ProductApi
             };

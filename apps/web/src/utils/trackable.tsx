@@ -2,12 +2,11 @@
 
 import { useShop } from '@/components/shop/provider';
 import { usePrevious } from '@/hooks/usePrevious';
-import type { Nullable } from '@/utils/abstract-api';
 import { BuildConfig } from '@/utils/build-config';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
-import type { Shop } from '@nordcom/commerce-database';
+import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
 import {

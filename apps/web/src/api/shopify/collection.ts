@@ -1,7 +1,8 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import type { AbstractApi, ApiOptions, Identifiable, Nullable } from '@/utils/abstract-api';
+import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { GenericError, NotFoundError, TodoError, UnknownApiError } from '@nordcom/commerce-errors';
+import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
+import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
 import type {
     Collection,
     CollectionEdge,
@@ -11,9 +12,6 @@ import type {
 } from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 import { unstable_cache as cache } from 'next/cache';
-
-/** @todo TODO: Type-library this so we can use it in other places. */
-type LimitFilters = { limit?: Nullable<number> } | { first?: Nullable<number>; last?: Nullable<number> };
 
 type GenericCollectionFilters = {
     after?: Nullable<string>;
@@ -33,7 +31,8 @@ type CollectionsFilters = {
 } & GenericCollectionFilters &
     LimitFilters;
 
-const extractLimitLikeFilters = (
+// TODO: This should be generic.
+export const extractLimitLikeFilters = (
     filters: LimitFilters,
     defaultLimit = 30
 ):
@@ -77,7 +76,7 @@ const extractLimitLikeFilters = (
     }
 
     // This should never actually be reachable.
-    throw new GenericError('Supposedly unreachable code path was reached');
+    throw new UnreachableError();
 };
 
 type CollectionOptions = ApiOptions &

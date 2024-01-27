@@ -1,8 +1,15 @@
 import type { Product } from '@/api/product';
-import type { AbstractApi, ApiOptions, Identifiable } from '@/utils/abstract-api';
+import { extractLimitLikeFilters } from '@/api/shopify/collection';
+import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { NotFoundError } from '@nordcom/commerce-errors';
-import type { ProductConnection, ProductEdge, ProductSortKeys } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
+import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+import type {
+    ProductConnection,
+    ProductEdge,
+    ProductSortKeys,
+    QueryRoot
+} from '@shopify/hydrogen-react/storefront-api-types';
 import { gql } from 'graphql-tag';
 import { unstable_cache as cache } from 'next/cache';
 
@@ -200,7 +207,18 @@ export const PRODUCT_FRAGMENT = `
     }
 `;
 
+type ProductsFilters = {
+    after?: Nullable<string>;
+    before?: Nullable<string>;
+
+    sorting?: Nullable<ProductSortKeys>;
+} & LimitFilters;
+
 type ProductOptions = ApiOptions & Identifiable;
+type ProductsOptions = ApiOptions & {
+    filters: ProductsFilters;
+};
+
 export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Product> => {
     if (!handle) throw new Error('400: Invalid handle');
     const shop = api.shop();
@@ -253,54 +271,95 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
     )({ api, handle });
 };
 
-/**
- * Preload to speed up api calls.
- *
- * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
- * @todo Generalize this for all API helpers.
- */
-ProductApi.preload = (data: ProductOptions) => {
-    void ProductApi(data);
-};
+export const ProductsPaginationCountApi = async ({
+    api,
+    filters
+    //...props
+}: ProductsOptions): Promise<{
+    pages: number;
+    products: number;
+    cursors: string[];
+}> => {
+    const shop = api.shop();
+    const locale = api.locale();
 
-export const ProductsCountApi = async ({ client }: { client: AbstractApi }): Promise<number> => {
-    const count_products = async (count: number = 0, cursor?: string) => {
-        const { data } = await client.query<{ products: ProductConnection }>(
-            gql`
-                query products {
-                    products(
-                        first: 250,
-                        sortKey: BEST_SELLING
-                        ${cursor ? `, after: "${cursor}"` : ''})
-                    {
-                        edges {
-                            cursor
-                            node {
-                                id
+    const filtersTag = JSON.stringify(filters, null, 0);
+
+    return cache(
+        async ({ api, filters }: ProductsOptions) => {
+            const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
+                const { data, errors } = await api.query<{
+                    products: QueryRoot['products'];
+                }>(
+                    gql`
+                        query products($first: Int, $sorting: ProductSortKeys, $before: String, $after: String) {
+                            products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+                                edges {
+                                    cursor
+                                    node {
+                                        id
+                                    }
+                                }
+                                pageInfo {
+                                    hasNextPage
+                                }
                             }
                         }
-                        pageInfo {
-                            hasNextPage
-                        }
+                    `,
+                    {
+                        ...extractLimitLikeFilters(filters),
+                        ...(({ sorting = 'BEST_SELLING' }) => ({
+                            sorting: sorting,
+                            after: after
+                        }))(filters)
+                    },
+                    {
+                        fetchPolicy: 'no-cache',
+                        tags: [shop.id, locale.code, `products`, 'pagination', filtersTag, `pos=${count}`]
                     }
+                );
+
+                if (errors) throw new UnknownApiError();
+                else if (!data?.products.edges || data.products.edges.length <= 0)
+                    return {
+                        count,
+                        cursors
+                    };
+
+                const cursor = data.products.edges.at(-1)!.cursor;
+                if (data.products.pageInfo.hasNextPage) {
+                    const res = await countProducts(count, [cursor, ...cursors], cursor);
+
+                    count += res.count;
+                    cursors = res.cursors;
                 }
-            `,
-            {},
-            {
-                tags: ['count.products']
+
+                return {
+                    count: count + data.products.edges.length,
+                    cursors
+                };
+            };
+
+            try {
+                const { count: products, cursors } = await countProducts(0);
+
+                const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+                const pages = Math.ceil(products / perPage);
+                return {
+                    pages,
+                    cursors: cursors.reverse(), // FIXME: This is a hack to reverse the cursors.
+                    products
+                };
+            } catch (error: unknown) {
+                console.error(error);
+                throw error;
             }
-        );
-
-        if (!data?.products?.edges) return count;
-
-        if (data.products.pageInfo.hasNextPage)
-            count += await count_products(count, data.products.edges.at(-1)!.cursor);
-
-        return count + data.products.edges.length;
-    };
-
-    const count = await count_products();
-    return count;
+        },
+        [shop.id, locale.code, 'products', 'pagination', filtersTag],
+        {
+            tags: [shop.id, locale.code, `products`, 'pagination', filtersTag]
+        }
+    )({ api, filters });
 };
 
 export const ProductsApi = async ({

@@ -2,9 +2,8 @@ import 'server-only';
 
 import type { PageData, PageType } from '@/api/page';
 import { components, components as slices } from '@/slices';
-import type { Optional } from '@/utils/abstract-api';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
+import type { Optional, Shop } from '@nordcom/commerce-database';
 import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
 

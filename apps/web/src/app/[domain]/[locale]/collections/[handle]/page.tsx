@@ -113,8 +113,8 @@ export default async function CollectionPage({
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) notFound();
-        else if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
 
+        if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
         const query = {
             page: searchParams.page ? Number.parseInt(searchParams.page) : 1
         };
@@ -126,11 +126,11 @@ export default async function CollectionPage({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Deal with pagination before fetching the collection.
-        const pagesInfo = await CollectionPaginationCountApi({ api, handle, first: PRODUCTS_PER_PAGE });
+        const pagesInfo = await CollectionPaginationCountApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE } });
         const after = pagesInfo.cursors[query.page - 2];
 
         // Do the actual API calls.
-        const collection = await CollectionApi({ api, handle, first: PRODUCTS_PER_PAGE, after }, cache);
+        const collection = await CollectionApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         // Get dictionary of strings for the current locale.

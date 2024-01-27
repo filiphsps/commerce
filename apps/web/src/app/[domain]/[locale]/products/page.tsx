@@ -1,7 +1,9 @@
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductsCountApi } from '@/api/shopify/product';
+import { ProductsPaginationCountApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
+import Pagination from '@/components/actionable/pagination';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
@@ -10,9 +12,19 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
-import { notFound } from 'next/navigation';
+import { unstable_cache as cache } from 'next/cache';
+import { RedirectType, notFound, redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import ProductsContent from './products-content';
+
+// TODO: Figure out a better way to deal with query params.
+
+// TODO: Make this dynamic, preferably a configurable default value and then a query param override.
+const PRODUCTS_PER_PAGE = 16 as const;
+
+type FilterParams = {
+    page?: string;
+};
 
 export type ProductsPageParams = { domain: string; locale: string };
 export async function generateMetadata({
@@ -24,7 +36,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
@@ -77,23 +89,61 @@ export async function generateMetadata({
     }
 }
 
-export default async function ProductsPage({ params: { domain, locale: localeData } }: { params: ProductsPageParams }) {
+export default async function ProductsPage({
+    params: { domain, locale: localeData },
+    searchParams
+}: {
+    params: ProductsPageParams;
+    searchParams: FilterParams;
+}) {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
+        if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
+        const query = {
+            page: searchParams.page ? Number.parseInt(searchParams.page) : 1
+        };
+
+        // Fetch the current shop.
+        const shop = await ShopApi(domain, cache);
+
+        // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
+
+        // Deal with pagination before fetching the collection.
+        const pagesInfo = await ProductsPaginationCountApi({ api, filters: { first: PRODUCTS_PER_PAGE } });
+        const after = pagesInfo.cursors[query.page - 2];
+
+        // Do the actual API calls.
+        //const products = await ProductsApi({ api, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);
         const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
 
-        const {} = ProductsCountApi({ client: api });
+        // Get dictionary of strings for the current locale.
+        const i18n = await getDictionary(locale);
+        const { t } = useTranslation('common', i18n);
+
+        redirect(`/${locale.code}/`, RedirectType.replace);
 
         return (
-            <PageContent primary={true}>
-                <Heading title={page?.title || 'Products'} subtitle={page?.description} />
+            <>
+                <PageContent primary={true}>
+                    <Heading title={page?.title || 'Products'} subtitle={page?.description} />
 
-                <ProductsContent />
-            </PageContent>
+                    <ProductsContent />
+
+                    <section>
+                        <ProductsContent />
+
+                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                    </section>
+                </PageContent>
+
+                <Suspense>
+                    <Breadcrumbs shop={shop} title={t('products')} />
+                </Suspense>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
