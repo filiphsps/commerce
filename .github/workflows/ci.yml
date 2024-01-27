@@ -13,7 +13,6 @@ on:
 
 env:
     CI: true
-    LIMIT_STATIC_PAGES: 5
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     POSTGRES_PRISMA_ACCELERATE_URL: ${{ secrets.POSTGRES_PRISMA_ACCELERATE_URL }}
@@ -24,6 +23,7 @@ env:
 jobs:
     build:
         name: 🔨 Build
+        needs: [lint, typecheck]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -33,12 +33,12 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build
+            - name: 🔨 Build All
               run: npm run build
 
     test:
         name: 🧪 Test
-        needs: [build]
+        needs: [lint, typecheck]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -48,8 +48,8 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build (cache)
-              run: npm run build
+            - name: 🔨 Build Packages
+              run: npm run build:packages
 
             - name: 🧪 Test
               run: npm run test
@@ -61,7 +61,6 @@ jobs:
 
     lint:
         name: 📋 Lint
-        needs: [build]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -71,15 +70,14 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build (cache)
-              run: npm run build
+            - name: 🔨 Build Packages
+              run: npm run build:packages
 
             - name: 📋 Lint
               run: npm run lint
 
     typecheck:
         name: ✅ Typecheck
-        needs: [build]
         timeout-minutes: 15
         runs-on: ubuntu-latest
         steps:
@@ -89,15 +87,15 @@ jobs:
             - name: 🚀 Bootstrap
               uses: ./.github/common/bootstrap
 
-            - name: 🔨 Build (cache)
-              run: npm run build
+            - name: 🔨 Build Packages
+              run: npm run build:packages
 
             - name: ✅ Typecheck
               run: npm run typecheck
 
     dispatch:
         name: 🗣️ Dispatch
-        needs: [build, test, typecheck, lint]
+        needs: [build, test]
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         timeout-minutes: 15
         runs-on: ubuntu-latest

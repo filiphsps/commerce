@@ -7,7 +7,6 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
-import { BuildConfig } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
 import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -55,11 +54,6 @@ export async function generateStaticParams() {
                 .filter((_) => _)
         )
     ).flat(2);
-
-    // FIXME: We have already looped through all pages when we get here which is really inefficient.
-    if (BuildConfig.build.limit_pages) {
-        return pages.slice(0, BuildConfig.build.limit_pages);
-    }
 
     return pages;
 }

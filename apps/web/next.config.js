@@ -78,9 +78,6 @@ const config = {
     },
 
     env: {
-        // Settings.
-        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
-
         // Prismic.
         PRISMIC_REPO: process.env.PRISMIC_REPO,
 
@@ -91,9 +88,6 @@ const config = {
     serverRuntimeConfig: {
         // Database.
         POSTGRES_PRISMA_ACCELERATE_URL: process.env.POSTGRES_PRISMA_ACCELERATE_URL,
-
-        // Settings.
-        LIMIT_STATIC_PAGES: process.env.LIMIT_STATIC_PAGES || '',
 
         // Prismic.
         PRISMIC_TOKEN: process.env.PRISMIC_TOKEN,

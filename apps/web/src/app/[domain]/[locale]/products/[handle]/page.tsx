@@ -72,11 +72,6 @@ import { ImportantProductDetails, ProductDetails } from './product-details';
         )
     ).flat(2);
 
-    // FIXME: We have already looped through all pages when we get here which is really inefficient.
-    if (BuildConfig.build.limit_pages) {
-        return pages.slice(0, BuildConfig.build.limit_pages);
-    }
-
     return pages;
 }*/
 

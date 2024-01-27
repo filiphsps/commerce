@@ -1,10 +1,6 @@
 export const BuildConfig = {
     environment: process.env.NODE_ENV || 'production',
 
-    build: {
-        limit_pages: process.env.LIMIT_STATIC_PAGES ? Number.parseInt(process.env.LIMIT_STATIC_PAGES) : undefined
-    },
-
     shopify: {
         api: '2023-10'
     },
