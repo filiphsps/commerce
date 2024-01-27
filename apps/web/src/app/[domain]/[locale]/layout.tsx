@@ -151,13 +151,13 @@ export default async function RootLayout({
                                     '@type': 'Person',
                                     name: 'Dennis Sahlin',
                                     email: 'dennis@nordcom.io',
-                                    jobTitle: 'CEO'
+                                    jobTitle: 'Chief Executive Officer'
                                 },
                                 {
                                     '@type': 'Person',
                                     name: 'Filiph Siitam Sandström',
                                     email: 'filiph@nordcom.io',
-                                    jobTitle: 'CTO'
+                                    jobTitle: 'Chief Technology Officer'
                                 },
                                 {
                                     '@type': 'Person',
@@ -168,10 +168,10 @@ export default async function RootLayout({
                             ]}
                             address={{
                                 '@type': 'PostalAddress',
-                                streetAddress: 'Bergsgatan 7F',
-                                addressLocality: 'Mellerud',
+                                streetAddress: 'Sädesbingen 20 lgh 1301',
+                                addressLocality: 'Trollhättan',
                                 addressRegion: 'Västra Götaland',
-                                postalCode: '464 30',
+                                postalCode: '461 61',
                                 addressCountry: 'Sweden'
                             }}
                             sameAs={[]}
