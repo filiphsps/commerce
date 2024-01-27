@@ -114,4 +114,3 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         throw error;
     }
 }
-/* c8 ignore stop */

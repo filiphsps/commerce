@@ -46,7 +46,6 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
         </Link>
     );
 };
-
 CartButton.displayName = 'Nordcom.Header.CartButton';
+
 export { CartButton };
-/* c8 ignore stop */

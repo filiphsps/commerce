@@ -21,4 +21,3 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         </>
     );
 }
-/* c8 ignore stop */

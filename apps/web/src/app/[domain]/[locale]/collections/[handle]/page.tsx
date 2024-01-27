@@ -3,6 +3,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import Pagination from '@/components/actionable/pagination';
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
@@ -22,9 +23,6 @@ import styles from './page.module.scss';
 
 // Make sure this page is always dynamic.
 // TODO: Figure out a better way to deal with query params.
-/*export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-export const revalidate = 0;*/
 
 type FilterParams = {
     page?: string;
@@ -99,7 +97,6 @@ export async function generateMetadata({
         throw error;
     }
 }
-/* c8 ignore stop */
 
 export default async function CollectionPage({
     params: { domain, locale: localeData, handle },
@@ -124,9 +121,10 @@ export default async function CollectionPage({
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
 
+        // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        // Pagination.
+        // Deal with pagination before fetching the collection.
         const pagesInfo = await CollectionPaginationCountApi({ api, handle, first: productsPerPage });
         const after = pagesInfo.cursors[query.page - 2];
 
@@ -140,71 +138,81 @@ export default async function CollectionPage({
         const subtitle =
             (page?.meta_description && asText(page?.meta_description)) || collection.seo?.description || null;
 
+        // Filter any left-over legacy collection slices.
+        const slices =
+            page?.slices?.filter(
+                ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
+            ) || [];
+
         return (
-            <PageContent primary={true} className={styles.container}>
-                <Heading
-                    title={page?.meta_title || collection?.seo?.title || collection.title}
-                    subtitleAs={Fragment}
-                    subtitle={
-                        subtitle ? (
-                            <Content
-                                dangerouslySetInnerHTML={{
-                                    __html: subtitle
-                                }}
-                            />
-                        ) : null
-                    }
-                />
-
-                <section className={styles.collection}>
-                    <Suspense
-                        key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
-                        fallback={<CollectionBlock.skeleton />}
-                    >
-                        <CollectionBlock
-                            shop={shop}
-                            locale={locale}
-                            handle={handle}
-                            filters={{
-                                first: productsPerPage,
-                                after
-                            }}
-                        />
-                    </Suspense>
-
-                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                </section>
-
-                {page?.slices && (page?.slices?.length || 0) > 0 ? (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={{
-                            ...page,
-                            slices: page.slices.filter(
-                                ({ slice_type, variation }) =>
-                                    !(slice_type === 'collection' && (variation as any) === 'full') // Filter any left-over legacy collection slices.
-                            ) as any
-                        }}
-                        i18n={i18n}
-                        handle={handle}
-                        type={'collection_page'}
+            <>
+                <PageContent primary={true} className={styles.container}>
+                    <Heading
+                        title={page?.meta_title || collection?.seo?.title || collection.title}
+                        subtitleAs={Fragment}
+                        subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
                     />
-                ) : null}
 
-                {collection.descriptionHtml ? (
-                    <>
-                        <hr />
-                        <section>
-                            <Content
-                                dangerouslySetInnerHTML={{
-                                    __html: collection.descriptionHtml
-                                }}
+                    <section className={styles.collection}>
+                        <Suspense
+                            key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
+                            fallback={<CollectionBlock.skeleton />}
+                        >
+                            <CollectionBlock
+                                shop={shop}
+                                locale={locale}
+                                handle={handle}
+                                filters={{ first: productsPerPage, after }}
                             />
-                        </section>
-                    </>
-                ) : null}
-            </PageContent>
+                        </Suspense>
+
+                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                    </section>
+
+                    {page && slices && (slices?.length || 0) > 0 ? (
+                        <Suspense
+                            key={`${shop.id}.products.${handle}.content`}
+                            fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
+                        >
+                            <PrismicPage
+                                shop={shop}
+                                locale={locale}
+                                page={{ ...page, slices } as any}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'collection_page'}
+                            />
+                        </Suspense>
+                    ) : null}
+
+                    {collection.descriptionHtml ? (
+                        <>
+                            <hr />
+                            <section>
+                                <Content dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
+                            </section>
+                        </>
+                    ) : null}
+                </PageContent>
+
+                <Suspense>
+                    <Breadcrumbs shop={shop} title={collection.title} />
+                </Suspense>
+
+                {/* Metadata */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'CollectionPage',
+                            name: collection.title,
+                            description: collection.description,
+                            url: `https://${shop.domain}/${locale.code}/collections/${handle}/`
+                        })
+                    }}
+                />
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

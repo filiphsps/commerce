@@ -146,7 +146,6 @@ export async function generateMetadata({
         throw error;
     }
 }
-/* c8 ignore stop */
 
 export default async function ProductPage({
     params: { domain, locale: localeData, handle }
@@ -165,13 +164,10 @@ export default async function ProductPage({
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
-
-        // Next.js Preloading pattern. // TODO: Figure out a nicer way.
-
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
         const reviews = await ProductReviewsApi({ api, product });
+        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -336,6 +332,7 @@ export default async function ProductPage({
                     <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
                 </Suspense>
 
+                {/* Metadata */}
                 <ProductJsonLd
                     useAppDir={true}
                     key={variant?.id}

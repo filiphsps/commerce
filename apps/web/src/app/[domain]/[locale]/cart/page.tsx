@@ -76,7 +76,6 @@ export async function generateMetadata({
         throw error;
     }
 }
-/* c8 ignore stop */
 
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     try {

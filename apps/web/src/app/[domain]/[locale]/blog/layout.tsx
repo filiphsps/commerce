@@ -11,11 +11,8 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
 
-/* c8 ignore start */
 export const revalidate = 28_800; // 8hrs.
-/* c8 ignore stop */
 
-/* c8 ignore start */
 export type BlogLayoutParams = { domain: string; locale: string };
 export default async function BlogLayout({
     children,
@@ -73,4 +70,3 @@ export default async function BlogLayout({
         throw error;
     }
 }
-/* c8 ignore stop */

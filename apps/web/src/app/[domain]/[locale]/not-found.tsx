@@ -2,7 +2,6 @@ import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import type { Metadata } from 'next';
 
-/* c8 ignore start */
 export const metadata: Metadata = {
     title: '404: Page Not Found',
     icons: {
@@ -40,4 +39,3 @@ export default function NotFound() {
         </>
     );
 }
-/* c8 ignore stop */
