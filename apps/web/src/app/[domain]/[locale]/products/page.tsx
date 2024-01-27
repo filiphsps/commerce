@@ -18,6 +18,8 @@ import { Suspense } from 'react';
 import ProductsContent from './products-content';
 
 // TODO: Figure out a better way to deal with query params.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // TODO: Make this dynamic, preferably a configurable default value and then a query param override.
 const PRODUCTS_PER_PAGE = 16 as const;

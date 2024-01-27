@@ -266,7 +266,16 @@ export const CollectionPaginationCountApi = async ({
                     },
                     {
                         fetchPolicy: 'no-cache',
-                        tags: [shop.id, locale.code, `collection`, 'pagination', handle, filtersTag, `pos=${count}`]
+                        tags: [
+                            shop.id,
+                            locale.code,
+                            `collection`,
+                            'pagination',
+                            'count',
+                            handle,
+                            filtersTag,
+                            `pos=${count}`
+                        ]
                     }
                 );
 
