@@ -1,7 +1,7 @@
 import type { AbstractApi } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
 import { describe, expect, it, vi } from 'vitest';
-import type { Shop } from '../shop';
 import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from './collection';
 
 describe('api', () => {
@@ -105,6 +105,116 @@ describe('api', () => {
                         }
                     });
                 });
+
+                it('should parse filters properly', async () => {
+                    const api: AbstractApi = {
+                        query: vi.fn().mockResolvedValue({
+                            data: {
+                                collection: {
+                                    id: '123',
+                                    handle: 'test-collection',
+                                    title: 'Test Collection',
+                                    description: 'This is a test collection',
+                                    descriptionHtml: '<p>This is a test collection</p>',
+                                    image: {
+                                        id: '456',
+                                        altText: 'Test Collection Image',
+                                        url: 'https://example.com/test-collection.jpg',
+                                        height: 500,
+                                        width: 500
+                                    },
+                                    seo: {
+                                        title: 'Test Collection SEO Title',
+                                        description: 'Test Collection SEO Description'
+                                    },
+                                    products: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    id: '789'
+                                                }
+                                            }
+                                        ],
+                                        pageInfo: {
+                                            startCursor: 'start',
+                                            endCursor: 'end',
+                                            hasNextPage: false,
+                                            hasPreviousPage: false
+                                        }
+                                    },
+                                    keywords: {
+                                        value: 'test, collection'
+                                    },
+                                    isBrand: {
+                                        value: 'true'
+                                    },
+                                    shortDescription: {
+                                        value: 'Short description of the test collection'
+                                    }
+                                }
+                            }
+                        }),
+                        locale: () => Locale.default,
+                        shop: () => ({}) as Shop
+                    };
+
+                    const handle = 'test-collection';
+                    const filters = {
+                        sorting: 'BEST_SELLING',
+                        after: 'start',
+                        before: 'end',
+                        limit: 10
+                    };
+
+                    const collection = await CollectionApi({ api, handle, filters });
+
+                    expect(collection).toEqual({
+                        id: '123',
+                        handle: 'test-collection',
+                        title: 'Test Collection',
+                        description: 'This is a test collection',
+                        descriptionHtml: '<p>This is a test collection</p>',
+                        image: {
+                            id: '456',
+                            altText: 'Test Collection Image',
+                            url: 'https://example.com/test-collection.jpg',
+                            height: 500,
+                            width: 500
+                        },
+                        seo: {
+                            title: 'Test Collection SEO Title',
+                            description: 'Test Collection SEO Description'
+                        },
+                        products: {
+                            edges: [
+                                {
+                                    node: {
+                                        id: '789'
+                                    }
+                                }
+                            ],
+                            pageInfo: {
+                                startCursor: 'start',
+                                endCursor: 'end',
+                                hasNextPage: false,
+                                hasPreviousPage: false
+                            }
+                        },
+                        keywords: {
+                            value: 'test, collection'
+                        },
+                        isBrand: {
+                            value: 'true'
+                        },
+                        shortDescription: {
+                            value: 'Short description of the test collection'
+                        }
+                    });
+                });
+
+                it.todo('should paginate products when `before` is provided');
+                it.todo('should paginate products when `after` is provided');
+                it.todo('should fail to paginate products when both `before` and `after` are provided');
             });
 
             describe('CollectionsApi', () => {

@@ -8,6 +8,7 @@ import ProductCard from '@/components/product-card/product-card';
 import styles from '@/components/products/collection-block.module.scss';
 import type { Locale } from '@/utils/locale';
 import type { Shop } from '@nordcom/commerce-database';
+import { unstable_cache as cache } from 'next/cache';
 import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {
@@ -41,13 +42,16 @@ const CollectionBlock = async ({
     const apiConfig = await ShopifyApiConfig({ shop });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
-    const collection = await CollectionApi({
-        api,
-        handle,
-        // TODO: Pagination for the full variation.
-        first: limit,
-        ...filters
-    });
+    const collection = await CollectionApi(
+        {
+            api,
+            handle,
+            // TODO: Pagination for the full variation.
+            first: limit,
+            ...filters
+        },
+        cache
+    );
 
     // TODO: Add collection type.
     const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];

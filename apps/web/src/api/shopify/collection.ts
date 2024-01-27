@@ -103,7 +103,7 @@ type CollectionOptions = ApiOptions &
  * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
  * @returns {Promise<Collection>} The collection.
  */
-export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions): Promise<Collection> => {
+export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions, cache?: any): Promise<Collection> => {
     if (!handle) throw new Error('400: Invalid handle');
     const shop = api.shop();
     const locale = api.locale();
@@ -111,100 +111,103 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
-    return cache(
-        async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
-            try {
-                const { data, errors } = await api.query<{
-                    collection: QueryRoot['collection'];
-                }>(
-                    gql`
-                        query collection(
-                            $handle: String!
-                            $first: Int
-                            $last: Int
-                            $sorting: ProductCollectionSortKeys
-                            $before: String
-                            $after: String
-                        ) {
-                            collection(handle: $handle) {
+    const callback = async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
+        try {
+            const { data, errors } = await api.query<{
+                collection: QueryRoot['collection'];
+            }>(
+                gql`
+                    query collection(
+                        $handle: String!
+                        $first: Int
+                        $last: Int
+                        $sorting: ProductCollectionSortKeys
+                        $before: String
+                        $after: String
+                    ) {
+                        collection(handle: $handle) {
+                            id
+                            handle
+                            title
+                            description
+                            descriptionHtml
+                            image {
                                 id
-                                handle
+                                altText
+                                url
+                                height
+                                width
+                            }
+                            seo {
                                 title
                                 description
-                                descriptionHtml
-                                image {
-                                    id
-                                    altText
-                                    url
-                                    height
-                                    width
-                                }
-                                seo {
-                                    title
-                                    description
-                                }
-                                products(
-                                    first: $first
-                                    last: $last
-                                    sortKey: $sorting
-                                    before: $before
-                                    after: $after
-                                ) {
-                                    edges {
-                                        node {
-                                            ${PRODUCT_FRAGMENT_MINIMAL}
-                                        }
-                                    }
-                                    pageInfo {
-                                        startCursor
-                                        endCursor
-                                        hasNextPage
-                                        hasPreviousPage
+                            }
+                            products(
+                                first: $first
+                                last: $last
+                                sortKey: $sorting
+                                before: $before
+                                after: $after
+                            ) {
+                                edges {
+                                    node {
+                                        ${PRODUCT_FRAGMENT_MINIMAL}
                                     }
                                 }
-                                keywords: metafield(namespace: "store", key: "keywords") {
-                                    value
-                                }
-                                isBrand: metafield(namespace: "store", key: "is_brand") {
-                                    value
-                                }
-                                shortDescription: metafield(namespace: "store", key: "short_description") {
-                                    value
+                                pageInfo {
+                                    startCursor
+                                    endCursor
+                                    hasNextPage
+                                    hasPreviousPage
                                 }
                             }
+                            keywords: metafield(namespace: "store", key: "keywords") {
+                                value
+                            }
+                            isBrand: metafield(namespace: "store", key: "is_brand") {
+                                value
+                            }
+                            shortDescription: metafield(namespace: "store", key: "short_description") {
+                                value
+                            }
                         }
-                    `,
-                    {
-                        handle: handle,
-                        ...extractLimitLikeFilters(filters),
-                        ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                            sorting: sorting,
-                            before: before,
-                            after: after
-                        }))(filters)
-                    },
-                    {
-                        tags: [shop.id, locale.code, `collection`, handle, filtersTag]
                     }
-                );
-
-                if (errors) {
-                    throw new UnknownApiError();
-                } else if (!data?.collection) {
-                    throw new NotFoundError(`"Collection" with the handle "${handle}"`);
+                `,
+                {
+                    handle: handle,
+                    ...extractLimitLikeFilters(filters),
+                    ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
+                        sorting: sorting,
+                        before: before,
+                        after: after
+                    }))(filters)
+                },
+                {
+                    tags: [shop.id, locale.code, `collection`, handle, filtersTag]
                 }
+            );
 
-                return {
-                    ...data.collection,
-                    descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
-                };
-            } catch (error: unknown) {
-                console.error(error);
-                throw error;
+            if (errors) {
+                throw new UnknownApiError();
+            } else if (!data?.collection) {
+                throw new NotFoundError(`"Collection" with the handle "${handle}"`);
             }
-        },
-        [shop.id, locale.code, 'collection', handle, filtersTag]
-    )({ api, handle }, filters);
+
+            return {
+                ...data.collection,
+                descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
+            };
+        } catch (error: unknown) {
+            console.error(error);
+            throw error;
+        }
+    };
+
+    if (!cache || typeof cache !== 'function') {
+        return await callback({ api, handle }, filters);
+    }
+
+    return cache(callback, [shop.id, locale.code, 'collection', handle, filtersTag])({ api, handle }, filters);
 };
 
 export const CollectionPaginationCountApi = async ({

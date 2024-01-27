@@ -21,8 +21,10 @@ import { notFound } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import styles from './page.module.scss';
 
-// Make sure this page is always dynamic.
 // TODO: Figure out a better way to deal with query params.
+
+// TODO: Make this dynamic, preferably a configurable default value and then a query param override.
+const PRODUCTS_PER_PAGE = 16 as const;
 
 type FilterParams = {
     page?: string;
@@ -45,7 +47,7 @@ export async function generateMetadata({
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const collection = await CollectionApi({ api, handle, first: 16, after: null }); // TODO: this.
+        const collection = await CollectionApi({ api, handle, first: 16, after: null }, cache); // TODO: this.
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = await LocalesApi({ api });
 
@@ -113,7 +115,6 @@ export default async function CollectionPage({
         if (!locale) notFound();
         else if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
 
-        const productsPerPage = 16; // TODO: Make this configurable.
         const query = {
             page: searchParams.page ? Number.parseInt(searchParams.page) : 1
         };
@@ -125,11 +126,11 @@ export default async function CollectionPage({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Deal with pagination before fetching the collection.
-        const pagesInfo = await CollectionPaginationCountApi({ api, handle, first: productsPerPage });
+        const pagesInfo = await CollectionPaginationCountApi({ api, handle, first: PRODUCTS_PER_PAGE });
         const after = pagesInfo.cursors[query.page - 2];
 
         // Do the actual API calls.
-        const collection = await CollectionApi({ api, handle, first: productsPerPage, after });
+        const collection = await CollectionApi({ api, handle, first: PRODUCTS_PER_PAGE, after }, cache);
         const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         // Get dictionary of strings for the current locale.
@@ -162,7 +163,7 @@ export default async function CollectionPage({
                                 shop={shop}
                                 locale={locale}
                                 handle={handle}
-                                filters={{ first: productsPerPage, after }}
+                                filters={{ first: PRODUCTS_PER_PAGE, after }}
                             />
                         </Suspense>
 
