@@ -73,7 +73,7 @@ export type AnalyticsEventData = {
 };
 
 /**
- * @see {@link https://shopify.dev/docs/api/hydrogen-react/2023-10/utilities/sendshopifyanalytics#analyticspagetype}
+ * @see {@link https://shopify.dev/docs/api/hydrogen-react/2024-01/utilities/sendshopifyanalytics#analyticspagetype}
  */
 export type ShopifyPageType =
     | 'article'

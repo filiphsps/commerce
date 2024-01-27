@@ -2,7 +2,7 @@ export const BuildConfig = {
     environment: process.env.NODE_ENV || 'production',
 
     shopify: {
-        api: '2023-10'
+        api: '2024-01'
     },
 
     prismic: {
