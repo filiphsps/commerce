@@ -22,6 +22,7 @@
         "build:vercel": "prisma migrate deploy",
         "prebuild": "prisma generate --no-engine  > /dev/null",
         "build": "turbo run build",
+        "build:packages": "turbo run build --filter='./packages/*'",
         "lint": "turbo run lint",
         "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
         "fix": "turbo run fix",
