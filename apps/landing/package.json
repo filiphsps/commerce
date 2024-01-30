@@ -48,7 +48,7 @@
         "@next/third-parties": "14.1.0",
         "@nordcom/commerce-errors": "*",
         "@nordcom/nordstar": "0.0.38",
-        "@vercel/otel": "1.0.1",
+        "@vercel/otel": "1.1.0",
         "colord": "2.9.3",
         "geist": "1.2.1",
         "next": "14.1.0",
