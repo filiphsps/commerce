@@ -47,7 +47,7 @@
     "homepage": "https://shops.nordcom.io/",
     "dependencies": {
         "@apollo/client": "3.8.10",
-        "@apollo/experimental-nextjs-app-support": "0.6.0",
+        "@apollo/experimental-nextjs-app-support": "0.7.0",
         "@next/third-parties": "14.1.0",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
