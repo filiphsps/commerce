@@ -80,8 +80,8 @@
         "lint-staged": "15.2.1",
         "prettier": "3.2.4",
         "prisma": "5.9.0",
-        "turbo": "1.12.0",
-        "turbo-ignore": "1.12.0",
+        "turbo": "1.12.2",
+        "turbo-ignore": "1.12.2",
         "typescript": "5.3.3"
     },
     "optionalDependencies": {
