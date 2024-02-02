@@ -48,7 +48,7 @@
     ],
     "dependencies": {
         "@nordcom/commerce-errors": "*",
-        "@prisma/client": "5.9.0",
+        "@prisma/client": "5.9.1",
         "@prisma/extension-accelerate": "0.6.2"
     },
     "devDependencies": {
