@@ -49,7 +49,7 @@
     "dependencies": {
         "@nordcom/commerce-errors": "*",
         "@prisma/client": "5.9.1",
-        "@prisma/extension-accelerate": "0.6.2"
+        "@prisma/extension-accelerate": "0.6.3"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
