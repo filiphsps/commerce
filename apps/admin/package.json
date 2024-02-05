@@ -55,7 +55,7 @@
         "@shopify/shopify-api": "9.0.2",
         "@vercel/otel": "1.2.1",
         "colord": "2.9.3",
-        "geist": "1.2.1",
+        "geist": "1.2.2",
         "next": "14.1.0",
         "next-auth": "4.24.5",
         "next-seo": "6.4.0",
