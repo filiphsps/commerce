@@ -61,8 +61,8 @@
     ],
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@typescript-eslint/eslint-plugin": "6.20.0",
-        "@typescript-eslint/parser": "6.20.0",
+        "@typescript-eslint/eslint-plugin": "6.21.0",
+        "@typescript-eslint/parser": "6.21.0",
         "@vitejs/plugin-react": "4.2.1",
         "@vitest/coverage-v8": "1.2.2",
         "babel-plugin-module-resolver": "5.0.0",
