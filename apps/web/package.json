@@ -96,7 +96,7 @@
         "graphql": "16.8.1",
         "happy-dom": "13.3.8",
         "server-only": "0.0.1",
-        "slice-machine-ui": "1.23.1",
+        "slice-machine-ui": "1.24.0",
         "typescript": "5.3.3",
         "vitest": "1.2.2"
     }
