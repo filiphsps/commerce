@@ -10,6 +10,8 @@ import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import LoginContent from './login-content';
 
+// Make sure this page is always dynamic.
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export type LoginAccountPageParams = { domain: string; locale: string };
