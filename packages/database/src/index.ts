@@ -21,6 +21,9 @@ export type {
 import { CommerceProviderAuthenticationApi, ShopApi, ShopsApi } from './shop';
 export { CommerceProviderAuthenticationApi, ShopApi, ShopsApi };
 
+import { PagesApi } from './page';
+export { PagesApi };
+
 // TODO: Place these in the correct place.
 export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };
 export type Nullable<T> = T | null;
