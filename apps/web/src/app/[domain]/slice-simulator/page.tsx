@@ -5,6 +5,7 @@ import { Locale } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
 import { SliceSimulator } from '@slicemachine/adapter-next/simulator';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export default function SliceSimulatorPage() {

@@ -3,6 +3,8 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 
+export const runtime = 'nodejs';
+
 export type AppleIconRouteParams = {
     domain: string;
 };

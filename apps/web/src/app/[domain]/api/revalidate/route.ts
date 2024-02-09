@@ -3,6 +3,7 @@ import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce
 import { revalidateTag, unstable_cache } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
+export const runtime = 'nodejs';
 const headers = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = {

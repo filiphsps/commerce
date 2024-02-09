@@ -4,6 +4,8 @@ import { ImageResponse } from 'next/og';
 import { NextResponse, type NextRequest } from 'next/server';
 import { validateSize } from './validate-size';
 
+export const runtime = 'nodejs';
+
 export type FaviconRouteParams = {
     domain: string;
 };
