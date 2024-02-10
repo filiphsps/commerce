@@ -6,7 +6,7 @@ import { Label } from '@/components/typography/label';
 import { Locale } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import styles from './layout.module.scss';
@@ -22,7 +22,7 @@ export default async function BlogLayout({
     params: BlogLayoutParams;
 }) {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 

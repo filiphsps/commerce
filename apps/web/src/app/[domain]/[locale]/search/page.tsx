@@ -10,7 +10,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import SearchContent from './search-content';
@@ -25,7 +25,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
@@ -80,7 +80,7 @@ export async function generateMetadata({
 
 export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 

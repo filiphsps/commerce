@@ -11,7 +11,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -27,7 +27,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
@@ -80,7 +80,7 @@ export default async function CustomPage({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         const { page } = await PageApi({ shop, locale, handle });
         if (!page) notFound(); // TODO: Return proper error.

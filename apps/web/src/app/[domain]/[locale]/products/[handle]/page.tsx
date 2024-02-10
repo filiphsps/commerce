@@ -27,7 +27,7 @@ import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 import type { Metadata } from 'next';
 import { ProductJsonLd } from 'next-seo';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
@@ -88,7 +88,7 @@ export async function generateMetadata({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -160,7 +160,7 @@ export default async function ProductPage({
         if (!locale) notFound();
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 

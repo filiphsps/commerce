@@ -8,7 +8,7 @@ import type { Shop } from '@nordcom/commerce-database';
 import { CommerceProviderAuthenticationApi } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { headers } from 'next/headers';
 
 export const ShopifyApiConfig = async ({
@@ -25,7 +25,7 @@ export const ShopifyApiConfig = async ({
 }> => {
     const commerceProvider = await CommerceProviderAuthenticationApi({
         shop,
-        cache: noCache ? undefined : unstable_cache
+        cache: noCache ? undefined : cache
     });
     if (!shop.commerceProvider || !commerceProvider) throw new UnknownCommerceProviderError();
 

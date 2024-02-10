@@ -10,7 +10,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import BlogContent from './blog-content';
@@ -22,7 +22,7 @@ export async function generateMetadata({
     params: BlogPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
@@ -77,7 +77,7 @@ export async function generateMetadata({
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 

@@ -1,6 +1,6 @@
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce-errors';
-import { revalidateTag, unstable_cache } from 'next/cache';
+import { unstable_cache as cache, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -14,7 +14,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
     // TODO: Support revalidating subtype (e.g. `namespace.shop.type`).
 
     try {
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         //TODO: Do this in the correct place.
         revalidateTag(`shopify`);
         revalidateTag('prismic');

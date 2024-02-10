@@ -8,7 +8,7 @@ import { CssVariablesProvider } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { Suspense, type ReactNode } from 'react';
 
@@ -36,7 +36,7 @@ export default async function RootLayout({
     children: ReactNode;
     params: { domain: string };
 }) {
-    const shop = await ShopApi(domain, unstable_cache);
+    const shop = await ShopApi(domain, cache);
     const locale = Locale.default;
     const shopifyApi = await ShopifyApiConfig({ shop });
 

@@ -1,13 +1,13 @@
 import { ShopApi } from '@nordcom/commerce-database';
 import { TodoError } from '@nordcom/commerce-errors';
 import { colord } from 'colord';
-import { unstable_cache as cache, unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
     return cache(
         async (domain: string) => {
-            const shop = await ShopApi(domain, unstable_cache);
+            const shop = await ShopApi(domain, cache);
             if (!shop.branding?.brandColors) throw new TodoError();
             const { brandColors: colors } = shop.branding;
 

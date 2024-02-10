@@ -10,7 +10,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import LocaleSelector from './locale-selector';
@@ -25,7 +25,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
@@ -88,7 +88,7 @@ export default async function CountriesPage({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const countries = await CountriesApi({ api });

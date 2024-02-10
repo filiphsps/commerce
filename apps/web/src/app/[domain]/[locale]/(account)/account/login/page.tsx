@@ -6,7 +6,7 @@ import { Locale } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import LoginContent from './login-content';
 
@@ -24,7 +24,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         const api = await ShopifyApiClient({ shop, locale });
         const locales = await LocalesApi({ api });
@@ -64,7 +64,7 @@ export default async function LoginAccountPage({
         const locale = Locale.from(localeData);
         if (!locale) notFound();
 
-        const shop = await ShopApi(domain, unstable_cache);
+        const shop = await ShopApi(domain, cache);
 
         return (
             <>
