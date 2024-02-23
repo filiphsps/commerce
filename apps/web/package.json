@@ -92,7 +92,7 @@
         "concurrently": "8.2.2",
         "critters": "0.0.20",
         "eslint-config-next": "14.1.0",
-        "eslint": "8.56.0",
+        "eslint": "8.57.0",
         "graphql": "16.8.1",
         "happy-dom": "13.5.0",
         "server-only": "0.0.1",
