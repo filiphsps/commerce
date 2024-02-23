@@ -64,7 +64,7 @@
         "glob": "10.3.10",
         "sass": "1.71.1",
         "sharp": "0.33.2",
-        "sonner": "1.4.0"
+        "sonner": "1.4.1"
     },
     "devDependencies": {
         "@happy-dom/global-registrator": "13.2.1",
