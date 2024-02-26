@@ -54,7 +54,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
             );
         }
         default: {
-            throw new Error('500: Invalid variant');
+            throw new Error(`500: Invalid variant: "${slice.variation}"`);
         }
     }
 };
