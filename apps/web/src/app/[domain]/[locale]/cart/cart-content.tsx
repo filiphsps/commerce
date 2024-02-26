@@ -1,12 +1,12 @@
+import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { Shop } from '@nordcom/commerce-database';
+import type { ReactNode } from 'react';
 
 import { CartLines } from '@/components/cart/cart-lines';
-import { FreeShippingProgress } from '@/components/cart/free-shipping-progress';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
-import type { StoreModel } from '@/models/StoreModel';
-import { type Shop } from '@nordcom/commerce-database';
-import { Suspense, type ReactNode } from 'react';
+import { Suspense } from 'react';
 import styles from './cart-content.module.scss';
 import { CartSidebar } from './cart-sidebar';
 
@@ -27,20 +27,20 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                 <div className={styles.lines}>
                     {header}
 
-                    <Suspense>
+                    {/*<Suspense key={`${shop.id}.page.cart.progress`}>
                         <FreeShippingProgress i18n={i18n} />
-                    </Suspense>
+                    </Suspense>*/}
 
-                    <Suspense>
+                    <Suspense key={`${shop.id}.page.cart.cart-lines`}>
                         <CartLines i18n={i18n} />
                     </Suspense>
                 </div>
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
-            <Suspense>{slices}</Suspense>
+            <Suspense key={`${shop.id}.page.cart.content`}>{slices}</Suspense>
 
-            <Suspense>
+            <Suspense key={`${shop.id}.page.cart.breadcrumbs`}>
                 <Breadcrumbs shop={shop} />
             </Suspense>
         </PageContent>
