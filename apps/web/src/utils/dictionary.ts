@@ -1,7 +1,7 @@
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 import type { Shop } from '@nordcom/commerce-database';
 
-const stub = { cart: {}, common: {} };
+const stub = { cart: {}, common: {}, product: {} };
 
 export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleDictionary>> = {
     af: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
