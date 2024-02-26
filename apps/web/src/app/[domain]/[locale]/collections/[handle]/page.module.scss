@@ -10,5 +10,7 @@
         flex-direction: column;
         align-items: center;
         gap: inherit;
+
+        padding: var(--block-padding-large) 0;
     }
 }

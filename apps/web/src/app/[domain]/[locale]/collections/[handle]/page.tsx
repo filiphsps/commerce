@@ -149,7 +149,7 @@ export default async function CollectionPage({
 
         return (
             <>
-                <PageContent primary={true} className={styles.container}>
+                <PageContent className={styles.container}>
                     <Heading
                         title={page?.meta_title || collection?.seo?.title || collection.title}
                         subtitleAs={Fragment}
