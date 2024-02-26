@@ -1,0 +1,38 @@
+{
+    "cart": {
+        "add-n-to-your-cart": "Ajouter {0} à votre panier",
+        "away-from-free-shipping": "Ne manquez pas une offre exceptionnelle! Ajoutez des articles pour une valeur supplémentaire de {0} à votre commande et obtenez la LIVRAISON GRATUITE, offerte par la maison.",
+        "away-from-getting": "loin d'obtenir",
+        "continue-to-checkout": "Passer à la caisse",
+        "estimated-total": "Total estimé",
+        "free-shipping-on-this-order": "Félicitations, vous êtes admissible à la livraison GRATUITE sur cette commande. Quelle belle affaire !",
+        "free-shipping": "Livraison GRATUITE",
+        "label-cart-note": "Ajouter des instructions ou des demandes spéciales à votre commande (facultatif)",
+        "order-summary": "Résumé de la commande",
+        "placeholder-cart-note": "Comment pouvons-nous faire de cette expérience un moment inoubliable pour vous ? Avez-vous des demandes spéciales ou des instructions que vous aimeriez que nous sachions ?",
+        "products": "Produits",
+        "promo-codes": "Codes promotionnels",
+        "sale-discount": "Remise de solde",
+        "shipping-calculated-at-checkout": "Frais de port calculés à la caisse",
+        "shipping": "Livraison",
+        "subtotal": "Sous-total",
+        "view-cart": "Voir votre panier"
+    },
+    "common": {
+        "add-to-cart": "Ajouter au panier",
+        "add": "Ajouter",
+        "added-to-cart": "Ajouté !",
+        "buy": "Acheter",
+        "cart-not-ready": "Patientez...",
+        "cart": "Panier",
+        "countries": "Pays",
+        "language-and-region-settings": "Paramètres de langue et de région",
+        "out-of-stock": "En rupture de stock",
+        "quantity-too-low": "Quantité trop faible",
+        "quantity": "Quantité",
+        "search": "Recherche"
+    },
+    "product": {
+        "recommendations": "D'autres clients ont également apprécié ces produits ensemble"
+    }
+}
