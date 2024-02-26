@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -10,7 +11,8 @@ describe('components', () => {
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),
-                useShop: vi.fn().mockReturnValue({})
+                useShop: vi.fn().mockReturnValue({}),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 

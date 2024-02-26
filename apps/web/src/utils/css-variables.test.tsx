@@ -10,7 +10,8 @@ describe('utils', () => {
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),
-                useShop: vi.fn().mockReturnValue({})
+                useShop: vi.fn().mockReturnValue({}),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 

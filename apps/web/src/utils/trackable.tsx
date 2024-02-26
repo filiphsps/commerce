@@ -15,7 +15,8 @@ import {
     getClientBrowserParameters,
     sendShopifyAnalytics,
     useCart,
-    useShop as useShopify
+    useShop as useShopify,
+    useShopifyCookies
 } from '@shopify/hydrogen-react';
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
@@ -143,7 +144,7 @@ export type AnalyticsEventActionProps = {
 };
 
 const trackableLogger = async (message: string, data?: any, service?: string) => {
-    console.debug(`[Nordcom-Universal-Trackable]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
+    console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
 };
 
 const shopifyEventHandler = async (
@@ -167,21 +168,32 @@ const shopifyEventHandler = async (
 
     const pageAnalytics = {
         canonicalUrl: `https://${shop.domain}${data.path}`,
-        resourceId: '',
+        resourceId: (() => {
+            switch (pageType) {
+                case 'product': {
+                    if (!products?.[0]) return undefined;
+
+                    return `gid://shopify/Product/${products[0].product_id}`;
+                }
+                default: {
+                    return undefined;
+                }
+            }
+        })(),
         pageType
     };
 
     const sharedPayload: ShopifyPageViewPayload = {
         shopifySalesChannel: ShopifySalesChannel.hydrogen,
-        shopId: `gid://shopify/Shop/${commerce.id}`,
-        storefrontId: shopify.storefrontId,
+        shopId: `gid://shopify/Shop/${commerce.id.toString()}`,
+        storefrontId: (shopify.storefrontId || commerce.id).toString(), // TODO: Is this correct?.
         currency: currency,
         acceptedLanguage: locale.language,
         hasUserConsent: true, // TODO: Cookie consent.
         ...getClientBrowserParameters(),
         ...pageAnalytics,
         path: data.path!.replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
-        navigationType: 'navigate', // TODO: do this properly.
+        //navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
         products: products.map((line) => ({
@@ -196,12 +208,6 @@ const shopifyEventHandler = async (
             quantity: line.quantity!
         }))
     };
-
-    if (BuildConfig.environment === 'development') {
-        // Don't actually send events in development.
-        console.debug('Shopify analytics', event, sharedPayload);
-        return;
-    }
 
     const ua = (sharedPayload.userAgent || navigator.userAgent).toLowerCase();
     if (ua.includes('googlebot') || ua.includes('lighthouse')) return;
@@ -318,8 +324,13 @@ function Trackable({ children }: TrackableProps) {
     const prevPath = usePrevious(path);
     const { shop, currency, locale } = useShop();
 
+    // Only use the domain, not the subdomain.
+    const cookieDomain = shop.domain.split('.').slice(-2).join('.');
+
     // TODO: Break these out into a separate hook, to support other providers.
+    useShopifyCookies({ hasUserConsent: true, domain: cookieDomain });
     const shopify = useShopify();
+
     const cart = useCart();
 
     const [queue, setQueue] = useState<

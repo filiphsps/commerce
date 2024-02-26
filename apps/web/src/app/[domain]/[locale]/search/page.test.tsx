@@ -71,7 +71,8 @@ describe('app', () => {
                 }),
                 useCart: vi.fn().mockReturnValue({
                     status: 'uninitialized'
-                })
+                }),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 

@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from '@/utils/test/react';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 
 import { ProductOptions } from '@/components/products/product-options';
 import { Locale } from '@/utils/locale';
-import { describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor } from '@/utils/test/react';
 
 const options = [
     {
@@ -56,7 +57,8 @@ vi.mock('@shopify/hydrogen-react', async () => ({
     useCart: vi.fn().mockReturnValue({
         status: 'idle'
     }),
-    useShop: vi.fn().mockReturnValue({})
+    useShop: vi.fn().mockReturnValue({}),
+    useShopifyCookies: vi.fn().mockReturnValue({})
 }));
 vi.mock('next/link', async () => ({
     ...((await vi.importActual('next/link')) || {}),

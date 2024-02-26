@@ -1,7 +1,9 @@
+import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import Link from '@/components/link';
 import type { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('components', () => {
     describe('Link', () => {
@@ -17,7 +19,8 @@ describe('components', () => {
                 }),
                 useShop: vi.fn().mockReturnValue({
                     domain: 'example.com'
-                })
+                }),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 

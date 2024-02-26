@@ -1,6 +1,8 @@
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
 import { render } from '@/utils/test/react';
 import { Trackable } from '@/utils/trackable';
-import { describe, expect, it, vi } from 'vitest';
 
 describe('components', () => {
     describe('Trackable', () => {
@@ -9,7 +11,8 @@ describe('components', () => {
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),
-                useShop: vi.fn().mockReturnValue({})
+                useShop: vi.fn().mockReturnValue({}),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 

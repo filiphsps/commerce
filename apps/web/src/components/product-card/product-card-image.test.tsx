@@ -1,6 +1,8 @@
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
 import ProductCardImage from '@/components/product-card/product-card-image';
 import { render } from '@/utils/test/react';
-import { describe, expect, it, vi } from 'vitest';
 
 describe('components', () => {
     describe('product-card', () => {
@@ -15,7 +17,8 @@ describe('components', () => {
                     useCart: vi.fn().mockReturnValue({
                         status: 'idle'
                     }),
-                    useShop: vi.fn().mockReturnValue({})
+                    useShop: vi.fn().mockReturnValue({}),
+                    useShopifyCookies: vi.fn().mockReturnValue({})
                 };
             });
 

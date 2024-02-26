@@ -1,5 +1,7 @@
-import { render } from '@/utils/test/react';
+import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
+
+import { render } from '@/utils/test/react';
 
 import SplitView from '@/components/layout/split-view';
 
@@ -10,7 +12,8 @@ describe('components', () => {
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),
-                useShop: vi.fn().mockReturnValue({})
+                useShop: vi.fn().mockReturnValue({}),
+                useShopifyCookies: vi.fn().mockReturnValue({})
             };
         });
 
