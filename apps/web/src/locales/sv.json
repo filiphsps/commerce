@@ -1,17 +1,18 @@
 {
     "cart": {
         "add-n-to-your-cart": "Lägg till {0} st i din varukorg",
-        "add-order-note": "Skriv ett meddelande till oss om din beställning.",
         "away-from-getting": "Kvar tills du får",
         "continue-to-checkout": "Gå till kassan",
         "estimated-total": "Est. Total",
-        "free-shipping": "FRI Frakt",
         "free-shipping-on-this-order": "FRI Frakt på denna beställning!",
+        "free-shipping": "FRI Frakt",
+        "label-cart-note": "Lägg till instruktioner eller specialförfrågningar till din beställning (valfritt)",
         "order-summary": "Ordersammanfattning",
+        "placeholder-cart-note": "Hur kan vi göra den här upplevelsen minnesvärd för dig? Har du några särskilda önskemål eller instruktioner som du vill att vi ska känna till?",
         "promo-codes": "Rabattkoder",
         "sale-discount": "Kampanjrabatt",
-        "shipping": "Frakt",
         "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
+        "shipping": "Frakt",
         "subtotal": "Subtotal",
         "view-cart": "Visa varukorgen"
     },
@@ -28,5 +29,8 @@
         "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
         "search": "Sök"
+    },
+    "product": {
+        "recommendations": "Komplettera upplevelsen med dessa populära tillägg"
     }
 }

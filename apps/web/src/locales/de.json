@@ -1,17 +1,18 @@
 {
     "cart": {
         "add-n-to-your-cart": "Fügen Sie {0} zu Ihrem Warenkorb hinzu",
-        "add-order-note": "Schreiben Sie eine Nachricht zu Ihrer Bestellung.",
         "away-from-getting": "Bis zu",
         "continue-to-checkout": "Zur Kasse gehen",
         "estimated-total": "Geschätzte Gesamtsumme",
-        "free-shipping": "KOSTENLOSEM Versand",
         "free-shipping-on-this-order": "KOSTENLOSEM Versand für diese Bestellung!",
+        "free-shipping": "KOSTENLOSEM Versand",
+        "label-cart-note": "Fügen Sie Ihrer Bestellung Anweisungen oder Sonderwünsche hinzu (optional)",
         "order-summary": "Bestellübersicht",
+        "placeholder-cart-note": "Wie können wir das zu einem besonderen Erlebnis für Sie machen? Gibt es etwas, das wir beachten sollten?",
         "promo-codes": "Aktionscodes",
         "sale-discount": "Sale-Rabatt",
-        "shipping": "Versand",
         "shipping-calculated-at-checkout": "Versand wird an der Kasse berechnet",
+        "shipping": "Versand",
         "subtotal": "Zwischensumme",
         "view-cart": "Warenkorb ansehen"
     },
@@ -28,5 +29,8 @@
         "quantity-too-low": "Die Menge ist zu niedrig",
         "quantity": "Menge",
         "search": "Suche"
+    },
+    "product": {
+        "recommendations": "Andere Kunden genießen diese Produkte auch zusammen"
     }
 }

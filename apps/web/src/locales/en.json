@@ -1,14 +1,13 @@
 {
     "cart": {
         "add-n-to-your-cart": "Add {0} to your cart",
-        "add-order-note": "Add a note to your order.",
         "away-from-free-shipping": "Don't miss out on a great deal! Add items worth an additional {0} to your order and get completely FREE shipping, on the house.",
         "away-from-getting": "away from getting",
         "continue-to-checkout": "Continue to Checkout",
         "estimated-total": "Est. Total",
         "free-shipping-on-this-order": "Woohoo, You qualify for FREE shipping on this order. What a sweet deal!",
         "free-shipping": "FREE Shipping",
-        "label-cart-note": "Add a note",
+        "label-cart-note": "Add instructions or special requests to your order (optional)",
         "order-summary": "Order Summary",
         "placeholder-cart-note": "How can we make this a memorable experience for you? Any special requests or instructions you'd like us to know about?",
         "products": "Products",
@@ -34,6 +33,6 @@
         "search": "Search"
     },
     "product": {
-        "recommendations": "Frequently enjoyed together with these products"
+        "recommendations": "Other customers also enjoy these products together"
     }
 }
