@@ -23,6 +23,10 @@ export type CollectionContainerProps = {
 
 const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'children'>) => {
     if (!slice || !slice.primary || asText(slice.primary.title)?.length <= 0) return null;
+    if (!slice.primary.handle) {
+        console.error(new Error('Collection slice is missing a handle.')); // FIXME: Correct error.
+        return null;
+    }
 
     return (
         <>

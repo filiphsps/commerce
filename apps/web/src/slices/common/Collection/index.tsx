@@ -24,7 +24,11 @@ export type CollectionProps = SliceComponentProps<
  * Component for "Collection" Slices.
  */
 const CollectionSlice = async ({ slice, index, context: { shop, locale } }: CollectionProps) => {
-    if (slice.variation !== 'default') console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
+    if (slice.variation !== 'default') {
+        console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
+
+        if (!slice?.primary?.handle) return null;
+    }
 
     const handle = slice.primary.handle as string;
     const horizontal = slice.primary.direction === 'horizontal';

@@ -142,6 +142,10 @@ export type AnalyticsEventActionProps = {
     cart: CartWithActions;
 };
 
+const trackableLogger = async (message: string, data?: any, service?: string) => {
+    console.debug(`[Nordcom-Universal-Trackable]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
+};
+
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
@@ -204,30 +208,30 @@ const shopifyEventHandler = async (
 
     // FIXME: We can't actually capture the error here. Make a PR upstream to fix this.
     try {
-        switch (event) {
-            case 'page_view': {
-                await sendShopifyAnalytics(
-                    {
-                        eventName: ShopifyAnalyticsEventName.PAGE_VIEW,
-                        payload: {
-                            ...sharedPayload
-                        }
-                    },
-                    commerce.domain
-                );
+        switch (event.toUpperCase()) {
+            case ShopifyAnalyticsEventName.PAGE_VIEW: {
+                const data = {
+                    eventName: ShopifyAnalyticsEventName.PAGE_VIEW,
+                    payload: {
+                        ...sharedPayload
+                    }
+                };
+
+                await trackableLogger(`Event "${ShopifyAnalyticsEventName.PAGE_VIEW}"`, data, 'shopify');
+                await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
-            case 'add_to_cart': {
-                await sendShopifyAnalytics(
-                    {
-                        eventName: ShopifyAnalyticsEventName.ADD_TO_CART,
-                        payload: {
-                            cartId: cart.id,
-                            ...sharedPayload
-                        }
-                    },
-                    commerce.domain
-                );
+            case ShopifyAnalyticsEventName.ADD_TO_CART: {
+                const data = {
+                    eventName: ShopifyAnalyticsEventName.ADD_TO_CART,
+                    payload: {
+                        cartId: cart.id,
+                        ...sharedPayload
+                    }
+                };
+
+                await trackableLogger(`Event "${ShopifyAnalyticsEventName.ADD_TO_CART}"`, data, 'shopify');
+                await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
         }
@@ -382,7 +386,7 @@ function Trackable({ children }: TrackableProps) {
     useEffect(() => {
         if (!shop || !currency || !queue || queue.length <= 0) return;
 
-        console.debug(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}.`, queue);
+        void trackableLogger(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}}`, queue);
 
         // Clone the queue, as it may be modified while we are sending events.
         let events = [...queue];
