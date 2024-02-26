@@ -93,7 +93,7 @@ export const dictionaries: Record<Lowercase<LanguageCode>, () => Promise<LocaleD
     ne: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     nl: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     nn: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
-    no: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
+    no: () => import('@/i18n/no.json').then((module) => module.default) as any,
     om: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     or: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,
     os: () => new Promise((resolve) => resolve(stub)) as any /* TODO */,

@@ -1,0 +1,38 @@
+{
+    "cart": {
+        "add-n-to-your-cart": "Legg {0} til i handlekurven",
+        "away-from-free-shipping": "Ikke gå glipp av et godt tilbud! Legg til varer verdt ytterligere {0} til bestillingen din og få helt GRATIS frakt.",
+        "away-from-getting": "unna å få",
+        "continue-to-checkout": "Fortsett til kassen",
+        "estimated-total": "Estimert total",
+        "free-shipping-on-this-order": "Hurra, du kvalifiserer for GRATIS frakt på denne bestillingen. For et godt tilbud!",
+        "free-shipping": "GRATIS frakt",
+        "label-cart-note": "Legg til instruksjoner eller spesielle forespørsler til bestillingen din (valgfritt)",
+        "order-summary": "Ordreoppsummering",
+        "placeholder-cart-note": "Hvordan kan vi gjøre dette til en minneverdig opplevelse for deg? Noen spesielle ønsker eller instruksjoner du vil at vi skal vite om?",
+        "products": "Produkter",
+        "promo-codes": "Kampanjekoder",
+        "sale-discount": "Salgsrabatt",
+        "shipping-calculated-at-checkout": "Frakten beregnes i kassen",
+        "shipping": "Frakt",
+        "subtotal": "Delsum",
+        "view-cart": "Se handlekurven din"
+    },
+    "common": {
+        "add-to-cart": "Legg i handlekurv",
+        "add": "Legg til",
+        "added-to-cart": "Lagt til!",
+        "buy": "Kjøp",
+        "cart-not-ready": "Vent litt...",
+        "cart": "Handlekurv",
+        "countries": "Land",
+        "language-and-region-settings": "Innstillinger for språk og region",
+        "out-of-stock": "Utsolgt",
+        "quantity-too-low": "For lav mengde",
+        "quantity": "Mengde",
+        "search": "Søk"
+    },
+    "product": {
+        "recommendations": "Andre kunder liker også disse produktene sammen"
+    }
+}
