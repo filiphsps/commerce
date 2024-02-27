@@ -47,7 +47,7 @@
     "dependencies": {
         "@next/third-parties": "14.1.0",
         "@nordcom/commerce-errors": "*",
-        "@nordcom/nordstar": "0.0.38",
+        "@nordcom/nordstar": "0.0.40",
         "@vercel/otel": "1.4.0",
         "colord": "2.9.3",
         "geist": "1.2.2",
