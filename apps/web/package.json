@@ -48,7 +48,7 @@
     "dependencies": {
         "@apollo/client": "3.9.5",
         "@apollo/experimental-nextjs-app-support": "0.8.0",
-        "@next/third-parties": "14.1.0",
+        "@next/third-parties": "14.1.1",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
         "@prisma/client": "5.10.2",
@@ -91,7 +91,7 @@
         "@types/react": "18.2.61",
         "concurrently": "8.2.2",
         "critters": "0.0.21",
-        "eslint-config-next": "14.1.0",
+        "eslint-config-next": "14.1.1",
         "eslint": "8.57.0",
         "graphql": "16.8.1",
         "happy-dom": "13.6.2",
