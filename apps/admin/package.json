@@ -46,7 +46,7 @@
     "homepage": "https://shops.nordcom.io/admin/",
     "dependencies": {
         "@next-auth/prisma-adapter": "1.0.7",
-        "@next/third-parties": "14.1.0",
+        "@next/third-parties": "14.1.1",
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
         "@nordcom/nordstar": "0.0.40",
@@ -75,7 +75,7 @@
         "@types/react": "18.2.61",
         "concurrently": "8.2.2",
         "critters": "0.0.21",
-        "eslint-config-next": "14.1.0",
+        "eslint-config-next": "14.1.1",
         "eslint": "8.57.0",
         "graphql": "16.8.1",
         "happy-dom": "13.6.2",
