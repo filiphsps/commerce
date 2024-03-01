@@ -52,7 +52,7 @@
         "@nordcom/commerce-database": "*",
         "@nordcom/commerce-errors": "*",
         "@prisma/client": "5.10.2",
-        "@prisma/extension-accelerate": "0.6.3",
+        "@prisma/extension-accelerate": "1.0.0",
         "@prismicio/client": "7.3.1",
         "@prismicio/next": "1.5.0",
         "@prismicio/react": "2.7.3",
