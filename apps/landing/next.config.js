@@ -1,6 +1,9 @@
-import withMarkdoc from '@markdoc/next.js';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import withMarkdoc from '@markdoc/next.js';
+import withMillionLint from '@million/lint';
+import withMillion from 'million/compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -104,11 +107,16 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withMarkdoc({
-    mode: 'static',
-    schemaPath: './src/markdoc',
-    tokenizerOptions: {
-        allowComments: true,
-        slots: true
-    }
-})(config);
+export default withMillionLint.next({ rsc: true })(
+    withMillion.next(
+        withMarkdoc({
+            mode: 'static',
+            schemaPath: './src/markdoc',
+            tokenizerOptions: {
+                allowComments: true,
+                slots: true
+            }
+        })(config)
+    ),
+    {}
+);
