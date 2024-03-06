@@ -1,6 +1,9 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import withMillionLint from '@million/lint';
+import withMillion from 'million/compiler';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
@@ -106,4 +109,4 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default config;
+export default withMillionLint.next({ rsc: true })(withMillion.next(config), {});

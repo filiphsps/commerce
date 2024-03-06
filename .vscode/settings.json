@@ -7,7 +7,7 @@
     "git.fetchOnPull": true,
     "git.inputValidationSubjectLength": 72,
     "git.inputValidationLength": 72,
-    "git.inputValidation": "always",
+    "git.inputValidation": true,
     "git.showPushSuccessNotification": true,
     "github.copilot.enable": {
         "plaintext": "true",
