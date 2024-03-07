@@ -82,7 +82,7 @@
         "prisma": "5.10.2",
         "turbo": "1.12.5",
         "turbo-ignore": "1.12.5",
-        "typescript": "5.3.3"
+        "typescript": "5.4.2"
     },
     "optionalDependencies": {
         "@rollup/rollup-darwin-arm64": "4.12.1",
