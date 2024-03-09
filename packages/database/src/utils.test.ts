@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { RestifyObject } from './utils';
 
 describe('RestifyObject', () => {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import prisma from '@/utils/prisma';
+import { prisma } from '@nordcom/commerce-database';
 import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
