@@ -21,6 +21,8 @@
     }
 
     .product-options {
+        grid-area: options;
+
         display: flex;
         flex-direction: column;
         gap: var(--block-spacer);
