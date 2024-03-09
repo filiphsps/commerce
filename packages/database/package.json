@@ -48,7 +48,7 @@
         "dist"
     ],
     "dependencies": {
-        "@nordcom/commerce-errors": "*",
+        "@nordcom/commerce-errors": "workspace:*",
         "@prisma/client": "5.10.2",
         "@prisma/extension-accelerate": "1.0.0"
     },

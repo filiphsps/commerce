@@ -13,16 +13,18 @@ Multi-tenenant headless e-commerce solution as a service.
 
 ## Information
 
-- SRC and/or SSR support (dependingnon route and components).
-- In-depth testing support.
-- Always targeting `node` **LTS** and latest `npm`.
+-   SRC and/or SSR support (dependingnon route and components).
+-   In-depth testing support.
+-   Built with `TypeScript`.
+-   Always targeting `node` **LTS**.
+-   Using `bun` <3.
 
 ### Maintainers
 
-- 2019-2023: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).
-- 2023: Nordcom Group Inc. - [@NordcomInc](https://github.com/NordcomInc).
+-   2019-2023: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).
+-   2023: Nordcom Group Inc. - [@NordcomInc](https://github.com/NordcomInc).
 
 ### Legal
 
-- © 2019-2023 Filiph Siitam Sandström.
-- © 2023 Nordcom Group Inc.
+-   © 2019-2023 Filiph Siitam Sandström.
+-   © 2023 Nordcom Group Inc.

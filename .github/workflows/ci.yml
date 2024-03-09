@@ -34,7 +34,7 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build All
-              run: npm run build
+              run: bun run build
 
     test:
         name: 🧪 Test
@@ -49,10 +49,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: npm run build:packages
+              run: bun run build:packages
 
             - name: 🧪 Test
-              run: npm run test
+              run: bun run test
 
             - name: 🦺 Codecov Coverage Reports
               uses: codecov/codecov-action@v4
@@ -71,10 +71,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: npm run build:packages
+              run: bun run build:packages
 
             - name: 📋 Lint
-              run: npm run lint
+              run: bun run lint
 
     typecheck:
         name: ✅ Typecheck
@@ -88,10 +88,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: npm run build:packages
+              run: bun run build:packages
 
             - name: ✅ Typecheck
-              run: npm run typecheck
+              run: bun run typecheck
 
     dispatch:
         name: 🗣️ Dispatch
