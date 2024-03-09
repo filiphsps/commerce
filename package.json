@@ -22,9 +22,9 @@
         "build": "dotenv -c -- turbo run build",
         "build:packages": "turbo run build --filter='./packages/*'",
         "lint": "turbo run lint",
-        "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
+        "prettier": "prettier **/src/**/*.{ts,tsx,js,scss} --check",
         "fix": "turbo run fix",
-        "fix:prettier": "prettier **/src/**/*.{ts,tsx,scss} --write",
+        "fix:prettier": "prettier **/src/**/*.{ts,tsx,js,scss} --write",
         "typecheck": "turbo run typecheck",
         "test": "turbo run test",
         "slicemachine": "turbo run slicemachine"

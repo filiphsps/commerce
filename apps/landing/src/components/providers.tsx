@@ -20,7 +20,6 @@ const theme = {
     }
 };
 
-
 export type ProvidersProps = {
     children: ReactNode;
 };
@@ -36,9 +35,7 @@ export function Providers({ children }: ProvidersProps) {
     }, [pathname, router]);
 
     return (
-        <NordstarProvider
-            theme={theme}
-        >
+        <NordstarProvider theme={theme}>
             <Toaster theme="dark" />
             <NextTopLoader color={theme.accents.primary} showSpinner={true} crawl={true} />
 

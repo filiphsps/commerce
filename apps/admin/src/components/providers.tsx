@@ -39,9 +39,7 @@ export function Providers({ children, session }: ProvidersProps) {
 
     return (
         <SessionProvider session={session} basePath="/admin/api/auth">
-            <NordstarProvider
-                theme={theme}
-            >
+            <NordstarProvider theme={theme}>
                 <Toaster theme="dark" />
                 <NextTopLoader color={theme.accents.primary} showSpinner={true} crawl={true} />
 

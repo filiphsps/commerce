@@ -5,6 +5,7 @@ import withMillionLint from '@million/lint';
 import withMillion from 'million/compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -19,7 +20,7 @@ const config = {
     transpilePackages: ['@shopify/hydrogen-react'],
     experimental: {
         caseSensitiveRoutes: true,
-        instrumentationHook: process.env.NODE_ENV !== 'development' ? true : false, // Deliberately using a ternary here for clarity.
+        instrumentationHook: isProduction,
         //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: [
@@ -37,7 +38,8 @@ const config = {
         serverSourceMaps: true,
         serverMinification: false,
         taint: true,
-        webpackBuildWorker: true
+        webpackBuildWorker: true,
+        parallelServerBuildTraces: true
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -107,4 +109,8 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withMillionLint.next({ rsc: true })(withMillion.next(config), {});
+export default withMillionLint.next({ rsc: true })(
+    withMillion.next(config, {
+        telemetry: false
+    })
+);
