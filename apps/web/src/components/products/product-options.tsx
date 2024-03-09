@@ -43,11 +43,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
 
     return (
         <>
-            <div
-                {...props}
-                className={`${actionsStyles['product-options']} ${className || ''}`}
-                style={{ gridArea: 'options', ...(style || {}) }}
-            >
+            <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`} style={style || {}}>
                 {options?.map((option, index) =>
                     option?.values ? (
                         <Fragment key={option.name}>
