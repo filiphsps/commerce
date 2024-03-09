@@ -8,9 +8,5 @@
     "github": {
         "enabled": true,
         "autoJobCancelation": true
-    },
-    "rewrites": [
-        { "source": "/admin/:path*", "destination": "https://nordcom-commerce-admin.vercel.app/admin/:path*" },
-        { "source": "/(.*)", "destination": "/" }
-    ]
+    }
 }

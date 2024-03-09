@@ -5,8 +5,7 @@ export const runtime = 'experimental-edge';
 export const config = {
     matcher: [
         // Admin routes
-        '/admin/:path*',
-        '/api/auth/:path*'
+        '/admin/:path*'
     ],
     missing: [
         { type: 'header', key: 'next-router-prefetch' },
@@ -17,13 +16,8 @@ export const config = {
 export default async function middleware(req: NextRequest) {
     let newUrl = req.nextUrl.clone();
 
-    // Rewrite admin routes to the admin app.
-    if (newUrl.pathname.startsWith('/api/auth')) {
-        newUrl.pathname = `/admin${newUrl.pathname}`;
-    }
-
     // Don't rewrite image routes.
-    if (newUrl.pathname.startsWith('/admin/_next/image')) {
+    if (newUrl.pathname.startsWith('/admin/_next')) {
         newUrl.pathname = newUrl.pathname.replace('/admin', '');
     }
 
