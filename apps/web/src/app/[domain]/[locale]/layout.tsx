@@ -14,13 +14,14 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
-import type { Metadata, Viewport } from 'next';
 import { SocialProfileJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import type { ReactNode } from 'react';
 import { Suspense } from 'react';
+
+import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react';
 
 //export const runtime = 'experimental-edge';
 export const revalidate = 28_800; // 8hrs.
@@ -121,9 +122,8 @@ export default async function RootLayout({
                     <body suppressHydrationWarning={true}>
                         <ProvidersRegistry
                             shop={shop}
-                            localization={localization || undefined}
+                            currency={localization?.country.currency.isoCode || 'USD'}
                             locale={locale}
-                            apiConfig={apiConfig.public()}
                         >
                             <AnalyticsProvider shop={shop}>
                                 <Suspense key={`${shop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
