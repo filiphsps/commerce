@@ -14,19 +14,21 @@ export type AnalyticsProviderProps = {
 };
 export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {
     const [deferred, setDeferred] = useState<any>(null);
+
+    const trackers = () => (
+        <>
+            {shop?.thirdParty?.googleTagManager ? (
+                <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} />
+            ) : null}
+            <VercelAnalytics debug={false} />
+        </>
+    );
     useEffect(() => {
         const timeout = setTimeout(() => {
-            setDeferred(
-                <>
-                    {shop?.thirdParty?.googleTagManager ? (
-                        <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} />
-                    ) : null}
-                    <VercelAnalytics debug={false} />
-                </>
-            );
+            setDeferred(trackers);
         }, 6750);
 
-        () => clearTimeout(timeout);
+        return () => clearTimeout(timeout);
     }, []);
 
     return (
