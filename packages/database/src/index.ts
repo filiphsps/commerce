@@ -18,3 +18,14 @@ export type Nullable<T> = T | null;
 export type Identifiable = { handle: string };
 
 export type LimitFilters = { limit?: Nullable<number> } | { first?: Nullable<number>; last?: Nullable<number> };
+
+type Callback = (...args: any[]) => Promise<any>;
+export type CacheUtil = <T extends Callback>(
+    cb: T,
+    key?: string[],
+    options?: {
+        revalidate?: number | false;
+        tags?: string[];
+    }
+) => T;
+export type TaintUtil = (message: string | undefined, object: any) => void;
