@@ -28,7 +28,7 @@ const config = {
         serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: false,
-        //taint: true,
+        taint: true,
         webpackBuildWorker: true
     },
     images: {

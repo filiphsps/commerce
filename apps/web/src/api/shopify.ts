@@ -1,15 +1,17 @@
 import 'server-only';
 
-import type { ApiConfig } from '@/api/client';
 import { setupApollo } from '@/api/client';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
 import { CommerceProviderAuthenticationApi } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { unstable_cache as cache } from 'next/cache';
 import { headers } from 'next/headers';
+import { experimental_taintObjectReference as taint } from 'react';
+
+import type { ApiConfig } from '@/api/client';
+import type { Shop } from '@nordcom/commerce-database';
 
 export const ShopifyApiConfig = async ({
     shop,
@@ -25,7 +27,8 @@ export const ShopifyApiConfig = async ({
 }> => {
     const commerceProvider = await CommerceProviderAuthenticationApi({
         shop,
-        cache: noCache ? undefined : cache
+        cache: noCache ? undefined : cache,
+        taint: noCache ? undefined : taint
     });
     if (!shop.commerceProvider || !commerceProvider) throw new UnknownCommerceProviderError();
 

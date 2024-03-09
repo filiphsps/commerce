@@ -1,6 +1,8 @@
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 import prisma from './prisma';
 
+import type { CacheUtil, TaintUtil } from '.';
+
 export type ShopTheme = {
     header: {
         theme: 'primary' | 'secondary';
@@ -167,44 +169,56 @@ export const ShopsApi = async (cache?: any) => {
     })() as ReturnType<typeof callback>;
 };
 
-export const CommerceProviderAuthenticationApi = async ({ shop, cache }: { shop: Shop; cache?: any }) => {
+export const CommerceProviderAuthenticationApi = async ({
+    shop,
+    cache,
+    taint
+}: {
+    shop: Shop;
+    cache?: CacheUtil;
+    taint?: TaintUtil;
+}) => {
     const callback = async (shop: Shop) => {
-        // TODO: Use the React taint API.
-        //taintObjectReference('', res);
+        const res = await (async (shop: Shop) => {
+            if (!shop) throw new UnknownShopDomainError();
+            else if (!shop.commerceProvider) throw new UnknownCommerceProviderError();
 
-        if (!shop) throw new UnknownShopDomainError();
-        else if (!shop.commerceProvider) throw new UnknownCommerceProviderError();
-
-        switch (shop.commerceProvider.type) {
-            case 'shopify': {
-                const { data, ...provider } =
-                    (
-                        await prisma.shop.findFirst({
-                            where: {
-                                domain: shop.domain
-                            },
-                            select: {
-                                commerceProvider: {
-                                    select: {
-                                        type: true,
-                                        data: true
+            switch (shop.commerceProvider.type) {
+                case 'shopify': {
+                    const { data, ...provider } =
+                        (
+                            await prisma.shop.findFirst({
+                                where: {
+                                    domain: shop.domain
+                                },
+                                select: {
+                                    commerceProvider: {
+                                        select: {
+                                            type: true,
+                                            data: true
+                                        }
                                     }
-                                }
-                            },
-                            cacheStrategy: { ttl: 120, swr: 3600 }
-                        })
-                    )?.commerceProvider || {};
-                if (!provider || !data) throw new UnknownShopDomainError();
+                                },
+                                cacheStrategy: { ttl: 120, swr: 3600 }
+                            })
+                        )?.commerceProvider || {};
+                    if (!provider || !data) throw new UnknownShopDomainError();
 
-                return {
-                    ...provider,
-                    ...((typeof data === 'object' ? data : JSON.parse(data.toString())) as ShopifyCommerceProvider)
-                };
+                    return {
+                        ...provider,
+                        ...((typeof data === 'object' ? data : JSON.parse(data.toString())) as ShopifyCommerceProvider)
+                    };
+                }
+                default: {
+                    throw new UnknownCommerceProviderError();
+                }
             }
-            default: {
-                throw new UnknownCommerceProviderError();
-            }
+        })(shop);
+
+        if (!!taint && typeof taint === 'function') {
+            taint('Do not pass commerce provider authentication to the client', res);
         }
+        return res;
     };
 
     if (!cache || typeof cache !== 'function') {
