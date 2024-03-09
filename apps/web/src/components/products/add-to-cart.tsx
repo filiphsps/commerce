@@ -8,6 +8,7 @@ import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
+import { TodoError } from '@nordcom/commerce-errors';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState, type HTMLProps } from 'react';
@@ -24,9 +25,11 @@ export type AddToCartProps = {
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
+    const queueEvent = useTrackable((context) => context.queueEvent);
+    if (typeof queueEvent !== 'function') throw new TodoError('queueEvent is not a function');
+
     const { t } = useTranslation('common', i18n);
     const { t: tCart } = useTranslation('cart', i18n);
-    const { queueEvent } = useTrackable();
     const path = usePathname();
 
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
