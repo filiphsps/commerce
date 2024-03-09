@@ -81,12 +81,20 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
+    async redirects() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: `https://shops.nordcom.io/api/:path*`,
+                permanent: false
+            }
+        ];
+    },
+
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    },
-
-    skipTrailingSlashRedirect: true
+    }
 };
 
 export default withMillionLint.next({ rsc: true })(withMillion.next(config), {});
