@@ -82,7 +82,7 @@
         "sharp": "0.33.2",
         "sonner": "1.4.3",
         "the-new-css-reset": "1.11.2",
-        "use-context-selector": "1.4.3"
+        "use-context-selector": "1.4.4"
     },
     "devDependencies": {
         "@happy-dom/global-registrator": "13.2.1",
