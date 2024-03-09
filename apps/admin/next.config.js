@@ -84,20 +84,13 @@ const config = {
         SHOPIFY_API_SECRET_KEY: process.env.SHOPIFY_API_SECRET_KEY
     },
 
-    async redirects() {
-        return [
-            {
-                source: '/api/:path*',
-                destination: `https://shops.nordcom.io/api/:path*`,
-                permanent: false
-            }
-        ];
-    },
-
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
-    }
+    },
+
+    // We handle all redirects at the edge.
+    skipTrailingSlashRedirect: true
 };
 
 export default withMillionLint.next({ rsc: true })(withMillion.next(config), {});

@@ -103,7 +103,7 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    // Let us handle trailing slashes in the middleware instead.
+    // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true
 };
 
