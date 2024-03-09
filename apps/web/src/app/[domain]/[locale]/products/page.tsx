@@ -116,7 +116,6 @@ export default async function ProductsPage({
 
         // Deal with pagination before fetching the collection.
         const pagesInfo = await ProductsPaginationCountApi({ api, filters: { first: PRODUCTS_PER_PAGE } });
-        const after = pagesInfo.cursors[query.page - 2];
 
         // Do the actual API calls.
         //const products = await ProductsApi({ api, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);

@@ -2,7 +2,7 @@ import 'the-new-css-reset';
 
 import '@/styles/app.scss';
 
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
@@ -98,7 +98,6 @@ export default async function RootLayout({
         if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
-        const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop });
 
         const branding = await getBrandingColors(domain);
