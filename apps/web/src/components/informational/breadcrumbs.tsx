@@ -16,6 +16,7 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
 
     if (!path || path.length <= 0) return null;
 
+    const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
         <section className={styles.breadcrumbs} itemScope itemType="https://schema.org/BreadcrumbList">
             <div className={styles.item} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
@@ -35,7 +36,7 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
                 >
                     <Link
                         className={styles.link}
-                        href={`/${path.slice(0, index + 1).join('/')}`}
+                        href={hrefs[index]!}
                         itemType="https://schema.org/Thing"
                         itemProp="item"
                     >

@@ -42,18 +42,21 @@ export type SubMenuItemProps = {
     data: NavigationItem;
     locale: Locale;
 };
-export const SubMenuItem = ({ children, data, locale }: SubMenuItemProps) => {
+export const SubMenuItem = ({ children, data: { handle, title, description }, locale }: SubMenuItemProps) => {
     const route = usePathname().replace(`/${locale.code}`, '');
-    let target: string = data.handle || '/';
+    let target: string = handle || '/';
 
     if (!target.startsWith('/') || target === '') target = `/${target}`;
     if (target.length !== 1 && target.endsWith('/')) target = target.slice(0, -1);
 
+    const url = `/${handle || ''}`;
+    const desc = !!description ? <div className={styles.description}>{description}</div> : null;
+
     return (
         <div className={`${styles.subitem} ${(target === route && styles.active) || ''}`}>
-            <Link href={`/${data?.handle || ''}`} title={data.title}>
-                <div className={styles.title}>{data.title}</div>
-                {data.description && <div className={styles.description}>{data.description}</div>}
+            <Link href={url} title={title}>
+                <div className={styles.title}>{title}</div>
+                {desc}
             </Link>
             {children}
         </div>

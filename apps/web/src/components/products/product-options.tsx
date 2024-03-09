@@ -46,7 +46,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
             <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`} style={style || {}}>
                 {options?.map((option, index) =>
                     option?.values ? (
-                        <Fragment key={option.name}>
+                        <Fragment key={`${option.name}_option`}>
                             <Label
                                 className={styles.label}
                                 data-options={option.values.length}
@@ -105,7 +105,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                     const inStock = isOptionInStock(option.name!, value!);
                                     return (
                                         <Link
-                                            key={value}
+                                            key={`${option.name}_${value}`}
                                             as={asComponent}
                                             title={`${product?.vendor} ${product?.title} - ${
                                                 title || matchingVariant?.title
@@ -127,7 +127,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                             </div>
                         </Fragment>
                     ) : (
-                        <div key={option?.name || index} /> // Empty div to keep the grid layout
+                        <div key={`empty_${index}`} /> // Empty div to keep the grid layout
                     )
                 )}
             </div>
