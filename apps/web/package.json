@@ -81,7 +81,7 @@
         "the-new-css-reset": "1.11.2"
     },
     "devDependencies": {
-        "@happy-dom/global-registrator": "13.2.1",
+        "@happy-dom/global-registrator": "13.7.0",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.36",
         "@testing-library/react": "14.2.1",
