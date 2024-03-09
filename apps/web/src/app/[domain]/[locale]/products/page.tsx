@@ -104,9 +104,6 @@ export default async function ProductsPage({
         if (!locale) notFound();
 
         if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
-        const query = {
-            page: searchParams.page ? Number.parseInt(searchParams.page) : 1
-        };
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
