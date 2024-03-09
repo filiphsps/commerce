@@ -1,9 +1,11 @@
 import 'server-only';
 
-import prisma from '@/utils/prisma';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { getServerSession, type NextAuthOptions } from 'next-auth';
+import { prisma } from '@nordcom/commerce-database';
+import { getServerSession } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
+
+import type { NextAuthOptions } from 'next-auth';
 
 export type AuthProvider = 'github';
 
