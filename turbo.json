@@ -1,11 +1,13 @@
 {
     "$schema": "https://turbo.build/schema.json",
+    "globalDotEnv": [".env"],
     "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/package.json"],
     "pipeline": {
         "build": {
             "cache": true,
             "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**", "!coverage/**", "!**/*.yml"]
+            "outputs": [".next/**", "!.next/cache/**", "dist/**", "!coverage/**", "!**/*.yml"],
+            "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
         },
         "lint": {
             "cache": false,
@@ -17,7 +19,8 @@
         "test": {
             "cache": false,
             "dependsOn": ["^test"],
-            "outputs": ["**/coverage/**"]
+            "outputs": ["**/coverage/**"],
+            "dotEnv": [".env.test.local", ".env.test", ".env"]
         },
         "typecheck": {
             "cache": false,
@@ -28,7 +31,8 @@
         },
         "dev": {
             "cache": false,
-            "persistent": true
+            "persistent": true,
+            "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "slicemachine": {
             "cache": false,

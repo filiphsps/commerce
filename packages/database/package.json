@@ -53,6 +53,7 @@
         "@prisma/extension-accelerate": "1.0.0"
     },
     "devDependencies": {
+        "@types/node": "20.11.25",
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
