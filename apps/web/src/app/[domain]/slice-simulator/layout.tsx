@@ -2,15 +2,18 @@ import 'the-new-css-reset';
 
 import '@/styles/app.scss';
 
-import { ShopifyApiConfig } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { LocaleApi } from '@/api/store';
 import ProvidersRegistry from '@/components/providers-registry';
 import { CssVariablesProvider } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
-import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
-import { Suspense, type ReactNode } from 'react';
+import { Suspense } from 'react';
+
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,7 +41,9 @@ export default async function RootLayout({
 }) {
     const shop = await ShopApi(domain, cache);
     const locale = Locale.default;
-    const shopifyApi = await ShopifyApiConfig({ shop });
+    const api = await ShopifyApolloApiClient({ shop, locale });
+
+    const localization = await LocaleApi({ api });
 
     return (
         <html lang={locale.code} className={`${fontPrimary.variable}`} suppressHydrationWarning={true}>
@@ -48,7 +53,11 @@ export default async function RootLayout({
                 </Suspense>
             </head>
             <body suppressHydrationWarning={true}>
-                <ProvidersRegistry shop={shop} locale={locale} apiConfig={shopifyApi.public()}>
+                <ProvidersRegistry
+                    shop={shop}
+                    locale={locale}
+                    currency={localization?.country.currency.isoCode || 'USD'}
+                >
                     {children}
                 </ProvidersRegistry>
             </body>
