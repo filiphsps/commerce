@@ -16,11 +16,6 @@ export const config = {
 export default async function middleware(req: NextRequest) {
     let newUrl = req.nextUrl.clone();
 
-    // Don't rewrite image routes.
-    if (newUrl.pathname.startsWith('/admin/_next')) {
-        newUrl.pathname = newUrl.pathname.replace('/admin', '');
-    }
-
     // Don't rewrite if the new URL is the same as the original URL.
     if (newUrl.href !== req.nextUrl.href) {
         return NextResponse.rewrite(newUrl.href);
