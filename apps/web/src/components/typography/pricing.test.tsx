@@ -1,8 +1,11 @@
-import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
-import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { describe, expect, it } from 'vitest';
 
+import { render, screen } from '@testing-library/react';
+
 import Pricing from '@/components/typography/pricing';
+
+import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 
 describe('components', () => {
     describe('Pricing', () => {

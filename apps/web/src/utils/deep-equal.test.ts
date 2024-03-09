@@ -1,5 +1,6 @@
-import { deepEqual } from '@/utils/deep-equal';
 import { describe, expect, it } from 'vitest';
+
+import { deepEqual } from '@/utils/deep-equal';
 
 describe('deepEqual', () => {
     it('should return true for equal objects', () => {

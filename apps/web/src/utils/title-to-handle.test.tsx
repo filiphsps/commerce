@@ -1,5 +1,6 @@
-import { TitleToHandle } from '@/utils/title-to-handle';
 import { describe, expect, it } from 'vitest';
+
+import { TitleToHandle } from '@/utils/title-to-handle';
 
 describe('utils', () => {
     const example_titles = [
