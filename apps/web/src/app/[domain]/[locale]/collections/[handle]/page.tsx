@@ -18,7 +18,7 @@ import { asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import styles from './page.module.scss';
 
 // TODO: Figure out a better way to deal with query params.
@@ -152,7 +152,7 @@ export default async function CollectionPage({
                 <PageContent className={styles.container}>
                     <Heading
                         title={page?.meta_title || collection?.seo?.title || collection.title}
-                        subtitleAs={Fragment}
+                        subtitleAs={null}
                         subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
                     />
 
