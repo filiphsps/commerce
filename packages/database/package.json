@@ -16,7 +16,8 @@
         ]
     },
     "scripts": {
-        "build": "rm -fr dist/* && tsc",
+        "prebuild": "rimraf -g dist/*",
+        "build": "tsc",
         "lint": "eslint",
         "typecheck": "tsc -noEmit",
         "test": "vitest run --coverage",
@@ -55,6 +56,7 @@
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
+        "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "typescript": "5.4.2",
         "vitest": "1.3.1"
