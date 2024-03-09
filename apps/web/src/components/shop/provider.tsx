@@ -5,7 +5,7 @@ import type { Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 import type { CurrencyCode } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 type ShopContextReturns = {};
 
@@ -30,11 +30,12 @@ export interface ShopContextValue extends ShopProviderBase, ShopContextReturns {
 export const ShopContext = createContext<ShopContextValue | null>(null);
 
 export function ShopProvider({ children, shop, currency, locale }: ShopProviderProps) {
-    return (
-        <ShopContext.Provider value={{ shop, currency: currency || 'USD', locale: locale || Locale.default }}>
-            {children}
-        </ShopContext.Provider>
+    const value = useMemo(
+        () => ({ shop, currency: currency || 'USD', locale: locale || Locale.default }),
+        [shop, currency, locale]
     );
+
+    return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }
 
 export const useShop = (): ShopContextValue => {

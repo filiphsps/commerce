@@ -21,9 +21,11 @@ import {
 import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { track as vercelTrack } from '@vercel/analytics/react';
+import debounce from 'lodash.debounce';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useContextSelector } from 'use-context-selector';
 
 /**
  * Analytics events.
@@ -296,7 +298,7 @@ const handleEvent = async (
     vercelTrack(event);
 };
 
-type TrackableContextReturns = {
+export type TrackableContextValue = {
     /**
      * Adds an event to the queue to be sent to the analytics provider.
      *
@@ -313,8 +315,7 @@ type TrackableContextReturns = {
     postEvent: (type: AnalyticsEventType, data: AnalyticsEventData) => Promise<void>;
 };
 
-export interface TrackableContextValue extends TrackableContextReturns {}
-export const TrackableContext = createContext<TrackableContextValue | null>(null);
+export const TrackableContext = createContext<TrackableContextValue>({} as TrackableContextValue);
 
 export type TrackableProps = {
     children: ReactNode;
@@ -353,11 +354,15 @@ function Trackable({ children }: TrackableProps) {
             });
             return;
         },
-        [queue]
+        [queue, setQueue]
     );
-    const postEvent = useCallback(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
-        return handleEvent(type, event, { shop, currency, locale, shopify, cart });
-    }, []);
+
+    const postEvent = useCallback(
+        debounce(async (type: AnalyticsEventType, event: AnalyticsEventData) => {
+            await handleEvent(type, event, { shop, currency, locale, shopify, cart });
+        }, 500),
+        [handleEvent, { shop, currency, locale, shopify, cart }]
+    )!;
 
     // Page view.
     useEffect(() => {
@@ -431,10 +436,16 @@ function Trackable({ children }: TrackableProps) {
             queueEvent,
             postEvent
         }),
-        []
+        [queueEvent, postEvent]
     );
-    return <TrackableContext.Provider value={store}>{children}</TrackableContext.Provider>;
+
+    return useMemo(
+        () => <TrackableContext.Provider value={store as TrackableContextValue}>{children}</TrackableContext.Provider>,
+        [store, children]
+    );
 }
+
+type SelectorFn<T extends keyof TrackableContextValue> = (context: TrackableContextValue) => TrackableContextValue[T];
 
 /**
  * Provides access to the {@link TrackableContext}.
@@ -442,14 +453,18 @@ function Trackable({ children }: TrackableProps) {
  *
  * @returns {TrackableContextValue} The trackable context.
  */
-export const useTrackable = (): TrackableContextValue => {
-    const context = useContext(TrackableContext);
+export function useTrackable(): TrackableContextValue;
+export function useTrackable<T extends keyof TrackableContextValue>(selector: SelectorFn<T>): TrackableContextValue[T];
+export function useTrackable<T extends keyof TrackableContextValue>(
+    selector?: SelectorFn<T>
+): TrackableContextValue | TrackableContextValue[T] {
+    const context = selector ? useContextSelector(TrackableContext, selector) : useContext(TrackableContext);
     if (!context) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');
     }
 
     return context;
-};
+}
 
 Trackable.displayName = 'Nordcom.Trackable';
 export { Trackable };
