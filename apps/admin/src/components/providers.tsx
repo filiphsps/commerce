@@ -10,6 +10,18 @@ import * as NProgress from 'nprogress';
 import { useEffect, type ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
+// TODO: This should be shared between `landing` and `admin`.
+const theme = {
+    accents: {
+        primary: '#ed1e79',
+        secondary: '#ed1e79'
+    },
+    fonts: {
+        heading: 'var(--font-primary)',
+        body: 'var(--font-primary)'
+    }
+};
+
 export type ProvidersProps = {
     children: ReactNode;
     session: Session | null;
@@ -28,19 +40,10 @@ export function Providers({ children, session }: ProvidersProps) {
     return (
         <SessionProvider session={session} basePath="/admin/api/auth">
             <NordstarProvider
-                theme={{
-                    accents: {
-                        primary: '#ed1e79',
-                        secondary: '#ed1e79'
-                    },
-                    fonts: {
-                        heading: 'var(--font-primary)',
-                        body: 'var(--font-primary)'
-                    }
-                }}
+                theme={theme}
             >
                 <Toaster theme="dark" />
-                <NextTopLoader color={'#ed1e79'} showSpinner={true} crawl={true} />
+                <NextTopLoader color={theme.accents.primary} showSpinner={true} crawl={true} />
 
                 {children}
 

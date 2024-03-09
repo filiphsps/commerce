@@ -74,11 +74,13 @@ const config = {
 
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
+        GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     },
     serverRuntimeConfig: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 
         SHOPIFY_API_KEY: process.env.SHOPIFY_API_KEY,
         SHOPIFY_API_SECRET_KEY: process.env.SHOPIFY_API_SECRET_KEY
