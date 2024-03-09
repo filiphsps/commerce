@@ -82,28 +82,12 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
 
-    async rewrites() {
-        return [
-            {
-                source: '/:path*',
-                destination: `/:path*`
-            },
-            {
-                source: '/admin',
-                destination: `https://admin.shops.nordcom.io/admin`
-            },
-            {
-                source: '/admin/:path*',
-                destination: `https://admin.shops.nordcom.io/admin/:path*`
-            }
-        ];
-    },
-
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
+    // We handle all redirects at the edge.
     skipTrailingSlashRedirect: true
 };
 
