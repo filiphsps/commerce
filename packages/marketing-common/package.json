@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
-    "name": "@nordcom/commerce-errors",
+    "name": "@nordcom/commerce-marketing-common",
     "version": "0.0.0",
     "private": true,
     "sideEffects": false,
@@ -50,6 +50,7 @@
     "dependencies": {},
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
+        "@nordcom/nordstar": "0.0.41",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
         "rimraf": "5.0.5",

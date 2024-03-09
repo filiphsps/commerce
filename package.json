@@ -53,10 +53,6 @@
         "url": "https://github.com/NordcomInc/ecommerce/issues"
     },
     "homepage": "https://shops.nordcom.io/",
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
         "@prisma/client": "5.10.2",
@@ -87,5 +83,9 @@
     "optionalDependencies": {
         "@rollup/rollup-darwin-arm64": "4.12.1",
         "@rollup/rollup-linux-x64-gnu": "4.12.1"
-    }
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ]
 }

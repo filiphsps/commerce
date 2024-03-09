@@ -37,11 +37,11 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/NordcomInc/sweetsideofsweden-frontend.git"
+        "url": "git+https://github.com/NordcomInc/commerce.git"
     },
     "keywords": [],
     "bugs": {
-        "url": "https://github.com/NordcomInc/sweetsideofsweden-frontend/issues"
+        "url": "https://github.com/NordcomInc/commerce/issues"
     },
     "homepage": "https://shops.nordcom.io/",
     "files": [

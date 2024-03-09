@@ -50,6 +50,7 @@
         "@million/lint": "0.0.68",
         "@next/third-parties": "14.1.3",
         "@nordcom/commerce-errors": "workspace:*",
+        "@nordcom/commerce-marketing-common": "workspace:*",
         "@nordcom/nordstar": "0.0.41",
         "@vercel/otel": "1.5.0",
         "colord": "2.9.3",
