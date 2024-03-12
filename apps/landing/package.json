@@ -74,7 +74,7 @@
         "@nordcom/prettier": "0.1.1",
         "@testing-library/react": "14.2.1",
         "@types/react-dom": "18.2.21",
-        "@types/react": "18.2.64",
+        "@types/react": "18.2.65",
         "@types/nprogress": "0.2.3",
         "concurrently": "8.2.2",
         "critters": "0.0.22",
