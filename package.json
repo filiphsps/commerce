@@ -55,7 +55,7 @@
     "homepage": "https://shops.nordcom.io/",
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@prisma/client": "5.10.2",
+        "@prisma/client": "5.11.0",
         "@typescript-eslint/eslint-plugin": "7.2.0",
         "@typescript-eslint/parser": "7.2.0",
         "@vitejs/plugin-react": "4.2.1",
