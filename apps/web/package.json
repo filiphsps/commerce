@@ -95,7 +95,7 @@
         "@types/convert-units": "2.3.9",
         "@types/lodash.debounce": "4.0.9",
         "@types/react": "18.2.65",
-        "@types/react-dom": "18.2.21",
+        "@types/react-dom": "18.2.22",
         "@types/nprogress": "0.2.3",
         "concurrently": "8.2.2",
         "critters": "0.0.21",
