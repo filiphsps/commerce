@@ -1,5 +1,5 @@
 {
-    "extends": ["../../.eslintrc"],
+    "extends": ["next/core-web-vitals", "../../.eslintrc"],
     "ignorePatterns": ["!**/*"],
     "overrides": [
         {

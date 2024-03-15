@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationCountApi } from '@/api/shopify/product';
@@ -11,11 +13,12 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
-import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import ProductsContent from './products-content';
+
+import type { Metadata } from 'next';
 
 // TODO: Figure out a better way to deal with query params.
 export const dynamic = 'force-dynamic';

@@ -55,7 +55,8 @@ export enum ApiErrorKind {
     API_IMAGE_NO_FRACTIONAL = 'API_ICON_WIDTH_NO_FRACTIONAL',
     API_IMAGE_OUT_OF_BOUNDS = 'API_IMAGE_OUT_OF_BOUNDS',
     API_NO_LOCALES_AVAILABLE = 'API_NO_LOCALES_AVAILABLE',
-    API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION'
+    API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION = 'API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION',
+    API_MISSING_ENVIRONMENT_VARIABLE = 'API_MISSING_ENVIRONMENT_VARIABLE'
 }
 
 export class ApiError extends Error<ApiErrorKind> {
@@ -156,6 +157,14 @@ export class InvalidShopifyCustomerAccountsApiConfiguration extends ApiError {
     code = ApiErrorKind.API_INVALID_SHOPIFY_CUSTOMER_ACCOUNT_API_CONFIGURATION;
 }
 
+export class MissingEnvironmentVariableError extends ApiError {
+    statusCode = 500;
+    name = 'MissingEnvironmentVariableError';
+    details = 'Missing environment variable';
+    description = `${!!this.cause ? 'the' : 'A'} required environment variable ${!!this.cause ? `"${this.cause}"` : ''} is missing`;
+    code = ApiErrorKind.API_MISSING_ENVIRONMENT_VARIABLE;
+}
+
 export type ApiErrorStatusCode = 400 | 405 | 429 | number;
 export const getErrorFromStatusCode = (statusCode: ApiErrorStatusCode) => {
     switch (statusCode) {
@@ -178,7 +187,8 @@ export enum GenericErrorKind {
     NOT_FOUND = 'NOT_FOUND',
     UNREACHABLE = 'UNREACHABLE',
     INVALID_TYPE = 'INVALID_TYPE',
-    MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER'
+    MISSING_CONTEXT_PROVIDER = 'MISSING_CONTEXT_PROVIDER',
+    NOT_CONNECTED_TO_DATABASE = 'NOT_CONNECTED_TO_DATABASE'
 }
 
 export class GenericError extends Error<GenericErrorKind> {
@@ -240,6 +250,12 @@ export class MissingContextProviderError extends GenericError {
 
         this.description = `\`${functionName}()\` must be used within a \`<${contextName}/>\` provider.`;
     }
+}
+export class NotConnectedToDatabase extends GenericError {
+    name = 'NotConnectedToDatabase';
+    details = 'Not connected to the database';
+    description = 'The instance provided does not have an active database connection.';
+    code = GenericErrorKind.NOT_CONNECTED_TO_DATABASE;
 }
 
 export const getAllErrorCodes = () => {

@@ -13,6 +13,7 @@
         "start": "next start -p $PORT",
         "dev": "next dev",
         "build": "next build",
+        "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "next lint",
         "fix:lint": "next lint --fix",
         "fix": "concurrently bun:fix:*",
@@ -83,6 +84,7 @@
         "graphql": "16.8.1",
         "happy-dom": "13.8.5",
         "prettier": "3.2.5",
+        "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "typescript": "5.4.2",
         "vitest": "1.3.1"

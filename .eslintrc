@@ -7,20 +7,35 @@
         "node": true
     },
     "extends": [
-        "next/core-web-vitals",
         "plugin:react/recommended",
-        "prettier",
+        "plugin:prettier/recommended",
         "plugin:react-hooks/recommended",
         "plugin:jsx-a11y/recommended"
     ],
-    "plugins": ["@typescript-eslint", "eslint-plugin-jsdoc", "import", "jsx-a11y", "unused-imports", "prettier"],
+    "plugins": [
+        "react",
+        "react-hooks",
+        "unused-imports",
+        "import",
+        "@typescript-eslint",
+        "eslint-plugin-jsdoc",
+        "jsx-a11y",
+        "prettier"
+    ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
         },
         "sourceType": "module",
-        "project": ["./tsconfig.json", "./apps/*/tsconfig.json"]
+        "project": [
+            "./tsconfig.json",
+            "./tsconfig.node.json",
+            "./tsconfig.test.json",
+            "./packages/**/tsconfig.json",
+            "./packages/**/tsconfig.node.json",
+            "./packages/**/tsconfig.test.json"
+        ]
     },
     "settings": {
         "react": {
@@ -28,11 +43,15 @@
         }
     },
     "rules": {
-        "@typescript-eslint/consistent-type-imports": "error",
-        "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+        "brace-style": [
+            "error",
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
+        ],
         "consistent-return": "error",
         "import/first": "off",
-        "import/order": "off",
         "indent": "off",
         "jsdoc/check-alignment": "error",
         "jsdoc/check-indentation": "off",
@@ -44,14 +63,18 @@
         "jsdoc/require-hyphen-before-param-description": "error",
         "jsx-a11y/alt-text": "off",
         "jsx-a11y/anchor-is-valid": "off",
-        "jsx-a11y/html-has-lang": "off",
-        "jsx-a11y/no-autofocus": "off",
-        "no-console": ["error", { "allow": ["log", "warn", "error", "debug"] }], // TODO: Proper logger.
+        "no-console": [
+            "error",
+            {
+                "allow": ["debug", "warn", "error"]
+            }
+        ],
         "no-mixed-operators": "off",
         "no-unused-vars": "off",
         "no-useless-constructor": "off",
+        "prettier/prettier": "error",
         "react-hooks/exhaustive-deps": "off",
-        "react-hooks/rules-of-hooks": "off",
+        "react-hooks/rules-of-hooks": "error",
         "react/no-children-prop": "off",
         "react/no-find-dom-node": "off",
         "react/no-string-refs": "off",
@@ -63,7 +86,12 @@
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": [
             "warn",
-            { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+            {
+                "vars": "all",
+                "varsIgnorePattern": "^_",
+                "args": "after-used",
+                "argsIgnorePattern": "^_"
+            }
         ]
     }
 }

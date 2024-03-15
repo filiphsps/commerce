@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import type { Product } from '@/api/product';
 import Link from '@/components/link';
 import styles from '@/components/product-card/product-card.module.scss';

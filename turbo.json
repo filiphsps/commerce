@@ -1,13 +1,30 @@
 {
     "$schema": "https://turbo.build/schema.json",
     "globalDotEnv": [".env"],
-    "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/package.json"],
+    "globalDependencies": [
+        "**/.env.*local",
+        "bun.lockb",
+        "tsconfig.json",
+        "**/tsconfig.json",
+        "vite.config.ts",
+        "**/vite.config.ts",
+        "package.json",
+        "**/package.json"
+    ],
     "pipeline": {
         "build": {
             "cache": true,
             "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**", "!coverage/**", "!**/*.yml"],
+            "outputs": ["**/.next/**", "!**/.next/cache/**", "!**/coverage/**", "dist/**"],
             "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
+        },
+        "clean": {
+            "cache": false
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true,
+            "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "lint": {
             "cache": false,
@@ -18,21 +35,16 @@
         },
         "test": {
             "cache": false,
-            "dependsOn": ["^test"],
+            "dependsOn": ["build", "^test"],
             "outputs": ["**/coverage/**"],
             "dotEnv": [".env.test.local", ".env.test", ".env"]
         },
         "typecheck": {
             "cache": false,
-            "dependsOn": ["^typecheck"]
+            "dependsOn": ["build", "^typecheck"]
         },
         "fix": {
             "cache": false
-        },
-        "dev": {
-            "cache": false,
-            "persistent": true,
-            "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "slicemachine": {
             "cache": false,

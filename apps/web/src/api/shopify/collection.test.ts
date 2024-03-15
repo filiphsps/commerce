@@ -164,7 +164,7 @@ describe('api', () => {
                         after: 'start',
                         before: 'end',
                         limit: 10
-                    };
+                    } as any;
 
                     const collection = await CollectionApi({ api, handle, filters });
 

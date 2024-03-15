@@ -1,11 +1,12 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": ".",
         "plugins": [{ "name": "next" }],
         "lib": ["DOM", "DOM.iterable", "ESNext"],
         "rootDir": "../../",
+        "jsx": "preserve",
+        "jsxImportSource": "react",
         "paths": {
             "@/api/*": ["src/api/*"],
             "@/components/*": ["src/components/*"],
@@ -13,10 +14,22 @@
             "@/markdoc/*": ["src/markdoc/*"],
             "@/styles/*": ["src/scss/*"],
             "@/utils/*": ["src/utils/*"],
-
             // Assets.
             "@/static/*": ["public/*"]
-        }
+        },
+        "allowJs": true,
+        "downlevelIteration": true,
+        "esModuleInterop": true,
+        "incremental": true,
+        "isolatedModules": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "noEmit": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": false
     },
-    "include": ["src/@types/declarations.d.ts", "next-env.d.ts", ".next/types/**/*.ts", "src/@types", "src"]
+    "exclude": ["node_modules"],
+    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
+    "references": [{ "path": "../../tsconfig.json" }]
 }
