@@ -35,6 +35,7 @@ export default function SearchContent({}: SearchContentProps) {
                     type="search"
                     defaultValue={searchParams.get('q')?.toString()}
                     onChange={(e) => handleSearch(e.target.value)}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus={true}
                     spellCheck={true}
                     /* TODO: Make this copy configurable. */

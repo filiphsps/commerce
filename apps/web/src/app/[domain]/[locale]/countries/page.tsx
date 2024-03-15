@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CountriesApi, LocalesApi } from '@/api/store';
@@ -9,11 +11,12 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
-import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import LocaleSelector from './locale-selector';
+
+import type { Metadata } from 'next';
 
 export type CountriesPageParams = { domain: string; locale: string };
 export async function generateMetadata({

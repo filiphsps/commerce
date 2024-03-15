@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
@@ -8,10 +10,11 @@ import { Locale, useTranslation } from '@/utils/locale';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
-import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import CartContent from './cart-content';
+
+import type { Metadata } from 'next';
 
 export type CartPageParams = { domain: string; locale: string };
 export async function generateMetadata({

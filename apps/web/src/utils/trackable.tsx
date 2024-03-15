@@ -458,6 +458,7 @@ export function useTrackable<T extends keyof TrackableContextValue>(selector: Se
 export function useTrackable<T extends keyof TrackableContextValue>(
     selector?: SelectorFn<T>
 ): TrackableContextValue | TrackableContextValue[T] {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const context = selector ? useContextSelector(TrackableContext, selector) : useContext(TrackableContext);
     if (!context) {
         throw new MissingContextProviderError('useTrackable', 'Trackable');

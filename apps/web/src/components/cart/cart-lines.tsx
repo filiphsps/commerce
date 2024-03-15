@@ -51,9 +51,9 @@ const CartLines = ({ i18n }: CartContentProps) => {
 CartLines.skeleton = () => {
     return (
         <section className={styles.container}>
-            {[...Array(3).keys()].map((i) => (
-                <div key={i} className={`${styles['line-item']} ${styles.placeholder}`} />
-            ))}
+            <div className={`${styles['line-item']} ${styles.placeholder}`} />
+            <div className={`${styles['line-item']} ${styles.placeholder}`} />
+            <div className={`${styles['line-item']} ${styles.placeholder}`} />
         </section>
     );
 };

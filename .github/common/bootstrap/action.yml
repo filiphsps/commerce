@@ -4,12 +4,6 @@ description: 'Install and configure dependencies'
 runs:
     using: 'composite'
     steps:
-        - name: 🏎️ Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-              node-version-file: '.nvmrc'
-              registry-url: 'https://registry.npmjs.org'
-
         - name: 🏎️ Setup Bun
           uses: oven-sh/setup-bun@v1
 
@@ -26,6 +20,6 @@ runs:
                   ${{ github.workspace }}/**/.next
                   ${{ github.workspace }}/**/.turbo
                   ${{ github.workspace }}/**/.vercel
-              key: ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+              key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
               restore-keys: |
-                  ${{ runner.os }}-node-build-${{ hashFiles('**/package-lock.json') }}-
+                  ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
