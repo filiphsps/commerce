@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, _context: any) => {
     try {
         const res = await shopifyAdminApi.auth.begin({
             shop: shopifyAdminApi.utils.sanitizeShop(searchParams.get('shop') as string, true)!,
-            callbackPath: '/admin/integrations/shopify/',
+            callbackPath: '/integrations/shopify/',
             isOnline: false,
             rawRequest: req
         });

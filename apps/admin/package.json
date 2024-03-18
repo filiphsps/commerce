@@ -43,7 +43,7 @@
     "bugs": {
         "url": "https://github.com/NordcomInc/commerce/issues"
     },
-    "homepage": "https://shops.nordcom.io/admin/",
+    "homepage": "https://admin.shops.nordcom.io/",
     "dependencies": {
         "@million/lint": "0.0.73",
         "@next-auth/prisma-adapter": "1.0.7",

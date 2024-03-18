@@ -21,6 +21,7 @@ jobs:
                   ref: ${{github.event.pull_request.head.ref}}
                   repository: ${{github.event.pull_request.head.repo.full_name}}
                   persist-credentials: false
+                  token: ${{ secrets.MACHINE_USER }}
 
             - name: 📦 Pull from remote
               run: git pull

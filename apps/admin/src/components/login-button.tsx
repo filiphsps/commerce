@@ -67,7 +67,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
                 switch (provider) {
                     case 'github': {
                         setLoading(true);
-                        signIn('github', { callbackUrl: 'https://shops.nordcom.io/admin' });
+                        signIn('github');
                         break;
                     }
                     default: {

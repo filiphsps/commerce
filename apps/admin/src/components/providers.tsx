@@ -29,7 +29,7 @@ export function Providers({ children, session }: ProvidersProps) {
     }, [pathname, router]);
 
     return (
-        <SessionProvider session={session} basePath="/admin/api/auth">
+        <SessionProvider session={session}>
             <NordstarProvider theme={Theme}>
                 <Toaster theme="dark" />
                 <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />

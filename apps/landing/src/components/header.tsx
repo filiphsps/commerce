@@ -32,7 +32,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                     Documentation
                 </NordstarHeader.Menu.Link>
 
-                <Button as="a" href="/admin/" className={styles.button}>
+                <Button as="a" href="https://admin.shops.nordcom.io/" target="_blank" className={styles.button}>
                     Admin
                 </Button>
             </NordstarHeader.Menu>

@@ -1,16 +1,25 @@
 import { authOptions } from '@/utils/auth';
 import NextAuth from 'next-auth';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 
 export type AuthApiRouteParams = {
-    domain: string;
     nextauth: string[];
 };
 async function handler(req: NextRequest, context: { params: AuthApiRouteParams }) {
-    const auth = await NextAuth(authOptions);
+    let newUrl = req.nextUrl.clone();
+    newUrl.hostname = 'shops.nordcom.io';
 
-    return await auth(req, context);
+    if (!newUrl.pathname.startsWith('/admin')) {
+        newUrl.pathname = `/admin${newUrl.pathname}`;
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+        newUrl.hostname = `${newUrl.hostname}.localhost`;
+    }
+
+    return (await NextAuth(authOptions))(new NextRequest(newUrl, req), context);
 }
+
 export { handler as GET, handler as POST };
