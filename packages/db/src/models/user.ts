@@ -31,4 +31,4 @@ export const UserSchema = new Schema<User>(
     }
 );
 
-export default (db: Mongoose): Model<User> => db.models.User || db.model<User>('User', UserSchema);
+export const User = (db: Mongoose): Model<User> => db.models.User || db.model<User>('User', UserSchema);

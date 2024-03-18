@@ -14,10 +14,9 @@ export default mergeConfig(
         build: {
             rollupOptions: {
                 output: {
-                    name: 'database'
+                    name: '@nordcom/commerce-database'
                 }
             }
-        },
-        plugins: []
+        }
     })
 );

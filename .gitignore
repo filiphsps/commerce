@@ -18,6 +18,7 @@ build/
 .env.local
 apps/**/public/**/sitemap*.xml*
 apps/**/public/**/robots.txt*
+*ts.timestamp-*
 
 # misc
 .DS_Store

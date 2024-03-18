@@ -18,8 +18,7 @@
         "fix:lint": "next lint --fix",
         "fix": "concurrently bun:fix:*",
         "typecheck": "tsc -noEmit",
-        "slicemachine": "start-slicemachine",
-        "watch:test": "vitest watch"
+        "slicemachine": "start-slicemachine"
     },
     "author": {
         "name": "Nordcom Group Inc.",

@@ -8,6 +8,7 @@ jobs:
     renovate:
         name: 🔍 Update lockfile
         runs-on: ubuntu-latest
+        if: contains(github.event.pull_request.labels.*.name, 'Dependency')
 
         permissions:
             contents: write
@@ -20,7 +21,6 @@ jobs:
                   fetch-depth: 0
                   ref: ${{github.event.pull_request.head.ref}}
                   repository: ${{github.event.pull_request.head.repo.full_name}}
-                  persist-credentials: false
                   token: ${{ secrets.MACHINE_USER }}
 
             - name: 📦 Pull from remote

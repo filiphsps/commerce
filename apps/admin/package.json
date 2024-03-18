@@ -17,8 +17,7 @@
         "lint": "next lint",
         "fix:lint": "next lint --fix",
         "fix": "concurrently bun:fix:*",
-        "typecheck": "tsc -noEmit",
-        "watch:test": "vitest watch"
+        "typecheck": "tsc -noEmit"
     },
     "author": {
         "name": "Nordcom Group Inc.",
