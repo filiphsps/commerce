@@ -1,0 +1,33 @@
+name: PRs
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, labeled]
+
+jobs:
+    renovate:
+        name: 🔍 Update lockfile
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+
+        steps:
+            - name: 🕶️ Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  ref: 'refs/pull/${{ github.event.number }}/merge'
+
+            - name: 📦 Install
+              uses: ./.github/common/install
+
+            - name: Commit files
+              run: |
+                  git config --local user.email "opensource@nordcom.io"
+                  git config --local user.name "nordcombot"
+                  git commit -a -m "Deps: Update lockfile."
+            - name: Push changes
+              uses: ad-m/github-push-action@master
+              with:
+                  branch: ${{ github.head_ref }}
+                  github_token: ${{ secrets.MACHINE_USER }}
