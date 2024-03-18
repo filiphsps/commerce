@@ -1,7 +1,7 @@
 import path from 'node:path';
-import { defineConfig } from 'vitest/config';
+import { defineProject } from 'vitest/config';
 
-export default defineConfig({
+export default defineProject({
     optimizeDeps: {
         force: true
     },

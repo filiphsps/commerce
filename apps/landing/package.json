@@ -18,7 +18,6 @@
         "fix:lint": "next lint --fix",
         "fix": "concurrently bun:fix:*",
         "typecheck": "tsc -noEmit",
-        "test": "vitest run --coverage",
         "watch:test": "vitest watch"
     },
     "author": {

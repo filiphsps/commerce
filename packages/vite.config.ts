@@ -9,21 +9,19 @@ import tsConfigPaths from 'vite-tsconfig-paths';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const input = Object.fromEntries(
-    globSync('./**/src/**/*.ts*')
-        .filter(
-            (file) =>
-                ['.test', '.stories'].every((ext) => !file.includes(ext)) &&
-                ['coverage/', 'dist/'].every((path) => !file.includes(path))
-        )
-        .map((file) => {
-            const filenameWithoutExt = file.slice(0, file.length - extname(file).length);
+    globSync('./**/src/**/*.ts*', {
+        ignore: ['**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.test.*', '**/*.stories.*']
+    }).map((file) => {
+        const filenameWithoutExt = file.slice(0, file.length - extname(file).length);
 
-            return [relative('src', filenameWithoutExt), resolve(process.cwd(), file)];
-        })
+        return [relative('src', filenameWithoutExt), resolve(process.cwd(), file)];
+    })
 );
 
-const logger = createLogger();
-logger.info(JSON.stringify(input, null, 4));
+if (process.env.NODE_ENV === 'development') {
+    const logger = createLogger();
+    logger.info(JSON.stringify(input, null, 4));
+}
 
 export default defineConfig({
     root: resolve(__dirname),

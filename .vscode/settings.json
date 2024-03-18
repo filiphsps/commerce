@@ -43,7 +43,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/coverage": true,
         "**/*.tsbuildinfo": true
     },
     "files.autoSave": "off",

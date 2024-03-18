@@ -3,9 +3,10 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "jsx": "react-jsx",
-        "types": ["vitest/globals", "happy-dom"]
+        "types": ["vitest/globals", "happy-dom"],
+        "noEmit": true
     },
 
-    "include": ["packages", "apps", "@types/declaration.d.ts", "**/*.test.*", "vitest.config.ts"],
+    "include": ["packages/**/*.test.*", "apps/**/*.test.*", "vitest.config.ts"],
     "exclude": ["**/.turbo", "**/build", "**/coverage", "**/dist", "**/node_modules", "**/public"]
 }

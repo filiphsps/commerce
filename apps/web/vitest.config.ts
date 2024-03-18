@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import react from '@vitejs/plugin-react';
 
-import { defineConfig, mergeConfig } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
 
 import base from '../../vitest.config';
 
@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default mergeConfig(
     base,
-    defineConfig({
+    defineProject({
         root: resolve(__dirname),
         plugins: [react()],
         resolve: {

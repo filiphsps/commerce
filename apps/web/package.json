@@ -18,7 +18,6 @@
         "fix:lint": "next lint --fix",
         "fix": "concurrently bun:fix:*",
         "typecheck": "tsc -noEmit",
-        "test": "vitest run --coverage",
         "slicemachine": "start-slicemachine",
         "watch:test": "vitest watch"
     },

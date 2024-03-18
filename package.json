@@ -31,7 +31,7 @@
         "fix": "turbo run fix",
         "fix:prettier": "prettier **/src/**/*.{ts,tsx,json,scss} --write",
         "typecheck": "turbo run typecheck",
-        "test": "turbo run test",
+        "test": "vitest run --coverage",
         "slicemachine": "turbo run slicemachine"
     },
     "author": {

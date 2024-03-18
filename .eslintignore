@@ -9,7 +9,6 @@ storybook-static/
 public/
 .vitest/
 
-*.test.*
 *.json
 *.lock
 *.env
