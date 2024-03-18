@@ -13,9 +13,9 @@ export default mergeConfig(
         root: resolve(__dirname),
         build: {
             rollupOptions: {
-                external: ['mongoose', 'monguito', 'uuid'],
+                external: ['mongoose'],
                 output: {
-                    name: 'db'
+                    name: '@nordcom/commerce-db'
                 }
             }
         },

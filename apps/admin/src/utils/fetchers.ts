@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { prisma } from '@nordcom/commerce-database';
+import { db, Shop } from '@nordcom/commerce-db';
 import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
@@ -13,6 +14,15 @@ const revalidateAll = async (userId: string, shopId: string, domain: string) => 
 export async function getShopsForUser(userId: string) {
     return await cache(
         async () => {
+            // FIXME: This is just here for debugging.
+            void Shop(await db())
+                .find({
+                    /*'collaborators.user': userId*/
+                })
+                .sort({ createdAt: -1 })
+                .exec()
+                .then((shops) => console.debug(`[mongodb-rework]: Found ${shops.map(({ name }) => name).join(', ')}!`));
+
             return prisma.shop.findMany({
                 where: {
                     collaborators: {

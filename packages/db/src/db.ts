@@ -27,4 +27,4 @@ class Singleton {
     }
 }
 
-export default async () => await Singleton.instance;
+export const db = async () => await Singleton.instance;

@@ -4,7 +4,7 @@ import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { afterEach } from 'node:test';
-import db from './db';
+import { db } from './db';
 
 let mongod: MongoMemoryServer;
 

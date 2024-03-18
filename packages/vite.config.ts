@@ -57,7 +57,7 @@ export default defineConfig({
         dts({
             clearPureImport: false,
             entryRoot: 'src',
-            insertTypesEntry: false,
+            insertTypesEntry: true,
             rollupTypes: false,
             tsconfigPath: 'tsconfig.json',
             include: ['**/src']

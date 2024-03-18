@@ -6,7 +6,7 @@
         "rootDir": "./src",
         "typeRoots": ["dist/index.d.ts"]
     },
-    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*", "**/*.stories.*"],
+    "exclude": ["node_modules", "coverage", "dist", "**/*.test.*"],
     "include": ["src/@types", "../../@types/declaration.d.ts"],
     "references": [{ "path": "../../tsconfig.json" }]
 }

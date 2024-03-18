@@ -1,6 +1,5 @@
-export * from './model';
+import Shop, { ShopSchema } from './shop';
+export { Shop, ShopSchema };
 
-import Shop from './shop';
-import User from './user';
-
-export const Models = { Shop, User };
+import User, { UserSchema } from './user';
+export { User, UserSchema };
