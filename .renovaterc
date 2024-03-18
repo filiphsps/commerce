@@ -2,5 +2,9 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "local>NordcomInc/renovate-config"
+    ],
+    "gitIgnoredAuthors": [
+        "github-actions[bot]@users.noreply.github.com",
+        "opensource@nordcom.io"
     ]
 }

@@ -49,7 +49,7 @@ export default mergeConfig(
                 tsconfig: `${__dirname}/tsconfig.test.json`
             },
 
-            setupFiles: [`${__dirname}/__tests__/setup.ts`],
+            setupFiles: [`${__dirname}/vitest.setup.ts`],
 
             coverage: {
                 exclude: [

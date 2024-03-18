@@ -8,6 +8,7 @@ jobs:
     renovate:
         name: 🔍 Update lockfile
         runs-on: ubuntu-latest
+
         permissions:
             contents: write
             pull-requests: write
@@ -19,6 +20,7 @@ jobs:
                   fetch-depth: 0
                   ref: ${{github.event.pull_request.head.ref}}
                   repository: ${{github.event.pull_request.head.repo.full_name}}
+                  persist-credentials: false
 
             - name: 📦 Pull from remote
               run: git pull
@@ -36,4 +38,4 @@ jobs:
               uses: ad-m/github-push-action@master
               with:
                   branch: ${{ github.head_ref }}
-                  github_token: ${{ secrets.NORDCOM_BOT_TOKEN }}
+                  github_token: ${{ secrets.MACHINE_USER }}

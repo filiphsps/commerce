@@ -7,11 +7,15 @@ const reporters = ['verbose'];
 const extraReporters = !!process.env.GITHUB_ACTIONS ? ['github-actions'] : [];
 const exclude = [
     '**/.next/**/*.*',
+    '**/.turbo/**/*.*',
     '**/*.d.ts',
     '**/*.json',
     '**/coverage/**/*.*',
     '**/dist/**/*.*',
-    '**/node_modules/**/*.*'
+    '**/node_modules/**/*.*',
+    '**/vite.*.ts',
+    '**/vitest.*.ts',
+    'vitest.workspace.ts'
 ];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -45,7 +49,7 @@ export default defineConfig({
 
         coverage: {
             all: true,
-            exclude,
+            exclude: exclude,
             provider: 'v8',
             reporter: ['json', 'json-summary'],
             reportOnFailure: true
