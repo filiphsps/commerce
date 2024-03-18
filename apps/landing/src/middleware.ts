@@ -16,15 +16,11 @@ export const config = {
 export default async function middleware(req: NextRequest) {
     let newUrl = req.nextUrl.clone();
 
-    // Don't rewrite if the new URL is the same as the original URL.
-    if (newUrl.href !== req.nextUrl.href) {
-        return NextResponse.rewrite(newUrl.href);
+    if (newUrl.pathname.startsWith('/admin')) {
+        let target = newUrl.clone();
+        target.hostname = 'nordcom-commerce-admin.vercel.app';
+        return NextResponse.rewrite(target);
     }
 
-    // Validations that doesn't apply to admin routes.
-    if (!newUrl.pathname.startsWith('/admin')) {
-        return NextResponse.next();
-    }
-
-    return NextResponse.rewrite(new URL(newUrl.pathname, 'https://admin.shops.nordcom.io/'));
+    return NextResponse.next();
 }
