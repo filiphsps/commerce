@@ -89,7 +89,7 @@
         "use-context-selector": "1.4.4"
     },
     "devDependencies": {
-        "@happy-dom/global-registrator": "13.2.2",
+        "@happy-dom/global-registrator": "13.9.0",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.37",
         "@testing-library/react": "14.2.1",
