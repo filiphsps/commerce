@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const input = Object.fromEntries(
     globSync('./**/src/**/*.ts*', {
-        ignore: ['**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.test.*', '**/*.stories.*']
+        ignore: ['**/*.d.ts', '**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.test.*', '**/*.stories.*']
     }).map((file) => {
         const filenameWithoutExt = file.slice(0, file.length - extname(file).length);
 
@@ -18,17 +18,15 @@ const input = Object.fromEntries(
     })
 );
 
-if (process.env.NODE_ENV === 'development') {
-    const logger = createLogger();
-    logger.info(JSON.stringify(input, null, 4));
-}
+const logger = createLogger();
+logger.info(JSON.stringify({ __dirname, ...input }, null, 4));
 
 export default defineConfig({
-    root: resolve(__dirname),
+    root: process.cwd(),
     build: {
         copyPublicDir: false,
         emptyOutDir: true,
-        minify: true,
+        minify: false,
         outDir: 'dist',
         sourcemap: true,
         target: 'esnext',
@@ -38,17 +36,17 @@ export default defineConfig({
         },
         rollupOptions: {
             external: ['@nordcom/commerce-errors', 'server-only'],
+            input: input,
             output: {
                 chunkFileNames: 'chunks/[name].[hash].js',
                 entryFileNames: '[name].js',
                 esModule: true,
-                exports: 'named',
+                exports: 'auto',
                 format: 'esm',
                 globals: {},
                 indent: false,
                 interop: 'esModule',
-                sourcemapExcludeSources: true,
-                strict: true
+                sourcemapExcludeSources: false
             }
         }
     },
@@ -56,10 +54,11 @@ export default defineConfig({
         tsConfigPaths(),
         dts({
             clearPureImport: false,
+            copyDtsFiles: true,
             entryRoot: 'src',
             insertTypesEntry: true,
             rollupTypes: false,
-            tsconfigPath: 'tsconfig.json',
+            tsconfigPath: `./tsconfig.json`,
             include: ['**/src']
         })
     ]

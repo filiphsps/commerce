@@ -24,8 +24,7 @@
         "build": "tsc && vite build",
         "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "eslint",
-        "typecheck": "tsc -noEmit",
-        "watch:test": "vitest watch"
+        "typecheck": "tsc -noEmit"
     },
     "author": {
         "name": "Nordcom Group Inc.",

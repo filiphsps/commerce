@@ -1,5 +1,5 @@
 declare global {
-    var _mongoClientPromise: Promise<typeof import('mongoose')>;
+    var mongoose: typeof import('mongoose') | undefined;
 }
 
 export {};

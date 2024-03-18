@@ -18,7 +18,6 @@ export default mergeConfig(
                     name: '@nordcom/commerce-db'
                 }
             }
-        },
-        plugins: []
+        }
     })
 );

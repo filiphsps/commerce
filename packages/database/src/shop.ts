@@ -101,7 +101,7 @@ export const ShopApi = async (domain: string, cache?: any) => {
                         }
                     }
                 },
-                cacheStrategy: { ttl: 120, swr: 3600 }
+                cacheStrategy: { ttl: 3600, swr: 3600 }
             });
 
             if (!res) throw new UnknownShopDomainError();
@@ -153,7 +153,7 @@ export const ShopsApi = async (cache?: any) => {
                 id: true,
                 domain: true
             },
-            cacheStrategy: { ttl: 120, swr: 3600 }
+            cacheStrategy: { ttl: 3600, swr: 3600 }
         });
 
         return Promise.all(shops.map((shop) => ShopApi(shop.domain)));
@@ -199,7 +199,7 @@ export const CommerceProviderAuthenticationApi = async ({
                                         }
                                     }
                                 },
-                                cacheStrategy: { ttl: 120, swr: 3600 }
+                                cacheStrategy: { ttl: 3600, swr: 3600 }
                             })
                         )?.commerceProvider || {};
                     if (!provider || !data) throw new UnknownShopDomainError();

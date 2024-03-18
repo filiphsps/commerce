@@ -50,4 +50,4 @@ export const ShopSchema = new Schema<Shop>(
     }
 );
 
-export default (db: Mongoose): Model<Shop> => db.models.Shop || db.model<Shop>('Shop', ShopSchema);
+export const Shop = (db: Mongoose) => (db.models.Shop || db.model('Shop', ShopSchema)) as Model<Shop>;
