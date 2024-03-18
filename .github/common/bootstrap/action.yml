@@ -17,11 +17,8 @@ runs:
           uses: actions/cache@v4
           with:
               path: |
-                  ~/.npm
-                  ${{ github.workspace }}/.turbo
+                  ~/.bun/install/cache
                   ${{ github.workspace }}/**/.next
-                  ${{ github.workspace }}/**/.turbo
-                  ${{ github.workspace }}/**/.vercel
                   ${{ github.workspace }}/**/node_modules
               key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
               restore-keys: |

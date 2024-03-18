@@ -11,6 +11,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
+
         steps:
             - name: 🕶️ Checkout repository
               uses: actions/checkout@v4
@@ -27,8 +28,8 @@ jobs:
 
             - name: 📦 Commit lockfile
               run: |
-                  git config --local user.email "opensource@nordcom.io"
-                  git config --local user.name "nordcombot"
+                  git config user.name 'github-actions[bot]'
+                  git config user.email 'github-actions[bot]@users.noreply.github.com'
                   git commit -a -m "Deps: Update lockfile." --no-verify
 
             - name: 🚀 Push changes
