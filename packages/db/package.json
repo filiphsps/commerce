@@ -55,7 +55,7 @@
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
         "mongoose": "8.2.2",
-        "monguito": "4.5.0",
+        "monguito": "4.6.0",
         "uuid": "9.0.1"
     },
     "devDependencies": {
@@ -67,6 +67,6 @@
         "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "typescript": "5.4.2",
-        "vitest": "1.3.1"
+        "vitest": "1.4.0"
     }
 }

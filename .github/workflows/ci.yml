@@ -64,7 +64,7 @@ jobs:
               # Always run, even if previous steps failed
               if: always()
               env:
-                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     lint:
         name: 📋 Lint

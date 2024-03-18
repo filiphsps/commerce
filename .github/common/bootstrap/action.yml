@@ -6,6 +6,8 @@ runs:
     steps:
         - name: 🏎️ Setup Bun
           uses: oven-sh/setup-bun@v1
+          with:
+              bun-version: canary
 
         - name: 📦 Install dependencies
           shell: bash
@@ -20,6 +22,7 @@ runs:
                   ${{ github.workspace }}/**/.next
                   ${{ github.workspace }}/**/.turbo
                   ${{ github.workspace }}/**/.vercel
+                  ${{ github.workspace }}/**/node_modules
               key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
               restore-keys: |
                   ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
