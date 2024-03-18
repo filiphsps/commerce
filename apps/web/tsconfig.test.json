@@ -3,7 +3,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "types": ["vitest/globals", "happy-dom"]
+        "types": ["vitest/globals", "happy-dom", "@testing-library/react"]
     },
 
     "include": ["./**/*.test.*"],

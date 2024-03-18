@@ -28,20 +28,20 @@
         },
         "lint": {
             "cache": false,
-            "dependsOn": ["^lint"]
+            "dependsOn": ["^build"]
         },
         "prettier": {
             "cache": false
         },
         "test": {
             "cache": false,
-            "dependsOn": ["build", "^test"],
             "outputs": ["**/coverage/**"],
-            "dotEnv": [".env.test.local", ".env.test", ".env"]
+            "dotEnv": [".env.test.local", ".env.test", ".env"],
+            "dependsOn": ["^build"]
         },
         "typecheck": {
             "cache": false,
-            "dependsOn": ["build", "^typecheck"]
+            "dependsOn": ["^build"]
         },
         "fix": {
             "cache": false

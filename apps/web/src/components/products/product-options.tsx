@@ -91,6 +91,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                             href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
                                     }
 
+                                    const inStock = isOptionInStock(option.name!, value!);
                                     const extraProps = {
                                         locale: locale,
                                         href: href,
@@ -99,10 +100,14 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                             setSelectedOptions({
                                                 ...(selectedOptions as any),
                                                 [option.name!]: value!
-                                            })
+                                            }),
+
+                                        ...(!inStock && {
+                                            disabled: !inStock,
+                                            'aria-disabled': !inStock
+                                        })
                                     };
 
-                                    const inStock = isOptionInStock(option.name!, value!);
                                     return (
                                         <Link
                                             key={`${option.name}_${value}`}
@@ -115,7 +120,6 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                             } ${!inStock ? styles.disabled : ''} ${
                                                 asComponent !== 'div' ? styles.clickable : ''
                                             }`}
-                                            {...({ disabled: !inStock } as any)}
                                             {...extraProps}
                                             // The user's locale might differ from ours.
                                             suppressHydrationWarning={true}

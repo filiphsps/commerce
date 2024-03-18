@@ -1,5 +1,5 @@
 import { usePrevious } from '@/hooks/usePrevious';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@/utils/test/react';
 import { describe, expect, it } from 'vitest';
 
 describe('hooks', () => {

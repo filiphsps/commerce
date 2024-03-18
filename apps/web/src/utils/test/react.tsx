@@ -1,8 +1,12 @@
+import '@testing-library/jest-dom/vitest';
+import '@testing-library/react';
+
 import { ShopProvider } from '@/components/shop/provider';
 import { Locale } from '@/utils/locale';
 import { Trackable } from '@/utils/trackable';
-import { render } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { queries, render, within } from '@testing-library/react';
+
+import type { ReactElement, ReactNode } from 'react';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
@@ -16,11 +20,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
     );
 };
 
-const customRender = (ui: Parameters<typeof render>[0], options?: Parameters<typeof render>[1]) =>
+const customScreen = within(document.body, queries);
+const customWithin = (element: ReactElement) => within(element as any, queries);
+const customRender = (ui: Parameters<typeof render>[0], options?: Omit<Parameters<typeof render>[1], 'queries'>) =>
     render(ui, { wrapper: Providers, ...options });
 
 // re-export everything
 export * from '@testing-library/react';
 
 // override render method
-export { customRender as render };
+export { customRender as render, customScreen as screen, customWithin as within };

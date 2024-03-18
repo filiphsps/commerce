@@ -1,7 +1,6 @@
-import React from 'react';
 import { describe, expect, it } from 'vitest';
 
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test/react';
 
 import Pricing from '@/components/typography/pricing';
 
@@ -17,6 +16,12 @@ describe('components', () => {
             amount: '15.00',
             currencyCode: 'USD'
         };
+
+        it('renders without crashing', async () => {
+            const { unmount } = render(<Pricing />);
+
+            expect(() => unmount()).not.toThrow();
+        });
 
         it('renders the price', () => {
             render(<Pricing price={price} />);

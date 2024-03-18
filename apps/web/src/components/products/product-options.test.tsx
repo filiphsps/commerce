@@ -1,9 +1,8 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ProductOptions } from '@/components/products/product-options';
 import { Locale } from '@/utils/locale';
-import { render, screen, waitFor } from '@/utils/test/react';
+import { fireEvent, render, screen } from '@/utils/test/react';
 
 const options = [
     {
@@ -31,79 +30,89 @@ const variants = [
     }
 ];
 
-// Mock `@shopify/hydrogen-react`s `useProduct` hook and other
-// required functions to prevent `<ProductProvider>` error.
 const setSelectedOptions = vi.fn();
-vi.mock('@shopify/hydrogen-react', async () => ({
-    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
-    flattenConnection: vi.fn().mockImplementation((data) => data),
-    useProduct: () => ({
-        options,
-        product: {
-            handle: 'test',
-            title: 'title',
-            vendor: 'vendor',
-            variants
-        },
-        variants,
-        selectedOptions,
-        setSelectedOptions,
-        isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
-    }),
-    createStorefrontClient: () => ({
-        getStorefrontApiUrl: () => '',
-        getPublicTokenHeaders: () => ({})
-    }),
-    useCart: vi.fn().mockReturnValue({
-        status: 'idle'
-    }),
-    useShop: vi.fn().mockReturnValue({}),
-    useShopifyCookies: vi.fn().mockReturnValue({})
-}));
-vi.mock('next/link', async () => ({
-    ...((await vi.importActual('next/link')) || {}),
-    default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-}));
 
 describe('components', () => {
+    // Mock `@shopify/hydrogen-react`s `useProduct` hook and other
+    // required functions to prevent `<ProductProvider>` error.
+    vi.mock('@shopify/hydrogen-react', async () => ({
+        ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+        flattenConnection: vi.fn().mockImplementation((data) => data),
+        useProduct: () => ({
+            options,
+            product: {
+                handle: 'test',
+                title: 'title',
+                vendor: 'vendor',
+                variants
+            },
+            variants,
+            selectedOptions,
+            setSelectedOptions,
+            isOptionInStock: vi.fn().mockImplementation((_, val) => val !== '100g')
+        }),
+        createStorefrontClient: () => ({
+            getStorefrontApiUrl: () => '',
+            getPublicTokenHeaders: () => ({})
+        }),
+        useCart: vi.fn().mockReturnValue({
+            status: 'idle'
+        }),
+        useShop: vi.fn().mockReturnValue({}),
+        useShopifyCookies: vi.fn().mockReturnValue({})
+    }));
+
+    vi.mock('next/link', async () => ({
+        ...((await vi.importActual('next/link')) || {}),
+        default: (props: any) => <a {...props} /> // eslint-disable-line
+    }));
+
     describe('ProductOptions', () => {
-        it('renders all options and values', () => {
-            render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
-            options.forEach((option) => {
-                const optionTitle = screen.getByText(option.name);
-                expect(optionTitle).toBeDefined();
+        it('renders without crashing', async () => {
+            const { unmount } = render(<ProductOptions locale={Locale.default} initialVariant={variants[0] as any} />);
 
-                option.values.forEach((value) => {
-                    const optionValue = screen.getByText(value);
-                    expect(optionValue).toBeDefined();
-                });
-            });
+            expect(() => unmount()).not.toThrow();
         });
 
-        it('calls setSelectedOptions when an option is clicked', () => {
+        it('renders all options and values', async () => {
             render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
-            const target = screen.getByText(variants[1]!.title);
-            expect(target.getAttribute('href')).toBeNull();
+
+            for (const option of options) {
+                expect(screen.getByText(option.name)).toBeDefined();
+
+                for (const value of option.values) {
+                    expect(screen.getByText(value)).toBeDefined();
+                }
+            }
         });
 
-        it('converts grams to ounces when locale is en-US', () => {
+        it('converts grams to ounces when locale is en-US', async () => {
             render(<ProductOptions locale={Locale.from('en-US')!} initialVariant={variants[0] as any} />);
+
             // We can't use sizeOptionValues[0] because it's in grams.
-            const sizeOptionValueElement = screen.getByText('4oz');
+            const target = screen.getByText('4oz');
 
             // NOTE: The conversion function rounds to the nearest whole number.
-            expect(sizeOptionValueElement.textContent).toContain('4oz');
+            expect(target.outerHTML).toContain('4oz');
         });
 
         it('disables options that are out of stock or unavailable', async () => {
             render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
 
-            await waitFor(() => {
-                const target = screen.getByText(variants[0]!.title);
-                expect(target).toBeDefined();
-                expect(target.getAttribute('href')).toBeNull();
-                expect(target.getAttribute('disabled')).toBeDefined();
-            });
+            const target = screen.getByText(variants[0]!.title);
+
+            expect(target).toBeDefined();
+            expect(target).toHaveAttribute('disabled');
+        });
+
+        it('should call setSelectedOptions when an option is clicked', async () => {
+            render(<ProductOptions locale={Locale.from('en-GB')!} initialVariant={variants[0] as any} />);
+
+            const variant = variants.at(-1)!;
+            const target = screen.getByText(variant.title);
+
+            fireEvent.click(target);
+            expect(setSelectedOptions).toHaveBeenCalledWith({ Size: variant.title });
         });
     });
 });

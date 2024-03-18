@@ -1,9 +1,20 @@
+import '@testing-library/jest-dom/vitest';
+import '@testing-library/react';
+
 import 'next';
 
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { vi } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/matchers';
+import { cleanup } from '@testing-library/react';
+import { afterEach, expect, vi } from 'vitest';
 
 GlobalRegistrator.register();
+expect.extend(matchers);
+
+afterEach(() => {
+    cleanup();
+    document.body.innerHTML = '';
+});
 
 vi.mock('server-only', () => ({}));
 
@@ -58,6 +69,18 @@ vi.mock('@/api/product-reviews', () => ({
         reviews: [],
         averageRating: 5
     })
+}));
+
+vi.mock('@shopify/hydrogen-react', async () => ({
+    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
+    flattenConnection: vi.fn().mockImplementation((data) => data),
+    createStorefrontClient: () => ({
+        getStorefrontApiUrl: () => '',
+        getPublicTokenHeaders: () => ({})
+    }),
+    useCart: vi.fn().mockReturnValue({}),
+    useShop: vi.fn().mockReturnValue({}),
+    useShopifyCookies: vi.fn().mockReturnValue({})
 }));
 
 vi.mock('react', async () => {
