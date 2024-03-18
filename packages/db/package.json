@@ -55,7 +55,7 @@
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
         "mongoose": "8.2.2",
-        "monguito": "4.5.0",
+        "monguito": "4.6.0",
         "uuid": "9.0.1"
     },
     "devDependencies": {
