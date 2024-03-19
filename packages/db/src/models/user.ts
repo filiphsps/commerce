@@ -1,19 +1,19 @@
 import { Schema } from 'mongoose';
-import { Identity, IdentitySchema } from '.';
+import { IdentityBase, IdentitySchema } from '.';
 import { db } from '../db';
 
-import type { Document } from '../db';
+import type { BaseDocument } from '../db';
 
-export interface User extends Document {
+export interface UserBase extends BaseDocument {
     email: string;
     name: string;
     avatar?: string;
-    identities: Identity[];
+    identities: IdentityBase[];
 
     emailVerified: Date | null;
 }
 
-export const UserSchema = new Schema<User>(
+export const UserSchema = new Schema<UserBase>(
     {
         email: {
             type: Schema.Types.String,
@@ -47,4 +47,6 @@ export const UserSchema = new Schema<User>(
     }
 );
 
-export const User = (db.models.User || db.model('User', UserSchema)) as ReturnType<typeof db.model<typeof UserSchema>>;
+export const UserModel = (db.models.User || db.model('User', UserSchema)) as ReturnType<
+    typeof db.model<typeof UserSchema>
+>;

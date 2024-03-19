@@ -4,11 +4,12 @@ import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
 import mongoose from 'mongoose';
 
 import type { Document } from 'mongoose';
+//
 
-interface DocumentWithId extends Document {
+interface BaseDocument extends Document {
     id: string;
 }
-export type { DocumentWithId as Document };
+export type { BaseDocument };
 
 mongoose.set('strictQuery', true);
 mongoose.set('strict', 'throw');

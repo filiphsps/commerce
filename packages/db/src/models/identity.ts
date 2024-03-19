@@ -1,11 +1,11 @@
 import { Schema } from 'mongoose';
-import { User } from '.';
+import { UserBase } from '.';
 import { db } from '../db';
 
-import type { Document } from '../db';
+import type { BaseDocument } from '../db';
 
-export interface Identity extends Omit<Document, '_id'> {
-    user: User;
+export interface IdentityBase extends BaseDocument {
+    user: UserBase;
     provider: string;
     identity: string;
     scope?: string;
@@ -15,7 +15,7 @@ export interface Identity extends Omit<Document, '_id'> {
     accessToken?: string;
 }
 
-export const IdentitySchema = new Schema<Identity>(
+export const IdentitySchema = new Schema<IdentityBase>(
     {
         provider: {
             type: Schema.Types.String,
@@ -46,6 +46,6 @@ export const IdentitySchema = new Schema<Identity>(
     }
 );
 
-export const Identity = (db.models.Identity || db.model('Identity', IdentitySchema)) as ReturnType<
+export const IdentityModel = (db.models.Identity || db.model('Identity', IdentitySchema)) as ReturnType<
     typeof db.model<typeof IdentitySchema>
 >;
