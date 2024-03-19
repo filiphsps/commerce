@@ -2,15 +2,16 @@ import 'server-only';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
-import { getSession } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
-import { Button, Card, Label, View } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
+import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import type { ReactNode } from 'react';
-import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket } from 'react-icons/bi';
+import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiStats, BiWrench } from 'react-icons/bi';
 import styles from './layout.module.scss';
+
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export type ShopLayoutProps = {
     children: ReactNode;
@@ -20,9 +21,9 @@ export type ShopLayoutProps = {
 };
 
 export async function generateMetadata({ params: { id: shopId } }: ShopLayoutProps): Promise<Metadata> {
-    const session = await getSession();
-    if (!session) {
-        return redirect('/login/');
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect('/auth/login/');
     }
 
     const shop = await getShop(session.user.id, shopId);
@@ -43,9 +44,9 @@ export async function generateMetadata({ params: { id: shopId } }: ShopLayoutPro
 }
 
 export default async function ShopLayout({ children, params: { id: shopId } }: ShopLayoutProps) {
-    const session = await getSession();
-    if (!session) {
-        return redirect('/auth/login/');
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect('/auth/login/');
     }
 
     const shop = await getShop(session.user.id, shopId);
@@ -65,11 +66,16 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
 
                     <aside className={styles.blocks}>
                         <div className={styles.block}>
-                            <Label>Analytics</Label>
+                            <Label className={styles['section-title']}>
+                                <BiStats />
+                                Analytics
+                            </Label>
 
                             <div className={styles.settings}>
                                 <Card className={styles.setting} as={Link} href={`${basePath}/`}>
-                                    Overview
+                                    <Heading level="h4" as="div">
+                                        Overview
+                                    </Heading>
                                     <Button as="div" variant="outline" className={styles.action}>
                                         <BiHomeAlt />
                                     </Button>
@@ -78,25 +84,34 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                         </div>
 
                         <div className={styles.block}>
-                            <Label>Settings</Label>
+                            <Label className={styles['section-title']}>
+                                <BiWrench />
+                                Settings
+                            </Label>
 
                             <div className={styles.settings}>
                                 <Card className={styles.setting} as={Link} href={`${basePath}/settings/content/`}>
-                                    Content
+                                    <Heading level="h4" as="div">
+                                        Content
+                                    </Heading>
                                     <Button as="div" variant="outline" className={styles.action}>
                                         <BiBook />
                                     </Button>
                                 </Card>
 
                                 <Card className={styles.setting} as={Link} href={`${basePath}/settings/design/`}>
-                                    Branding & Theme
+                                    <Heading level="h4" as="div">
+                                        Branding & Theme
+                                    </Heading>
                                     <Button as="div" variant="outline" className={styles.action}>
                                         <BiImage />
                                     </Button>
                                 </Card>
 
                                 <Card className={styles.setting} as={Link} href={`${basePath}/settings/billing/`}>
-                                    Billing
+                                    <Heading level="h4" as="div">
+                                        Billing
+                                    </Heading>
                                     <Button as="div" variant="outline" className={styles.action}>
                                         <BiCreditCardFront />
                                     </Button>
@@ -105,15 +120,29 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                         </div>
 
                         <div className={styles.block}>
-                            <Label>
+                            <Label className={styles['section-title']}>
                                 <BiRocket />
                                 Collaborators
                             </Label>
 
                             <div className={styles.settings}>
-                                {shop.collaborators.map(({ user: { name } }) => (
-                                    <Card key={name} className={styles.setting}>
-                                        {name}
+                                {shop.collaborators.map(({ user: { id, name, avatar } }) => (
+                                    <Card key={id} className={`${styles.setting} ${styles.collaborator}`}>
+                                        {!!avatar ? (
+                                            <img
+                                                src={avatar}
+                                                alt={name}
+                                                height={35}
+                                                width={35}
+                                                draggable={false}
+                                                decoding="async"
+                                                className={styles.avatar}
+                                            />
+                                        ) : (
+                                            <div className={styles.avatar}>{name.at(0)}</div>
+                                        )}
+
+                                        <Label as="div">{name}</Label>
                                     </Card>
                                 ))}
                             </div>

@@ -1,13 +1,14 @@
 import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';
-import { getSession } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import { Heading, Label } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.scss';
+
+import type { Metadata } from 'next';
 
 export type IndexAdminPageParams = {};
 
@@ -16,8 +17,8 @@ export const metadata: Metadata = {
 };
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
-    const session = await getSession();
-    if (session) {
+    const session = await auth();
+    if (!!session?.user?.id) {
         redirect('/');
     }
 

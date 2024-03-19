@@ -1,29 +1,29 @@
 import ActionableCard from '@/components/actionable-card';
-import { getSession } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import { getShopsForUser } from '@/utils/fetchers';
 import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import styles from './page.module.scss';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Your Shops'
 };
 
 export default async function Overview() {
-    const session = await getSession();
-    if (!session) {
-        return redirect('/auth/login/');
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect('/auth/login/');
     }
 
     const { user } = session;
+    const shops = await getShopsForUser(user.id!);
 
-    const shops = await getShopsForUser(user.id);
-
-    const firstName = user.name.split(' ').at(0) || null;
-    const lastName = user.name.split(' ').slice(1).join(' ') || null;
+    const firstName = user.name?.split(' ').at(0) || null;
+    const lastName = user.name?.split(' ').slice(1).join(' ') || null;
 
     return (
         <div className={styles.container}>
@@ -63,15 +63,11 @@ export default async function Overview() {
                         </>
                     }
                 >
-                    {shops.length > 0 ? (
-                        <>
-                            {shops.map(({ id, name }) => (
-                                <Button key={id} variant="outline" as={Link} href={`/${id}/`}>
-                                    {name}
-                                </Button>
-                            ))}
-                        </>
-                    ) : null}
+                    {(shops || []).map((shop) => (
+                        <Button key={shop.id} variant="outline" as={Link} href={`/${shop.id}/`}>
+                            {shop.name}
+                        </Button>
+                    ))}
                 </ActionableCard>
             </View>
         </div>

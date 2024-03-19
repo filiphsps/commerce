@@ -1,8 +1,10 @@
 'use client';
 
 import { Input } from '@nordcom/nordstar';
-import { CommerceProviderType, type CommerceProvider } from '@prisma/client/edge';
+import { CommerceProviderType } from '@prisma/client/edge';
 import { useState } from 'react';
+
+import type { CommerceProvider } from '@prisma/client/edge';
 
 export type CommerceSettingsProps = {
     data: CommerceProvider | null;

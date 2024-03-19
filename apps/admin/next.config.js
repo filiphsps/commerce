@@ -29,8 +29,8 @@ const config = {
         serverSourceMaps: true,
         serverMinification: false,
         taint: true,
-        webpackBuildWorker: true,
-        parallelServerBuildTraces: true
+        webpackBuildWorker: false,
+        parallelServerBuildTraces: false
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -92,6 +92,14 @@ const config = {
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+    },
+
+    webpack(config) {
+        config.experiments = {
+            ...config.experiments,
+            topLevelAwait: true
+        };
+        return config;
     },
 
     // We handle all redirects at the edge.

@@ -1,7 +1,8 @@
 import { View } from '@nordcom/nordstar';
+import styles from './layout.module.scss';
+
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import styles from './layout.module.scss';
 
 export const metadata: Metadata = {
     title: {

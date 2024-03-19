@@ -2,18 +2,19 @@
 
 import styles from '@/components/login-button.module.scss';
 import GithubLight from '@/static/icons/light/github.svg';
-import type { AuthProvider } from '@/utils/auth';
 import { UnknownApiError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { ReactNode } from 'react';
-import { useEffect, useState, type HTMLProps } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import type { AuthProvider } from '@/utils/auth';
+import type { HTMLProps, ReactNode } from 'react';
+
 export type LoginButtonProps = {
-    provider?: AuthProvider;
+    provider?: AuthProvider['name'];
 } & Omit<HTMLProps<HTMLButtonElement>, 'type' | 'onClick'>;
 export default function LoginButton({ provider = 'github', className, ...props }: LoginButtonProps) {
     const [loading, setLoading] = useState<boolean>(false);

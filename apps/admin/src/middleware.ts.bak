@@ -1,0 +1,12 @@
+import { auth } from '@/utils/auth';
+import { NextResponse } from 'next/server';
+
+export default auth(async (req) => {
+    return NextResponse.next({
+        request: req
+    });
+});
+
+export const config = {
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+};

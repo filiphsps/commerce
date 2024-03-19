@@ -1,6 +1,8 @@
 import { UnknownApiError } from '@nordcom/commerce-errors';
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { shopifyAdminApi } from './shopify';
+
+import type { NextRequest } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
