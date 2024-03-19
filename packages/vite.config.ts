@@ -45,10 +45,8 @@ export default mergeConfig(
                     chunkFileNames: 'chunks/[name].[hash].js',
                     entryFileNames: '[name].js',
                     esModule: true,
-                    exports: 'auto',
                     format: 'esm',
                     globals: {},
-                    indent: false,
                     interop: 'esModule',
                     sourcemapExcludeSources: false
                 }
@@ -67,4 +65,4 @@ export default mergeConfig(
             })
         ]
     })
-});
+);
