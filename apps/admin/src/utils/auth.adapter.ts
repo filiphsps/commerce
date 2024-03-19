@@ -1,26 +1,45 @@
 import { Identity, User } from '@nordcom/commerce-db';
 
-import type { Adapter } from '@auth/core/adapters';
+import type { Adapter, AdapterAccount } from '@auth/core/adapters';
+import type { UserBase } from '@nordcom/commerce-db';
 
 export function AuthAdapter(): Adapter {
     return {
         async getUser(id) {
-            return await User.findById(id);
+            try {
+                return await User.find({ id });
+            } catch {
+                return null;
+            }
         },
-        async getUserByAccount({ providerAccountId, provider }) {
-            const user = User.findOne({
-                identities: {
-                    $elemMatch: {
-                        provider: provider,
-                        identity: providerAccountId
-                    }
-                }
-            });
 
-            return user;
+        async getUserByAccount({
+            providerAccountId,
+            provider
+        }: Pick<AdapterAccount, 'provider' | 'providerAccountId'>) {
+            try {
+                return (await User.find({
+                    count: 1,
+                    filter: {
+                        identities: {
+                            $elemMatch: {
+                                provider: provider,
+                                identity: providerAccountId
+                            }
+                        }
+                    }
+                })) as UserBase;
+            } catch {
+                return null;
+            }
         },
+
         async getUserByEmail(email) {
-            return await User.findOne({ email });
+            try {
+                return await User.findOne({ email });
+            } catch {
+                return null;
+            }
         },
 
         async createUser({ email, name, image: avatar, emailVerified }) {

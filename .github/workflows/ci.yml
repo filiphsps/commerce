@@ -95,7 +95,7 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: bun run build
+              run: bun run build:packages
 
             - name: ✅ Typecheck
               run: bun run typecheck
