@@ -1,13 +1,15 @@
 import { Schema } from 'mongoose';
+import { User } from '.';
+import { db } from '../db';
 
-import type { Document, Model, Mongoose } from 'mongoose';
+import type { Document } from '../db';
 
 export interface Shop extends Document {
     name: string;
     domain: string;
     alternativeDomains?: string[];
     collaborators: {
-        user: any;
+        user: User;
     }[];
 }
 
@@ -36,7 +38,13 @@ export const ShopSchema = new Schema<Shop>(
                     user: {
                         type: Schema.Types.ObjectId,
                         ref: 'User'
-                    }
+                    },
+                    permissions: [
+                        {
+                            type: Schema.Types.String,
+                            default: []
+                        }
+                    ]
                 }
             ],
             required: true,
@@ -50,4 +58,4 @@ export const ShopSchema = new Schema<Shop>(
     }
 );
 
-export const Shop = (db: Mongoose) => (db.models.Shop || db.model('Shop', ShopSchema)) as Model<Shop>;
+export const Shop = (db.models.Shop || db.model('Shop', ShopSchema)) as ReturnType<typeof db.model<typeof ShopSchema>>;

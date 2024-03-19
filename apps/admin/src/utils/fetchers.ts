@@ -1,45 +1,24 @@
 import 'server-only';
 
 import { prisma } from '@nordcom/commerce-database';
-import { db, Shop } from '@nordcom/commerce-db';
+import { Shop } from '@nordcom/commerce-db';
 import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
-    await revalidateTag('admin');
-    await revalidateTag(`admin.user.${userId}`);
-    await revalidateTag(domain);
-    await revalidateTag(shopId);
+    revalidateTag('admin');
+    revalidateTag(`admin.user.${userId}`);
+    revalidateTag(domain);
+    revalidateTag(shopId);
 };
 
 export async function getShopsForUser(userId: string) {
     return await cache(
         async () => {
             // FIXME: This is just here for debugging.
-            void Shop(await db())
-                .find({
-                    /*'collaborators.user': userId*/
-                })
+            return Shop.find<Shop>({})
                 .sort({ createdAt: -1 })
                 .exec()
-                .then((shops) => console.debug(`[mongodb-rework]: Found ${shops.map(({ name }) => name).join(', ')}!`));
-
-            return prisma.shop.findMany({
-                where: {
-                    collaborators: {
-                        some: { userId }
-                    }
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    domain: true
-                },
-                orderBy: [
-                    {
-                        createdAt: 'desc'
-                    }
-                ]
-            });
+                .then((shops) => shops.map((shop) => shop?.toObject<Shop>() || null));
         },
         ['admin', userId, `admin.user.${userId}.shops`],
         {
@@ -50,47 +29,24 @@ export async function getShopsForUser(userId: string) {
 }
 
 export async function getShop(userId: string, shopId: string) {
-    return await cache(
-        async () => {
-            return prisma.shop.findFirst({
-                where: {
-                    id: shopId,
-                    collaborators: {
-                        some: {
-                            userId
-                        }
-                    }
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    domain: true,
-                    collaborators: {
-                        select: {
-                            user: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                    image: true,
-                                    email: true
-                                }
-                            }
-                        }
-                    },
-                    icons: {
-                        select: {
-                            favicon: true
-                        }
-                    }
-                }
-            });
-        },
+    //return await cache(
+    //     async () => {
+    return Shop.findById<Shop>(shopId)
+        .sort({ createdAt: -1 })
+        .populate('collaborators.user')
+        .exec()
+        .then(async (shop) => {
+            await shop!.save();
+            return shop;
+        })
+        .then((shop) => shop?.toObject<Shop>() || null);
+    /*     },
         ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
         {
             revalidate: 120,
             tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
         }
-    )();
+    )();*/
 }
 export type UpdateShopData = {
     name: string;

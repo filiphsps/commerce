@@ -10,13 +10,24 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default mergeConfig(
     base,
     defineConfig({
+        optimizeDeps: {
+            esbuildOptions: {
+                target: 'esnext'
+            }
+        },
         root: resolve(__dirname),
         build: {
+            target: 'esnext',
             rollupOptions: {
                 external: ['mongoose'],
                 output: {
                     name: '@nordcom/commerce-db'
                 }
+            }
+        },
+        esbuild: {
+            supported: {
+                'top-level-await': true
             }
         }
     })

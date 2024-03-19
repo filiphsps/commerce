@@ -1,10 +1,11 @@
 import 'server-only';
 
-import { getSession } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
 import { Card, Heading } from '@nordcom/nordstar';
+import { notFound, redirect } from 'next/navigation';
+
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
 export const revalidate = 30;
 
@@ -19,8 +20,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopSettingsBillingPage({ params: { id: shopId } }: ShopSettingsBillingPageProps) {
-    const session = await getSession();
-    if (!session) return null;
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect('/auth/login/');
+    }
 
     const shop = await getShop(session.user.id, shopId);
     if (!shop) {

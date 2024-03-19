@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { SettingsBlock } from '@/components/settings-block';
-import { getSession } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import {
     getCheckoutProvider,
     getCommerceProvider,
@@ -14,9 +14,10 @@ import {
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import { ContentProviderType } from '@prisma/client';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { CommerceSettings } from './commerce-settings';
+
+import type { Metadata } from 'next';
 
 export const revalidate = 30;
 
@@ -31,19 +32,19 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopSettingsContentPage({ params: { id: shopId } }: ShopSettingsContentPageProps) {
-    const session = await getSession();
-    if (!session) return null;
+    const session = await auth();
+    if (!session?.user?.id) {
+        redirect('/auth/login/');
+    }
 
-    const { user } = session;
-
-    const shop = await getShop(user.id, shopId);
+    const shop = await getShop(session.user.id, shopId);
     if (!shop) {
         notFound();
     }
 
-    const commerceProvider = await getCommerceProvider(user.id, shopId);
+    const commerceProvider = await getCommerceProvider(session.user.id, shopId);
 
-    const contentProvider = await getContentProvider(user.id, shopId);
+    const contentProvider = await getContentProvider(session.user.id, shopId);
     const defaultContentData = JSON.stringify(
         {
             id: '',
@@ -56,7 +57,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
         0
     );
 
-    const checkoutProvider = await getCheckoutProvider(user.id, shopId);
+    const checkoutProvider = await getCheckoutProvider(session.user.id, shopId);
     const defaultCheckoutData = JSON.stringify({}, null, 0);
 
     return (
@@ -68,6 +69,11 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                 <SettingsBlock
                     save={async (form: FormData) => {
                         'use server';
+
+                        const session = await auth();
+                        if (!session?.user?.id) {
+                            redirect('/auth/login/');
+                        }
 
                         const type = form.get('type')?.toString().toLowerCase() as ContentProviderType;
 
@@ -98,7 +104,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         }
 
                         console.debug(`Updating commerce provider`, JSON.stringify({ type, data }, null, 4));
-                        await updateCommerceProvider(user.id, shopId, { type, data });
+                        await updateCommerceProvider(session.user.id, shopId, { type, data });
                     }}
                 >
                     <CommerceSettings data={commerceProvider || null} />
@@ -114,6 +120,11 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                     action={async (form: FormData) => {
                         'use server';
 
+                        const session = await auth();
+                        if (!session?.user?.id) {
+                            redirect('/auth/login/');
+                        }
+
                         const type = form.get('type')?.toString().toLowerCase();
                         const data = JSON.stringify(
                             JSON.parse(form.get('data')?.toString() || defaultContentData),
@@ -122,7 +133,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         );
 
                         console.debug(`Updating content provider`, { type, data });
-                        await updateContentProvider(user.id, shopId, { type, data });
+                        await updateContentProvider(session.user.id, shopId, { type, data });
                     }}
                 >
                     <Label as="label" htmlFor="type">
@@ -165,6 +176,11 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                     action={async (form: FormData) => {
                         'use server';
 
+                        const session = await auth();
+                        if (!session?.user?.id) {
+                            redirect('/auth/login/');
+                        }
+
                         const type = form.get('type')?.toString().toLowerCase();
                         const data = JSON.stringify(
                             JSON.parse(form.get('data')?.toString() || defaultCheckoutData),
@@ -173,7 +189,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         );
 
                         console.debug(`Updating checkout provider`, { type, data });
-                        await updateCheckoutProvider(user.id, shopId, { type, data });
+                        await updateCheckoutProvider(session.user.id, shopId, { type, data });
                     }}
                 >
                     <Label as="label" htmlFor="type">

@@ -1,12 +1,11 @@
 import '@/styles/app.scss';
 
 import { Providers } from '@/components/providers';
-import { authOptions } from '@/utils/auth';
+import { auth } from '@/utils/auth';
 import { GeistMono } from 'geist/font/mono';
-import type { Metadata, Viewport } from 'next';
-import type { Session } from 'next-auth';
-import { getServerSession } from 'next-auth/next';
 import { Montserrat } from 'next/font/google';
+
+import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
@@ -55,13 +54,7 @@ const primaryFont = Montserrat({
 });
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-    let session: Session | null = null;
-
-    try {
-        session = await getServerSession(authOptions);
-    } catch (error) {
-        console.error(error);
-    }
+    const session = await auth();
 
     return (
         <html lang="en" className={`${primaryFont.variable} ${GeistMono.variable}`}>
