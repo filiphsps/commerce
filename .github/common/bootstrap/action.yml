@@ -4,6 +4,20 @@ description: 'Install and configure dependencies'
 runs:
     using: 'composite'
     steps:
+        - name: 💾 Cache node modules
+          uses: actions/cache@v4
+          with:
+              path: |
+                  ~/.bun/install/cache
+                  ${{ github.workspace }}/**/.next
+                  ${{ github.workspace }}/**/deps
+                  ${{ github.workspace }}/**/node_modules
+              key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
+              restore-keys: |
+                  ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
+                  ${{ runner.os }}-node-build-
+                  ${{ runner.os }}-
+
         - name: 🏎️ Setup Bun
           uses: oven-sh/setup-bun@v1
           with:
@@ -12,14 +26,3 @@ runs:
         - name: 📦 Install dependencies
           shell: bash
           run: bun install
-
-        - name: 💾 Cache node modules
-          uses: actions/cache@v4
-          with:
-              path: |
-                  ~/.bun/install/cache
-                  ${{ github.workspace }}/**/.next
-                  ${{ github.workspace }}/**/node_modules
-              key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
-              restore-keys: |
-                  ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
