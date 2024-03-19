@@ -11,34 +11,35 @@ const revalidateAll = async (userId: string, shopId: string, domain: string) => 
     revalidateTag(shopId);
 };
 
-export async function getShopsForUser(userId: string) {
-    return await cache(
-        async () => {
-            // FIXME: This is just here for debugging.
-            return Shop.get({}).then((res) => (Array.isArray(res) ? res : [res]));
-        },
-        ['admin', userId, `admin.user.${userId}.shops`],
-        {
-            revalidate: 120,
-            tags: ['admin', userId, `admin.user.${userId}.shops`]
-        }
-    )();
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+export async function getShopsForUser(userId: string, skipCache = isDevelopment) {
+    const action = async () => {
+        return Shop.find({
+            sort: '-createdAt'
+        }).then((res) => (Array.isArray(res) ? res : [res]));
+    };
+
+    if (skipCache) return await action();
+    return await cache(action, ['admin', userId, `admin.user.${userId}.shops`], {
+        revalidate: 120,
+        tags: ['admin', userId, `admin.user.${userId}.shops`]
+    })();
 }
 
-export async function getShop(userId: string, shopId: string) {
-    //return await cache(
-    //     async () => {
-    return await (await Shop.findById(shopId)).populate('collaborators.user').then(async (shop) => {
-        await shop!.save();
-        return shop;
-    });
-    /*     },
-        ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
-        {
-            revalidate: 120,
-            tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
-        }
-    )();*/
+export async function getShop(userId: string, shopId: string, skipCache = isDevelopment) {
+    const action = async () => {
+        return await (await Shop.findById(shopId)).populate('collaborators.user').then(async (shop) => {
+            await shop!.save();
+            return shop;
+        });
+    };
+
+    if (skipCache) return await action();
+    return await cache(action, ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`], {
+        revalidate: 120,
+        tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
+    })();
 }
 export type UpdateShopData = {
     name: string;

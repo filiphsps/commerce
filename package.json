@@ -19,7 +19,6 @@
     ],
     "scripts": {
         "prepare": "husky || true",
-        "postinstall": "prisma generate --no-engine",
         "predev": "prisma generate --no-engine",
         "dev": "dotenv -c -- turbo run dev",
         "prebuild": "prisma generate --no-engine",
