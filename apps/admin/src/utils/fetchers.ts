@@ -15,10 +15,7 @@ export async function getShopsForUser(userId: string) {
     return await cache(
         async () => {
             // FIXME: This is just here for debugging.
-            return Shop.find<Shop>({})
-                .sort({ createdAt: -1 })
-                .exec()
-                .then((shops) => shops.map((shop) => shop?.toObject<Shop>() || null));
+            return Shop.get({}).then((res) => (Array.isArray(res) ? res : [res]));
         },
         ['admin', userId, `admin.user.${userId}.shops`],
         {
@@ -31,15 +28,10 @@ export async function getShopsForUser(userId: string) {
 export async function getShop(userId: string, shopId: string) {
     //return await cache(
     //     async () => {
-    return Shop.findById<Shop>(shopId)
-        .sort({ createdAt: -1 })
-        .populate('collaborators.user')
-        .exec()
-        .then(async (shop) => {
-            await shop!.save();
-            return shop;
-        })
-        .then((shop) => shop?.toObject<Shop>() || null);
+    return await (await Shop.findById(shopId)).populate('collaborators.user').then(async (shop) => {
+        await shop!.save();
+        return shop;
+    });
     /*     },
         ['admin', shopId, `admin.user.${userId}`, `admin.user.${userId}.shop.${shopId}`],
         {

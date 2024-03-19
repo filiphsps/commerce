@@ -1,19 +1,19 @@
 import { Schema } from 'mongoose';
-import { User } from '.';
+import { UserBase } from '.';
 import { db } from '../db';
 
-import type { Document } from '../db';
+import type { BaseDocument } from '../db';
 
-export interface Shop extends Document {
+export interface ShopBase extends BaseDocument {
     name: string;
     domain: string;
     alternativeDomains?: string[];
     collaborators: {
-        user: User;
+        user: UserBase;
     }[];
 }
 
-export const ShopSchema = new Schema<Shop>(
+export const ShopSchema = new Schema<ShopBase>(
     {
         name: {
             type: Schema.Types.String,
@@ -58,4 +58,6 @@ export const ShopSchema = new Schema<Shop>(
     }
 );
 
-export const Shop = (db.models.Shop || db.model('Shop', ShopSchema)) as ReturnType<typeof db.model<typeof ShopSchema>>;
+export const ShopModel = (db.models.Shop || db.model('Shop', ShopSchema)) as ReturnType<
+    typeof db.model<typeof ShopSchema>
+>;

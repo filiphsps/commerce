@@ -5,33 +5,32 @@ import type { Adapter } from '@auth/core/adapters';
 export function AuthAdapter(): Adapter {
     return {
         async getUser(id) {
-            return await User.findById<User>(id).then((user) => user?.toObject<User>() || null);
+            return await User.findById(id);
         },
         async getUserByAccount({ providerAccountId, provider }) {
-            const user = User.findOne<User>({
+            const user = User.findOne({
                 identities: {
                     $elemMatch: {
                         provider: provider,
                         identity: providerAccountId
                     }
                 }
-            }).then((user) => user?.toObject<User>() || null);
+            });
 
             return user;
         },
         async getUserByEmail(email) {
-            return await User.findOne<User>({ email }).then((user) => user?.toObject<User>() || null);
+            return await User.findOne({ email });
         },
 
         async createUser({ email, name, image: avatar, emailVerified }) {
             return await User.create({
                 email,
-                name,
-                avatar,
-                emailVerified
-            })
-                .then((user) => user.save())
-                .then((user) => user?.toObject<User>() || null);
+                name: name || email,
+                avatar: avatar || undefined,
+                emailVerified,
+                identities: []
+            });
         },
         async updateUser(user) {
             console.debug('[TODO] AuthAdapter - updateUser', user);
@@ -56,11 +55,11 @@ export function AuthAdapter(): Adapter {
         },
 
         async linkAccount({ userId, ...account }) {
-            const user = await User.findById<User>(userId);
+            const user = await User.findById(userId);
             if (!user) return null;
 
             // Update or create the identity
-            const identity = await Identity.findOneAndUpdate<Identity>(
+            const identity = await Identity.findOneAndUpdate(
                 {
                     provider: account.provider,
                     identity: account.providerAccountId
