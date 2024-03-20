@@ -107,22 +107,6 @@ describe('Service', () => {
         });
     });
 
-    describe('get', () => {
-        it.skip('should get one document', async () => {
-            const filter = { name: 'John Doe' };
-            const result = await service.get(filter);
-            expect(Model.find).toHaveBeenCalledWith(filter);
-            expect(result).toEqual(expect.arrayContaining([{ _id: '123' }, { _id: '456' }]));
-        });
-
-        it.skip('should get multiple documents', async () => {
-            const filter = { name: 'John Doe' };
-            const result = await service.get(filter);
-            expect(Model.find).toHaveBeenCalledWith(filter);
-            expect(result).toEqual([]);
-        });
-    });
-
     describe('findById', () => {
         it('should find a document by id', async () => {
             const id = '123';

@@ -96,14 +96,6 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return res as DocType[];
     }
 
-    public async get(filter: FilterQuery<DocType>): Promise<DocType | DocType[]> {
-        const res = await this.model.find(filter);
-
-        if (res.length < 1) throw new TodoError('No data found');
-        else if (res.length === 1) return res[0];
-        return res;
-    }
-
     public async findById(
         id: string,
         projection?: ProjectionType<DocType> | null,
