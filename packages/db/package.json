@@ -59,7 +59,6 @@
         "@types/node": "20.11.29",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
-        "mongodb-memory-server": "9.1.7",
         "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "typescript": "5.4.2",
