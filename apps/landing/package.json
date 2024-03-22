@@ -51,7 +51,7 @@
         "@nordcom/commerce-errors": "workspace:*",
         "@nordcom/commerce-marketing-common": "workspace:*",
         "@nordcom/nordstar": "0.0.43",
-        "@vercel/otel": "1.6.0",
+        "@vercel/otel": "1.6.2",
         "colord": "2.9.3",
         "geist": "1.2.2",
         "glob": "10.3.10",
