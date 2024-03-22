@@ -387,11 +387,11 @@ importers:
   apps/web:
     dependencies:
       '@apollo/client':
-        specifier: 3.9.8
-        version: 3.9.8(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 3.9.9
+        version: 3.9.9(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.9.0
-        version: 0.9.0(@apollo/client@3.9.8)(next@14.1.4)(react@18.2.0)
+        version: 0.9.0(@apollo/client@3.9.9)(next@14.1.4)(react@18.2.0)
       '@million/lint':
         specifier: 0.0.73
         version: 0.0.73(@types/react-dom@18.2.22)(@types/react@18.2.68)
@@ -744,20 +744,20 @@ packages:
     hasBin: true
     dev: true
 
-  /@apollo/client-react-streaming@0.9.0(@apollo/client@3.9.8)(react@18.2.0):
+  /@apollo/client-react-streaming@0.9.0(@apollo/client@3.9.9)(react@18.2.0):
     resolution: {integrity: sha512-cuOwhUeGWdHqbwKhr14xx5m2MS9QYB7cPAyr8FZvbCYQ44HpwBUJgPkwy4A7WBvPHkQ1gOMua5izzno6Hwlzlw==}
     peerDependencies:
       '@apollo/client': ^3.9.6
       react: ^18
     dependencies:
-      '@apollo/client': 3.9.8(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/client': 3.9.9(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       superjson: 2.2.1
       ts-invariant: 0.10.3
     dev: false
 
-  /@apollo/client@3.9.8(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ausPftEb2xAUkZqz+VkSSIhNxKraShJXdV2/NJ7JbHAAciGsFlapGtZ++b7lF0/+3Jp/p34g/i6dvO8b4WjQig==}
+  /@apollo/client@3.9.9(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/sMecU/M0WK9knrguts1lSLV8xFKzIgOMVb4mi6MOxgJXjliDB8PvOtmXhTqh2cVMMR4TzXgOnb+af/690zlQw==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
@@ -795,15 +795,15 @@ packages:
       - '@types/react'
     dev: false
 
-  /@apollo/experimental-nextjs-app-support@0.9.0(@apollo/client@3.9.8)(next@14.1.4)(react@18.2.0):
+  /@apollo/experimental-nextjs-app-support@0.9.0(@apollo/client@3.9.9)(next@14.1.4)(react@18.2.0):
     resolution: {integrity: sha512-w/iWbNKnnDFsbv65B3kFKJXIelhPRMPnzdsWmtDeDIZ1vhL468eRWBsgWIkg4WX+55EGp1GJRQx1WO15+dTE4w==}
     peerDependencies:
       '@apollo/client': ^3.9.6
       next: ^13.4.1 || ^14.0.0
       react: ^18
     dependencies:
-      '@apollo/client': 3.9.8(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
-      '@apollo/client-react-streaming': 0.9.0(@apollo/client@3.9.8)(react@18.2.0)
+      '@apollo/client': 3.9.9(@types/react@18.2.68)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
+      '@apollo/client-react-streaming': 0.9.0(@apollo/client@3.9.9)(react@18.2.0)
       next: 14.1.4(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.72.0)
       react: 18.2.0
     dev: false
