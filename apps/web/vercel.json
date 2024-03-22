@@ -4,8 +4,6 @@
     "public": false,
     "trailingSlash": true,
     "framework": "nextjs",
-    "buildCommand": "turbo build",
-    "devCommand": "turbo dev",
     "github": {
         "enabled": true,
         "autoJobCancelation": true
