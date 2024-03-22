@@ -60,7 +60,7 @@
         "@prismicio/react": "2.7.3",
         "@shopify/hydrogen-react": "2024.1.1",
         "@vercel/analytics": "1.2.2",
-        "@vercel/otel": "1.6.0",
+        "@vercel/otel": "1.6.2",
         "@vercel/speed-insights": "1.0.5",
         "accept-language-parser": "1.5.0",
         "colord": "2.9.3",
@@ -74,7 +74,7 @@
         "next-auth": "4.24.7",
         "next-seo": "6.5.0",
         "next-sitemap": "4.2.3",
-        "nextjs-toploader": "1.6.6",
+        "nextjs-toploader": "1.6.11",
         "png-to-ico": "2.1.8",
         "react": "18.2.0",
         "react-dom": "18.2.0",
@@ -90,7 +90,7 @@
         "@happy-dom/global-registrator": "13.2.2",
         "@nordcom/prettier": "0.1.1",
         "@slicemachine/adapter-next": "0.3.37",
-        "@testing-library/react": "14.2.1",
+        "@testing-library/react": "14.2.2",
         "@testing-library/jest-dom": "6.4.2",
         "@types/accept-language-parser": "1.5.6",
         "@types/convert-units": "2.3.9",
@@ -108,7 +108,7 @@
         "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.25.0",
-        "typescript": "5.4.2",
+        "typescript": "5.4.3",
         "vitest": "1.4.0"
     }
 }
