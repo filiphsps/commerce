@@ -1,10 +1,10 @@
+import { defineConfig } from 'vitest/config';
+
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { defineConfig } from 'vitest/config';
-
 const reporters = ['verbose'];
-const extraReporters = !!process.env.GITHUB_ACTIONS ? ['github-actions'] : [];
+const extraReporters = !process.env.GITHUB_ACTIONS ? [] : ['github-actions'];
 const exclude = [
     '**/.next/**/*.*',
     '**/.turbo/**/*.*',
@@ -33,7 +33,7 @@ export default defineConfig({
         }
     },
     test: {
-        bail: 2,
+        bail: 1,
         environment: 'node',
         exclude,
         maxConcurrency: 16,
