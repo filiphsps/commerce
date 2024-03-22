@@ -41,13 +41,6 @@ export default defineConfig({
         silent: false,
         reporters: [...reporters, ...extraReporters],
 
-        pool: 'vmThreads',
-        poolOptions: {
-            vmThreads: {
-                useAtomics: true
-            }
-        },
-
         coverage: {
             all: true,
             exclude: exclude,

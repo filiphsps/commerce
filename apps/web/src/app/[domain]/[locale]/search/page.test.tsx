@@ -107,7 +107,7 @@ describe('app', () => {
             });
         });
 
-        it.skip('should render', async () => {
+        it('should render', async () => {
             const result = await SearchPage({ params });
             const wrapper = render(result);
 
