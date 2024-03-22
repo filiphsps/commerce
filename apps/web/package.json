@@ -108,7 +108,7 @@
         "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "slice-machine-ui": "1.25.0",
-        "typescript": "5.4.2",
+        "typescript": "5.4.3",
         "vitest": "1.4.0"
     }
 }
