@@ -1,10 +1,13 @@
 'use client';
 
 import styles from '@/components/informational/breadcrumbs.module.scss';
-import Link from '@/components/link';
-import type { Shop } from '@nordcom/commerce-database';
-import { usePathname } from 'next/navigation';
+
 import { FiChevronRight } from 'react-icons/fi';
+import { usePathname } from 'next/navigation';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import Link from '@/components/link';
 
 type BreadcrumbsProps = {
     shop: Shop;
@@ -12,7 +15,7 @@ type BreadcrumbsProps = {
 };
 const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
     const route = usePathname();
-    const path = route?.split('/').slice(2, -1);
+    const path = route.split('/').slice(2, -1);
 
     if (!path || path.length <= 0) return null;
 
@@ -21,12 +24,12 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
         <section className={styles.breadcrumbs} itemScope itemType="https://schema.org/BreadcrumbList">
             <div className={styles.item} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
                 <Link className={styles.link} href="/" itemType="https://schema.org/Thing" itemProp="item">
-                    <span itemProp="name">{shop?.name}</span>
+                    <span itemProp="name">{shop.name}</span>
                 </Link>
                 <meta itemProp="position" content="1" />
                 <FiChevronRight className={styles.icon} />
             </div>
-            {path?.map((entry, index) => (
+            {path.map((entry, index) => (
                 <div
                     key={entry}
                     className={styles.item}

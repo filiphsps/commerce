@@ -1,17 +1,20 @@
-import type { Product } from '@/api/product';
-import { extractLimitLikeFilters } from '@/api/shopify/collection';
-import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { unstable_cache as cache } from 'next/cache';
+
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
 import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+
+import { extractLimitLikeFilters } from '@/api/shopify/collection';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { gql } from 'graphql-tag';
+
+import type { Product } from '@/api/product';
+import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
     ProductConnection,
     ProductEdge,
     ProductSortKeys,
     QueryRoot
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from 'graphql-tag';
-import { unstable_cache as cache } from 'next/cache';
 
 export const PRODUCT_FRAGMENT_MINIMAL = `
     id
@@ -245,11 +248,11 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
 
                 if (errors) {
                     throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
-                } else if (!data?.product?.handle) {
+                } else if (!data?.product.handle) {
                     throw new NotFoundError(`"Product" with the handle "${handle}"`);
-                } else if (data.product?.handle !== handle) {
+                } else if (data.product.handle !== handle) {
                     throw new Error(
-                        `500: Product handle doesn't match requested handle ("${data.product?.handle}" !== "${handle}")`
+                        `500: Product handle doesn't match requested handle ("${data.product.handle}" !== "${handle}")`
                     );
                 }
 
@@ -422,7 +425,7 @@ export const ProductsApi = async ({
                 return reject(
                     new Error(`500: Something went wrong on our end (${errors.map((e) => e.message).join('\n')})`)
                 );
-            if (!data?.products?.edges) return reject(new Error(`404: No products could be found`));
+            if (!data?.products.edges) return reject(new Error(`404: No products could be found`));
 
             return resolve({
                 products: data.products.edges,
@@ -530,7 +533,7 @@ export const ProductsPaginationApi = async ({
                     has_next_page: page_info.hasNextPage,
                     has_prev_page: page_info.hasPreviousPage
                 },
-                products: data.products?.edges || []
+                products: data.products.edges || []
             });
         } catch (error: unknown) {
             console.error(error);

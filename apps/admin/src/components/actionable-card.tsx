@@ -1,4 +1,5 @@
 import styles from '@/components/actionable-card.module.scss';
+
 import { Card } from '@nordcom/nordstar';
 
 import type { HTMLProps, ReactNode } from 'react';

@@ -1,11 +1,15 @@
-import ActionableCard from '@/components/actionable-card';
-import { auth } from '@/utils/auth';
-import { getShopsForUser } from '@/utils/fetchers';
-import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
+import styles from './page.module.scss';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import styles from './page.module.scss';
+
+import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
+
+import { auth } from '@/utils/auth';
+import { getShopsForUser } from '@/utils/fetchers';
+
+import ActionableCard from '@/components/actionable-card';
 
 import type { Metadata } from 'next';
 

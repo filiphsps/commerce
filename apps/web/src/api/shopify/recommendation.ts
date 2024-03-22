@@ -1,7 +1,8 @@
-import type { Product } from '@/api/product';
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import type { AbstractApi } from '@/utils/abstract-api';
 import { gql } from 'graphql-tag';
+
+import type { Product } from '@/api/product';
+import type { AbstractApi } from '@/utils/abstract-api';
 
 // TODO: Migrate to the new recommendations api.
 export const RecommendationApi = async ({ api, id }: { api: AbstractApi; id: string }): Promise<Product[]> => {

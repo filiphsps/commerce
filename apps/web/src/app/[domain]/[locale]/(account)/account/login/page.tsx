@@ -1,14 +1,19 @@
-import { ShopifyApiClient } from '@/api/shopify';
-import { LocalesApi } from '@/api/store';
-import PageContent from '@/components/page-content';
-import Heading from '@/components/typography/heading';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import type { Metadata } from 'next';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
+import { ShopifyApiClient } from '@/api/shopify';
+import { LocalesApi } from '@/api/store';
+import { Locale } from '@/utils/locale';
+
+import PageContent from '@/components/page-content';
+import Heading from '@/components/typography/heading';
+
 import LoginContent from './login-content';
+
+import type { Metadata } from 'next';
 
 // Make sure this page is always dynamic.
 export const dynamic = 'force-dynamic';

@@ -1,10 +1,13 @@
 'use client';
 
-import type { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import { signIn } from 'next-auth/react';
-import { useEffect } from 'react';
 import styles from './login-content.module.scss';
+
+import { useEffect } from 'react';
+import { signIn } from 'next-auth/react';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import type { Locale } from '@/utils/locale';
 
 export type LoginContentProps = {
     shop: Shop;

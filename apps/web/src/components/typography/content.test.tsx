@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { Content } from '@/components/typography/content';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import { Content } from '@/components/typography/content';
 
 describe('components', () => {
     describe('Content', () => {

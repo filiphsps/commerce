@@ -1,12 +1,17 @@
+import styles from './blog-content.module.scss';
+
+import Image from 'next/image';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import gravatar from 'gravatar.js';
+
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
 import { Content } from '@/components/typography/content';
+
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
-import gravatar from 'gravatar.js';
-import Image from 'next/image';
-import styles from './blog-content.module.scss';
 
 type BlogContentProps = {
     shop: Shop;

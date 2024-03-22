@@ -1,16 +1,21 @@
 import 'server-only';
 
+import styles from '@/components/header/header.module.scss';
+import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
+
+import Image from 'next/image';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import { NavigationApi } from '@/api/navigation';
+
 import { CartButton } from '@/components/header/cart-button';
 import { HamburgerMenu } from '@/components/header/hamburger-menu';
 import { HeaderContainer } from '@/components/header/header-container';
 import { HeaderNavigation } from '@/components/header/header-navigation';
-import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
-import styles from '@/components/header/header.module.scss';
 import Link from '@/components/link';
+
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import Image from 'next/image';
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {
@@ -20,25 +25,25 @@ export type HeaderProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
     const navigation = await NavigationApi({ shop, locale });
-    const headerTheme = shop?.theme?.header;
+    const headerTheme = shop.theme.header;
 
-    const logo = shop?.logos?.primary!;
+    const logo = shop.logos?.primary!;
     return (
         <section
             className={styles.wrapper}
-            data-theme={headerTheme?.theme || 'primary'}
-            data-theme-variant={headerTheme?.themeVariant || 'default'}
+            data-theme={headerTheme.theme || 'primary'}
+            data-theme-variant={headerTheme.themeVariant || 'default'}
         >
             <HeaderContainer {...props}>
                 <HamburgerMenu />
 
                 <Link href={'/'} className={styles.logo}>
-                    {logo?.src ? (
+                    {logo.src ? (
                         <Image
                             src={logo.src}
                             width={175}
                             height={50}
-                            alt={logo?.alt || `${shop.name}'s logo`}
+                            alt={logo.alt || `${shop.name}'s logo`}
                             sizes="(max-width: 1024px) 125px, 175px"
                             draggable={false}
                             priority={true}

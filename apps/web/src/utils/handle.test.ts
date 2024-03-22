@@ -1,5 +1,6 @@
-import { isValidHandle } from '@/utils/handle';
 import { describe, expect, it } from 'vitest';
+
+import { isValidHandle } from '@/utils/handle';
 
 describe('utils', () => {
     describe('isValidHandle', () => {

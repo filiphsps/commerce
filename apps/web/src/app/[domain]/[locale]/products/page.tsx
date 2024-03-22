@@ -1,21 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound, redirect, RedirectType } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationCountApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/i18n/dictionary';
+import { Locale, useTranslation } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
-import { Locale, useTranslation } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
-import { RedirectType, notFound, redirect } from 'next/navigation';
-import { Suspense } from 'react';
+
 import ProductsContent from './products-content';
 
 import type { Metadata } from 'next';
@@ -75,11 +79,11 @@ export async function generateMetadata({
                 images:
                     (page?.meta_image && [
                         {
-                            url: page?.meta_image!.url as string,
-                            width: page?.meta_image!.dimensions?.width || 0,
-                            height: page?.meta_image!.dimensions?.height || 0,
-                            alt: page?.meta_image!.alt || '',
-                            secureUrl: page?.meta_image!.url as string
+                            url: page.meta_image!.url as string,
+                            width: page.meta_image!.dimensions?.width || 0,
+                            height: page.meta_image!.dimensions?.height || 0,
+                            alt: page.meta_image!.alt || '',
+                            secureUrl: page.meta_image!.url as string
                         }
                     ]) ||
                     undefined

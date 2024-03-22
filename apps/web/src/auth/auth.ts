@@ -1,11 +1,13 @@
 import 'server-only';
 
-import ShopifyProvider from '@/auth/shopify-provider';
+import { experimental_taintObjectReference as taint } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { type AuthOptions, getServerSession } from 'next-auth';
+
 import { CommerceProviderAuthenticationApi, type Shop } from '@nordcom/commerce-database';
 import { InvalidShopError, InvalidShopifyCustomerAccountsApiConfiguration } from '@nordcom/commerce-errors';
-import { getServerSession, type AuthOptions } from 'next-auth';
-import { unstable_cache as cache } from 'next/cache';
-import { experimental_taintObjectReference as taint } from 'react';
+
+import ShopifyProvider from '@/auth/shopify-provider';
 
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;
 

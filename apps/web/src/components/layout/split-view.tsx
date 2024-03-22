@@ -1,6 +1,6 @@
-import type { HTMLProps, ReactNode } from 'react';
-
 import styles from '@/components/layout/split-view.module.scss';
+
+import type { HTMLProps, ReactNode } from 'react';
 
 type ContainerProps = {
     children: ReactNode;

@@ -1,16 +1,18 @@
 'use client';
 
+import type { Shop } from '@nordcom/commerce-database';
+import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
+
 import { CartFragment } from '@/api/shopify/cart';
-import { ShopProvider } from '@/components/shop/provider';
 import { BuildConfig } from '@/utils/build-config';
 import { createClient, linkResolver } from '@/utils/prismic';
-import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 import { PrismicProvider } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToaserProvider } from 'sonner';
 
+import { ShopProvider } from '@/components/shop/provider';
+
 import type { CurrencyCode, Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
 import type { ReactNode } from 'react';
 
 const CommerceProvider = ({
@@ -24,7 +26,7 @@ const CommerceProvider = ({
     locale: Locale;
     children: ReactNode;
 }) => {
-    switch (shop.commerceProvider?.type) {
+    switch (shop.commerceProvider.type) {
         case 'shopify':
             return (
                 <ShopProvider shop={shop} currency={currency} locale={locale}>

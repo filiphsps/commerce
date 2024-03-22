@@ -1,6 +1,7 @@
 import 'server-only';
 
 import NextAuth from 'next-auth';
+
 import { AuthAdapter } from './auth.adapter';
 import config from './auth.config';
 

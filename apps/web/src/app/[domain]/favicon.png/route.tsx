@@ -1,7 +1,9 @@
+import { ImageResponse } from 'next/og';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
-import { ImageResponse } from 'next/og';
-import { NextResponse, type NextRequest } from 'next/server';
+
 import { validateSize } from './validate-size';
 
 export const runtime = 'nodejs';
@@ -11,8 +13,8 @@ export type FaviconRouteParams = {
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
     const url = new URL(req.url);
-    let width = url?.searchParams?.get?.('width') ? Number.parseFloat(url?.searchParams?.get?.('width')!) : null;
-    let height = url?.searchParams?.get?.('height') ? Number.parseFloat(url?.searchParams?.get?.('height')!) : null;
+    let width = url.searchParams.get('width') ? Number.parseFloat(url.searchParams.get('width')!) : null;
+    let height = url.searchParams.get('height') ? Number.parseFloat(url.searchParams.get('height')!) : null;
 
     const errors = [...(await validateSize({ width, height }))];
 

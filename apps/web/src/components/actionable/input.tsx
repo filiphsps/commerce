@@ -1,5 +1,7 @@
 import styles from '@/components/actionable/input.module.scss';
+
 import type { As } from '@nordcom/nordstar';
+
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
 export type InputProps<T extends As> = {

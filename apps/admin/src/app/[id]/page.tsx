@@ -1,10 +1,12 @@
 import 'server-only';
 
-import { auth } from '@/utils/auth';
-import { getShop } from '@/utils/fetchers';
-import { Button, Card, Heading } from '@nordcom/nordstar';
 import { revalidateTag } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
+
+import { Button, Card, Heading } from '@nordcom/nordstar';
+
+import { auth } from '@/utils/auth';
+import { getShop } from '@/utils/fetchers';
 
 import type { Metadata } from 'next';
 

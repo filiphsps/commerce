@@ -1,12 +1,16 @@
 'use client';
 
-import type { Product } from '@/api/product';
+import styles from '@/components/product-card/product-card.module.scss';
+
+import { type ReactNode, Suspense, useState } from 'react';
+
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
+
 import ProductCardFooter from '@/components/product-card/product-card-footer';
 import ProductCardOptions from '@/components/product-card/product-card-options';
-import styles from '@/components/product-card/product-card.module.scss';
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
+
+import type { Product } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { Suspense, useState, type ReactNode } from 'react';
 
 export type ProductCardActionsProps = {
     data?: Product;

@@ -1,9 +1,11 @@
 /* eslint-disable unused-imports/no-unused-vars */
+import type { Nullable, Shop } from '@nordcom/commerce-database';
+
+import { DocumentTransform } from '@apollo/client';
+import { visit } from 'graphql';
+
 import type { Locale } from '@/utils/locale';
 import type { ApolloClient, FetchPolicy, TypedDocumentNode } from '@apollo/client';
-import { DocumentTransform } from '@apollo/client';
-import type { Nullable, Shop } from '@nordcom/commerce-database';
-import { visit } from 'graphql';
 
 export type OmitTypeName<T> = Omit<T, '__typename'>;
 

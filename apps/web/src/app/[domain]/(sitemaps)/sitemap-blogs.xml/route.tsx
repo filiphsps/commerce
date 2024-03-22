@@ -1,13 +1,16 @@
+import { type NextRequest, NextResponse } from 'next/server';
+import { getServerSideSitemap } from 'next-sitemap';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
+
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
-import type { ISitemapField } from 'next-sitemap';
-import { getServerSideSitemap } from 'next-sitemap';
-import { NextResponse, type NextRequest } from 'next/server';
+
 import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
+import type { ISitemapField } from 'next-sitemap';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +26,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         const blog = await BlogApi({ api, handle: 'news' });
         if (!blog) throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
 
-        const articles = blog.articles?.edges?.map?.(({ node: article }) => article) || [];
+        const articles = blog.articles.edges.map(({ node: article }) => article) || [];
         return getServerSideSitemap(
             locales
                 .map(({ code }) => {

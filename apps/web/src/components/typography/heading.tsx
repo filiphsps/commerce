@@ -1,9 +1,10 @@
-import type { As } from '@nordcom/nordstar';
-import type { CSSProperties, ComponentProps, ElementType, HTMLProps, ReactNode } from 'react';
+import styles from '@/components/typography/heading.module.scss';
 
 import { Fragment } from 'react';
 
-import styles from '@/components/typography/heading.module.scss';
+import type { As } from '@nordcom/nordstar';
+
+import type { ComponentProps, CSSProperties, ElementType, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
     as?: As;

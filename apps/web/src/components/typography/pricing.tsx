@@ -1,4 +1,5 @@
 import styles from '@/components/typography/pricing.module.scss';
+
 import { Money } from '@shopify/hydrogen-react';
 
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';

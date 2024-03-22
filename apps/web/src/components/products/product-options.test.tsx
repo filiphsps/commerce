@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { ProductOptions } from '@/components/products/product-options';
 import { Locale } from '@/utils/locale';
 import { fireEvent, render, screen } from '@/utils/test/react';
+
+import { ProductOptions } from '@/components/products/product-options';
 
 const options = [
     {

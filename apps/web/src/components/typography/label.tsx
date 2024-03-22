@@ -1,4 +1,5 @@
 import styles from '@/components/typography/label.module.scss';
+
 import type { ElementType, HTMLProps, ReactNode } from 'react';
 
 export type LabelProps = {

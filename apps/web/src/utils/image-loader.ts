@@ -1,4 +1,5 @@
 import { BuildConfig } from '@/utils/build-config';
+
 import type { ImageLoader as ImageLoaderType } from 'next/image';
 
 const normalizeSrc = (src: string) => {

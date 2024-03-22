@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import Breadcrumbs from '@/components/informational/breadcrumbs';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 
 describe('components', () => {
     describe('Breadcrumbs', () => {

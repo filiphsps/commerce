@@ -1,9 +1,11 @@
 import '@/styles/app.scss';
 
-import { Providers } from '@/components/providers';
+import { Montserrat } from 'next/font/google';
+
 import { auth } from '@/utils/auth';
 import { GeistMono } from 'geist/font/mono';
-import { Montserrat } from 'next/font/google';
+
+import { Providers } from '@/components/providers';
 
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';

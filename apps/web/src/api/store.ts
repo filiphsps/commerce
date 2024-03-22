@@ -1,14 +1,18 @@
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { Error, NoLocalesAvailableError } from '@nordcom/commerce-errors';
+
+import { Locale } from '@/utils/locale';
+import { createClient } from '@/utils/prismic';
+import { asText } from '@prismicio/client';
+import { gql } from 'graphql-tag';
+
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { Locale } from '@/utils/locale';
-import { createClient } from '@/utils/prismic';
-import { Error, NoLocalesAvailableError } from '@nordcom/commerce-errors';
-import { asText, type Client as PrismicClient } from '@prismicio/client';
+import type { Client as PrismicClient } from '@prismicio/client';
 import type { Country, Localization, Shop as ShopifyStore } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from 'graphql-tag';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
 
 export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Country[]> => {
     const { data: localData } = await api.query<{ localization: Localization }>(gql`
@@ -32,12 +36,12 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     `);
 
     // FIXME: Handle errors or missing data.
-    return localData?.localization?.availableCountries! || [];
+    return localData?.localization.availableCountries! || [];
 };
 
 export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?: boolean }): Promise<Locale[]> => {
     const shop = api.shop();
-    if (shop.commerceProvider?.type !== 'shopify') {
+    if (shop.commerceProvider.type !== 'shopify') {
         // TODO: Do this properly.
         return [Locale.from('en-US')];
     }
@@ -77,7 +81,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
     const shop = api.shop();
     const locale = api.locale();
 
-    if (shop.commerceProvider?.type !== 'shopify') {
+    if (shop.commerceProvider.type !== 'shopify') {
         // TODO: Do this properly.
         return null;
     }
@@ -285,25 +289,25 @@ export const StoreApi = async ({
                     })(),
                     accent: {
                         primary:
-                            extraStoreDetails?.brand?.colors.primary?.[0]?.background ||
+                            extraStoreDetails?.brand?.colors.primary[0]?.background ||
                             store?.colors_primary ||
                             store?.primary ||
                             '', // FIXME: Throw error instead of empty string.
                         secondary:
-                            extraStoreDetails?.brand?.colors.secondary?.[0]?.background ||
+                            extraStoreDetails?.brand?.colors.secondary[0]?.background ||
                             store?.colors_secondary ||
                             store?.secondary ||
                             '' // FIXME: Throw error instead of empty string.
                     },
                     color: {
-                        primary: extraStoreDetails?.brand?.colors.primary?.[0]?.foreground || '', // FIXME: Throw error instead of empty string.?
-                        secondary: extraStoreDetails?.brand?.colors.secondary?.[0]?.foreground || '' // FIXME: Throw error instead of empty string.
+                        primary: extraStoreDetails?.brand?.colors.primary[0]?.foreground || '', // FIXME: Throw error instead of empty string.?
+                        secondary: extraStoreDetails?.brand?.colors.secondary[0]?.foreground || '' // FIXME: Throw error instead of empty string.
                     },
-                    currencies: extraStoreDetails?.paymentSettings?.enabledPresentmentCurrencies || currencies,
+                    currencies: extraStoreDetails?.paymentSettings.enabledPresentmentCurrencies || currencies,
                     social: (store?.social as any) || [],
                     payment: {
-                        methods: extraStoreDetails?.paymentSettings?.acceptedCardBrands || [],
-                        wallets: extraStoreDetails?.paymentSettings?.supportedDigitalWallets || []
+                        methods: extraStoreDetails?.paymentSettings.acceptedCardBrands || [],
+                        wallets: extraStoreDetails?.paymentSettings.supportedDigitalWallets || []
                     }
                 };
             } catch (error: unknown) {
@@ -341,5 +345,5 @@ export const CurrentLocaleApi = async ({ api }: { api: AbstractApi }) => {
     `);
 
     // FIXME: Handle errors or missing data.
-    return data?.localization?.country;
+    return data?.localization.country;
 };

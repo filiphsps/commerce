@@ -1,8 +1,12 @@
-import type { AbstractApi } from '@/utils/abstract-api';
-import { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
 import { describe, expect, it, vi } from 'vitest';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import { Locale } from '@/utils/locale';
+
 import { CollectionApi, CollectionsApi, CollectionsPaginationApi } from './collection';
+
+import type { AbstractApi } from '@/utils/abstract-api';
 
 describe('api', () => {
     describe('shopify', () => {

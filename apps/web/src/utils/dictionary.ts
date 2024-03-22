@@ -1,5 +1,6 @@
-import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 import type { Shop } from '@nordcom/commerce-database';
+
+import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
 const stub = { cart: {}, common: {}, product: {} };
 
@@ -174,5 +175,5 @@ export const getDictionary = async (props: { shop: Shop; locale: Locale } | Loca
     }
 
     // TODO: Fetch tenant-specific dictionary if it exists and shop is defined.
-    return dictionaries[locale?.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? ({} as any);
+    return dictionaries[locale.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? ({} as any);
 };

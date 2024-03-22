@@ -1,11 +1,14 @@
 'use client';
 
+import styles from './search-content.module.scss';
+
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { Button } from '@/components/actionable/button';
-import type { Locale } from '@/utils/locale';
 import type { Shop } from '@nordcom/commerce-database';
-import styles from './search-content.module.scss';
+
+import { Button } from '@/components/actionable/button';
+
+import type { Locale } from '@/utils/locale';
 
 export type SearchContentProps = {
     shop: Shop;

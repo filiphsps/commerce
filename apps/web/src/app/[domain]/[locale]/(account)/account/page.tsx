@@ -1,14 +1,18 @@
+import { unstable_cache as cache } from 'next/cache';
+import { notFound, redirect } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { ShopifyApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getAuthSession } from '@/auth';
+import { Locale } from '@/utils/locale';
+
 import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
+
 import type { Metadata } from 'next';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound, redirect } from 'next/navigation';
 
 // Make sure this page is always dynamic.
 export const dynamic = 'force-dynamic';
@@ -70,7 +74,7 @@ export default async function AccountPage({ params: { domain, locale: localeData
         return (
             <>
                 <PageContent>
-                    <Heading title={`Hi ${session.user?.name || 'there'}!`} subtitle={null} />
+                    <Heading title={`Hi ${session.user.name || 'there'}!`} subtitle={null} />
                 </PageContent>
             </>
         );

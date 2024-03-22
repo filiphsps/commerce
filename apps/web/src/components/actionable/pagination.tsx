@@ -1,11 +1,14 @@
 'use client';
 
 import styles from '@/components/actionable/pagination.module.scss';
-import Link from '@/components/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import type { ComponentProps } from 'react';
+
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbDots } from 'react-icons/tb';
+import { usePathname, useSearchParams } from 'next/navigation';
+
+import Link from '@/components/link';
+
+import type { ComponentProps } from 'react';
 
 export type PaginationProps = ComponentProps<'nav'> & {
     knownFirstPage?: number;

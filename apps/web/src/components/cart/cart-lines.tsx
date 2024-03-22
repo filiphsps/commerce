@@ -1,11 +1,15 @@
 'use client';
 
-import { CartLine } from '@/components/cart/cart-line';
 import styles from '@/components/cart/cart-lines.module.scss';
-import { Label } from '@/components/typography/label';
-import type { LocaleDictionary } from '@/utils/locale';
-import { useCart } from '@shopify/hydrogen-react';
+
 import { Suspense } from 'react';
+
+import { useCart } from '@shopify/hydrogen-react';
+
+import { CartLine } from '@/components/cart/cart-line';
+import { Label } from '@/components/typography/label';
+
+import type { LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
     i18n: LocaleDictionary;
@@ -32,7 +36,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
             >
                 {!noItems ? (
                     <>
-                        {lines?.map((item) => {
+                        {lines.map((item) => {
                             if (!item) return null;
 
                             return (

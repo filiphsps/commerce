@@ -1,9 +1,11 @@
 'use client';
 
-import type { Product, ProductVariant } from '@/api/product';
 import styles from '@/components/product-card/product-card.module.scss';
-import type { Locale } from '@/utils/locale';
+
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
+
+import type { Product, ProductVariant } from '@/api/product';
+import type { Locale } from '@/utils/locale';
 
 export type ProductCardOptionsProps = {
     locale: Locale;
@@ -18,15 +20,15 @@ const ProductCardOptions = ({
     selectedVariant,
     setSelectedVariant
 }: ProductCardOptionsProps) => {
-    if (!selectedVariant || (product?.variants?.edges?.length || 0) <= 1) return null;
+    if (!selectedVariant || (product.variants.edges.length || 0) <= 1) return null;
 
     // TODO: Use options rather than variants.
     return (
         <div className={styles.variants}>
-            {product?.variants?.edges &&
-                product?.variants.edges.length > 1 &&
-                product?.variants.edges.map((edge, index) => {
-                    if (!edge?.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
+            {product.variants.edges &&
+                product.variants.edges.length > 1 &&
+                product.variants.edges.map((edge, index) => {
+                    if (!edge.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
                     const variant = edge.node! as ProductVariant;
                     let title = variant.title;
 

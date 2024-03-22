@@ -1,6 +1,8 @@
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { ShopApi } from '@nordcom/commerce-database';
+
 import type { MetadataRoute } from 'next';
-import { NextResponse, type NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 

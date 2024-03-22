@@ -1,5 +1,6 @@
-import { fallbackLoader as ImageLoader } from '@/utils/image-loader';
 import { describe, expect, it } from 'vitest';
+
+import { fallbackLoader as ImageLoader } from '@/utils/image-loader';
 
 describe('utils', () => {
     describe('ImageLoader', () => {

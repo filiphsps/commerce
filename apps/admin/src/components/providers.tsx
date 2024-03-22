@@ -1,13 +1,15 @@
 'use client';
 
-import { GoogleTagManager } from '@next/third-parties/google';
+import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { SessionProvider } from 'next-auth/react';
+import NextTopLoader from 'nextjs-toploader';
+
 import { Theme } from '@nordcom/commerce-marketing-common';
 import { NordstarProvider } from '@nordcom/nordstar';
-import { SessionProvider } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
-import NextTopLoader from 'nextjs-toploader';
+
+import { GoogleTagManager } from '@next/third-parties/google';
 import * as NProgress from 'nprogress';
-import { useEffect } from 'react';
 import { Toaster } from 'sonner';
 
 import type { Session } from 'next-auth';

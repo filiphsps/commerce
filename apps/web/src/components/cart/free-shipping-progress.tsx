@@ -1,10 +1,12 @@
 'use client';
 
 import styles from '@/components/cart/free-shipping-progress.module.scss';
+
+import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { useCart, useMoney } from '@shopify/hydrogen-react';
+
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
-import { useTranslation, type LocaleDictionary } from '@/utils/locale';
-import { useCart, useMoney } from '@shopify/hydrogen-react';
 
 type FreeShippingProgressProps = {
     i18n: LocaleDictionary;

@@ -1,13 +1,17 @@
 'use client';
 
+import styles from './image-grid.module.scss';
+
+import { memo } from 'react';
+
+import { deepEqual } from '@/utils/deep-equal';
+import { PrismicNextImage } from '@prismicio/next';
+
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
-import { deepEqual } from '@/utils/deep-equal';
+
 import type { Content } from '@prismicio/client';
-import { PrismicNextImage } from '@prismicio/next';
 import type { SliceComponentProps } from '@prismicio/react';
-import { memo } from 'react';
-import styles from './image-grid.module.scss';
 
 /**
  * Props for `ImageGrid`.

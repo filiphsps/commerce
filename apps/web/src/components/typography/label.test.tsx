@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { Label } from '@/components/typography/label';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import { Label } from '@/components/typography/label';
 
 describe('components', () => {
     describe('Label', () => {

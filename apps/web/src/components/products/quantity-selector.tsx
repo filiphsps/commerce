@@ -1,11 +1,14 @@
 'use client';
 
 import styles from '@/components/products/quantity-selector.module.scss';
-import type { LocaleDictionary } from '@/utils/locale';
-import { useTranslation } from '@/utils/locale';
-import type { ChangeEvent, KeyboardEventHandler } from 'react';
-import { useCallback, useEffect, useState, type HTMLProps } from 'react';
+
+import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 import { CgMathMinus, CgMathPlus } from 'react-icons/cg';
+
+import { useTranslation } from '@/utils/locale';
+
+import type { LocaleDictionary } from '@/utils/locale';
+import type { ChangeEvent, KeyboardEventHandler } from 'react';
 
 export const QuantityInputFilter = (value?: string, prev?: string): string => {
     // FRO-58: Only allow numbers
@@ -86,7 +89,7 @@ const QuantitySelector = ({
     );
     const onChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
-            const value = QuantityInputFilter(e?.target?.value, quantityValue);
+            const value = QuantityInputFilter(e.target.value, quantityValue);
             if (value == quantityValue) return;
 
             setQuantityValue(value);

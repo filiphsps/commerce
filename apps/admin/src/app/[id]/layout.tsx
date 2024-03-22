@@ -1,14 +1,18 @@
 import 'server-only';
 
-import Footer from '@/components/footer';
-import Header from '@/components/header';
-import { auth } from '@/utils/auth';
-import { getShop } from '@/utils/fetchers';
-import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
+import styles from './layout.module.scss';
+
+import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiStats, BiWrench } from 'react-icons/bi';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiStats, BiWrench } from 'react-icons/bi';
-import styles from './layout.module.scss';
+
+import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
+
+import { auth } from '@/utils/auth';
+import { getShop } from '@/utils/fetchers';
+
+import Footer from '@/components/footer';
+import Header from '@/components/header';
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';

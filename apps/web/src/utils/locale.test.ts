@@ -1,4 +1,5 @@
-import type { StoreModel } from '@/models/StoreModel';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
     NextLocaleToCountry,
     NextLocaleToCurrency,
@@ -6,7 +7,8 @@ import {
     NextLocaleToLocale,
     useTranslation
 } from '@/utils/locale';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { StoreModel } from '@/models/StoreModel';
 
 describe('utils', () => {
     describe('NextLocaleToLocale', () => {

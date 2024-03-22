@@ -1,12 +1,16 @@
-import ActionableCard from '@/components/actionable-card';
-import LoginButton from '@/components/login-button';
-import { auth } from '@/utils/auth';
-import { Heading, Label } from '@nordcom/nordstar';
+import styles from './page.module.scss';
+
+import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import styles from './page.module.scss';
+
+import { Heading, Label } from '@nordcom/nordstar';
+
+import { auth } from '@/utils/auth';
+
+import ActionableCard from '@/components/actionable-card';
+import LoginButton from '@/components/login-button';
 
 import type { Metadata } from 'next';
 

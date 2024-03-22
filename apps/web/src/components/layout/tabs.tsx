@@ -1,7 +1,10 @@
 import styles from '@/components/layout/tabs.module.scss';
-import { Label } from '@/components/typography/label';
-import type { As } from '@nordcom/nordstar';
+
 import { Fragment, type HTMLProps, type ReactNode } from 'react';
+
+import type { As } from '@nordcom/nordstar';
+
+import { Label } from '@/components/typography/label';
 
 export type TabProps = {
     as?: As;

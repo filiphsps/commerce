@@ -1,15 +1,20 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import type { Product } from '@/api/product';
-import Link from '@/components/link';
 import styles from '@/components/product-card/product-card.module.scss';
+
+import { memo, useMemo } from 'react';
+import Image from 'next/image';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import type { Shop } from '@nordcom/commerce-database';
+
+import Link from '@/components/link';
+
+import type { Product } from '@/api/product';
 import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
-import Image from 'next/image';
 import type { ReactNode } from 'react';
-import { memo, useMemo } from 'react';
 
 interface VariantImageProps {
     image?: ShopifyImage;
@@ -50,9 +55,9 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
 
     const image = useMemo(
         () =>
-            ((selectedVariant?.image &&
-                product.images?.edges?.find((i) => i?.node?.id === selectedVariant?.image!.id)?.node) ||
-                product.images?.edges?.[0]?.node) as ShopifyImage | undefined,
+            ((selectedVariant.image &&
+                product.images.edges.find((i) => i.node.id === selectedVariant.image!.id)?.node) ||
+                product.images.edges[0]?.node) as ShopifyImage | undefined,
         [product, selectedVariant]
     );
     if (!image) return null;

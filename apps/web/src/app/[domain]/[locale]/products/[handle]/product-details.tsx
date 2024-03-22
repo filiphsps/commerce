@@ -1,11 +1,14 @@
 import 'server-only';
 
-import type { Product } from '@/api/product';
+import styles from './product-details.module.scss';
+
+import { parseMetafield } from '@shopify/hydrogen-react';
+
 import { Alert } from '@/components/informational/alert';
 import { Label } from '@/components/typography/label';
+
+import type { Product } from '@/api/product';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
-import { parseMetafield } from '@shopify/hydrogen-react';
-import styles from './product-details.module.scss';
 
 export type ProductDetailsProps = {
     data: Product;

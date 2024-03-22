@@ -1,7 +1,9 @@
+import { unstable_cache as cache } from 'next/cache';
+
 import { ShopApi } from '@nordcom/commerce-database';
 import { TodoError } from '@nordcom/commerce-errors';
+
 import { colord } from 'colord';
-import { unstable_cache as cache } from 'next/cache';
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {

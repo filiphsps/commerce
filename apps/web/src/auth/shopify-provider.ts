@@ -1,8 +1,11 @@
-import { BuildConfig } from '@/utils/build-config';
+import { cookies } from 'next/headers';
+
 import type { Shop, ShopifyCommerceProvider } from '@nordcom/commerce-database';
 import { InvalidShopifyCustomerAccountsApiConfiguration } from '@nordcom/commerce-errors';
+
+import { BuildConfig } from '@/utils/build-config';
+
 import type { OAuthConfig, OAuthUserConfig } from 'next-auth/providers/oauth';
-import { cookies } from 'next/headers';
 
 export const SHOPIFY_CUSTOMER_ACCOUNT_ACCESS_TOKEN_COOKIE = 'SHOPIFY_ACCOUNT_ACCESS_TOKEN';
 const VERCEL_DEPLOYMENT = process.env.VERCEL_URL;

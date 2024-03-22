@@ -1,14 +1,18 @@
 import '@/styles/app.scss';
+import styles from './layout.module.scss';
+
+import { Montserrat } from 'next/font/google';
+
+import { View } from '@nordcom/nordstar';
+
+import { GeistMono } from 'geist/font/mono';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import { Providers } from '@/components/providers';
-import { View } from '@nordcom/nordstar';
-import { GeistMono } from 'geist/font/mono';
+
 import type { Metadata, Viewport } from 'next';
-import { Montserrat } from 'next/font/google';
 import type { ReactNode } from 'react';
-import styles from './layout.module.scss';
 
 export const viewport: Viewport = {
     themeColor: '#000000',

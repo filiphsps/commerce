@@ -1,5 +1,6 @@
-import { View } from '@nordcom/nordstar';
 import styles from './layout.module.scss';
+
+import { View } from '@nordcom/nordstar';
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';

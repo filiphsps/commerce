@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { Button } from '@/components/actionable/button';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import { Button } from '@/components/actionable/button';
 
 describe('components', () => {
     describe('Button', () => {

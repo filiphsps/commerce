@@ -1,15 +1,20 @@
-import React from 'react';
+import styles from './page.module.scss';
 
-import { Content } from '@/components/content';
-import { components } from '@/markdoc';
-import Markdoc from '@markdoc/markdoc';
-import { Heading } from '@nordcom/nordstar';
-import gravatar from 'gravatar.js';
-import type { Metadata } from 'next';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import { Heading } from '@nordcom/nordstar';
+
+import { components } from '@/markdoc';
+import Markdoc from '@markdoc/markdoc';
+import gravatar from 'gravatar.js';
+
+import { Content } from '@/components/content';
+
 import { getArticleContent, getArticlePaths } from './articles';
-import styles from './page.module.scss';
+
+import type { Metadata } from 'next';
 
 export const dynamicParams = false;
 

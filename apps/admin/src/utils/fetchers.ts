@@ -1,8 +1,9 @@
 import 'server-only';
 
+import { revalidateTag, unstable_cache as cache } from 'next/cache';
+
 import { prisma } from '@nordcom/commerce-database';
 import { Shop } from '@nordcom/commerce-db';
-import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
     revalidateTag('admin');

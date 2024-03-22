@@ -1,19 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
-import type { Product, ProductVariant } from '@/api/product';
-import { Button } from '@/components/actionable/button';
 import styles from '@/components/products/add-to-cart.module.scss';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+
+import { type HTMLProps, useCallback, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+
+import { TodoError } from '@nordcom/commerce-errors';
+
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
-import { TodoError } from '@nordcom/commerce-errors';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
-import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 import { toast } from 'sonner';
+
+import { Button } from '@/components/actionable/button';
+
+import type { Product, ProductVariant } from '@/api/product';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type AddToCartProps = {
     locale: Locale;

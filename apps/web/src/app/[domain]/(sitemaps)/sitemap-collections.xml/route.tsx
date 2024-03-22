@@ -1,14 +1,17 @@
+import { type NextRequest, NextResponse } from 'next/server';
+import { getServerSideSitemap } from 'next-sitemap';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error, UnknownApiError } from '@nordcom/commerce-errors';
+
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionsPaginationApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error, UnknownApiError } from '@nordcom/commerce-errors';
+
+import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ISitemapField } from 'next-sitemap';
-import { getServerSideSitemap } from 'next-sitemap';
-import { NextResponse, type NextRequest } from 'next/server';
-import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +25,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
         let res,
             collections: Collection[] = [];
-        while ((res = await CollectionsPaginationApi({ api, limit: 75, after: res?.page_info?.end_cursor }))) {
+        while ((res = await CollectionsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
             collections.push(...res.collections.map(({ node: collection }) => collection));
             if (!res.page_info.has_next_page) break;
         }

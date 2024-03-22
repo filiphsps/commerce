@@ -1,16 +1,18 @@
 import 'the-new-css-reset';
-
 import '@/styles/app.scss';
+
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { Public_Sans } from 'next/font/google';
+
+import { ShopApi } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
-import ProvidersRegistry from '@/components/providers-registry';
 import { CssVariablesProvider } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { unstable_cache as cache } from 'next/cache';
-import { Public_Sans } from 'next/font/google';
-import { Suspense } from 'react';
+
+import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';

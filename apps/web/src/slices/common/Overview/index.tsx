@@ -1,11 +1,13 @@
 import 'server-only';
 
+import styles from './overview.module.scss';
+
 import PageContent from '@/components/page-content';
 import { Overview } from '@/components/typography/Overview';
 import { PrismicText } from '@/components/typography/prismic-text';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styles from './overview.module.scss';
 
 /**
  * Props for `Overview`.
@@ -25,7 +27,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            {slice?.items?.map((item, index) => {
+            {slice.items.map((item, index) => {
                 return (
                     <Overview
                         key={index}
@@ -41,7 +43,7 @@ const OverviewSlice = ({ slice }: OverviewProps) => {
                             undefined
                         }
                         layout={item.layout}
-                        image={(item.image?.url && (item.image as any)) || undefined}
+                        image={(item.image.url && (item.image as any)) || undefined}
                         imageStyle={item.image_style}
                         body={<PrismicText data={item.text} />}
                     />

@@ -1,7 +1,8 @@
+import { revalidateTag, unstable_cache as cache } from 'next/cache';
+import { type NextRequest, NextResponse } from 'next/server';
+
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce-errors';
-import { unstable_cache as cache, revalidateTag } from 'next/cache';
-import { NextResponse, type NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 const headers = { 'Cache-Control': 'no-store' };

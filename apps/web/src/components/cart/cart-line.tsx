@@ -1,20 +1,23 @@
-import type { Product, ProductVariant } from '@/api/product';
-import { CartLineActions } from '@/components/cart/cart-line-actions';
 import styles from '@/components/cart/cart-line.module.scss';
-import Heading from '@/components/typography/heading';
-import Pricing from '@/components/typography/pricing';
-import type { LocaleDictionary } from '@/utils/locale';
-import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
+
+import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
+
+import { CartLineActions } from '@/components/cart/cart-line-actions';
+import Heading from '@/components/typography/heading';
+import Pricing from '@/components/typography/pricing';
+
+import type { Product, ProductVariant } from '@/api/product';
+import type { LocaleDictionary } from '@/utils/locale';
+import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
 interface CartLineProps {
     i18n: LocaleDictionary;
     data: ShopifyCartLine;
 }
 const CartLine = ({ i18n, data: line }: CartLineProps) => {
-    const product: Required<Product> = line.merchandise?.product! as any;
+    const product: Required<Product> = line.merchandise.product! as any;
     const variant: Required<ProductVariant> = line.merchandise! as any;
     if (!product || !variant) {
         console.error(`Product or product variant not found for line ${line.id}`);

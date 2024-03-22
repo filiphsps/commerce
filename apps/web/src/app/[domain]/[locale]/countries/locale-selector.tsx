@@ -1,13 +1,18 @@
 'use client';
 
+import styles from './countries.module.scss';
+
+import { useRef } from 'react';
+import Image from 'next/image';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import { Locale } from '@/utils/locale';
+
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
-import { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
+
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
-import Image from 'next/image';
-import { useRef } from 'react';
-import styles from './countries.module.scss';
 
 type LocaleSelectorProps = {
     shop: Shop;
@@ -19,7 +24,7 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const markets = (
-        countries?.map((country) =>
+        countries.map((country) =>
             country.availableLanguages.map((language) => ({
                 locale: `${language.isoCode.toLowerCase()}-${country.isoCode.toUpperCase()}`,
                 country: country.name,
@@ -37,7 +42,7 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
             </button>
 
             {markets.flatMap((markets) =>
-                markets?.map((country) => {
+                markets.map((country) => {
                     return (
                         <Link
                             key={country.locale}

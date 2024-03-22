@@ -1,9 +1,11 @@
 'use client';
 
 import styles from '@/components/products/product-gallery.module.scss';
-import type { Image } from '@shopify/hydrogen-react/storefront-api-types';
+
+import { type HTMLProps, useEffect, useState } from 'react';
 import NextImage from 'next/image';
-import { useEffect, useState, type HTMLProps } from 'react';
+
+import type { Image } from '@shopify/hydrogen-react/storefront-api-types';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;

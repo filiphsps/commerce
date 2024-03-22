@@ -1,8 +1,8 @@
-import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import { gql } from 'graphql-tag';
 
 import type { RedirectModel } from '@/models/RedirectModel';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { gql } from 'graphql-tag';
+import type { UrlRedirect, UrlRedirectConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 /**
  * Convert the Shopify redirect list to a list of redirects.
@@ -67,7 +67,7 @@ export const RedirectsApi = async ({
             );
 
             if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
-            else if (!data?.urlRedirects?.edges || redirects.length <= 0)
+            else if (!data?.urlRedirects.edges || redirects.length <= 0)
                 return reject(new Error(`404: No redirects could be found`));
 
             cursor = data.urlRedirects.edges.at(-1)!.cursor;

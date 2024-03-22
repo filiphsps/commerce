@@ -1,12 +1,15 @@
 'use client';
 
-import type { NavigationItem } from '@/api/navigation';
 import styles from '@/components/header/header-navigation.module.scss';
-import Link from '@/components/link';
-import type { Locale } from '@/utils/locale';
-import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+
 import { FiChevronDown } from 'react-icons/fi';
+import { usePathname } from 'next/navigation';
+
+import Link from '@/components/link';
+
+import type { NavigationItem } from '@/api/navigation';
+import type { Locale } from '@/utils/locale';
+import type { ReactNode } from 'react';
 
 export type MenuItemProps = {
     children?: ReactNode;
@@ -23,14 +26,14 @@ export const MenuItem = ({ data, locale, children }: MenuItemProps) => {
     return (
         <div className={`${styles.item} ${(target === route && styles.active) || ''}`}>
             <Link
-                href={`/${data?.handle || ''}`}
+                href={`/${data.handle || ''}`}
                 title={data.title}
                 className={`${styles.top} ${
-                    (route === '/' && data?.handle === null) || `/${data?.handle}` === route ? styles.active : ''
+                    (route === '/' && data.handle === null) || `/${data.handle}` === route ? styles.active : ''
                 }`}
             >
-                {data?.title || null}
-                {(data?.children?.length > 0 && <FiChevronDown />) || null}
+                {data.title || null}
+                {(data.children.length > 0 && <FiChevronDown />) || null}
             </Link>
             {children}
         </div>

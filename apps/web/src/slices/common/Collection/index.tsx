@@ -1,12 +1,16 @@
 import 'server-only';
 
-import CollectionBlock from '@/components/products/collection-block';
-import CollectionContainer from '@/slices/common/Collection/collection';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import { Suspense } from 'react';
+
 import type { Shop } from '@nordcom/commerce-database';
+
+import CollectionContainer from '@/slices/common/Collection/collection';
+
+import CollectionBlock from '@/components/products/collection-block';
+
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { Suspense } from 'react';
 
 /**
  * Props for `Collection`.
@@ -27,7 +31,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     if (slice.variation !== 'default') {
         console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
 
-        if (!slice?.primary?.handle) return null;
+        if (!slice.primary.handle) return null;
     }
 
     const handle = slice.primary.handle as string;

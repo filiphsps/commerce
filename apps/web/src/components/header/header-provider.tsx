@@ -1,9 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
+
 import * as NProgress from 'nprogress';
-import { useEffect } from 'react';
 
 export type HeaderProviderProps = {
     loaderColor: string;

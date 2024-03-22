@@ -1,5 +1,6 @@
-import type { Product, ProductVariant } from '@/api/product';
 import { NotFoundError } from '@nordcom/commerce-errors';
+
+import type { Product, ProductVariant } from '@/api/product';
 
 /**
  * Find the first available and most suitable variant for a specific product.
@@ -9,11 +10,11 @@ import { NotFoundError } from '@nordcom/commerce-errors';
  */
 export const FirstAvailableVariant = (product?: Product | null): ProductVariant | undefined => {
     // 1. Make sure we got a product passed to us.
-    if (!product || !product?.variants) return undefined;
+    if (!product || !product.variants) return undefined;
 
-    const variants: ProductVariant[] | undefined = product?.variants?.edges
-        ? product?.variants?.edges?.map?.(({ node: variant }) => variant)
-        : (product?.variants as any);
+    const variants: ProductVariant[] | undefined = product.variants.edges
+        ? product.variants.edges.map(({ node: variant }) => variant)
+        : (product.variants as any);
 
     if (!variants) throw new NotFoundError(`"product.variant"`);
 

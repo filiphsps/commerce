@@ -1,10 +1,11 @@
-import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
+import { NotFoundError } from '@nordcom/commerce-errors';
+
+import { TitleToHandle } from '@/utils/title-to-handle';
+import { gql } from 'graphql-tag';
 
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';
-import { TitleToHandle } from '@/utils/title-to-handle';
-import { NotFoundError } from '@nordcom/commerce-errors';
-import { gql } from 'graphql-tag';
+import type { Product, ProductConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 /**
  * Convert the Shopify product list to a list of vendors.
@@ -20,7 +21,7 @@ export const Convertor = (
 ): VendorModel[] => {
     let vendors: any[] = [];
     products.forEach((product) => {
-        if (!product?.node?.vendor) return;
+        if (!product.node.vendor) return;
 
         vendors.push(product.node.vendor);
     });
@@ -59,11 +60,11 @@ export const VendorsApi = async ({ api }: VendorsOptions): Promise<VendorModel[]
         `);
 
         // FIXME: Handle errors and missing data.
-        if (!data?.products?.edges! || data?.products?.edges?.length <= 0) {
+        if (!data?.products.edges! || data.products.edges.length <= 0) {
             throw new NotFoundError('vendors');
         }
 
-        return Convertor(data?.products?.edges!);
+        return Convertor(data.products.edges!);
     } catch (error: unknown) {
         console.error(error);
         throw error;

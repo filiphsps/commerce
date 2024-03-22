@@ -1,10 +1,13 @@
 import 'server-only';
 
+import styles from './icon-grid.module.scss';
+
+import Image from 'next/image';
+
 import PageContent from '@/components/page-content';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import Image from 'next/image';
-import styles from './icon-grid.module.scss';
 
 /**
  * Props for `IconGrid`.
@@ -26,7 +29,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
         >
             {slice.items.map(({ icon, title }, index) => (
                 <div key={index} className={styles.item}>
-                    {icon?.url ? (
+                    {icon.url ? (
                         <Image
                             className={styles.icon}
                             src={icon.url}

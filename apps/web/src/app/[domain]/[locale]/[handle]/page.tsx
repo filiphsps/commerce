@@ -1,19 +1,23 @@
 import 'server-only';
 
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
-import PrismicPage from '@/components/prismic-page';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
+
+import PrismicPage from '@/components/prismic-page';
+
 import type { Metadata } from 'next';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({

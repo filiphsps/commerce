@@ -1,24 +1,28 @@
 'use client';
 
-import type { Product, ProductVariant } from '@/api/product';
-import { ProductActionsContainer } from '@/components/products/product-actions-container';
-import { useShop } from '@/components/shop/provider';
-import Pricing from '@/components/typography/pricing';
-import type { LocaleDictionary } from '@/utils/locale';
+import styles from './page.module.scss';
+
+import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
-import type { ReadonlyURLSearchParams } from 'next/navigation';
-import { usePathname, useSearchParams } from 'next/navigation';
 import * as NProgress from 'nprogress';
+
+import { ProductActionsContainer } from '@/components/products/product-actions-container';
+import { useShop } from '@/components/shop/provider';
+import Pricing from '@/components/typography/pricing';
+
+import type { Product, ProductVariant } from '@/api/product';
+import type { LocaleDictionary } from '@/utils/locale';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import styles from './page.module.scss';
 
 const getVariant = (product: Product, searchParams: ReadonlyURLSearchParams): ProductVariant | undefined => {
     return product.variants.edges.length > 1
         ? (searchParams.get('variant') &&
-              product?.variants?.edges?.find(
+              product.variants.edges.find(
                   ({ node }) => node.id === `gid://shopify/ProductVariant/${searchParams.get('variant')}`
               )?.node) ||
               undefined
@@ -47,8 +51,8 @@ export function ProductContent({ product, initialVariant, i18n, children }: Prod
             path,
             gtm: {
                 ecommerce: {
-                    currency: variant?.price?.currencyCode! || currency || 'USD',
-                    value: ShopifyPriceToNumber(undefined, variant?.price?.amount!),
+                    currency: variant.price.currencyCode! || currency || 'USD',
+                    value: ShopifyPriceToNumber(undefined, variant.price.amount!),
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
@@ -58,15 +62,15 @@ export function ProductContent({ product, initialVariant, i18n, children }: Prod
                                     variantGid: variant.id
                                 }
                             }),
-                            item_name: product?.title,
-                            item_variant: variant?.title,
-                            item_brand: product?.vendor,
-                            item_category: product?.productType,
-                            product_id: product?.id,
-                            variant_id: variant?.id,
-                            sku: variant?.sku || undefined,
-                            currency: variant?.price?.currencyCode! || currency || 'USD',
-                            price: ShopifyPriceToNumber(undefined, variant?.price?.amount!),
+                            item_name: product.title,
+                            item_variant: variant.title,
+                            item_brand: product.vendor,
+                            item_category: product.productType,
+                            product_id: product.id,
+                            variant_id: variant.id,
+                            sku: variant.sku || undefined,
+                            currency: variant.price.currencyCode! || currency || 'USD',
+                            price: ShopifyPriceToNumber(undefined, variant.price.amount!),
                             quantity: 1
                         }
                     ]

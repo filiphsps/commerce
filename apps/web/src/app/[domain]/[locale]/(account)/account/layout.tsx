@@ -1,11 +1,14 @@
-import { getAuthOptions } from '@/auth';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { getServerSession, type Session } from 'next-auth';
-import { SessionProvider } from 'next-auth/react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { getServerSession, type Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
+import { getAuthOptions } from '@/auth';
+import { Locale } from '@/utils/locale';
+
 import type { ReactNode } from 'react';
 
 // Make sure this page is always dynamic.

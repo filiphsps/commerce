@@ -1,10 +1,11 @@
-import '@testing-library/jest-dom/vitest';
 import '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
 
-import { ShopProvider } from '@/components/shop/provider';
 import { Locale } from '@/utils/locale';
 import { Trackable } from '@/utils/trackable';
 import { queries, render, within } from '@testing-library/react';
+
+import { ShopProvider } from '@/components/shop/provider';
 
 import type { ReactElement, ReactNode } from 'react';
 

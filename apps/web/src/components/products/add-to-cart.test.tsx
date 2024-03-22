@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import AddToCart from '@/components/products/add-to-cart';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import AddToCart from '@/components/products/add-to-cart';
 
 describe('components', () => {
     describe('AddToCart', () => {

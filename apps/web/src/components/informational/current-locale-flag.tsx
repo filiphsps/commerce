@@ -1,6 +1,8 @@
 import styles from '@/components/informational/current-locale-flag.module.scss';
-import type { Locale } from '@/utils/locale';
+
 import Image from 'next/image';
+
+import type { Locale } from '@/utils/locale';
 import type { ComponentProps } from 'react';
 
 export type CurrentLocaleFlagProps = {

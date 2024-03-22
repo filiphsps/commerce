@@ -1,8 +1,13 @@
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
-import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { unstable_cache as cache } from 'next/cache';
+
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
 import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
+
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { cleanShopifyHtml } from '@/utils/abstract-api';
+import { gql } from 'graphql-tag';
+
+import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
     Collection,
     CollectionEdge,
@@ -10,8 +15,6 @@ import type {
     ProductCollectionSortKeys,
     QueryRoot
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from 'graphql-tag';
-import { unstable_cache as cache } from 'next/cache';
 
 type GenericCollectionFilters = {
     after?: Nullable<string>;
@@ -371,7 +374,7 @@ export const CollectionsApi = async (
             data.collections.edges.map(({ node: { id, handle, products } }) => ({
                 id,
                 handle,
-                hasProducts: products?.edges ? products.edges.length > 0 : false
+                hasProducts: products.edges ? products.edges.length > 0 : false
             }))
         );
     });
@@ -472,7 +475,7 @@ export const CollectionsPaginationApi = async ({
             if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
 
             return resolve({
-                collections: data.collections?.edges || [],
+                collections: data.collections.edges || [],
                 page_info: {
                     start_cursor: page_info.startCursor || null,
                     end_cursor: page_info.endCursor || null,

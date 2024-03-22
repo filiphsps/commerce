@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import 'server-only';
 
-import type { Product } from '@/api/product';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
-import { RecommendationApi } from '@/api/shopify/recommendation';
-import ProductCard from '@/components/product-card/product-card';
 import styles from '@/components/products/collection-block.module.scss';
 import extraStyles from '@/components/products/recommended-products.module.scss';
-import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/utils/dictionary';
-import { useTranslation, type Locale } from '@/utils/locale';
+
 import type { Shop } from '@nordcom/commerce-database';
+
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { RecommendationApi } from '@/api/shopify/recommendation';
+import { getDictionary } from '@/utils/dictionary';
+import { type Locale, useTranslation } from '@/utils/locale';
+
+import ProductCard from '@/components/product-card/product-card';
+import Heading from '@/components/typography/heading';
+
+import type { Product } from '@/api/product';
 
 export type RecommendedProductsProps = {
     shop: Shop;

@@ -1,15 +1,19 @@
 import 'server-only';
 
+import styles from './collection.module.scss';
+
+import { type ReactNode } from 'react';
+
+import { asText } from '@prismicio/client';
+
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
+
 import type { CollectionSliceDefault } from '@/prismic/types';
-import { asText } from '@prismicio/client';
-import { type ReactNode } from 'react';
-import styles from './collection.module.scss';
 
 type Slice = {
     slice_type: 'collection';
@@ -22,7 +26,7 @@ export type CollectionContainerProps = {
 };
 
 const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'children'>) => {
-    if (!slice || !slice.primary || asText(slice.primary.title)?.length <= 0) return null;
+    if (!slice || !slice.primary || asText(slice.primary.title).length <= 0) return null;
     if (!slice.primary.handle) {
         console.error(new Error('Collection slice is missing a handle.')); // FIXME: Correct error.
         return null;

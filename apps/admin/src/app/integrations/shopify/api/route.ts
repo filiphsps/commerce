@@ -1,5 +1,7 @@
-import { UnknownApiError } from '@nordcom/commerce-errors';
 import { NextResponse } from 'next/server';
+
+import { UnknownApiError } from '@nordcom/commerce-errors';
+
 import { shopifyAdminApi } from './shopify';
 
 import type { NextRequest } from 'next/server';

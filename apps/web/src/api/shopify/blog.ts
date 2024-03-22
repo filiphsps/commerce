@@ -1,6 +1,7 @@
+import { gql } from 'graphql-tag';
+
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { Article, ArticleSortKeys, Blog } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from 'graphql-tag';
 
 export const BlogApi = async ({
     api,

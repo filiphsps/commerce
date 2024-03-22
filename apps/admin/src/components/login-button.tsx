@@ -1,13 +1,16 @@
 'use client';
 
 import styles from '@/components/login-button.module.scss';
-import GithubLight from '@/static/icons/light/github.svg';
-import { UnknownApiError } from '@nordcom/commerce-errors';
-import { Button } from '@nordcom/nordstar';
-import { signIn } from 'next-auth/react';
+
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { signIn } from 'next-auth/react';
+
+import { UnknownApiError } from '@nordcom/commerce-errors';
+import { Button } from '@nordcom/nordstar';
+
+import GithubLight from '@/static/icons/light/github.svg';
 import { toast } from 'sonner';
 
 import type { AuthProvider } from '@/utils/auth';
@@ -23,7 +26,7 @@ export default function LoginButton({ provider = 'github', className, ...props }
     const router = useRouter();
     const path = usePathname();
     const searchParams = useSearchParams();
-    const error = searchParams?.get('error');
+    const error = searchParams.get('error');
 
     useEffect(() => {
         const errorMessage = Array.isArray(error) ? error.pop() : error;
