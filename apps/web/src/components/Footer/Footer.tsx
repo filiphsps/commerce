@@ -1,15 +1,21 @@
 import 'server-only';
 
+import styles from '@/components/Footer/footer.module.scss';
+
+import Image from 'next/image';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import { FooterApi } from '@/api/footer';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
+
 import FooterContent from '@/components/Footer/footer-content';
-import styles from '@/components/Footer/footer.module.scss';
 import { PrismicText } from '@/components/typography/prismic-text';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import Image from 'next/image';
+
 import Link from '../link';
+
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type FooterProps = {
     shop: Shop;
@@ -30,7 +36,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                 <div className={styles.blocks}>
                     <div className={styles.block}>
                         <div className={styles.logo}>
-                            {store.logos?.primary?.src && (
+                            {store.logos.primary?.src && (
                                 <Image
                                     src={store.logos.primary.src}
                                     alt={store.logos.primary.alt || 'Logo'}
@@ -46,7 +52,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         <PrismicText data={footer.address} />
                     </div>
 
-                    {footer.blocks?.map?.((block) => (
+                    {footer.blocks.map((block) => (
                         <div key={block.title} className={styles.block} data-align="right">
                             <div className={styles.title}>{block.title}</div>
                             {block?.items.map((item: any) => (

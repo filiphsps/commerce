@@ -1,16 +1,20 @@
 'use client';
 
-import type { Product, ProductVariant } from '@/api/product';
-import AddToCart from '@/components/products/add-to-cart';
 import styles from '@/components/products/product-actions-container.module.scss';
+
+import { type HTMLProps, Suspense, useState } from 'react';
+
+import { useTranslation } from '@/utils/locale';
+import { ProductProvider } from '@shopify/hydrogen-react';
+
+import AddToCart from '@/components/products/add-to-cart';
 import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
+
+import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
-import { useTranslation } from '@/utils/locale';
-import { ProductProvider } from '@shopify/hydrogen-react';
-import { Suspense, useState, type HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
     i18n: LocaleDictionary;

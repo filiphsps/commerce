@@ -1,10 +1,13 @@
 import styles from '@/components/header.module.scss';
-import { auth } from '@/utils/auth';
-import { getShop } from '@/utils/fetchers';
-import { Card, Label, Header as NordstarHeader } from '@nordcom/nordstar';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+
+import { Card, Header as NordstarHeader, Label } from '@nordcom/nordstar';
+
+import { auth } from '@/utils/auth';
+import { getShop } from '@/utils/fetchers';
 
 import type { HTMLProps } from 'react';
 

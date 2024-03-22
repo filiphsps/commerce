@@ -1,14 +1,18 @@
 'use client';
 
-import type { ProductVariant } from '@/api/product';
-import Link from '@/components/link';
 import actionsStyles from '@/components/products/product-actions-container.module.scss';
 import styles from '@/components/products/product-options.module.scss';
-import { Label } from '@/components/typography/label';
-import type { Locale } from '@/utils/locale';
+
+import { Fragment, type HTMLProps } from 'react';
+
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
-import { Fragment, type HTMLProps } from 'react';
+
+import Link from '@/components/link';
+import { Label } from '@/components/typography/label';
+
+import type { ProductVariant } from '@/api/product';
+import type { Locale } from '@/utils/locale';
 
 export type ProductOptionProps = {
     locale: Locale;
@@ -27,7 +31,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
     if (!product) {
         console.error('No product found. Have you wrapped your component in a `<ProductProvider>`?');
         return null;
-    } else if (!product?.variants) {
+    } else if (!product.variants) {
         console.error('No product variants found. Something has gone really wrong.');
         return null;
     }
@@ -77,10 +81,10 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                             title &&
                                             variants
                                                 ?.filter((variant) => variant)
-                                                ?.find(
+                                                .find(
                                                     (variant) =>
-                                                        variant!.title?.toLowerCase()?.includes(value!.toLowerCase()) ||
-                                                        variant!.title?.toLowerCase()?.includes(title!.toLowerCase())
+                                                        variant!.title?.toLowerCase().includes(value!.toLowerCase()) ||
+                                                        variant!.title?.toLowerCase().includes(title!.toLowerCase())
                                                 )) ||
                                         undefined;
                                     let href = `/products/${handle}/`;
@@ -112,7 +116,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                         <Link
                                             key={`${option.name}_${value}`}
                                             as={asComponent}
-                                            title={`${product?.vendor} ${product?.title} - ${
+                                            title={`${product.vendor} ${product.title} - ${
                                                 title || matchingVariant?.title
                                             }`}
                                             className={`${styles.option} ${

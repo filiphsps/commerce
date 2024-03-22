@@ -7,20 +7,21 @@
         "node": true
     },
     "extends": [
-        "plugin:react/recommended",
+        "plugin:jsx-a11y/recommended",
         "plugin:prettier/recommended",
         "plugin:react-hooks/recommended",
-        "plugin:jsx-a11y/recommended"
+        "plugin:react/recommended"
     ],
     "plugins": [
-        "react",
-        "react-hooks",
-        "unused-imports",
-        "import",
         "@typescript-eslint",
         "eslint-plugin-jsdoc",
+        "import",
         "jsx-a11y",
-        "prettier"
+        "prettier",
+        "react-hooks",
+        "react",
+        "simple-import-sort",
+        "unused-imports"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -28,6 +29,7 @@
             "jsx": true
         },
         "sourceType": "module",
+        "ecmaVersion": "latest",
         "project": [
             "./tsconfig.json",
             "./tsconfig.node.json",
@@ -43,6 +45,13 @@
         }
     },
     "rules": {
+        "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": false }],
+        "@typescript-eslint/consistent-type-imports": [
+            "error",
+            { "fixStyle": "separate-type-imports", "prefer": "type-imports" }
+        ],
+        "@typescript-eslint/no-require-imports": "error",
+        "@typescript-eslint/no-unnecessary-condition": "warn",
         "brace-style": [
             "error",
             "1tbs",
@@ -52,6 +61,7 @@
         ],
         "consistent-return": "error",
         "import/first": "off",
+        "import/order": "off",
         "indent": "off",
         "jsdoc/check-alignment": "error",
         "jsdoc/check-indentation": "off",
@@ -75,13 +85,39 @@
         "prettier/prettier": "error",
         "react-hooks/exhaustive-deps": "off",
         "react-hooks/rules-of-hooks": "error",
+        "react/jsx-uses-react": "off",
         "react/no-children-prop": "off",
         "react/no-find-dom-node": "off",
         "react/no-string-refs": "off",
         "react/prop-types": "error",
         "react/react-in-jsx-scope": "off",
-        "react/jsx-uses-react": "off",
         "semi": ["error", "always"],
+        "sort-imports": "off",
+        //"simple-import-sort/exports": "error",
+        "simple-import-sort/imports": [
+            "error",
+            {
+                "groups": [
+                    ["server-only"],
+                    // Side effect imports and styles.
+                    ["^\\u0000", "vitest", "^.+\\.s?css$"],
+                    // Node.js built-ins.
+                    ["^node:", "^react", "^next"],
+                    // Our packages.
+                    ["^@nordcom(/.*|$)"],
+                    // Path aliases.
+                    ["^@/\\w", "^"],
+                    // Local components.
+                    ["^@/components(/.*|$)"],
+                    // Parent imports.
+                    ["^\\.\\.(?!/?$)"],
+                    // Relative imports.
+                    ["^\\.", "^\\./?$"],
+                    // Types.
+                    ["^.+\\u0000$"]
+                ]
+            }
+        ],
         "standard/computed-property-even-spacing": "off",
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": [

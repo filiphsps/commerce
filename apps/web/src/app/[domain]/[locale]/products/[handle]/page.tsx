@@ -1,10 +1,29 @@
 import 'server-only';
 
+import styles from './page.module.scss';
+
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+import { ProductJsonLd } from 'next-seo';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/i18n/dictionary';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { TitleToHandle } from '@/utils/title-to-handle';
+import { asText } from '@prismicio/client';
+import { parseGid } from '@shopify/hydrogen-react';
+
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
 import { Tabs } from '@/components/layout/tabs';
@@ -15,24 +34,11 @@ import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
-import { FirstAvailableVariant } from '@/utils/first-available-variant';
-import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { TitleToHandle } from '@/utils/title-to-handle';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
-import { parseGid } from '@shopify/hydrogen-react';
-import type { Metadata } from 'next';
-import { ProductJsonLd } from 'next-seo';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import styles from './page.module.scss';
+
 import { ProductContent, ProductPricing } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
+
+import type { Metadata } from 'next';
 
 /*export async function generateStaticParams() {
     const shops = await ShopsApi();
@@ -98,8 +104,8 @@ export async function generateMetadata({
         const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = await LocalesApi({ api });
 
-        const title = page?.meta_title || product.seo?.title || `${product.vendor} ${product.title}`;
-        const description = asText(page?.meta_description) || product.seo?.description || product.description;
+        const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
+        const description = asText(page?.meta_description) || product.seo.description || product.description;
         return {
             title,
             description,
@@ -121,7 +127,7 @@ export async function generateMetadata({
                 siteName: shop.name,
                 locale: locale.code,
                 images: [
-                    ...(page?.meta_image?.dimensions
+                    ...(page?.meta_image.dimensions
                         ? [
                               {
                                   url: page.meta_image.url!,
@@ -130,7 +136,7 @@ export async function generateMetadata({
                               }
                           ]
                         : []),
-                    ...product.images?.edges?.map?.(({ node }) => ({
+                    ...product.images.edges.map(({ node }) => ({
                         url: node.url,
                         width: node.width!,
                         height: node.height!
@@ -198,7 +204,7 @@ export default async function ProductPage({
             notFound();
         }
 
-        const content = todoImproperWayToHandleDescriptionFix(product?.descriptionHtml) || '';
+        const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
         return (
             <>
@@ -208,7 +214,7 @@ export default async function ProductPage({
                     asideDesktopWidth={0.58}
                     aside={
                         <ProductGallery
-                            initialImageId={variant?.image?.id || product.images?.edges?.[0]?.node.id}
+                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
                             images={product.images.edges.map((edge) => edge.node)}
                             className={styles.gallery}
                         />
@@ -265,7 +271,7 @@ export default async function ProductPage({
                                                     <ImportantProductDetails data={product} />
                                                 </Suspense>
 
-                                                {page?.slices && page?.slices.length > 0 ? (
+                                                {page?.slices && page.slices.length > 0 ? (
                                                     <>
                                                         <div className={styles.contentDivider} />
 
@@ -305,7 +311,7 @@ export default async function ProductPage({
                 </SplitView>
 
                 <PageContent primary={true}>
-                    {page?.slices2 && page?.slices2.length > 0 ? (
+                    {page?.slices2 && page.slices2.length > 0 ? (
                         <Suspense
                             key={`${shop.id}.products.${handle}.content`}
                             fallback={<PrismicPage.skeleton page={{ slices: page.slices2 } as any} />}
@@ -335,8 +341,8 @@ export default async function ProductPage({
                 {/* Metadata */}
                 <ProductJsonLd
                     useAppDir={true}
-                    key={variant?.id}
-                    keyOverride={`item_${variant?.id}`}
+                    key={variant.id}
+                    keyOverride={`item_${variant.id}`}
                     productName={`${product.vendor} ${product.title} ${variant.title}`}
                     brand={product.vendor}
                     sku={ProductToMerchantsCenterId({
@@ -347,13 +353,11 @@ export default async function ProductPage({
                         } as any
                     })}
                     mpn={variant.barcode || variant.sku || undefined}
-                    images={
-                        (product.images?.edges?.map?.((edge) => edge?.node?.url).filter((i) => i) as string[]) || []
-                    }
+                    images={(product.images.edges.map((edge) => edge.node.url).filter((i) => i) as string[]) || []}
                     description={product.description || ''}
                     // TODO: Utility function.
                     reviews={
-                        reviews?.reviews?.map(({ rating, title, body, author, createdAt }) => ({
+                        reviews.reviews.map(({ rating, title, body, author, createdAt }) => ({
                             type: 'Review',
                             author: {
                                 type: 'Person',

@@ -1,11 +1,14 @@
 import 'server-only';
 
-import type { PageData, PageType } from '@/api/page';
-import { components, components as slices } from '@/slices';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Optional, Shop } from '@nordcom/commerce-database';
-import { SliceZone } from '@prismicio/react';
 import { Suspense } from 'react';
+
+import type { Optional, Shop } from '@nordcom/commerce-database';
+
+import { components, components as slices } from '@/slices';
+import { SliceZone } from '@prismicio/react';
+
+import type { PageData, PageType } from '@/api/page';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 type PageParams<T extends PageType> = {
     shop: Shop;
@@ -26,7 +29,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     return (
         <Suspense key={`${shop.id}.page.${handle}.PrismicPage`} fallback={<PrismicPage.skeleton page={page} />}>
             <SliceZone
-                slices={page?.slices || []}
+                slices={page.slices || []}
                 components={slices}
                 context={{ shop, i18n, locale, type, uid: handle, handle }}
             />

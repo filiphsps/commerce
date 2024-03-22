@@ -1,11 +1,12 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { gql } from 'graphql-tag';
+
 import type { AbstractApi } from '@/utils/abstract-api';
 import type {
     PredictiveSearchResult,
     Product,
     SearchResultItemConnection
 } from '@shopify/hydrogen-react/storefront-api-types';
-import { gql } from 'graphql-tag';
 
 export const SearchApi = async ({
     client,
@@ -61,8 +62,8 @@ export const SearchApi = async ({
             );
 
             return {
-                result: data?.search?.edges?.map((item: any) => item?.node) || [],
-                productFilters: data?.search?.productFilters || []
+                result: data?.search.edges.map((item: any) => item?.node) || [],
+                productFilters: data?.search.productFilters || []
             };
         };
 

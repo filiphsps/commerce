@@ -1,12 +1,15 @@
 'use client';
 
-import type { Product, ProductVariant } from '@/api/product';
 import styles from '@/components/product-card/product-card.module.scss';
+
+import { useCallback, useState } from 'react';
+
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import Pricing from '@/components/typography/pricing';
+
+import type { Product, ProductVariant } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { useCallback, useState } from 'react';
 
 export type ProductCardFooterProps = {
     locale: Locale;
@@ -43,7 +46,7 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
                 i18n={i18n}
                 className={styles.button}
                 quantity={quantity}
-                disabled={!product?.availableForSale || !selectedVariant.availableForSale}
+                disabled={!product.availableForSale || !selectedVariant.availableForSale}
                 data={product}
                 variant={selectedVariant}
             />

@@ -1,5 +1,7 @@
 import styles from '@/components/actionable/button.module.scss';
+
 import type { As } from '@nordcom/nordstar';
+
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
 export type ButtonProps<T extends As> = {

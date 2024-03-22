@@ -1,7 +1,7 @@
+import type { UserBase } from '@nordcom/commerce-db';
 import { Identity, User } from '@nordcom/commerce-db';
 
 import type { Adapter, AdapterAccount } from '@auth/core/adapters';
-import type { UserBase } from '@nordcom/commerce-db';
 
 export function AuthAdapter(): Adapter {
     return {
@@ -75,7 +75,6 @@ export function AuthAdapter(): Adapter {
 
         async linkAccount({ userId, ...account }) {
             const user = await User.findById(userId);
-            if (!user) return null;
 
             // Update or create the identity
             const identity = await Identity.findOneAndUpdate(
@@ -96,7 +95,6 @@ export function AuthAdapter(): Adapter {
                     new: true
                 }
             );
-            if (!identity) return null;
 
             if (!user.identities.find(({ id }) => id === identity.id)) {
                 user.identities.push(identity);

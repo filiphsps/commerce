@@ -1,8 +1,10 @@
-import { getAuthOptions } from '@/auth';
-import { ShopApi } from '@nordcom/commerce-database';
-import NextAuth from 'next-auth';
 import { unstable_cache as cache } from 'next/cache';
 import { type NextRequest } from 'next/server';
+import NextAuth from 'next-auth';
+
+import { ShopApi } from '@nordcom/commerce-database';
+
+import { getAuthOptions } from '@/auth';
 
 export const runtime = 'nodejs';
 

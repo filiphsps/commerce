@@ -1,4 +1,5 @@
 import { storefront } from '@/middleware/storefront';
+
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'experimental-edge';

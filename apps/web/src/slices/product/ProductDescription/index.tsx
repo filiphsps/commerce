@@ -1,9 +1,11 @@
 'use client';
 
+import { useProduct } from '@shopify/hydrogen-react';
+
 import { Content as Body } from '@/components/typography/content';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { useProduct } from '@shopify/hydrogen-react';
 import type { ReactNode } from 'react';
 
 /**

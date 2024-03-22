@@ -1,15 +1,20 @@
+import styles from './layout.module.scss';
+
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
+import { Locale } from '@/utils/locale';
+
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
+
 import type { ReactNode } from 'react';
-import styles from './layout.module.scss';
 
 export const revalidate = 28_800; // 8hrs.
 

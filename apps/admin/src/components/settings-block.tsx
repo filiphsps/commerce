@@ -1,8 +1,10 @@
 'use client';
 
 import styles from '@/components/settings-block.module.scss';
-import { Button, Card } from '@nordcom/nordstar';
+
 import { useFormStatus } from 'react-dom';
+
+import { Button, Card } from '@nordcom/nordstar';
 
 import type { ElementType, ReactNode } from 'react';
 

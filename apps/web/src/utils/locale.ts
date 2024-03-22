@@ -1,8 +1,10 @@
+import { TodoError, UnknownLocaleError } from '@nordcom/commerce-errors';
+
+import ConvertUnits from 'convert-units';
+
 import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
-import { TodoError, UnknownLocaleError } from '@nordcom/commerce-errors';
 import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
-import ConvertUnits from 'convert-units';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
@@ -154,7 +156,7 @@ export const NextLocaleToLanguage = (locale?: string): LanguageCode => {
  * @returns {CurrencyCode} `CurrencyCode` string.
  */
 export const NextLocaleToCurrency = ({ country, store }: { country: CountryCode; store: StoreModel }): CurrencyCode =>
-    (store?.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode! || 'USD') as CurrencyCode;
+    (store.payment?.countries?.find(({ isoCode }) => isoCode === country)?.currency.isoCode! || 'USD') as CurrencyCode;
 
 /**
  * Converts a locale string to a Locale.

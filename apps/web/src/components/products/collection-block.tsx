@@ -1,14 +1,19 @@
 import 'server-only';
 
-import type { Product } from '@/api/product';
+import styles from '@/components/products/collection-block.module.scss';
+
+import { unstable_cache as cache } from 'next/cache';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
+
 import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';
-import styles from '@/components/products/collection-block.module.scss';
+
+import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import { unstable_cache as cache } from 'next/cache';
 import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {
@@ -54,7 +59,7 @@ const CollectionBlock = async ({
     );
 
     // TODO: Add collection type.
-    const products: Product[] = collection?.products?.edges?.map(({ node }) => node as any) || [];
+    const products: Product[] = collection.products.edges.map(({ node }) => node as any) || [];
     if (!collection || !products || products.length <= 0) return null;
 
     return (

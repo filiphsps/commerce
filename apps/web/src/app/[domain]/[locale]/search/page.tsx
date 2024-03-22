@@ -1,19 +1,23 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/i18n/dictionary';
+import { Locale, useTranslation } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
-import { Locale, useTranslation } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+
 import SearchContent from './search-content';
 
 import type { Metadata } from 'next';
@@ -62,11 +66,11 @@ export async function generateMetadata({
                 images:
                     (page?.meta_image && [
                         {
-                            url: page?.meta_image!.url as string,
-                            width: page?.meta_image!.dimensions?.width || 0,
-                            height: page?.meta_image!.dimensions?.height || 0,
-                            alt: page?.meta_image!.alt || '',
-                            secureUrl: page?.meta_image!.url as string
+                            url: page.meta_image!.url as string,
+                            width: page.meta_image!.dimensions?.width || 0,
+                            height: page.meta_image!.dimensions?.height || 0,
+                            alt: page.meta_image!.alt || '',
+                            secureUrl: page.meta_image!.url as string
                         }
                     ]) ||
                     undefined
@@ -95,7 +99,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
             <PageContent primary={true}>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                {page?.slices && page?.slices.length > 0 && (
+                {page?.slices && page.slices.length > 0 && (
                     <PrismicPage
                         shop={shop}
                         locale={locale}

@@ -1,21 +1,26 @@
 import 'server-only';
 
+import styles from './page.module.scss';
+
+import { unstable_cache as cache } from 'next/cache';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { NewsArticleJsonLd } from 'next-seo';
+
+import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
+import { Locale } from '@/utils/locale';
+
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
-import { Locale } from '@/utils/locale';
-import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
+
 import type { Metadata } from 'next';
-import { NewsArticleJsonLd } from 'next-seo';
-import { unstable_cache as cache } from 'next/cache';
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import styles from './page.module.scss';
 
 export async function generateStaticParams() {
     const locale = Locale.default;
@@ -93,7 +98,7 @@ export async function generateMetadata({
                 type: 'article',
                 title,
                 description,
-                siteName: shop?.name,
+                siteName: shop.name,
                 locale: locale.code,
                 images: []
             }
@@ -168,7 +173,7 @@ export default async function ArticlePage({
                     title={article.title}
                     section="news"
                     images={[article.image?.url!]}
-                    keywords={article.tags?.join?.(', ') || ''}
+                    keywords={article.tags.join(', ') || ''}
                     dateCreated={article.publishedAt}
                     datePublished={article.publishedAt}
                     authorName={article.authorV2?.name!}

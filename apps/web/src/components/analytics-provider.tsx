@@ -1,8 +1,10 @@
 'use client';
 
-import { Trackable } from '@/utils/trackable';
+import { type ReactNode, useEffect, useState } from 'react';
+
 import type { Shop } from '@nordcom/commerce-database';
-import { useEffect, useState, type ReactNode } from 'react';
+
+import { Trackable } from '@/utils/trackable';
 //import { useReportWebVitals } from 'next/web-vitals';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
@@ -17,9 +19,7 @@ export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) =>
 
     const trackers = () => (
         <>
-            {shop?.thirdParty?.googleTagManager ? (
-                <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} />
-            ) : null}
+            {shop.thirdParty?.googleTagManager ? <GoogleTagManager gtmId={shop.thirdParty!.googleTagManager!} /> : null}
             <VercelAnalytics debug={false} />
         </>
     );

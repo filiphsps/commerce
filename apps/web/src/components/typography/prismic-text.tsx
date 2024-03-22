@@ -1,8 +1,9 @@
 'use client';
 
 import { linkResolver } from '@/utils/prismic';
-import type { RichTextField } from '@prismicio/client';
 import { PrismicRichText } from '@prismicio/react';
+
+import type { RichTextField } from '@prismicio/client';
 
 export type PrismicTextProps = {
     data: RichTextField;

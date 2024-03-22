@@ -1,5 +1,6 @@
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

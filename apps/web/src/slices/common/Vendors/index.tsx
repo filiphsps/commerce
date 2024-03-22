@@ -1,11 +1,14 @@
 import 'server-only';
 
+import styles from './vendors.module.scss';
+
+import { Suspense } from 'react';
+
 import Vendors from '@/components/informational/vendors';
 import PageContent from '@/components/page-content';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import { Suspense } from 'react';
-import styles from './vendors.module.scss';
 
 /**
  * Props for `Vendors`.

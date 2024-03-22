@@ -1,9 +1,10 @@
 'use client';
 
-import { Card, Input, Label } from '@nordcom/nordstar';
 import styles from './settings.module.scss';
 
 import type { ShopTheme } from '@nordcom/commerce-database';
+import { Card, Input, Label } from '@nordcom/nordstar';
+
 import type { ShopTheme as ShopThemeValue } from '@prisma/client/edge';
 
 export type CommerceSettingsProps = {
@@ -12,7 +13,7 @@ export type CommerceSettingsProps = {
 
 const ThemeSettings = ({ data: settings }: CommerceSettingsProps) => {
     const data = (
-        typeof settings?.data === 'object' ? settings?.data : JSON.parse(settings?.data?.toString() || 'null')
+        typeof settings?.data === 'object' ? settings.data : JSON.parse(settings?.data?.toString() || 'null')
     ) as ShopTheme | null;
 
     return (

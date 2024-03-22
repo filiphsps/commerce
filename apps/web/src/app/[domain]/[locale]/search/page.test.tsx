@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { PageApi as OriginalPageApi } from '@/api/page';
 import { Locale } from '@/utils/locale';
 import { render } from '@/utils/test/react';
-import type { SearchPageParams } from './page';
+
 import SearchPage, { generateMetadata } from './page';
+
+import type { SearchPageParams } from './page';
+import type { PageApi as OriginalPageApi } from '@/api/page';
 
 describe('app', () => {
     describe('SearchPage', () => {

@@ -1,8 +1,12 @@
 import styles from '@/components/cart/cart-coupons.module.scss';
-import { Label } from '@/components/typography/label';
-import { useCart } from '@shopify/hydrogen-react';
-import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
+
 import { FiTag, FiX } from 'react-icons/fi';
+
+import { useCart } from '@shopify/hydrogen-react';
+
+import { Label } from '@/components/typography/label';
+
+import type { CartDiscountCode } from '@shopify/hydrogen-react/storefront-api-types';
 
 const CartCoupons = ({}) => {
     'use client';
@@ -15,7 +19,7 @@ const CartCoupons = ({}) => {
         <div className={styles.container}>
             <Label>Active discounts</Label>
             <div className={styles.coupons}>
-                {(discountCodes as CartDiscountCode[])?.map(
+                {(discountCodes as CartDiscountCode[]).map(
                     ({ code }) =>
                         (code && (
                             <div key={code} className={styles.code}>

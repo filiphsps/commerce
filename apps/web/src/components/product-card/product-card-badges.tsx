@@ -1,6 +1,8 @@
-import type { Product } from '@/api/product';
 import styles from '@/components/product-card/product-card.module.scss';
+
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
+
+import type { Product } from '@/api/product';
 
 export type ProductCardBadgesProps = {
     data: Product;
@@ -11,10 +13,10 @@ const ProductCardBadges = ({ data: product }: ProductCardBadgesProps) => {
     if (!selectedVariant) return null;
 
     const isNewProduct =
-        product?.createdAt &&
-        Math.abs(new Date(product?.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
-    const isVegan = product?.tags?.includes('Vegan');
-    const isSale = !!selectedVariant?.compareAtPrice?.amount;
+        product.createdAt &&
+        Math.abs(new Date(product.createdAt).getTime() - new Date().getTime()) / (24 * 60 * 60 * 1000) < 15; // TODO: Do this properly through a tag or similar.
+    const isVegan = product.tags.includes('Vegan');
+    const isSale = !!selectedVariant.compareAtPrice?.amount;
 
     let discount = 0;
     if (isSale && selectedVariant) {

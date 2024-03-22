@@ -1,4 +1,5 @@
 import styles from '@/components/footer.module.scss';
+
 import Link from 'next/link';
 
 import type { HTMLProps } from 'react';

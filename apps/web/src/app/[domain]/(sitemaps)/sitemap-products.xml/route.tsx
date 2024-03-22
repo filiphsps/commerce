@@ -1,13 +1,16 @@
+import { getServerSideSitemap } from 'next-sitemap';
+
+import { ShopApi } from '@nordcom/commerce-database';
+
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { ISitemapField } from 'next-sitemap';
-import { getServerSideSitemap } from 'next-sitemap';
-import type { NextRequest } from 'next/server';
+
 import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
+import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
+import type { NextRequest } from 'next/server';
+import type { ISitemapField } from 'next-sitemap';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi(domain);
@@ -18,7 +21,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
 
     let res,
         products: Product[] = [];
-    while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info?.end_cursor }))) {
+    while ((res = await ProductsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
         products.push(...res.products.map(({ node: product }) => product));
         if (!res.page_info.has_next_page) break;
     }

@@ -1,8 +1,12 @@
 import styles from '@/components/header.module.scss';
-import logo from '@/static/logo.svg';
-import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
+
 import Image from 'next/image';
 import Link from 'next/link';
+
+import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
+
+import logo from '@/static/logo.svg';
+
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'color'>;

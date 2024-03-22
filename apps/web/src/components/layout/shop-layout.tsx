@@ -1,11 +1,14 @@
 import 'server-only';
 
+import { type HTMLProps, type ReactNode, Suspense } from 'react';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import Footer from '@/components/Footer';
 import Header from '@/components/header/header';
 import PageContent from '@/components/page-content';
+
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import { Suspense, type HTMLProps, type ReactNode } from 'react';
 
 export type ShopLayoutProps = {
     shop: Shop;

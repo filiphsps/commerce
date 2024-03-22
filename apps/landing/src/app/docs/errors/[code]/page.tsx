@@ -1,17 +1,21 @@
+import styles from './page.module.scss';
+
 import React from 'react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+import { getErrorFromCode } from '@nordcom/commerce-errors';
+import { Card, Heading } from '@nordcom/nordstar';
+
+import { components, config } from '@/markdoc';
+import Markdoc from '@markdoc/markdoc';
+import fs from 'fs';
+import path from 'path';
 
 import BackButton from '@/components/back-button';
 import { Content } from '@/components/content';
-import { components, config } from '@/markdoc';
+
 import type { Schema } from '@markdoc/markdoc';
-import Markdoc from '@markdoc/markdoc';
-import { getErrorFromCode } from '@nordcom/commerce-errors';
-import { Card, Heading } from '@nordcom/nordstar';
-import fs from 'fs';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import path from 'path';
-import styles from './page.module.scss';
 
 const CONTENT_DIR = path.join(process.cwd(), 'docs/errors');
 

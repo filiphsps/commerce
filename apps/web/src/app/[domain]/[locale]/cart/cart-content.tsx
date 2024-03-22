@@ -1,14 +1,18 @@
-import type { StoreModel } from '@/models/StoreModel';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import styles from './cart-content.module.scss';
+
+import { Suspense } from 'react';
+
 import type { Shop } from '@nordcom/commerce-database';
-import type { ReactNode } from 'react';
 
 import { CartLines } from '@/components/cart/cart-lines';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
-import { Suspense } from 'react';
-import styles from './cart-content.module.scss';
+
 import { CartSidebar } from './cart-sidebar';
+
+import type { StoreModel } from '@/models/StoreModel';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { ReactNode } from 'react';
 
 export type CartContentProps = {
     shop: Shop;

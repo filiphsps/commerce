@@ -1,9 +1,11 @@
 import 'server-only';
 
+import styles from './title.module.scss';
+
 import { PrismicText } from '@/components/typography/prismic-text';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styles from './title.module.scss';
 
 /**
  * Props for `Title`.

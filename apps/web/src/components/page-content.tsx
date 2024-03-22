@@ -1,6 +1,8 @@
 import styles from '@/components/page-content.module.scss';
-import type { As } from '@nordcom/nordstar';
+
 import { type HTMLProps, type ReactNode } from 'react';
+
+import type { As } from '@nordcom/nordstar';
 
 export type PageContentProps = {
     as?: As;

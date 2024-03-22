@@ -1,11 +1,14 @@
 'use client';
 
-import { commonValidations } from '@/middleware/common-validations';
-import { Locale } from '@/utils/locale';
+import { type ComponentProps } from 'react';
+import BaseLink from 'next/link';
+
 import type { Shop } from '@nordcom/commerce-database';
 import { TypeError } from '@nordcom/commerce-errors';
-import BaseLink from 'next/link';
-import { type ComponentProps } from 'react';
+
+import { commonValidations } from '@/middleware/common-validations';
+import { Locale } from '@/utils/locale';
+
 import { useShop } from './shop/provider';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {

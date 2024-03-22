@@ -1,7 +1,21 @@
+import styles from './page.module.scss';
+
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi, CollectionPaginationCountApi } from '@/api/shopify/collection';
 import { LocalesApi } from '@/api/store';
+import { getDictionary } from '@/i18n/dictionary';
+import { isValidHandle } from '@/utils/handle';
+import { Locale } from '@/utils/locale';
+import { asText } from '@prismicio/client';
+
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
@@ -9,17 +23,8 @@ import PrismicPage from '@/components/prismic-page';
 import CollectionBlock from '@/components/products/collection-block';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
-import { getDictionary } from '@/i18n/dictionary';
-import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
-import { asText } from '@prismicio/client';
+
 import type { Metadata } from 'next';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import styles from './page.module.scss';
 
 // TODO: Figure out a better way to deal with query params.
 export const dynamic = 'force-dynamic';
@@ -54,11 +59,11 @@ export async function generateMetadata({
         const locales = await LocalesApi({ api });
 
         // TODO: i18n.
-        const title = `${page?.meta_title || collection.seo?.title || collection.title}${searchParams.page ? ` -  Page ${searchParams.page}` : ''}`;
+        const title = `${page?.meta_title || collection.seo.title || collection.title}${searchParams.page ? ` -  Page ${searchParams.page}` : ''}`;
         const description: string | undefined =
             (page?.meta_description && asText(page.meta_description)) ||
             collection.seo.description ||
-            collection.description?.substring(0, 150) ||
+            collection.description.substring(0, 150) ||
             undefined;
         return {
             title,
@@ -78,16 +83,16 @@ export async function generateMetadata({
                 type: 'website',
                 title,
                 description,
-                siteName: shop?.name,
+                siteName: shop.name,
                 locale: locale.code,
                 images:
                     (page?.meta_image && [
                         {
-                            url: page?.meta_image!.url as string,
-                            width: page?.meta_image!.dimensions?.width || 0,
-                            height: page?.meta_image!.dimensions?.height || 0,
-                            alt: page?.meta_image!.alt || '',
-                            secureUrl: page?.meta_image!.url as string
+                            url: page.meta_image!.url as string,
+                            width: page.meta_image!.dimensions?.width || 0,
+                            height: page.meta_image!.dimensions?.height || 0,
+                            alt: page.meta_image!.alt || '',
+                            secureUrl: page.meta_image!.url as string
                         }
                     ]) ||
                     undefined
@@ -139,11 +144,11 @@ export default async function CollectionPage({
         const i18n = await getDictionary(locale);
 
         const subtitle =
-            (page?.meta_description && asText(page?.meta_description)) || collection.seo?.description || null;
+            (page?.meta_description && asText(page.meta_description)) || collection.seo.description || null;
 
         // Filter any left-over legacy collection slices.
         const slices =
-            page?.slices?.filter(
+            page?.slices.filter(
                 ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
             ) || [];
 
@@ -151,7 +156,7 @@ export default async function CollectionPage({
             <>
                 <PageContent className={styles.container}>
                     <Heading
-                        title={page?.meta_title || collection?.seo?.title || collection.title}
+                        title={page?.meta_title || collection.seo.title || collection.title}
                         subtitleAs={null}
                         subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
                     />
@@ -172,7 +177,7 @@ export default async function CollectionPage({
                         <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                     </section>
 
-                    {page && slices && (slices?.length || 0) > 0 ? (
+                    {page && slices && (slices.length || 0) > 0 ? (
                         <Suspense
                             key={`${shop.id}.products.${handle}.content`}
                             fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}

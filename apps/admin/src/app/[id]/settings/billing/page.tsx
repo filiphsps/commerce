@@ -1,9 +1,11 @@
 import 'server-only';
 
+import { notFound, redirect } from 'next/navigation';
+
+import { Card, Heading } from '@nordcom/nordstar';
+
 import { auth } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
-import { Card, Heading } from '@nordcom/nordstar';
-import { notFound, redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 

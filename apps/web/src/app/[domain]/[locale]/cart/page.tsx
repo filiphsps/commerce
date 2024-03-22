@@ -1,17 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi, StoreApi } from '@/api/store';
-import PrismicPage from '@/components/prismic-page';
-import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
+
+import PrismicPage from '@/components/prismic-page';
+import Heading from '@/components/typography/heading';
+
 import CartContent from './cart-content';
 
 import type { Metadata } from 'next';
@@ -56,16 +60,16 @@ export async function generateMetadata({
                 type: 'website',
                 title,
                 description,
-                siteName: shop?.name,
+                siteName: shop.name,
                 locale: locale.code,
                 images:
                     (page?.meta_image && [
                         {
-                            url: page?.meta_image!.url as string,
-                            width: page?.meta_image!.dimensions?.width || 0,
-                            height: page?.meta_image!.dimensions?.height || 0,
-                            alt: page?.meta_image!.alt || '',
-                            secureUrl: page?.meta_image!.url as string
+                            url: page.meta_image!.url as string,
+                            width: page.meta_image!.dimensions?.width || 0,
+                            height: page.meta_image!.dimensions?.height || 0,
+                            alt: page.meta_image!.alt || '',
+                            secureUrl: page.meta_image!.url as string
                         }
                     ]) ||
                     undefined

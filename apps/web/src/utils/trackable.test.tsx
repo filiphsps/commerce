@@ -1,5 +1,6 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
+
+import React from 'react';
 
 import { render } from '@/utils/test/react';
 import { Trackable } from '@/utils/trackable';

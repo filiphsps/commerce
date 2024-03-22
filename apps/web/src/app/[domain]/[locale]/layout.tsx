@@ -1,24 +1,26 @@
 import 'the-new-css-reset';
-
 import '@/styles/app.scss';
+
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { Public_Sans } from 'next/font/google';
+import { notFound } from 'next/navigation';
+import { SocialProfileJsonLd } from 'next-seo';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
+import { getDictionary } from '@/i18n/dictionary';
+import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
+import { Locale } from '@/utils/locale';
+
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
 import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
-import { getDictionary } from '@/i18n/dictionary';
-import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
-import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
-import { SocialProfileJsonLd } from 'next-seo';
-import { unstable_cache as cache } from 'next/cache';
-import { Public_Sans } from 'next/font/google';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';

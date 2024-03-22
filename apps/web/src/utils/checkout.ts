@@ -1,7 +1,9 @@
-import type { Locale } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import type { TrackableContextValue } from '@/utils/trackable';
 import type { Shop } from '@nordcom/commerce-database';
+
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+
+import type { Locale } from '@/utils/locale';
+import type { TrackableContextValue } from '@/utils/trackable';
 import type { CartWithActions } from '@shopify/hydrogen-react';
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
@@ -68,15 +70,15 @@ export const Checkout = async ({
                                 variantGid: line.merchandise!.id
                             } as any
                         }),
-                        item_name: line.merchandise?.product?.title,
-                        item_variant: line.merchandise?.title,
-                        item_brand: line.merchandise?.product?.vendor,
-                        item_category: line.merchandise?.product?.productType,
-                        sku: line.merchandise?.sku || undefined,
+                        item_name: line.merchandise.product.title,
+                        item_variant: line.merchandise.title,
+                        item_brand: line.merchandise.product.vendor,
+                        item_category: line.merchandise.product.productType,
+                        sku: line.merchandise.sku || undefined,
                         product_id: line.merchandise!.product!.id,
                         variant_id: line.merchandise!.id,
-                        currency: line.merchandise?.price?.currencyCode!,
-                        price: Number.parseFloat(line.merchandise?.price?.amount!) || undefined,
+                        currency: line.merchandise.price.currencyCode!,
+                        price: Number.parseFloat(line.merchandise.price.amount!) || undefined,
                         quantity: line.quantity
                     }))
                 }

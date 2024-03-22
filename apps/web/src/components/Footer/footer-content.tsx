@@ -1,12 +1,16 @@
 import styles from '@/components/Footer/footer.module.scss';
+
+import { Suspense } from 'react';
+import Image from 'next/image';
+
+import { useTranslation } from '@/utils/locale';
+
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
+
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import { useTranslation } from '@/utils/locale';
-import Image from 'next/image';
-import { Suspense } from 'react';
 
 export type FooterContentProps = {
     locale: Locale;
@@ -49,7 +53,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                         className={styles.socials}
                         // TODO: Add LinkedIn and YouTube icons.
                     >
-                        {store?.social
+                        {store.social
                             .filter(({ name }) => !['linkedin', 'youtube'].includes(name.toLowerCase()))
                             .map((social) => (
                                 <Link

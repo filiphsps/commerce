@@ -1,10 +1,14 @@
 import 'server-only';
 
-import { SettingsBlock } from '@/components/settings-block';
+import { notFound, redirect } from 'next/navigation';
+
+import { Card, Heading, Label } from '@nordcom/nordstar';
+
 import { auth } from '@/utils/auth';
 import { getShop, getShopTheme, updateShop, updateShopTheme } from '@/utils/fetchers';
-import { Card, Heading, Label } from '@nordcom/nordstar';
-import { notFound, redirect } from 'next/navigation';
+
+import { SettingsBlock } from '@/components/settings-block';
+
 import { ThemeSettings } from './theme-settings';
 
 import type { Metadata } from 'next';

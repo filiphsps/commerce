@@ -1,11 +1,14 @@
-import type { HeaderModel } from '@/models/HeaderModel';
+import { unstable_cache as cache } from 'next/cache';
+
+import type { Shop } from '@nordcom/commerce-database';
+import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+
 import { buildCacheTagArray } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
-import type { Shop } from '@nordcom/commerce-database';
-import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+
+import type { HeaderModel } from '@/models/HeaderModel';
 import type { Client as PrismicClient } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 
 export const HeaderApi = async ({
     shop,

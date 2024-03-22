@@ -1,9 +1,10 @@
 'use client';
 
 import styles from '@/components/header/hamburger-menu.module.scss';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState, type HTMLProps } from 'react';
+
+import { type HTMLProps, useEffect, useState } from 'react';
 import { CgClose, CgMenuLeftAlt } from 'react-icons/cg';
+import { usePathname } from 'next/navigation';
 
 type HamburgerMenuProps = {} & HTMLProps<HTMLDivElement>;
 export const HamburgerMenu = ({ className, ...props }: HamburgerMenuProps) => {

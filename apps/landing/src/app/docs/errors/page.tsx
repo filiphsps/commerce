@@ -1,9 +1,12 @@
-import type { Error } from '@nordcom/commerce-errors';
-import { MissingContextProviderError, getAllErrorCodes, getErrorFromCode } from '@nordcom/commerce-errors';
-import { Card, Heading } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
-import Link from 'next/link';
 import styles from './page.module.scss';
+
+import Link from 'next/link';
+
+import type { Error } from '@nordcom/commerce-errors';
+import { getAllErrorCodes, getErrorFromCode, MissingContextProviderError } from '@nordcom/commerce-errors';
+import { Card, Heading } from '@nordcom/nordstar';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Errors'

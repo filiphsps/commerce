@@ -1,6 +1,8 @@
 import styles from '@/components/informational/alert.module.scss';
-import { Content } from '@/components/typography/content';
+
 import { PiInfoBold } from 'react-icons/pi';
+
+import { Content } from '@/components/typography/content';
 
 export type AlertProps = {
     severity: 'success' | 'info' | 'warning' | 'error';

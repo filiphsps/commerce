@@ -1,9 +1,12 @@
+import styles from './banner.module.scss';
+
+import { asLink } from '@prismicio/client';
+
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
+
 import type { Content } from '@prismicio/client';
-import { asLink } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styles from './banner.module.scss';
 
 /**
  * Props for `Banner`.

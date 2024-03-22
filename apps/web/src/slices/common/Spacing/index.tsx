@@ -1,6 +1,7 @@
+import styles from './spacing.module.scss';
+
 import type { Content } from '@prismicio/client';
 import type { SliceComponentProps } from '@prismicio/react';
-import styles from './spacing.module.scss';
 
 /**
  * Props for `Spacing`.

@@ -1,8 +1,9 @@
-import type { HTMLProps, ReactNode } from 'react';
-
 import styles from '@/components/header/header-navigation.module.scss';
+
 import { MenuItem, SubMenuItem } from '@/components/header/menu-item';
+
 import type { Locale } from '@/utils/locale';
+import type { HTMLProps, ReactNode } from 'react';
 
 type HeaderNavigationChildItemsProps = {
     children?: ReactNode;

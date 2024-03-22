@@ -1,31 +1,35 @@
 'use client';
 
-import { useShop } from '@/components/shop/provider';
-import { usePrevious } from '@/hooks/usePrevious';
-import { BuildConfig } from '@/utils/build-config';
-import type { CurrencyCode, Locale } from '@/utils/locale';
-import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
-import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
+
 import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
-import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+
+import { usePrevious } from '@/hooks/usePrevious';
+import { BuildConfig } from '@/utils/build-config';
+import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
+import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
     AnalyticsEventName as ShopifyAnalyticsEventName,
-    ShopifySalesChannel,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    ShopifySalesChannel,
     useCart,
     useShop as useShopify,
     useShopifyCookies
 } from '@shopify/hydrogen-react';
-import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
-import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
-import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createContext, useContext, useContextSelector } from 'use-context-selector';
+
+import { useShop } from '@/components/shop/provider';
+
+import type { CurrencyCode, Locale } from '@/utils/locale';
+import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
+import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/ShopifyProvider';
+import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ReactNode } from 'react';
 
 /**
  * Analytics events.
@@ -173,7 +177,7 @@ const shopifyEventHandler = async (
         resourceId: (() => {
             switch (pageType) {
                 case 'product': {
-                    if (!products?.[0]) return undefined;
+                    if (!products[0]) return undefined;
 
                     return `gid://shopify/Product/${products[0].product_id}`;
                 }
@@ -381,15 +385,15 @@ function Trackable({ children }: TrackableProps) {
                             item_id: ProductToMerchantsCenterId({
                                 locale,
                                 product: {
-                                    productGid: line.merchandise?.product?.id!,
-                                    variantGid: line.merchandise?.id!
+                                    productGid: line.merchandise.product.id!,
+                                    variantGid: line.merchandise.id!
                                 }
                             }),
-                            item_name: line.merchandise?.product?.title,
-                            item_variant: line.merchandise?.title,
-                            item_brand: line.merchandise?.product?.vendor,
-                            currency: line.merchandise?.price?.currencyCode,
-                            price: ShopifyPriceToNumber(undefined, line.merchandise?.price?.amount!),
+                            item_name: line.merchandise.product.title,
+                            item_variant: line.merchandise.title,
+                            item_brand: line.merchandise.product.vendor,
+                            currency: line.merchandise.price.currencyCode,
+                            price: ShopifyPriceToNumber(undefined, line.merchandise.price.amount!),
                             quantity: line.quantity
                         }))
                     }

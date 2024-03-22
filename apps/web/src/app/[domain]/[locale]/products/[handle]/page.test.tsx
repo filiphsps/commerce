@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { PageApi as OriginalPageApi } from '@/api/page';
 import { render, screen } from '@/utils/test/react';
-import type { ProductPageParams } from './page';
+
 import ProductPage, { generateMetadata } from './page';
+
+import type { ProductPageParams } from './page';
+import type { PageApi as OriginalPageApi } from '@/api/page';
 
 describe('app', () => {
     vi.mock('@/i18n/dictionary', () => ({

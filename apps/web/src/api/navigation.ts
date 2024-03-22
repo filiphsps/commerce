@@ -1,10 +1,13 @@
+import { unstable_cache as cache } from 'next/cache';
+
+import type { Shop } from '@nordcom/commerce-database';
+import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+
 import { buildCacheTagArray } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
-import type { Shop } from '@nordcom/commerce-database';
-import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
+
 import type { Client as PrismicClient } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 
 export type NavigationItem = {
     title: string;
@@ -39,7 +42,7 @@ export const NavigationApi = async ({
                     lang: locale.code
                 });
 
-                return (navigation?.data?.body as any)?.map((item: any) => ({
+                return (navigation.data.body as any)?.map((item: any) => ({
                     title: item.primary.title,
                     handle: item.primary.handle,
                     children: item.items

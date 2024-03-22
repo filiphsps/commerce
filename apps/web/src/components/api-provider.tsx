@@ -1,6 +1,5 @@
 'use client';
 
-import type { ApiConfig } from '@/api/client';
 import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloLink, HttpLink } from '@apollo/client';
 import {
@@ -9,6 +8,8 @@ import {
     NextSSRInMemoryCache,
     SSRMultipartLink
 } from '@apollo/experimental-nextjs-app-support/ssr';
+
+import type { ApiConfig } from '@/api/client';
 import type { ReactNode } from 'react';
 
 export const createClientMaker =

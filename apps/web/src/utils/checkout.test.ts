@@ -1,8 +1,11 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import type { Shop } from '@nordcom/commerce-database';
+
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
+
 import type { CartWithActions } from '@shopify/hydrogen-react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('utils', () => {
     describe('checkout', () => {

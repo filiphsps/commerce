@@ -1,11 +1,14 @@
 'use client';
 
 import styles from '@/components/header/cart-button.module.scss';
-import Link from '@/components/link';
-import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
-import { useTranslation, type Locale, type LocaleDictionary } from '@/utils/locale';
-import { useCart } from '@shopify/hydrogen-react';
+
 import dynamic from 'next/dynamic';
+
+import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
+import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { useCart } from '@shopify/hydrogen-react';
+
+import Link from '@/components/link';
 
 const Lottie = dynamic(() => import('react-lottie-player'), {
     ssr: false,

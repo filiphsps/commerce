@@ -1,8 +1,11 @@
-import { MultilineInput } from '@/components/actionable/input';
 import styles from '@/components/cart/cart-note.module.scss';
-import { useTranslation, type LocaleDictionary } from '@/utils/locale';
-import { useCart } from '@shopify/hydrogen-react';
+
 import { useEffect, useState } from 'react';
+
+import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { useCart } from '@shopify/hydrogen-react';
+
+import { MultilineInput } from '@/components/actionable/input';
 
 const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
     const { t } = useTranslation('cart', i18n);

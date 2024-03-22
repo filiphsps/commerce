@@ -1,8 +1,10 @@
-import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import ProductCardImage from '@/components/product-card/product-card-image';
+import React from 'react';
+
 import { render } from '@/utils/test/react';
+
+import ProductCardImage from '@/components/product-card/product-card-image';
 
 describe('components', () => {
     describe('product-card', () => {

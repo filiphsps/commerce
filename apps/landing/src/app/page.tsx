@@ -1,7 +1,10 @@
-import { Accented, Card, Heading } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
-import Link from 'next/link';
 import styles from './page.module.scss';
+
+import Link from 'next/link';
+
+import { Accented, Card, Heading } from '@nordcom/nordstar';
+
+import type { Metadata } from 'next';
 
 export type IndexAdminPageParams = {};
 

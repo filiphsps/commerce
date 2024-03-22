@@ -1,5 +1,7 @@
-import { ShopApi } from '@nordcom/commerce-database';
 import { getServerSideSitemapIndex } from 'next-sitemap';
+
+import { ShopApi } from '@nordcom/commerce-database';
+
 import type { NextRequest } from 'next/server';
 
 export type DynamicSitemapRouteParams = {

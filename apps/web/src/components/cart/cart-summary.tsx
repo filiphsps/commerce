@@ -1,16 +1,21 @@
+import styles from '@/components/cart/cart-summary.module.scss';
+
+import { Suspense, useEffect, useState } from 'react';
+import { FiChevronRight, FiLock } from 'react-icons/fi';
+
+import { type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { Pluralize } from '@/utils/pluralize';
+import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
+
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
 import { CartNote } from '@/components/cart/cart-note';
-import styles from '@/components/cart/cart-summary.module.scss';
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
-import type { StoreModel } from '@/models/StoreModel';
-import { useTranslation, type LocaleDictionary } from '@/utils/locale';
-import { Pluralize } from '@/utils/pluralize';
-import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
-import { Suspense, useEffect, useState } from 'react';
-import { FiChevronRight, FiLock } from 'react-icons/fi';
+
 import { AcceptedPaymentMethods } from '../informational/accepted-payment-methods';
+
+import type { StoreModel } from '@/models/StoreModel';
 
 type CartSummaryProps = {
     onCheckout: any;
@@ -36,8 +41,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
             (sum, line) =>
                 (line?.cost?.compareAtAmountPerQuantity &&
                     sum +
-                        ((Number.parseFloat(line?.cost?.compareAtAmountPerQuantity?.amount!) || 0) *
-                            (line?.quantity || 0) -
+                        ((Number.parseFloat(line.cost.compareAtAmountPerQuantity.amount!) || 0) * (line.quantity || 0) -
                             Number.parseFloat(line.cost.totalAmount?.amount!))) ||
                 sum,
             0
@@ -98,11 +102,10 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                             <Money
                                 className={styles.money}
                                 data={{
-                                    currencyCode: cost?.subtotalAmount?.currencyCode,
+                                    currencyCode: cost.subtotalAmount.currencyCode,
                                     amount:
-                                        (sale &&
-                                            (Number.parseFloat(cost?.subtotalAmount?.amount!) + sale).toString()) ||
-                                        cost?.subtotalAmount?.amount
+                                        (sale && (Number.parseFloat(cost.subtotalAmount.amount!) + sale).toString()) ||
+                                        cost.subtotalAmount.amount
                                 }}
                             />
                         ) : null}
@@ -146,7 +149,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         {cost?.totalAmount ? (
                             <Money
                                 className={styles.money}
-                                data={(cost?.totalAmountEstimated || cost?.totalAmount) as any}
+                                data={(cost.totalAmountEstimated || cost.totalAmount) as any}
                             />
                         ) : null}
                     </div>

@@ -1,5 +1,6 @@
-import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { describe, expect, it } from 'vitest';
+
+import { ShopifyPriceToNumber } from '@/utils/pricing';
 
 describe('utils', () => {
     describe('ShopifyPriceToNumber', () => {

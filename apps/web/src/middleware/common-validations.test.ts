@@ -1,6 +1,8 @@
-import type { NextURL } from 'next/dist/server/web/next-url';
 import { describe, expect, it } from 'vitest';
+
 import { commonValidations } from './common-validations';
+
+import type { NextURL } from 'next/dist/server/web/next-url';
 
 describe('middleware', () => {
     describe('commonValidations', () => {

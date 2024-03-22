@@ -1,15 +1,20 @@
 import 'server-only';
 
-import type { Product } from '@/api/product';
+import styles from '@/components/product-card/product-card.module.scss';
+
+import { Suspense } from 'react';
+
+import type { Shop } from '@nordcom/commerce-database';
+
+import { getDictionary } from '@/utils/dictionary';
+
 import ProductCardActions from '@/components/product-card/product-card-actions';
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardImage from '@/components/product-card/product-card-image';
 import ProductCardTitle from '@/components/product-card/product-card-title';
-import styles from '@/components/product-card/product-card.module.scss';
-import { getDictionary } from '@/utils/dictionary';
+
+import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import { Suspense } from 'react';
 
 export type ProductCardProps = {
     shop: Shop;

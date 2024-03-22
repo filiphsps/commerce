@@ -1,8 +1,12 @@
-import { Card, Heading } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { getArticles } from './[year]/[month]/[slug]/articles';
 import styles from './page.module.scss';
+
+import Link from 'next/link';
+
+import { Card, Heading } from '@nordcom/nordstar';
+
+import { getArticles } from './[year]/[month]/[slug]/articles';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'News'

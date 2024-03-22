@@ -1,12 +1,13 @@
-import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
+import type { Shop } from '@nordcom/commerce-database';
+import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { BuildConfig } from '@/utils/build-config';
 import { Locale } from '@/utils/locale';
-import type { Shop } from '@nordcom/commerce-database';
-import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 import { createClient as prismicCreateClient } from '@prismicio/client';
-import type { CreateClientConfig } from '@prismicio/next';
 import { enableAutoPreviews } from '@prismicio/next';
+
+import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
+import type { CreateClientConfig } from '@prismicio/next';
 
 /**
  * The project's Prismic repository name.

@@ -1,6 +1,10 @@
 import 'server-only';
 
-import { SettingsBlock } from '@/components/settings-block';
+import { notFound, redirect } from 'next/navigation';
+
+import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
+import { Button, Card, Heading, Label } from '@nordcom/nordstar';
+
 import { auth } from '@/utils/auth';
 import {
     getCheckoutProvider,
@@ -11,10 +15,10 @@ import {
     updateCommerceProvider,
     updateContentProvider
 } from '@/utils/fetchers';
-import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
-import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 import { ContentProviderType } from '@prisma/client';
-import { notFound, redirect } from 'next/navigation';
+
+import { SettingsBlock } from '@/components/settings-block';
+
 import { CommerceSettings } from './commerce-settings';
 
 import type { Metadata } from 'next';

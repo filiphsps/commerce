@@ -1,7 +1,10 @@
-import { Heading } from '@nordcom/nordstar';
-import type { Metadata } from 'next';
 import styles from './page.module.scss';
+
+import { Heading } from '@nordcom/nordstar';
+
 import { LogoutAction } from './logout-action';
+
+import type { Metadata } from 'next';
 
 export type IndexAdminPageParams = {};
 

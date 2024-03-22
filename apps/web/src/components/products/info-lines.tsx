@@ -1,7 +1,10 @@
-import type { Product } from '@/api/product';
 import styles from '@/components/products/info-lines.module.scss';
-import { Label } from '@/components/typography/label';
+
 import { FiPackage } from 'react-icons/fi';
+
+import { Label } from '@/components/typography/label';
+
+import type { Product } from '@/api/product';
 
 export type StockStatusProps = {
     product?: Product;

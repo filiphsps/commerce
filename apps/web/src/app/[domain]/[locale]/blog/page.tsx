@@ -1,19 +1,24 @@
+import { Suspense } from 'react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
+
+import { ShopApi } from '@nordcom/commerce-database';
+import { Error } from '@nordcom/commerce-errors';
+
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
-import PrismicPage from '@/components/prismic-page';
-import Heading from '@/components/typography/heading';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale } from '@/utils/locale';
-import { ShopApi } from '@nordcom/commerce-database';
-import { Error } from '@nordcom/commerce-errors';
 import { asText } from '@prismicio/client';
-import type { Metadata } from 'next';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+
+import PrismicPage from '@/components/prismic-page';
+import Heading from '@/components/typography/heading';
+
 import BlogContent from './blog-content';
+
+import type { Metadata } from 'next';
 
 export type BlogPageParams = { domain: string; locale: string };
 export async function generateMetadata({
@@ -56,11 +61,11 @@ export async function generateMetadata({
                 images:
                     (page?.meta_image && [
                         {
-                            url: page?.meta_image!.url as string,
-                            width: page?.meta_image!.dimensions?.width || 0,
-                            height: page?.meta_image!.dimensions?.height || 0,
-                            alt: page?.meta_image!.alt || '',
-                            secureUrl: page?.meta_image!.url as string
+                            url: page.meta_image!.url as string,
+                            width: page.meta_image!.dimensions?.width || 0,
+                            height: page.meta_image!.dimensions?.height || 0,
+                            alt: page.meta_image!.alt || '',
+                            secureUrl: page.meta_image!.url as string
                         }
                     ]) ||
                     undefined
@@ -92,7 +97,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                 <Heading title={page?.title} subtitle={page?.description} />
                 <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
 
-                {page?.slices && page?.slices.length > 0 && (
+                {page?.slices && page.slices.length > 0 && (
                     <Suspense>
                         <PrismicPage
                             shop={shop}
