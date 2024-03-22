@@ -1,5 +1,7 @@
 import { UnknownShopDomainError } from '@nordcom/commerce-errors';
+
 import prisma from './prisma';
+
 import type { Shop } from './shop';
 
 export const PagesApi = async (shop: Shop, cache?: any) => {

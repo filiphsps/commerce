@@ -6,7 +6,7 @@ green='\033[1;32m'
 red='\033[1;31m'
 
 echo -e "Running pre-commit hooks with ${green}bun${reset}"
-bunx concurrently "bun:lint" "bun:prettier" "bun:typecheck" "bun:test"
-bun run build
-npx lint-staged
-npx lint-staged
+bunx lint-staged
+bun run --bun build:packages
+bun run typecheck
+bun run test
