@@ -25,9 +25,7 @@ export default async function AccountLayout({
     params: LayoutParams;
 }) {
     try {
-        const locale = Locale.from(localeData);
-        if (!locale) notFound();
-
+        const _locale = Locale.from(localeData);
         const shop = await ShopApi(domain, cache);
 
         let session: Session | null = null;

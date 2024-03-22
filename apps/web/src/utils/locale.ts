@@ -25,7 +25,7 @@ type SerializableLocale = {
  */
 export class Locale implements SerializableLocale {
     public code!: Code;
-    public language!: LanguageCode;
+    public language: LanguageCode;
     public country?: CountryCode;
 
     /**

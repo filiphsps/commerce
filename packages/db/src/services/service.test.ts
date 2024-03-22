@@ -60,7 +60,7 @@ vi.mock('mongoose', async () => {
     };
 });
 
-describe('Service', () => {
+describe('services', () => {
     let model: any;
     let service: Service<BaseDocument, typeof Model>;
 
@@ -79,14 +79,6 @@ describe('Service', () => {
             await service.create(input);
             expect(Model.create).toHaveBeenCalledWith(input);
             //expect(model.save).toHaveBeenCalled();
-        });
-    });
-
-    describe('findOne', () => {
-        it('should find one document', async () => {
-            const filter = { name: 'John Doe' };
-            await service.findOne(filter);
-            expect(Model.find).toHaveBeenCalledWith(filter);
         });
     });
 

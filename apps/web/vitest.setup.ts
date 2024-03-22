@@ -29,6 +29,9 @@ vi.mock('@/utils/build-config', () => ({
         },
         shopify: {
             storefront_id: 'mock-id'
+        },
+        prismic: {
+            name: 'mock-repo'
         }
     }
 }));

@@ -174,6 +174,10 @@ export const getDictionary = async (props: { shop: Shop; locale: Locale } | Loca
         locale = props as Locale;
     }
 
-    // TODO: Fetch tenant-specific dictionary if it exists and shop is defined.
-    return dictionaries[locale.language?.toLowerCase() as DictionaryLanguageCode]?.() ?? ({} as any);
+    try {
+        // TODO: Fetch tenant-specific dictionary if it exists and shop is defined.
+        return dictionaries[locale.language.toLowerCase() as DictionaryLanguageCode]() ?? ({} as any);
+    } catch {
+        return {} as any;
+    }
 };

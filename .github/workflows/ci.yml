@@ -13,6 +13,7 @@ on:
 
 env:
     CI: true
+    MONGODB_URI: ${{ secrets.MONGODB_URI }}
     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
     TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     POSTGRES_PRISMA_ACCELERATE_URL: ${{ secrets.POSTGRES_PRISMA_ACCELERATE_URL }}
@@ -55,14 +56,10 @@ jobs:
               run: bun run test
 
             - name: 🦺 Report Coverage to GitHub
-              # Always run, even if previous steps failed
-              if: always()
               uses: davelosert/vitest-coverage-report-action@v2.3.0
 
             - name: 🦺 Codecov Coverage Reports
               uses: codecov/codecov-action@v4
-              # Always run, even if previous steps failed
-              if: always()
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 

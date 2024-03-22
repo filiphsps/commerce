@@ -50,10 +50,12 @@
     "files": [
         "dist"
     ],
-    "dependencies": {},
+    "dependencies": {
+        "@nordcom/nordstar": "0.0.43"
+    },
     "devDependencies": {
+        "@codecov/vite-plugin": "0.0.1-beta.4",
         "@nordcom/prettier": "0.1.1",
-        "@nordcom/nordstar": "0.0.43",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
         "rimraf": "5.0.5",

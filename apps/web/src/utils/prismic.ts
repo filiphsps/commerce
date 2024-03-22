@@ -14,7 +14,7 @@ import type { CreateClientConfig } from '@prismicio/next';
  *
  * @deprecated
  */
-export const repositoryName = BuildConfig.prismic?.name || '';
+export const repositoryName = BuildConfig.prismic.name || '';
 /** @deprecated */
 export const accessToken = process.env.PRISMIC_TOKEN;
 

@@ -52,6 +52,7 @@
     ],
     "dependencies": {},
     "devDependencies": {
+        "@codecov/vite-plugin": "0.0.1-beta.4",
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",

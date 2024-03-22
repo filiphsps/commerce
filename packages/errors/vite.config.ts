@@ -1,11 +1,13 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { codecovVitePlugin } from '@codecov/vite-plugin';
 import { defineConfig, mergeConfig } from 'vite';
 
 import base from '../vite.config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const name = '@nordcom/commerce-errors';
 
 export default mergeConfig(
     base,
@@ -14,10 +16,16 @@ export default mergeConfig(
         build: {
             rollupOptions: {
                 output: {
-                    name: 'errors'
+                    name
                 }
             }
         },
-        plugins: []
+        plugins: [
+            codecovVitePlugin({
+                enableBundleAnalysis: !!process.env.CODECOV_TOKEN,
+                bundleName: name,
+                uploadToken: process.env.CODECOV_TOKEN
+            })
+        ]
     })
 );

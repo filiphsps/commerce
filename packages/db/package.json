@@ -1,7 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "@nordcom/commerce-db",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "private": true,
     "sideEffects": false,
     "type": "module",
@@ -22,7 +22,7 @@
     },
     "scripts": {
         "build": "tsc && vite build",
-        "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
+        "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log",
         "lint": "eslint",
         "typecheck": "tsc -noEmit"
     },
@@ -55,6 +55,7 @@
         "mongoose": "8.2.3"
     },
     "devDependencies": {
+        "@codecov/vite-plugin": "0.0.1-beta.4",
         "@nordcom/prettier": "0.1.1",
         "@types/node": "20.11.29",
         "concurrently": "8.2.2",

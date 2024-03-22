@@ -25,7 +25,7 @@ export default defineProject({
             tsconfig: './tsconfig.test.json'
         },
 
-        setupFiles: ['./__tests__/setup.ts'],
+        setupFiles: [`${__dirname}/vitest.setup.ts`],
         reporters: ['verbose'],
         exclude: ['**/*.d.ts', '**/*.stories.*', '**/dist/**/', '**/node_modules/**/*.*', '**/utils/test/**/*.*'],
 
