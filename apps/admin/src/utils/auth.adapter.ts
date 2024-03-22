@@ -9,6 +9,7 @@ export function AuthAdapter(): Adapter {
             try {
                 return await User.find({ id });
             } catch (error: unknown) {
+                console.error('AuthAdapter', error);
                 return null;
             }
         },
@@ -30,6 +31,7 @@ export function AuthAdapter(): Adapter {
                     }
                 })) as UserBase;
             } catch (error: unknown) {
+                console.error('AuthAdapter', error);
                 return null;
             }
         },
@@ -41,6 +43,7 @@ export function AuthAdapter(): Adapter {
                     count: 1
                 });
             } catch (error: unknown) {
+                console.error('AuthAdapter', error);
                 return null;
             }
         },
@@ -110,6 +113,7 @@ export function AuthAdapter(): Adapter {
                     ...account
                 };
             } catch (error: unknown) {
+                console.error('AuthAdapter', error);
                 return null;
             }
         },
