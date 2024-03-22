@@ -60,11 +60,11 @@
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
         "@prisma/client": "5.11.0",
-        "@types/node": "20.11.29",
+        "@types/node": "20.11.30",
         "@types/react-dom": "18.2.22",
         "@types/react": "18.2.67",
-        "@typescript-eslint/eslint-plugin": "7.2.0",
-        "@typescript-eslint/parser": "7.2.0",
+        "@typescript-eslint/eslint-plugin": "7.3.1",
+        "@typescript-eslint/parser": "7.3.1",
         "@vitejs/plugin-react": "4.2.1",
         "@vitest/coverage-v8": "1.4.0",
         "babel-plugin-module-resolver": "5.0.0",
@@ -97,7 +97,7 @@
         "@rollup/rollup-linux-x64-gnu": "4.13.0"
     },
     "overrides": {
-        "@typescript-eslint/typescript-estree": "7.2.0",
+        "@typescript-eslint/typescript-estree": "7.3.1",
         "esbuild": "0.20.2",
         "psl": "npm:@filiphsandstrom/psl@2.0.0"
     },
