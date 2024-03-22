@@ -69,7 +69,7 @@
         "sonner": "1.4.3"
     },
     "devDependencies": {
-        "@happy-dom/global-registrator": "13.2.2",
+        "@happy-dom/global-registrator": "13.10.1",
         "@nordcom/prettier": "0.1.1",
         "@testing-library/react": "14.2.2",
         "@types/react-dom": "18.2.22",
