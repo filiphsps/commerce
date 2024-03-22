@@ -52,7 +52,7 @@
     ],
     "dependencies": {
         "@nordcom/commerce-errors": "workspace:*",
-        "mongoose": "8.2.2"
+        "mongoose": "8.2.3"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
