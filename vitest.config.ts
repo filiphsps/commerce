@@ -15,6 +15,7 @@ const exclude = [
     '**/node_modules/**/*.*',
     '**/vite.*.ts',
     '**/vitest.*.ts',
+    'next.config.js',
     'vitest.workspace.ts'
 ];
 
@@ -51,7 +52,7 @@ export default defineConfig({
             all: true,
             exclude: exclude,
             provider: 'v8',
-            reporter: ['json', 'json-summary'],
+            reporter: ['json', 'json-summary', 'text'],
             reportOnFailure: true
         },
 

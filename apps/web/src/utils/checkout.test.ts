@@ -77,16 +77,14 @@ describe('utils', () => {
         } as any;
 
         const shop: Shop = {
-            configuration: {
-                commerce: {
-                    type: 'shopify' as const,
-                    id: 'shopid',
-                    domain: 'checkout.sweetsideofsweden.com',
-                    storefrontId: 'Storefront Id',
-                    authentication: {
-                        token: null,
-                        publicToken: 'this-is-a-public-token'
-                    }
+            commerceProvider: {
+                type: 'shopify' as const,
+                id: 'shopid',
+                domain: 'checkout.sweetsideofsweden.com',
+                storefrontId: 'Storefront Id',
+                authentication: {
+                    token: null,
+                    publicToken: 'this-is-a-public-token'
                 }
             }
         } as any;
@@ -153,36 +151,49 @@ describe('utils', () => {
             );
         });
 
-        it.skip(`should track the begin_checkout event in Google Analytics`, async () => {
+        it(`should track the begin_checkout event in Google Analytics`, async () => {
+            const postEventSpy = vi.spyOn(trackable, 'postEvent');
+            const expectedEventPayload = {
+                path: '/en-US/checkout/',
+                gtm: {
+                    ecommerce: {
+                        currency: 'USD',
+                        value: 30,
+                        items: [
+                            {
+                                currency: 'USD',
+                                item_brand: 'Vendor 1',
+                                item_category: undefined,
+                                item_id: 'product-id',
+                                item_name: 'Product 1',
+                                item_variant: 'Variant 1',
+                                price: 10,
+                                product_id: 'product-1',
+                                quantity: 1,
+                                sku: undefined,
+                                variant_id: 'variant-1'
+                            },
+                            {
+                                currency: 'USD',
+                                item_brand: 'Vendor 2',
+                                item_category: undefined,
+                                item_id: 'product-id',
+                                item_name: 'Product 2',
+                                item_variant: 'Variant 2',
+                                price: 20,
+                                product_id: 'product-2',
+                                quantity: 1,
+                                sku: undefined,
+                                variant_id: 'variant-2'
+                            }
+                        ]
+                    }
+                }
+            };
+
             await Checkout({ shop, locale, cart, trackable });
 
-            expect((window as any).dataLayer).toContainEqual({
-                event: 'begin_checkout',
-                ecommerce: {
-                    currency: 'USD',
-                    value: 30,
-                    items: [
-                        {
-                            item_id: 'product-id',
-                            item_name: 'Product 1',
-                            item_variant: 'Variant 1',
-                            item_brand: 'Vendor 1',
-                            currency: 'USD',
-                            price: 10,
-                            quantity: 1
-                        },
-                        {
-                            item_id: 'product-id',
-                            item_name: 'Product 2',
-                            item_variant: 'Variant 2',
-                            item_brand: 'Vendor 2',
-                            currency: 'USD',
-                            price: 20,
-                            quantity: 1
-                        }
-                    ]
-                }
-            });
+            expect(postEventSpy).toHaveBeenCalledWith('begin_checkout', expectedEventPayload);
         });
     });
 });

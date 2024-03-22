@@ -16,7 +16,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 export async function getShopsForUser(userId: string, skipCache = isDevelopment) {
     const action = async () => {
-        return Shop.find({
+        return Shop.findByCollaborator({
+            collaboratorId: userId,
             sort: '-createdAt'
         }).then((res) => (Array.isArray(res) ? res : [res]));
     };

@@ -8,7 +8,7 @@ export function AuthAdapter(): Adapter {
         async getUser(id) {
             try {
                 return await User.find({ id });
-            } catch {
+            } catch (error: unknown) {
                 return null;
             }
         },
@@ -29,15 +29,18 @@ export function AuthAdapter(): Adapter {
                         }
                     }
                 })) as UserBase;
-            } catch {
+            } catch (error: unknown) {
                 return null;
             }
         },
 
         async getUserByEmail(email) {
             try {
-                return await User.findOne({ email });
-            } catch {
+                return await User.find({
+                    filter: { email },
+                    count: 1
+                });
+            } catch (error: unknown) {
                 return null;
             }
         },
@@ -74,37 +77,41 @@ export function AuthAdapter(): Adapter {
         },
 
         async linkAccount({ userId, ...account }) {
-            const user = await User.findById(userId);
+            try {
+                const user = await User.findById(userId);
 
-            // Update or create the identity
-            const identity = await Identity.findOneAndUpdate(
-                {
-                    provider: account.provider,
-                    identity: account.providerAccountId
-                },
-                {
-                    provider: account.provider,
-                    identity: account.providerAccountId,
-                    scope: account.scope,
-                    //expiresAt: account.expiresAt,
-                    refreshToken: account.refreshToken,
-                    accessToken: account.accessToken
-                },
-                {
-                    upsert: true,
-                    new: true
+                // Update or create the identity
+                const identity = await Identity.findOneAndUpdate(
+                    {
+                        provider: account.provider,
+                        identity: account.providerAccountId
+                    },
+                    {
+                        provider: account.provider,
+                        identity: account.providerAccountId,
+                        scope: account.scope,
+                        //expiresAt: account.expiresAt,
+                        refreshToken: account.refreshToken,
+                        accessToken: account.accessToken
+                    },
+                    {
+                        upsert: true,
+                        new: true
+                    }
+                );
+
+                if (!user.identities.find(({ id }) => id === identity.id)) {
+                    user.identities.push(identity);
+                    await user.save();
                 }
-            );
 
-            if (!user.identities.find(({ id }) => id === identity.id)) {
-                user.identities.push(identity);
-                await user.save();
+                return {
+                    userId,
+                    ...account
+                };
+            } catch (error: unknown) {
+                return null;
             }
-
-            return {
-                userId,
-                ...account
-            };
         },
         async unlinkAccount(providerAccountId) {
             console.debug('[TODO] AuthAdapter - unlinkAccount', providerAccountId);

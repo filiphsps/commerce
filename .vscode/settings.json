@@ -14,7 +14,7 @@
         "markdown": "true"
     },
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "editor.renderWhitespace": "all",
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit",
@@ -141,5 +141,8 @@
     "prettier.requireConfig": false,
     "github.copilot.advanced": {
         "length": 1200
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     }
 }

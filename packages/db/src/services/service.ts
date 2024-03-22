@@ -44,12 +44,6 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return this.model.create(input).then((doc) => doc.save());
     }
 
-    public async findOne(filter: FilterQuery<DocType>) {
-        const res = this.find({ count: 1, filter }) as Promise<DocType>;
-        if (!res) throw new TodoError('No data found');
-        return res;
-    }
-
     private mutateQuery<Q>(req: Query<any, DocType>, args: { [k: string]: any }) {
         return new Promise(async (resolve) => {
             const { id } = args;

@@ -1,7 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "name": "@nordcom/commerce-admin",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "private": true,
     "sideEffects": false,
     "type": "module",
@@ -74,6 +74,7 @@
         "@happy-dom/global-registrator": "13.2.2",
         "@nordcom/prettier": "0.1.1",
         "@testing-library/react": "14.2.1",
+        "@testing-library/jest-dom": "6.4.2",
         "@types/nprogress": "0.2.3",
         "@types/react-dom": "18.2.22",
         "@types/react": "18.2.67",

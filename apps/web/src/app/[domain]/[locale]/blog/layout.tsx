@@ -29,7 +29,6 @@ export default async function BlogLayout({
     try {
         const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const latest = (await BlogApi({ api, handle: 'news', limit: 5 })).articles.edges.map(

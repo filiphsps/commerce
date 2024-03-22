@@ -17,7 +17,7 @@ export const {
     },
     callbacks: {
         async jwt({ token, user }) {
-            return { ...token, ...(user ? { user } : {}) };
+            return { ...token, user };
         },
 
         async session({ session, token }) {

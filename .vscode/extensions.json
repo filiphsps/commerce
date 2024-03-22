@@ -7,9 +7,9 @@
         "graphql.vscode-graphql-syntax",
         "bierner.markdown-checkbox",
         "bierner.markdown-preview-github-styles",
-        "esbenp.prettier-vscode",
         "medo64.render-crlf",
         "wakatime.vscode-wakatime",
-        "prisma.prisma"
+        "prisma.prisma",
+        "rvest.vs-code-prettier-eslint"
     ]
 }
