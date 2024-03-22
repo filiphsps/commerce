@@ -17,7 +17,6 @@ Multi-tenenant headless e-commerce solution as a service.
 -   In-depth testing support.
 -   Built with `TypeScript`.
 -   Always targeting `node` **LTS**.
--   Using `bun` <3.
 
 ### Maintainers
 

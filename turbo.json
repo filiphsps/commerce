@@ -3,7 +3,6 @@
     "globalDotEnv": [".env"],
     "globalDependencies": [
         "**/.env.*local",
-        "bun.lockb",
         "tsconfig.json",
         "**/tsconfig.json",
         "vite.config.ts",

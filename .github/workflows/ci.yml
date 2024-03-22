@@ -35,7 +35,7 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build All
-              run: bun run build
+              run: pnpm run build
 
     test:
         name: 🧪 Test
@@ -50,10 +50,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: bun run build:packages
+              run: pnpm run build:packages
 
             - name: 🧪 Test
-              run: bun run test
+              run: pnpm run test
 
             - name: 🦺 Report Coverage to GitHub
               uses: davelosert/vitest-coverage-report-action@v2.3.0
@@ -75,10 +75,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: bun run build:packages
+              run: pnpm run build:packages
 
             - name: 📋 Lint
-              run: bun run lint
+              run: pnpm run lint
 
     typecheck:
         name: ✅ Typecheck
@@ -92,10 +92,10 @@ jobs:
               uses: ./.github/common/bootstrap
 
             - name: 🔨 Build Packages
-              run: bun run build:packages
+              run: pnpm run build:packages
 
             - name: ✅ Typecheck
-              run: bun run typecheck
+              run: pnpm run typecheck
 
     dispatch:
         name: 🗣️ Dispatch

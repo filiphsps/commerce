@@ -4,7 +4,7 @@
     "version": "2.1.0",
     "private": true,
     "type": "module",
-    "packageManager": "bun@1.0.30",
+    "packageManager": "pnpm@8.15.5",
     "engines": {
         "node": "<=21"
     },
@@ -22,7 +22,7 @@
         "predev": "prisma generate --no-engine",
         "dev": "dotenv -c -- turbo run dev",
         "prebuild": "prisma generate --no-engine",
-        "build": "dotenv -c -- turbo run build",
+        "build": "pnpm run prebuild && dotenv -c -- turbo run build",
         "build:packages": "turbo run build --filter='./packages/*'",
         "clean": "turbo run clean",
         "lint": "turbo run lint",
@@ -30,7 +30,7 @@
         "fix": "turbo run fix",
         "fix:prettier": "prettier **/src/**/*.{ts,tsx,json,scss} --write",
         "typecheck": "turbo run typecheck",
-        "test": "vitest run --coverage",
+        "test": "dotenv -c -- vitest run --coverage",
         "slicemachine": "turbo run slicemachine"
     },
     "author": {
@@ -90,7 +90,8 @@
         "typescript": "5.4.3",
         "vite-plugin-dts": "3.7.3",
         "vite-tsconfig-paths": "4.3.2",
-        "vite": "5.2.3"
+        "vite": "5.2.3",
+        "vitest": "1.4.0"
     },
     "optionalDependencies": {
         "@rollup/rollup-darwin-arm64": "4.13.0",

@@ -1,15 +1,15 @@
+import { defineProject } from 'vitest/config';
+
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import react from '@vitejs/plugin-react';
 
-import { defineProject } from 'vitest/config';
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineProject({
     root: resolve(__dirname),
-    plugins: [...react()] as any,
+    plugins: [react()],
     resolve: {
         alias: [
             {

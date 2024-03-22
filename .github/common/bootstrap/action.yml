@@ -4,25 +4,14 @@ description: 'Install and configure dependencies'
 runs:
     using: 'composite'
     steps:
-        - name: 💾 Cache node modules
-          uses: actions/cache@v4
+        - name: 🏎️ Setup Node
+          uses: actions/setup-node@v4
           with:
-              path: |
-                  ~/.bun/install/cache
-                  ${{ github.workspace }}/**/.next
-                  ${{ github.workspace }}/**/deps
-                  ${{ github.workspace }}/**/node_modules
-              key: ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
-              restore-keys: |
-                  ${{ runner.os }}-node-build-${{ hashFiles('**/bun.lockb') }}-
-                  ${{ runner.os }}-node-build-
-                  ${{ runner.os }}-
+              registry-url: 'https://registry.npmjs.org/'
+              node-version-file: '.nvmrc'
 
-        - name: 🏎️ Setup Bun
-          uses: oven-sh/setup-bun@v1
+        - name: 🏎️ Setup pnpm
+          uses: pnpm/action-setup@v3
           with:
-              bun-version: canary
-
-        - name: 📦 Install dependencies
-          shell: bash
-          run: bun install
+              version: 8
+              run_install: true

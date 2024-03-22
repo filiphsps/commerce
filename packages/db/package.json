@@ -60,6 +60,7 @@
         "@types/node": "20.11.30",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
+        "glob": "10.3.10",
         "rimraf": "5.0.5",
         "server-only": "0.0.1",
         "typescript": "5.4.3",

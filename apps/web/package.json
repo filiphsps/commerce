@@ -16,7 +16,7 @@
         "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
         "lint": "next lint",
         "fix:lint": "next lint --fix",
-        "fix": "concurrently bun:fix:*",
+        "fix": "concurrently pnpm:fix:*",
         "typecheck": "tsc -noEmit",
         "slicemachine": "start-slicemachine"
     },
@@ -75,6 +75,7 @@
         "next-seo": "6.5.0",
         "next-sitemap": "4.2.3",
         "nextjs-toploader": "1.6.11",
+        "nprogress": "0.2.0",
         "png-to-ico": "2.1.8",
         "react": "18.2.0",
         "react-dom": "18.2.0",
