@@ -1,5 +1,9 @@
-import { auth } from '@/utils/auth';
 import { NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
+
+import authConfig from '@/utils/auth.config';
+
+const { auth } = NextAuth(authConfig);
 
 export default auth(async (req) => {
     return NextResponse.next({

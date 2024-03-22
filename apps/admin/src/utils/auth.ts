@@ -15,20 +15,5 @@ export const {
     session: {
         strategy: 'jwt'
     },
-    callbacks: {
-        async jwt({ token, user }) {
-            return { ...token, user };
-        },
-
-        async session({ session, token }) {
-            return { ...session, ...token };
-        },
-
-        async redirect({ baseUrl, url }) {
-            if (url.startsWith('/')) return `${baseUrl}${url}`;
-
-            return new URL(url).origin === baseUrl ? url : baseUrl;
-        }
-    },
     ...config
 });

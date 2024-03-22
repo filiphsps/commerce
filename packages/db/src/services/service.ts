@@ -44,7 +44,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         return this.model.create(input).then((doc) => doc.save());
     }
 
-    private mutateQuery<Q>(req: Query<any, DocType>, args: { [k: string]: any }) {
+    private mutateQuery<Q>(req: Query<any, DocType>, args: { [k: string]: any }): Promise<() => Q> {
         return new Promise(async (resolve) => {
             const { id } = args;
 
@@ -66,7 +66,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
                 }
             }
 
-            return resolve(req as Q);
+            return resolve(() => req as Q);
         });
     }
 
@@ -81,7 +81,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
             ...(filter || {}),
             ...((id && { _id: id }) || {})
         });
-        req = (await this.mutateQuery<Req>(req, args)) as Req;
+        req = (await this.mutateQuery<Req>(req, args))();
 
         let res = await req.exec();
         if (!res) throw new TodoError('No data found');

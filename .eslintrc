@@ -39,11 +39,6 @@
             "./packages/**/tsconfig.test.json"
         ]
     },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
     "rules": {
         "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": false }],
         "@typescript-eslint/consistent-type-imports": [
