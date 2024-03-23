@@ -1,81 +1,56 @@
 @import 'globals';
 
-section.container {
+.container {
     display: flex;
     flex-direction: column;
     gap: calc(var(--layout-block-padding) / 2);
 
     width: 24rem;
     max-width: 100%;
+    min-width: 0;
     margin: 0 auto;
 
-    border-width: var(--border-width);
+    .divider {
+        --margin: calc(calc(var(--layout-block-padding) / 2) - calc(var(--border-width) / 2));
 
-    hr {
-        margin-left: calc(var(--layout-block-padding) * -1);
-        margin-right: calc(var(--layout-block-padding) * -1);
+        margin-top: var(--margin) !important;
+        margin-bottom: var(--margin) !important;
     }
 
-    :is(a, button):is([role='button']) {
-        width: 100%;
-        height: 100%;
-        padding: calc(var(--layout-block-padding) / 1.25) var(--layout-block-padding-half);
-
-        font-size: 1em;
-        font-weight: 600;
-
-        &[data-variant='solid'] {
-            padding: calc(var(--layout-block-padding-half) * 1.25) var(--layout-block-padding-half);
-
-            font-size: 0.85em;
-            font-weight: 700;
-        }
-
-        [data-content] {
-            font-weight: inherit;
-        }
-    }
-
-    .header {
+    .block {
         display: flex;
         flex-direction: column;
-        gap: calc(var(--layout-block-padding) / 2);
+        justify-content: center;
+        align-items: space-between;
+        gap: calc(var(--layout-section-spacing) / 4);
 
-        a:has(img) {
-            position: relative;
-            display: block;
-            justify-self: flex-start;
-            height: 2.5rem;
-            width: 100%;
-
-            img {
-                height: 100%;
-
-                -webkit-user-select: none;
-                user-select: none;
-                object-fit: contain;
-                object-position: left center;
-            }
+        &.header {
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            height: calc(var(--layout-block-padding) * 2.75);
         }
 
-        section {
-            display: flex;
-            flex-direction: column;
-            gap: calc(var(--layout-section-spacing) / 4);
-
+        &.content {
             padding: var(--layout-block-padding-half) 0;
         }
-    }
 
-    .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--layout-section-spacing);
-    }
+        &.actions {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--layout-section-spacing) / 2);
+        }
 
-    .footer {
-        display: flex;
-        flex-direction: column;
-        gap: calc(var(--layout-section-spacing) / 2);
+        &:is(.actions, .footer) {
+            a,
+            button {
+                height: 2.75rem;
+            }
+
+            & > * {
+                // Make first level child full-width
+                width: 100%;
+            }
+        }
     }
 }

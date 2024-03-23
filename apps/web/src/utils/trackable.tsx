@@ -161,6 +161,8 @@ const shopifyEventHandler = async (
     // Shopify only supports a subset of events.
     if (event !== 'page_view' && event !== 'add_to_cart') {
         return;
+        // TODO:.type shouldn't be considered a literal.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (shop.commerceProvider.type !== 'shopify') {
         console.error('shopifyEventHandler() called for non-Shopify shop.');
         return;

@@ -17,7 +17,9 @@ describe('AuthAdapter', () => {
         it('should get user by id', async () => {
             const id = '123';
             const user = { id: '123', name: 'John Doe' };
-            const findSpy = vi.spyOn(User, 'find').mockResolvedValue(user as any);
+            const findSpy = vi.spyOn(User, 'find').mockResolvedValue({
+                toObject: vi.fn().mockReturnValue(user)
+            } as any);
 
             const result = await adapter.getUser?.(id);
 
@@ -40,7 +42,9 @@ describe('AuthAdapter', () => {
             const providerAccountId = '456';
             const provider = 'google';
             const user = { id: '123', name: 'John Doe' };
-            const findSpy = vi.spyOn(User, 'find').mockResolvedValue(user as any);
+            const findSpy = vi.spyOn(User, 'find').mockResolvedValue({
+                toObject: vi.fn().mockReturnValue(user)
+            } as any);
 
             const result = await adapter.getUserByAccount?.({ provider, providerAccountId });
 
@@ -69,6 +73,4 @@ describe('AuthAdapter', () => {
             expect(result).toBeNull();
         });
     });
-
-    // Add tests for other methods...
 });

@@ -30,12 +30,15 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
         const shop = await getShop(session.user.id, shopId);
 
         return (
-            <Card>
-                <Heading level="h1">{shop.name}</Heading>
-                <Heading level="h4" as="h2">
-                    Overview - {shop.domain}
-                </Heading>
-            </Card>
+            <>
+                <header>
+                    <Heading level="h1">{shop.name}</Heading>
+                    <Heading level="h4" as="h2">
+                        Overview - {shop.domain}
+                    </Heading>
+                </header>
+                <Card></Card>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

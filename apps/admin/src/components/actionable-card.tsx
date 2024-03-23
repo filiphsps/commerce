@@ -1,4 +1,4 @@
-import styles from '@/components/actionable-card.module.scss';
+import styles from './actionable-card.module.scss';
 
 import { Card } from '@nordcom/nordstar';
 
@@ -6,28 +6,48 @@ import type { HTMLProps, ReactNode } from 'react';
 
 export type ActionableCardProps = {
     header?: ReactNode | ReactNode[];
-    children?: ReactNode | ReactNode[];
+    headerAction?: ReactNode;
+    actions?: ReactNode | ReactNode[] | null;
     footer?: ReactNode | ReactNode[];
+    children?: ReactNode | ReactNode[];
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export default function ActionableCard({ header, children, footer, className }: ActionableCardProps) {
+export default function ActionableCard({
+    header,
+    headerAction,
+    actions,
+    footer,
+    children,
+    className
+}: ActionableCardProps) {
     return (
-        <Card className={`${styles.container} ${className || ''}`} as="section">
+        <Card className={`${styles.container} ${className || ''}`}>
             {header ? (
-                <header className={styles.header}>
-                    {header}
+                <>
+                    <header className={`${styles.block} ${styles.header}`}>
+                        <section className={styles.title}>{header}</section>
+                        {headerAction ? <section className={styles.action}>{headerAction}</section> : null}
+                    </header>
 
-                    {children ? <hr /> : null}
-                </header>
+                    <Card.Divider className={styles.divider} />
+                </>
             ) : null}
 
-            {children ? <main className={styles.header}>{children}</main> : null}
+            <main className={`${styles.block} ${styles.content}`}>{children}</main>
+
+            {actions ? (
+                <>
+                    <Card.Divider className={styles.divider} />
+
+                    <nav className={`${styles.block} ${styles.actions}`}>{actions}</nav>
+                </>
+            ) : null}
 
             {footer ? (
-                <footer className={styles.footer}>
-                    <hr />
+                <>
+                    <Card.Divider className={styles.divider} />
 
-                    {footer}
-                </footer>
+                    <footer className={`${styles.block} ${styles.footer}`}>{footer}</footer>
+                </>
             ) : null}
         </Card>
     );
