@@ -11,7 +11,7 @@ const config = {
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
     reactStrictMode: true,
-    trailingSlash: true,
+    trailingSlash: false, // FIXME: https://github.com/nextauthjs/next-auth/issues/10127
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
