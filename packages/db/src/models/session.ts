@@ -29,11 +29,11 @@ export const SessionSchema = new Schema<SessionBase>(
     },
     {
         id: true,
-        timestamps: false,
+        timestamps: true,
         versionKey: false
     }
 );
 
-export const SessionModel = (db.models.Identity || db.model('Session', SessionSchema)) as ReturnType<
+export const SessionModel = (db.models.Session || db.model('Session', SessionSchema)) as ReturnType<
     typeof db.model<typeof SessionSchema>
 >;
