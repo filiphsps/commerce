@@ -27,38 +27,28 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
     return (
         <ActionableCard
             header={
-                <>
-                    <Link href="/" title="Nordcom Commerce">
-                        <Image
-                            src="https://shops.nordcom.io/logo.svg"
-                            alt="Nordcom Group Inc.'s Logo"
-                            height={75}
-                            width={150}
-                            draggable={false}
-                            decoding="async"
-                            priority={true}
-                            loader={undefined}
-                        />
-                    </Link>
-
-                    <hr />
-
-                    <section>
-                        <Label as="div">Welcome Back</Label>
-
-                        <Heading level="h1">Login</Heading>
-                    </section>
-                </>
+                <Link href="/" title="Nordcom Commerce">
+                    <Image
+                        src="https://shops.nordcom.io/logo.svg"
+                        alt="Nordcom Group Inc.'s Logo"
+                        height={75}
+                        width={150}
+                        draggable={false}
+                        decoding="async"
+                        priority={true}
+                        loader={undefined}
+                    />
+                </Link>
             }
-            footer={
-                <>
-                    <Label>Nordcom Commerce is currently invite only</Label>
-                </>
+            actions={
+                <Suspense>
+                    <LoginButton provider="github" className={styles.button} />
+                </Suspense>
             }
+            footer={<Label>Nordcom Commerce is currently invite only</Label>}
         >
-            <Suspense>
-                <LoginButton provider="github" className={styles.button} />
-            </Suspense>
+            <Label as="div">Welcome Back</Label>
+            <Heading level="h1">Login</Heading>
         </ActionableCard>
     );
 }

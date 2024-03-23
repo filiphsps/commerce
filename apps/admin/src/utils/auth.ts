@@ -22,14 +22,8 @@ export const {
         signOut: `/auth/logout/`,
         error: '/auth/login/'
     },
-    events: {
-        async signIn(args) {
-            console.debug('auth', 'signIn', args);
-        }
-    },
     callbacks: {
         async session({ token, session, ...args }) {
-            console.debug('auth', 'session', { token, session, args });
             return {
                 ...session,
                 user: {
@@ -40,7 +34,6 @@ export const {
             };
         },
         async jwt({ token, ...args }) {
-            console.debug('auth', 'jwt', { token, args });
             return token;
         }
     },

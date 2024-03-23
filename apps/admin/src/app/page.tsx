@@ -67,20 +67,16 @@ export default async function Overview() {
                     }
                     actions={shopsActions.length > 1 ? shopsActions : null}
                     footer={
-                        <>
-                            <Button variant="solid" color="primary" disabled>
-                                Connect a new Shop
-                            </Button>
-                        </>
+                        <Button variant="solid" color="primary" disabled>
+                            Connect a new Shop
+                        </Button>
                     }
                 >
-                    <>
-                        <Label as="div">
-                            Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
-                        </Label>
+                    <Label as="div">
+                        Hi <Accented>{firstName || 'there'}</Accented> {lastName || ''}
+                    </Label>
 
-                        <Heading level="h1">Choose a Shop</Heading>
-                    </>
+                    <Heading level="h1">Choose a Shop</Heading>
                 </ActionableCard>
             </View>
         </div>
