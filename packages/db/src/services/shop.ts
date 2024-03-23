@@ -1,5 +1,6 @@
 import { ShopModel } from '../models';
 
+import { User } from '.';
 import { Service } from './service';
 
 import type { ShopBase } from '../models';
@@ -13,11 +14,17 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         collaboratorId,
         ...args
     }: { collaboratorId: string } & Parameters<typeof this.find>[0]) {
+        const collaborator = await User.find({ id: collaboratorId });
+
         return this.find({
             ...args,
             filter: {
                 ...args.filter,
-                collaborators: collaboratorId
+                collaborators: {
+                    $elemMatch: {
+                        user: collaborator
+                    }
+                }
             }
         });
     }

@@ -24,17 +24,23 @@ export const {
     },
     events: {
         async signIn(args) {
-            console.debug('signIn', args);
+            console.debug('auth', 'signIn', args);
         }
     },
     callbacks: {
-        async session({ token, session }) {
+        async session({ token, session, ...args }) {
+            console.debug('auth', 'session', { token, session, args });
             return {
                 ...session,
+                user: {
+                    ...session.user,
+                    id: token.sub
+                },
                 ...token
             };
         },
-        async jwt({ token }) {
+        async jwt({ token, ...args }) {
+            console.debug('auth', 'jwt', { token, args });
             return token;
         }
     },

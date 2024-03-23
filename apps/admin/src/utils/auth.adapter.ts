@@ -77,13 +77,13 @@ export function AuthAdapter(): Adapter {
                     id: userId
                 }),
                 token: sessionToken,
-                expires: expires
+                expiresAt: expires
             });
 
             return {
                 sessionToken: session.token,
                 userId: session.user.id,
-                expires: session.expires
+                expires: session.expiresAt
             };
         },
         async updateSession(session) {
@@ -109,7 +109,7 @@ export function AuthAdapter(): Adapter {
                         provider: account.provider,
                         identity: account.providerAccountId,
                         scope: account.scope,
-                        //expiresAt: account.expiresAt,
+                        expiresAt: account.expires_at ? new Date(account.expires_at * 1000) : undefined,
                         refreshToken: account.refreshToken,
                         accessToken: account.accessToken
                     },

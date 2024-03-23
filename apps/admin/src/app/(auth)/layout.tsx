@@ -1,5 +1,7 @@
 import { View } from '@nordcom/nordstar';
 
-export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+import type { ReactNode } from 'react';
+
+export default async function AuthLayout({ children }: { children: ReactNode }) {
     return <View>{children}</View>;
 }

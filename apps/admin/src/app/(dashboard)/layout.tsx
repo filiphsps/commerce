@@ -1,15 +1,11 @@
 import { SessionProvider } from 'next-auth/react';
 
-import { View } from '@nordcom/nordstar';
-
 import { auth } from '@/utils/auth';
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+import type { ReactNode } from 'react';
+
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
     const session = await auth();
 
-    return (
-        <SessionProvider session={session}>
-            <View>{children}</View>
-        </SessionProvider>
-    );
+    return <SessionProvider session={session}>{children}</SessionProvider>;
 }

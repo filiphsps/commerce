@@ -8,7 +8,7 @@ import type { UserBase } from '.';
 export interface SessionBase extends BaseDocument {
     user: UserBase;
     token: string;
-    expires: Date;
+    expiresAt: Date;
 }
 
 export const SessionSchema = new Schema<SessionBase>(
@@ -22,7 +22,7 @@ export const SessionSchema = new Schema<SessionBase>(
             type: Schema.Types.String,
             required: true
         },
-        expires: {
+        expiresAt: {
             type: Schema.Types.Date,
             required: true
         }
