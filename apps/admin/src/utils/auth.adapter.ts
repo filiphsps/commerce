@@ -23,8 +23,10 @@ export function AuthAdapter(): Adapter {
                         count: 1,
                         filter: {
                             identities: {
-                                provider: provider,
-                                identity: providerAccountId
+                                $elemMatch: {
+                                    provider: provider,
+                                    identity: providerAccountId
+                                }
                             }
                         }
                     })
