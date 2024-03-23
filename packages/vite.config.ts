@@ -1,7 +1,7 @@
-import { globSync } from 'glob';
 import { dirname, extname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { globSync } from 'glob';
 import { createLogger, defineConfig, mergeConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import tsConfigPaths from 'vite-tsconfig-paths';
@@ -20,7 +20,9 @@ const input = Object.fromEntries(
     })
 );
 
-const logger = createLogger();
+const logger = createLogger(undefined, {
+    prefix: process.cwd().split('/').at(-1)
+});
 logger.info(JSON.stringify({ __dirname, ...input }, null, 4));
 
 export default mergeConfig(

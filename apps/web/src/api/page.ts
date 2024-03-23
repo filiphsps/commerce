@@ -33,8 +33,6 @@ export const PagesApi = async ({
                 lang: locale.code
             });
 
-            if (!pages) return reject(new NotFoundError(`\`Pages\` for the locale \`${locale.code}\``));
-
             // TODO: Remove filter once we've migrated away from "special" pages
             const filtered = pages.filter(({ uid }) => !exclude.includes(uid!));
             return resolve(filtered);

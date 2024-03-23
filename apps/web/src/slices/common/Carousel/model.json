@@ -1,59 +1,59 @@
 {
-  "id": "carousel",
-  "type": "SharedSlice",
-  "name": "Carousel",
-  "description": "Carousel",
-  "variations": [
-    {
-      "id": "default",
-      "name": "Default",
-      "docURL": "...",
-      "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
-      "primary": {
-        "delay": {
-          "type": "Text",
-          "config": {
-            "label": "Delay",
-            "placeholder": "3000"
-          }
+    "id": "carousel",
+    "type": "SharedSlice",
+    "name": "Carousel",
+    "description": "Carousel",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "delay": {
+                    "type": "Text",
+                    "config": {
+                        "label": "Delay",
+                        "placeholder": "3000"
+                    }
+                }
+            },
+            "items": {
+                "image": {
+                    "type": "Image",
+                    "config": {
+                        "label": "Image",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
+                },
+                "mobile_image": {
+                    "type": "Image",
+                    "config": {
+                        "label": "Mobile Image",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
+                },
+                "href": {
+                    "type": "Text",
+                    "config": {
+                        "label": "href",
+                        "placeholder": ""
+                    }
+                },
+                "defer": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Defer",
+                        "placeholder_false": "false",
+                        "placeholder_true": "true",
+                        "default_value": true
+                    }
+                }
+            }
         }
-      },
-      "items": {
-        "image": {
-          "type": "Image",
-          "config": {
-            "label": "Image",
-            "constraint": {},
-            "thumbnails": []
-          }
-        },
-        "mobile_image": {
-          "type": "Image",
-          "config": {
-            "label": "Mobile Image",
-            "constraint": {},
-            "thumbnails": []
-          }
-        },
-        "href": {
-          "type": "Text",
-          "config": {
-            "label": "href",
-            "placeholder": ""
-          }
-        },
-        "defer": {
-          "type": "Boolean",
-          "config": {
-            "label": "Defer",
-            "placeholder_false": "false",
-            "placeholder_true": "true",
-            "default_value": true
-          }
-        }
-      }
-    }
-  ]
+    ]
 }

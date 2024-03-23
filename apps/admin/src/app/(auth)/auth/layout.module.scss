@@ -12,9 +12,6 @@
     width: 100%;
     max-width: 100%;
     height: 100%;
+    max-height: calc(100vh - var(--layout-section-padding) * 2);
     margin: 0;
-
-    .content {
-        height: 100%;
-    }
 }

@@ -1,46 +1,46 @@
 [
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "default",
-		"primary": {},
-		"items": [
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"icon",
-						{
-							"__TYPE__": "ImageContent",
-							"origin": {
-								"id": "main",
-								"url": "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f",
-								"width": 6597,
-								"height": 4398
-							},
-							"url": "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f",
-							"width": 6597,
-							"height": 4398,
-							"edit": {
-								"zoom": 1,
-								"crop": {
-									"x": 0,
-									"y": 0
-								},
-								"background": "transparent"
-							},
-							"thumbnails": {}
-						}
-					],
-					[
-						"title",
-						{
-							"__TYPE__": "FieldContent",
-							"value": "zero",
-							"type": "Text"
-						}
-					]
-				]
-			}
-		]
-	}
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {},
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "icon",
+                        {
+                            "__TYPE__": "ImageContent",
+                            "origin": {
+                                "id": "main",
+                                "url": "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f",
+                                "width": 6597,
+                                "height": 4398
+                            },
+                            "url": "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f",
+                            "width": 6597,
+                            "height": 4398,
+                            "edit": {
+                                "zoom": 1,
+                                "crop": {
+                                    "x": 0,
+                                    "y": 0
+                                },
+                                "background": "transparent"
+                            },
+                            "thumbnails": {}
+                        }
+                    ],
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "value": "zero",
+                            "type": "Text"
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
 ]

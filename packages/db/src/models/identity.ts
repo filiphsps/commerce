@@ -1,11 +1,10 @@
 import { Schema } from 'mongoose';
-import { UserBase } from '.';
+
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
 
 export interface IdentityBase extends BaseDocument {
-    user: UserBase;
     provider: string;
     identity: string;
     scope?: string;

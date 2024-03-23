@@ -1,8 +1,11 @@
 import { Schema } from 'mongoose';
-import { IdentityBase, IdentitySchema } from '.';
+
 import { db } from '../db';
 
+import { IdentitySchema } from '.';
+
 import type { BaseDocument } from '../db';
+import type { IdentityBase } from '.';
 
 export interface UserBase extends BaseDocument {
     email: string;

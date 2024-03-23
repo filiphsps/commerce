@@ -51,6 +51,7 @@ export const extractLimitLikeFilters = (
       }
     | {} => {
     switch (true) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case filters === null || typeof filters === 'undefined':
         case typeof (filters as any).limit !== 'number' &&
             typeof (filters as any).first !== 'number' &&
@@ -374,7 +375,7 @@ export const CollectionsApi = async (
             data.collections.edges.map(({ node: { id, handle, products } }) => ({
                 id,
                 handle,
-                hasProducts: products.edges ? products.edges.length > 0 : false
+                hasProducts: products.edges.length > 0
             }))
         );
     });
@@ -475,7 +476,7 @@ export const CollectionsPaginationApi = async ({
             if (!page_info) return reject(new Error(`500: Something went wrong on our end`));
 
             return resolve({
-                collections: data.collections.edges || [],
+                collections: data.collections.edges,
                 page_info: {
                     start_cursor: page_info.startCursor || null,
                     end_cursor: page_info.endCursor || null,

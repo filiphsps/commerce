@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { SessionProvider } from 'next-auth/react';
 import NextTopLoader from 'nextjs-toploader';
 
 import { Theme } from '@nordcom/commerce-marketing-common';
@@ -12,14 +11,12 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import * as NProgress from 'nprogress';
 import { Toaster } from 'sonner';
 
-import type { Session } from 'next-auth';
 import type { ReactNode } from 'react';
 
 export type ProvidersProps = {
     children: ReactNode;
-    session: Session | null;
 };
-export function Providers({ children, session }: ProvidersProps) {
+export function Providers({ children }: ProvidersProps) {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -31,15 +28,13 @@ export function Providers({ children, session }: ProvidersProps) {
     }, [pathname, router]);
 
     return (
-        <SessionProvider session={session}>
-            <NordstarProvider theme={Theme}>
-                <Toaster theme="dark" />
-                <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
+        <NordstarProvider theme={Theme}>
+            <Toaster theme="dark" />
+            <NextTopLoader color={Theme.accents.primary} showSpinner={true} crawl={true} />
 
-                {children}
+            {children}
 
-                <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
-            </NordstarProvider>
-        </SessionProvider>
+            <GoogleTagManager gtmId={'GTM-N6TLG8MX'} />
+        </NordstarProvider>
     );
 }

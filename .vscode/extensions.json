@@ -10,6 +10,6 @@
         "medo64.render-crlf",
         "wakatime.vscode-wakatime",
         "prisma.prisma",
-        "rvest.vs-code-prettier-eslint"
+        "esbenp.prettier-vscode"
     ]
 }

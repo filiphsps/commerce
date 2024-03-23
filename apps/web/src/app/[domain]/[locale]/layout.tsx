@@ -97,7 +97,6 @@ export default async function RootLayout({
 }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop });

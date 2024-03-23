@@ -2,7 +2,6 @@ import '@/styles/app.scss';
 
 import { Montserrat } from 'next/font/google';
 
-import { auth } from '@/utils/auth';
 import { GeistMono } from 'geist/font/mono';
 
 import { Providers } from '@/components/providers';
@@ -56,12 +55,10 @@ const primaryFont = Montserrat({
 });
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-    const session = await auth();
-
     return (
         <html lang="en" className={`${primaryFont.variable} ${GeistMono.variable}`}>
             <body>
-                <Providers session={session}>{children}</Providers>
+                <Providers>{children}</Providers>
             </body>
         </html>
     );

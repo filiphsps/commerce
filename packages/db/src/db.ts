@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { MissingEnvironmentVariableError } from '@nordcom/commerce-errors';
+
 import mongoose from 'mongoose';
 
 import type { Document } from 'mongoose';

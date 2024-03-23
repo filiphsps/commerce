@@ -28,6 +28,8 @@ export type CollectionProps = SliceComponentProps<
  * Component for "Collection" Slices.
  */
 const CollectionSlice = async ({ slice, index, context: { shop, locale } }: CollectionProps) => {
+    // TODO: Remove this once we know there's no legacy data.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (slice.variation !== 'default') {
         console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
 

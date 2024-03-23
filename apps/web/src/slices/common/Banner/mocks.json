@@ -1,173 +1,173 @@
 [
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "default",
-		"primary": {
-			"content": {
-				"__TYPE__": "StructuredTextContent",
-				"value": [
-					{
-						"type": "heading1",
-						"content": {
-							"text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms.",
-							"spans": [
-								{
-									"type": "strong",
-									"start": 0,
-									"end": 7
-								}
-							]
-						},
-						"direction": "ltr"
-					},
-					{
-						"type": "paragraph",
-						"content": {
-							"text": "showing their honest commitment to helping the environment.",
-							"spans": []
-						},
-						"direction": "ltr"
-					}
-				]
-			}
-		},
-		"items": [
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"title",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Shop now",
-										"spans": []
-									},
-									"direction": "ltr"
-								}
-							]
-						}
-					],
-					[
-						"target",
-						{
-							"__TYPE__": "LinkContent",
-							"value": {
-								"__TYPE__": "ExternalLink",
-								"url": "http://google.com"
-							}
-						}
-					],
-					[
-						"type",
-						{
-							"__TYPE__": "BooleanContent",
-							"value": true
-						}
-					]
-				]
-			},
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"target",
-						{
-							"__TYPE__": "LinkContent",
-							"value": {
-								"__TYPE__": "ExternalLink",
-								"url": "http://google.com"
-							}
-						}
-					],
-					[
-						"title",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Learn more",
-										"spans": []
-									},
-									"direction": "ltr"
-								}
-							]
-						}
-					],
-					[
-						"type",
-						{
-							"__TYPE__": "BooleanContent",
-							"value": false
-						}
-					]
-				]
-			}
-		]
-	},
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "simpleSlim",
-		"primary": {
-			"content": {
-				"__TYPE__": "StructuredTextContent",
-				"value": [
-					{
-						"type": "paragraph",
-						"content": {
-							"text": "Esse occaecat nulla esse eiusmod minim incididunt laboris elit sit sint commodo duis."
-						}
-					}
-				]
-			},
-			"background": {
-				"__TYPE__": "FieldContent",
-				"value": "#48d910",
-				"type": "Color"
-			}
-		},
-		"items": [
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"title",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Irure excepteur excepteur adipisicing laboris ad nulla et."
-									}
-								}
-							]
-						}
-					],
-					[
-						"target",
-						{
-							"__TYPE__": "LinkContent",
-							"value": {
-								"__TYPE__": "ExternalLink",
-								"url": "https://prismic.io"
-							}
-						}
-					],
-					[
-						"type",
-						{
-							"__TYPE__": "BooleanContent",
-							"value": false
-						}
-					]
-				]
-			}
-		]
-	}
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "content": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "heading1",
+                        "content": {
+                            "text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms.",
+                            "spans": [
+                                {
+                                    "type": "strong",
+                                    "start": 0,
+                                    "end": 7
+                                }
+                            ]
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "showing their honest commitment to helping the environment.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    }
+                ]
+            }
+        },
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Shop now",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "target",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "http://google.com"
+                            }
+                        }
+                    ],
+                    [
+                        "type",
+                        {
+                            "__TYPE__": "BooleanContent",
+                            "value": true
+                        }
+                    ]
+                ]
+            },
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "target",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "http://google.com"
+                            }
+                        }
+                    ],
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Learn more",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "type",
+                        {
+                            "__TYPE__": "BooleanContent",
+                            "value": false
+                        }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "simpleSlim",
+        "primary": {
+            "content": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Esse occaecat nulla esse eiusmod minim incididunt laboris elit sit sint commodo duis."
+                        }
+                    }
+                ]
+            },
+            "background": {
+                "__TYPE__": "FieldContent",
+                "value": "#48d910",
+                "type": "Color"
+            }
+        },
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Irure excepteur excepteur adipisicing laboris ad nulla et."
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "target",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "https://prismic.io"
+                            }
+                        }
+                    ],
+                    [
+                        "type",
+                        {
+                            "__TYPE__": "BooleanContent",
+                            "value": false
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
 ]

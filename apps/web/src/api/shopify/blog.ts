@@ -68,8 +68,6 @@ export const BlogApi = async ({
             if (errors) return reject(new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`));
             else if (!data?.blogByHandle)
                 return reject(new Error(`404: "Blog" with handle "${handle}" cannot be found`));
-            else if (!data.blogByHandle.articles)
-                return reject(new Error(`404: "Articles" for blog "${handle}" cannot be found`));
 
             return resolve(data.blogByHandle);
         } catch (error: unknown) {

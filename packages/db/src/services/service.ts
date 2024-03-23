@@ -1,8 +1,9 @@
 import { TodoError } from '@nordcom/commerce-errors';
-import { FilterQuery, Model, ProjectionType, Query, QueryOptions, UpdateQuery } from 'mongoose';
+
 import { db } from '../db';
 
 import type { BaseDocument } from '../db';
+import type { FilterQuery, Model, ProjectionType, Query, QueryOptions, UpdateQuery } from 'mongoose';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 

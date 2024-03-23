@@ -2,18 +2,17 @@ import prisma from './prisma';
 export { prisma };
 
 export { PagesApi } from './page';
-export { CommerceProviderAuthenticationApi, ShopApi, ShopsApi } from './shop';
-export { RestifyObject } from './utils';
-
 export type {
     CommerceProvider,
     ContentProvider,
     PrismicContentProvider,
     Shop,
-    ShopTheme,
     ShopifyCommerceProvider,
-    ShopifyContentProvider
+    ShopifyContentProvider,
+    ShopTheme
 } from './shop';
+export { CommerceProviderAuthenticationApi, ShopApi, ShopsApi } from './shop';
+export { RestifyObject } from './utils';
 
 // TODO: Place these in the correct place.
 export type Optional<T extends { [key: string]: unknown }> = { [K in keyof T]?: Nullable<T[K]> };

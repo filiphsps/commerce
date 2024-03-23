@@ -1,5 +1,4 @@
-import type { UserBase } from '@nordcom/commerce-db';
-import { Identity, User } from '@nordcom/commerce-db';
+import { Identity, Session, User } from '@nordcom/commerce-db';
 
 import type { Adapter, AdapterAccount } from '@auth/core/adapters';
 
@@ -7,7 +6,7 @@ export function AuthAdapter(): Adapter {
     return {
         async getUser(id) {
             try {
-                return await User.find({ id });
+                return (await User.find({ id })).toObject();
             } catch (error: unknown) {
                 console.error('AuthAdapter', error);
                 return null;
@@ -19,17 +18,17 @@ export function AuthAdapter(): Adapter {
             provider
         }: Pick<AdapterAccount, 'provider' | 'providerAccountId'>) {
             try {
-                return (await User.find({
-                    count: 1,
-                    filter: {
-                        identities: {
-                            $elemMatch: {
+                return (
+                    await User.find({
+                        count: 1,
+                        filter: {
+                            identities: {
                                 provider: provider,
                                 identity: providerAccountId
                             }
                         }
-                    }
-                })) as UserBase;
+                    })
+                ).toObject();
             } catch (error: unknown) {
                 console.error('AuthAdapter', error);
                 return null;
@@ -38,10 +37,12 @@ export function AuthAdapter(): Adapter {
 
         async getUserByEmail(email) {
             try {
-                return await User.find({
-                    filter: { email },
-                    count: 1
-                });
+                return (
+                    await User.find({
+                        count: 1,
+                        filter: { email }
+                    })
+                ).toObject();
             } catch (error: unknown) {
                 console.error('AuthAdapter', error);
                 return null;
@@ -49,13 +50,15 @@ export function AuthAdapter(): Adapter {
         },
 
         async createUser({ email, name, image: avatar, emailVerified }) {
-            return await User.create({
-                email,
-                name: name || email,
-                avatar: avatar || undefined,
-                emailVerified,
-                identities: []
-            });
+            return (
+                await User.create({
+                    email,
+                    name: name || email,
+                    avatar: avatar || undefined,
+                    emailVerified,
+                    identities: []
+                })
+            ).toObject();
         },
         async updateUser(user) {
             console.debug('[TODO] AuthAdapter - updateUser', user);
@@ -66,9 +69,20 @@ export function AuthAdapter(): Adapter {
             return null;
         },
 
-        async createSession(session) {
-            console.debug('[TODO] AuthAdapter - createSession', session);
-            return session;
+        async createSession({ userId, sessionToken, expires }) {
+            const session = await Session.create({
+                user: await User.find({
+                    id: userId
+                }),
+                token: sessionToken,
+                expires: expires
+            });
+
+            return {
+                sessionToken: session.token,
+                userId: session.user.id,
+                expires: session.expires
+            };
         },
         async updateSession(session) {
             console.debug('[TODO] AuthAdapter - updateSession', session);

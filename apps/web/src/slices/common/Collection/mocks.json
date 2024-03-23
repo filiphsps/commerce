@@ -1,57 +1,57 @@
 [
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "default",
-		"primary": {
-			"limit": {
-				"__TYPE__": "FieldContent",
-				"type": "Number",
-				"value": "6"
-			},
-			"direction": {
-				"__TYPE__": "FieldContent",
-				"type": "Select",
-				"value": "horizontal"
-			},
-			"hide_title": {
-				"__TYPE__": "BooleanContent",
-				"value": true
-			},
-			"handle": {
-				"__TYPE__": "FieldContent",
-				"type": "Text",
-				"value": "marabou"
-			},
-			"title": {
-				"__TYPE__": "StructuredTextContent",
-				"value": [
-					{
-						"type": "paragraph",
-						"content": {
-							"text": "Est esse quis aliquip dolore ex velit cupidatat ipsum.",
-							"spans": []
-						},
-						"direction": "ltr"
-					}
-				]
-			},
-			"body": {
-				"__TYPE__": "StructuredTextContent",
-				"value": [
-					{
-						"type": "paragraph",
-						"content": {
-							"text": "Veniam ipsum qui ipsum fugiat mollit nisi duis sunt amet nostrud. Enim consectetur ad anim incididunt quis enim et ut fugiat Lorem ea dolore aliqua. Esse ad aliqua cupidatat pariatur qui."
-						}
-					}
-				]
-			},
-			"alignment": {
-				"__TYPE__": "FieldContent",
-				"type": "Select",
-				"value": "center"
-			}
-		},
-		"items": []
-	}
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "limit": {
+                "__TYPE__": "FieldContent",
+                "type": "Number",
+                "value": "6"
+            },
+            "direction": {
+                "__TYPE__": "FieldContent",
+                "type": "Select",
+                "value": "horizontal"
+            },
+            "hide_title": {
+                "__TYPE__": "BooleanContent",
+                "value": true
+            },
+            "handle": {
+                "__TYPE__": "FieldContent",
+                "type": "Text",
+                "value": "marabou"
+            },
+            "title": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Est esse quis aliquip dolore ex velit cupidatat ipsum.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    }
+                ]
+            },
+            "body": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Veniam ipsum qui ipsum fugiat mollit nisi duis sunt amet nostrud. Enim consectetur ad anim incididunt quis enim et ut fugiat Lorem ea dolore aliqua. Esse ad aliqua cupidatat pariatur qui."
+                        }
+                    }
+                ]
+            },
+            "alignment": {
+                "__TYPE__": "FieldContent",
+                "type": "Select",
+                "value": "center"
+            }
+        },
+        "items": []
+    }
 ]

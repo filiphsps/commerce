@@ -1,4 +1,5 @@
 import { UnknownCommerceProviderError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+
 import prisma from './prisma';
 
 import type { CacheUtil, TaintUtil } from '.';
@@ -112,13 +113,13 @@ export const ShopApi = async (domain: string, cache?: any) => {
                 ...res,
                 theme: {
                     ...((typeof res.theme?.data === 'object'
-                        ? res.theme?.data
+                        ? res.theme.data
                         : JSON.parse(res.theme!.data.toString())) as ShopTheme)
                 },
                 commerceProvider: {
                     ...res.commerceProvider,
                     data: (typeof res.commerceProvider?.data === 'object'
-                        ? res.commerceProvider?.data
+                        ? res.commerceProvider.data
                         : JSON.parse(res.commerceProvider!.data.toString())) as ShopifyCommerceProvider
                 }
             };

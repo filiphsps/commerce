@@ -53,6 +53,8 @@ const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => 
 
     if (!lines || lines.length < 1) return null;
 
+    const progress = freeShipping ? 100 : ((Number.parseFloat(cost?.totalAmount?.amount!) || 0) / threshold) * 100;
+
     return (
         <section {...props} className={`${styles.container} ${freeShipping ? styles.success : ''}`}>
             {freeShipping ? (
@@ -68,10 +70,7 @@ const FreeShippingProgress = ({ i18n, ...props }: FreeShippingProgressProps) => 
                 <div
                     className={styles.line}
                     style={{
-                        width: `${
-                            (freeShipping && 100) ||
-                            ((Number.parseFloat(cost?.totalAmount?.amount!) || 0) / threshold) * 100
-                        }%`
+                        width: `${progress}%`
                     }}
                     suppressHydrationWarning={true}
                 />

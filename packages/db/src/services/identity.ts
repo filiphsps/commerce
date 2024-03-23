@@ -1,4 +1,5 @@
 import { IdentityModel } from '../models';
+
 import { Service } from './service';
 
 import type { IdentityBase } from '../models';

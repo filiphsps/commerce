@@ -1,5 +1,5 @@
 export const BuildConfig = {
-    environment: process.env.NODE_ENV || 'production',
+    environment: process.env.NODE_ENV,
 
     shopify: {
         api: '2024-01'

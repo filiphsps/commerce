@@ -24,6 +24,7 @@
         "build": "tsc && vite build",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log",
         "lint": "eslint",
+        "fix": "eslint --fix",
         "typecheck": "tsc -noEmit"
     },
     "author": {

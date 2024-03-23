@@ -1,4 +1,5 @@
 import { ShopModel } from '../models';
+
 import { Service } from './service';
 
 import type { ShopBase } from '../models';

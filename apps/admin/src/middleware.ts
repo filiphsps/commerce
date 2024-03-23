@@ -1,10 +1,20 @@
-import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 
 import authConfig from '@/utils/auth.config';
 
-export const { auth: middleware } = NextAuth(authConfig)
+import type { NextAuthRequest } from 'next-auth/lib';
 
+export const runtime = 'experimental-edge';
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+    matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|favicon.ico|[\\w-]+\\.\\w+).*)'],
+    missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'purpose', value: 'prefetch' }
+    ]
 };
+
+const { auth } = NextAuth(authConfig);
+
+export default auth((_req: NextAuthRequest) => {
+    return undefined;
+});

@@ -43,6 +43,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                             key={index}
                             className={styles.action}
                             data-type={cta.type ? 'primary' : 'default'}
+                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                             href={((cta.target && asLink(cta.target)?.toString()!) || '')!} // FIXME: Handle this correctly.
                         >
                             <PrismicText data={cta.title} />

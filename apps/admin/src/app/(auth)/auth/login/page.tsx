@@ -3,11 +3,8 @@ import styles from './page.module.scss';
 import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import { Heading, Label } from '@nordcom/nordstar';
-
-import { auth } from '@/utils/auth';
 
 import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';
@@ -21,11 +18,6 @@ export const metadata: Metadata = {
 };
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
-    const session = await auth();
-    if (!!session?.user?.id) {
-        redirect('/');
-    }
-
     return (
         <ActionableCard
             header={

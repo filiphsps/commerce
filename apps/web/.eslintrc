@@ -11,5 +11,10 @@
                 }
             }
         }
-    ]
+    ],
+    "settings": {
+        "next": {
+            "rootDir": "apps/landing/"
+        }
+    }
 }

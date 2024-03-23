@@ -50,7 +50,7 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
     );
 };
 CollapsibleText.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice || !slice.items || slice.items.length <= 0) return null;
+    if (!slice || slice.items.length <= 0) return null;
 
     return <CollapsibleText {...({ slice } as any)} />;
 };

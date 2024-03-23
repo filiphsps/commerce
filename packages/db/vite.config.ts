@@ -21,7 +21,7 @@ export default mergeConfig(
         build: {
             target: 'esnext',
             rollupOptions: {
-                external: ['mongoose'],
+                external: ['mongoose', 'mongodb'],
                 output: {
                     name
                 }

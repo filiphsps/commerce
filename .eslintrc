@@ -34,6 +34,8 @@
             "./tsconfig.json",
             "./tsconfig.node.json",
             "./tsconfig.test.json",
+            "./apps/**/tsconfig.json",
+            "./apps/**/tsconfig.test.json",
             "./packages/**/tsconfig.json",
             "./packages/**/tsconfig.node.json",
             "./packages/**/tsconfig.test.json"
@@ -88,7 +90,7 @@
         "react/react-in-jsx-scope": "off",
         "semi": ["error", "always"],
         "sort-imports": "off",
-        //"simple-import-sort/exports": "error",
+        "simple-import-sort/exports": "error",
         "simple-import-sort/imports": [
             "error",
             {
@@ -109,7 +111,7 @@
                     // Relative imports.
                     ["^\\.", "^\\./?$"],
                     // Types.
-                    ["^.+\\u0000$"]
+                    ["^.+\\u0000$", "^.+\\u0000$\\."]
                 ]
             }
         ],

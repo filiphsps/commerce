@@ -1,191 +1,191 @@
 [
-	{
-		"__TYPE__": "SharedSliceContent",
-		"variation": "default",
-		"primary": {},
-		"items": [
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"image",
-						{
-							"alt": null,
-							"credits": null,
-							"edit": {
-								"background": "transparent",
-								"crop": {
-									"x": 0,
-									"y": 0
-								},
-								"zoom": 1
-							},
-							"height": 500,
-							"origin": {
-								"height": 500,
-								"id": "main",
-								"url": "https://images.prismic.io/candy-by-sweden/d2bc3de2-3814-4253-92cf-e8e19477a820_rainforest-alliance-certified.png?auto=compress,format",
-								"width": 500
-							},
-							"url": "https://images.prismic.io/candy-by-sweden/d2bc3de2-3814-4253-92cf-e8e19477a820_rainforest-alliance-certified.png?auto=compress,format",
-							"width": 500,
-							"__TYPE__": "ImageContent",
-							"thumbnails": {}
-						}
-					],
-					[
-						"text",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "heading1",
-									"content": {
-										"text": "Ex incididunt voluptate",
-										"spans": []
-									},
-									"direction": "rtl"
-								},
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
-										"spans": []
-									},
-									"direction": "ltr"
-								},
-								{
-									"type": "heading2",
-									"content": {
-										"text": "Voluptate fugiat aliqua magna pariatus,  enim nostrud.",
-										"spans": []
-									},
-									"direction": "ltr"
-								},
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
-										"spans": []
-									},
-									"direction": "ltr"
-								}
-							]
-						}
-					],
-					[
-						"image_style",
-						{
-							"__TYPE__": "FieldContent",
-							"type": "Select",
-							"value": "normal"
-						}
-					],
-					[
-						"layout",
-						{
-							"__TYPE__": "FieldContent",
-							"value": "left",
-							"type": "Select"
-						}
-					],
-					[
-						"accent",
-						{
-							"__TYPE__": "FieldContent",
-							"value": "#0484ab",
-							"type": "Color"
-						}
-					]
-				]
-			},
-			{
-				"__TYPE__": "GroupItemContent",
-				"value": [
-					[
-						"image",
-						{
-							"url": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw2fHxmcnVpdHxlbnwwfHx8fDE2OTAwNDc3NDR8MA&ixlib=rb-4.0.3&q=85",
-							"origin": {
-								"id": "5JQH9Iqnm9o",
-								"url": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw2fHxmcnVpdHxlbnwwfHx8fDE2OTAwNDc3NDR8MA&ixlib=rb-4.0.3&q=85",
-								"width": 4608,
-								"height": 3072
-							},
-							"width": 4608,
-							"height": 3072,
-							"edit": {
-								"background": "transparent",
-								"zoom": 1,
-								"crop": {
-									"x": 0,
-									"y": 0
-								}
-							},
-							"credits": null,
-							"alt": null,
-							"__TYPE__": "ImageContent",
-							"thumbnails": {}
-						}
-					],
-					[
-						"text",
-						{
-							"__TYPE__": "StructuredTextContent",
-							"value": [
-								{
-									"type": "heading2",
-									"content": {
-										"text": "Ex incididunt voluptate",
-										"spans": []
-									},
-									"direction": "ltr"
-								},
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
-										"spans": []
-									},
-									"direction": "ltr"
-								},
-								{
-									"type": "paragraph",
-									"content": {
-										"text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
-										"spans": []
-									},
-									"direction": "ltr"
-								}
-							]
-						}
-					],
-					[
-						"image_style",
-						{
-							"__TYPE__": "FieldContent",
-							"type": "Select",
-							"value": "cover"
-						}
-					],
-					[
-						"layout",
-						{
-							"__TYPE__": "FieldContent",
-							"value": "left",
-							"type": "Select"
-						}
-					],
-					[
-						"accent",
-						{
-							"__TYPE__": "FieldContent",
-							"value": "#47355a",
-							"type": "Color"
-						}
-					]
-				]
-			}
-		]
-	}
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {},
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "image",
+                        {
+                            "alt": null,
+                            "credits": null,
+                            "edit": {
+                                "background": "transparent",
+                                "crop": {
+                                    "x": 0,
+                                    "y": 0
+                                },
+                                "zoom": 1
+                            },
+                            "height": 500,
+                            "origin": {
+                                "height": 500,
+                                "id": "main",
+                                "url": "https://images.prismic.io/candy-by-sweden/d2bc3de2-3814-4253-92cf-e8e19477a820_rainforest-alliance-certified.png?auto=compress,format",
+                                "width": 500
+                            },
+                            "url": "https://images.prismic.io/candy-by-sweden/d2bc3de2-3814-4253-92cf-e8e19477a820_rainforest-alliance-certified.png?auto=compress,format",
+                            "width": 500,
+                            "__TYPE__": "ImageContent",
+                            "thumbnails": {}
+                        }
+                    ],
+                    [
+                        "text",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "heading1",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate",
+                                        "spans": []
+                                    },
+                                    "direction": "rtl"
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                },
+                                {
+                                    "type": "heading2",
+                                    "content": {
+                                        "text": "Voluptate fugiat aliqua magna pariatus,  enim nostrud.",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "image_style",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "type": "Select",
+                            "value": "normal"
+                        }
+                    ],
+                    [
+                        "layout",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "value": "left",
+                            "type": "Select"
+                        }
+                    ],
+                    [
+                        "accent",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "value": "#0484ab",
+                            "type": "Color"
+                        }
+                    ]
+                ]
+            },
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "image",
+                        {
+                            "url": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw2fHxmcnVpdHxlbnwwfHx8fDE2OTAwNDc3NDR8MA&ixlib=rb-4.0.3&q=85",
+                            "origin": {
+                                "id": "5JQH9Iqnm9o",
+                                "url": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw2fHxmcnVpdHxlbnwwfHx8fDE2OTAwNDc3NDR8MA&ixlib=rb-4.0.3&q=85",
+                                "width": 4608,
+                                "height": 3072
+                            },
+                            "width": 4608,
+                            "height": 3072,
+                            "edit": {
+                                "background": "transparent",
+                                "zoom": 1,
+                                "crop": {
+                                    "x": 0,
+                                    "y": 0
+                                }
+                            },
+                            "credits": null,
+                            "alt": null,
+                            "__TYPE__": "ImageContent",
+                            "thumbnails": {}
+                        }
+                    ],
+                    [
+                        "text",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "heading2",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Ex incididunt voluptate fugiat aliqua eiusmod non. Pariatur do voluptate irure proident Lorem qui velit aliquip aliquip magna pariatur. Voluptate exercitation eiusmod voluptate enim nostrud irure labore aliqua anim non.",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "image_style",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "type": "Select",
+                            "value": "cover"
+                        }
+                    ],
+                    [
+                        "layout",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "value": "left",
+                            "type": "Select"
+                        }
+                    ],
+                    [
+                        "accent",
+                        {
+                            "__TYPE__": "FieldContent",
+                            "value": "#47355a",
+                            "type": "Color"
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
 ]

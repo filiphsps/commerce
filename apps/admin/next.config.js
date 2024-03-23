@@ -5,7 +5,6 @@ import withMillionLint from '@million/lint';
 import withMillion from 'million/compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -19,7 +18,6 @@ const config = {
     transpilePackages: [],
     experimental: {
         caseSensitiveRoutes: true,
-        instrumentationHook: isProduction,
         //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: ['react-icons', '@nordcom/nordstar'],
@@ -76,15 +74,13 @@ const config = {
     env: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-        AUTH_TRUST_HOST: 'true'
+        AUTH_URL: process.env.AUTH_URL
     },
     serverRuntimeConfig: {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-        AUTH_TRUST_HOST: 'true',
-
+        AUTH_URL: process.env.AUTH_URL,
+        AUTH_SECRET: process.env.AUTH_SECRET,
         SHOPIFY_API_KEY: process.env.SHOPIFY_API_KEY,
         SHOPIFY_API_SECRET_KEY: process.env.SHOPIFY_API_SECRET_KEY
     },
@@ -100,10 +96,7 @@ const config = {
             topLevelAwait: true
         };
         return config;
-    },
-
-    // We handle all redirects at the edge.
-    skipTrailingSlashRedirect: true
+    }
 };
 
 export default withMillionLint.next({ rsc: true })(
