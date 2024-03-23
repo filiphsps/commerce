@@ -8,16 +8,7 @@ export default {
     providers: [
         GitHub({
             clientId: process.env.GITHUB_ID as string,
-            clientSecret: process.env.GITHUB_TOKEN as string,
-            profile(profile) {
-                return {
-                    id: profile.id.toString(),
-                    name: profile.name || profile.login,
-                    username: profile.login,
-                    email: profile.email,
-                    image: profile.avatar_url
-                };
-            }
+            clientSecret: process.env.GITHUB_TOKEN as string
         })
     ],
     pages: {
