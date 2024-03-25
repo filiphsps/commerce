@@ -63,7 +63,7 @@
         "@prisma/client": "5.11.0",
         "@types/node": "20.11.30",
         "@types/react-dom": "18.2.22",
-        "@types/react": "18.2.69",
+        "@types/react": "18.2.70",
         "@typescript-eslint/eslint-plugin": "7.3.1",
         "@typescript-eslint/parser": "7.3.1",
         "@vitejs/plugin-react": "4.2.1",
