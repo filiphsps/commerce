@@ -278,8 +278,8 @@ importers:
         specifier: 0.0.46
         version: 0.0.46(react-dom@18.2.0)(react@18.2.0)
       '@vercel/otel':
-        specifier: 1.7.2
-        version: 1.7.2(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
+        specifier: 1.8.0
+        version: 1.8.0(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
       colord:
         specifier: 2.9.3
         version: 2.9.3
@@ -432,8 +432,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2(next@14.1.4)(react@18.2.0)
       '@vercel/otel':
-        specifier: 1.7.2
-        version: 1.7.2(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
+        specifier: 1.8.0
+        version: 1.8.0(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
       '@vercel/speed-insights':
         specifier: 1.0.5
         version: 1.0.5(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(sass@1.72.0)(typescript@5.4.3)(vite@4.5.2)
@@ -4028,8 +4028,8 @@ packages:
       server-only: 0.0.1
     dev: false
 
-  /@vercel/otel@1.7.2(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0):
-    resolution: {integrity: sha512-QU0K1AQsJ3Wb1Xe3jZJvAaeoVXi7o4CdrbvkzkMHBL1uPpQ0pce4Wa8QIe0cn6OLFiXM4nzLNtVCbM9z3fwV/g==}
+  /@vercel/otel@1.8.0(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0):
+    resolution: {integrity: sha512-8mfAFlCnub239zJcizVccQFV8rbX9JF6/XzLgs8Cwt31784rnO1lPg1e32RoIenyhVFJLlRb0gQjjhnh1dU8Cw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': ^1.7.0
