@@ -60,7 +60,7 @@
         "@prismicio/react": "2.7.3",
         "@shopify/hydrogen-react": "2024.1.1",
         "@vercel/analytics": "1.2.2",
-        "@vercel/otel": "1.7.2",
+        "@vercel/otel": "1.8.0",
         "@vercel/speed-insights": "1.0.5",
         "accept-language-parser": "1.5.0",
         "colord": "2.9.3",
