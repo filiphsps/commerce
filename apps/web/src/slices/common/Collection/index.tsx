@@ -33,7 +33,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     if (slice.variation !== 'default') {
         console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
 
-        if (!slice.primary.handle) return null;
+        return null;
     }
 
     const handle = slice.primary.handle as string;
