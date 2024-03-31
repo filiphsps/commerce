@@ -423,8 +423,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@prismicio/client@7.3.1)(next@14.1.4)(react@18.2.0)
       '@prismicio/react':
-        specifier: 2.7.3
-        version: 2.7.3(@prismicio/client@7.3.1)(react@18.2.0)
+        specifier: 2.7.4
+        version: 2.7.4(@prismicio/client@7.3.1)(react@18.2.0)
       '@shopify/hydrogen-react':
         specifier: 2024.1.1
         version: 2024.1.1(@types/react@18.2.72)(react-dom@18.2.0)(react@18.2.0)
@@ -2489,8 +2489,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@prismicio/react@2.7.3(@prismicio/client@7.3.1)(react@18.2.0):
-    resolution: {integrity: sha512-4Fr19mcJPCDCQUvCYUjphgFH6bzoNeamIVubDvDTdedYYGT+SjKCwNRIElDJIh6QMCU8zqvVAT4jAS3Tok5hlw==}
+  /@prismicio/react@2.7.4(@prismicio/client@7.3.1)(react@18.2.0):
+    resolution: {integrity: sha512-FIbDxAH6gy2Cw9AaA+UhI5LG2QyHwfgJS60Wuo/i6xwcgZRLELUcsoHK7/rLzxSXvNMmiaoqH61Wi5rip8Z0Rg==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
