@@ -80,7 +80,7 @@ const config = {
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown',
         AUTH_URL: process.env.AUTH_URL,
-        AUTH_SECRET: process.env.AUTH_SECRET,
+        AUTH_SECRET: process.env.AUTH_SECRET || 'development-secret-change-me',
         SHOPIFY_API_KEY: process.env.SHOPIFY_API_KEY,
         SHOPIFY_API_SECRET_KEY: process.env.SHOPIFY_API_SECRET_KEY
     },
