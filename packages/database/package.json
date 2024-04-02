@@ -57,7 +57,7 @@
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
-        "@types/node": "20.12.2",
+        "@types/node": "20.12.3",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
         "glob": "10.3.12",
