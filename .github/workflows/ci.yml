@@ -20,6 +20,7 @@ env:
     POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL}}
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
+    AUTH_SECRET: 'development-secret'
 
 jobs:
     build:
