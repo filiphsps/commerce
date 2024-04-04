@@ -390,8 +390,8 @@ importers:
         specifier: 3.9.10
         version: 3.9.10(@types/react@18.2.74)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.9.2
-        version: 0.9.2(@apollo/client@3.9.10)(next@14.1.4)(react@18.2.0)
+        specifier: 0.10.0
+        version: 0.10.0(@apollo/client@3.9.10)(next@14.1.4)(react@18.2.0)
       '@million/lint':
         specifier: 0.0.73
         version: 0.0.73(@types/react-dom@18.2.24)(@types/react@18.2.74)
@@ -744,8 +744,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@apollo/client-react-streaming@0.9.2(@apollo/client@3.9.10)(react@18.2.0):
-    resolution: {integrity: sha512-yCURY+XsvIcc/EUTvRnBTfqbG+zcjQOOkD8mmPClgkFvH7v7g4ZM0uGILPIV/KLxfRJf2UCH5gBQhXyoXVDbSA==}
+  /@apollo/client-react-streaming@0.10.0(@apollo/client@3.9.10)(react@18.2.0):
+    resolution: {integrity: sha512-iZ2jYghRS71xFv6O3Js5Ojrrmk4SnIEKwPRKIswQyAtqjHrfvUTyXCDzxrhPcGQe/y7su/XcE7Xp0kOp7yTnlg==}
     peerDependencies:
       '@apollo/client': ^3.9.6
       react: ^18
@@ -795,15 +795,15 @@ packages:
       - '@types/react'
     dev: false
 
-  /@apollo/experimental-nextjs-app-support@0.9.2(@apollo/client@3.9.10)(next@14.1.4)(react@18.2.0):
-    resolution: {integrity: sha512-LePNBEM8hun1hVSMBSSAWwUEa6i652fPZVDzLWagCMMrnKCE1LzYj3N4LBNr/keqYRaqpo8ZoRAw5tJkf0k3tw==}
+  /@apollo/experimental-nextjs-app-support@0.10.0(@apollo/client@3.9.10)(next@14.1.4)(react@18.2.0):
+    resolution: {integrity: sha512-S3mfZRnAAAaKwA8RNckS4TWYLX5utpmRTwG3WGFtpooYx8QQG8xft0p0a9eTQ53Jrw3nSMJc/wOOsT/5noMCQg==}
     peerDependencies:
       '@apollo/client': ^3.9.6
       next: ^13.4.1 || ^14.0.0
       react: ^18
     dependencies:
       '@apollo/client': 3.9.10(@types/react@18.2.74)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
-      '@apollo/client-react-streaming': 0.9.2(@apollo/client@3.9.10)(react@18.2.0)
+      '@apollo/client-react-streaming': 0.10.0(@apollo/client@3.9.10)(react@18.2.0)
       next: 14.1.4(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.74.1)
       react: 18.2.0
     dev: false
