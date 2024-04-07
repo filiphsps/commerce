@@ -56,7 +56,7 @@
         "@codecov/vite-plugin": "0.0.1-beta.5",
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
-        "eslint": "8.57.0",
+        "eslint": "9.0.0",
         "glob": "10.3.12",
         "rimraf": "5.0.5",
         "typescript": "5.4.4",
