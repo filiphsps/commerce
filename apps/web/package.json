@@ -52,7 +52,7 @@
         "@nordcom/commerce-database": "workspace:*",
         "@nordcom/commerce-db": "workspace:*",
         "@nordcom/commerce-errors": "workspace:*",
-        "@nordcom/nordstar": "0.0.48",
+        "@nordcom/nordstar": "0.0.49",
         "@prisma/client": "5.12.0",
         "@prisma/extension-accelerate": "1.0.0",
         "@prismicio/client": "7.4.0",
