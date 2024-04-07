@@ -142,8 +142,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
-        specifier: 0.0.49
-        version: 0.0.49(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.0.50
+        version: 0.0.50(react-dom@18.2.0)(react@18.2.0)
       '@prisma/client':
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
@@ -275,8 +275,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/marketing-common
       '@nordcom/nordstar':
-        specifier: 0.0.49
-        version: 0.0.49(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.0.50
+        version: 0.0.50(react-dom@18.2.0)(react@18.2.0)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
@@ -408,8 +408,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/errors
       '@nordcom/nordstar':
-        specifier: 0.0.49
-        version: 0.0.49(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.0.50
+        version: 0.0.50(react-dom@18.2.0)(react@18.2.0)
       '@prisma/client':
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
@@ -693,8 +693,8 @@ importers:
   packages/marketing-common:
     dependencies:
       '@nordcom/nordstar':
-        specifier: 0.0.49
-        version: 0.0.49(react-dom@18.2.0)(react@18.2.0)
+        specifier: 0.0.50
+        version: 0.0.50(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@codecov/vite-plugin':
         specifier: 0.0.1-beta.5
@@ -2103,88 +2103,88 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  /@nordcom/nordstar-accented@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-bERvhyKZn6nsNx2wETCfjq5EGiEEfZassfPM5Lx2xq0I70Dtz0Xx+7SufXFXMPgTrWj2LYXLLsvXrzhEDON3Iw==}
+  /@nordcom/nordstar-accented@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-p3Q6tyRIQlp4AVbuISZjImUdUMz6F4gHH5a0LrT2HczU5eh+CQ0zWHsS8Kx4MndJXLwdkx4LtaVwJ9B0zsMaCg==}
     engines: {node: <=21}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-button@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-SDWSvg3wb6LaxMauWJAiaYng42XCCuPWhNFYslIa5ADpgCyz6ZX2GGcMICiUe3VAKEExwkZ5bjjhHfNIJ08Isg==}
+  /@nordcom/nordstar-button@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-JwK0ttbB5TA9+72sKUdNnvBZzMxv8rD/jG9SzDfc8l64UN7RYUbbM5EBsRghJdEh7TYjtLKlSDuJIcedyIgltg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-card@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-KeO4YizQowtPwPRJD7z/zz/r2XYpqODsy8zv8PQ8iynGQNEjbsaZVJB1BEWOpECwTPRsH3yzufAsk7uhL1mjRA==}
+  /@nordcom/nordstar-card@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FfASrtQcZu9e3GVOHeL3mffiPF+DHamhhx4uUZr/ZMZhhQQ/2iuyhNymVogm9TJncks4IBPSrE7w4Sqhn5Qyvw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-header@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Cqz2nStLoVmCzZ7Y0V9sWVbcNGvqk2RQFWtc9EVyDT2C5bKVi6/W6f3oGswvEOaLwphlT2h3GQ0PY5lkQaIzjg==}
+  /@nordcom/nordstar-header@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ID2nE2C/Sdxykohv/hf6r0316PfHSOXPaEBfQFjZKp3SARVySKw+KMKtBRP8fEUsotoC3MU9vIb2aizxkv5VTw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-card': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-view': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-card': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-view': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-heading@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-FUNxmzW/9QnA74PVrmwRXOuu8h6yfvy5+9ipaZg9QsaSgkjyOCaElmgnx8rvIjfAFZChDRTXy8eY/2c4THy/dQ==}
+  /@nordcom/nordstar-heading@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-JS2TH5gKpteFg4ZGbFHKHyMbMHen1If2sCHJxxjJv/YvGbj2oHR5BNQTbLHvDuymAxL1DaAE3vQ/dMO3GU1YJg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-input@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-pvymPe/pFyrQ3t2KDjc/LLHuC2ne2o1ARC8G+UcHd07Zi1kil7/pzzvx7OsA6M6YF+ZGYWxGmGcQQggTFKU+GQ==}
+  /@nordcom/nordstar-input@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-AzWuxd8jVkfMcWB0d4BOYmrKszOW119rTNX5Px569dDvh5KUTw0fCBAVftus78qT1ZVQZH5kRw3axH1IXLomxg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-label@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-V6ipIl2FyRKA+4M/LLxZ/zKCwbma56Hgmm8GVV/S0JGCbEdMi8OtDVfEfxHpHoJ2ITM6i/k+9oPIuOzODZHZMg==}
+  /@nordcom/nordstar-label@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-3LbSinPhKHGbP5U986cfTuB0928KW68wrLquIBYev0CRJ/OzgcaiVJ0qhnZtpz0B6v4clBpO9j2mEHnCp8D9Nw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar-system@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-kW/4TyqYCSpexnYQKV1w6oGmq+915g7zTuVzr9Hu6SefaOSwD8SWZu9SkljFB8NbWobr8ETTUvT1t/fjf6/zDA==}
+  /@nordcom/nordstar-system@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-bWRP27jGZkjMiyi8/2bkxCGQs1+QEkr/Q6lQM8IocK+GyWRIVMU4hlCl3A+uNsGY2AW3Yg3sbn4MqZ3RgSEj3w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -2194,32 +2194,32 @@ packages:
       the-new-css-reset: 1.11.2
     dev: false
 
-  /@nordcom/nordstar-view@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-7SeuaK5BgIvADpCqzm7Y+zMvLMbOid3oEDlN2B+w8IqLcu3LK9E8hDDggxcg72EECpuN/9KZHUo69Fk/7cTQ2w==}
+  /@nordcom/nordstar-view@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-cdrjQw47zm0Ww9sYvHV5muQq2LUa48k5oSSqWwvlLg6d2zNZSBxHWmnHURxDjERqja6l4AhHAZznSCBTawz9VA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@nordcom/nordstar@0.0.49(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-sbIwqiq3juwJLNJJodaplCFhohKsR3GAHO1FRelwhHikLDss0pgtTaaHIsOwX0dnfv0OYZin19lFSOeJsIVFjQ==}
+  /@nordcom/nordstar@0.0.50(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-o5dDyHGrLyDfuqSJ5Pz6tvYa4+133okVK8Rv2sW9j03XuHyymGODUY0mCgp5lkOxSyipJ/W4LMRQP1qhlPuHfg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@nordcom/nordstar-accented': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-button': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-card': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-header': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-heading': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-input': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-label': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-system': 0.0.49(react-dom@18.2.0)(react@18.2.0)
-      '@nordcom/nordstar-view': 0.0.49(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-accented': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-button': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-card': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-header': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-heading': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-input': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-label': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-system': 0.0.50(react-dom@18.2.0)(react@18.2.0)
+      '@nordcom/nordstar-view': 0.0.50(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
