@@ -96,7 +96,7 @@
     },
     "optionalDependencies": {
         "@rollup/rollup-darwin-arm64": "4.14.1",
-        "@rollup/rollup-linux-x64-gnu": "4.14.0"
+        "@rollup/rollup-linux-x64-gnu": "4.14.1"
     },
     "overrides": {
         "@typescript-eslint/typescript-estree": "7.5.0",
