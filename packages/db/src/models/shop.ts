@@ -9,6 +9,12 @@ export interface ShopBase extends BaseDocument {
     name: string;
     domain: string;
     alternativeDomains?: string[];
+    design: {
+        accents: {
+            color: string;
+            foreground: string;
+        }[];
+    };
     collaborators: {
         user: UserBase;
     }[];
@@ -32,6 +38,23 @@ export const ShopSchema = new Schema<ShopBase>(
                 default: []
             }
         ],
+
+        design: {
+            accents: {
+                type: [
+                    {
+                        color: {
+                            type: Schema.Types.String
+                        },
+                        foreground: {
+                            type: Schema.Types.String
+                        }
+                    }
+                ],
+                required: true,
+                default: []
+            }
+        },
 
         collaborators: {
             type: [
