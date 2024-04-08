@@ -44,7 +44,7 @@
     },
     "homepage": "https://admin.shops.nordcom.io/",
     "dependencies": {
-        "@auth/core": "0.28.2",
+        "@auth/core": "0.29.0",
         "@million/lint": "0.0.73",
         "@next/third-parties": "14.1.4",
         "@nordcom/commerce-database": "workspace:*",
