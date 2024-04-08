@@ -58,7 +58,7 @@
         "colord": "2.9.3",
         "geist": "1.3.0",
         "million": "3.0.6",
-        "mongoose": "8.3.0",
+        "mongoose": "8.3.1",
         "next-auth": "5.0.0-beta.16",
         "next-seo": "6.5.0",
         "next": "14.1.4",
