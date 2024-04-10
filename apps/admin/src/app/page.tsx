@@ -65,7 +65,7 @@ export default async function Overview() {
                             Logout
                         </Button>
                     }
-                    actions={shopsActions.length > 1 ? shopsActions : null}
+                    actions={shopsActions.length >= 1 ? shopsActions : null}
                     footer={
                         <Button variant="solid" color="primary" disabled>
                             Connect a new Shop
