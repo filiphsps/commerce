@@ -426,8 +426,8 @@ importers:
         specifier: 2.7.3
         version: 2.7.3(@prismicio/client@7.4.0)(react@18.2.0)
       '@shopify/hydrogen-react':
-        specifier: 2024.1.1
-        version: 2024.1.1(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 2024.4.0
+        version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
       '@vercel/analytics':
         specifier: 1.2.2
         version: 1.2.2(next@14.2.0)(react@18.2.0)
@@ -3404,8 +3404,8 @@ packages:
     resolution: {integrity: sha512-w9noa5wbuyQegOdmqR5Yfj0GQJKmwuDiqIzDETgZhTMcmV45CNxVRxCWx6BQt3MpLzgk0A8G9iaoppfHXzkhfA==}
     dev: false
 
-  /@shopify/hydrogen-react@2024.1.1(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-3ZDTUZPauXyV6TTxSjsEd0KEybT0jDpaEaB2tPtpjq783rJ1xD+wS9sWqqaKhAY2EUngg03muZiiuBeZIbR4Fw==}
+  /@shopify/hydrogen-react@2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-CmOIftVO7DRdcs8dzU0DC6je8/lzM+YEuxRmmvlXSgrKvHTKEPToipUaZTHQi3DaZvThw06ZNjYQi5x2RGz57A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0.0
