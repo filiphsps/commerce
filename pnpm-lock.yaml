@@ -783,8 +783,8 @@ importers:
         version: 8.3.1
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 0.0.1-beta.5
-        version: 0.0.1-beta.5(vite@5.2.8)
+        specifier: 0.0.1-beta.6
+        version: 0.0.1-beta.6(vite@5.2.8)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -816,8 +816,8 @@ importers:
   packages/errors:
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 0.0.1-beta.5
-        version: 0.0.1-beta.5(vite@5.2.8)
+        specifier: 0.0.1-beta.6
+        version: 0.0.1-beta.6(vite@5.2.8)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -847,8 +847,8 @@ importers:
         version: 0.0.52(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@codecov/vite-plugin':
-        specifier: 0.0.1-beta.5
-        version: 0.0.1-beta.5(vite@5.2.8)
+        specifier: 0.0.1-beta.6
+        version: 0.0.1-beta.6(vite@5.2.8)
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
@@ -1210,8 +1210,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@codecov/bundler-plugin-core@0.0.1-beta.5:
-    resolution: {integrity: sha512-eltwv1aRJdwonlTD47jQ2GYdKZfMv3jCviDui32JOu12ZAiI3WdJCtjWF9zxpmnHEZ30pn0WbeZir+sXSFLJHw==}
+  /@codecov/bundler-plugin-core@0.0.1-beta.6:
+    resolution: {integrity: sha512-dGk/s90fZm7D1O00gRtuE2gqM/CW9nglaPzcIT0v10VOV2tj+aHRrdB+yjas+RW8QP8Qf/sMqSmjkufP1iqggw==}
     engines: {node: '>=18.0.0'}
     dependencies:
       chalk: 4.1.2
@@ -1220,13 +1220,13 @@ packages:
       zod: 3.22.4
     dev: true
 
-  /@codecov/vite-plugin@0.0.1-beta.5(vite@5.2.8):
-    resolution: {integrity: sha512-KW+AY27lqFSOj1lY+yO7zLSNdxCaYaRTnHibRBNyCvVd76MdaResIpFr1bxjgaxVGaEtsV4mcTzDjtlgVV/+nw==}
+  /@codecov/vite-plugin@0.0.1-beta.6(vite@5.2.8):
+    resolution: {integrity: sha512-eIi3M9R1om/T+6FoZGaffWMmwSZ0nx1fIGgidFRFkQdXtKAwHU0//YjCXOg17vJsPXlaSatM81EQBU/qmSXQ1Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       vite: 4.x || 5.x
     dependencies:
-      '@codecov/bundler-plugin-core': 0.0.1-beta.5
+      '@codecov/bundler-plugin-core': 0.0.1-beta.6
       vite: 5.2.8(@types/node@20.12.7)(sass@1.75.0)
     dev: true
 
