@@ -2,9 +2,6 @@
 
 import styles from './image-grid.module.scss';
 
-import { memo } from 'react';
-
-import { deepEqual } from '@/utils/deep-equal';
 import { PrismicNextImage } from '@prismicio/next';
 
 import Link from '@/components/link';
@@ -73,4 +70,4 @@ ImageGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
 };
 (ImageGrid.skeleton as any).displayName = 'Nordcom.Slices.ImageGrid.skeleton';
 
-export default memo(ImageGrid, deepEqual);
+export default ImageGrid;

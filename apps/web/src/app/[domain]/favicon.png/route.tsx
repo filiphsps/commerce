@@ -61,8 +61,6 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
             }
         );
     } catch (error) {
-        console.error(error);
-
         return NextResponse.json(
             {
                 status: 500,
