@@ -18,7 +18,7 @@
         "packages/*"
     ],
     "scripts": {
-        "prepare": "husky || true && husky install",
+        "prepare": "husky || true",
         "predev": "prisma generate --no-engine",
         "dev": "dotenv -c -- turbo run dev",
         "prebuild": "prisma generate --no-engine",

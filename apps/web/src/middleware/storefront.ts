@@ -22,7 +22,7 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
             return 'shops.nordcom.io';
         }
 
-        return 'www.sweetsideofsweden.com';
+        return 'swedish-candy-store.com';
     }
 
     return hostname;

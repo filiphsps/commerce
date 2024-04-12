@@ -13,7 +13,7 @@
         "start": "next start -p $PORT",
         "dev": "next dev",
         "build": "next build",
-        "clean": "rimraf -g dist coverage .turbo .next .tsbuildinfo *.log",
+        "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "next lint",
         "fix:lint": "next lint --fix",
         "fix": "concurrently pnpm:fix:*",
