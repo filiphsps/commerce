@@ -55,7 +55,7 @@
         "@nordcom/nordstar": "0.0.52"
     },
     "devDependencies": {
-        "@codecov/vite-plugin": "0.0.1-beta.5",
+        "@codecov/vite-plugin": "0.0.1-beta.6",
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
