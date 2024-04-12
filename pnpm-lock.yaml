@@ -254,8 +254,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
       '@testing-library/react':
-        specifier: 14.3.0
-        version: 14.3.0(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.3.1
+        version: 14.3.1(react-dom@18.2.0)(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -450,8 +450,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
       '@testing-library/react':
-        specifier: 14.3.0
-        version: 14.3.0(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.3.1
+        version: 14.3.1(react-dom@18.2.0)(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -643,8 +643,8 @@ importers:
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
       '@testing-library/react':
-        specifier: 14.3.0
-        version: 14.3.0(react-dom@18.2.0)(react@18.2.0)
+        specifier: 14.3.1
+        version: 14.3.1(react-dom@18.2.0)(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -3803,8 +3803,8 @@ packages:
       vitest: 1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0)
     dev: true
 
-  /@testing-library/react@14.3.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-AYJGvNFMbCa5vt1UtDCa/dcaABrXq8gph6VN+cffIx0UeA0qiGqS+sT60+sb+Gjc8tGXdECWYQgaF0khf8b+Lg==}
+  /@testing-library/react@14.3.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-H99XjUhWQw0lTgyMN05W3xQG1Nh4lq574D8keFf1dDoNTJgp66VbJozRaczoF+wsiaPJNt/TcnfpLGufGxSrZQ==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^18.0.0
