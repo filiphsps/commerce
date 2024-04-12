@@ -4,7 +4,6 @@ import type { Shop } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { CartFragment } from '@/api/shopify/cart';
-import { BuildConfig } from '@/utils/build-config';
 import { createClient, linkResolver } from '@/utils/prismic';
 import { PrismicProvider } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
@@ -33,7 +32,7 @@ const CommerceProvider = ({
                     <ShopifyProvider
                         storefrontId={shop.commerceProvider.storefrontId}
                         storeDomain={`https://${shop.commerceProvider.domain}`}
-                        storefrontApiVersion={BuildConfig.shopify.api}
+                        storefrontApiVersion="2024-04"
                         storefrontToken={shop.commerceProvider.authentication.publicToken}
                         countryIsoCode={locale.country!}
                         languageIsoCode={locale.language}

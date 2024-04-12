@@ -31,8 +31,8 @@ const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) =>
     return (
         <section
             className={styles.wrapper}
-            data-theme={headerTheme.theme || 'primary'}
-            data-theme-variant={headerTheme.themeVariant || 'default'}
+            data-theme={headerTheme?.theme || 'primary'}
+            data-theme-variant={headerTheme?.themeVariant || 'default'}
         >
             <HeaderContainer {...props}>
                 <HamburgerMenu />

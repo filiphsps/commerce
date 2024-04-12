@@ -114,7 +114,7 @@ export const ShopApi = async (domain: string, cache?: any) => {
                 theme: {
                     ...((typeof res.theme?.data === 'object'
                         ? res.theme.data
-                        : JSON.parse(res.theme!.data.toString())) as ShopTheme)
+                        : JSON.parse((res.theme?.data || '{}').toString())) as Partial<ShopTheme>)
                 },
                 commerceProvider: {
                     ...res.commerceProvider,
