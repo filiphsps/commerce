@@ -1,7 +1,7 @@
 'use client';
 
-import { type ComponentProps } from 'react';
 import BaseLink from 'next/link';
+import { type ComponentProps } from 'react';
 
 import type { Shop } from '@nordcom/commerce-database';
 import { TypeError } from '@nordcom/commerce-errors';
@@ -14,6 +14,7 @@ import { useShop } from './shop/provider';
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
     shop?: Shop;
     locale?: Locale;
+    href?: string;
 };
 
 const isInternal = (href: string, shop?: Shop): boolean => {
@@ -36,7 +37,8 @@ const isInternal = (href: string, shop?: Shop): boolean => {
 export default function Link({ locale, href, prefetch, ...props }: Props) {
     if (typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
-        throw new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`);
+        console.error(new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`));
+        return null;
     }
 
     const shop = useShop();
