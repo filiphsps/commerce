@@ -86,7 +86,7 @@ export const createClient = ({
     let accessToken: string = process.env.PRISMIC_TOKEN!;
 
     // TODO: These cases should be dealt with before even arriving here.
-    switch (shop.contentProvider?.type) {
+    switch (shop.contentProvider.type) {
         case 'prismic': {
             const data = shop.contentProvider as PrismicContentProvider | null;
             name = data?.id || repositoryName;
@@ -120,7 +120,7 @@ export const createClient = ({
 };
 
 export const linkResolver: LinkResolverFunction<any> = (doc) => {
-    const { code: locale } = Locale.from(doc.lang)!; // FIXME: handle invalid locales.
+    const { code: locale } = Locale.from(doc.lang || Locale.default.code)!;
 
     // TODO: Deal with tenants that don't use locales in their paths.
 

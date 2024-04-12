@@ -43,7 +43,7 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
     const shop = api.shop();
     if (shop.commerceProvider.type !== 'shopify') {
         // TODO: Do this properly.
-        return [Locale.from('en-US')];
+        return [Locale.default];
     }
 
     const callback = async (api: AbstractApi) => {
@@ -54,7 +54,7 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
                     try {
                         return Locale.from({ language: language.isoCode, country: country.isoCode });
                     } catch {
-                        return null;
+                        return Locale.default;
                     }
                 })
                 .filter((_) => _)
@@ -182,7 +182,7 @@ export const StoreApi = async ({
                 `);
 
                 let store: any | null = null;
-                if (shop.contentProvider?.type === 'prismic') {
+                if (shop.contentProvider.type === 'prismic') {
                     const client = _client || createClient({ shop, locale });
                     store = (await (async () => {
                         try {

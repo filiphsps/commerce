@@ -311,7 +311,7 @@ export const CollectionPaginationCountApi = async ({
                 const pages = Math.ceil(products / perPage);
                 return {
                     pages,
-                    cursors: cursors.reverse(), // FIXME: This is a hack to reverse the cursors.
+                    cursors: cursors.reverse(),
                     products
                 };
             } catch (error: unknown) {
