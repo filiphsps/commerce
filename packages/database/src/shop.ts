@@ -126,10 +126,10 @@ export const ShopApi = async (domain: string, cache?: any) => {
                 },
                 contentProvider: {
                     ...res.contentProvider,
-                    ...((typeof res.contentProvider?.data === 'object'
+                    ...(typeof res.contentProvider?.data === 'object'
                         ? res.contentProvider.data
-                        : JSON.parse(res.contentProvider!.data.toString())) as PrismicContentProvider) // FIXME: This shouldn't be hardcoded to prismic.
-                }
+                        : JSON.parse(res.contentProvider!.data.toString())) // FIXME: This shouldn't be hardcoded to prismic.
+                } as ContentProvider
             };
         })();
 

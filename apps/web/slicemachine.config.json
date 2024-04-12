@@ -9,5 +9,5 @@
     },
     "libraries": ["./src/slices/common", "./src/slices/navigation", "./src/slices/product"],
     "localSliceSimulatorURL": "http://localhost:3000/slice-simulator",
-    "repositoryName": "candy-by-sweden"
+    "repositoryName": "swedish-candy-store"
 }
