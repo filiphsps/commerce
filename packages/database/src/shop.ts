@@ -98,7 +98,9 @@ export const ShopApi = async (domain: string, cache?: any) => {
                     },
                     contentProvider: {
                         select: {
-                            type: true
+                            id: true,
+                            type: true,
+                            data: true
                         }
                     }
                 },
@@ -121,6 +123,12 @@ export const ShopApi = async (domain: string, cache?: any) => {
                     data: (typeof res.commerceProvider?.data === 'object'
                         ? res.commerceProvider.data
                         : JSON.parse(res.commerceProvider!.data.toString())) as ShopifyCommerceProvider
+                },
+                contentProvider: {
+                    ...res.contentProvider,
+                    ...((typeof res.contentProvider?.data === 'object'
+                        ? res.contentProvider.data
+                        : JSON.parse(res.contentProvider!.data.toString())) as PrismicContentProvider) // FIXME: This shouldn't be hardcoded to prismic.
                 }
             };
         })();

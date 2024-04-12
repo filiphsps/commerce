@@ -1,4 +1,4 @@
-import type { Shop } from '@nordcom/commerce-database';
+import type { PrismicContentProvider, Shop } from '@nordcom/commerce-database';
 import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { BuildConfig } from '@/utils/build-config';
@@ -85,11 +85,14 @@ export const createClient = ({
     let name: string = repositoryName;
 
     // TODO: These cases should be dealt with before even arriving here.
-    if (shop.contentProvider?.type !== 'prismic') {
-        throw new UnknownContentProviderError();
-    } else {
-        // Work-around since `content.id` wouldn't exist on a `DummyContentProvider`.
-        name = /*shop.configuration.content?.id ||*/ repositoryName;
+    switch (shop.contentProvider?.type) {
+        case 'prismic': {
+            const data = shop.contentProvider as PrismicContentProvider | null;
+            name = data?.id || repositoryName;
+            break;
+        }
+        default:
+            throw new UnknownContentProviderError();
     }
 
     // TODO: Remove `repositoryName` variable.
