@@ -58,4 +58,17 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
     );
 };
 
+ImageGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
+    if (!slice) return null;
+
+    return (
+        <PageContent
+            as="section"
+            className={styles.container}
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+        ></PageContent>
+    );
+};
+
 export default memo(ImageGrid, deepEqual);

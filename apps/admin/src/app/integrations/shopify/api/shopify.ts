@@ -1,7 +1,7 @@
 import '@shopify/shopify-api/adapters/cf-worker';
 
 import { ApiVersion, shopifyApi } from '@shopify/shopify-api';
-import { restResources } from '@shopify/shopify-api/rest/admin/2024-01';
+import { restResources } from '@shopify/shopify-api/rest/admin/2024-04';
 
 export const shopifyAdminApi = shopifyApi({
     userAgentPrefix: 'nordcom',

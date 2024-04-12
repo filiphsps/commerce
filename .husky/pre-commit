@@ -1,11 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname "$0")/_/husky.sh"
 
-reset=$(tput sgr0)
-green='\033[1;32m'
-red='\033[1;31m'
-
-echo -e "Running pre-commit hooks with ${green}bun${reset}"
 pnpx lint-staged
 pnpm run build:packages
 pnpm run typecheck

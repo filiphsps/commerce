@@ -61,6 +61,7 @@
         "@prismicio/next": "1.5.0",
         "@prismicio/react": "2.7.3",
         "@shopify/hydrogen-react": "2024.4.0",
+        "@shopify/shopify-api": "9.7.1",
         "@vercel/analytics": "1.2.2",
         "@vercel/otel": "1.8.1",
         "@vercel/speed-insights": "1.0.5",
