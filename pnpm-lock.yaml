@@ -151,8 +151,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0(@prisma/client@5.12.0)
       '@shopify/shopify-api':
-        specifier: 9.7.0
-        version: 9.7.0
+        specifier: 9.7.1
+        version: 9.7.1
       colord:
         specifier: 2.9.3
         version: 2.9.3
@@ -3429,8 +3429,8 @@ packages:
     engines: {node: ^14.17.0 || >=16.0.0}
     dev: false
 
-  /@shopify/shopify-api@9.7.0:
-    resolution: {integrity: sha512-sP4msdi2BgYSj04+zbpQLX9JNCkqoZYEZCn3pCdJH1F5KWT+TrIEFQa69RLVRzIlLgJvMm9aILmlUkV1NUYEEg==}
+  /@shopify/shopify-api@9.7.1:
+    resolution: {integrity: sha512-LstIycn/gC0OHbLX3YEqEFdlkp1v+CvJhyUB0dTJz+uK7gziu8G9lZgnv9/punjBH38mw7qBSCGEMzdLve6gAA==}
     dependencies:
       '@shopify/admin-api-client': 0.2.8
       '@shopify/network': 3.2.1
