@@ -543,8 +543,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@prismicio/client@7.4.0)(next@14.2.0)(react@18.2.0)
       '@prismicio/react':
-        specifier: 2.7.3
-        version: 2.7.3(@prismicio/client@7.4.0)(react@18.2.0)
+        specifier: 2.7.4
+        version: 2.7.4(@prismicio/client@7.4.0)(react@18.2.0)
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
@@ -1956,6 +1956,7 @@ packages:
   /@jridgewell/resolve-uri@3.1.2:
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
+    requiresBuild: true
 
   /@jridgewell/set-array@1.2.1:
     resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
@@ -2610,8 +2611,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@prismicio/react@2.7.3(@prismicio/client@7.4.0)(react@18.2.0):
-    resolution: {integrity: sha512-4Fr19mcJPCDCQUvCYUjphgFH6bzoNeamIVubDvDTdedYYGT+SjKCwNRIElDJIh6QMCU8zqvVAT4jAS3Tok5hlw==}
+  /@prismicio/react@2.7.4(@prismicio/client@7.4.0)(react@18.2.0):
+    resolution: {integrity: sha512-FIbDxAH6gy2Cw9AaA+UhI5LG2QyHwfgJS60Wuo/i6xwcgZRLELUcsoHK7/rLzxSXvNMmiaoqH61Wi5rip8Z0Rg==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
