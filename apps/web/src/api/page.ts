@@ -20,7 +20,7 @@ export const PagesApi = async ({
     client?: PrismicClient;
     exclude?: string[];
 }): Promise<PrismicDocument[]> => {
-    if (shop.contentProvider?.type !== 'prismic') {
+    if (shop.contentProvider.type !== 'prismic') {
         // TODO: throw new NotFoundError();.
         return [];
     }
@@ -76,7 +76,7 @@ export const PageApi = async <T extends PageType = 'custom_page'>(props: {
 }): Promise<{
     page: PageData<T> | null;
 }> => {
-    if (props.shop.contentProvider?.type !== 'prismic') {
+    if (props.shop.contentProvider.type !== 'prismic') {
         return { page: null };
     }
 
@@ -100,6 +100,10 @@ export const PageApi = async <T extends PageType = 'custom_page'>(props: {
 
                     // Don't throw on 404.
                     // TODO: In the future we absolutely should.
+                    return { page: null };
+                }
+
+                if ((error as any)?.message?.includes('unexpected field')) {
                     return { page: null };
                 }
 
