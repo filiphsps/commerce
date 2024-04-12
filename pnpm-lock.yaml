@@ -156,15 +156,6 @@ importers:
       '@prisma/extension-accelerate':
         specifier: 1.0.0
         version: 1.0.0(@prisma/client@5.12.0)
-      '@prismicio/client':
-        specifier: 7.4.0
-        version: 7.4.0
-      '@prismicio/next':
-        specifier: 1.5.0
-        version: 1.5.0(@prismicio/client@7.4.0)(next@14.2.0)(react@18.2.0)
-      '@prismicio/react':
-        specifier: 2.7.3
-        version: 2.7.3(@prismicio/client@7.4.0)(react@18.2.0)
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
@@ -259,9 +250,6 @@ importers:
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
-      '@slicemachine/adapter-next':
-        specifier: 0.3.38
-        version: 0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.0)(react@18.2.0)(uuid@9.0.1)
       '@testing-library/jest-dom':
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
@@ -313,9 +301,6 @@ importers:
       server-only:
         specifier: 0.0.1
         version: 0.0.1
-      slice-machine-ui:
-        specifier: 1.26.0
-        version: 1.26.0(@prismicio/client@7.4.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@18.2.0)(react@18.2.0)(uuid@9.0.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -364,15 +349,6 @@ importers:
       '@prisma/extension-accelerate':
         specifier: 1.0.0
         version: 1.0.0(@prisma/client@5.12.0)
-      '@prismicio/client':
-        specifier: 7.4.0
-        version: 7.4.0
-      '@prismicio/next':
-        specifier: 1.5.0
-        version: 1.5.0(@prismicio/client@7.4.0)(next@14.2.0)(react@18.2.0)
-      '@prismicio/react':
-        specifier: 2.7.3
-        version: 2.7.3(@prismicio/client@7.4.0)(react@18.2.0)
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
@@ -470,9 +446,6 @@ importers:
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
-      '@slicemachine/adapter-next':
-        specifier: 0.3.38
-        version: 0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.0)(react@18.2.0)(uuid@9.0.1)
       '@testing-library/jest-dom':
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
@@ -524,9 +497,6 @@ importers:
       server-only:
         specifier: 0.0.1
         version: 0.0.1
-      slice-machine-ui:
-        specifier: 1.26.0
-        version: 1.26.0(@prismicio/client@7.4.0)(@types/react-dom@18.2.24)(@types/react@18.2.75)(@types/uuid@9.0.8)(react-dom@18.2.0)(react@18.2.0)(uuid@9.0.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5

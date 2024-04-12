@@ -46,7 +46,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
     return (
         <>
             {page.slices.map((slice) => {
-                if (!slice?.slice_type) return null;
+                if (!(slice as any)?.slice_type) return null;
 
                 const Slice = components[slice.slice_type] as any;
                 if (!Slice) return null;

@@ -27,9 +27,9 @@
         "clean": "turbo run clean",
         "lint": "turbo run lint",
         "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
-        "fix": "concurrently pnpm:fix:* && turbo run fix",
-        "fix:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
-        "fix:prettier": "prettier --write **/src/**/*.{ts,tsx,scss}",
+        "format": "concurrently pnpm:format:* && turbo run format",
+        "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
+        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss}",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -- vitest run --coverage",
         "slicemachine": "turbo run slicemachine"
