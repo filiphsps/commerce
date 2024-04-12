@@ -125,7 +125,7 @@ export const ShopApi = async (domain: string, cache?: any) => {
                         : JSON.parse(res.commerceProvider!.data.toString())) as ShopifyCommerceProvider
                 },
                 contentProvider: {
-                    ...res.contentProvider,
+                    type: res.contentProvider?.type!,
                     ...(typeof res.contentProvider?.data === 'object'
                         ? res.contentProvider.data
                         : JSON.parse(res.contentProvider!.data.toString())) // FIXME: This shouldn't be hardcoded to prismic.

@@ -57,7 +57,7 @@ const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Local
         case 'shopify': // TODO: Handle this.
             return <>{children}</>;
         default:
-            throw new UnknownContentProviderError();
+            throw new UnknownContentProviderError(shop.contentProvider);
     }
 };
 

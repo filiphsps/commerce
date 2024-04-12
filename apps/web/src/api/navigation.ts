@@ -39,7 +39,7 @@ export const NavigationApi = async ({
 
             try {
                 const navigation = await client.getSingle('navigation', {
-                    lang: locale.code
+                    lang: locale.code.toLowerCase()
                 });
 
                 return (navigation.data.body as any)?.map((item: any) => ({
