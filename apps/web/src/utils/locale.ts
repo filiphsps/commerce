@@ -114,8 +114,9 @@ export class Locale implements SerializableLocale {
             const [language, country] = code.split('-') as [LanguageCode, CountryCode?];
             return wrap(new Locale({ language, country }));
         } else {
-            const { language, country } = data;
+            if (!data) throw new UnknownLocaleError(`Invalid locale: "${data}"`);
 
+            const { language, country } = data;
             if (language.length !== 2 || (typeof country !== 'undefined' && language.length !== 2)) {
                 throw new UnknownLocaleError(`Invalid locale: "${data}"`);
             }

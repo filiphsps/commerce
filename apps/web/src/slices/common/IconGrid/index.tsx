@@ -50,6 +50,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
         </PageContent>
     );
 };
+IconGrid.displayName = 'Nordcom.Slices.IconGrid';
 
 IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
     if (!slice) return null;
@@ -70,6 +71,6 @@ IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
         </PageContent>
     );
 };
+(IconGrid.skeleton as any).displayName = 'Nordcom.Slices.IconGrid.skeleton';
 
-IconGrid.displayName = 'Nordcom.Slices.IconGrid';
 export default IconGrid;
