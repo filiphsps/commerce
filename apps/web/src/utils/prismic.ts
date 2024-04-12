@@ -83,12 +83,14 @@ export const createClient = ({
     const defaultTags = ['prismic', `prismic.${shop.id}`];
     // TODO: Remove `repositoryName` variable.
     let name: string = repositoryName;
+    let accessToken: string = process.env.PRISMIC_TOKEN!;
 
     // TODO: These cases should be dealt with before even arriving here.
     switch (shop.contentProvider?.type) {
         case 'prismic': {
             const data = shop.contentProvider as PrismicContentProvider | null;
             name = data?.id || repositoryName;
+            accessToken = data?.authentication.token || accessToken;
             break;
         }
         default:
@@ -98,7 +100,7 @@ export const createClient = ({
     // TODO: Remove `repositoryName` variable.
     const client = prismicCreateClient(name, {
         routes,
-        accessToken: accessToken || undefined,
+        accessToken,
         fetchOptions: {
             cache: process.env.NODE_ENV === 'production' ? 'force-cache' : 'default',
             next: { tags: defaultTags }
