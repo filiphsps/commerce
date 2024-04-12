@@ -25,7 +25,8 @@
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "strict": true
+        "strict": true,
+        "typeRoots": ["node_modules/@types", "../../node_modules/@types"]
     },
     "exclude": ["node_modules"],
     "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
