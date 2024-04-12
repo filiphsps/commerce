@@ -50,6 +50,7 @@ const ProductCard = async ({ shop, locale, data, priority, className, ...props }
         </Suspense>
     );
 };
+ProductCard.displayName = 'Nordcom.ProductCard';
 
 ProductCard.skeleton = () => (
     <div className={styles.container} data-skeleton>
@@ -58,6 +59,6 @@ ProductCard.skeleton = () => (
         <div></div>
     </div>
 );
+(ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.skeleton';
 
-ProductCard.displayName = 'Nordcom.ProductCard';
 export default ProductCard;

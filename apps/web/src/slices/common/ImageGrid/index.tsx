@@ -57,6 +57,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
         </PageContent>
     );
 };
+ImageGrid.displayName = 'Nordcom.Slices.ImageGrid';
 
 ImageGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
     if (!slice) return null;
@@ -70,5 +71,6 @@ ImageGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
         ></PageContent>
     );
 };
+(ImageGrid.skeleton as any).displayName = 'Nordcom.Slices.ImageGrid.skeleton';
 
 export default memo(ImageGrid, deepEqual);

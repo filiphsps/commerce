@@ -36,6 +36,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
         </Suspense>
     );
 }
+PrismicPage.displayName = 'Nordcom.PrismicPage';
 
 // TODO: Add a skeleton with a shimmer animation.
 // TODO: Add {slice}.skeleton components as children.
@@ -45,7 +46,7 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
     return (
         <>
             {page.slices.map((slice) => {
-                if (!slice) return null;
+                if (!slice?.slice_type) return null;
 
                 const Slice = components[slice.slice_type] as any;
                 if (!Slice) return null;
@@ -59,6 +60,6 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
         </>
     );
 };
+(PrismicPage.skeleton as any).displayName = 'Nordcom.PrismicPage.skeleton';
 
-PrismicPage.displayName = 'Nordcom.PrismicPage';
 export default PrismicPage;
