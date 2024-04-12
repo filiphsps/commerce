@@ -57,7 +57,7 @@
         "@prisma/extension-accelerate": "1.0.0",
         "@prismicio/client": "7.4.0",
         "@prismicio/next": "1.5.0",
-        "@prismicio/react": "2.7.3",
+        "@prismicio/react": "2.7.4",
         "@shopify/hydrogen-react": "2024.4.0",
         "@vercel/analytics": "1.2.2",
         "@vercel/otel": "1.8.1",
