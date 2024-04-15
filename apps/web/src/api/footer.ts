@@ -19,7 +19,7 @@ export const FooterApi = async ({
     locale: Locale;
     client?: PrismicClient;
 }): Promise<FooterModel> => {
-    if (shop.contentProvider?.type !== 'prismic') {
+    if (shop.contentProvider.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.
         return {
             address: '',

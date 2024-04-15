@@ -47,7 +47,7 @@ const CommerceProvider = ({
 };
 
 const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
-    switch (shop.contentProvider?.type) {
+    switch (shop.contentProvider.type) {
         case 'prismic':
             return (
                 <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>

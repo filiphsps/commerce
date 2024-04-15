@@ -1,12 +1,13 @@
-import '@/styles/app.scss';
 import 'the-new-css-reset';
+import '@/styles/app.scss';
 
-import { SocialProfileJsonLd } from 'next-seo';
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { SocialProfileJsonLd } from 'next-seo';
 
+import { ShopApi } from '@nordcom/commerce-database';
 import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
@@ -22,7 +23,6 @@ import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
-import { ShopApi } from '@nordcom/commerce-database';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 

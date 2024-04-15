@@ -1,7 +1,7 @@
 'use client';
 
-import BaseLink from 'next/link';
 import { type ComponentProps } from 'react';
+import BaseLink from 'next/link';
 
 import type { Shop } from '@nordcom/commerce-database';
 import { TypeError } from '@nordcom/commerce-errors';

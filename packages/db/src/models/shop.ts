@@ -2,8 +2,8 @@ import { Schema } from 'mongoose';
 
 import { db } from '../db';
 
-import type { UserBase } from '.';
 import type { BaseDocument } from '../db';
+import type { UserBase } from '.';
 
 export interface ShopBase extends BaseDocument {
     name: string;

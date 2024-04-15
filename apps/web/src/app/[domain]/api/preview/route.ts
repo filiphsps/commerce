@@ -16,7 +16,7 @@ export type PreviewApiRouteParams = {
 export async function GET(req: NextRequest, { params: { domain } }: { params: PreviewApiRouteParams }) {
     const shop = await ShopApi(domain, cache);
 
-    if (shop.contentProvider?.type !== 'prismic') {
+    if (shop.contentProvider.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.
         return NextResponse.json({ status: 404 });
     }
