@@ -1,13 +1,13 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
+import 'the-new-css-reset';
 
-import { Suspense } from 'react';
+import { SocialProfileJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { SocialProfileJsonLd } from 'next-seo';
+import { Suspense } from 'react';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -22,6 +22,7 @@ import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
+import { ShopApi } from '@nordcom/commerce-database';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
@@ -52,7 +53,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
 
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale}/`),
@@ -98,6 +99,7 @@ export default async function RootLayout({
     try {
         const locale = Locale.from(localeData);
 
+        const newShop = await Shop.findByDomain(domain);
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop });
 
@@ -114,7 +116,7 @@ export default async function RootLayout({
                     suppressHydrationWarning={true}
                 >
                     <head suppressHydrationWarning={true}>
-                        <Suspense key={`${shop.id}.theme`}>
+                        <Suspense key={`${newShop.id}.theme`}>
                             <CssVariablesProvider domain={domain} />
                         </Suspense>
                     </head>
@@ -126,7 +128,7 @@ export default async function RootLayout({
                             locale={locale}
                         >
                             <AnalyticsProvider shop={shop}>
-                                <Suspense key={`${shop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
+                                <Suspense key={`${newShop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
                                     <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                         <PageContent as="main" primary={true}>
                                             {children}

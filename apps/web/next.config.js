@@ -34,7 +34,7 @@ const config = {
         ],
         //ppr: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: [],
+        serverComponentsExternalPackages: ['mongoose'],
         serverSourceMaps: true,
         serverMinification: false,
         taint: true,

@@ -38,11 +38,15 @@
         align-items: center;
         margin-left: var(--block-spacer);
         height: 100%;
-        color: var(--color-dark);
+        color: inherit;
 
         font-weight: 600;
         font-size: 1.65rem;
         text-transform: uppercase;
+
+        &:hover {
+            color: inherit;
+        }
 
         &.centered {
             gap: calc(var(--block-spacer-large) * 1.75);
@@ -58,7 +62,7 @@
 
         &:is(:hover, :active, :focus, :focus-within, .active),
         &:hover {
-            color: var(--accent-primary);
+            text-decoration: underline;
         }
     }
 

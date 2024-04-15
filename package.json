@@ -58,6 +58,9 @@
         "url": "https://github.com/NordcomInc/ecommerce/issues"
     },
     "homepage": "https://shops.nordcom.io/",
+    "dependencies": {
+        "@nordcom/nordstar": "0.0.52"
+    },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
         "@prisma/client": "5.12.0",
