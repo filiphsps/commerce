@@ -1,11 +1,11 @@
-import '@/styles/app.scss';
 import 'the-new-css-reset';
+import '@/styles/app.scss';
 
-import { SocialProfileJsonLd } from 'next-seo';
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
+import { SocialProfileJsonLd } from 'next-seo';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';

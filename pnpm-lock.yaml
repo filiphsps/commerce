@@ -85,6 +85,9 @@ importers:
       eslint-plugin-unused-imports:
         specifier: 3.1.0
         version: 3.1.0(@typescript-eslint/eslint-plugin@7.6.0)(eslint@8.57.0)
+      glob:
+        specifier: 10.3.12
+        version: 10.3.12
       husky:
         specifier: 9.0.11
         version: 9.0.11
