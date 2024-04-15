@@ -11,7 +11,7 @@
     "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
-        "dev": "next dev --turbo",
+        "dev": "next dev",
         "build": "next build",
         "clean": "rimraf -g dist coverage .turbo .next *.tsbuildinfo *.log node_modules",
         "lint": "next lint",

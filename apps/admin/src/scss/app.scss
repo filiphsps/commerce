@@ -49,6 +49,10 @@ select {
         -webkit-appearance: none;
         appearance: none;
     }
+
+    &[type='color'] {
+        width: 2rem !important;
+    }
 }
 
 hr {

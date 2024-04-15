@@ -1,5 +1,7 @@
 import 'server-only';
 
+import styles from './page.module.scss';
+
 import { notFound, redirect } from 'next/navigation';
 
 import { Error } from '@nordcom/commerce-errors';
@@ -37,7 +39,14 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
                         Overview - {shop.domain}
                     </Heading>
                 </header>
-                <Card></Card>
+                <Card className={styles.container}>
+                    {/* Dropdown */}
+                    <details open className={styles.details}>
+                        <summary>Shop</summary>
+
+                        <code style={{ whiteSpace: 'pre' }}>{JSON.stringify(shop.toObject(), null, 2)}</code>
+                    </details>
+                </Card>
             </>
         );
     } catch (error: unknown) {

@@ -1,8 +1,10 @@
 import 'server-only';
 
+import styles from './settings.module.scss';
+
 import { notFound, redirect } from 'next/navigation';
 
-import { Card, Heading, Label } from '@nordcom/nordstar';
+import { Card, Heading, Input, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/utils/auth';
 import { getShop, getShopTheme, updateShop, updateShopTheme } from '@/utils/fetchers';
@@ -66,15 +68,81 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         await updateShop(session.user.id, shopId, { name, domain });
                     }}
                 >
-                    <Label as="label" htmlFor="name">
-                        Name
-                    </Label>
-                    <Card as="input" name="name" title="Name" defaultValue={shop.name} />
+                    <Card className={styles.section} padding={false} borderless>
+                        <Label as="label" htmlFor="name">
+                            Name
+                        </Label>
+                        <Input name="name" title="Name" defaultValue={shop.name} />
+                    </Card>
 
-                    <Label as="label" htmlFor="domain">
-                        Domain
-                    </Label>
-                    <Card as="input" name="domain" title="Domain" defaultValue={shop.domain} />
+                    <Card className={styles.section} padding={false} borderless>
+                        <Label as="label" htmlFor="domain">
+                            Domain
+                        </Label>
+                        <Input name="domain" title="Domain" defaultValue={shop.domain} />
+                    </Card>
+
+                    <Card className={styles.section} padding={false} borderless>
+                        <Label as="label" htmlFor="accents">
+                            Accents
+                        </Label>
+                        <Card className={styles.section}>
+                            {shop.design.accents.map(({ type, color, foreground }, index) => (
+                                <>
+                                    <Label key={`accent_${index}`} as="label">
+                                        {type} (Accent)
+                                    </Label>
+                                    <Card key={`accent_${index}`} className={styles.grid}>
+                                        <div className={styles.item}>
+                                            <Label as="label" htmlFor={`accent_${index}_type`}>
+                                                Type
+                                            </Label>
+                                            <Input
+                                                as="select"
+                                                name={`accent_${index}_type`}
+                                                type="select"
+                                                title="Type"
+                                                label="Type"
+                                                defaultValue={color}
+                                            >
+                                                {['primary', 'secondary'].map((value) => (
+                                                    <option key={value} value={value}>
+                                                        {value}
+                                                    </option>
+                                                ))}
+                                            </Input>
+                                        </div>
+
+                                        <div className={styles.item}>
+                                            <Label as="label" htmlFor={`accent_${index}`}>
+                                                Color
+                                            </Label>
+                                            <Input
+                                                as="input"
+                                                name={`accent_${index}`}
+                                                type="color"
+                                                title="Color"
+                                                defaultValue={color}
+                                            />
+                                        </div>
+
+                                        <div className={styles.item}>
+                                            <Label as="label" htmlFor={`accent_${index}_foreground`}>
+                                                Text
+                                            </Label>
+                                            <Input
+                                                as="input"
+                                                name={`accent_${index}_foreground`}
+                                                type="color"
+                                                title="Foreground"
+                                                defaultValue={foreground}
+                                            />
+                                        </div>
+                                    </Card>
+                                </>
+                            ))}
+                        </Card>
+                    </Card>
                 </SettingsBlock>
             </section>
 

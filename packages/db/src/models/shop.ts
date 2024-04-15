@@ -17,6 +17,7 @@ export interface ShopBase extends BaseDocument {
             };
         };
         accents: {
+            type: 'primary' | 'secondary';
             color: string;
             foreground: string;
         }[];
@@ -73,11 +74,18 @@ export const ShopSchema = new Schema<ShopBase>(
             accents: {
                 type: [
                     {
+                        type: {
+                            type: Schema.Types.String,
+                            enum: ['primary', 'secondary'],
+                            required: true
+                        },
                         color: {
-                            type: Schema.Types.String
+                            type: Schema.Types.String,
+                            required: true
                         },
                         foreground: {
-                            type: Schema.Types.String
+                            type: Schema.Types.String,
+                            required: true
                         }
                     }
                 ],

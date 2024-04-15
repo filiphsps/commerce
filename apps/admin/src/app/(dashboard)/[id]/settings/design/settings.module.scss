@@ -4,4 +4,21 @@
     display: flex;
     flex-direction: column;
     gap: calc(var(--layout-block-padding) / 2);
+
+    .grid {
+        display: flex;
+        gap: var(--layout-block-padding);
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--layout-block-padding) / 2);
+        }
+    }
+
+    select {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
