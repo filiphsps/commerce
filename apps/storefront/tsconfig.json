@@ -34,7 +34,7 @@
         "incremental": true,
         "isolatedModules": true,
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "Node10",
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,

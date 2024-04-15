@@ -1,7 +1,6 @@
 {
     "$schema": "https://turbo.build/schema.json",
     "globalDotEnv": [".env"],
-    "experimentalUI": true,
     "globalDependencies": [
         "**/.env.*local",
         "tsconfig.json",
@@ -24,7 +23,6 @@
         "dev": {
             "cache": false,
             "persistent": true,
-            "interactive": true,
             "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "lint": {

@@ -8,7 +8,6 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { ShopApi } from '@nordcom/commerce-database';
-import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -99,7 +98,6 @@ export default async function RootLayout({
     try {
         const locale = Locale.from(localeData);
 
-        const newShop = await Shop.findByDomain(domain);
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop });
 
@@ -116,7 +114,7 @@ export default async function RootLayout({
                     suppressHydrationWarning={true}
                 >
                     <head suppressHydrationWarning={true}>
-                        <Suspense key={`${newShop.id}.theme`}>
+                        <Suspense key={`${shop.id}.theme`}>
                             <CssVariablesProvider domain={domain} />
                         </Suspense>
                     </head>
@@ -128,7 +126,7 @@ export default async function RootLayout({
                             locale={locale}
                         >
                             <AnalyticsProvider shop={shop}>
-                                <Suspense key={`${newShop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
+                                <Suspense key={`${shop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
                                     <ShopLayout shop={shop} locale={locale} i18n={i18n}>
                                         <PageContent as="main" primary={true}>
                                             {children}

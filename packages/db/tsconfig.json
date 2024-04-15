@@ -4,6 +4,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "composite": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
         "outDir": "./dist",
         "rootDir": "./src",
         "typeRoots": ["./node_modules/@types", "./src/@types", "./dist/index.d.ts"]

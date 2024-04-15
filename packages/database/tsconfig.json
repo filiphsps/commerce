@@ -3,6 +3,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": ".",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
         "composite": true,
         "outDir": "./dist",
         "rootDir": "./src",
