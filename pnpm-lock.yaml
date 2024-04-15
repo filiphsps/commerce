@@ -16,8 +16,8 @@ importers:
         specifier: 4.14.2
         version: 4.14.2
       '@rollup/rollup-linux-x64-gnu':
-        specifier: 4.14.2
-        version: 4.14.2
+        specifier: 4.14.3
+        version: 4.14.3
     devDependencies:
       '@nordcom/prettier':
         specifier: 0.1.1
@@ -3399,8 +3399,8 @@ packages:
     dev: true
     optional: true
 
-  /@rollup/rollup-linux-x64-gnu@4.14.2:
-    resolution: {integrity: sha512-QBhtr07iFGmF9egrPOWyO5wciwgtzKkYPNLVCFZTmr4TWmY0oY2Dm/bmhHjKRwZoGiaKdNcKhFtUMBKvlchH+Q==}
+  /@rollup/rollup-linux-x64-gnu@4.14.3:
+    resolution: {integrity: sha512-8ybV4Xjy59xLMyWo3GCfEGqtKV5M5gCSrZlxkPGvEPCGDLNla7v48S662HSGwRd6/2cSneMQWiv+QzcttLrrOA==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
