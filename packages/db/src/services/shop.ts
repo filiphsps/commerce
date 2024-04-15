@@ -28,6 +28,15 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
             }
         });
     }
+
+    public async findByDomain(domain: string) {
+        return this.find({
+            filter: {
+                domain
+            },
+            count: 1
+        });
+    }
 }
 
 export const Shop = new ShopService();

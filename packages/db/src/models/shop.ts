@@ -2,21 +2,35 @@ import { Schema } from 'mongoose';
 
 import { db } from '../db';
 
-import type { BaseDocument } from '../db';
 import type { UserBase } from '.';
+import type { BaseDocument } from '../db';
 
 export interface ShopBase extends BaseDocument {
     name: string;
     domain: string;
     alternativeDomains?: string[];
     design: {
+        header: {
+            theme: {
+                accent: 'primary' | 'secondary';
+                variant: 'default' | 'dark' | 'light';
+            };
+        };
         accents: {
             color: string;
             foreground: string;
         }[];
     };
+    icons?: {
+        favicon?: {
+            width: number;
+            height: number;
+            src: string;
+        };
+    };
     collaborators: {
         user: UserBase;
+        permissions: string[];
     }[];
 }
 
@@ -40,6 +54,22 @@ export const ShopSchema = new Schema<ShopBase>(
         ],
 
         design: {
+            header: {
+                theme: {
+                    accent: {
+                        type: Schema.Types.String,
+                        enum: ['primary', 'secondary'],
+                        required: true,
+                        default: 'primary'
+                    },
+                    variant: {
+                        type: Schema.Types.String,
+                        enum: ['default', 'dark', 'light'],
+                        required: true,
+                        default: 'default'
+                    }
+                }
+            },
             accents: {
                 type: [
                     {
@@ -53,6 +83,25 @@ export const ShopSchema = new Schema<ShopBase>(
                 ],
                 required: true,
                 default: []
+            }
+        },
+
+        icons: {
+            favicon: {
+                width: {
+                    type: Schema.Types.Number,
+                    required: true,
+                    default: 512
+                },
+                height: {
+                    type: Schema.Types.Number,
+                    required: true,
+                    default: 512
+                },
+                src: {
+                    type: Schema.Types.String,
+                    required: true
+                }
             }
         },
 

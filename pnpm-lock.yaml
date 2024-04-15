@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@nordcom/nordstar':
+        specifier: 0.0.52
+        version: 0.0.52(react-dom@18.2.0)(react@18.2.0)
     optionalDependencies:
       '@rollup/rollup-darwin-arm64':
         specifier: 4.14.2
@@ -125,7 +129,7 @@ importers:
         version: 3.9.11(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.10.0
-        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.0)(react@18.2.0)
+        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.1)(react@18.2.0)
       '@auth/core':
         specifier: 0.29.0
         version: 0.29.0
@@ -134,7 +138,7 @@ importers:
         version: 0.0.73(@types/react-dom@18.2.24)(@types/react@18.2.75)
       '@next/third-parties':
         specifier: 14.2.0
-        version: 14.2.0(next@14.2.0)(react@18.2.0)
+        version: 14.2.0(next@14.2.1)(react@18.2.0)
       '@nordcom/commerce-database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -164,7 +168,7 @@ importers:
         version: 9.7.1
       '@vercel/analytics':
         specifier: 1.2.2
-        version: 1.2.2(next@14.2.0)(react@18.2.0)
+        version: 1.2.2(next@14.2.1)(react@18.2.0)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
@@ -182,7 +186,7 @@ importers:
         version: 2.3.4
       geist:
         specifier: 1.3.0
-        version: 1.3.0(next@14.2.0)
+        version: 1.3.0(next@14.2.1)
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.8.1)
@@ -195,21 +199,24 @@ importers:
       million:
         specifier: 3.0.6
         version: 3.0.6
+      mongoose:
+        specifier: 8.3.1
+        version: 8.3.1
       next:
-        specifier: 14.2.0
-        version: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+        specifier: 14.2.1
+        version: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       next-auth:
         specifier: 5.0.0-beta.16
-        version: 5.0.0-beta.16(next@14.2.0)(react@18.2.0)
+        version: 5.0.0-beta.16(next@14.2.1)(react@18.2.0)
       next-seo:
         specifier: 6.5.0
-        version: 6.5.0(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 6.5.0(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@14.2.0)
+        version: 4.2.3(next@14.2.1)
       nextjs-toploader:
         specifier: 1.6.11
-        version: 1.6.11(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.6.11(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -315,19 +322,19 @@ importers:
         version: 3.9.11(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.10.0
-        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.0)(react@18.2.0)
+        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.1)(react@18.2.0)
       '@markdoc/markdoc':
         specifier: 0.4.0
         version: 0.4.0(@types/react@18.2.75)(react@18.2.0)
       '@markdoc/next.js':
         specifier: 0.3.7
-        version: 0.3.7(@markdoc/markdoc@0.4.0)(next@14.2.0)(react@18.2.0)
+        version: 0.3.7(@markdoc/markdoc@0.4.0)(next@14.2.1)(react@18.2.0)
       '@million/lint':
         specifier: 0.0.73
         version: 0.0.73(@types/react-dom@18.2.24)(@types/react@18.2.75)
       '@next/third-parties':
         specifier: 14.2.0
-        version: 14.2.0(next@14.2.0)(react@18.2.0)
+        version: 14.2.0(next@14.2.1)(react@18.2.0)
       '@nordcom/commerce-database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -354,7 +361,7 @@ importers:
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
       '@vercel/analytics':
         specifier: 1.2.2
-        version: 1.2.2(next@14.2.0)(react@18.2.0)
+        version: 1.2.2(next@14.2.1)(react@18.2.0)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
@@ -372,7 +379,7 @@ importers:
         version: 2.3.4
       geist:
         specifier: 1.3.0
-        version: 1.3.0(next@14.2.0)
+        version: 1.3.0(next@14.2.1)
       glob:
         specifier: 10.3.12
         version: 10.3.12
@@ -392,20 +399,20 @@ importers:
         specifier: 3.0.6
         version: 3.0.6
       next:
-        specifier: 14.2.0
-        version: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+        specifier: 14.2.1
+        version: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       next-auth:
         specifier: 4.24.7
-        version: 4.24.7(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.24.7(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       next-seo:
         specifier: 6.5.0
-        version: 6.5.0(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 6.5.0(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@14.2.0)
+        version: 4.2.3(next@14.2.1)
       nextjs-toploader:
         specifier: 1.6.11
-        version: 1.6.11(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.6.11(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -511,13 +518,13 @@ importers:
         version: 3.9.11(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
         specifier: 0.10.0
-        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.0)(react@18.2.0)
+        version: 0.10.0(@apollo/client@3.9.11)(next@14.2.1)(react@18.2.0)
       '@million/lint':
         specifier: 0.0.73
         version: 0.0.73(@types/react-dom@18.2.24)(@types/react@18.2.75)
       '@next/third-parties':
         specifier: 14.2.0
-        version: 14.2.0(next@14.2.0)(react@18.2.0)
+        version: 14.2.0(next@14.2.1)(react@18.2.0)
       '@nordcom/commerce-database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -541,7 +548,7 @@ importers:
         version: 7.4.0
       '@prismicio/next':
         specifier: 1.5.0
-        version: 1.5.0(@prismicio/client@7.4.0)(next@14.2.0)(react@18.2.0)
+        version: 1.5.0(@prismicio/client@7.4.0)(next@14.2.1)(react@18.2.0)
       '@prismicio/react':
         specifier: 2.7.4
         version: 2.7.4(@prismicio/client@7.4.0)(react@18.2.0)
@@ -550,7 +557,7 @@ importers:
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0)(react@18.2.0)
       '@vercel/analytics':
         specifier: 1.2.2
-        version: 1.2.2(next@14.2.0)(react@18.2.0)
+        version: 1.2.2(next@14.2.1)(react@18.2.0)
       '@vercel/otel':
         specifier: 1.8.1
         version: 1.8.1(@opentelemetry/api-logs@0.46.0)(@opentelemetry/api@1.8.0)(@opentelemetry/instrumentation@0.46.0)(@opentelemetry/resources@1.22.0)(@opentelemetry/sdk-logs@0.46.0)(@opentelemetry/sdk-metrics@1.22.0)(@opentelemetry/sdk-trace-base@1.22.0)
@@ -568,7 +575,7 @@ importers:
         version: 2.3.4
       geist:
         specifier: 1.3.0
-        version: 1.3.0(next@14.2.0)
+        version: 1.3.0(next@14.2.1)
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.8.1)
@@ -582,20 +589,20 @@ importers:
         specifier: 3.0.6
         version: 3.0.6
       next:
-        specifier: 14.2.0
-        version: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+        specifier: 14.2.1
+        version: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       next-auth:
         specifier: 4.24.7
-        version: 4.24.7(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.24.7(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       next-seo:
         specifier: 6.5.0
-        version: 6.5.0(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 6.5.0(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       next-sitemap:
         specifier: 4.2.3
-        version: 4.2.3(next@14.2.0)
+        version: 4.2.3(next@14.2.1)
       nextjs-toploader:
         specifier: 1.6.11
-        version: 1.6.11(next@14.2.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.6.11(next@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
@@ -638,7 +645,7 @@ importers:
         version: 0.1.1
       '@slicemachine/adapter-next':
         specifier: 0.3.38
-        version: 0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.0)(react@18.2.0)(uuid@9.0.1)
+        version: 0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.1)(react@18.2.0)(uuid@9.0.1)
       '@testing-library/jest-dom':
         specifier: 6.4.2
         version: 6.4.2(vitest@1.5.0)
@@ -915,7 +922,7 @@ packages:
       - '@types/react'
     dev: false
 
-  /@apollo/experimental-nextjs-app-support@0.10.0(@apollo/client@3.9.11)(next@14.2.0)(react@18.2.0):
+  /@apollo/experimental-nextjs-app-support@0.10.0(@apollo/client@3.9.11)(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-S3mfZRnAAAaKwA8RNckS4TWYLX5utpmRTwG3WGFtpooYx8QQG8xft0p0a9eTQ53Jrw3nSMJc/wOOsT/5noMCQg==}
     peerDependencies:
       '@apollo/client': ^3.9.6
@@ -924,7 +931,7 @@ packages:
     dependencies:
       '@apollo/client': 3.9.11(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@apollo/client-react-streaming': 0.10.0(@apollo/client@3.9.11)(react@18.2.0)
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
     dev: false
 
@@ -2011,7 +2018,7 @@ packages:
       '@types/markdown-it': 12.2.3
     dev: false
 
-  /@markdoc/next.js@0.3.7(@markdoc/markdoc@0.4.0)(next@14.2.0)(react@18.2.0):
+  /@markdoc/next.js@0.3.7(@markdoc/markdoc@0.4.0)(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-lp/J0Lfx8YPWes82HOMSDvXBfIkJxPKfEwgzGTwfFBJUGBNM1TBvchaaAzDP2X+HRORP4jNcGbJrZoXSdon0BQ==}
     peerDependencies:
       '@markdoc/markdoc': '*'
@@ -2020,7 +2027,7 @@ packages:
     dependencies:
       '@markdoc/markdoc': 0.4.0(@types/react@18.2.75)(react@18.2.0)
       js-yaml: 4.1.0
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
     dev: false
 
@@ -2114,8 +2121,8 @@ packages:
     resolution: {integrity: sha512-Yac/bV5sBGkkEXmAX5FWPS9Mmo2rthrOPRQQNfycJPkjUAUclomCPH7QFVCDQ4Mp2k2K1SSM6m0zrxYrOwtFQw==}
     dev: false
 
-  /@next/env@14.2.0:
-    resolution: {integrity: sha512-4+70ELtSbRtYUuyRpAJmKC8NHBW2x1HMje9KO2Xd7IkoyucmV9SjgO+qeWMC0JWkRQXgydv1O7yKOK8nu/rITQ==}
+  /@next/env@14.2.1:
+    resolution: {integrity: sha512-qsHJle3GU3CmVx7pUoXcghX4sRN+vINkbLdH611T8ZlsP//grzqVW87BSUgOZeSAD4q7ZdZicdwNe/20U2janA==}
 
   /@next/eslint-plugin-next@14.2.0:
     resolution: {integrity: sha512-QkM01VPhwcupezVevy9Uyl1rmpg2PimhMjkb+ySmnPgSKUUM/PGGRQxdFgMpHv/JzQoC8kRySgKeM441GiizcA==}
@@ -2123,85 +2130,85 @@ packages:
       glob: 10.3.10
     dev: true
 
-  /@next/swc-darwin-arm64@14.2.0:
-    resolution: {integrity: sha512-kHktLlw0AceuDnkVljJ/4lTJagLzDiO3klR1Fzl2APDFZ8r+aTxNaNcPmpp0xLMkgRwwk6sggYeqq0Rz9K4zzA==}
+  /@next/swc-darwin-arm64@14.2.1:
+    resolution: {integrity: sha512-kGjnjcIJehEcd3rT/3NAATJQndAEELk0J9GmGMXHSC75TMnvpOhONcjNHbjtcWE5HUQnIHy5JVkatrnYm1QhVw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     optional: true
 
-  /@next/swc-darwin-x64@14.2.0:
-    resolution: {integrity: sha512-HFSDu7lb1U3RDxXNeKH3NGRR5KyTPBSUTuIOr9jXoAso7i76gNYvnTjbuzGVWt2X5izpH908gmOYWtI7un+JrA==}
+  /@next/swc-darwin-x64@14.2.1:
+    resolution: {integrity: sha512-dAdWndgdQi7BK2WSXrx4lae7mYcOYjbHJUhvOUnJjMNYrmYhxbbvJ2xElZpxNxdfA6zkqagIB9He2tQk+l16ew==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     optional: true
 
-  /@next/swc-linux-arm64-gnu@14.2.0:
-    resolution: {integrity: sha512-iQsoWziO5ZMxDWZ4ZTCAc7hbJ1C9UDj/gATSqTaMjW2bJFwAsvf9UM79AKnljBl73uPZ+V0kH4rvnHTco4Ps2w==}
+  /@next/swc-linux-arm64-gnu@14.2.1:
+    resolution: {integrity: sha512-2ZctfnyFOGvTkoD6L+DtQtO3BfFz4CapoHnyLTXkOxbZkVRgg3TQBUjTD/xKrO1QWeydeo8AWfZRg8539qNKrg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     optional: true
 
-  /@next/swc-linux-arm64-musl@14.2.0:
-    resolution: {integrity: sha512-0JOk2uzLUt8fJK5LpsKKZa74zAch7bJjjgJzR9aOMs231AlE4gPYzsSm430ckZitjPGKeH5bgDZjqwqJQKIS2w==}
+  /@next/swc-linux-arm64-musl@14.2.1:
+    resolution: {integrity: sha512-jazZXctiaanemy4r+TPIpFP36t1mMwWCKMsmrTRVChRqE6putyAxZA4PDujx0SnfvZHosjdkx9xIq9BzBB5tWg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     optional: true
 
-  /@next/swc-linux-x64-gnu@14.2.0:
-    resolution: {integrity: sha512-uYHkuTzX0NM6biKNp7hdKTf+BF0iMV254SxO0B8PgrQkxUBKGmk5ysHKB+FYBfdf9xei/t8OIKlXJs9ckD943A==}
+  /@next/swc-linux-x64-gnu@14.2.1:
+    resolution: {integrity: sha512-VjCHWCjsAzQAAo8lkBOLEIkBZFdfW+Z18qcQ056kL4KpUYc8o59JhLDCBlhg+hINQRgzQ2UPGma2AURGOH0+Qg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     optional: true
 
-  /@next/swc-linux-x64-musl@14.2.0:
-    resolution: {integrity: sha512-paN89nLs2dTBDtfXWty1/NVPit+q6ldwdktixYSVwiiAz647QDCd+EIYqoiS+/rPG3oXs/A7rWcJK9HVqfnMVg==}
+  /@next/swc-linux-x64-musl@14.2.1:
+    resolution: {integrity: sha512-7HZKYKvAp4nAHiHIbY04finRqjeYvkITOGOurP1aLMexIFG/1+oCnqhGogBdc4lao/lkMW1c+AkwWSzSlLasqw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     optional: true
 
-  /@next/swc-win32-arm64-msvc@14.2.0:
-    resolution: {integrity: sha512-j1oiidZisnymYjawFqEfeGNcE22ZQ7lGUaa4pGOCVWrWeIDkPSj8zYgS9TzMNlg17Q3wSWCQC/F5uJAhSh7qcA==}
+  /@next/swc-win32-arm64-msvc@14.2.1:
+    resolution: {integrity: sha512-YGHklaJ/Cj/F0Xd8jxgj2p8po4JTCi6H7Z3Yics3xJhm9CPIqtl8erlpK1CLv+HInDqEWfXilqatF8YsLxxA2Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     optional: true
 
-  /@next/swc-win32-ia32-msvc@14.2.0:
-    resolution: {integrity: sha512-6ff6F4xb+QGD1jhx/dOT9Ot7PQ/GAYekV9ykwEh2EFS/cLTyU4Y3cXkX5cNtNIhpctS5NvyjW9gIksRNErYE0A==}
+  /@next/swc-win32-ia32-msvc@14.2.1:
+    resolution: {integrity: sha512-o+ISKOlvU/L43ZhtAAfCjwIfcwuZstiHVXq/BDsZwGqQE0h/81td95MPHliWCnFoikzWcYqh+hz54ZB2FIT8RA==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
     optional: true
 
-  /@next/swc-win32-x64-msvc@14.2.0:
-    resolution: {integrity: sha512-09DbG5vXAxz0eTFSf1uebWD36GF3D5toynRkgo2AlSrxwGZkWtJ1RhmrczRYQ17eD5bdo4FZ0ibiffdq5kc4vg==}
+  /@next/swc-win32-x64-msvc@14.2.1:
+    resolution: {integrity: sha512-GmRoTiLcvCLifujlisknv4zu9/C4i9r0ktsA8E51EMqJL4bD4CpO7lDYr7SrUxCR0tS4RVcrqKmCak24T0ohaw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     optional: true
 
-  /@next/third-parties@14.2.0(next@14.2.0)(react@18.2.0):
+  /@next/third-parties@14.2.0(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-ybnOSK2y0ICrT2OppkCY/LDoe4DD6rYyZa0E4BuD83KpXnXhO5VotMd9RbN2+AmpsV9ap2KdF/lEHvBM1aYjZA==}
     peerDependencies:
       next: ^13.0.0 || ^14.0.0
       react: ^18.2.0
     dependencies:
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
       third-party-capital: 1.0.20
     dev: false
@@ -2534,7 +2541,7 @@ packages:
     dependencies:
       '@prisma/debug': 5.12.0
 
-  /@prismicio/api-renderer@1.0.0(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21):
+  /@prismicio/api-renderer@1.0.0(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21):
     resolution: {integrity: sha512-dD74209FaT4JB+pZkLP+69u5rFqzcuNQU9aBMN9sQ4usSbScuSbNdXL1hVasAite5r+hIiphskfxaxdfqPvDIw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -2542,10 +2549,10 @@ packages:
       io-ts: ^2.2.16
       io-ts-types: ^0.5.16
     dependencies:
-      '@prismicio/types-internal': 1.5.3(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      '@prismicio/types-internal': 1.5.3(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
       tslib: 2.6.2
       uuid: 8.3.2
     dev: true
@@ -2567,14 +2574,14 @@ packages:
     resolution: {integrity: sha512-zWbAox9YEvYQNVrnOJIE0AIW/UKswtYDS+IH+Ikr36Hfn+cStKFI33n44B7xaAhX17pjSrNDzWQrSO16Vq98lg==}
     engines: {node: '>=12.7.0'}
     dependencies:
-      '@prismicio/api-renderer': 1.0.0(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)
-      '@prismicio/types-internal': 2.0.0-alpha.8(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      '@prismicio/api-renderer': 1.0.0(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)
+      '@prismicio/types-internal': 2.0.0-alpha.8(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
       lorem-ipsum: 2.0.8
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       tslib: 2.6.2
       uuid: 8.3.2
     dev: true
@@ -2583,19 +2590,19 @@ packages:
     resolution: {integrity: sha512-yp7WTNoGFjBBBJE08tu4RSGD1OHIkbdH65lLoXJtyiKClXnB8vxi4wzCb6QvnVAxAjOkJR1GRN8WukkYlJDbjw==}
     engines: {node: '>=12.7.0'}
     dependencies:
-      '@prismicio/api-renderer': 1.0.0(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)
-      '@prismicio/types-internal': 2.0.0-alpha.8(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      '@prismicio/api-renderer': 1.0.0(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)
+      '@prismicio/types-internal': 2.0.0-alpha.8(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
       lorem-ipsum: 2.0.8
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       tslib: 2.6.2
       uuid: 8.3.2
     dev: true
 
-  /@prismicio/next@1.5.0(@prismicio/client@7.4.0)(next@14.2.0)(react@18.2.0):
+  /@prismicio/next@1.5.0(@prismicio/client@7.4.0)(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-WbAbBwvUUfrgCJCX8a1SKjGrbnpzLtbo9MnTn0aDRc2yZ4BhK1PRN4Q24Bqx0wmJybQkzM6PcBKiDkZBps1gxA==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
@@ -2607,7 +2614,7 @@ packages:
       '@prismicio/client': 7.4.0
       imgix-url-builder: 0.0.4
       negotiator: 0.6.3
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
     dev: false
 
@@ -2639,7 +2646,7 @@ packages:
       statuses: 2.0.1
     dev: true
 
-  /@prismicio/types-internal@1.5.3(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21):
+  /@prismicio/types-internal@1.5.3(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21):
     resolution: {integrity: sha512-GHV2rZsCUJJQDF7gF2to0F/3eolTXD/ng7ClfbqtHO3udJ5D+iifocAEnsEdi+Y9VKT/WVgyBi/dA6GAhNMHmQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -2647,15 +2654,15 @@ packages:
       io-ts: ^2.2.16
       io-ts-types: ^0.5.16
     dependencies:
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       tslib: 2.6.2
     dev: true
 
-  /@prismicio/types-internal@2.0.0-alpha.8(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21):
+  /@prismicio/types-internal@2.0.0-alpha.8(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21):
     resolution: {integrity: sha512-mTyzwnDrOJMl7m5FkpoCIfF7x1kOnQ4vUspcYa5Qj18r8QY2djhRzBcMtIttMlUM5ZbLJBXtyVXeHftHuODb1Q==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -2663,15 +2670,15 @@ packages:
       io-ts: ^2.2.16
       io-ts-types: ^0.5.16
     dependencies:
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       tslib: 2.6.2
     dev: true
 
-  /@prismicio/types-internal@2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1):
+  /@prismicio/types-internal@2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1):
     resolution: {integrity: sha512-BeUiA1KiwCVYi2QLii5gg8u22x4ey8pHPhO5BHf7NQUCOm/mjtizbjUyqDk92NwhGKC9MRCOFqgAOb6kvUctng==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -2682,11 +2689,11 @@ packages:
       uuid: ^9.0.0
     dependencies:
       '@types/uuid': 9.0.8
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       tslib: 2.6.2
       uuid: 9.0.1
     dev: true
@@ -3590,7 +3597,7 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@slicemachine/adapter-next@0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.0)(react@18.2.0)(uuid@9.0.1):
+  /@slicemachine/adapter-next@0.3.38(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(next@14.2.1)(react@18.2.0)(uuid@9.0.1):
     resolution: {integrity: sha512-WP68O8JpMh4/0ijEUO9WWQozdluFDmglhQiwDhWY+n+BEOYDOabnGh8w2x0YbBvS8UdnrXitCiyn5aBavmhR6g==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
@@ -3598,16 +3605,16 @@ packages:
       react: ^17 || ^18
     dependencies:
       '@prismicio/simulator': 0.1.4
-      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
+      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
       '@slicemachine/plugin-kit': 0.4.38(@prismicio/client@7.4.0)
       common-tags: 1.8.2
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
       lz-string: 1.5.0
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       pascal-case: 3.1.2
       prismic-ts-codegen: 0.1.19(@prismicio/client@7.4.0)
       react: 18.2.0
@@ -3630,26 +3637,26 @@ packages:
       '@antfu/ni': 0.20.0
       '@prismicio/custom-types-client': 1.3.0
       '@prismicio/mocks': 2.0.0
-      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
+      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
       '@segment/analytics-node': 1.1.3
       '@slicemachine/plugin-kit': 0.4.38(@prismicio/client@7.4.0)
       cookie: 0.5.0
       cors: 2.8.5
       execa: 7.2.0
       file-type: 18.7.0
-      fp-ts: 2.16.4
+      fp-ts: 2.16.5
       get-port: 6.1.2
       h3: 1.11.1
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-reporters: 2.0.1(fp-ts@2.16.4)(io-ts@2.2.21)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-reporters: 2.0.1(fp-ts@2.16.5)(io-ts@2.2.21)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       node-fetch: 3.3.2
       p-limit: 4.0.0
       prettier: 3.2.5
       r19: 0.1.8
-      rc9: 2.1.1
+      rc9: 2.1.2
       semver: 7.6.0
     transitivePeerDependencies:
       - '@prismicio/client'
@@ -3667,10 +3674,10 @@ packages:
       common-tags: 1.8.2
       defu: 6.1.4
       dotenv: 16.3.1
-      fp-ts: 2.16.4
+      fp-ts: 2.16.5
       fs-extra: 11.1.1
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-reporters: 2.0.1(fp-ts@2.16.4)(io-ts@2.2.21)
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-reporters: 2.0.1(fp-ts@2.16.5)(io-ts@2.2.21)
       p-limit: 4.0.0
       prettier: 3.2.5
       prismic-ts-codegen: 0.1.19(@prismicio/client@7.4.0)
@@ -4180,7 +4187,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vercel/analytics@1.2.2(next@14.2.0)(react@18.2.0):
+  /@vercel/analytics@1.2.2(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-X0rctVWkQV1e5Y300ehVNqpOfSOufo7ieA5PIdna8yX/U7Vjz0GFsGf4qvAhxV02uQ2CVt7GYcrFfddXXK2Y4A==}
     peerDependencies:
       next: '>= 13'
@@ -4191,7 +4198,7 @@ packages:
       react:
         optional: true
     dependencies:
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
       server-only: 0.0.1
     dev: false
@@ -4222,7 +4229,7 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@sveltejs/kit': 1.30.4(svelte@4.2.12)(vite@4.5.2)
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
       svelte: 4.2.12
       vue: 3.4.21(typescript@5.4.5)
@@ -5104,6 +5111,7 @@ packages:
   /commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
+    requiresBuild: true
     dev: true
 
   /comment-parser@1.4.1:
@@ -5171,8 +5179,8 @@ packages:
       lodash.keys: 2.3.0
     dev: false
 
-  /cookie-es@1.0.0:
-    resolution: {integrity: sha512-mWYvfOLrfEc996hlKcdABeIiPHUPC6DM2QYZdGGOvhOTbA3tjm2eBwqlJpoFdjC89NI4Qt6h0Pu06Mp+1Pj5OQ==}
+  /cookie-es@1.1.0:
+    resolution: {integrity: sha512-L2rLOcK0wzWSfSDA33YR+PUHDG10a8px7rUHKWbGLP4YfbsMed2KFUw5fczvDPbT98DDe3LEzviswl810apTEw==}
     dev: true
 
   /cookie-signature@1.0.6:
@@ -5182,6 +5190,7 @@ packages:
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
+    requiresBuild: true
 
   /cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
@@ -6236,8 +6245,8 @@ packages:
       strip-final-newline: 3.0.0
     dev: true
 
-  /express@4.19.1:
-    resolution: {integrity: sha512-K4w1/Bp7y8iSiVObmCrtq8Cs79XjJc/RU2YYkZQ7wpUu5ZyZ7MtPHkqoMz4pf+mgXfNvo2qft8D9OnrH2ABk9w==}
+  /express@4.19.2:
+    resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
@@ -6389,11 +6398,6 @@ packages:
       rimraf: 3.0.2
     dev: true
 
-  /flat@5.0.2:
-    resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
-    hasBin: true
-    dev: true
-
   /flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
     dev: true
@@ -6441,8 +6445,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /fp-ts@2.16.4:
-    resolution: {integrity: sha512-EkV/l6oHaf/w/DlVc5UiqLibqTV1S+idiDdcWQ+UjnLLflL9pZG28ebJfPLor8ifoL8NgEFDIo9fOvHyiSCrJQ==}
+  /fp-ts@2.16.5:
+    resolution: {integrity: sha512-N8T8PwMSeTKKtkm9lkj/zSTAnPC/aJIIrQhnHxxkL0KLsRCNUPANksJOlMXxcKKCo7H1ORP3No9EMD+fP0tsdA==}
     dev: true
 
   /fresh@0.5.2:
@@ -6496,12 +6500,12 @@ packages:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: true
 
-  /geist@1.3.0(next@14.2.0):
+  /geist@1.3.0(next@14.2.1):
     resolution: {integrity: sha512-IoGBfcqVEYB4bEwsfHd35jF4+X9LHRPYZymHL4YOltHSs9LJa24DYs1Z7rEMQ/lsEvaAIc61Y9aUxgcJaQ8lrg==}
     peerDependencies:
       next: '>=13.2.0 <15.0.0-0'
     dependencies:
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
     dev: false
 
   /gensync@1.0.0-beta.2:
@@ -6600,7 +6604,7 @@ packages:
     dependencies:
       foreground-child: 3.1.1
       jackspeak: 2.3.6
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       minipass: 7.0.4
       path-scurry: 1.10.2
 
@@ -6713,13 +6717,13 @@ packages:
   /h3@1.11.1:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
     dependencies:
-      cookie-es: 1.0.0
+      cookie-es: 1.1.0
       crossws: 0.2.4
       defu: 6.1.4
       destr: 2.0.3
       iron-webcrypto: 1.1.0
       ohash: 1.1.3
-      radix3: 1.1.1
+      radix3: 1.1.2
       ufo: 1.5.3
       uncrypto: 0.1.3
       unenv: 1.9.0
@@ -6955,18 +6959,18 @@ packages:
       loose-envify: 1.4.0
     dev: false
 
-  /io-ts-reporters@2.0.1(fp-ts@2.16.4)(io-ts@2.2.21):
+  /io-ts-reporters@2.0.1(fp-ts@2.16.5)(io-ts@2.2.21):
     resolution: {integrity: sha512-RVpLstYBsmTGgCW9wJ5KVyN/eRnRUDp87Flt4D1O3aJ7oAnd8csq8aXuu7ZeNK8qEDKmjUl9oUuzfwikaNAMKQ==}
     peerDependencies:
       fp-ts: ^2.10.5
       io-ts: ^2.2.16
     dependencies:
       '@scarf/scarf': 1.3.0
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
     dev: true
 
-  /io-ts-types@0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5):
+  /io-ts-types@0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5):
     resolution: {integrity: sha512-kQOYYDZG5vKre+INIDZbLeDJe+oM+4zLpUkjXyTMyUfoCpjJNyi29ZLkuEAwcPufaYo3yu/BsemZtbdD+NtRfQ==}
     peerDependencies:
       fp-ts: ^2.0.0
@@ -6974,18 +6978,18 @@ packages:
       monocle-ts: ^2.0.0
       newtype-ts: ^0.3.2
     dependencies:
-      fp-ts: 2.16.4
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      fp-ts: 2.16.5
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
     dev: true
 
-  /io-ts@2.2.21(fp-ts@2.16.4):
+  /io-ts@2.2.21(fp-ts@2.16.5):
     resolution: {integrity: sha512-zz2Z69v9ZIC3mMLYWIeoUcwWD6f+O7yP92FMVVaXEOSZH1jnVBmET/urd/uoarD1WGBY4rCj8TAyMPzsGNzMFQ==}
     peerDependencies:
       fp-ts: ^2.5.0
     dependencies:
-      fp-ts: 2.16.4
+      fp-ts: 2.16.5
     dev: true
 
   /ipaddr.js@1.9.1:
@@ -7322,8 +7326,8 @@ packages:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
 
-  /joi@17.12.2:
-    resolution: {integrity: sha512-RonXAIzCiHLc8ss3Ibuz45u28GOsWE1UpfDXLbN/9NKbL4tCJf8TWYVKsoYuuh+sAUt7fsSNpA+r2+TBA6Wjmw==}
+  /joi@17.12.3:
+    resolution: {integrity: sha512-2RRziagf555owrm9IRVtdKynOBeITiDpuZqIpgwqXShPncPKNiRQoiGsl/T8SQdq+8ugRzH2LqY67irr2y/d+g==}
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0
@@ -7909,13 +7913,13 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
+    dev: true
 
   /minimatch@9.0.4:
     resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: true
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -7998,12 +8002,12 @@ packages:
       - supports-color
     dev: false
 
-  /monocle-ts@2.3.13(fp-ts@2.16.4):
+  /monocle-ts@2.3.13(fp-ts@2.16.5):
     resolution: {integrity: sha512-D5Ygd3oulEoAm3KuGO0eeJIrhFf1jlQIoEVV2DYsZUMz42j4tGxgct97Aq68+F8w4w4geEnwFa8HayTS/7lpKQ==}
     peerDependencies:
       fp-ts: ^2.5.0
     dependencies:
-      fp-ts: 2.16.4
+      fp-ts: 2.16.5
     dev: true
 
   /mpath@0.9.0:
@@ -8023,6 +8027,7 @@ packages:
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
+    requiresBuild: true
 
   /mrmime@1.0.1:
     resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
@@ -8065,17 +8070,17 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
-  /newtype-ts@0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13):
+  /newtype-ts@0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13):
     resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
     peerDependencies:
       fp-ts: ^2.0.0
       monocle-ts: ^2.0.0
     dependencies:
-      fp-ts: 2.16.4
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
+      fp-ts: 2.16.5
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
     dev: true
 
-  /next-auth@4.24.7(next@14.2.0)(react-dom@18.2.0)(react@18.2.0):
+  /next-auth@4.24.7(next@14.2.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==}
     peerDependencies:
       next: ^12.2.5 || ^13 || ^14
@@ -8090,17 +8095,17 @@ packages:
       '@panva/hkdf': 1.1.1
       cookie: 0.5.0
       jose: 4.15.5
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       oauth: 0.9.15
       openid-client: 5.6.5
-      preact: 10.20.0
-      preact-render-to-string: 5.2.6(preact@10.20.0)
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       uuid: 8.3.2
     dev: false
 
-  /next-auth@5.0.0-beta.16(next@14.2.0)(react@18.2.0):
+  /next-auth@5.0.0-beta.16(next@14.2.1)(react@18.2.0):
     resolution: {integrity: sha512-dX2snB+ezN23tFzSes3n3uosT9iBf0eILPYWH/R2fd9n3ZzdMQlRzq7JIOPeS1aLc84IuRlyuyXyx9XmmZB6og==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
@@ -8117,23 +8122,23 @@ packages:
         optional: true
     dependencies:
       '@auth/core': 0.28.1
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
     dev: false
 
-  /next-seo@6.5.0(next@14.2.0)(react-dom@18.2.0)(react@18.2.0):
+  /next-seo@6.5.0(next@14.2.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-MfzUeWTN/x/rsKp/1n0213eojO97lIl0unxqbeCY+6pAucViHDA8GSLRRcXpgjsSmBxfCFdfpu7LXbt4ANQoNQ==}
     peerDependencies:
       next: ^8.1.1-canary.54 || >=9.0.0
       react: '>=16.0.0'
       react-dom: '>=16.0.0'
     dependencies:
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /next-sitemap@4.2.3(next@14.2.0):
+  /next-sitemap@4.2.3(next@14.2.1):
     resolution: {integrity: sha512-vjdCxeDuWDzldhCnyFCQipw5bfpl4HmZA7uoo3GAaYGjGgfL4Cxb1CiztPuWGmS+auYs7/8OekRS8C2cjdAsjQ==}
     engines: {node: '>=14.18'}
     hasBin: true
@@ -8144,11 +8149,11 @@ packages:
       '@next/env': 13.5.6
       fast-glob: 3.3.2
       minimist: 1.2.8
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
     dev: false
 
-  /next@14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0):
-    resolution: {integrity: sha512-2T41HqJdKPqheR27ll7MFZ3gtTYvGew7cUc0PwPSyK9Ao5vvwpf9bYfP4V5YBGLckHF2kEGvrLte5BqLSv0s8g==}
+  /next@14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0):
+    resolution: {integrity: sha512-SF3TJnKdH43PMkCcErLPv+x/DY1YCklslk3ZmwaVoyUfDgHKexuKlf9sEfBQ69w+ue8jQ3msLb+hSj1T19hGag==}
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
@@ -8165,7 +8170,7 @@ packages:
       sass:
         optional: true
     dependencies:
-      '@next/env': 14.2.0
+      '@next/env': 14.2.1
       '@opentelemetry/api': 1.8.0
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
@@ -8177,20 +8182,20 @@ packages:
       sass: 1.75.0
       styled-jsx: 5.1.1(@babel/core@7.24.3)(react@18.2.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.0
-      '@next/swc-darwin-x64': 14.2.0
-      '@next/swc-linux-arm64-gnu': 14.2.0
-      '@next/swc-linux-arm64-musl': 14.2.0
-      '@next/swc-linux-x64-gnu': 14.2.0
-      '@next/swc-linux-x64-musl': 14.2.0
-      '@next/swc-win32-arm64-msvc': 14.2.0
-      '@next/swc-win32-ia32-msvc': 14.2.0
-      '@next/swc-win32-x64-msvc': 14.2.0
+      '@next/swc-darwin-arm64': 14.2.1
+      '@next/swc-darwin-x64': 14.2.1
+      '@next/swc-linux-arm64-gnu': 14.2.1
+      '@next/swc-linux-arm64-musl': 14.2.1
+      '@next/swc-linux-x64-gnu': 14.2.1
+      '@next/swc-linux-x64-musl': 14.2.1
+      '@next/swc-win32-arm64-msvc': 14.2.1
+      '@next/swc-win32-ia32-msvc': 14.2.1
+      '@next/swc-win32-x64-msvc': 14.2.1
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  /nextjs-toploader@1.6.11(next@14.2.0)(react-dom@18.2.0)(react@18.2.0):
+  /nextjs-toploader@1.6.11(next@14.2.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-2mt+YDj3I7s8JGv136TRdJo9amd2BBeb2u1U4tyvZpR08eqeBgqp3xsw2Yu1AUT7C3NZQhbQN11EXwnlqsPEIA==}
     peerDependencies:
       next: '>= 6.0.0'
@@ -8198,7 +8203,7 @@ packages:
       react-dom: '>= 16.0.0'
     dependencies:
       '@types/nprogress': 0.2.3
-      next: 14.2.0(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
+      next: 14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0)(react@18.2.0)(sass@1.75.0)
       nprogress: 0.2.0
       prop-types: 15.8.1
       react: 18.2.0
@@ -8659,21 +8664,8 @@ packages:
       pretty-format: 3.8.0
     dev: false
 
-  /preact-render-to-string@5.2.6(preact@10.20.0):
-    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
-    peerDependencies:
-      preact: '>=10'
-    dependencies:
-      preact: 10.20.0
-      pretty-format: 3.8.0
-    dev: false
-
   /preact@10.11.3:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
-    dev: false
-
-  /preact@10.20.0:
-    resolution: {integrity: sha512-wU7iZw2BjsaKDal3pDRDy/HpPB6cuFOnVUCcw9aIPKG98+ZrXx3F+szkos8BVME5bquyKDKvRlOJFG8kMkcAbg==}
     dev: false
 
   /prelude-ls@1.2.1:
@@ -8770,7 +8762,7 @@ packages:
       common-tags: 1.8.2
       fast-glob: 3.3.2
       jiti: 1.21.0
-      joi: 17.12.2
+      joi: 17.12.3
       meow: 12.1.1
       node-fetch: 3.3.2
       pascal-case: 3.1.2
@@ -8822,8 +8814,8 @@ packages:
       '@msgpack/msgpack': 2.8.0
     dev: true
 
-  /radix3@1.1.1:
-    resolution: {integrity: sha512-yUUd5VTiFtcMEx0qFUxGAv5gbMc1un4RvEO1JZdP7ZUl/RHygZK6PknIKntmQRZxnMY3ZXD2ISaw1ij8GYW1yg==}
+  /radix3@1.1.2:
+    resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
     dev: true
 
   /range-parser@1.2.1:
@@ -8841,12 +8833,11 @@ packages:
       unpipe: 1.0.0
     dev: true
 
-  /rc9@2.1.1:
-    resolution: {integrity: sha512-lNeOl38Ws0eNxpO3+wD1I9rkHGQyj1NU1jlzv4go2CtEnEQEUfqnIvZG7W+bC/aXdJ27n5x/yUjb6RoT9tko+Q==}
+  /rc9@2.1.2:
+    resolution: {integrity: sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==}
     dependencies:
       defu: 6.1.4
       destr: 2.0.3
-      flat: 5.0.2
     dev: true
 
   /react-dom@18.2.0(react@18.2.0):
@@ -9552,19 +9543,19 @@ packages:
     hasBin: true
     dependencies:
       '@prismicio/mocks': 2.1.1
-      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.4)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
+      '@prismicio/types-internal': 2.3.1(@types/uuid@9.0.8)(fp-ts@2.16.5)(io-ts-types@0.5.19)(io-ts@2.2.21)(uuid@9.0.1)
       '@slicemachine/manager': 0.18.3(@prismicio/client@7.4.0)(@types/uuid@9.0.8)(uuid@9.0.1)
       body-parser: 1.20.2
       chalk: 4.1.2
       cors: 2.8.5
-      express: 4.19.1
-      fp-ts: 2.16.4
+      express: 4.19.2
+      fp-ts: 2.16.5
       http-proxy-middleware: 2.0.6
-      io-ts: 2.2.21(fp-ts@2.16.4)
-      io-ts-types: 0.5.19(fp-ts@2.16.4)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
-      monocle-ts: 2.3.13(fp-ts@2.16.4)
+      io-ts: 2.2.21(fp-ts@2.16.5)
+      io-ts-types: 0.5.19(fp-ts@2.16.5)(io-ts@2.2.21)(monocle-ts@2.3.13)(newtype-ts@0.3.5)
+      monocle-ts: 2.3.13(fp-ts@2.16.5)
       mri: 1.2.0
-      newtype-ts: 0.3.5(fp-ts@2.16.4)(monocle-ts@2.3.13)
+      newtype-ts: 0.3.5(fp-ts@2.16.5)(monocle-ts@2.3.13)
       node-fetch: 3.3.2
       open: 8.4.2
       serve-static: 1.15.0
