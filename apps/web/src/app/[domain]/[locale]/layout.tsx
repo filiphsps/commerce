@@ -1,11 +1,11 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
+import 'the-new-css-reset';
 
-import { Suspense } from 'react';
+import { SocialProfileJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { SocialProfileJsonLd } from 'next-seo';
+import { Suspense } from 'react';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Shop } from '@nordcom/commerce-db';
@@ -53,7 +53,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
 
 export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const shop = await Shop.findByDomain(domain);
+        const shop = await ShopApi(domain, cache);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale}/`),
