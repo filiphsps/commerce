@@ -5,7 +5,7 @@ import styles from './page.module.scss';
 import { notFound, redirect } from 'next/navigation';
 
 import { Error } from '@nordcom/commerce-errors';
-import { Card, Heading } from '@nordcom/nordstar';
+import { Card, Details, Heading } from '@nordcom/nordstar';
 
 import { auth } from '@/utils/auth';
 import { getShop } from '@/utils/fetchers';
@@ -41,11 +41,9 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
                 </header>
                 <Card className={styles.container}>
                     {/* Dropdown */}
-                    <details open className={styles.details}>
-                        <summary>Shop</summary>
-
+                    <Details label="Raw Shop" className={styles.details}>
                         <code style={{ whiteSpace: 'pre' }}>{JSON.stringify(shop.toObject(), null, 2)}</code>
-                    </details>
+                    </Details>
                 </Card>
             </>
         );
