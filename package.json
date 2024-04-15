@@ -92,7 +92,7 @@
         "turbo-ignore": "1.13.2",
         "turbo": "1.13.2",
         "typescript": "5.4.5",
-        "vite-plugin-dts": "3.8.1",
+        "vite-plugin-dts": "3.8.3",
         "vite-tsconfig-paths": "4.3.2",
         "vite": "5.2.8",
         "vitest": "1.5.0"
