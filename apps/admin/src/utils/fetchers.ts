@@ -52,7 +52,7 @@ export async function updateShop(userId: string, shopId: string, data: Partial<S
 
         await shop.save();
         await revalidateAll(userId, shopId, shop.domain);
-        console.debug('Updated shop', shop.toObject());
+        console.debug('Updated shop', JSON.stringify(shop.toObject(), null, 2));
         return shop;
     } catch (error: any) {
         console.error(error);
