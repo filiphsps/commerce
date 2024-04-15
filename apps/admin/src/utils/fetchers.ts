@@ -3,6 +3,7 @@ import 'server-only';
 import { revalidateTag, unstable_cache as cache } from 'next/cache';
 
 import { prisma } from '@nordcom/commerce-database';
+import type { ShopBase } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
@@ -43,26 +44,16 @@ export async function getShop(userId: string, shopId: string, skipCache = isDeve
         tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`]
     })();
 }
-export type UpdateShopData = {
-    name: string;
-    domain: string;
-};
-export async function updateShop(userId: string, shopId: string, data: UpdateShopData) {
-    try {
-        const response = await prisma.shop.update({
-            where: {
-                id: shopId,
-                collaborators: {
-                    some: {
-                        userId
-                    }
-                }
-            },
-            data: data
-        });
 
-        await revalidateAll(userId, shopId, data.domain);
-        return response;
+export async function updateShop(userId: string, shopId: string, data: Partial<ShopBase>) {
+    try {
+        const shop = await Shop.findById(shopId);
+        shop.set(data);
+
+        await shop.save();
+        await revalidateAll(userId, shopId, shop.domain);
+        console.debug('Updated shop', shop.toObject());
+        return shop;
     } catch (error: any) {
         console.error(error);
         return {
