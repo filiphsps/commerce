@@ -11,6 +11,16 @@
     flex-direction: column;
     gap: calc(var(--layout-block-padding) / 4);
 
+    &.small {
+        width: 6.5rem;
+    }
+
+    img.preview {
+        height: 3.5rem;
+        aspect-ratio: 1 / 1;
+        border-radius: var(--border-radius);
+    }
+
     .grid {
         display: flex;
         gap: var(--layout-block-padding);

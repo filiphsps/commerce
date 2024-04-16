@@ -61,11 +61,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                             redirect('/auth/login/');
                         }
 
-                        const name = form.get('name')?.toString()!;
-                        const domain = form.get('domain')?.toString()!;
-
-                        console.debug(`Updating shop`, { name, domain });
-                        await updateShop(session.user.id, shopId, { name, domain });
+                        await updateShop(session.user.id, shopId, Object.fromEntries(form.entries()));
                     }}
                 >
                     <Card className={styles.section} padding={false} borderless>
@@ -83,21 +79,19 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                     </Card>
 
                     <Card className={styles.section} padding={false} borderless>
-                        <Label as="label" htmlFor="accents">
-                            Accents
-                        </Label>
+                        <Label as="label">Accents</Label>
                         <Card className={styles.container}>
                             {shop.design.accents.map(({ type, color, foreground }, index) => (
-                                <Card key={`accent_${index}`} className={styles.section} padding={false} borderless>
+                                <Card key={`accents.${index}`} className={styles.section} padding={false} borderless>
                                     <Label as="label">{type} (Accent)</Label>
                                     <Card className={styles.grid}>
                                         <div className={styles.item}>
-                                            <Label as="label" htmlFor={`accent_${index}_type`}>
+                                            <Label as="label" htmlFor={`accents.${index}.type`}>
                                                 Type
                                             </Label>
                                             <Input
                                                 as="select"
-                                                name={`accent_${index}_type`}
+                                                name={`accents.${index}.type`}
                                                 type="select"
                                                 title="Type"
                                                 label="Type"
@@ -112,12 +106,12 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                                         </div>
 
                                         <div className={styles.item}>
-                                            <Label as="label" htmlFor={`accent_${index}`}>
+                                            <Label as="label" htmlFor={`accents.${index}.color`}>
                                                 Color
                                             </Label>
                                             <Input
                                                 as="input"
-                                                name={`accent_${index}`}
+                                                name={`accents.${index}.color`}
                                                 type="color"
                                                 title="Color"
                                                 defaultValue={color}
@@ -125,12 +119,12 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                                         </div>
 
                                         <div className={styles.item}>
-                                            <Label as="label" htmlFor={`accent_${index}_foreground`}>
+                                            <Label as="label" htmlFor={`accents.${index}.foreground`}>
                                                 Text
                                             </Label>
                                             <Input
                                                 as="input"
-                                                name={`accent_${index}_foreground`}
+                                                name={`accents.${index}.foreground`}
                                                 type="color"
                                                 title="Foreground"
                                                 defaultValue={foreground}
@@ -139,6 +133,53 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                                     </Card>
                                 </Card>
                             ))}
+                        </Card>
+                    </Card>
+
+                    <Card className={styles.section} padding={false} borderless>
+                        <Label as="label" htmlFor="icons">
+                            Favicon
+                        </Label>
+
+                        <Card className={styles.grid}>
+                            <img className={styles.preview} src={shop.icons?.favicon?.src!} alt="Favicon Preview" />
+                            <Card className={styles.section} padding={false} borderless>
+                                <Input
+                                    label="src"
+                                    name="icons.favicon.src"
+                                    title="Favicon Src"
+                                    defaultValue={shop.icons?.favicon?.src}
+                                />
+                            </Card>
+
+                            <Card className={styles.section} padding={false} borderless>
+                                <Input
+                                    label="Alt"
+                                    name="icons.favicon.alt"
+                                    title="Favicon Alt"
+                                    defaultValue={shop.icons?.favicon?.alt}
+                                />
+                            </Card>
+
+                            <Card className={`${styles.section} ${styles.small}`} padding={false} borderless>
+                                <Input
+                                    label="width"
+                                    type="number"
+                                    name="icons.favicon.width"
+                                    title="Favicon Width"
+                                    defaultValue={shop.icons?.favicon?.width}
+                                />
+                            </Card>
+
+                            <Card className={`${styles.section} ${styles.small}`} padding={false} borderless>
+                                <Input
+                                    label="height"
+                                    type="number"
+                                    name="icons.favicon.height"
+                                    title="Favicon Height"
+                                    defaultValue={shop.icons?.favicon?.height}
+                                />
+                            </Card>
                         </Card>
                     </Card>
                 </SettingsBlock>

@@ -47,12 +47,13 @@ export async function getShop(userId: string, shopId: string, skipCache = isDeve
 
 export async function updateShop(userId: string, shopId: string, data: Partial<ShopBase>) {
     try {
+        const sanitized = Object.fromEntries(Object.entries(data).filter(([key]) => !key.startsWith('$')));
+
         const shop = await Shop.findById(shopId);
-        shop.set(data);
+        shop.set(sanitized);
 
         await shop.save();
         await revalidateAll(userId, shopId, shop.domain);
-        console.debug('Updated shop', JSON.stringify(shop.toObject(), null, 2));
         return shop;
     } catch (error: any) {
         console.error(error);
