@@ -1,9 +1,15 @@
 @import 'globals';
 
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-block-padding);
+}
+
 .section {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--layout-block-padding) / 2);
+    gap: calc(var(--layout-block-padding) / 4);
 
     .grid {
         display: flex;

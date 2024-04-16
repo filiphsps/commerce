@@ -86,13 +86,11 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         <Label as="label" htmlFor="accents">
                             Accents
                         </Label>
-                        <Card className={styles.section}>
+                        <Card className={styles.container}>
                             {shop.design.accents.map(({ type, color, foreground }, index) => (
-                                <>
-                                    <Label key={`accent_${index}`} as="label">
-                                        {type} (Accent)
-                                    </Label>
-                                    <Card key={`accent_${index}`} className={styles.grid}>
+                                <Card key={`accent_${index}`} className={styles.section} padding={false} borderless>
+                                    <Label as="label">{type} (Accent)</Label>
+                                    <Card className={styles.grid}>
                                         <div className={styles.item}>
                                             <Label as="label" htmlFor={`accent_${index}_type`}>
                                                 Type
@@ -103,7 +101,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                                                 type="select"
                                                 title="Type"
                                                 label="Type"
-                                                defaultValue={color}
+                                                defaultValue={type}
                                             >
                                                 {['primary', 'secondary'].map((value) => (
                                                     <option key={value} value={value}>
@@ -139,7 +137,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                                             />
                                         </div>
                                     </Card>
-                                </>
+                                </Card>
                             ))}
                         </Card>
                     </Card>

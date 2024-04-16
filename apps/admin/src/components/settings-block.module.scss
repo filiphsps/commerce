@@ -1,8 +1,9 @@
 @import 'globals';
 
-.container {
+form.container {
     display: flex;
     flex-direction: column;
+    gap: var(--layout-block-padding) !important;
 
     button:not(:is(:first-child)):is(:last-child) {
         margin: var(--layout-block-padding) 0 0 0;
