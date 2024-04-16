@@ -85,7 +85,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
         req = (await this.mutateQuery<Req>(req, args))();
 
         let res = await req.exec();
-        if (!res) throw new TodoError('No data found');
+        if (!res || res.length <= 0) throw new TodoError('No data found');
 
         if (id || (count && count === 1)) return res[0] as DocType;
         return res as DocType[];

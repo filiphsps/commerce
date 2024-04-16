@@ -11,17 +11,15 @@ interface BaseDocument extends Document {
 }
 export type { BaseDocument };
 
-mongoose.set('strictQuery', true);
-mongoose.set('strict', 'throw');
+mongoose.set('strictQuery', false);
+mongoose.set('strict', false);
 mongoose.set('toJSON', {
-    virtuals: true,
     transform: (doc, ret) => {
         doc.id = ret._id;
         return ret;
     }
 });
 mongoose.set('toObject', {
-    virtuals: true,
     transform: (doc, ret) => {
         doc.id = ret._id;
         return ret;

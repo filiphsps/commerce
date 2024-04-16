@@ -17,6 +17,7 @@ const config = {
     compress: true,
     transpilePackages: [],
     experimental: {
+        esmExternals: 'loose',
         caseSensitiveRoutes: true,
         //nextScriptWorkers: true,
         optimizeCss: true,

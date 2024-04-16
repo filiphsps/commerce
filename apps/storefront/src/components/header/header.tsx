@@ -5,7 +5,7 @@ import headerNavigationStyles from '@/components/header/header-navigation.module
 
 import Image from 'next/image';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { ShopBase } from '@nordcom/commerce-db';
 
 import { NavigationApi } from '@/api/navigation';
 
@@ -19,20 +19,22 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type HeaderProps = {
-    shop: Shop;
+    shop: ShopBase;
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
     const navigation = await NavigationApi({ shop, locale });
-    const headerTheme = shop.theme.header;
+    const {
+        logo,
+        theme: { ...headerTheme }
+    } = shop.design.header;
 
-    const logo = shop.logos?.primary!;
     return (
         <section
             className={styles.wrapper}
-            data-theme={headerTheme?.theme || 'primary'}
-            data-theme-variant={headerTheme?.themeVariant || 'default'}
+            data-theme={headerTheme.accent || 'primary'}
+            data-theme-variant={headerTheme.variant || 'default'}
         >
             <HeaderContainer {...props}>
                 <HamburgerMenu />

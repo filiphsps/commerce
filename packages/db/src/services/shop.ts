@@ -16,7 +16,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     }: { collaboratorId: string } & Parameters<typeof this.find>[0]) {
         const collaborator = await User.find({ id: collaboratorId });
 
-        return this.find({
+        return await this.find({
             ...args,
             filter: {
                 ...args.filter,
@@ -30,9 +30,14 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
     }
 
     public async findByDomain(domain: string) {
-        return this.find({
+        return await this.find({
             filter: {
-                domain
+                $or: [
+                    { domain: domain },
+                    {
+                        alternativeDomains: domain
+                    }
+                ]
             },
             count: 1
         });

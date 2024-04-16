@@ -11,7 +11,6 @@ const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // D
 const config = {
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
-    generateEtags: false,
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
@@ -32,7 +31,7 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
-        //ppr: true,
+        ppr: true,
         scrollRestoration: true,
         serverComponentsExternalPackages: ['mongoose'],
         serverSourceMaps: true,

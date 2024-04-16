@@ -1,5 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import type { Nullable, Shop } from '@nordcom/commerce-database';
+import type { ShopBase } from '@nordcom/commerce-db';
 
 import { DocumentTransform } from '@apollo/client';
 import { visit } from 'graphql';
@@ -38,7 +39,7 @@ export type AbstractApiBuilder<K, Q> = ({
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
-export function buildCacheTagArray(shop: Shop, locale: Locale, tags: string[], env?: string) {
+export function buildCacheTagArray(shop: Shop | ShopBase, locale: Locale, tags: string[], env?: string) {
     const prefix = env ? `${env}.` : '';
 
     return [
