@@ -11,6 +11,12 @@ export interface ShopBase extends BaseDocument {
     alternativeDomains?: string[];
     design: {
         header: {
+            logo: {
+                width: number;
+                height: number;
+                src: string;
+                alt: string;
+            };
             theme: {
                 accent: 'primary' | 'secondary';
                 variant: 'default' | 'dark' | 'light';
@@ -27,8 +33,22 @@ export interface ShopBase extends BaseDocument {
             width: number;
             height: number;
             src: string;
+            alt: string;
         };
     };
+    contentProvider: {
+        id: string;
+    } & (
+        | {
+              type: 'prismic';
+              authentication: {
+                  token: string;
+              };
+          }
+        | {
+              type: 'shopify';
+          }
+    );
     collaborators: {
         user: UserBase;
         permissions: string[];
@@ -56,6 +76,26 @@ export const ShopSchema = new Schema<ShopBase>(
 
         design: {
             header: {
+                logo: {
+                    width: {
+                        type: Schema.Types.Number,
+                        required: true,
+                        default: 512
+                    },
+                    height: {
+                        type: Schema.Types.Number,
+                        required: true,
+                        default: 512
+                    },
+                    src: {
+                        type: Schema.Types.String,
+                        required: true
+                    },
+                    alt: {
+                        type: Schema.Types.String,
+                        required: true
+                    }
+                },
                 theme: {
                     accent: {
                         type: Schema.Types.String,
@@ -107,6 +147,29 @@ export const ShopSchema = new Schema<ShopBase>(
                     default: 512
                 },
                 src: {
+                    type: Schema.Types.String,
+                    required: true
+                },
+                alt: {
+                    type: Schema.Types.String,
+                    required: true
+                }
+            }
+        },
+
+        contentProvider: {
+            type: {
+                type: Schema.Types.String,
+                enum: ['prismic', 'shopify'],
+                required: true,
+                default: 'prismic'
+            },
+            id: {
+                type: Schema.Types.String,
+                required: true
+            },
+            authentication: {
+                token: {
                     type: Schema.Types.String,
                     required: true
                 }

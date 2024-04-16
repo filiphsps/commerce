@@ -1,4 +1,5 @@
 import type { PrismicContentProvider, Shop } from '@nordcom/commerce-database';
+import type { ShopBase } from '@nordcom/commerce-db';
 import { UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { BuildConfig } from '@/utils/build-config';
@@ -79,7 +80,7 @@ export const createClient = ({
     shop,
     locale,
     ...config
-}: CreateClientConfig & { shop: Shop; locale: Locale }): Client => {
+}: CreateClientConfig & { shop: Shop | ShopBase; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
     // TODO: Remove `repositoryName` variable.
     let name: string = repositoryName;

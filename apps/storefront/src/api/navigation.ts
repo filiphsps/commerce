@@ -1,6 +1,6 @@
 import { unstable_cache as cache } from 'next/cache';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { ShopBase } from '@nordcom/commerce-db';
 import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 
 import { buildCacheTagArray } from '@/utils/abstract-api';
@@ -24,17 +24,12 @@ export const NavigationApi = async ({
     locale,
     client: _client
 }: {
-    shop: Shop;
+    shop: ShopBase;
     locale: Locale;
     client?: PrismicClient;
 }): Promise<NavigationItem[]> => {
-    if (shop.contentProvider.type !== 'prismic') {
-        // TODO: Handle non-Prismic content providers.
-        return [];
-    }
-
     return cache(
-        async (shop: Shop, locale: Locale, _client?: PrismicClient) => {
+        async (shop: ShopBase, locale: Locale, _client?: PrismicClient) => {
             const client = _client || createClient({ shop, locale });
 
             try {
