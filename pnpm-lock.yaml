@@ -167,8 +167,8 @@ importers:
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/shopify-api':
-        specifier: 9.7.1
-        version: 9.7.1
+        specifier: 9.7.2
+        version: 9.7.2
       '@vercel/analytics':
         specifier: 1.2.2
         version: 1.2.2(next@14.2.1(@babel/core@7.24.3)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.75.0))(react@18.2.0)
@@ -2322,8 +2322,8 @@ packages:
     resolution: {integrity: sha512-Ih/6Oe80dynlUsRfEqptWBfsySCqI0rjQvPAjS8HuWeK9nZ+TvmYScfxjucKXZ2deXwAClnU6SMdh3/B1lMMog==}
     engines: {node: ^14.17.0 || >=16.0.0}
 
-  '@shopify/shopify-api@9.7.1':
-    resolution: {integrity: sha512-LstIycn/gC0OHbLX3YEqEFdlkp1v+CvJhyUB0dTJz+uK7gziu8G9lZgnv9/punjBH38mw7qBSCGEMzdLve6gAA==}
+  '@shopify/shopify-api@9.7.2':
+    resolution: {integrity: sha512-EZn3xPnB8ftqlse1m2PQBsKLIczd/sor01kImqMW65dPkSYCufEdK54QP7AH/anj2vkYJXVKdGqMunzQWrJAoA==}
 
   '@shopify/storefront-api-client@0.3.3':
     resolution: {integrity: sha512-yoZul8r2mhb/XCDh55UxKNuo/PDB+bldTOt+rRz9uCKC9WkVQfGfMLwJhKb92i3CT/cxWNREPqEN5z1H+B9+IQ==}
@@ -4160,8 +4160,8 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  isbot@4.4.0:
-    resolution: {integrity: sha512-8ZvOWUA68kyJO4hHJdWjyreq7TYNWTS9y15IzeqVdKxR9pPr3P/3r9AHcoIv9M0Rllkao5qWz2v1lmcyKIVCzQ==}
+  isbot@5.1.4:
+    resolution: {integrity: sha512-KuqD/TAG/qtgCDnO8Ab1v5rGRK3jl9hb+2KfJt+roIPE7R4Hiq99VinR0qrLGFptdUNIkClYjuXEpVTGkD9V/A==}
     engines: {node: '>=18'}
 
   isexe@2.0.0:
@@ -7593,13 +7593,13 @@ snapshots:
 
   '@shopify/network@3.2.1': {}
 
-  '@shopify/shopify-api@9.7.1':
+  '@shopify/shopify-api@9.7.2':
     dependencies:
       '@shopify/admin-api-client': 0.2.8
       '@shopify/network': 3.2.1
       '@shopify/storefront-api-client': 0.3.3
       compare-versions: 6.1.0
-      isbot: 4.4.0
+      isbot: 5.1.4
       jose: 5.2.4
       node-fetch: 2.7.0
       tslib: 2.6.2
@@ -9890,7 +9890,7 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  isbot@4.4.0: {}
+  isbot@5.1.4: {}
 
   isexe@2.0.0: {}
 
