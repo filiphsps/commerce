@@ -2,16 +2,16 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
+import { NewsArticleJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { NewsArticleJsonLd } from 'next-seo';
 
-import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
-import { BlogApi, BlogArticleApi } from '@/api/shopify/blog';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 
@@ -22,7 +22,7 @@ import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
 
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
     const locale = Locale.default;
     const shops = await ShopsApi();
 
@@ -61,7 +61,7 @@ export async function generateStaticParams() {
     ).flat(2);
 
     return pages;
-}
+}*/
 
 export type ArticlePageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
