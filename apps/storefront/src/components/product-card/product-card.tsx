@@ -16,6 +16,8 @@ import ProductCardTitle from '@/components/product-card/product-card-title';
 import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
 
+const DESCRIPTION_LENGTH = 160;
+
 export type ProductCardProps = {
     shop: Shop;
     locale: Locale;
@@ -29,7 +31,7 @@ export type ProductCardProps = {
 const ProductCard = async ({ shop, locale, data, priority, className, ...props }: ProductCardProps) => {
     const i18n = await getDictionary({ shop, locale });
 
-    const description = (data.seo.description || data.description || '').slice(0, 160).trimEnd();
+    const description = (data.seo.description || data.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
 
     return (
         <Suspense key={`${shop.id}.product.${data.handle}.card`} fallback={<ProductCard.skeleton />}>

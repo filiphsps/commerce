@@ -2,10 +2,10 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { NewsArticleJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { NewsArticleJsonLd } from 'next-seo';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
