@@ -71,7 +71,7 @@
         "lodash.debounce": "4.0.8",
         "million": "3.0.6",
         "mongoose": "8.3.1",
-        "next-auth": "5.0.0-beta.17",
+        "next-auth": "5.0.0-beta.18",
         "next-seo": "6.5.0",
         "next-sitemap": "4.2.3",
         "next": "14.2.1",
