@@ -261,11 +261,11 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@testing-library/jest-dom':
-        specifier: 6.4.2
-        version: 6.4.2(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
+        specifier: 6.4.5
+        version: 6.4.5(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
       '@testing-library/react':
-        specifier: 15.0.4
-        version: 15.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -457,11 +457,11 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@testing-library/jest-dom':
-        specifier: 6.4.2
-        version: 6.4.2(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
+        specifier: 6.4.5
+        version: 6.4.5(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
       '@testing-library/react':
-        specifier: 15.0.4
-        version: 15.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -650,11 +650,11 @@ importers:
         specifier: 0.3.39
         version: 0.3.39(@prismicio/client@7.4.1)(@prismicio/types@0.2.8)(@types/uuid@9.0.8)(next@14.3.0-canary.4(@babel/core@7.24.5)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.75.0))(react@18.2.0)(uuid@9.0.1)
       '@testing-library/jest-dom':
-        specifier: 6.4.2
-        version: 6.4.2(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
+        specifier: 6.4.5
+        version: 6.4.5(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))
       '@testing-library/react':
-        specifier: 15.0.4
-        version: 15.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 15.0.7
+        version: 15.0.7(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/accept-language-parser':
         specifier: 1.5.6
         version: 1.5.6
@@ -2463,8 +2463,8 @@ packages:
     resolution: {integrity: sha512-wdsYKy5zupPyLCW2Je5DLHSxSfbIp6h80WoHOQc+RPtmPGA52O9x5MJEkv92Sjonpq+poOAtUKhh1kBGAXBrNA==}
     engines: {node: '>=18'}
 
-  '@testing-library/jest-dom@6.4.2':
-    resolution: {integrity: sha512-CzqH0AFymEMG48CpzXFriYYkOjk6ZGPCLMhW9e9jg3KMCn5OfJecF8GtGW7yGfR/IgCe3SX8BSwjdzI6BBbZLw==}
+  '@testing-library/jest-dom@6.4.5':
+    resolution: {integrity: sha512-AguB9yvTXmCnySBP1lWjfNNUwpbElsaQ567lt2VdGqAdHtpieLgjmcVyv1q7PMIvLbgpDdkWV5Ydv3FEejyp2A==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@jest/globals': '>= 28'
@@ -2484,12 +2484,16 @@ packages:
       vitest:
         optional: true
 
-  '@testing-library/react@15.0.4':
-    resolution: {integrity: sha512-Fw/LM1emOHKfCxv5R0tz+25TOtiMt0o5Np1zJmb4LbSacOagXQX4ooAaHiJfGUMe+OjUk504BX11W+9Z8CvyZA==}
+  '@testing-library/react@15.0.7':
+    resolution: {integrity: sha512-cg0RvEdD1TIhhkm1IeYMQxrzy0MtUNfa3minv4MjbgcYzJAZ7yD0i0lwoPOTPr+INtiXFezt2o8xMSnyHhEn2Q==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@types/react': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
@@ -7937,7 +7941,7 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@6.4.2(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))':
+  '@testing-library/jest-dom@6.4.5(vitest@1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0))':
     dependencies:
       '@adobe/css-tools': 4.3.3
       '@babel/runtime': 7.24.5
@@ -7950,13 +7954,15 @@ snapshots:
     optionalDependencies:
       vitest: 1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.75.0)
 
-  '@testing-library/react@15.0.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@testing-library/react@15.0.7(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.24.5
       '@testing-library/dom': 10.1.0
       '@types/react-dom': 18.2.24
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.75
 
   '@tokenizer/token@0.3.0': {}
 
