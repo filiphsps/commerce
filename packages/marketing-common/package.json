@@ -60,7 +60,7 @@
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
         "glob": "10.3.16",
-        "rimraf": "5.0.5",
+        "rimraf": "5.0.7",
         "typescript": "5.4.5",
         "vite-plugin-dts": "3.8.3",
         "vite-tsconfig-paths": "4.3.2",
