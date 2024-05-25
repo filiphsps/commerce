@@ -3,8 +3,8 @@
 
 import styles from '@/components/products/add-to-cart.module.scss';
 
-import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 
 import { TodoError } from '@nordcom/commerce-errors';
 
