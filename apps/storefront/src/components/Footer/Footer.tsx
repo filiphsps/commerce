@@ -60,7 +60,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                 <Link
                                     key={item.handle}
                                     href={item.handle || ''}
-                                    target={item.handle.startsWith('http') ? '_blank' : ''}
+                                    target={item.handle?.startsWith('http') ? '_blank' : ''}
                                 >
                                     {item.title}
                                 </Link>
