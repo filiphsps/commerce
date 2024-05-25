@@ -81,15 +81,17 @@
         }
     }
 
-    &.align-center {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: auto;
-        gap: var(--block-spacer-large);
+    @media (min-width: $breakpoint-mobile) {
+        &.align-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            gap: var(--block-spacer-large);
 
-        text-align: center;
+            text-align: center;
+        }
     }
 
     &.plain {
