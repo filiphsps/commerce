@@ -9,6 +9,20 @@
     scrollbar-color: var(--color-block-black) var(--color-block);
     scrollbar-width: thin;
 
+    // FIXME: This wont be correct if the "view all" card isn't present.
+    &.small {
+        --component-product-card-width: calc(100% / 2);
+        @media (min-width: $breakpoint-mobile) {
+            --component-product-card-width: calc(100% / 3);
+        }
+        @media (min-width: $breakpoint-tablet) {
+            --component-product-card-width: calc(100% / 5);
+        }
+        @media (min-width: $breakpoint-tablet-medium) {
+            --component-product-card-width: calc(100% / 7);
+        }
+    }
+
     .content {
         display: grid;
         gap: var(--block-spacer-large);
