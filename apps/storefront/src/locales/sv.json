@@ -31,6 +31,7 @@
         "search": "Sök"
     },
     "product": {
-        "recommendations": "Komplettera upplevelsen med dessa populära tillägg"
+        "recommendations": "Komplettera upplevelsen med dessa populära tillägg",
+        "SKUs": "Artikelnummer"
     }
 }

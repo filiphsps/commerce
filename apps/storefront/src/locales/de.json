@@ -31,6 +31,7 @@
         "search": "Suche"
     },
     "product": {
-        "recommendations": "Andere Kunden genießen diese Produkte auch zusammen"
+        "recommendations": "Andere Kunden genießen diese Produkte auch zusammen",
+        "SKUs": "SKUs"
     }
 }

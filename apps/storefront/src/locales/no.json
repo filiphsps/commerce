@@ -33,6 +33,7 @@
         "search": "Søk"
     },
     "product": {
-        "recommendations": "Andre kunder liker også disse produktene sammen"
+        "recommendations": "Andre kunder liker også disse produktene sammen",
+        "SKUs": "Artikkelnummer"
     }
 }

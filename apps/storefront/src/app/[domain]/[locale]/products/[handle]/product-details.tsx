@@ -2,18 +2,23 @@ import 'server-only';
 
 import styles from './product-details.module.scss';
 
+import { getDictionary } from '@/utils/dictionary';
+import { useTranslation } from '@/utils/locale';
 import { parseMetafield } from '@shopify/hydrogen-react';
 
 import { Alert } from '@/components/informational/alert';
 import { Label } from '@/components/typography/label';
 
 import type { Product } from '@/api/product';
+import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 
 export type ProductDetailsProps = {
+    locale: Locale;
     data: Product;
 };
 const ProductDetails = async ({
+    locale,
     data: {
         ingredients,
         flavors,
@@ -28,6 +33,9 @@ const ProductDetails = async ({
     const parsedFlavors = flavors
         ? parseMetafield<ParsedMetafields['list.single_line_text_field']>(flavors).parsedValue
         : null;
+
+    const i18n = await getDictionary(locale);
+    const { t } = useTranslation('product', i18n);
 
     return (
         <>
@@ -47,8 +55,12 @@ const ProductDetails = async ({
 
             {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
                 <div className={styles.block}>
-                    <Label className={styles.label}>SKU(s)</Label>
-                    <p>{variants.map(({ node: { sku, title } }) => `${title}: ${sku}`).join(', ')}.</p>
+                    <Label className={styles.label}>{t('skus')}</Label>
+                    {variants.map(({ node: { sku, title } }) => (
+                        <p key={sku}>
+                            {title}: {sku}
+                        </p>
+                    ))}
                 </div>
             ) : null}
         </>

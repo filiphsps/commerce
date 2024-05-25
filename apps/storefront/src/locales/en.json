@@ -33,6 +33,7 @@
         "search": "Search"
     },
     "product": {
-        "recommendations": "Other customers also enjoy these products together"
+        "recommendations": "Other customers also enjoy these products together",
+        "skus": "SKUs"
     }
 }

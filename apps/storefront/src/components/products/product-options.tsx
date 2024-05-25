@@ -118,7 +118,7 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
                                             as={asComponent}
                                             title={`${product.vendor} ${product.title} - ${
                                                 title || matchingVariant?.title
-                                            }`}
+                                            }${!inStock ? ' (Out of stock)' : ''}`} // TODO: i18n.
                                             className={`${styles.option} ${
                                                 selectedOptions?.[option.name!] === value ? styles.selected : ''
                                             } ${!inStock ? styles.disabled : ''} ${

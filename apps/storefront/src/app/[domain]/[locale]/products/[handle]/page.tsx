@@ -270,7 +270,7 @@ export default async function ProductPage({
                                                 />
 
                                                 <Suspense>
-                                                    <ImportantProductDetails data={product} />
+                                                    <ImportantProductDetails locale={locale} data={product} />
                                                 </Suspense>
 
                                                 {page?.slices && page.slices.length > 0 ? (
@@ -301,7 +301,7 @@ export default async function ProductPage({
                                         children: (
                                             <>
                                                 <Suspense>
-                                                    <ProductDetails data={product} />
+                                                    <ProductDetails locale={locale} data={product} />
                                                 </Suspense>
                                             </>
                                         )
