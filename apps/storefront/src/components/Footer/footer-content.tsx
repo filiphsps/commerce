@@ -1,7 +1,7 @@
 import styles from '@/components/Footer/footer.module.scss';
 
-import Image from 'next/image';
 import { Suspense } from 'react';
+import Image from 'next/image';
 
 import { useTranslation } from '@/utils/locale';
 

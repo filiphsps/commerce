@@ -38,9 +38,10 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         <div className={styles.logo}>
                             {store.logos.primary?.src && (
                                 <Image
+                                    title={store.name}
                                     src={store.logos.primary.src}
                                     alt={store.logos.primary.alt || 'Logo'}
-                                    fill
+                                    fill={true}
                                     sizes="(max-width: 950px) 75px, 225px"
                                     priority={false}
                                     loading="lazy"

@@ -5,7 +5,7 @@ import prisma from './prisma';
 import type { Shop } from './shop';
 
 export const PagesApi = async (shop: Shop, cache?: any) => {
-    if (!shop) throw new UnknownShopDomainError();
+    if (!(shop as any)) throw new UnknownShopDomainError();
 
     const callback = async () => {
         const pages = await prisma.page.findMany({
@@ -24,9 +24,8 @@ export const PagesApi = async (shop: Shop, cache?: any) => {
         return pages;
     };
 
-    if (!cache || typeof cache !== 'function') {
-        return callback();
-    }
+    // Fast-path for no cache.
+    if (!cache || typeof cache !== 'function') return callback();
 
     const tags = ['shops', shop.id, 'pages', 'page']; // TODO: Utility function.
     return cache(async () => callback(), tags, {

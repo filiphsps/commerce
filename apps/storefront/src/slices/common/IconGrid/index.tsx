@@ -27,26 +27,28 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            {slice.items.map(({ icon, title }, index) => (
-                <div key={index} className={styles.item}>
-                    {icon.url ? (
-                        <Image
-                            className={styles.icon}
-                            src={icon.url}
-                            alt={icon.alt || ''}
-                            width={35}
-                            height={35}
-                            decoding="async"
-                            loading={order < 2 && index < 1 ? 'eager' : 'lazy'}
-                            priority={order < 2 && index < 1}
-                            draggable={false}
-                        />
-                    ) : (
-                        <div className={styles.icon} />
-                    )}
-                    <div className={styles.title}>{title}</div>
-                </div>
-            ))}
+            {slice.items.length > 0
+                ? slice.items.map(({ icon, title }, index) => (
+                      <div key={index} className={styles.item}>
+                          {icon.url ? (
+                              <Image
+                                  className={styles.icon}
+                                  src={icon.url}
+                                  alt={icon.alt || ''}
+                                  width={35}
+                                  height={35}
+                                  decoding="async"
+                                  loading={order < 2 && index < 1 ? 'eager' : 'lazy'}
+                                  priority={order < 2 && index < 1}
+                                  draggable={false}
+                              />
+                          ) : (
+                              <div className={styles.icon} />
+                          )}
+                          <div className={styles.title}>{title}</div>
+                      </div>
+                  ))
+                : null}
         </PageContent>
     );
 };
@@ -62,7 +64,7 @@ IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            {(slice.items || []).map(({ title }, index) => (
+            {(slice.items.length > 0 ? slice.items : []).map(({ title }, index) => (
                 <div key={index} className={styles.item} data-skeleton>
                     <div className={styles.icon} />
                     <div className={styles.title}>{title}</div>

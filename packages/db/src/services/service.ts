@@ -80,7 +80,7 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
 
         let req = this.model.find<DocType>({
             ...(filter || {}),
-            ...((id && { _id: id }) || {})
+            ...(((id as any) && { _id: id }) || {})
         });
         req = (await this.mutateQuery<Req>(req, args))();
 
