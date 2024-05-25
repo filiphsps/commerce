@@ -2,8 +2,6 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import withMarkdoc from '@markdoc/next.js';
-import withMillionLint from '@million/lint';
-import withMillion from 'million/compiler';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
@@ -93,18 +91,11 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withMillionLint.next({ rsc: true })(
-    withMillion.next(
-        withMarkdoc({
-            mode: 'static',
-            schemaPath: './src/markdoc',
-            tokenizerOptions: {
-                allowComments: true,
-                slots: true
-            }
-        })(config),
-        {
-            telemetry: false
-        }
-    )
-);
+export default withMarkdoc({
+    mode: 'static',
+    schemaPath: './src/markdoc',
+    tokenizerOptions: {
+        allowComments: true,
+        slots: true
+    }
+})(config);
