@@ -1,7 +1,7 @@
 import styles from '@/components/Footer/footer.module.scss';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 
@@ -20,7 +20,8 @@ export type FooterContentProps = {
 const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
 
-    const currentYear = new Date().getFullYear();
+    // TODO: This should be tenant-specific.
+    const copyright = <>&copy; 2023-{new Date().getFullYear()}</>;
 
     return (
         <>
@@ -50,30 +51,25 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                 </div>
 
                 <div className={styles['bottom-block']}>
-                    <div
-                        className={styles.socials}
-                        // TODO: Add LinkedIn and YouTube icons.
-                    >
-                        {store.social
-                            .filter(({ name }) => !['linkedin', 'youtube'].includes(name.toLowerCase()))
-                            .map((social) => (
-                                <Link
-                                    className={`${styles.social} ${styles['social-icon']}`}
-                                    key={social.url}
-                                    href={social.url}
-                                >
-                                    <Image
-                                        src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
-                                        width={35}
-                                        height={35}
-                                        alt={social.name}
-                                        title={social.name}
-                                        sizes="35px"
-                                        draggable={false}
-                                        decoding="async"
-                                    />
-                                </Link>
-                            ))}
+                    <div className={styles.socials}>
+                        {store.social.map((social) => (
+                            <Link
+                                className={`${styles.social} ${styles['social-icon']}`}
+                                key={social.url}
+                                href={social.url}
+                            >
+                                <Image
+                                    src={`/assets/icons/social/${social.name.toLowerCase()}.svg`}
+                                    width={35}
+                                    height={35}
+                                    alt={social.name}
+                                    title={social.name}
+                                    sizes="35px"
+                                    draggable={false}
+                                    decoding="async"
+                                />
+                            </Link>
+                        ))}
                         <Link className={styles.flag} href="/countries/" title={t('language-and-region-settings')}>
                             <Suspense>
                                 <CurrentLocaleFlag locale={locale} />
@@ -82,7 +78,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                     </div>
                     <div className={styles['legal-and-copyrights']}>
                         <div className={styles.copyright}>
-                            &copy; 2023-${currentYear}
+                            {copyright}
                             <Link href={`https://nordcom.io/`} target="_blank">
                                 Nordcom Group Inc.
                             </Link>
