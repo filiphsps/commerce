@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
@@ -136,14 +137,16 @@ export default async function CountriesPage({
                 </PageContent>
 
                 {page?.slices && page.slices.length > 0 && (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        i18n={i18n}
-                        handle={'countries'}
-                        type={'custom_page'}
-                    />
+                    <Suspense key={`${shop.id}.countries.content`}>
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            page={page}
+                            i18n={i18n}
+                            handle={'countries'}
+                            type={'custom_page'}
+                        />
+                    </Suspense>
                 )}
             </PageContent>
         );

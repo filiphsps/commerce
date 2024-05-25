@@ -100,14 +100,16 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                 <Heading title={page?.title} subtitle={page?.description} />
 
                 {page?.slices && page.slices.length > 0 && (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={page}
-                        i18n={i18n}
-                        handle={'search'}
-                        type={'custom_page'}
-                    />
+                    <Suspense key={`${shop.id}.search.content`}>
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            page={page}
+                            i18n={i18n}
+                            handle={'search'}
+                            type={'custom_page'}
+                        />
+                    </Suspense>
                 )}
 
                 <Suspense>

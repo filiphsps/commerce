@@ -84,7 +84,7 @@ const Pagination = ({
             {currentPage !== 1 ? (
                 <Link className={styles.action} href={previousHref}>
                     <FiChevronLeft />
-                    Previous
+                    Prev
                 </Link>
             ) : null}
 

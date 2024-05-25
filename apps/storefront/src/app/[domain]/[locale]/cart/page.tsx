@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -103,14 +104,16 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                 header={<Heading title={page?.title} subtitle={page?.description} />}
                 slices={
                     page ? (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'cart'}
-                            type={'custom_page'}
-                        />
+                        <Suspense key={`${shop.id}.cart.content`}>
+                            <PrismicPage
+                                shop={shop}
+                                locale={locale}
+                                page={page}
+                                i18n={i18n}
+                                handle={'cart'}
+                                type={'custom_page'}
+                            />
+                        </Suspense>
                     ) : null
                 }
                 i18n={i18n}

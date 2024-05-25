@@ -152,6 +152,17 @@ export default async function CollectionPage({
                 ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
             ) || [];
 
+        const pagination = (
+            <section className={styles.collection}>
+                <Suspense
+                    key={`${shop.id}.collection.${handle}.pagination`}
+                    fallback={<Pagination knownFirstPage={1} />}
+                >
+                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                </Suspense>
+            </section>
+        );
+
         return (
             <>
                 <PageContent className={styles.container}>
@@ -160,6 +171,8 @@ export default async function CollectionPage({
                         subtitleAs={null}
                         subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
                     />
+
+                    {pagination}
 
                     <section className={styles.collection}>
                         <Suspense
@@ -173,33 +186,32 @@ export default async function CollectionPage({
                                 filters={{ first: PRODUCTS_PER_PAGE, after }}
                             />
                         </Suspense>
-
-                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                     </section>
 
-                    {page && slices && (slices.length || 0) > 0 ? (
-                        <Suspense
-                            key={`${shop.id}.products.${handle}.content`}
-                            fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
-                        >
-                            <PrismicPage
-                                shop={shop}
-                                locale={locale}
-                                page={{ ...page, slices } as any}
-                                i18n={i18n}
-                                handle={handle}
-                                type={'collection_page'}
-                            />
-                        </Suspense>
-                    ) : null}
+                    {pagination}
+
+                    <section className={styles.content}>
+                        {page && slices && (slices.length || 0) > 0 ? (
+                            <Suspense
+                                key={`${shop.id}.products.${handle}.content`}
+                                fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
+                            >
+                                <PrismicPage
+                                    shop={shop}
+                                    locale={locale}
+                                    page={{ ...page, slices } as any}
+                                    i18n={i18n}
+                                    handle={handle}
+                                    type={'collection_page'}
+                                />
+                            </Suspense>
+                        ) : null}
+                    </section>
 
                     {collection.descriptionHtml ? (
-                        <>
-                            <hr />
-                            <section>
-                                <Content dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
-                            </section>
-                        </>
+                        <section>
+                            <Content dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
+                        </section>
                     ) : null}
                 </PageContent>
 

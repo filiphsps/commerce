@@ -98,7 +98,7 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                 <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
 
                 {page?.slices && page.slices.length > 0 && (
-                    <Suspense>
+                    <Suspense key={`${shop.id}.blog.content`}>
                         <PrismicPage
                             shop={shop}
                             locale={locale}
