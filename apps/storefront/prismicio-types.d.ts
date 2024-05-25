@@ -831,26 +831,26 @@ export type AllDocumentTypes =
     | StoreDocument;
 
 /**
- * Primary content in *Alert → Primary*
+ * Primary content in *Alert → Default → Primary*
  */
 export interface AlertSliceDefaultPrimary {
     /**
-     * Severity field in *Alert → Primary*
+     * Severity field in *Alert → Default → Primary*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
      * - **Default Value**: info
-     * - **API ID Path**: alert.primary.severity
+     * - **API ID Path**: alert.default.primary.severity
      * - **Documentation**: https://prismic.io/docs/field#select
      */
     severity: prismic.SelectField<'info' | 'success' | 'warning' | 'error', 'filled'>;
 
     /**
-     * Content field in *Alert → Primary*
+     * Content field in *Alert → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: alert.primary.content
+     * - **API ID Path**: alert.default.primary.content
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     content: prismic.RichTextField;
@@ -880,25 +880,25 @@ type AlertSliceVariation = AlertSliceDefault;
 export type AlertSlice = prismic.SharedSlice<'alert', AlertSliceVariation>;
 
 /**
- * Primary content in *Banner → Primary*
+ * Primary content in *Banner → Default → Primary*
  */
 export interface BannerSliceDefaultPrimary {
     /**
-     * Primary content field in *Banner → Primary*
+     * Primary content field in *Banner → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: banner.primary.content
+     * - **API ID Path**: banner.default.primary.content
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     content: prismic.RichTextField;
 
     /**
-     * Background field in *Banner → Primary*
+     * Background field in *Banner → Default → Primary*
      *
      * - **Field Type**: Color
      * - **Placeholder**: #cce2cb
-     * - **API ID Path**: banner.primary.background
+     * - **API ID Path**: banner.default.primary.background
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     background: prismic.ColorField;
@@ -954,25 +954,25 @@ export type BannerSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Primary content in *Banner → Primary*
+ * Primary content in *Banner → Simple - Slim → Primary*
  */
 export interface BannerSliceSimpleSlimPrimary {
     /**
-     * Primary content field in *Banner → Primary*
+     * Primary content field in *Banner → Simple - Slim → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: banner.primary.content
+     * - **API ID Path**: banner.simpleSlim.primary.content
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     content: prismic.RichTextField;
 
     /**
-     * Background field in *Banner → Primary*
+     * Background field in *Banner → Simple - Slim → Primary*
      *
      * - **Field Type**: Color
      * - **Placeholder**: #cce2cb
-     * - **API ID Path**: banner.primary.background
+     * - **API ID Path**: banner.simpleSlim.primary.background
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     background: prismic.ColorField;
@@ -1042,15 +1042,15 @@ type BannerSliceVariation = BannerSliceDefault | BannerSliceSimpleSlim;
 export type BannerSlice = prismic.SharedSlice<'banner', BannerSliceVariation>;
 
 /**
- * Primary content in *Carousel → Primary*
+ * Primary content in *Carousel → Default → Primary*
  */
 export interface CarouselSliceDefaultPrimary {
     /**
-     * Delay field in *Carousel → Primary*
+     * Delay field in *Carousel → Default → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: 3000
-     * - **API ID Path**: carousel.primary.delay
+     * - **API ID Path**: carousel.default.primary.delay
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     delay: prismic.KeyTextField;
@@ -1130,45 +1130,45 @@ type CarouselSliceVariation = CarouselSliceDefault;
 export type CarouselSlice = prismic.SharedSlice<'carousel', CarouselSliceVariation>;
 
 /**
- * Primary content in *CollapsibleText → Primary*
+ * Primary content in *CollapsibleText → Default → Primary*
  */
 export interface CollapsibleTextSliceDefaultPrimary {
     /**
-     * Title field in *CollapsibleText → Primary*
+     * Title field in *CollapsibleText → Default → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.primary.title
+     * - **API ID Path**: collapsible_text.default.primary.title
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     title: prismic.KeyTextField;
 
     /**
-     * Text field in *CollapsibleText → Primary*
+     * Text field in *CollapsibleText → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.primary.text
+     * - **API ID Path**: collapsible_text.default.primary.text
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     text: prismic.RichTextField;
 
     /**
-     * Accent field in *CollapsibleText → Primary*
+     * Accent field in *CollapsibleText → Default → Primary*
      *
      * - **Field Type**: Color
      * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.primary.accent
+     * - **API ID Path**: collapsible_text.default.primary.accent
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     accent: prismic.ColorField;
 
     /**
-     * Accent Dark field in *CollapsibleText → Primary*
+     * Accent Dark field in *CollapsibleText → Default → Primary*
      *
      * - **Field Type**: Color
      * - **Placeholder**: *None*
-     * - **API ID Path**: collapsible_text.primary.accent_dark
+     * - **API ID Path**: collapsible_text.default.primary.accent_dark
      * - **Documentation**: https://prismic.io/docs/field#color
      */
     accent_dark: prismic.ColorField;
@@ -1202,81 +1202,92 @@ type CollapsibleTextSliceVariation = CollapsibleTextSliceDefault;
 export type CollapsibleTextSlice = prismic.SharedSlice<'collapsible_text', CollapsibleTextSliceVariation>;
 
 /**
- * Primary content in *Collection → Primary*
+ * Primary content in *Collection → Default → Primary*
  */
 export interface CollectionSliceDefaultPrimary {
     /**
-     * Handle field in *Collection → Primary*
+     * Handle field in *Collection → Default → Primary*
      *
      * - **Field Type**: Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collection.primary.handle
+     * - **API ID Path**: collection.default.primary.handle
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     handle: prismic.KeyTextField;
 
     /**
-     * Title field in *Collection → Primary*
+     * Title field in *Collection → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collection.primary.title
+     * - **API ID Path**: collection.default.primary.title
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     title: prismic.RichTextField;
 
     /**
-     * Body field in *Collection → Primary*
+     * Body field in *Collection → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: collection.primary.body
+     * - **API ID Path**: collection.default.primary.body
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     body: prismic.RichTextField;
 
     /**
-     * Alignment field in *Collection → Primary*
+     * Alignment field in *Collection → Default → Primary*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
      * - **Default Value**: left
-     * - **API ID Path**: collection.primary.alignment
+     * - **API ID Path**: collection.default.primary.alignment
      * - **Documentation**: https://prismic.io/docs/field#select
      */
     alignment: prismic.SelectField<'left' | 'center' | 'right', 'filled'>;
 
     /**
-     * Item Limit field in *Collection → Primary*
+     * Item Limit field in *Collection → Default → Primary*
      *
      * - **Field Type**: Number
      * - **Placeholder**: 16
-     * - **API ID Path**: collection.primary.limit
+     * - **API ID Path**: collection.default.primary.limit
      * - **Documentation**: https://prismic.io/docs/field#number
      */
     limit: prismic.NumberField;
 
     /**
-     * Direction field in *Collection → Primary*
+     * Direction field in *Collection → Default → Primary*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
      * - **Default Value**: horizontal
-     * - **API ID Path**: collection.primary.direction
+     * - **API ID Path**: collection.default.primary.direction
      * - **Documentation**: https://prismic.io/docs/field#select
      */
     direction: prismic.SelectField<'horizontal' | 'vertical' | 'grid', 'filled'>;
 
     /**
-     * Hide Title field in *Collection → Primary*
+     * Hide Title field in *Collection → Default → Primary*
      *
      * - **Field Type**: Boolean
      * - **Placeholder**: *None*
      * - **Default Value**: false
-     * - **API ID Path**: collection.primary.hide_title
+     * - **API ID Path**: collection.default.primary.hide_title
      * - **Documentation**: https://prismic.io/docs/field#boolean
      */
     hide_title: prismic.BooleanField;
+
+    /**
+     * "View All" Card field in *Collection → Default → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: collection.default.primary.show_view_all_card
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    show_view_all_card: prismic.BooleanField;
 }
 
 /**
@@ -1448,15 +1459,15 @@ export type SpacingSliceLarge = prismic.SharedSliceVariation<'large', Record<str
 export type SpacingSliceSmall = prismic.SharedSliceVariation<'small', Record<string, never>, never>;
 
 /**
- * Primary content in *Spacing → Primary*
+ * Primary content in *Spacing → Custom → Primary*
  */
 export interface SpacingSliceCustomPrimary {
     /**
-     * Scaling field in *Spacing → Primary*
+     * Scaling field in *Spacing → Custom → Primary*
      *
      * - **Field Type**: Number
      * - **Placeholder**: *None*
-     * - **API ID Path**: spacing.primary.scaling
+     * - **API ID Path**: spacing.custom.primary.scaling
      * - **Documentation**: https://prismic.io/docs/field#number
      */
     scaling: prismic.NumberField;
@@ -1570,26 +1581,26 @@ type TextBlockSliceVariation = TextBlockSliceDefault;
 export type TextBlockSlice = prismic.SharedSlice<'text_block', TextBlockSliceVariation>;
 
 /**
- * Primary content in *Title → Primary*
+ * Primary content in *Title → Default → Primary*
  */
 export interface TitleSliceDefaultPrimary {
     /**
-     * Content field in *Title → Primary*
+     * Content field in *Title → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: *None*
-     * - **API ID Path**: title.primary.content
+     * - **API ID Path**: title.default.primary.content
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     content: prismic.RichTextField;
 
     /**
-     * Alignment field in *Title → Primary*
+     * Alignment field in *Title → Default → Primary*
      *
      * - **Field Type**: Select
      * - **Placeholder**: *None*
      * - **Default Value**: left
-     * - **API ID Path**: title.primary.alignment
+     * - **API ID Path**: title.default.primary.alignment
      * - **Documentation**: https://prismic.io/docs/field#select
      */
     alignment: prismic.SelectField<'left' | 'center' | 'right', 'filled'>;
@@ -1642,35 +1653,35 @@ type VendorsSliceVariation = VendorsSliceDefault;
 export type VendorsSlice = prismic.SharedSlice<'vendors', VendorsSliceVariation>;
 
 /**
- * Primary content in *NavigationItem → Primary*
+ * Primary content in *NavigationItem → Default → Primary*
  */
 export interface NavigationItemSliceDefaultPrimary {
     /**
-     * Title field in *NavigationItem → Primary*
+     * Title field in *NavigationItem → Default → Primary*
      *
      * - **Field Type**: Rich Text
      * - **Placeholder**: The title/name of the link
-     * - **API ID Path**: navigation_item.primary.title
+     * - **API ID Path**: navigation_item.default.primary.title
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     title: prismic.RichTextField;
 
     /**
-     * Link field in *NavigationItem → Primary*
+     * Link field in *NavigationItem → Default → Primary*
      *
      * - **Field Type**: Link
      * - **Placeholder**: The target link
-     * - **API ID Path**: navigation_item.primary.link
+     * - **API ID Path**: navigation_item.default.primary.link
      * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
      */
     link: prismic.LinkField;
 
     /**
-     * Child Menu field in *NavigationItem → Primary*
+     * Child Menu field in *NavigationItem → Default → Primary*
      *
      * - **Field Type**: Content Relationship
      * - **Placeholder**: *None*
-     * - **API ID Path**: navigation_item.primary.child_menu
+     * - **API ID Path**: navigation_item.default.primary.child_menu
      * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
      */
     child_menu: prismic.ContentRelationshipField<'menu_item'>;

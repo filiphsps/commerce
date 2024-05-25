@@ -32,12 +32,12 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (slice.variation !== 'default') {
         console.warn(new Error(`500: Invalid variant: "${slice.variation}"`));
-
         return null;
     }
 
     const handle = slice.primary.handle as string;
     const horizontal = slice.primary.direction === 'horizontal';
+    const showViewAll = slice.primary.show_view_all_card ?? true;
 
     return (
         <Suspense
@@ -55,7 +55,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
                         handle={handle}
                         isHorizontal={horizontal}
                         limit={slice.primary.limit || 16}
-                        showViewAll={true}
+                        showViewAll={showViewAll}
                         priority={index < 3}
                     />
                 </Suspense>
