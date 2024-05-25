@@ -63,25 +63,29 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
     if (!newUrl.pathname.match(LOCALE_TEST)) {
-        let locale = req.cookies.get('LOCALE')?.value || req.cookies.get('NEXT_LOCALE')?.value;
+        let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
             const shop = await ShopApi(hostname);
 
             const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false, noCache: true });
             const api = await ShopifyApiClient({ shop, apiConfig });
-            const locales = (await LocalesApi({ api, noCache: true })).map(({ code }) => code);
+            const locales = (await LocalesApi({ api, noCache: true }))
+                .map(({ code }) => code.toLowerCase())
+                .sort((a, b) => a.localeCompare(b));
 
-            const acceptLanguageHeader = req.headers.get('accept-language') || '';
+            const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language') || '';
             const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
 
             locale = userLang || locales.at(0);
             if (!locale) {
+                // TODO: find the correct country with another language if available as a fallback.
                 throw new Error(`No locale could be found for "${req.nextUrl.href}" and no default locale is set.`);
             }
         }
 
-        // TODO: Set the locale in the cookie here.
+        // Set locale cookie.
+        req.cookies.set('localization', locale);
 
         // In a perfect world we'd just set `newUrl.locale` here but
         // since we want to support fully dynamic locales we need to
@@ -90,7 +94,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Replace locale with locale from cookie if it doesn't match.
-    const locale = !!req.cookies.get('LOCALE') ? Locale.from(req.cookies.get('LOCALE')!.value!) : undefined;
+    const locale = !!req.cookies.get('localization') ? Locale.from(req.cookies.get('localization')!.value!) : undefined;
     if (locale && newUrl.pathname.match(LOCALE_TEST)) {
         const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0].replace('/', '');
         if (urlLocale && urlLocale !== locale.code) {
