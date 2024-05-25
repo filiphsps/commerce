@@ -3,8 +3,8 @@
 
 import styles from '@/components/products/add-to-cart.module.scss';
 
+import { type HTMLProps, useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState, type HTMLProps } from 'react';
 
 import { TodoError } from '@nordcom/commerce-errors';
 
@@ -111,7 +111,7 @@ const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant,
                 </p>
             </>
         );
-    }, [selectedVariant, quantity]);
+    }, [selectedVariant, quantity, status]);
 
     const [label, setLabel] = useState<string>(t('add-to-cart'));
     useEffect(() => {
