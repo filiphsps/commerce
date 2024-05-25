@@ -245,8 +245,8 @@ importers:
         specifier: 1.11.2
         version: 1.11.2
       use-context-selector:
-        specifier: 1.4.4
-        version: 1.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(scheduler@0.23.2)
+        specifier: 2.0.0
+        version: 2.0.0(react@18.2.0)(scheduler@0.23.2)
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 13.2.2
@@ -435,8 +435,8 @@ importers:
         specifier: 1.11.2
         version: 1.11.2
       use-context-selector:
-        specifier: 1.4.4
-        version: 1.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(scheduler@0.23.2)
+        specifier: 2.0.0
+        version: 2.0.0(react@18.2.0)(scheduler@0.23.2)
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 13.2.2
@@ -619,8 +619,8 @@ importers:
         specifier: 1.11.2
         version: 1.11.2
       use-context-selector:
-        specifier: 1.4.4
-        version: 1.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(scheduler@0.23.2)
+        specifier: 2.0.0
+        version: 2.0.0(react@18.2.0)(scheduler@0.23.2)
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: 13.2.2
@@ -5464,18 +5464,11 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  use-context-selector@1.4.4:
-    resolution: {integrity: sha512-pS790zwGxxe59GoBha3QYOwk8AFGp4DN6DOtH+eoqVmgBBRXVx4IlPDhJmmMiNQAgUaLlP+58aqRC3A4rdaSjg==}
+  use-context-selector@2.0.0:
+    resolution: {integrity: sha512-owfuSmUNd3eNp3J9CdDl0kMgfidV+MkDvHPpvthN5ThqM+ibMccNE0k+Iq7TWC6JPFvGZqanqiGCuQx6DyV24g==}
     peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '*'
-      react-native: '*'
+      react: '>=18.0.0'
       scheduler: '>=0.19.0'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
 
   use-isomorphic-layout-effect@1.1.2:
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
@@ -10867,12 +10860,10 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  use-context-selector@1.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(scheduler@0.23.2):
+  use-context-selector@2.0.0(react@18.2.0)(scheduler@0.23.2):
     dependencies:
       react: 18.2.0
       scheduler: 0.23.2
-    optionalDependencies:
-      react-dom: 18.2.0(react@18.2.0)
 
   use-isomorphic-layout-effect@1.1.2(@types/react@18.2.75)(react@18.2.0):
     dependencies:
