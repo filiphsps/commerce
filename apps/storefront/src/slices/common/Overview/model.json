@@ -1,51 +1,68 @@
 {
-    "description": "An image with a textblock to the side of it",
-    "id": "text_block",
-    "name": "Overview",
-    "type": "SharedSlice",
-    "variations": [
-        {
-            "description": "Image on the left side",
-            "docURL": "...",
-            "id": "default",
-            "imageUrl": "",
-            "items": {
-                "layout": {
-                    "type": "Select",
-                    "config": {
-                        "label": "Layout",
-                        "placeholder": "Image on the left or the right?",
-                        "options": ["left", "right"],
-                        "default_value": "left"
-                    }
-                },
-                "accent": { "type": "Color", "config": { "label": "Accent", "placeholder": "" } },
-                "image": {
-                    "config": { "constraint": {}, "label": "Image", "thumbnails": [] },
-                    "type": "Image"
-                },
-                "image_style": {
-                    "config": {
-                        "default_value": "normal",
-                        "label": "Image Style",
-                        "options": ["normal", "cover"],
-                        "placeholder": ""
-                    },
-                    "type": "Select"
-                },
-                "text": {
-                    "config": {
-                        "allowTargetBlank": true,
-                        "label": "Text",
-                        "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
-                        "placeholder": ""
-                    },
-                    "type": "StructuredText"
-                }
-            },
-            "name": "Default",
-            "primary": {},
-            "version": "initial"
+  "description": "An image with a textblock to the side of it",
+  "id": "text_block",
+  "name": "Overview",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "description": "Image on the left side",
+      "docURL": "...",
+      "id": "default",
+      "imageUrl": "",
+      "items": {
+        "layout": {
+          "type": "Select",
+          "config": {
+            "label": "Layout",
+            "placeholder": "Image on the left or the right?",
+            "options": [
+              "left",
+              "right",
+              "center"
+            ],
+            "default_value": "left"
+          }
+        },
+        "accent": {
+          "type": "Color",
+          "config": {
+            "label": "Accent",
+            "placeholder": ""
+          }
+        },
+        "image": {
+          "config": {
+            "constraint": {},
+            "label": "Image",
+            "thumbnails": []
+          },
+          "type": "Image"
+        },
+        "image_style": {
+          "config": {
+            "default_value": "normal",
+            "label": "Image Style",
+            "options": [
+              "normal",
+              "cover"
+            ],
+            "placeholder": ""
+          },
+          "type": "Select"
+        },
+        "text": {
+          "config": {
+            "label": "Text",
+            "placeholder": "Content",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          },
+          "type": "StructuredText"
         }
-    ]
+      },
+      "name": "Default",
+      "primary": {},
+      "version": "initial"
+    }
+  ]
 }

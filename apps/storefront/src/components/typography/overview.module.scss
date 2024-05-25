@@ -11,15 +11,30 @@
     border-radius: var(--block-border-radius);
 
     @media (min-width: $breakpoint-mobile) {
-        display: grid;
-        justify-content: stretch;
-        align-items: stretch;
-        grid-template-areas: 'overview-banner overview-content';
-        grid-template-columns: minmax(32rem, 1fr) auto;
+        &.align-left {
+            display: grid;
+            justify-content: stretch;
+            align-items: stretch;
+            grid-template-areas: 'overview-banner overview-content';
+            grid-template-columns: minmax(32rem, 1fr) auto;
+        }
 
         &.align-right {
+            display: grid;
+            justify-content: stretch;
+            align-items: stretch;
             grid-template-areas: 'overview-content overview-banner';
             grid-template-columns: auto minmax(32rem, 1fr);
+        }
+
+        &.align-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: var(--block-spacer-large);
+
+            text-align: center;
         }
     }
 
@@ -64,6 +79,17 @@
         h1 {
             font-size: 1.9em;
         }
+    }
+
+    &.align-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        gap: var(--block-spacer-large);
+
+        text-align: center;
     }
 
     &.plain {

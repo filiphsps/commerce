@@ -1509,7 +1509,7 @@ export interface TextBlockSliceDefaultItem {
      * - **API ID Path**: text_block.items[].layout
      * - **Documentation**: https://prismic.io/docs/field#select
      */
-    layout: prismic.SelectField<'left' | 'right', 'filled'>;
+    layout: prismic.SelectField<'left' | 'right' | 'center', 'filled'>;
 
     /**
      * Accent field in *Overview → Items*
@@ -1546,7 +1546,7 @@ export interface TextBlockSliceDefaultItem {
      * Text field in *Overview → Items*
      *
      * - **Field Type**: Rich Text
-     * - **Placeholder**: *None*
+     * - **Placeholder**: Content
      * - **API ID Path**: text_block.items[].text
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
