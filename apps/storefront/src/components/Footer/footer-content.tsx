@@ -1,7 +1,7 @@
 import styles from '@/components/Footer/footer.module.scss';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 
@@ -20,7 +20,8 @@ export type FooterContentProps = {
 const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
     const { t } = useTranslation('common', i18n);
 
-    const year = new Date().getFullYear();
+    const currentYear = new Date().getFullYear();
+
     return (
         <>
             {/* TODO: This should be configurable in prismic. */}
@@ -81,7 +82,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                     </div>
                     <div className={styles['legal-and-copyrights']}>
                         <div className={styles.copyright}>
-                            &copy; {`${year !== 2023 ? '2023-' : ''}${year} `}
+                            &copy; 2023-${currentYear}
                             <Link href={`https://nordcom.io/`} target="_blank">
                                 Nordcom Group Inc.
                             </Link>

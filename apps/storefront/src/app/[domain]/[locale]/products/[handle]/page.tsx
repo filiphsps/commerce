@@ -2,10 +2,10 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { Suspense } from 'react';
+import { ProductJsonLd } from 'next-seo';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { ProductJsonLd } from 'next-seo';
+import { Suspense } from 'react';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -179,6 +179,8 @@ export default async function ProductPage({
         const i18n = await getDictionary({ shop, locale });
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
+        // This function is used to deal with the title in the product's description
+        // and to make sure it's the correct h tag.
         const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
             if (!description) return null;
             let result = description;
