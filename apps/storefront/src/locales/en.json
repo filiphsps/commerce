@@ -13,6 +13,8 @@
         "products": "Products",
         "promo-codes": "Promo Codes",
         "sale-discount": "Sale Discount",
+        "discount": "Discount",
+        "automatic-discount": "Automatic Discount",
         "shipping-calculated-at-checkout": "Shipping calculated at checkout",
         "shipping": "Shipping",
         "subtotal": "Subtotal",

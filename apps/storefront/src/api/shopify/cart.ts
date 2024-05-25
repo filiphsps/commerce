@@ -36,6 +36,13 @@ export const CartFragment = /* GraphQL */ `
                         discountedAmount {
                             ...MoneyFragment
                         }
+                        ... on CartAutomaticDiscountAllocation {
+                            title
+                            discountedAmount {
+                                amount
+                                currencyCode
+                            }
+                        }
                     }
                     merchandise {
                         ... on ProductVariant {

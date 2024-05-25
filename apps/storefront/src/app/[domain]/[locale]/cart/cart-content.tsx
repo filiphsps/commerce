@@ -36,7 +36,7 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                     </Suspense>*/}
 
                     <Suspense key={`${shop.id}.page.cart.cart-lines`}>
-                        <CartLines i18n={i18n} />
+                        <CartLines shop={shop} i18n={i18n} />
                     </Suspense>
                 </div>
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />

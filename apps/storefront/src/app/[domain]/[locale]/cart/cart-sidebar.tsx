@@ -30,6 +30,7 @@ export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: 
     return (
         <aside {...props} className={`${styles.container} ${className || ''}`}>
             <CartSummary
+                shop={shop}
                 onCheckout={async () => {
                     if (!['idle'].includes(cart.status)) {
                         toast.error('The cart is still loading, please try again in a few seconds'); // TODO: i18n.

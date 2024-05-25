@@ -13,6 +13,8 @@
         "products": "Produits",
         "promo-codes": "Codes promotionnels",
         "sale-discount": "Remise de solde",
+        "discount": "Remise de discount",
+        "automatic-discount": "Remise de discount automatique",
         "shipping-calculated-at-checkout": "Frais de port calculés à la caisse",
         "shipping": "Livraison",
         "subtotal": "Sous-total",

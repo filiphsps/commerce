@@ -4,6 +4,8 @@ import styles from '@/components/cart/cart-lines.module.scss';
 
 import { Suspense } from 'react';
 
+import type { Shop } from '@nordcom/commerce-database';
+
 import { useCart } from '@shopify/hydrogen-react';
 
 import { CartLine } from '@/components/cart/cart-line';
@@ -12,9 +14,10 @@ import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
+    shop: Shop;
     i18n: LocaleDictionary;
 };
-const CartLines = ({ i18n }: CartContentProps) => {
+const CartLines = ({ shop, i18n }: CartContentProps) => {
     const { status, lines } = useCart();
 
     const noItems = !lines || lines.length <= 0;
@@ -28,6 +31,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
     return (
         <div className={styles.container}>
             <Suspense
+                key={`${shop.id}.cart.lines`}
                 fallback={
                     <>
                         <CartLine.skeleton />
@@ -40,7 +44,7 @@ const CartLines = ({ i18n }: CartContentProps) => {
                             if (!item) return null;
 
                             return (
-                                <Suspense key={item.id} fallback={<CartLine.skeleton />}>
+                                <Suspense key={`${shop.id}.cart.lines.${item.id}`} fallback={<CartLine.skeleton />}>
                                     <CartLine i18n={i18n} data={item as any} />
                                 </Suspense>
                             );

@@ -35,9 +35,9 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
         <div className={`${styles.container} ${discount > 0 ? styles.sale : ''}`}>
             {variant.image ? (
                 <Image
+                    alt={variant.image.altText || variant.title}
                     className={styles.image}
                     src={variant.image.url}
-                    alt={variant.image.altText!}
                     width={45}
                     height={45}
                     draggable={false}

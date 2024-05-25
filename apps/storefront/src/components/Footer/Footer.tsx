@@ -40,7 +40,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                 <Image
                                     title={store.name}
                                     src={store.logos.primary.src}
-                                    alt={store.logos.primary.alt || 'Logo'}
+                                    alt={store.logos.primary.alt || store.name}
                                     fill={true}
                                     sizes="(max-width: 950px) 75px, 225px"
                                     priority={false}

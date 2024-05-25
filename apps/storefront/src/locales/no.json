@@ -13,6 +13,8 @@
         "products": "Produkter",
         "promo-codes": "Kampanjekoder",
         "sale-discount": "Salgsrabatt",
+        "discount": "Rabatt",
+        "automatic-discount": "Automatisk rabatt",
         "shipping-calculated-at-checkout": "Frakten beregnes i kassen",
         "shipping": "Frakt",
         "subtotal": "Delsum",

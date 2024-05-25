@@ -11,6 +11,8 @@
         "placeholder-cart-note": "Hur kan vi göra den här upplevelsen minnesvärd för dig? Har du några särskilda önskemål eller instruktioner som du vill att vi ska känna till?",
         "promo-codes": "Rabattkoder",
         "sale-discount": "Kampanjrabatt",
+        "discount": "Rabatt",
+        "automatic-discount": "Automatisk rabatt",
         "shipping-calculated-at-checkout": "Frakt beräknas i kassan",
         "shipping": "Frakt",
         "subtotal": "Subtotal",
