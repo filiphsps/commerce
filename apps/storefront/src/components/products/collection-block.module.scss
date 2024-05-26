@@ -13,7 +13,7 @@
     &.small {
         --component-product-card-width: calc(100% / 2);
         @media (min-width: $breakpoint-mobile) {
-            --component-product-card-width: calc(100% / 3);
+            --component-product-card-width: calc(100% / 4);
         }
         @media (min-width: $breakpoint-tablet) {
             --component-product-card-width: calc(100% / 5);
