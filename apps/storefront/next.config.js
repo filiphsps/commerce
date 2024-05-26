@@ -18,7 +18,7 @@ const config = {
     experimental: {
         esmExternals: 'loose',
         caseSensitiveRoutes: true,
-        instrumentationHook: isProduction,
+        //instrumentationHook: isProduction,
         //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: [
