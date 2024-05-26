@@ -19,16 +19,15 @@ interface CartLineProps {
     data: ShopifyCartLine;
 }
 const CartLineActions = ({ i18n, data: line }: CartLineProps) => {
-    const { linesRemove, linesUpdate, status } = useCart();
+    const { linesRemove, linesUpdate, cartReady } = useCart();
 
     const update = useCallback(
         (value: number) => {
-            if (!value) {
+            if (value === line.quantity) return;
+            else if (!value) {
                 linesRemove([line.id!]);
                 return;
             }
-
-            if (value === line.quantity) return;
 
             linesUpdate([
                 {
@@ -37,7 +36,7 @@ const CartLineActions = ({ i18n, data: line }: CartLineProps) => {
                 }
             ]);
         },
-        [line]
+        [, line]
     );
 
     const product: Required<Product> = line.merchandise.product! as any;
@@ -52,7 +51,7 @@ const CartLineActions = ({ i18n, data: line }: CartLineProps) => {
             <QuantitySelector
                 className={styles.quantity}
                 i18n={i18n}
-                disabled={status !== 'idle'}
+                disabled={!cartReady}
                 value={line.quantity}
                 update={update}
                 allowDecreaseToZero={true}

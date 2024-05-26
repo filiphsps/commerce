@@ -68,6 +68,7 @@ html {
         --block-padding: 1rem;
         --block-padding-small: 0.5rem;
         --block-padding-large: 1.5rem;
+        --block-padding-larger: 1.75rem;
 
         --block-spacer: 1rem;
         --block-spacer-small: 0.75rem;
@@ -141,16 +142,10 @@ body {
         }
     }
 
-    a {
-        :not(:disabled) {
-            transition:
-                150ms ease-in-out color,
-                150ms ease-in-out text-decoration;
-
-            &:is(:hover, :active, :focus) {
-                color: var(--accent-primary-light);
-                text-decoration-color: var(--accent-primary-light);
-            }
+    a:not(:disabled) {
+        &:is(:hover, :active, :focus) {
+            color: var(--accent-primary-light);
+            text-decoration-color: var(--accent-primary-light);
         }
     }
 }

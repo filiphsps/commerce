@@ -2,13 +2,15 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 
 import { useCart } from '@shopify/hydrogen-react';
 
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 import Pricing from '@/components/typography/pricing';
+
+import { useShop } from '../shop/provider';
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -22,7 +24,8 @@ export type ProductCardFooterProps = {
 };
 
 const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
-    const { status, linesAdd } = useCart();
+    const { cartReady } = useCart();
+    const { shop } = useShop();
 
     const [quantity, setQuantity] = useState<number>(1);
     const update = useCallback(
@@ -33,7 +36,6 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
         [quantity]
     );
 
-    const ready = ['idle', 'uninitialized'].includes(status) || !selectedVariant;
     if (!selectedVariant) return null;
 
     return (
@@ -46,19 +48,20 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
                     i18n={i18n}
                     value={quantity}
                     update={update}
-                    disabled={!ready || !selectedVariant.availableForSale}
+                    disabled={!cartReady || !selectedVariant.availableForSale}
                 />
             </div>
 
-            <AddToCart
-                locale={locale}
-                i18n={i18n}
-                className={styles.button}
-                quantity={quantity}
-                disabled={!ready || !(product.availableForSale || selectedVariant.availableForSale)}
-                data={product}
-                variant={selectedVariant}
-            />
+            <Suspense key={`${shop.id}.product-card.footer.add-to-cart`}>
+                <AddToCart
+                    locale={locale}
+                    i18n={i18n}
+                    className={styles.button}
+                    quantity={quantity}
+                    data={product}
+                    variant={selectedVariant}
+                />
+            </Suspense>
         </div>
     );
 };

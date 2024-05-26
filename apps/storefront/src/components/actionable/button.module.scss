@@ -14,21 +14,16 @@
     padding: var(--block-padding-large) var(--block-padding);
 
     font-size: 1.5rem;
-    font-weight: 500;
+    font-weight: 700;
     text-align: center;
     line-height: 1;
 
-    border-radius: var(--block-border-radius-large);
+    border-radius: var(--block-border-radius);
     box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     background-color: var(--accent-primary);
     color: var(--accent-primary-text);
 
-    transition:
-        $animation-duration ease-in-out background-color,
-        $animation-duration ease-in-out color,
-        $animation-duration ease-in-out font-weight,
-        $animation-duration ease-in-out opacity;
-
+    transition: $animation-duration ease-in-out all;
     -webkit-user-select: none;
     user-select: none;
 
