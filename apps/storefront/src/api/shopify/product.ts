@@ -64,6 +64,8 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
                     currencyCode
                 }
                 availableForSale
+                currentlyNotInStock
+                quantityAvailable
                 weight
                 weightUnit
                 image {

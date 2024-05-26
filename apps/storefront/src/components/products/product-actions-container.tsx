@@ -13,6 +13,8 @@ import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
+import { ProductQuantityBreaks } from './product-quantity-breaks';
+
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
@@ -54,9 +56,11 @@ export const ProductActionsContainer = ({
                 <ProductOptions locale={locale} initialVariant={initialVariant} style={{ gridArea: 'options' }} />
             </div>
 
+            <ProductQuantityBreaks locale={locale} currentQuantity={quantity} />
+
             <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
 
-            <Suspense>{children}</Suspense>
+            <Suspense key={`${product?.id}.product-actions-container`}>{children}</Suspense>
         </ProductProvider>
     );
 };

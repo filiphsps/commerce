@@ -41,9 +41,13 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
             <div className={styles['quantity-action']}>
                 <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
 
-                {selectedVariant.availableForSale ? (
-                    <QuantitySelector className={styles.quantity} i18n={i18n} value={quantity} update={update} />
-                ) : null}
+                <QuantitySelector
+                    className={styles.quantity}
+                    i18n={i18n}
+                    value={quantity}
+                    update={update}
+                    disabled={!ready || !selectedVariant.availableForSale}
+                />
             </div>
 
             <AddToCart
@@ -51,7 +55,7 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
                 i18n={i18n}
                 className={styles.button}
                 quantity={quantity}
-                disabled={!ready || !product.availableForSale || !selectedVariant.availableForSale}
+                disabled={!ready || !(product.availableForSale || selectedVariant.availableForSale)}
                 data={product}
                 variant={selectedVariant}
             />

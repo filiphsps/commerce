@@ -215,11 +215,13 @@ export default async function ProductPage({
                     primaryClassName={styles.headingPrimary}
                     asideDesktopWidth={0.58}
                     aside={
-                        <ProductGallery
-                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
-                            images={product.images.edges.map((edge) => edge.node)}
-                            className={styles.gallery}
-                        />
+                        <Suspense key={`${shop.id}.products.${handle}.gallery`}>
+                            <ProductGallery
+                                initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
+                                images={product.images.edges.map((edge) => edge.node)}
+                                className={styles.gallery}
+                            />
+                        </Suspense>
                     }
                 >
                     <div className={styles.content}>
@@ -250,11 +252,11 @@ export default async function ProductPage({
                             />
                         </SplitView>
 
-                        <Suspense>
+                        <Suspense key={`${shop.id}.products.${handle}.content`}>
                             <ProductContent product={product} initialVariant={initialVariant} i18n={i18n} />
                         </Suspense>
 
-                        <Suspense>
+                        <Suspense key={`${shop.id}.products.${handle}.tabs`}>
                             <Tabs
                                 data={[
                                     {
@@ -269,7 +271,7 @@ export default async function ProductPage({
                                                     }}
                                                 />
 
-                                                <Suspense>
+                                                <Suspense key={`${shop.id}.products.${handle}.tabs.information`}>
                                                     <ImportantProductDetails locale={locale} data={product} />
                                                 </Suspense>
 
@@ -278,7 +280,7 @@ export default async function ProductPage({
                                                         <div className={styles.contentDivider} />
 
                                                         <Suspense
-                                                            key={`${shop.id}.products.${handle}.content`}
+                                                            key={`${shop.id}.products.${handle}.tabs.content`}
                                                             fallback={<PrismicPage.skeleton page={page as any} />}
                                                         >
                                                             <PrismicPage
@@ -300,7 +302,7 @@ export default async function ProductPage({
                                         label: 'Details',
                                         children: (
                                             <>
-                                                <Suspense>
+                                                <Suspense key={`${shop.id}.products.${handle}.tabs.details`}>
                                                     <ProductDetails locale={locale} data={product} />
                                                 </Suspense>
                                             </>
@@ -336,7 +338,7 @@ export default async function ProductPage({
                     <RecommendedProducts shop={shop} locale={locale} product={product} />
                 </PageContent>
 
-                <Suspense>
+                <Suspense key={`${shop.id}.products.${handle}.breadcrumbs`}>
                     <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
                 </Suspense>
 

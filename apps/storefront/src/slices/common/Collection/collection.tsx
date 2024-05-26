@@ -14,6 +14,7 @@ import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { CollectionSliceDefault } from '@/prismic/types';
+import { FiChevronRight } from 'react-icons/fi';
 
 type Slice = {
     slice_type: 'collection';
@@ -46,6 +47,7 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
                 }`}
             >
                 <PrismicText data={slice.primary.title} />
+                <FiChevronRight />
             </Title>
             <Content
                 className={`${styles.body} ${
