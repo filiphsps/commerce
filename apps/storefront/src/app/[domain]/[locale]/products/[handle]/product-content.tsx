@@ -5,6 +5,8 @@ import styles from './page.module.scss';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
+import type { Shop } from '@nordcom/commerce-database';
+
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
@@ -30,13 +32,14 @@ const getVariant = (product: Product, searchParams: ReadonlyURLSearchParams): Pr
 };
 
 export type ProductContentProps = {
+    shop: Shop;
     product: Product;
     initialVariant: ProductVariant;
     i18n: LocaleDictionary;
 
     children?: ReactNode;
 };
-export function ProductContent({ product, initialVariant, i18n, children }: ProductContentProps) {
+export function ProductContent({ shop, product, initialVariant, i18n, children }: ProductContentProps) {
     const path = usePathname();
     const searchParams = useSearchParams();
     const variant = getVariant(product, searchParams) || initialVariant;
@@ -87,17 +90,16 @@ export function ProductContent({ product, initialVariant, i18n, children }: Prod
     }, [, searchParams]);
 
     return (
-        <>
-            <ProductActionsContainer
-                i18n={i18n}
-                className={styles.actions}
-                product={product as any}
-                initialVariant={initialVariant!}
-                selectedVariant={variant}
-            >
-                {children || null}
-            </ProductActionsContainer>
-        </>
+        <ProductActionsContainer
+            shop={shop}
+            i18n={i18n}
+            className={styles.actions}
+            product={product as any}
+            initialVariant={initialVariant!}
+            selectedVariant={variant}
+        >
+            {children || null}
+        </ProductActionsContainer>
     );
 }
 

@@ -36,6 +36,7 @@
     },
     "product": {
         "recommendations": "Other customers also enjoy these products together",
-        "skus": "SKUs"
+        "skus": "SKUs",
+        "add-to-wishlist": "Add to Wishlist"
     }
 }

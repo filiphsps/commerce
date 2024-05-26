@@ -153,14 +153,11 @@ export default async function CollectionPage({
             ) || [];
 
         const pagination = (
-            <section className={styles.collection}>
-                <Suspense
-                    key={`${shop.id}.collection.${handle}.pagination`}
-                    fallback={<Pagination knownFirstPage={1} />}
-                >
+            <Suspense key={`${shop.id}.collection.${handle}.pagination`} fallback={<Pagination knownFirstPage={1} />}>
+                <section className={styles.collection}>
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                </Suspense>
-            </section>
+                </section>
+            </Suspense>
         );
 
         return (
@@ -191,11 +188,11 @@ export default async function CollectionPage({
                     {pagination}
 
                     <section className={styles.content}>
-                        {page && slices && (slices.length || 0) > 0 ? (
-                            <Suspense
-                                key={`${shop.id}.products.${handle}.content`}
-                                fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
-                            >
+                        <Suspense
+                            key={`${shop.id}.products.${handle}.slices`}
+                            fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
+                        >
+                            {page && slices && (slices.length || 0) > 0 ? (
                                 <PrismicPage
                                     shop={shop}
                                     locale={locale}
@@ -204,8 +201,8 @@ export default async function CollectionPage({
                                     handle={handle}
                                     type={'collection_page'}
                                 />
-                            </Suspense>
-                        ) : null}
+                            ) : null}
+                        </Suspense>
                     </section>
 
                     {collection.descriptionHtml ? (
@@ -215,7 +212,7 @@ export default async function CollectionPage({
                     ) : null}
                 </PageContent>
 
-                <Suspense>
+                <Suspense key={`${shop.id}.collection.${handle}.breadcrumbs`}>
                     <Breadcrumbs shop={shop} title={collection.title} />
                 </Suspense>
 

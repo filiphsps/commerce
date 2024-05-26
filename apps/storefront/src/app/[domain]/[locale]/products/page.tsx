@@ -141,11 +141,13 @@ export default async function ProductsPage({
                     <section>
                         <ProductsContent />
 
-                        <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                        <Suspense key={`${shop.id}.products.pagination`} fallback={<Pagination knownFirstPage={1} />}>
+                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                        </Suspense>
                     </section>
                 </PageContent>
 
-                <Suspense>
+                <Suspense key={`${shop.id}.products.breadcrumbs`}>
                     <Breadcrumbs shop={shop} title={t('products')} />
                 </Suspense>
             </>

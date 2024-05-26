@@ -3,6 +3,7 @@ import 'server-only';
 import styles from './collection.module.scss';
 
 import { type ReactNode } from 'react';
+import { FiChevronRight } from 'react-icons/fi';
 
 import { asText } from '@prismicio/client';
 
@@ -14,7 +15,6 @@ import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { CollectionSliceDefault } from '@/prismic/types';
-import { FiChevronRight } from 'react-icons/fi';
 
 type Slice = {
     slice_type: 'collection';

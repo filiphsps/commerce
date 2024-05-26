@@ -4,6 +4,8 @@ import styles from '@/components/products/product-actions-container.module.scss'
 
 import { type HTMLProps, Suspense, useState } from 'react';
 
+import type { Shop } from '@nordcom/commerce-database';
+
 import { useTranslation } from '@/utils/locale';
 import { ProductProvider } from '@shopify/hydrogen-react';
 
@@ -19,6 +21,7 @@ import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductActionsContainerProps = {
+    shop: Shop;
     i18n: LocaleDictionary;
     product?: Product;
     initialVariant: ProductVariant;
@@ -26,6 +29,7 @@ export type ProductActionsContainerProps = {
 } & HTMLProps<HTMLDivElement>;
 
 export const ProductActionsContainer = ({
+    shop,
     className,
     i18n,
     product,
@@ -53,14 +57,20 @@ export const ProductActionsContainer = ({
                     style={{ gridArea: 'quantity' }}
                 />
 
-                <ProductOptions locale={locale} initialVariant={initialVariant} style={{ gridArea: 'options' }} />
+                <Suspense key={`${shop.id}.${product?.id}.product-actions.options`}>
+                    <ProductOptions locale={locale} initialVariant={initialVariant} style={{ gridArea: 'options' }} />
+                </Suspense>
             </div>
 
-            <ProductQuantityBreaks locale={locale} currentQuantity={quantity} />
+            <Suspense key={`${shop.id}.${product?.id}.product-actions.quantity-breaks`}>
+                <ProductQuantityBreaks locale={locale} currentQuantity={quantity} />
+            </Suspense>
 
-            <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
+            <Suspense key={`${shop.id}.${product?.id}.product-actions.add-to-cart`}>
+                <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
+            </Suspense>
 
-            <Suspense key={`${product?.id}.product-actions-container`}>{children}</Suspense>
+            <Suspense key={`${shop.id}.${product?.id}.product-actions.content`}>{children}</Suspense>
         </ProductProvider>
     );
 };

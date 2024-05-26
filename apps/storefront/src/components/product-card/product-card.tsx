@@ -41,6 +41,7 @@ const ProductCard = async ({ shop, locale, data, priority, className, ...props }
                 title={description ? `${description}...` : undefined}
                 {...props}
             >
+                {/*<ProductCardQuickActions data={data} locale={locale} i18n={i18n} />*/}
                 <ProductCardImage shop={shop} data={data} priority={priority}>
                     <ProductCardBadges data={data} />
                 </ProductCardImage>

@@ -209,7 +209,7 @@ export default async function ProductPage({
         const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
         return (
-            <>
+            <Suspense key={`${shop.id}.products.${handle}`}>
                 <SplitView
                     primaryDesktopWidth={0.42}
                     primaryClassName={styles.headingPrimary}
@@ -231,7 +231,7 @@ export default async function ProductPage({
                             asideClassName={styles.headingAside}
                             aside={
                                 <div className={styles.pricing}>
-                                    <ProductPricing product={product} initialVariant={initialVariant} />
+                                    <ProductPricing shop={shop} product={product} initialVariant={initialVariant} />
                                 </div>
                             }
                             style={{ gap: '0', paddingBottom: 'var(--block-spacer-large)' }}
@@ -253,7 +253,7 @@ export default async function ProductPage({
                         </SplitView>
 
                         <Suspense key={`${shop.id}.products.${handle}.content`}>
-                            <ProductContent product={product} initialVariant={initialVariant} i18n={i18n} />
+                            <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
                         </Suspense>
 
                         <Suspense key={`${shop.id}.products.${handle}.tabs`}>
@@ -271,18 +271,20 @@ export default async function ProductPage({
                                                     }}
                                                 />
 
-                                                <Suspense key={`${shop.id}.products.${handle}.tabs.information`}>
+                                                <Suspense
+                                                    key={`${shop.id}.products.${handle}.tabs.information.details`}
+                                                    fallback={<div />}
+                                                >
                                                     <ImportantProductDetails locale={locale} data={product} />
                                                 </Suspense>
 
-                                                {page?.slices && page.slices.length > 0 ? (
-                                                    <>
-                                                        <div className={styles.contentDivider} />
-
-                                                        <Suspense
-                                                            key={`${shop.id}.products.${handle}.tabs.content`}
-                                                            fallback={<PrismicPage.skeleton page={page as any} />}
-                                                        >
+                                                <Suspense
+                                                    key={`${shop.id}.products.${handle}.tabs.information.slices`}
+                                                    fallback={<PrismicPage.skeleton page={page as any} />}
+                                                >
+                                                    {page?.slices && page.slices.length > 0 ? (
+                                                        <>
+                                                            <div className={styles.contentDivider} />
                                                             <PrismicPage
                                                                 shop={shop}
                                                                 locale={locale}
@@ -291,9 +293,9 @@ export default async function ProductPage({
                                                                 handle={`product-${handle}`}
                                                                 type={'product_page'}
                                                             />
-                                                        </Suspense>
-                                                    </>
-                                                ) : null}
+                                                        </>
+                                                    ) : null}
+                                                </Suspense>
                                             </>
                                         )
                                     },
@@ -302,7 +304,10 @@ export default async function ProductPage({
                                         label: 'Details',
                                         children: (
                                             <>
-                                                <Suspense key={`${shop.id}.products.${handle}.tabs.details`}>
+                                                <Suspense
+                                                    key={`${shop.id}.products.${handle}.tabs.details`}
+                                                    fallback={<div />}
+                                                >
                                                     <ProductDetails locale={locale} data={product} />
                                                 </Suspense>
                                             </>
@@ -315,11 +320,11 @@ export default async function ProductPage({
                 </SplitView>
 
                 <PageContent primary={true}>
-                    {page?.slices2 && page.slices2.length > 0 ? (
-                        <Suspense
-                            key={`${shop.id}.products.${handle}.content`}
-                            fallback={<PrismicPage.skeleton page={{ slices: page.slices2 } as any} />}
-                        >
+                    <Suspense
+                        key={`${shop.id}.products.${handle}.slices`}
+                        fallback={<PrismicPage.skeleton page={{ slices: page?.slices2 || [] } as any} />}
+                    >
+                        {page?.slices2 && page.slices2.length > 0 ? (
                             <PrismicPage
                                 shop={shop}
                                 locale={locale}
@@ -332,10 +337,12 @@ export default async function ProductPage({
                                 handle={`product-${handle}-secondary`}
                                 type={'product_page'}
                             />
-                        </Suspense>
-                    ) : null}
+                        ) : null}
+                    </Suspense>
 
-                    <RecommendedProducts shop={shop} locale={locale} product={product} />
+                    <Suspense key={`${shop.id}.products.${handle}.recommended-products`}>
+                        <RecommendedProducts shop={shop} locale={locale} product={product} />
+                    </Suspense>
                 </PageContent>
 
                 <Suspense key={`${shop.id}.products.${handle}.breadcrumbs`}>
@@ -447,7 +454,7 @@ export default async function ProductPage({
                         }
                     ]}
                 />
-            </>
+            </Suspense>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

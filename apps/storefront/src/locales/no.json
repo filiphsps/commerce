@@ -36,6 +36,7 @@
     },
     "product": {
         "recommendations": "Andre kunder liker også disse produktene sammen",
-        "SKUs": "Artikkelnummer"
+        "SKUs": "Artikkelnummer",
+        "add-to-wishlist": "Legg til i ønskeliste"
     }
 }

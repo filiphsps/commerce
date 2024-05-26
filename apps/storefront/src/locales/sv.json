@@ -34,6 +34,7 @@
     },
     "product": {
         "recommendations": "Komplettera upplevelsen med dessa populära tillägg",
-        "SKUs": "Artikelnummer"
+        "SKUs": "Artikelnummer",
+        "add-to-wishlist": "Lägg till i begäranslista"
     }
 }

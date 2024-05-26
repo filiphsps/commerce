@@ -5,6 +5,10 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: var(--block-spacer);
 
+    &:empty {
+        display: none;
+    }
+
     .item {
         display: grid;
         grid-template-columns: 1fr auto;
