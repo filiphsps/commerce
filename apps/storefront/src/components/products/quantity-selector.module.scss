@@ -19,10 +19,6 @@
     text-transform: uppercase;
     font-weight: 600;
 
-    @media (max-width: $breakpoint-mobile) {
-        margin-bottom: var(--block-spacer-large);
-    }
-
     &:is(:hover, :focus, :focus-within, :has(input:active, input:focus)):not(:disabled) {
         border-color: var(--color-block-dark);
     }

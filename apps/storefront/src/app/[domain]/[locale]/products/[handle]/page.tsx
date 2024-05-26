@@ -258,6 +258,7 @@ export default async function ProductPage({
 
                         <Suspense key={`${shop.id}.products.${handle}.tabs`}>
                             <Tabs
+                                className={styles.tabs}
                                 data={[
                                     {
                                         id: 'information',

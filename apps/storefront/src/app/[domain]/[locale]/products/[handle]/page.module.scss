@@ -33,7 +33,7 @@
 .content {
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer-large);
+    gap: var(--block-spacer-huge);
 
     height: 100%;
 
@@ -42,6 +42,10 @@
     @media (min-width: $breakpoint-mobile) {
         gap: var(--block-spacer-huge);
     }
+}
+
+.tabs {
+    margin-top: var(--block-spacer);
 }
 
 .contentDivider {
