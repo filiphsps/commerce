@@ -7,7 +7,7 @@ import { CartFragment } from '@/api/shopify/cart';
 import { createClient, linkResolver } from '@/utils/prismic';
 import { PrismicProvider } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
-import { Toaster as ToaserProvider } from 'sonner';
+import { Toaster as ToasterProvider } from 'sonner';
 
 import { ShopProvider } from '@/components/shop/provider';
 
@@ -55,7 +55,7 @@ const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Local
                 </PrismicProvider>
             );
         case 'shopify': // TODO: Handle this.
-            return <>{children}</>;
+            return children;
         default:
             throw new UnknownContentProviderError(shop.contentProvider);
     }
@@ -63,12 +63,12 @@ const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Local
 
 const ProvidersRegistry = ({
     shop,
-    currency,
+    currency = 'USD',
     locale,
     children
 }: {
     shop: Shop;
-    currency: CurrencyCode;
+    currency?: CurrencyCode;
     locale: Locale;
     children: ReactNode;
 }) => {
@@ -78,7 +78,7 @@ const ProvidersRegistry = ({
                 <CartProvider cartFragment={CartFragment} languageCode={locale.language} countryCode={locale.country!}>
                     {children}
 
-                    <ToaserProvider
+                    <ToasterProvider
                         theme="dark"
                         position="bottom-left"
                         expand={true}

@@ -18,7 +18,7 @@ const config = {
     transpilePackages: [],
     experimental: {
         caseSensitiveRoutes: true,
-        instrumentationHook: isProduction,
+        //instrumentationHook: isProduction,
         //nextScriptWorkers: true,
         optimizeCss: true,
         optimizePackageImports: ['react-icons', '@nordcom/nordstar'],
@@ -85,6 +85,14 @@ const config = {
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+    },
+
+    webpack(config) {
+        config.experiments = {
+            ...config.experiments,
+            topLevelAwait: true
+        };
+        return config;
     },
 
     // We handle all redirects at the edge.

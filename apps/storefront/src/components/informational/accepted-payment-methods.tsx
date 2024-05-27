@@ -31,6 +31,7 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
                     decoding="async"
                 />
             ))}
+
             {wallets?.map((method) => (
                 <Image
                     key={method}

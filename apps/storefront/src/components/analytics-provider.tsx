@@ -15,7 +15,7 @@ export type AnalyticsProviderProps = {
     children: ReactNode;
 };
 export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {
-    const [deferred, setDeferred] = useState<any>(null);
+    const [deferred, setDeferred] = useState<ReactNode>(null);
 
     const trackers = () => (
         <>

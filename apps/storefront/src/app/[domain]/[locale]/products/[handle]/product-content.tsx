@@ -2,7 +2,7 @@
 
 import styles from './page.module.scss';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -90,16 +90,18 @@ export function ProductContent({ shop, product, initialVariant, i18n, children }
     }, [, searchParams]);
 
     return (
-        <ProductActionsContainer
-            shop={shop}
-            i18n={i18n}
-            className={styles.actions}
-            product={product as any}
-            initialVariant={initialVariant!}
-            selectedVariant={variant}
-        >
-            {children || null}
-        </ProductActionsContainer>
+        <Suspense key={`${shop.id}.products.${product.handle}.actions`} fallback={<div />}>
+            <ProductActionsContainer
+                shop={shop}
+                i18n={i18n}
+                className={styles.actions}
+                product={product as any}
+                initialVariant={initialVariant!}
+                selectedVariant={variant}
+            >
+                {children}
+            </ProductActionsContainer>
+        </Suspense>
     );
 }
 

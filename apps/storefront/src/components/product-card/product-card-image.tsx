@@ -29,8 +29,8 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
             src={image.url}
             alt={image.altText!}
             title={image.altText!}
-            height={image.height || 100}
-            width={image.width || 100}
+            height={100}
+            width={100}
             quality={75}
             sizes="(max-width: 950px) 25vw, 100px"
             decoding="async"

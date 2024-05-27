@@ -17,13 +17,11 @@ export type ShopLayoutProps = {
     i18n: LocaleDictionary;
     children: ReactNode;
 } & Omit<HTMLProps<HTMLDivElement>, 'data' | 'className'>;
-const ShopLayout = async ({ shop: store, locale, i18n, children }: ShopLayoutProps) => {
-    const shop = await Shop.findByDomain(store.domain);
-
+const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
             <Suspense key={`${shop.id}.layout.header`} fallback={<Header.skeleton />}>
-                <Header shop={shop} locale={locale} i18n={i18n} />
+                <Header shop={await Shop.findByDomain(shop.domain)} locale={locale} i18n={i18n} />
             </Suspense>
 
             <Suspense key={`${shop.id}.layout.content`} fallback={<PageContent />}>
@@ -31,7 +29,7 @@ const ShopLayout = async ({ shop: store, locale, i18n, children }: ShopLayoutPro
             </Suspense>
 
             <Suspense key={`${shop.id}.layout.footer`} fallback={<Footer.skeleton />}>
-                <Footer shop={store} locale={locale} i18n={i18n} />
+                <Footer shop={shop} locale={locale} i18n={i18n} />
             </Suspense>
         </>
     );

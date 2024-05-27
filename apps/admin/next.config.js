@@ -21,7 +21,7 @@ const config = {
         optimizePackageImports: ['react-icons'],
         //ppr: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: ['mongoose'],
+        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: false,
         taint: true,

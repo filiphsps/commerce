@@ -109,12 +109,12 @@ export default async function RootLayout({
             <>
                 <html
                     lang={locale.code}
-                    className={fontPrimary.variable || ''}
+                    className={fontPrimary.variable}
                     // A bunch of extensions add classes to the `html` element.
                     suppressHydrationWarning={true}
                 >
                     <head suppressHydrationWarning={true}>
-                        <Suspense key={`${shop.id}.theme`}>
+                        <Suspense key={`${shop.id}.layout.providers.theme`}>
                             <CssVariablesProvider domain={domain} />
                         </Suspense>
                     </head>
@@ -122,20 +122,20 @@ export default async function RootLayout({
                     <body suppressHydrationWarning={true}>
                         <ProvidersRegistry
                             shop={shop}
-                            currency={localization?.country.currency.isoCode || 'USD'}
+                            currency={localization?.country.currency.isoCode}
                             locale={locale}
                         >
                             <AnalyticsProvider shop={shop}>
-                                <Suspense key={`${shop.id}.layout.shop`} fallback={<ShopLayout.skeleton />}>
-                                    <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                        <PageContent as="main" primary={true}>
-                                            {children}
-                                        </PageContent>
-                                    </ShopLayout>
-                                </Suspense>
+                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                    <PageContent as="main" primary={true}>
+                                        {children}
+                                    </PageContent>
+                                </ShopLayout>
                             </AnalyticsProvider>
 
-                            <HeaderProvider loaderColor={branding.primary.accent} />
+                            <Suspense key={`${shop.id}.layout.providers.header`}>
+                                <HeaderProvider loaderColor={branding.primary.accent} />
+                            </Suspense>
                         </ProvidersRegistry>
 
                         <SocialProfileJsonLd
@@ -149,15 +149,21 @@ export default async function RootLayout({
                             founders={[
                                 {
                                     '@type': 'Person',
-                                    name: 'Dennis Sahlin',
-                                    email: 'dennis@nordcom.io',
-                                    jobTitle: 'Chief Executive Officer'
+                                    name: 'Marcel Sobolewski',
+                                    email: 'marcel@nordcom.io',
+                                    jobTitle: 'Interim Chief Executive Officer'
                                 },
                                 {
                                     '@type': 'Person',
                                     name: 'Filiph Siitam Sandström',
                                     email: 'filiph@nordcom.io',
                                     jobTitle: 'Chief Technology Officer'
+                                },
+                                {
+                                    '@type': 'Person',
+                                    name: 'Dennis Sahlin',
+                                    email: 'dennis@nordcom.io',
+                                    jobTitle: 'Founder'
                                 },
                                 {
                                     '@type': 'Person',

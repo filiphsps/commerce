@@ -32,7 +32,7 @@ const config = {
         ],
         //ppr: true,
         scrollRestoration: true,
-        serverComponentsExternalPackages: ['mongoose'],
+        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
         serverMinification: false,
         taint: true,
@@ -101,6 +101,14 @@ const config = {
     async generateBuildId() {
         if (process.env.NODE_ENV === 'development') return 'dev';
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+    },
+
+    webpack(config) {
+        config.experiments = {
+            ...config.experiments,
+            topLevelAwait: true
+        };
+        return config;
     },
 
     // We handle all redirects at the edge.

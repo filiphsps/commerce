@@ -2,6 +2,7 @@ import 'server-only';
 
 import styles from '@/components/Footer/footer.module.scss';
 
+import { Suspense } from 'react';
 import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -11,9 +12,8 @@ import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 
 import FooterContent from '@/components/Footer/footer-content';
+import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
-
-import Link from '../link';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -35,7 +35,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
             <div className={styles.content}>
                 <div className={styles.blocks}>
                     <div className={styles.block}>
-                        {store.logos.primary?.src && (
+                        {store.logos.primary?.src ? (
                             <Image
                                 className={styles.logo}
                                 title={store.name}
@@ -48,7 +48,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                                 loading="lazy"
                                 decoding="async"
                             />
-                        )}
+                        ) : null}
 
                         <PrismicText data={footer.address} />
                     </div>
@@ -70,7 +70,9 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                     ))}
                 </div>
 
-                <FooterContent locale={locale} i18n={i18n} store={store} />
+                <Suspense key={`${shop.id}.footer.content`}>
+                    <FooterContent locale={locale} i18n={i18n} store={store} />
+                </Suspense>
             </div>
         </footer>
     );
