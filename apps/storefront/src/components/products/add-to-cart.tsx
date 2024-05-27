@@ -41,10 +41,11 @@ const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant,
     const [animation, setAnimation] = useState<NodeJS.Timeout | undefined>();
     // This is a bit of a hack, but it works.
     const { selectedVariant, product } = data ? { selectedVariant: variant, product: data } : useProduct();
-    const { cartReady, linesAdd } = useCart();
+    const { cartReady, linesAdd, status } = useCart();
+    const ready = cartReady && status !== 'updating';
 
     const add = useCallback(() => {
-        if (!cartReady || !product || !selectedVariant) {
+        if (!ready || !product || !selectedVariant) {
             // TODO: i18n.
             toast.warning(`The cart is still loading, please try again in a few seconds!`);
             return;
@@ -109,7 +110,7 @@ const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant,
                 </p>
             </>
         );
-    }, [linesAdd, selectedVariant, quantity, cartReady]);
+    }, [linesAdd, selectedVariant, quantity, ready]);
 
     const [label, setLabel] = useState<string>(t('add-to-cart'));
     useEffect(() => {
@@ -140,10 +141,10 @@ const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant,
         <Button
             {...props}
             className={`${styles['add-to-cart']} ${className || ''}`}
-            disabled={!cartReady || !selectedVariant!.availableForSale || !quantity}
+            disabled={!ready || !selectedVariant!.availableForSale || !quantity}
             as="button"
             type={type || ('button' as const)}
-            data-ready={cartReady}
+            data-ready={ready}
             data-success={(animation && 'true') || undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}

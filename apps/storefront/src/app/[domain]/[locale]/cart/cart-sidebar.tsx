@@ -32,7 +32,7 @@ export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: 
             <CartSummary
                 shop={shop}
                 onCheckout={async () => {
-                    if (!['idle'].includes(cart.status)) {
+                    if (cart.status !== 'idle') {
                         toast.error('The cart is still loading, please try again in a few seconds'); // TODO: i18n.
                         return;
                     }
