@@ -3,9 +3,9 @@
 import styles from '@/components/header/cart-button.module.scss';
 
 import { useEffect, useRef, useState } from 'react';
+import { FiShoppingBag } from 'react-icons/fi';
 import dynamic from 'next/dynamic';
 
-import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
@@ -59,19 +59,7 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
             <div className={styles.quantity} suppressHydrationWarning={true}>
                 {totalQuantity ? totalQuantity : null}
             </div>
-            <Lottie
-                ref={lottieRef}
-                className={styles.icon}
-                animationData={ShoppingBagIcon}
-                play={true}
-                loop={false}
-                useSubframes={true}
-                suppressHydrationWarning={true}
-                /*onComplete={() => {
-                    if (lottieRef.current?.firstFrame === 0) return;
-                    lottieRef.current?.goToAndPlay('in-shopping-bag');
-                }}*/
-            />
+            <FiShoppingBag className={styles.icon} />
         </Link>
     );
 };

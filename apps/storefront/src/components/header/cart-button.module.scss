@@ -4,7 +4,7 @@ body a.container {
     overflow: hidden;
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 1fr 3.5rem;
+    grid-template-columns: auto 1fr;
     flex-grow: 0;
     gap: 0;
     justify-content: center;
@@ -30,21 +30,17 @@ body a.container {
     .icon {
         overflow: hidden;
         display: block;
-        min-width: 0.85em;
-        height: 2.75rem;
-        padding: 0.15rem 0 0.3rem 0.3rem;
 
-        stroke-width: 0.2em;
-
-        font-size: 1em;
-        line-height: 1;
+        font-size: 0.95em;
         text-align: right;
     }
 
     .quantity {
         width: 0;
 
-        font-size: 0.75em;
+        font-weight: 800;
+        font-size: 0.85em;
+        text-align: left;
     }
 
     &:not(:disabled):is(:hover, :active, :focus) {
@@ -52,7 +48,6 @@ body a.container {
             &,
             svg {
                 color: var(--color-accent-primary);
-                fill: var(--color-accent-primary);
                 stroke: var(--color-accent-primary);
             }
         }
@@ -60,7 +55,6 @@ body a.container {
 
     svg {
         color: var(--accent-secondary-text);
-        fill: var(--accent-secondary-text);
         stroke: var(--accent-secondary-text);
     }
 
@@ -74,7 +68,7 @@ body a.container {
         border-radius: 5rem;
 
         &:not([data-items='0'], :disabled) {
-            gap: calc(var(--block-spacer-small) / 2);
+            gap: var(--block-spacer);
             padding: var(--block-padding-small) calc(var(--block-padding) * 1.25);
             background-color: var(--color-accent-primary);
             color: var(--accent-primary-text);
@@ -85,12 +79,10 @@ body a.container {
 
             svg {
                 color: var(--accent-primary-text);
-                fill: var(--accent-primary-text);
                 stroke: var(--accent-primary-text);
             }
 
             .quantity {
-                font-weight: 500;
                 width: fit-content;
                 padding: 0.15rem 0 0 0.3rem;
             }
@@ -101,7 +93,6 @@ body a.container {
                 &,
                 svg {
                     color: var(--color-dark);
-                    fill: var(--color-dark);
                     stroke: var(--color-dark);
                 }
             }
