@@ -14,7 +14,6 @@ import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
-import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 
@@ -96,11 +95,11 @@ export default async function SearchPage({ params: { domain, locale: localeData 
         const i18n = await getDictionary(locale);
 
         return (
-            <PageContent primary={true}>
+            <>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                <Suspense key={`${shop.id}.search.slices`}>
-                    {page?.slices && page.slices.length > 0 && (
+                <Suspense key={`${shop.id}.search.slices`} fallback={<PrismicPage.skeleton page={page} />}>
+                    {page?.slices && page.slices.length > 0 ? (
                         <PrismicPage
                             shop={shop}
                             locale={locale}
@@ -109,7 +108,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                             handle={'search'}
                             type={'custom_page'}
                         />
-                    )}
+                    ) : null}
                 </Suspense>
 
                 <Suspense key={`${shop.id}.search.content`}>
@@ -120,7 +119,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                         i18n={i18n}
                     />
                 </Suspense>
-            </PageContent>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

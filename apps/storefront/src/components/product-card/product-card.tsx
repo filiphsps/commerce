@@ -28,26 +28,26 @@ export type ProductCardProps = {
 
     className?: string;
 };
-const ProductCard = async ({ shop, locale, data, priority, className, ...props }: ProductCardProps) => {
+const ProductCard = async ({ shop, locale, data: product, priority, className, ...props }: ProductCardProps) => {
     const i18n = await getDictionary({ shop, locale });
 
-    const description = (data.seo.description || data.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
+    const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
 
     return (
-        <Suspense key={`${shop.id}.product.${data.handle}.card`} fallback={<ProductCard.skeleton />}>
+        <Suspense key={`${shop.id}.product.${product.handle}.card`} fallback={<ProductCard.skeleton />}>
             <div
                 className={`${styles.container} ${className || ''}`}
-                data-available={data.availableForSale}
+                data-available={product.availableForSale}
                 title={description ? `${description}...` : undefined}
                 {...props}
             >
-                {/*<ProductCardQuickActions data={data} locale={locale} i18n={i18n} />*/}
-                <ProductCardImage shop={shop} data={data} priority={priority}>
-                    <ProductCardBadges data={data} />
+                {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
+                <ProductCardImage shop={shop} data={product} priority={priority}>
+                    <ProductCardBadges data={product} />
                 </ProductCardImage>
 
-                <ProductCardActions data={data} locale={locale} i18n={i18n}>
-                    <ProductCardTitle data={data} />
+                <ProductCardActions data={product} locale={locale} i18n={i18n}>
+                    <ProductCardTitle data={product} />
                 </ProductCardActions>
             </div>
         </Suspense>

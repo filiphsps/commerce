@@ -29,8 +29,9 @@ const ProductCardActions = ({ data: product, i18n, locale, children }: ProductCa
     return (
         <>
             <div className={styles.details}>
-                {children}
-                <Suspense key={`${shop.id}.product-card.actions.options`}>
+                <Suspense key={`${shop.id}.product-card.actions.content`}>{children}</Suspense>
+
+                <Suspense key={`${shop.id}.product-card.actions.options`} fallback={<div />}>
                     <ProductCardOptions
                         locale={locale}
                         data={product}
@@ -40,7 +41,7 @@ const ProductCardActions = ({ data: product, i18n, locale, children }: ProductCa
                 </Suspense>
             </div>
 
-            <Suspense key={`${shop.id}.product-card.actions.footer`}>
+            <Suspense key={`${shop.id}.product-card.actions.footer`} fallback={<div />}>
                 <ProductCardFooter locale={locale} i18n={i18n} data={product} selectedVariant={selectedVariant} />
             </Suspense>
         </>

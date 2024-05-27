@@ -63,14 +63,12 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
     if (!image) return null;
 
     // TODO: Hotlink to variant.
-    // TODO: `product.trackingParameters`.
-
     const title = `${product.vendor} ${product.title} by ${shop.name}`;
+    const params = new URLSearchParams(product.trackingParameters ? `?${product.trackingParameters}` : '');
+    const href = `/products/${product.handle}/?${params.toString()}`;
+
     return (
-        <Link
-            href={`/products/${product.handle}/${product.trackingParameters ? `?${product.trackingParameters}` : ''}`}
-            className={styles['image-container']}
-        >
+        <Link href={href || ''} className={styles['image-container']}>
             <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
 
             {children}

@@ -11,7 +11,6 @@ import { BlogApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
 
 import Link from '@/components/link';
-import PageContent from '@/components/page-content';
 import { Label } from '@/components/typography/label';
 
 import type { ReactNode } from 'react';
@@ -39,32 +38,31 @@ export default async function BlogLayout({
         );
 
         return (
-            <PageContent primary={true}>
-                <div className={styles.container}>
-                    <main className={styles.content}>{children}</main>
+            <div className={styles.container}>
+                <main className={styles.content}>{children}</main>
 
-                    <div className={styles['sidebar-wrapper']}>
-                        <aside className={styles.sidebar}>
-                            <section className={styles.section}>
-                                <Label>Latest Articles</Label>
-                                {latest.map(({ id, handle, title }) => (
-                                    <Link key={id} href={`/blog/${handle}/`}>
-                                        {title}
-                                    </Link>
-                                ))}
-                            </section>
-                            <section className={styles.section}>
-                                <Label>Popular Posts</Label>
-                                {popular.map(({ id, handle, title }) => (
-                                    <Link key={id} href={`/blog/${handle}/`}>
-                                        {title}
-                                    </Link>
-                                ))}
-                            </section>
-                        </aside>
-                    </div>
+                <div className={styles['sidebar-wrapper']}>
+                    <aside className={styles.sidebar}>
+                        <section className={styles.section}>
+                            <Label>Latest Articles</Label>
+                            {latest.map(({ id, handle, title }) => (
+                                <Link key={id} href={`/blog/${handle}/`}>
+                                    {title}
+                                </Link>
+                            ))}
+                        </section>
+
+                        <section className={styles.section}>
+                            <Label>Popular Posts</Label>
+                            {popular.map(({ id, handle, title }) => (
+                                <Link key={id} href={`/blog/${handle}/`}>
+                                    {title}
+                                </Link>
+                            ))}
+                        </section>
+                    </aside>
                 </div>
-            </PageContent>
+            </div>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

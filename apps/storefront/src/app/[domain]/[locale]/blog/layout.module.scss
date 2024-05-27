@@ -15,10 +15,6 @@
     }
 
     .sidebar-wrapper {
-        @media (min-width: $breakpoint-mobile) {
-            padding-top: 6rem;
-        }
-
         .sidebar {
             position: sticky;
             top: 10rem;

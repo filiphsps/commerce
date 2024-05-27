@@ -4,20 +4,20 @@ import { Fragment } from 'react';
 
 import type { As } from '@nordcom/nordstar';
 
-import type { ComponentProps, CSSProperties, ElementType, HTMLProps, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, HTMLProps, ReactNode } from 'react';
 
 export type TitleProps<T extends As> = {
     as?: As;
     children?: ReactNode;
     bold?: boolean;
 } & ComponentProps<T>;
-export const Title = <T extends As = ElementType<'h1'>>({ as, bold, className, key, ...props }: TitleProps<T>) => {
+export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key, ...props }: TitleProps<T>) => {
     if (!props.children) return null;
-    if (as === null) {
+    if (Tag === null) {
         return <Fragment key={key} children={props.children} />;
     }
 
-    const AsComponent = as || ('h1' as keyof JSX.IntrinsicElements);
+    const AsComponent = Tag || ('h1' as keyof JSX.IntrinsicElements);
     return (
         <AsComponent
             key={key}

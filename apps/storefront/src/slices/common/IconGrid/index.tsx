@@ -18,7 +18,7 @@ export type IconGridProps = SliceComponentProps<Content.IconGridSlice>;
  * Component for "IconGrid" Slices.
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
-    if (!slice) return null;
+    if (!(slice as any)) return null;
 
     return (
         <PageContent

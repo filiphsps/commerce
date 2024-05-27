@@ -19,33 +19,29 @@ const CartCoupons = ({}) => {
         <div className={styles.container}>
             <Label>Active discounts</Label>
             <div className={styles.coupons}>
-                {(discountCodes as CartDiscountCode[]).map(
-                    ({ code }) =>
-                        (code && (
-                            <div key={code} className={styles.code}>
-                                <div className={styles.tag}>
-                                    <FiTag className={styles.icon} />
-                                </div>
-
-                                <Label className={styles.label} as="label">
-                                    {code}
-                                </Label>
-
-                                <button
-                                    className={styles.action}
-                                    type="button"
-                                    title={`Remove promo code "${code}"`}
-                                    onClick={() =>
-                                        discountCodesUpdate(
-                                            (discountCodes.filter((i) => i?.code !== code) as any) || []
-                                        )
-                                    }
-                                >
-                                    <FiX className={styles.icon} />
-                                </button>
+                {(discountCodes as CartDiscountCode[]).map(({ code }) =>
+                    code ? (
+                        <div key={code} className={styles.code}>
+                            <div className={styles.tag}>
+                                <FiTag className={styles.icon} />
                             </div>
-                        )) ||
-                        null
+
+                            <Label className={styles.label} as="label">
+                                {code}
+                            </Label>
+
+                            <button
+                                className={styles.action}
+                                type="button"
+                                title={`Remove promo code "${code}"`}
+                                onClick={() =>
+                                    discountCodesUpdate((discountCodes.filter((i) => i?.code !== code) as any) || [])
+                                }
+                            >
+                                <FiX className={styles.icon} />
+                            </button>
+                        </div>
+                    ) : null
                 )}
             </div>
         </div>

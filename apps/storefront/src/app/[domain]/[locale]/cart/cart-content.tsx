@@ -26,7 +26,7 @@ export type CartContentProps = {
 };
 export default function CartContent({ shop, locale, i18n, header, slices, store }: CartContentProps) {
     return (
-        <PageContent className={styles.container} primary={true}>
+        <PageContent className={styles.container}>
             <section className={styles.content}>
                 <div className={styles.lines}>
                     {header}
@@ -35,6 +35,7 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                         <CartLines shop={shop} i18n={i18n} />
                     </Suspense>
                 </div>
+
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 

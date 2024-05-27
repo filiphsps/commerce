@@ -17,7 +17,6 @@ import { asText } from '@prismicio/client';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';
-import PageContent from '@/components/page-content';
 import Heading from '@/components/typography/heading';
 
 import ProductsContent from './products-content';
@@ -133,19 +132,13 @@ export default async function ProductsPage({
 
         return (
             <>
-                <PageContent primary={true}>
-                    <Heading title={page?.title || 'Products'} subtitle={page?.description} />
+                <Heading title={page?.title || 'Products'} subtitle={page?.description} />
 
-                    <ProductsContent />
+                <ProductsContent />
 
-                    <section>
-                        <ProductsContent />
-
-                        <Suspense key={`${shop.id}.products.pagination`} fallback={<Pagination knownFirstPage={1} />}>
-                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                        </Suspense>
-                    </section>
-                </PageContent>
+                <Suspense key={`${shop.id}.products.pagination`} fallback={<Pagination knownFirstPage={1} />}>
+                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                </Suspense>
 
                 <Suspense key={`${shop.id}.products.breadcrumbs`}>
                     <Breadcrumbs shop={shop} title={t('products')} />

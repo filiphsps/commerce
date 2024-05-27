@@ -27,11 +27,11 @@ const ProductCardBadges = ({ data: product }: ProductCardBadgesProps) => {
 
     return (
         <>
-            {discount > 1 && ( // Handle rounding-errors.
+            {discount > 1 ? ( // Handle rounding-errors.
                 <div className={styles.badge} data-variant="discount">
                     <b>{discount}%</b> OFF
                 </div>
-            )}
+            ) : null}
 
             {isNewProduct || isVegan ? (
                 <div className={styles.badges}>

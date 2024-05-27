@@ -105,7 +105,7 @@ export default async function CountriesPage({
         const i18n = await getDictionary(locale);
 
         return (
-            <PageContent primary={true}>
+            <>
                 <PageContent>
                     <Heading title={page?.title} subtitle={page?.description} />
                     <form
@@ -136,8 +136,8 @@ export default async function CountriesPage({
                     </form>
                 </PageContent>
 
-                {page?.slices && page.slices.length > 0 && (
-                    <Suspense key={`${shop.id}.countries.content`}>
+                <Suspense key={`${shop.id}.countries.slices`} fallback={<PrismicPage.skeleton page={page} />}>
+                    {page?.slices && page.slices.length > 0 ? (
                         <PrismicPage
                             shop={shop}
                             locale={locale}
@@ -146,9 +146,9 @@ export default async function CountriesPage({
                             handle={'countries'}
                             type={'custom_page'}
                         />
-                    </Suspense>
-                )}
-            </PageContent>
+                    ) : null}
+                </Suspense>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

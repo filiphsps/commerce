@@ -28,7 +28,6 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
 import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
-import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
@@ -322,31 +321,29 @@ export default async function ProductPage({
                     </div>
                 </SplitView>
 
-                <PageContent primary={true}>
-                    <Suspense
-                        key={`${shop.id}.products.${handle}.slices`}
-                        fallback={<PrismicPage.skeleton page={{ slices: page?.slices2 || [] } as any} />}
-                    >
-                        {page?.slices2 && page.slices2.length > 0 ? (
-                            <PrismicPage
-                                shop={shop}
-                                locale={locale}
-                                page={
-                                    {
-                                        slices: page.slices2
-                                    } as any
-                                }
-                                i18n={i18n}
-                                handle={`product-${handle}-secondary`}
-                                type={'product_page'}
-                            />
-                        ) : null}
-                    </Suspense>
+                <Suspense
+                    key={`${shop.id}.products.${handle}.slices`}
+                    fallback={<PrismicPage.skeleton page={{ slices: page?.slices2 || [] } as any} />}
+                >
+                    {page?.slices2 && page.slices2.length > 0 ? (
+                        <PrismicPage
+                            shop={shop}
+                            locale={locale}
+                            page={
+                                {
+                                    slices: page.slices2
+                                } as any
+                            }
+                            i18n={i18n}
+                            handle={`product-${handle}-secondary`}
+                            type={'product_page'}
+                        />
+                    ) : null}
+                </Suspense>
 
-                    <Suspense key={`${shop.id}.products.${handle}.recommended-products`}>
-                        <RecommendedProducts shop={shop} locale={locale} product={product} />
-                    </Suspense>
-                </PageContent>
+                <Suspense key={`${shop.id}.products.${handle}.recommended-products`}>
+                    <RecommendedProducts shop={shop} locale={locale} product={product} />
+                </Suspense>
 
                 <Suspense key={`${shop.id}.products.${handle}.breadcrumbs`}>
                     <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />

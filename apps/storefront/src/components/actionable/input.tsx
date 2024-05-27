@@ -28,7 +28,7 @@ export type MultilineInputProps<T extends As> = {
 
     children: ReactNode;
 } & ComponentProps<T>;
-const MultilineInput = <T extends As = ElementType<'textarea'>>({
+const MultilineInput = <T extends As>({
     as: Tag = 'textarea' as T,
     children,
     className,

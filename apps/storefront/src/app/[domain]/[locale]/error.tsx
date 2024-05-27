@@ -1,6 +1,5 @@
 'use client';
 
-/* c8 ignore start */
 import { useEffect } from 'react';
 
 import { Button } from '@/components/actionable/button';
@@ -9,15 +8,14 @@ import Heading from '@/components/typography/heading';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => console.error(error), [error]);
+
     return (
         <>
             <Heading title={error.name} subtitle={<code>{error.message}</code>} />
 
             <Content>
                 <p>If this keeps happening please reach out to our support.</p>
-                <p>
-                    <Button onClick={reset}>Try again</Button>
-                </p>
+                <Button onClick={reset}>Try again</Button>
             </Content>
         </>
     );

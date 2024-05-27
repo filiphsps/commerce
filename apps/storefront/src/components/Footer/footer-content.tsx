@@ -9,6 +9,8 @@ import { AcceptedPaymentMethods } from '@/components/informational/accepted-paym
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
 import Link from '@/components/link';
 
+import { useShop } from '../shop/provider';
+
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -18,6 +20,7 @@ export type FooterContentProps = {
     store: StoreModel;
 };
 const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
+    const { shop } = useShop();
     const { t } = useTranslation('common', i18n);
 
     // TODO: This should be tenant-specific.
@@ -28,9 +31,10 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
             {/* TODO: This should be configurable in prismic. */}
             <div className={styles.legal}>
                 <div className={styles['bottom-block']}>
-                    <Suspense>
+                    <Suspense key={`${shop.id}.footer.accepted-payment-methods`}>
                         <AcceptedPaymentMethods store={store!} />
                     </Suspense>
+
                     <div className={styles['legal-and-copyrights']}>
                         <div className={styles.important}>
                             <Link className={styles.policy} href="/contact/">
@@ -71,7 +75,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                             </Link>
                         ))}
                         <Link className={styles.flag} href="/countries/" title={t('language-and-region-settings')}>
-                            <Suspense>
+                            <Suspense key={`${shop.id}.footer.flag`}>
                                 <CurrentLocaleFlag locale={locale} />
                             </Suspense>
                         </Link>

@@ -29,15 +29,8 @@ const CartLines = ({ shop, i18n }: CartContentProps) => {
     }
 
     return (
-        <div className={styles.container}>
-            <Suspense
-                key={`${shop.id}.cart.lines`}
-                fallback={
-                    <>
-                        <CartLine.skeleton />
-                    </>
-                }
-            >
+        <Suspense key={`${shop.id}.cart.lines`} fallback={<CartLine.skeleton />}>
+            <div className={styles.container}>
                 {!noItems ? (
                     <>
                         {lines.map((item) => {
@@ -51,8 +44,8 @@ const CartLines = ({ shop, i18n }: CartContentProps) => {
                         })}
                     </>
                 ) : null}
-            </Suspense>
-        </div>
+            </div>
+        </Suspense>
     );
 };
 
