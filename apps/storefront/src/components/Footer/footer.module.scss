@@ -26,6 +26,8 @@
             justify-content: space-between;
             align-items: center;
             text-align: left;
+            width: 100%;
+            height: 100%;
 
             @media (min-width: $breakpoint-mobile) {
                 display: flex;
@@ -35,76 +37,52 @@
             .block {
                 display: flex;
                 grid-auto-rows: auto;
-                align-items: flex-start;
+                align-items: center;
                 justify-content: flex-end;
                 flex-direction: column;
                 flex-grow: 1;
                 width: 100%;
                 height: 100%;
+                gap: var(--block-spacer-small);
 
-                font-size: 1.75rem;
-                line-height: normal;
+                font-size: 1.5em;
                 font-weight: 400;
 
                 .title {
-                    margin-bottom: var(--block-spacer-large);
-
-                    font-size: 2.5rem;
-                    line-height: normal;
-                    font-weight: 600;
-
-                    @media (min-width: $breakpoint-mobile) {
-                        margin-bottom: var(--block-spacer-small);
-                    }
-                }
-
-                p {
-                    margin-bottom: 0.15rem;
-
-                    line-height: normal;
+                    font-size: 1.5em;
+                    font-weight: 700;
+                    text-transform: uppercase;
                 }
 
                 .logo {
                     position: relative;
                     display: block;
+
+                    margin: 0 auto var(--block-padding) auto;
+                    height: 5rem;
                     width: 100%;
-                    height: 7rem;
-                    margin: 0 0 var(--block-padding) 0;
+                    min-width: 15rem;
 
-                    img {
-                        display: block;
-                        height: 100%;
-                        width: 100%;
-                        min-width: 15rem;
-                        object-fit: contain;
+                    object-fit: contain;
+                    object-position: center;
+
+                    filter: grayscale(100%) brightness(0) invert(1);
+
+                    @media (min-width: $breakpoint-mobile) {
+                        height: 7rem;
+
                         object-position: left;
-
-                        filter: grayscale(100%) brightness(0) invert(1);
                     }
                 }
 
                 a {
+                    display: block;
                     font-weight: inherit;
-                    margin-bottom: var(--block-spacer);
                 }
 
                 @media (min-width: $breakpoint-mobile) {
-                    display: grid;
-
+                    align-items: flex-start;
                     justify-content: flex-start;
-
-                    font-size: 1.5rem;
-                    line-height: 1;
-
-                    &[data-align='right'] {
-                        align-items: flex-end;
-                        justify-content: flex-end;
-                        text-align: left;
-                    }
-
-                    a {
-                        margin-bottom: calc(var(--block-spacer) / 1.5);
-                    }
                 }
             }
         }

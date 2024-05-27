@@ -1,12 +1,9 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import { gql } from 'graphql-tag';
 
+import type { Product, ProductFilters } from '@/api/product';
 import type { AbstractApi } from '@/utils/abstract-api';
-import type {
-    PredictiveSearchResult,
-    Product,
-    SearchResultItemConnection
-} from '@shopify/hydrogen-react/storefront-api-types';
+import type { PredictiveSearchResult, SearchResultItemConnection } from '@shopify/hydrogen-react/storefront-api-types';
 
 export const SearchApi = async ({
     client,
@@ -18,7 +15,7 @@ export const SearchApi = async ({
     limit?: number;
 }): Promise<{
     products: Product[];
-    productFilters: SearchResultItemConnection['productFilters'];
+    productFilters: ProductFilters;
 }> => {
     return new Promise(async (resolve, reject) => {
         if (!query) return resolve({ products: [], productFilters: [] });

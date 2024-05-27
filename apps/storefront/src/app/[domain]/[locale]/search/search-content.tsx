@@ -2,33 +2,58 @@
 
 import styles from './search-content.module.scss';
 
+import { useCallback, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
 
+import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import debounce from 'lodash.debounce';
+
 import { Button } from '@/components/actionable/button';
 
-import type { Locale } from '@/utils/locale';
+import type { Product, ProductFilters } from '@/api/product';
 
 export type SearchContentProps = {
     shop: Shop;
     locale: Locale;
+    //client: AbstractApi;
+    i18n: LocaleDictionary;
 };
-export default function SearchContent({}: SearchContentProps) {
+export default function SearchContent({ i18n }: SearchContentProps) {
     const { replace } = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
+    const { t } = useTranslation('common', i18n);
+    const [results, setResults] = useState<Product[]>([]);
+    const [filters, setFilters] = useState<ProductFilters>([]);
 
-    function handleSearch(term?: string) {
-        const params = new URLSearchParams(searchParams);
-        if (term) {
-            params.set('q', term);
-        } else {
-            params.delete('q');
-        }
+    const searchAction = useCallback(
+        debounce(async () => {
+            const query = searchParams.get('q')?.toString();
+            if (!query) {
+                setResults(() => []);
+                setFilters(() => []);
+                return;
+            }
 
-        replace(`${pathname}?${params.toString()}`);
-    }
+            /*const { products, productFilters } = await SearchApi({ query, client });
+            setResults(() => products);
+            setFilters(() => productFilters);*/
+        }, 500),
+        [searchParams]
+    )!;
+
+    const updateQuery = useCallback(
+        (term?: string) => {
+            const params = new URLSearchParams(searchParams);
+            if (term) params.set('q', term);
+            else params.delete('q');
+
+            replace(`${pathname}?${params.toString()}`);
+        },
+        [searchParams, replace]
+    );
 
     return (
         <>
@@ -37,7 +62,7 @@ export default function SearchContent({}: SearchContentProps) {
                     className={styles.input}
                     type="search"
                     defaultValue={searchParams.get('q')?.toString()}
-                    onChange={(e) => handleSearch(e.target.value)}
+                    onChange={(e) => updateQuery(e.target.value)}
                     // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus={true}
                     spellCheck={true}
@@ -46,7 +71,7 @@ export default function SearchContent({}: SearchContentProps) {
                 />
 
                 <Button className={styles.button} onClick={() => console.warn('todo')} title="Search">
-                    Search
+                    {t('search')}
                 </Button>
             </div>
         </>

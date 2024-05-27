@@ -3,7 +3,8 @@ import type {
     Metafield,
     PageInfo,
     Product as ShopifyProduct,
-    ProductVariant as ShopifyVariant
+    ProductVariant as ShopifyVariant,
+    SearchResultItemConnection
 } from '@shopify/hydrogen-react/storefront-api-types';
 
 export type ProductVariant = {
@@ -27,3 +28,5 @@ export type Product = ShopifyProduct & {
     ingredients: Metafield;
     flavors: Metafield;
 } & OmitTypeName<Omit<ShopifyProduct, 'descriptionHtml' | 'variants'>>;
+
+export type ProductFilters = SearchResultItemConnection['productFilters'];

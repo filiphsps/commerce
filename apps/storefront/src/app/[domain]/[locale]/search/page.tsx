@@ -99,8 +99,8 @@ export default async function SearchPage({ params: { domain, locale: localeData 
             <PageContent primary={true}>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                {page?.slices && page.slices.length > 0 && (
-                    <Suspense key={`${shop.id}.search.content`}>
+                <Suspense key={`${shop.id}.search.slices`}>
+                    {page?.slices && page.slices.length > 0 && (
                         <PrismicPage
                             shop={shop}
                             locale={locale}
@@ -109,11 +109,16 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                             handle={'search'}
                             type={'custom_page'}
                         />
-                    </Suspense>
-                )}
+                    )}
+                </Suspense>
 
-                <Suspense>
-                    <SearchContent shop={shop} locale={locale} />
+                <Suspense key={`${shop.id}.search.content`}>
+                    <SearchContent
+                        //client={await ShopifyApolloApiClient({ shop, locale })}
+                        shop={shop}
+                        locale={locale}
+                        i18n={i18n}
+                    />
                 </Suspense>
             </PageContent>
         );

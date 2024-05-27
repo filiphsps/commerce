@@ -31,18 +31,14 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                 <div className={styles.lines}>
                     {header}
 
-                    {/*<Suspense key={`${shop.id}.page.cart.progress`}>
-                        <FreeShippingProgress i18n={i18n} />
-                    </Suspense>*/}
-
-                    <Suspense key={`${shop.id}.page.cart.cart-lines`}>
+                    <Suspense key={`${shop.id}.page.cart.lines`}>
                         <CartLines shop={shop} i18n={i18n} />
                     </Suspense>
                 </div>
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
-            <Suspense key={`${shop.id}.page.cart.content`}>{slices}</Suspense>
+            <Suspense key={`${shop.id}.page.cart.slices`}>{slices}</Suspense>
 
             <Suspense key={`${shop.id}.page.cart.breadcrumbs`}>
                 <Breadcrumbs shop={shop} />

@@ -35,20 +35,20 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
             <div className={styles.content}>
                 <div className={styles.blocks}>
                     <div className={styles.block}>
-                        <div className={styles.logo}>
-                            {store.logos.primary?.src && (
-                                <Image
-                                    title={store.name}
-                                    src={store.logos.primary.src}
-                                    alt={store.logos.primary.alt || store.name}
-                                    fill={true}
-                                    sizes="(max-width: 950px) 75px, 225px"
-                                    priority={false}
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            )}
-                        </div>
+                        {store.logos.primary?.src && (
+                            <Image
+                                className={styles.logo}
+                                title={store.name}
+                                src={store.logos.primary.src}
+                                alt={store.logos.primary.alt || store.name}
+                                width={store.logos.primary.width || 0}
+                                height={store.logos.primary.height || 0}
+                                sizes="(max-width: 950px) 75px, 225px"
+                                priority={false}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        )}
 
                         <PrismicText data={footer.address} />
                     </div>
@@ -56,6 +56,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                     {footer.blocks.map((block, index) => (
                         <div key={`${block.title}-${index}`} className={styles.block} data-align="right">
                             <div className={styles.title}>{block.title}</div>
+
                             {block?.items.map((item: any) => (
                                 <Link
                                     key={item.handle}
