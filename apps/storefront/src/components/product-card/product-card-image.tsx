@@ -67,7 +67,10 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
 
     const title = `${product.vendor} ${product.title} by ${shop.name}`;
     return (
-        <Link href={`/products/${product.handle}/`} className={styles['image-container']}>
+        <Link
+            href={`/products/${product.handle}/${product.trackingParameters ? `?${product.trackingParameters}` : ''}`}
+            className={styles['image-container']}
+        >
             <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
 
             {children}

@@ -9,5 +9,7 @@ export type PrismicTextProps = {
     data: RichTextField;
 };
 export const PrismicText = ({ data }: PrismicTextProps) => {
+    if (data.length <= 0) return null;
+
     return <PrismicRichText field={data} linkResolver={linkResolver} />;
 };

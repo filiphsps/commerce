@@ -17,9 +17,7 @@ const StockStatus = ({ product }: StockStatusProps) => {
 
     return (
         <section className={styles.item} data-status={'available'} title={available}>
-            <div className={styles.icon}>
-                <FiPackage />
-            </div>
+            <FiPackage className={styles.icon} />
             <Label>{available}</Label>
         </section>
     );

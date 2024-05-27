@@ -53,8 +53,8 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                         <PrismicText data={footer.address} />
                     </div>
 
-                    {footer.blocks.map((block) => (
-                        <div key={block.title} className={styles.block} data-align="right">
+                    {footer.blocks.map((block, index) => (
+                        <div key={`${block.title}-${index}`} className={styles.block} data-align="right">
                             <div className={styles.title}>{block.title}</div>
                             {block?.items.map((item: any) => (
                                 <Link

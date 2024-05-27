@@ -73,16 +73,16 @@ const SplitView = ({
     const asideComponent = (
         <Aside
             style={{ '--desktop-width': _asideDesktopWidth }}
-            className={`${asideClassName || ''} ${(typeof asideDesktopWidth === 'string' && styles.specific) || ''}`}
+            className={`${asideClassName || ''} ${typeof asideDesktopWidth === 'string' ? styles.specific : ''}`}
         >
             {aside}
         </Aside>
     );
 
     return (
-        <Container {...props} className={(padding && styles.padding) || ''}>
-            {(!reverse && asideComponent) || primaryComponent}
-            {(reverse && asideComponent) || primaryComponent}
+        <Container {...props} className={padding ? styles.padding : ''}>
+            {!reverse ? asideComponent : primaryComponent}
+            {reverse ? asideComponent : primaryComponent}
         </Container>
     );
 };

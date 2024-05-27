@@ -12,6 +12,7 @@ export type TitleProps<T extends As> = {
     bold?: boolean;
 } & ComponentProps<T>;
 export const Title = <T extends As = ElementType<'h1'>>({ as, bold, className, key, ...props }: TitleProps<T>) => {
+    if (!props.children) return null;
     if (as === null) {
         return <Fragment key={key} children={props.children} />;
     }

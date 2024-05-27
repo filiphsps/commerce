@@ -28,6 +28,8 @@ export type TabsProps = {
     }>;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'data'>;
 const Tabs = ({ as: Tag = 'div', data, className, ...props }: TabsProps) => {
+    if (!data || data.length <= 0) return null;
+
     return (
         <Tag {...props} className={`${styles.tabs}${className ? ` ${className}` : ''}`}>
             <style>{`${data.map(({ id }) => `#${id}:checked ~ #content-${id}`).join(',')} { display: flex; }`}</style>

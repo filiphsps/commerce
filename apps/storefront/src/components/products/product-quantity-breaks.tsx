@@ -7,7 +7,7 @@ export type ProductQuantityBreaksItemProps = {
     quantity: number;
     currentQuantity: number;
 } & HTMLProps<HTMLDivElement>;
-export const ProductQuantityBreaksItem = async ({
+export const ProductQuantityBreaksItem = ({
     quantity,
     currentQuantity,
     style,
@@ -26,7 +26,7 @@ export type ProductQuantityBreaksProps = {
     currentQuantity: number;
     locale: Locale;
 } & HTMLProps<HTMLDivElement>;
-export const ProductQuantityBreaks = async ({
+export const ProductQuantityBreaks = ({
     currentQuantity,
     locale,
     style,

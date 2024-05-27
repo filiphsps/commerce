@@ -27,8 +27,10 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
                     <span itemProp="name">{shop.name}</span>
                 </Link>
                 <meta itemProp="position" content="1" />
+
                 <FiChevronRight className={styles.icon} />
             </div>
+
             {path.map((entry, index) => (
                 <div
                     key={entry}
@@ -46,7 +48,8 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
                         <span itemProp="name">{index === path.length - 1 ? title || entry : entry}</span>
                     </Link>
                     <meta itemProp="position" content={`${index + 2}`} />
-                    {(index + 1 < path.length && <FiChevronRight className={styles.icon} />) || false}
+
+                    {index + 1 < path.length ? <FiChevronRight className={styles.icon} /> : null}
                 </div>
             ))}
         </section>

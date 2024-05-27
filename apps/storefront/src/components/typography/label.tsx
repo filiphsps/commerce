@@ -7,6 +7,8 @@ export type LabelProps = {
     as?: ElementType;
 } & HTMLProps<HTMLLabelElement>;
 export const Label = ({ children, as, className, ...props }: LabelProps) => {
+    if (!children) return null;
+
     const AsComponent = as || 'div';
 
     return (

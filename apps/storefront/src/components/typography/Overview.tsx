@@ -23,6 +23,8 @@ interface OverviewProps {
     style?: React.CSSProperties;
 }
 export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageStyle, layout, className, style }) => {
+    if (!body) return null;
+
     layout = layout || 'left';
     if (!image) {
         return (

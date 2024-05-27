@@ -2,11 +2,11 @@
 
 import styles from '@/components/header/cart-button.module.scss';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import ShoppingBagIcon from '@/static/assets/icons/lottie/shopping-bag-light.json';
-import { useTranslation, type Locale, type LocaleDictionary } from '@/utils/locale';
+import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
 
 import Link from '@/components/link';

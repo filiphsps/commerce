@@ -30,6 +30,7 @@ import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
+import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
@@ -256,6 +257,10 @@ export default async function ProductPage({
                             <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
                         </Suspense>
 
+                        <Suspense key={`${shop.id}.products.${handle}.info-lines`}>
+                            <InfoLines product={product} />
+                        </Suspense>
+
                         <Suspense key={`${shop.id}.products.${handle}.tabs`}>
                             <Tabs
                                 className={styles.tabs}
@@ -274,7 +279,6 @@ export default async function ProductPage({
 
                                                 <Suspense
                                                     key={`${shop.id}.products.${handle}.tabs.information.details`}
-                                                    fallback={<div />}
                                                 >
                                                     <ImportantProductDetails locale={locale} data={product} />
                                                 </Suspense>
@@ -304,14 +308,12 @@ export default async function ProductPage({
                                         id: 'details',
                                         label: 'Details',
                                         children: (
-                                            <>
-                                                <Suspense
-                                                    key={`${shop.id}.products.${handle}.tabs.details`}
-                                                    fallback={<div />}
-                                                >
-                                                    <ProductDetails locale={locale} data={product} />
-                                                </Suspense>
-                                            </>
+                                            <Suspense
+                                                key={`${shop.id}.products.${handle}.tabs.details`}
+                                                fallback={<div />}
+                                            >
+                                                <ProductDetails locale={locale} data={product} />
+                                            </Suspense>
                                         )
                                     }
                                 ]}

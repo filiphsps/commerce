@@ -15,8 +15,6 @@ import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
-import { ProductQuantityBreaks } from './product-quantity-breaks';
-
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
@@ -62,9 +60,9 @@ export const ProductActionsContainer = ({
                 </Suspense>
             </div>
 
-            <Suspense key={`${shop.id}.${product?.id}.product-actions.quantity-breaks`}>
+            {/*<Suspense key={`${shop.id}.${product?.id}.product-actions.quantity-breaks`}>
                 <ProductQuantityBreaks locale={locale} currentQuantity={quantity} />
-            </Suspense>
+            </Suspense>*/}
 
             <Suspense key={`${shop.id}.${product?.id}.product-actions.add-to-cart`}>
                 <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />

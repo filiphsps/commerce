@@ -10,6 +10,8 @@ export type PageContentProps = {
     children?: ReactNode;
 } & HTMLProps<HTMLDivElement>;
 const PageContent = ({ as: Tag = 'div', primary, className, ...props }: PageContentProps) => {
+    if (!props.children) return null;
+
     return <Tag {...props} className={`${styles.container} ${primary ? styles.primary : ''} ${className || ''}`} />;
 };
 
