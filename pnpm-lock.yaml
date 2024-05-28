@@ -161,8 +161,8 @@ importers:
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
       '@prisma/extension-accelerate':
-        specifier: 1.0.0
-        version: 1.0.0(@prisma/client@5.12.0(prisma@5.12.0))
+        specifier: 1.1.0
+        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -345,8 +345,8 @@ importers:
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
       '@prisma/extension-accelerate':
-        specifier: 1.0.0
-        version: 1.0.0(@prisma/client@5.12.0(prisma@5.12.0))
+        specifier: 1.1.0
+        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -520,8 +520,8 @@ importers:
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
       '@prisma/extension-accelerate':
-        specifier: 1.0.0
-        version: 1.0.0(@prisma/client@5.12.0(prisma@5.12.0))
+        specifier: 1.1.0
+        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@prismicio/client':
         specifier: 7.4.1
         version: 7.4.1
@@ -689,8 +689,8 @@ importers:
         specifier: 5.12.0
         version: 5.12.0(prisma@5.12.0)
       '@prisma/extension-accelerate':
-        specifier: 1.0.0
-        version: 1.0.0(@prisma/client@5.12.0(prisma@5.12.0))
+        specifier: 1.1.0
+        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
     devDependencies:
       '@nordcom/prettier':
         specifier: 0.1.1
@@ -1678,8 +1678,8 @@ packages:
   '@prisma/engines@5.12.0':
     resolution: {integrity: sha512-rFNRul9JGu0d3tf8etBgmDQ4NVoDwgGrRguvQOc8i+c6g7xPjRuu4aKzMMvHWUuccvRx5+fs1KMBxQ0x2THt+Q==}
 
-  '@prisma/extension-accelerate@1.0.0':
-    resolution: {integrity: sha512-5oSpPtKCMfTl/sSXaS/7vBsPqfm+eEVB6/5KPBJITFatDoFcmjx/PIC/T93mHLiHI98xKwosPN59NGXjDDhcFA==}
+  '@prisma/extension-accelerate@1.1.0':
+    resolution: {integrity: sha512-sESjhBZ4ywQjAVpKzsfhxyNu+9txIM5I6M1MPBaJBq/xDlqmniIAhlwIEt9KLtO80zqPxqbZYes18zrkgYqNiQ==}
     engines: {node: '>=16'}
     peerDependencies:
       '@prisma/client': '>=4.16.1'
@@ -6386,7 +6386,7 @@ snapshots:
       '@prisma/fetch-engine': 5.12.0
       '@prisma/get-platform': 5.12.0
 
-  '@prisma/extension-accelerate@1.0.0(@prisma/client@5.12.0(prisma@5.12.0))':
+  '@prisma/extension-accelerate@1.1.0(@prisma/client@5.12.0(prisma@5.12.0))':
     dependencies:
       '@prisma/client': 5.12.0(prisma@5.12.0)
 
