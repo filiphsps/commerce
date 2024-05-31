@@ -529,8 +529,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(@prismicio/client@7.4.1)(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.4))(react@18.2.0)
       '@prismicio/react':
-        specifier: 2.7.4
-        version: 2.7.4(@prismicio/client@7.4.1)(react@18.2.0)
+        specifier: 2.8.0
+        version: 2.8.0(@prismicio/client@7.4.1)(react@18.2.0)
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1724,12 +1724,12 @@ packages:
       next: ^13.4.5 || ^14 || ^15.0.0-rc.0
       react: ^18 || ^19.0.0-rc.0
 
-  '@prismicio/react@2.7.4':
-    resolution: {integrity: sha512-FIbDxAH6gy2Cw9AaA+UhI5LG2QyHwfgJS60Wuo/i6xwcgZRLELUcsoHK7/rLzxSXvNMmiaoqH61Wi5rip8Z0Rg==}
+  '@prismicio/react@2.8.0':
+    resolution: {integrity: sha512-nMTX4yM2eaa78Ck51oAMADZs2kN3VE/YDfGV+t1pImJI5arPMg65z+JhyU8GqPVLn5TLr2oS+QLFR9p4X9T5Gw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@prismicio/client': ^6 || ^7
-      react: ^18
+      react: ^18 || ^19.0.0-rc.0
 
   '@prismicio/richtext@2.1.5':
     resolution: {integrity: sha512-Sf6iCsciPmfK3uQeFmeY9RTRSuhrCVzyU39OkiJ1VJn8O0531pKapGoWS+5WGxouJtE5+jGqV8L+L2mKP7NkXQ==}
@@ -6438,7 +6438,7 @@ snapshots:
       next: 14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.4)
       react: 18.2.0
 
-  '@prismicio/react@2.7.4(@prismicio/client@7.4.1)(react@18.2.0)':
+  '@prismicio/react@2.8.0(@prismicio/client@7.4.1)(react@18.2.0)':
     dependencies:
       '@prismicio/client': 7.4.1
       '@prismicio/richtext': 2.1.5
