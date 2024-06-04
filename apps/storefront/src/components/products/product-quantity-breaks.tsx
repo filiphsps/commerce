@@ -1,56 +1,47 @@
+'use client';
+
 import styles from '@/components/products/product-quantity-breaks.module.scss';
 
-import type { Locale } from '@/utils/locale';
+import { useQuantity } from './quantity-provider';
+
 import type { HTMLProps } from 'react';
 
 export type ProductQuantityBreaksItemProps = {
-    quantity: number;
-    currentQuantity: number;
-    setQuantity: (value: number) => void;
-} & HTMLProps<HTMLDivElement>;
+    requiredQuantity: number;
+} & HTMLProps<HTMLButtonElement>;
 export const ProductQuantityBreaksItem = ({
-    quantity,
-    currentQuantity,
-    setQuantity,
+    requiredQuantity,
     style,
     className,
     ...props
 }: ProductQuantityBreaksItemProps) => {
+    const { quantity, setQuantity } = useQuantity();
+
     return (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-        <div
-            role="button"
-            className={`${styles.item} ${quantity === currentQuantity ? styles.selected : ''}`}
+        <button
             {...props}
-            onClick={() => setQuantity(quantity)}
+            type="button"
+            className={`${styles.item} ${requiredQuantity === quantity ? styles.selected : ''}`}
+            onClick={() => setQuantity(requiredQuantity)}
         >
-            <div className={styles.quantity}>{quantity}x</div>
-            <div className={styles.percentage}>{Math.floor(quantity / 3.5)}%</div>
-        </div>
+            <div className={styles.quantity}>{requiredQuantity}x</div>
+            <div className={styles.percentage}>{Math.floor(requiredQuantity / 3.5)}%</div>
+        </button>
     );
 };
+ProductQuantityBreaksItem.displayName = 'Nordcom.Products.QuantityBreaks.Item';
 
-export type ProductQuantityBreaksProps = {
-    currentQuantity: number;
-    locale: Locale;
-    setQuantity: (value: number) => void;
-} & HTMLProps<HTMLDivElement>;
-export const ProductQuantityBreaks = ({
-    currentQuantity,
-    setQuantity,
-    locale,
-    style,
-    className,
-    ...props
-}: ProductQuantityBreaksProps) => {
+export type ProductQuantityBreaksProps = {} & HTMLProps<HTMLDivElement>;
+export const ProductQuantityBreaks = ({ style, className, ...props }: ProductQuantityBreaksProps) => {
     return (
         <section className={styles.container} style={style} {...props}>
-            <ProductQuantityBreaksItem quantity={1} currentQuantity={currentQuantity} setQuantity={setQuantity} />
-            <ProductQuantityBreaksItem quantity={10} currentQuantity={currentQuantity} setQuantity={setQuantity} />
-            <ProductQuantityBreaksItem quantity={25} currentQuantity={currentQuantity} setQuantity={setQuantity} />
-            <ProductQuantityBreaksItem quantity={50} currentQuantity={currentQuantity} setQuantity={setQuantity} />
-            <ProductQuantityBreaksItem quantity={75} currentQuantity={currentQuantity} setQuantity={setQuantity} />
-            <ProductQuantityBreaksItem quantity={100} currentQuantity={currentQuantity} setQuantity={setQuantity} />
+            <ProductQuantityBreaksItem requiredQuantity={1} />
+            <ProductQuantityBreaksItem requiredQuantity={10} />
+            <ProductQuantityBreaksItem requiredQuantity={25} />
+            <ProductQuantityBreaksItem requiredQuantity={50} />
+            <ProductQuantityBreaksItem requiredQuantity={75} />
+            <ProductQuantityBreaksItem requiredQuantity={100} />
         </section>
     );
 };
+ProductQuantityBreaks.displayName = 'Nordcom.Products.QuantityBreaks';

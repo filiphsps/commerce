@@ -9,16 +9,17 @@ import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
 
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
 import type { ProductVariant } from '@/api/product';
-import type { Locale } from '@/utils/locale';
 
 export type ProductOptionProps = {
-    locale: Locale;
     initialVariant: ProductVariant;
 } & HTMLProps<HTMLDivElement>;
-export const ProductOptions = ({ locale, initialVariant, style, className, ...props }: ProductOptionProps) => {
+export const ProductOptions = ({ initialVariant, style, className, ...props }: ProductOptionProps) => {
+    const { locale } = useShop();
+
     const {
         options: productOptions,
         variants,
@@ -46,99 +47,97 @@ export const ProductOptions = ({ locale, initialVariant, style, className, ...pr
     );
 
     return (
-        <>
-            <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`} style={style || {}}>
-                {options?.map((option, index) =>
-                    option?.values ? (
-                        <Fragment key={`${option.name}_option`}>
-                            <Label
-                                className={styles.label}
-                                data-options={option.values.length}
-                                suppressHydrationWarning={true}
-                            >
-                                {option.name}
-                            </Label>
-                            <div
-                                className={styles.options}
-                                data-options={option.values.length}
-                                suppressHydrationWarning={true}
-                            >
-                                {option.values.map((value) => {
-                                    if (!value) return null;
-                                    let title = value;
+        <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`} style={style || {}}>
+            {options?.map((option, index) =>
+                option?.values ? (
+                    <Fragment key={`${option.name}_option`}>
+                        <Label
+                            className={styles.label}
+                            data-options={option.values.length}
+                            suppressHydrationWarning={true}
+                        >
+                            {option.name}
+                        </Label>
+                        <div
+                            className={styles.options}
+                            data-options={option.values.length}
+                            suppressHydrationWarning={true}
+                        >
+                            {option.values.map((value) => {
+                                if (!value) return null;
+                                let title = value;
 
-                                    if (option.name === 'Size' && value && value.toLowerCase().endsWith('g')) {
-                                        title = ConvertToLocalMeasurementSystem({
-                                            locale,
-                                            weight: Number.parseFloat(value.replaceAll(' ', '')!.slice(0, -1)),
-                                            weightUnit: 'GRAMS'
-                                        });
-                                    }
+                                if (option.name === 'Size' && value && value.toLowerCase().endsWith('g')) {
+                                    title = ConvertToLocalMeasurementSystem({
+                                        locale,
+                                        weight: Number.parseFloat(value.replaceAll(' ', '')!.slice(0, -1)),
+                                        weightUnit: 'GRAMS'
+                                    });
+                                }
 
-                                    // FIXME: Handle options to variant properly.
-                                    const matchingVariant =
-                                        (value &&
-                                            title &&
-                                            variants
-                                                ?.filter((variant) => variant)
-                                                .find(
-                                                    (variant) =>
-                                                        variant!.title?.toLowerCase().includes(value!.toLowerCase()) ||
-                                                        variant!.title?.toLowerCase().includes(title!.toLowerCase())
-                                                )) ||
-                                        undefined;
-                                    let href = `/products/${handle}/`;
-                                    let asComponent: any = undefined;
+                                // FIXME: Handle options to variant properly.
+                                const matchingVariant =
+                                    (value &&
+                                        title &&
+                                        variants
+                                            ?.filter((variant) => variant)
+                                            .find(
+                                                (variant) =>
+                                                    variant!.title?.toLowerCase().includes(value!.toLowerCase()) ||
+                                                    variant!.title?.toLowerCase().includes(title!.toLowerCase())
+                                            )) ||
+                                    undefined;
+                                let href = `/products/${handle}/`;
+                                let asComponent: any = undefined;
 
-                                    if (matchingVariant?.id) {
-                                        if (matchingVariant.id !== initialVariant.id)
-                                            href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
-                                    }
+                                if (matchingVariant?.id) {
+                                    if (matchingVariant.id !== initialVariant.id)
+                                        href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
+                                }
 
-                                    const inStock = isOptionInStock(option.name!, value!);
-                                    const extraProps = {
-                                        locale: locale,
-                                        href: href,
-                                        replace: true,
-                                        onClick: () =>
-                                            setSelectedOptions({
-                                                ...(selectedOptions as any),
-                                                [option.name!]: value!
-                                            }),
+                                const inStock = isOptionInStock(option.name!, value!);
+                                const extraProps = {
+                                    locale: locale,
+                                    href: href,
+                                    replace: true,
+                                    onClick: () =>
+                                        setSelectedOptions({
+                                            ...(selectedOptions as any),
+                                            [option.name!]: value!
+                                        }),
 
-                                        ...(!inStock && {
-                                            disabled: !inStock,
-                                            'aria-disabled': !inStock
-                                        })
-                                    };
+                                    ...(!inStock && {
+                                        disabled: !inStock,
+                                        'aria-disabled': !inStock
+                                    })
+                                };
 
-                                    return (
-                                        <Link
-                                            key={`${option.name}_${value}`}
-                                            as={asComponent}
-                                            title={`${product.vendor} ${product.title} - ${
-                                                title || matchingVariant?.title
-                                            }${!inStock ? ' (Out of stock)' : ''}`} // TODO: i18n.
-                                            className={`${styles.option} ${
-                                                selectedOptions?.[option.name!] === value ? styles.selected : ''
-                                            } ${!inStock ? styles.disabled : ''} ${
-                                                asComponent !== 'div' ? styles.clickable : ''
-                                            }`}
-                                            {...extraProps}
-                                            // The user's locale might differ from ours.
-                                            suppressHydrationWarning={true}
-                                        >
-                                            {title}
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        </Fragment>
-                    ) : (
-                        <div key={`empty_${index}`} /> // Empty div to keep the grid layout
-                    )
-                )}
-            </div>
-        </>
+                                return (
+                                    <Link
+                                        key={`${option.name}_${value}`}
+                                        as={asComponent}
+                                        title={`${product.vendor} ${product.title} - ${
+                                            title || matchingVariant?.title
+                                        }${!inStock ? ' (Out of stock)' : ''}`} // TODO: i18n.
+                                        className={`${styles.option} ${
+                                            selectedOptions?.[option.name!] === value ? styles.selected : ''
+                                        } ${!inStock ? styles.disabled : ''} ${
+                                            asComponent !== 'div' ? styles.clickable : ''
+                                        }`}
+                                        {...extraProps}
+                                        // The user's locale might differ from ours.
+                                        suppressHydrationWarning={true}
+                                    >
+                                        {title}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </Fragment>
+                ) : (
+                    <div key={`empty_${index}`} /> // Empty div to keep the grid layout
+                )
+            )}
+        </div>
     );
 };

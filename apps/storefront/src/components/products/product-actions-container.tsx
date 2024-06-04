@@ -2,7 +2,7 @@
 
 import styles from '@/components/products/product-actions-container.module.scss';
 
-import { type HTMLProps, Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import type { Shop } from '@nordcom/commerce-database';
 
@@ -12,11 +12,13 @@ import { ProductProvider } from '@shopify/hydrogen-react';
 import AddToCart from '@/components/products/add-to-cart';
 import { ProductOptions } from '@/components/products/product-options';
 import { QuantitySelector } from '@/components/products/quantity-selector';
-import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
+
+import { QuantityProvider } from './quantity-provider';
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
+import type { HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
     shop: Shop;
@@ -36,39 +38,44 @@ export const ProductActionsContainer = ({
     children,
     ...props
 }: ProductActionsContainerProps) => {
-    const { locale } = useShop();
     const { t } = useTranslation('common', i18n);
     const [quantity, setQuantity] = useState(1);
 
+    // Make sure product actually exists.
+    if (!product) return null; // TODO: Add loading shimmer/placeholder.
+
     return (
         <ProductProvider data={product as any} initialVariantId={selectedVariant?.id || initialVariant.id}>
-            <div {...props} className={`${styles.options} ${className || ''}`}>
-                <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
+            <QuantityProvider quantity={quantity} setQuantity={setQuantity}>
+                <div {...props} className={`${styles.options} ${className || ''}`}>
+                    <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
 
-                <QuantitySelector
-                    update={(value) => {
-                        if (value === quantity) return;
-                        setQuantity(value);
-                    }}
-                    value={quantity}
-                    i18n={i18n}
-                    style={{ gridArea: 'quantity' }}
-                />
+                    <QuantitySelector
+                        update={(value) => {
+                            if (value === quantity) return;
+                            setQuantity(value);
+                        }}
+                        value={quantity}
+                        i18n={i18n}
+                        style={{ gridArea: 'quantity' }}
+                    />
 
-                <Suspense key={`${shop.id}.${product?.id}.product-actions.options`}>
-                    <ProductOptions locale={locale} initialVariant={initialVariant} style={{ gridArea: 'options' }} />
+                    <Suspense key={`${shop.id}.${product.id}.product-actions.options`}>
+                        <ProductOptions initialVariant={initialVariant} style={{ gridArea: 'options' }} />
+                    </Suspense>
+                </div>
+
+                {/*<Suspense key={`${shop.id}.${product.id}.product-actions.quantity-breaks`}>
+                    <ProductQuantityBreaks />
+                </Suspense>*/}
+
+                <Suspense key={`${shop.id}.${product.id}.product-actions.add-to-cart`}>
+                    <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
                 </Suspense>
-            </div>
 
-            {/*<Suspense key={`${shop.id}.${product?.id}.product-actions.quantity-breaks`}>
-                <ProductQuantityBreaks locale={locale} currentQuantity={quantity} setQuantity={setQuantity} />
-            </Suspense>*/}
-
-            <Suspense key={`${shop.id}.${product?.id}.product-actions.add-to-cart`}>
-                <AddToCart locale={locale} className={styles.button} quantity={quantity} i18n={i18n} />
-            </Suspense>
-
-            <Suspense key={`${shop.id}.${product?.id}.product-actions.content`}>{children}</Suspense>
+                <Suspense key={`${shop.id}.${product.id}.product-actions.content`}>{children}</Suspense>
+            </QuantityProvider>
         </ProductProvider>
     );
 };
+ProductActionsContainer.displayName = 'Nordcom.Products.ActionsContainer';

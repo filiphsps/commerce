@@ -8,22 +8,20 @@ import { useCart } from '@shopify/hydrogen-react';
 
 import AddToCart from '@/components/products/add-to-cart';
 import { QuantitySelector } from '@/components/products/quantity-selector';
+import { useShop } from '@/components/shop/provider';
 import Pricing from '@/components/typography/pricing';
 
-import { useShop } from '../shop/provider';
-
 import type { Product, ProductVariant } from '@/api/product';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardFooterProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
 
     selectedVariant: ProductVariant;
     data: Product;
 };
 
-const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
+const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
     const { cartReady } = useCart();
     const { shop } = useShop();
 
@@ -54,7 +52,6 @@ const ProductCardFooter = ({ locale, i18n, data: product, selectedVariant }: Pro
 
             <Suspense key={`${shop.id}.product-card.footer.add-to-cart`}>
                 <AddToCart
-                    locale={locale}
                     i18n={i18n}
                     className={styles.button}
                     quantity={quantity}

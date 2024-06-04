@@ -9,7 +9,7 @@ import { TypeError } from '@nordcom/commerce-errors';
 import { commonValidations } from '@/middleware/common-validations';
 import { Locale } from '@/utils/locale';
 
-import { useShop } from './shop/provider';
+import { useShop } from '@/components/shop/provider';
 
 type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
     shop?: Shop;

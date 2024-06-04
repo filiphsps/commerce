@@ -16,12 +16,12 @@ import { useCart, useProduct } from '@shopify/hydrogen-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/actionable/button';
+import { useShop } from '@/components/shop/provider';
 
 import type { Product, ProductVariant } from '@/api/product';
-import type { Locale, LocaleDictionary } from '@/utils/locale';
+import type { LocaleDictionary } from '@/utils/locale';
 
 export type AddToCartProps = {
-    locale: Locale;
     i18n: LocaleDictionary;
     quantity: number;
 
@@ -30,7 +30,9 @@ export type AddToCartProps = {
 } & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const AddToCart = ({ locale, i18n, className, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
+const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
+    const { locale } = useShop();
+
     const queueEvent = useTrackable((context) => context.queueEvent);
     if (typeof queueEvent !== 'function') throw new TodoError('queueEvent is not a function');
 

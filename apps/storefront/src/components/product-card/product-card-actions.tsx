@@ -2,14 +2,13 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { type ReactNode, Suspense, useState } from 'react';
+import { Suspense, useState, type ReactNode } from 'react';
 
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
 import ProductCardFooter from '@/components/product-card/product-card-footer';
 import ProductCardOptions from '@/components/product-card/product-card-options';
-
-import { useShop } from '../shop/provider';
+import { useShop } from '@/components/shop/provider';
 
 import type { Product } from '@/api/product';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
@@ -42,7 +41,7 @@ const ProductCardActions = ({ data: product, i18n, locale, children }: ProductCa
             </div>
 
             <Suspense key={`${shop.id}.product-card.actions.footer`} fallback={<div />}>
-                <ProductCardFooter locale={locale} i18n={i18n} data={product} selectedVariant={selectedVariant} />
+                <ProductCardFooter i18n={i18n} data={product} selectedVariant={selectedVariant} />
             </Suspense>
         </>
     );
