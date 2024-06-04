@@ -2,7 +2,7 @@
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--block-spacer);
 
     &:empty {
@@ -27,7 +27,9 @@
         }
 
         &:is(.selected) {
-            background-color: var(--color-block);
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary-dark);
+            color: var(--accent-primary-text);
         }
 
         .percentage {

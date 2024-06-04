@@ -51,7 +51,7 @@ export const Checkout = async ({
     else if (!cart.checkoutUrl) throw new Error('Cart is missing checkoutUrl');
 
     let url = cart.checkoutUrl;
-    if (shop.commerceProvider.type === 'shopify') {
+    if ((shop.commerceProvider.type as string) === 'shopify') {
         url = url.replace(/[A-Za-z0-9\-\_]+.\.myshopify\.com/, `${shop.commerceProvider.domain}`);
     }
 
@@ -89,6 +89,6 @@ export const Checkout = async ({
     }
 
     const ga4 = getCrossDomainLinkerParameter();
-    const finalUrl = `${url}${(ga4 && `${(url.includes('?') && '&') || '?'}_gl=${ga4}`) || ''}`;
+    const finalUrl = `${url}${ga4 ? `${url.includes('?') ? '&' : '?'}_gl=${ga4}` : ''}`;
     window.location.href = finalUrl;
 };

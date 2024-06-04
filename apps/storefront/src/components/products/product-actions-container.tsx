@@ -61,7 +61,7 @@ export const ProductActionsContainer = ({
             </div>
 
             {/*<Suspense key={`${shop.id}.${product?.id}.product-actions.quantity-breaks`}>
-                <ProductQuantityBreaks locale={locale} currentQuantity={quantity} />
+                <ProductQuantityBreaks locale={locale} currentQuantity={quantity} setQuantity={setQuantity} />
             </Suspense>*/}
 
             <Suspense key={`${shop.id}.${product?.id}.product-actions.add-to-cart`}>

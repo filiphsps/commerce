@@ -70,6 +70,7 @@
         "jsdoc/require-hyphen-before-param-description": "error",
         "jsx-a11y/alt-text": "off",
         "jsx-a11y/anchor-is-valid": "off",
+        "jsx-a11y/interactive-supports-focus": "off",
         "no-console": [
             "error",
             {
