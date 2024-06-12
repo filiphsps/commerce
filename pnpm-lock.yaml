@@ -134,8 +134,8 @@ importers:
         specifier: 3.10.4
         version: 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.11.1
-        version: 0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
+        specifier: 0.11.2
+        version: 0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
       '@auth/core':
         specifier: 0.32.0
         version: 0.32.0
@@ -315,8 +315,8 @@ importers:
         specifier: 3.10.4
         version: 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.11.1
-        version: 0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
+        specifier: 0.11.2
+        version: 0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
       '@markdoc/markdoc':
         specifier: 0.4.0
         version: 0.4.0(@types/react@18.2.75)(react@18.2.0)
@@ -499,8 +499,8 @@ importers:
         specifier: 3.10.4
         version: 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@apollo/experimental-nextjs-app-support':
-        specifier: 0.11.1
-        version: 0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
+        specifier: 0.11.2
+        version: 0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
       '@next/third-parties':
         specifier: 14.2.1
         version: 14.2.1(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)
@@ -870,8 +870,8 @@ packages:
     resolution: {integrity: sha512-mBgAuq2b0daSA/14LMyjEjaInD7/Zd7KVXZge7bQPKmtQJFqy9/pWBml6DMkMreeHQEomMtIbbeqReNJ/74kjA==}
     hasBin: true
 
-  '@apollo/client-react-streaming@0.11.1':
-    resolution: {integrity: sha512-cKQwVcq4N34hO8Tid2iYlX+GHtpw97sF6lrjYx/GM95Ywsr6lwxY6F8m4ziJ5B4FncL+XnpiYm4YVrRfpAe0Eg==}
+  '@apollo/client-react-streaming@0.11.2':
+    resolution: {integrity: sha512-rRA/dIA09/Y6+jtGGBnXHQfPOv6BYYVZwQP8OzQtWrWbSgDEI6uAhqULssU5f0ZhQJVzKDuslqGE9QAX0gdfRQ==}
     peerDependencies:
       '@apollo/client': ^3.10.4
       react: ^18
@@ -894,8 +894,8 @@ packages:
       subscriptions-transport-ws:
         optional: true
 
-  '@apollo/experimental-nextjs-app-support@0.11.1':
-    resolution: {integrity: sha512-m58Jocg/exuC++5l6eAj+4CmyStcEWmBrsr/hF4DJ8CBZNBzP93ZW4RNmV9+4T0TS3TxPh8XNXSCObnaxWW4kg==}
+  '@apollo/experimental-nextjs-app-support@0.11.2':
+    resolution: {integrity: sha512-HRQ8/Ux/tM2pezrhZeoHsJs55+nJvJZRV1B21QwEVtWhslQXjT5gqs5nKw86KURF0xR7gX18Nyy659NzJ09Pmw==}
     peerDependencies:
       '@apollo/client': ^3.10.4
       next: ^13.4.1 || ^14.0.0 || 15.0.0-rc.0
@@ -5656,7 +5656,7 @@ snapshots:
 
   '@antfu/ni@0.20.0': {}
 
-  '@apollo/client-react-streaming@0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@apollo/client-react-streaming@0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@apollo/client': 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
@@ -5685,17 +5685,17 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@apollo/experimental-nextjs-app-support@0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)':
+  '@apollo/experimental-nextjs-app-support@0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)':
     dependencies:
       '@apollo/client': 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@apollo/client-react-streaming': 0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+      '@apollo/client-react-streaming': 0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       next: 14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5)
       react: 18.2.0
 
-  '@apollo/experimental-nextjs-app-support@0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)':
+  '@apollo/experimental-nextjs-app-support@0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5))(react@18.2.0)':
     dependencies:
       '@apollo/client': 3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@apollo/client-react-streaming': 0.11.1(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+      '@apollo/client-react-streaming': 0.11.2(@apollo/client@3.10.4(@types/react@18.2.75)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       next: 14.3.0-canary.4(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.5)
       react: 18.2.0
 
