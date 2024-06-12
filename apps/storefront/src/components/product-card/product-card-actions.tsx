@@ -2,7 +2,7 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { Suspense, useState, type ReactNode } from 'react';
+import { type ReactNode, Suspense, useState } from 'react';
 
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
