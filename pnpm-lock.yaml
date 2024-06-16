@@ -72,7 +72,7 @@ importers:
         version: 6.8.0(eslint@8.57.0)
       eslint-plugin-prettier:
         specifier: 5.1.3
-        version: 5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.0)
+        version: 5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.2)
       eslint-plugin-react:
         specifier: 7.34.2
         version: 7.34.2(eslint@8.57.0)
@@ -98,8 +98,8 @@ importers:
         specifier: 8.4.0
         version: 8.4.0
       prettier:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.2
+        version: 3.3.2
       prettier-eslint:
         specifier: 16.3.0
         version: 16.3.0
@@ -294,8 +294,8 @@ importers:
         specifier: 14.3.2
         version: 14.3.2
       prettier:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.2
+        version: 3.3.2
       rimraf:
         specifier: 5.0.7
         version: 5.0.7
@@ -478,8 +478,8 @@ importers:
         specifier: 14.3.2
         version: 14.3.2
       prettier:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.2
+        version: 3.3.2
       rimraf:
         specifier: 5.0.7
         version: 5.0.7
@@ -662,8 +662,8 @@ importers:
         specifier: 14.3.2
         version: 14.3.2
       prettier:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.3.2
+        version: 3.3.2
       rimraf:
         specifier: 5.0.7
         version: 5.0.7
@@ -4640,8 +4640,8 @@ packages:
     resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
     engines: {node: '>=6.0.0'}
 
-  prettier@3.3.0:
-    resolution: {integrity: sha512-J9odKxERhCQ10OC2yb93583f6UnYutOeiV5i0zEDS7UGTdUt0u+y8erxl3lBKvwo/JHyyoEdXjwp4dke9oyZ/g==}
+  prettier@3.3.2:
+    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6735,7 +6735,7 @@ snapshots:
       newtype-ts: 0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))
       node-fetch: 3.3.2
       p-limit: 4.0.0
-      prettier: 3.3.0
+      prettier: 3.3.2
       r19: 0.1.8
       rc9: 2.1.2
       semver: 7.6.2
@@ -6757,7 +6757,7 @@ snapshots:
       io-ts: 2.2.21(fp-ts@2.16.6)
       io-ts-reporters: 2.0.1(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))
       p-limit: 4.0.0
-      prettier: 3.3.0
+      prettier: 3.3.2
       prismic-ts-codegen: 0.1.20(@prismicio/client@7.5.0)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
@@ -6773,7 +6773,7 @@ snapshots:
       io-ts: 2.2.21(fp-ts@2.16.6)
       io-ts-reporters: 2.0.1(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))
       p-limit: 4.0.0
-      prettier: 3.3.0
+      prettier: 3.3.2
       prismic-ts-codegen: 0.1.20(@prismicio/client@7.5.0)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
@@ -8218,10 +8218,10 @@ snapshots:
       object.entries: 1.1.8
       object.fromentries: 2.0.8
 
-  eslint-plugin-prettier@5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.0):
+  eslint-plugin-prettier@5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.2):
     dependencies:
       eslint: 8.57.0
-      prettier: 3.3.0
+      prettier: 3.3.2
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.8
     optionalDependencies:
@@ -9863,7 +9863,7 @@ snapshots:
       indent-string: 4.0.0
       lodash.merge: 4.6.2
       loglevel-colored-level-prefix: 1.0.0
-      prettier: 3.3.0
+      prettier: 3.3.2
       pretty-format: 29.7.0
       require-relative: 0.8.7
       typescript: 5.4.5
@@ -9875,7 +9875,7 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier@3.3.0: {}
+  prettier@3.3.2: {}
 
   pretty-format@27.5.1:
     dependencies:
