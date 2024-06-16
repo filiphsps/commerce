@@ -61,7 +61,7 @@
     },
     "homepage": "https://shops.nordcom.io/",
     "dependencies": {
-        "@nordcom/nordstar": "0.0.54"
+        "@nordcom/nordstar": "0.0.55"
     },
     "devDependencies": {
         "@nordcom/prettier": "0.1.1",
