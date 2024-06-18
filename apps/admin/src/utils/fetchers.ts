@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { revalidateTag, unstable_cache as cache } from 'next/cache';
+import { unstable_cache as cache, revalidateTag } from 'next/cache';
 
 import { prisma } from '@nordcom/commerce-database';
 import type { ShopBase } from '@nordcom/commerce-db';
@@ -101,7 +101,9 @@ export async function getCommerceProvider(userId: string, shopId: string) {
                     select: {
                         commerceProvider: true
                     },
-                    cacheStrategy: { ttl: 120, swr: 3600 }
+                    cacheStrategy: {
+                        ttl: 60 * 60 * 4 // 4 hours.
+                    }
                 })
             )?.commerceProvider;
         },

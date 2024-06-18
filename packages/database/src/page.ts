@@ -18,7 +18,9 @@ export const PagesApi = async (shop: Shop, cache?: any) => {
                 handle: true,
                 content: true
             },
-            cacheStrategy: { ttl: 120, swr: 3600 }
+            cacheStrategy: {
+                ttl: 60 * 60 * 4 // 4 hours.
+            }
         });
 
         return pages;
