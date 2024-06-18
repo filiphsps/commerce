@@ -20,7 +20,12 @@ export const createClientMaker =
             headers: apiConfig.headers,
             // you can disable result caching here if you want to
             // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
-            fetchOptions: { /*cache: 'no-cache' 'force-cache',*/ next: { revalidate: 28_800 } }
+            fetchOptions: {
+                cache: 'force-cache',
+                next: {
+                    revalidate: 60 * 60 * 8 // 8 hours.
+                }
+            }
             // you can override the default `fetchOptions` on a per query basis
             // via the `context` property on the options passed as a second argument
             // to an Apollo Client data fetching hook, e.g.:

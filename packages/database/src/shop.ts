@@ -151,7 +151,7 @@ export const ShopApi = async (domain: string, cache?: any) => {
 
     return cache(async (domain: string) => callback(domain), [domain], {
         tags: [domain],
-        revalidate: 28_800 // 8hrs.
+        revalidate: 60 * 60 * 8 // 8 hours.
     })(domain) as ReturnType<typeof callback>;
 };
 
@@ -174,7 +174,7 @@ export const ShopsApi = async (cache?: any) => {
 
     return cache(async () => callback(), ['shops'], {
         tags: ['shops'],
-        revalidate: 28_800 // 8hrs.
+        revalidate: 60 * 60 * 8 // 8 hours.
     })() as ReturnType<typeof callback>;
 };
 
@@ -236,6 +236,6 @@ export const CommerceProviderAuthenticationApi = async ({
 
     return cache(callback, [shop.id, 'commerce', 'authentication'], {
         tags: [shop.id, `${shop.id}.commerce.authentication`],
-        revalidate: 28_800 // 8hrs.
+        revalidate: 60 * 60 * 8 // 8 hours.
     })(shop);
 };

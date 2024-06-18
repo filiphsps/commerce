@@ -23,7 +23,7 @@ import { CommerceSettings } from './commerce-settings';
 
 import type { Metadata } from 'next';
 
-export const revalidate = 30;
+export const revalidate = 5;
 
 export type ShopSettingsContentPageProps = {
     params: {

@@ -15,7 +15,7 @@ import { ThemeSettings } from './theme-settings';
 
 import type { Metadata } from 'next';
 
-export const revalidate = 30;
+export const revalidate = 5;
 
 export type ShopSettingsDesignPageProps = {
     params: {

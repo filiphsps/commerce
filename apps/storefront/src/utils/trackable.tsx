@@ -31,6 +31,13 @@ import type { ShopifyContextValue } from '@shopify/hydrogen-react/dist/types/Sho
 import type { CartLine } from '@shopify/hydrogen-react/storefront-api-types';
 import type { ReactNode } from 'react';
 
+// FIXME: Create or use a proper logging solution.
+const TrackableLogger = (message: string, data?: any, service?: string) => {
+    if (BuildConfig.environment !== 'development') return;
+
+    console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
+};
+
 /**
  * Analytics events.
  *
@@ -149,10 +156,6 @@ export type AnalyticsEventActionProps = {
     cart: CartWithActions;
 };
 
-const trackableLogger = async (message: string, data?: any, service?: string) => {
-    console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
-};
-
 const shopifyEventHandler = async (
     event: AnalyticsEventType,
     data: AnalyticsEventData,
@@ -231,7 +234,7 @@ const shopifyEventHandler = async (
                     }
                 };
 
-                await trackableLogger(`Event "${ShopifyAnalyticsEventName.PAGE_VIEW}"`, data, 'shopify');
+                TrackableLogger(`Event "${ShopifyAnalyticsEventName.PAGE_VIEW}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
@@ -244,7 +247,7 @@ const shopifyEventHandler = async (
                     }
                 };
 
-                await trackableLogger(`Event "${ShopifyAnalyticsEventName.ADD_TO_CART}"`, data, 'shopify');
+                TrackableLogger(`Event "${ShopifyAnalyticsEventName.ADD_TO_CART}"`, data, 'shopify');
                 await sendShopifyAnalytics(data, commerce.domain);
                 break;
             }
@@ -261,7 +264,7 @@ const handleEvent = async (
 ) => {
     if (!window.dataLayer) {
         if (BuildConfig.environment === 'development') {
-            console.debug('window.dataLayer not found, creating it.');
+            TrackableLogger('window.dataLayer not found, creating it.', data, 'analytics');
         }
 
         window.dataLayer = [];
@@ -408,7 +411,7 @@ function Trackable({ children }: TrackableProps) {
     useEffect(() => {
         if (!shop || !currency || !queue || queue.length <= 0) return;
 
-        void trackableLogger(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}}`, queue);
+        TrackableLogger(`Sending ${queue.length} event(s): ${queue.map(({ type }) => type).join(', ')}}`, queue);
 
         // Clone the queue, as it may be modified while we are sending events.
         let events = [...queue];

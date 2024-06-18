@@ -17,14 +17,11 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
     try {
         const shop = await ShopApi(domain, cache);
         //TODO: Do this in the correct place.
-        revalidateTag(`shopify`);
-        revalidateTag('prismic');
         revalidateTag(shop.id);
 
         switch (req.method) {
             case 'POST': {
                 // TODO: Validate API type and authenticity.
-                revalidateTag(`shopify.${shop.id}`);
                 console.debug(`Revalidated shopify for shop with id ${shop.id}`);
 
                 const data = await req.json();
@@ -46,7 +43,6 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
             }
             case 'GET': {
                 // FIXME: This is incorrect, prismic also uses POST.
-                revalidateTag(`prismic.${shop.id}`);
                 console.debug(`Revalidated prismic for shop with id ${shop.id}`);
 
                 return NextResponse.json(
@@ -62,13 +58,14 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
                     { status: 200, headers }
                 );
             }
-            default:
+            default: {
                 throw new MethodNotAllowedError(req.method);
+            }
         }
     } catch (error: unknown) {
         switch (true) {
             // Switch case to let us easily add more specific error handling.
-            case error instanceof Error:
+            case error instanceof Error: {
                 return NextResponse.json(
                     {
                         status: error.statusCode ?? 500,
@@ -77,6 +74,7 @@ const revalidate = async (req: NextRequest, { domain }: RevalidateApiRouteParams
                     },
                     { status: error.statusCode ?? 500 }
                 );
+            }
         }
 
         const ex = new UnknownApiError();

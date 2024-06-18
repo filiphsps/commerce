@@ -26,7 +26,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 //export const runtime = 'experimental-edge';
-export const revalidate = 28_800; // 8hrs.
+export const revalidate = 60 * 60 * 8; // 8 hours.
 export const dynamic = 'force-static';
 
 const fontPrimary = Public_Sans({

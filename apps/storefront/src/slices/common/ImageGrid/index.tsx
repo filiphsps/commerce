@@ -29,6 +29,7 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
             {slice.items.map(({ href, title, image }) => (
                 <Link key={href!} className={styles.item} href={href!} title={title!}>
                     <PrismicNextImage
+                        fallbackAlt={image.alt ? '' : undefined}
                         style={{
                             width: '100%',
                             height: 'auto',

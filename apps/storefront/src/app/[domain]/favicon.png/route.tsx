@@ -1,12 +1,14 @@
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { validateSize } from './validate-size';
 
 export const runtime = 'nodejs';
+export const revalidate = 60 * 60 * 8; // 8 hours.
+export const dynamic = 'force-static';
 
 export type FaviconRouteParams = {
     domain: string;
@@ -42,7 +44,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
     try {
         let src!: string;
 
-        const shop = await ShopApi(domain);
+        const shop = await Shop.findByDomain(domain);
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {
@@ -61,6 +63,8 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Fa
             }
         );
     } catch (error) {
+        console.error(error);
+
         return NextResponse.json(
             {
                 status: 500,

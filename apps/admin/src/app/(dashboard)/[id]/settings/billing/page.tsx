@@ -9,7 +9,7 @@ import { getShop } from '@/utils/fetchers';
 
 import type { Metadata } from 'next';
 
-export const revalidate = 30;
+export const revalidate = 5;
 
 export type ShopSettingsBillingPageProps = {
     params: {

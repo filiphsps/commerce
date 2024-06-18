@@ -224,7 +224,7 @@ export class NotFoundError extends GenericError {
         super();
 
         if (requestedResource) {
-            this.cause = this.details.replace('resource', `resource "${requestedResource}"`);
+            this.cause = this.description.replace('resource', `resource "${requestedResource}"`);
         }
     }
 }

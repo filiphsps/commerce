@@ -73,7 +73,7 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
 
     return cache(callback, [shop.id, 'locales'], {
         tags: [shop.id, 'locales'],
-        revalidate: 28_800 // 8hrs.
+        revalidate: 60 * 60 * 8 // 8 hours.
     })(api);
 };
 
@@ -118,7 +118,7 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
         [shop.id, locale.code, 'locale'],
         {
             tags: [shop.id, locale.code, 'locale'],
-            revalidate: 28_800 // 8hrs.
+            revalidate: 60 * 60 * 8 // 8 hours.
         }
     )(api);
 };
@@ -191,8 +191,8 @@ export const StoreApi = async ({
                                 fetchOptions: {
                                     cache: undefined,
                                     next: {
-                                        revalidate: 28_800, // 8hrs.
-                                        tags: ['prismic']
+                                        revalidate: 60 * 60 * 8, // 8 hours.
+                                        tags: [shop.id, 'prismic']
                                     }
                                 },
                                 fetchLinks: []
@@ -202,8 +202,8 @@ export const StoreApi = async ({
                                 fetchOptions: {
                                     cache: undefined,
                                     next: {
-                                        revalidate: 28_800, // 8hrs.
-                                        tags: ['prismic']
+                                        revalidate: 60 * 60 * 8, // 8 hours.
+                                        tags: [shop.id, 'prismic']
                                     }
                                 },
                                 fetchLinks: []

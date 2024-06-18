@@ -271,7 +271,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
         [shop.id, locale.code, 'product', handle],
         {
             tags: [shop.id, `${shop.id}.${locale.code}`, `${shop.id}.${locale.code}.product.${handle}`],
-            revalidate: 3600 // 1hr.
+            revalidate: 60 * 60 * 8 // 8 hours.
         }
     )({ api, handle });
 };
