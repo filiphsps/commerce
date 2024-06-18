@@ -82,20 +82,24 @@ export const createClient = ({
     ...config
 }: CreateClientConfig & { shop: Shop | ShopBase; locale: Locale }): Client => {
     const defaultTags = ['prismic', `prismic.${shop.id}`];
-    // TODO: Remove `repositoryName` variable.
-    let name: string = repositoryName;
-    let accessToken: string = process.env.PRISMIC_TOKEN!;
+    let name: string;
+    let accessToken: string;
 
     // TODO: These cases should be dealt with before even arriving here.
     switch (shop.contentProvider.type) {
         case 'prismic': {
             const data = shop.contentProvider as PrismicContentProvider | null;
+            if (!data) {
+                console.warn(`No Prismic data found for shop "${shop.id}", falling back to legacy values.`);
+            }
+
             name = data?.id || repositoryName;
-            accessToken = data?.authentication.token || accessToken;
+            accessToken = data?.authentication.token || process.env.PRISMIC_TOKEN!;
             break;
         }
-        default:
+        default: {
             throw new UnknownContentProviderError();
+        }
     }
 
     // TODO: Remove `repositoryName` variable.
@@ -124,7 +128,6 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
     const { code: locale } = Locale.from(doc.lang || Locale.default.code)!;
 
     // TODO: Deal with tenants that don't use locales in their paths.
-
     if (doc.type === 'custom_page') {
         if (doc.uid === 'homepage') return `/${locale}/`;
         else if (doc.uid === 'countries') return `/${locale}/countries/`;
