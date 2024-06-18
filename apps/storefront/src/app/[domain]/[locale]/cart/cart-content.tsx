@@ -1,7 +1,5 @@
 import styles from './cart-content.module.scss';
 
-import { Suspense } from 'react';
-
 import type { Shop } from '@nordcom/commerce-database';
 
 import { CartLines } from '@/components/cart/cart-lines';
@@ -31,19 +29,15 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
                 <div className={styles.lines}>
                     {header}
 
-                    <Suspense key={`${shop.id}.page.cart.lines`}>
-                        <CartLines shop={shop} i18n={i18n} />
-                    </Suspense>
+                    <CartLines shop={shop} i18n={i18n} />
                 </div>
 
                 <CartSidebar shop={shop} locale={locale} i18n={i18n} store={store} className={styles.sidebar} />
             </section>
 
-            <Suspense key={`${shop.id}.page.cart.slices`}>{slices}</Suspense>
+            {slices}
 
-            <Suspense key={`${shop.id}.page.cart.breadcrumbs`}>
-                <Breadcrumbs shop={shop} />
-            </Suspense>
+            <Breadcrumbs shop={shop} />
         </PageContent>
     );
 }

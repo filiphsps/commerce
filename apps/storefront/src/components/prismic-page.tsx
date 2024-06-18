@@ -60,6 +60,6 @@ PrismicPage.skeleton = <T extends PageType = 'custom_page'>({ page }: Optional<P
         </>
     );
 };
-(PrismicPage.skeleton as any).displayName = 'Nordcom.PrismicPage.skeleton';
+(PrismicPage.skeleton as any).displayName = 'Nordcom.PrismicPage.Skeleton';
 
 export default PrismicPage;

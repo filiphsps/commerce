@@ -69,6 +69,6 @@ ImageGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
         ></PageContent>
     );
 };
-(ImageGrid.skeleton as any).displayName = 'Nordcom.Slices.ImageGrid.skeleton';
+(ImageGrid.skeleton as any).displayName = 'Nordcom.Slices.ImageGrid.Skeleton';
 
 export default ImageGrid;

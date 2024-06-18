@@ -62,6 +62,6 @@ ProductCard.skeleton = () => (
         <div></div>
     </div>
 );
-(ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.skeleton';
+(ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.Skeleton';
 
 export default ProductCard;

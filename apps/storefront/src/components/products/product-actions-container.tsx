@@ -60,20 +60,24 @@ export const ProductActionsContainer = ({
                         style={{ gridArea: 'quantity' }}
                     />
 
-                    <Suspense key={`${shop.id}.${product.id}.product-actions.options`}>
+                    <Suspense
+                        key={`${shop.id}.${product.id}.product-actions.options`}
+                        fallback={<ProductOptions.skeleton />}
+                    >
                         <ProductOptions initialVariant={initialVariant} style={{ gridArea: 'options' }} />
                     </Suspense>
                 </div>
 
-                {/*<Suspense key={`${shop.id}.${product.id}.product-actions.quantity-breaks`}>
-                    <ProductQuantityBreaks />
-                </Suspense>*/}
+                {/*<ProductQuantityBreaks />*/}
 
-                <Suspense key={`${shop.id}.${product.id}.product-actions.add-to-cart`}>
+                <Suspense
+                    key={`${shop.id}.${product.id}.product-actions.add-to-cart`}
+                    fallback={<AddToCart.skeleton />}
+                >
                     <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
                 </Suspense>
 
-                <Suspense key={`${shop.id}.${product.id}.product-actions.content`}>{children}</Suspense>
+                {children}
             </QuantityProvider>
         </ProductProvider>
     );

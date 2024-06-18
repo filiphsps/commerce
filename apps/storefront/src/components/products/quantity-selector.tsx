@@ -2,8 +2,7 @@
 
 import styles from '@/components/products/quantity-selector.module.scss';
 
-import { type HTMLProps, useCallback, useEffect, useState } from 'react';
-import { CgMathMinus, CgMathPlus } from 'react-icons/cg';
+import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 
@@ -18,14 +17,17 @@ export const QuantityInputFilter = (value?: string, prev?: string): string => {
         return '';
     }
 
-    let quantity = Number.parseInt(value) || 0;
+    // Remove non-numeric characters.
+    value = value.replaceAll(/[^\d]/g, '').replace(/^0+/, '');
+
+    let quantity = Number.parseFloat(value) || 0;
     if (quantity < 0) {
         quantity = 0;
     } else if (quantity > 999) {
         quantity = 999;
     }
 
-    return quantity.toString(10);
+    return quantity.toString(10).split('.')[0];
 };
 
 export type QuantitySelectorProps = {
@@ -34,6 +36,8 @@ export type QuantitySelectorProps = {
     value?: number;
     disabled?: boolean;
     allowDecreaseToZero?: boolean;
+    allowDecimal?: boolean;
+    allowNegative?: boolean;
 } & HTMLProps<HTMLDivElement>;
 
 const QuantitySelector = ({
@@ -42,24 +46,42 @@ const QuantitySelector = ({
     value: quantity = 0,
     update,
     disabled,
-    allowDecreaseToZero,
+    allowDecreaseToZero = false,
+    allowDecimal = false,
+    allowNegative = false,
     ...props
 }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const updateLength = useCallback(
+        (value: string | number) => {
+            const length = value.toString().length;
+            if (inputRef.current) {
+                inputRef.current.style.setProperty('--length', length.toString());
+            }
+        },
+        [inputRef, quantityValue]
+    );
 
     const updateQuantity = useCallback(
         (value: string | number) => {
             if (typeof value === 'string' && value === '') return;
             else if (value === quantity) return;
 
-            update(typeof value === 'string' ? Number.parseInt(value) : value);
+            const parsedQuantity = Number.parseFloat(QuantityInputFilter(value.toString()));
+
+            update(parsedQuantity);
         },
         [update, quantity]
     );
 
     const decrease = useCallback(() => {
-        if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) return;
+        if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
+            return;
+        }
 
         updateQuantity(quantity - 1);
     }, [quantity]);
@@ -73,49 +95,67 @@ const QuantitySelector = ({
             return;
         }
 
+        // Handle invalid values.
+        if (!allowDecreaseToZero && Number.parseFloat(quantityValue) <= 0) {
+            setQuantityValue('1');
+            return;
+        }
+
         updateQuantity(quantityValue);
     }, [quantityValue]);
     const onKeyDown = useCallback(
-        ({ key, preventDefault }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
-            if (key === 'Enter') {
-                updateQuantity(quantityValue);
-                return;
-            } else if (['.', ',', '-', '+'].includes(key)) {
-                preventDefault();
+        ({ key }: Parameters<KeyboardEventHandler<HTMLInputElement>>[0]) => {
+            if (key !== 'Enter') {
                 return;
             }
+
+            updateQuantity(quantityValue);
         },
         [quantityValue]
     );
-    const onChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            const value = QuantityInputFilter(e.target.value, quantityValue);
-            if (value == quantityValue) return;
 
-            setQuantityValue(value);
+    const onChange = useCallback(
+        ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+            const parsedValue = QuantityInputFilter(value, quantityValue);
+
+            setQuantityValue(parsedValue);
+            updateLength(parsedValue);
         },
         [quantityValue]
     );
 
     useEffect(() => {
-        if (quantity.toString() === quantityValue) return;
+        if (quantity.toString() === quantityValue) {
+            return;
+        }
+
         setQuantityValue(quantity.toString());
+        updateLength(quantity);
     }, [quantity]);
+
+    const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
 
     return (
         <section {...props} className={`${styles.container} ${className || ''}`}>
             <button
+                aria-disabled={decreaseDisabled}
+                aria-label={t('decrease')}
                 type="button"
                 className={styles.button}
-                disabled={disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1)}
+                disabled={decreaseDisabled}
                 onClick={decrease}
-                title="Decrease quantity" // TODO: i18n.
+                title={t('decrease')}
                 data-quantity-decrease
             >
-                <CgMathMinus />
+                -
             </button>
+
             <input
+                aria-disabled={disabled}
+                aria-label={t('quantity')}
+                ref={inputRef}
                 type="number"
+                title={t('quantity')}
                 min={1}
                 max={999}
                 step={1}
@@ -130,15 +170,18 @@ const QuantitySelector = ({
                 suppressHydrationWarning={true}
                 data-quantity-input
             />
+
             <button
+                aria-disabled={disabled}
+                aria-label={t('increase')}
                 type="button"
                 className={styles.button}
                 disabled={disabled}
                 onClick={increase}
-                title="Increase quantity" // TODO: i18n.
+                title={t('increase')}
                 data-quantity-increase
             >
-                <CgMathPlus />
+                +
             </button>
         </section>
     );

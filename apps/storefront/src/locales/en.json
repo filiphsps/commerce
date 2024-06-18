@@ -32,6 +32,8 @@
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
+        "increase": "Increase",
+        "decrease": "Decrease",
         "search": "Search"
     },
     "product": {

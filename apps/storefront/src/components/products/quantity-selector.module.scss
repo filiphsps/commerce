@@ -23,22 +23,70 @@
         border-color: var(--color-block-dark);
     }
 
+    &:not(:has(input:disabled)) .button {
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &:has(input:disabled) {
+        cursor: progress;
+    }
+
     .button,
     .input {
+        -webkit-appearance: none;
+        appearance: none;
+
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        appearance: none;
         height: 100%;
         max-height: 100%;
         min-height: calc(5rem - var(--block-border-width) * 2);
+
+        border: none;
+        outline: none;
+
         font-size: 1.75rem;
         font-variant: common-ligatures tabular-nums slashed-zero;
         text-align: center;
         transition:
             150ms ease-in-out background-color,
             150ms ease-in-out color;
-        outline: none;
+
+        svg {
+            height: 100%;
+
+            font-size: 0.75em;
+            stroke-width: 1.25;
+        }
+
+        &:disabled {
+            color: var(--color-block);
+        }
+    }
+
+    .input {
+        --length: 1;
+
+        width: calc(1.75rem * var(--length)) !important;
+        height: 100%;
+        max-width: max-content;
+        min-width: fit-content;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button,
+        &[type='number'] {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        &::placeholder {
+            display: none;
+            color: transparent;
+        }
     }
 
     .button {
@@ -67,44 +115,6 @@
             &:is(:hover):not(:disabled, :active) {
                 background-color: var(--color-block);
             }
-        }
-    }
-
-    .button,
-    .input {
-        -webkit-appearance: none;
-        appearance: none;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        border: none;
-        outline: none;
-
-        svg {
-            height: 100%;
-
-            font-size: 0.75em;
-            stroke-width: 1.25;
-        }
-
-        &:is(:disabled) {
-            color: var(--color-block);
-
-            cursor: progress;
-        }
-    }
-
-    .input {
-        width: 100%;
-        height: 100%;
-
-        &::-webkit-inner-spin-button,
-        &::-webkit-outer-spin-button,
-        &[type='number'] {
-            -webkit-appearance: none;
-            margin: 0;
         }
     }
 }

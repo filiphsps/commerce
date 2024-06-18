@@ -30,6 +30,8 @@
         "out-of-stock": "Slutsåld",
         "quantity-too-low": "För lågt antal",
         "quantity": "Antal",
+        "increase": "Öka",
+        "decrease": "Minska",
         "search": "Sök"
     },
     "product": {

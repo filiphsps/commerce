@@ -73,6 +73,6 @@ IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
         </PageContent>
     );
 };
-(IconGrid.skeleton as any).displayName = 'Nordcom.Slices.IconGrid.skeleton';
+(IconGrid.skeleton as any).displayName = 'Nordcom.Slices.IconGrid.Skeleton';
 
 export default IconGrid;

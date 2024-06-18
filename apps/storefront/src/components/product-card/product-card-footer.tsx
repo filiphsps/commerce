@@ -50,7 +50,7 @@ const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCard
                 />
             </div>
 
-            <Suspense key={`${shop.id}.product-card.footer.add-to-cart`}>
+            <Suspense key={`${shop.id}.product-card.footer.add-to-cart`} fallback={<AddToCart.skeleton />}>
                 <AddToCart
                     i18n={i18n}
                     className={styles.button}

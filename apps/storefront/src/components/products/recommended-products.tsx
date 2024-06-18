@@ -44,6 +44,11 @@ const RecommendedProducts = async ({ shop, locale, product }: RecommendedProduct
         </section>
     );
 };
-
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';
+
+RecommendedProducts.skeleton = () => {
+    return <section className={`${styles.container} ${styles.horizontal} ${extraStyles.container}`} />;
+};
+(RecommendedProducts.skeleton as any).displayName = 'Nordcom.Products.RecommendedProducts.Skeleton';
+
 export { RecommendedProducts };

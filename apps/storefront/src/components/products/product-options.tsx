@@ -141,3 +141,9 @@ export const ProductOptions = ({ initialVariant, style, className, ...props }: P
         </div>
     );
 };
+ProductOptions.displayName = 'Nordcom.Products.Options';
+
+ProductOptions.skeleton = () => {
+    return <div className={actionsStyles['product-options']} />;
+};
+(ProductOptions.skeleton as any).displayName = 'Nordcom.Products.Options.Skeleton';

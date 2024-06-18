@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -95,19 +94,18 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
         return (
             <>
                 <Heading title={page?.title} subtitle={page?.description} />
+
                 <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
 
                 {page?.slices && page.slices.length > 0 && (
-                    <Suspense key={`${shop.id}.blog.content`}>
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'blog'}
-                            type={'custom_page'}
-                        />
-                    </Suspense>
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        page={page}
+                        i18n={i18n}
+                        handle={'blog'}
+                        type={'custom_page'}
+                    />
                 )}
             </>
         );

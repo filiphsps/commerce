@@ -188,21 +188,16 @@ export default async function CollectionPage({
                     {pagination}
 
                     <section className={styles.content}>
-                        <Suspense
-                            key={`${shop.id}.products.${handle}.slices`}
-                            fallback={<PrismicPage.skeleton page={{ ...page, slices } as any} />}
-                        >
-                            {page && slices && (slices.length || 0) > 0 ? (
-                                <PrismicPage
-                                    shop={shop}
-                                    locale={locale}
-                                    page={{ ...page, slices } as any}
-                                    i18n={i18n}
-                                    handle={handle}
-                                    type={'collection_page'}
-                                />
-                            ) : null}
-                        </Suspense>
+                        {page && slices && (slices.length || 0) > 0 ? (
+                            <PrismicPage
+                                shop={shop}
+                                locale={locale}
+                                page={{ ...page, slices } as any}
+                                i18n={i18n}
+                                handle={handle}
+                                type={'collection_page'}
+                            />
+                        ) : null}
                     </section>
 
                     {collection.descriptionHtml ? (
@@ -212,9 +207,7 @@ export default async function CollectionPage({
                     ) : null}
                 </PageContent>
 
-                <Suspense key={`${shop.id}.collection.${handle}.breadcrumbs`}>
-                    <Breadcrumbs shop={shop} title={collection.title} />
-                </Suspense>
+                <Breadcrumbs shop={shop} title={collection.title} />
 
                 {/* Metadata */}
                 <script

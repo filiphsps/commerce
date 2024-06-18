@@ -139,11 +139,15 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
         }
     }, [animation, selectedVariant]);
 
+    const disabled = !ready || !selectedVariant!.availableForSale || !quantity;
+
     return (
         <Button
+            aria-disabled={disabled}
+            aria-label={tCart('add-n-to-your-cart', quantity)}
             {...props}
             className={`${styles['add-to-cart']} ${className || ''}`}
-            disabled={!ready || !selectedVariant!.availableForSale || !quantity}
+            disabled={disabled}
             as="button"
             type={type || ('button' as const)}
             data-ready={ready}
@@ -155,6 +159,11 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
         </Button>
     );
 };
-
 AddToCart.displayName = 'Nordcom.Products.AddToCart';
+
+AddToCart.skeleton = () => {
+    return <Button disabled={true} className={`${styles['add-to-cart']}`} />;
+};
+(AddToCart.skeleton as any).displayName = 'Nordcom.Products.AddToCart.Skeleton';
+
 export default AddToCart;

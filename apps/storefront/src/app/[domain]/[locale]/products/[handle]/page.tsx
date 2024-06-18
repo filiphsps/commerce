@@ -253,98 +253,74 @@ export default async function ProductPage({
 
                         <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
 
-                        <Suspense key={`${shop.id}.products.${handle}.info-lines`}>
-                            <InfoLines product={product} />
-                        </Suspense>
+                        <InfoLines product={product} />
 
-                        <Suspense key={`${shop.id}.products.${handle}.tabs`}>
-                            <Tabs
-                                className={styles.tabs}
-                                data={[
-                                    {
-                                        id: 'information',
-                                        label: 'Information',
-                                        children: (
-                                            <>
-                                                <Content
-                                                    className={styles.description}
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: content
-                                                    }}
-                                                />
+                        <Tabs
+                            className={styles.tabs}
+                            data={[
+                                {
+                                    id: 'information',
+                                    label: 'Information',
+                                    children: (
+                                        <>
+                                            <Content
+                                                className={styles.description}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: content
+                                                }}
+                                            />
 
-                                                <Suspense
-                                                    key={`${shop.id}.products.${handle}.tabs.information.details`}
-                                                >
-                                                    <ImportantProductDetails locale={locale} data={product} />
-                                                </Suspense>
+                                            <ImportantProductDetails locale={locale} data={product} />
 
-                                                <Suspense
-                                                    key={`${shop.id}.products.${handle}.tabs.information.slices`}
-                                                    fallback={<PrismicPage.skeleton page={page as any} />}
-                                                >
-                                                    {page?.slices && page.slices.length > 0 ? (
-                                                        <>
-                                                            <div className={styles.contentDivider} />
-                                                            <PrismicPage
-                                                                shop={shop}
-                                                                locale={locale}
-                                                                page={page}
-                                                                i18n={i18n}
-                                                                handle={`product-${handle}`}
-                                                                type={'product_page'}
-                                                            />
-                                                        </>
-                                                    ) : null}
-                                                </Suspense>
-                                            </>
-                                        )
-                                    },
-                                    {
-                                        id: 'details',
-                                        label: 'Details',
-                                        children: (
-                                            <Suspense
-                                                key={`${shop.id}.products.${handle}.tabs.details`}
-                                                fallback={<div />}
-                                            >
-                                                <ProductDetails locale={locale} data={product} />
-                                            </Suspense>
-                                        )
-                                    }
-                                ]}
-                            />
-                        </Suspense>
+                                            {page?.slices && page.slices.length > 0 ? (
+                                                <>
+                                                    <div className={styles.contentDivider} />
+                                                    <PrismicPage
+                                                        shop={shop}
+                                                        locale={locale}
+                                                        page={page}
+                                                        i18n={i18n}
+                                                        handle={`product-${handle}`}
+                                                        type={'product_page'}
+                                                    />
+                                                </>
+                                            ) : null}
+                                        </>
+                                    )
+                                },
+                                {
+                                    id: 'details',
+                                    label: 'Details',
+                                    children: <ProductDetails locale={locale} data={product} />
+                                }
+                            ]}
+                        />
                     </div>
                 </SplitView>
 
-                <Suspense
-                    key={`${shop.id}.products.${handle}.slices`}
-                    fallback={<PrismicPage.skeleton page={{ slices: page?.slices2 || [] } as any} />}
-                >
-                    {page?.slices2 && page.slices2.length > 0 ? (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={
-                                {
-                                    slices: page.slices2
-                                } as any
-                            }
-                            i18n={i18n}
-                            handle={`product-${handle}-secondary`}
-                            type={'product_page'}
-                        />
-                    ) : null}
-                </Suspense>
+                {page?.slices2 && page.slices2.length > 0 ? (
+                    <PrismicPage
+                        shop={shop}
+                        locale={locale}
+                        page={
+                            {
+                                slices: page.slices2
+                            } as any
+                        }
+                        i18n={i18n}
+                        handle={`product-${handle}-secondary`}
+                        type={'product_page'}
+                    />
+                ) : null}
 
-                <Suspense key={`${shop.id}.products.${handle}.recommended-products`}>
+                <Suspense
+                    key={`${shop.id}.products.${handle}.recommended-products`}
+                    fallback={<RecommendedProducts.skeleton />}
+                >
                     <RecommendedProducts shop={shop} locale={locale} product={product} />
                 </Suspense>
 
-                <Suspense key={`${shop.id}.products.${handle}.breadcrumbs`}>
-                    <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
-                </Suspense>
+                <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
                 {/* Metadata */}
                 <ProductJsonLd

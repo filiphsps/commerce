@@ -1,6 +1,6 @@
 import styles from '@/components/cart/cart-summary.module.scss';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiChevronRight, FiLock } from 'react-icons/fi';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -202,9 +202,7 @@ const CartSummary = ({ shop, onCheckout, i18n, store }: CartSummaryProps) => {
 
             {discountCodes && discountCodes.length > 0 ? (
                 <section className={styles.section}>
-                    <Suspense key={`${shop.id}.cart.coupons`}>
-                        <CartCoupons />
-                    </Suspense>
+                    <CartCoupons />
                 </section>
             ) : null}
 

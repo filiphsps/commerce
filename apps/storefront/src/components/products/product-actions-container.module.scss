@@ -10,7 +10,7 @@
         display: grid;
         grid-template-areas: 'quantity-label options' 'quantity options' '. options';
         grid-template-rows: 1.75rem 5rem 1fr;
-        grid-template-columns: minmax(18rem, auto) 1fr;
+        grid-template-columns: auto 1fr;
         gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
     }
 

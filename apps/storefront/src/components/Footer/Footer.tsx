@@ -2,7 +2,6 @@ import 'server-only';
 
 import styles from '@/components/Footer/footer.module.scss';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -70,9 +69,7 @@ const Footer = async ({ shop, locale, i18n }: FooterProps) => {
                     ))}
                 </div>
 
-                <Suspense key={`${shop.id}.footer.content`}>
-                    <FooterContent locale={locale} i18n={i18n} store={store} />
-                </Suspense>
+                <FooterContent locale={locale} i18n={i18n} store={store} />
             </div>
         </footer>
     );

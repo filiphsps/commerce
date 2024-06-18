@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -131,13 +130,7 @@ export default async function CustomPage({
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
 
-        return (
-            <>
-                <Suspense key={`${shop.id}.page.${handle}.content`} fallback={<PrismicPage.skeleton page={page} />}>
-                    <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
-                </Suspense>
-            </>
-        );
+        return <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />;
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();

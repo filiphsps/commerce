@@ -32,6 +32,8 @@
         "out-of-stock": "Utsolgt",
         "quantity-too-low": "For lav mengde",
         "quantity": "Mengde",
+        "increase": "Øke",
+        "decrease": "Redusere",
         "search": "Søk"
     },
     "product": {

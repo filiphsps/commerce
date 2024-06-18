@@ -140,9 +140,7 @@ export default async function ProductsPage({
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Suspense key={`${shop.id}.products.breadcrumbs`}>
-                    <Breadcrumbs shop={shop} title={t('products')} />
-                </Suspense>
+                <Breadcrumbs shop={shop} title={t('products')} />
             </>
         );
     } catch (error: unknown) {

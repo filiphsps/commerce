@@ -29,6 +29,8 @@
         "out-of-stock": "Ausverkauft",
         "quantity-too-low": "Die Menge ist zu niedrig",
         "quantity": "Menge",
+        "increase": "Erhöhen",
+        "decrease": "Verringern",
         "search": "Suche"
     },
     "product": {

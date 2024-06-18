@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -98,27 +97,23 @@ export default async function SearchPage({ params: { domain, locale: localeData 
             <>
                 <Heading title={page?.title} subtitle={page?.description} />
 
-                <Suspense key={`${shop.id}.search.slices`} fallback={<PrismicPage.skeleton page={page} />}>
-                    {page?.slices && page.slices.length > 0 ? (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'search'}
-                            type={'custom_page'}
-                        />
-                    ) : null}
-                </Suspense>
-
-                <Suspense key={`${shop.id}.search.content`}>
-                    <SearchContent
-                        //client={await ShopifyApolloApiClient({ shop, locale })}
+                {page?.slices && page.slices.length > 0 ? (
+                    <PrismicPage
                         shop={shop}
                         locale={locale}
+                        page={page}
                         i18n={i18n}
+                        handle={'search'}
+                        type={'custom_page'}
                     />
-                </Suspense>
+                ) : null}
+
+                <SearchContent
+                    //client={await ShopifyApolloApiClient({ shop, locale })}
+                    shop={shop}
+                    locale={locale}
+                    i18n={i18n}
+                />
             </>
         );
     } catch (error: unknown) {
