@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // D
 const config = {
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
-    generateEtags: false,
+    generateEtags: true,
     reactStrictMode: true,
     trailingSlash: true,
     swcMinify: true,
@@ -16,10 +16,11 @@ const config = {
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react'],
     experimental: {
+        //nextScriptWorkers: true,
+        //ppr: true,
         esmExternals: 'loose',
         caseSensitiveRoutes: true,
-        //instrumentationHook: isProduction,
-        //nextScriptWorkers: true,
+        instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
@@ -30,14 +31,13 @@ const config = {
             '@shopify/hydrogen-react',
             'react-icons'
         ],
-        //ppr: true,
         scrollRestoration: true,
         serverComponentsExternalPackages: [],
         serverSourceMaps: true,
-        serverMinification: false,
+        serverMinification: true,
         taint: true,
-        webpackBuildWorker: false,
-        parallelServerBuildTraces: false
+        webpackBuildWorker: true,
+        parallelServerBuildTraces: true
     },
     images: {
         dangerouslyAllowSVG: true,

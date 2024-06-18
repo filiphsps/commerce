@@ -2,11 +2,13 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
 /** @type {import('next').NextConfig} */
 const config = {
     pageExtensions: ['ts', 'tsx'],
     poweredByHeader: false,
+    generateEtags: true,
     reactStrictMode: true,
     trailingSlash: false, // FIXME: https://github.com/nextauthjs/next-auth/issues/10127
     swcMinify: true,
@@ -16,19 +18,20 @@ const config = {
     trailingSlash: true,
     transpilePackages: [],
     experimental: {
+        //nextScriptWorkers: true,
+        //ppr: true,
         esmExternals: 'loose',
         caseSensitiveRoutes: true,
-        //nextScriptWorkers: true,
+        instrumentationHook: isProduction,
         optimizeCss: true,
-        optimizePackageImports: ['react-icons'],
-        //ppr: true,
+        optimizePackageImports: ['@nordcom/nordstar', 'react-icons'],
         scrollRestoration: true,
         serverComponentsExternalPackages: [],
         serverSourceMaps: true,
-        serverMinification: false,
+        serverMinification: true,
         taint: true,
-        webpackBuildWorker: false,
-        parallelServerBuildTraces: false
+        webpackBuildWorker: true,
+        parallelServerBuildTraces: true
     },
     images: {
         dangerouslyAllowSVG: true,

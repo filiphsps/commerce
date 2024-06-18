@@ -4,11 +4,11 @@ import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
-import { PageApi } from '@/api/page';
-import { ShopifyApolloApiClient } from '@/api/shopify';
+import { PageApi, PagesApi } from '@/api/page';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -18,6 +18,45 @@ import { asText } from '@prismicio/client';
 import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
+
+export async function generateStaticParams() {
+    const shops = await ShopsApi();
+
+    const pages = (
+        await Promise.all(
+            shops
+                .map(async (shop) => {
+                    try {
+                        const api = await ShopifyApiClient({ shop });
+                        const locales = await LocalesApi({ api });
+
+                        return await Promise.all(
+                            locales
+                                .map(async (locale) => {
+                                    try {
+                                        const pages = await PagesApi({ shop, locale });
+
+                                        return pages.map(({ uid }) => ({
+                                            domain: shop.domain,
+                                            locale: locale.code,
+                                            handle: uid === 'homepage' ? undefined : uid
+                                        }));
+                                    } catch {
+                                        return null;
+                                    }
+                                })
+                                .filter((_) => _)
+                        );
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter((_) => _)
+        )
+    ).flat(2);
+
+    return pages;
+}
 
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({

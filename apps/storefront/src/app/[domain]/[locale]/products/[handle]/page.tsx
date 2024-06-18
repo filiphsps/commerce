@@ -7,13 +7,13 @@ import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { ProductJsonLd } from 'next-seo';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi } from '@/api/shopify/product';
+import { ProductApi, ProductsApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -40,7 +40,7 @@ import { ImportantProductDetails, ProductDetails } from './product-details';
 
 import type { Metadata } from 'next';
 
-/*export async function generateStaticParams() {
+export async function generateStaticParams() {
     const shops = await ShopsApi();
 
     const pages = (
@@ -50,8 +50,9 @@ import type { Metadata } from 'next';
                     try {
                         //const api = await ShopifyApiClient({ shop, locale });
                         //await LocalesApi({ api });
-                        const locales = [Locale.from('en-US'), Locale.from('en-CA'), Locale.from('en-GB')]; // TODO: Prefetch all locales when it's feasible.
 
+                        // TODO: Prefetch all locales when it's feasible.
+                        const locales = [Locale.from('en-US')];
                         return await Promise.all(
                             locales
                                 .map(async (locale) => {
@@ -79,7 +80,7 @@ import type { Metadata } from 'next';
     ).flat(2);
 
     return pages;
-}*/
+}
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
