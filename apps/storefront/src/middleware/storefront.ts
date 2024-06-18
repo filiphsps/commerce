@@ -38,8 +38,12 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
+    let shop;
+
     if (newUrl.pathname === '/') {
-        const shop = await ShopApi(hostname);
+        if (!shop) {
+            shop = await ShopApi(hostname);
+        }
 
         // Redirect to the primary domain if the hostname doesn't match.
         if (hostname !== shop.domain) {
@@ -66,7 +70,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const shop = await ShopApi(hostname);
+            if (!shop) {
+                shop = await ShopApi(hostname);
+            }
 
             const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false, noCache: true });
             const api = await ShopifyApiClient({ shop, apiConfig });
