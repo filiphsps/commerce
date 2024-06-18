@@ -36,8 +36,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     return null;
                 }
 
-                const priority = order < 2 && index < 1;
-
+                const priority = order < 2;
                 return (
                     <div key={index} className={styles.item}>
                         {icon.url ? (
