@@ -12,12 +12,11 @@
     height: 100%;
 
     font-size: 1.25em;
-    line-height: 1;
-    font-weight: 600;
+    line-height: normal;
+    font-weight: 700;
 
     &.sale {
         font-weight: 800;
-        font-size: 1.35em;
 
         color: var(--color-sale);
     }
@@ -30,8 +29,8 @@
 
     height: 100%;
 
-    font-size: 0.9em;
-    font-weight: 500;
+    font-size: 0.85em;
+    font-weight: 600;
 
     &,
     .price {

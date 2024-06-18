@@ -7,15 +7,15 @@
     display: grid;
     grid-template-rows: 16rem 1fr 10rem;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
-    gap: calc(var(--block-spacer-small) / 2);
 
     height: 100%;
-    min-height: 38.5rem;
     width: 100%;
     min-width: var(--component-product-card-width);
-    padding: calc(var(--block-padding) - var(--block-border-width));
 
-    background-color: var(--product-card-color-background, var(--accent-secondary-light));
+    padding: calc(var(--block-padding) - var(--block-border-width) - var(--block-border-width));
+    border: var(--block-border-width) solid var(--product-card-color-background, var(--color-accent-secondary));
+
+    background-color: var(--product-card-color-background, var(--color-accent-secondary-light));
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
 
     border-radius: var(--block-border-radius);
@@ -33,8 +33,14 @@
         color: var(--color-dark);
     }
 
+    &:has([data-variant='discount']) {
+        border-color: var(--color-sale);
+    }
+
     @media (min-width: $breakpoint-mobile) {
-        box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, 0.3);
+        min-height: 35.5rem;
+
+        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     }
 
     .button {
@@ -56,7 +62,7 @@
         user-select: none;
 
         background-color: var(--product-card-color-image-background, var(--color-bright));
-        //box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
 
         .image {
             z-index: 0;
@@ -68,7 +74,7 @@
             object-fit: contain;
             object-position: center;
 
-            transition: $animation-duration ease-in-out transform;
+            transition: #{$animation-duration} ease-in-out transform;
 
             @media (min-width: 950px) {
                 padding: var(--block-padding-large);
@@ -82,9 +88,9 @@
 
     .details {
         grid-area: product-details;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        gap: var(--block-padding-large);
+        display: flex;
+        flex-direction: column;
+        gap: var(--block-padding-small);
         width: 100%;
         margin-top: var(--block-spacer);
     }
@@ -98,19 +104,17 @@
         min-width: 0;
         height: 100%;
 
-        font-size: 2.25rem;
-        line-height: 1.05;
+        font-size: 2.05rem;
+        line-height: normal;
 
         -webkit-hyphens: auto;
         hyphens: auto;
 
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 2.15rem;
-        }
-
         .title {
             font-size: inherit;
-            font-weight: 650;
+            font-weight: 700;
+            line-height: 1.1;
+
             -webkit-hyphens: auto;
             hyphens: auto;
             word-wrap: break-word;
@@ -121,11 +125,18 @@
 
             width: 100%;
 
-            font-weight: 500;
-            font-size: 0.75em;
-            line-height: 1;
+            font-weight: 800;
+            font-size: 0.7em;
+            line-height: normal;
+
             -webkit-hyphens: auto;
             hyphens: auto;
+
+            opacity: 0.65;
+        }
+
+        &:hover .brand {
+            opacity: 1;
         }
     }
 
@@ -145,11 +156,17 @@
     .variants {
         display: inline-flex;
         align-items: flex-end;
-        justify-content: flex-end;
-        gap: var(--block-spacer-large);
+        justify-content: flex-start;
+        gap: var(--block-spacer-tiny);
         width: 100%;
         height: 100%;
+        height: fit-content;
+
         font-size: 1.75rem;
+
+        &:empty {
+            display: none;
+        }
 
         @media (max-width: $breakpoint-mobile) {
             padding-bottom: var(--block-spacer-large);
@@ -160,24 +177,24 @@
             appearance: none;
             display: inline-block;
 
-            font-weight: 500;
-            font-size: 1.15em;
-            line-height: 1;
+            padding: var(--block-padding-small) var(--block-padding);
+
+            font-weight: 600;
+            font-size: 0.85em;
+            line-height: normal;
             text-align: right;
 
             cursor: pointer;
-            opacity: 0.95;
-            transition: 150ms ease-in-out color;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 1em;
-            }
+            opacity: 0.65;
+            transition:
+                $animation-duration ease-in-out color,
+                $animation-duration ease-in-out background-color;
+            border-radius: var(--block-border-radius);
 
             &[data-active='true'] {
                 opacity: 1;
-                color: var(--accent-primary);
-                text-decoration: underline;
-                text-decoration-thickness: 0.2rem;
+                background: var(--color-accent-primary);
+                color: var(--color-accent-primary-text);
             }
         }
     }
@@ -284,15 +301,6 @@
         font-size: 0.75rem;
     }
 
-    // Hover effect(s).
-    &:not([data-available='false']) {
-        .header:is(:hover, :active, :focus) {
-            text-decoration: underline dotted 0.2rem var(--accent-primary);
-            text-underline-offset: var(--block-border-width);
-            text-underline-position: auto;
-        }
-    }
-
     &[data-skeleton],
     [data-skeleton] & {
         box-shadow: none;
@@ -338,8 +346,7 @@
     justify-content: center;
     align-items: center;
     gap: calc(var(--block-spacer-small) / 2);
-    padding: var(--block-padding-small) var(--block-padding) calc(var(--block-padding-small) * 1.25)
-        var(--block-padding);
+    padding: calc(var(--block-padding) / 1.25) var(--block-padding);
 
     background: var(--accent-primary-light);
     color: var(--accent-primary-text);
@@ -348,29 +355,30 @@
 
     font-weight: 500;
     font-size: 1.25rem;
-    line-height: normal;
+    line-height: 1;
     text-align: center;
 
     &[data-variant='discount'] {
+        z-index: 1;
         position: absolute;
-        inset: var(--block-spacer-tiny) auto auto var(--block-spacer-tiny);
-        display: flex;
+        --inset: calc(var(--block-spacer-tiny) - var(--block-border-width) / 2);
+        inset: var(--inset) auto auto var(--inset);
         justify-content: center;
         align-items: center;
-        z-index: 1;
+
+        gap: var(--block-spacer-tiny);
+
         pointer-events: none;
-        font-weight: 500;
-        font-size: 1.15rem;
-        line-height: 1;
         background: var(--color-sale);
         color: var(--color-bright);
-        border-radius: var(--block-border-radius);
-        box-shadow: 0 0 0.5rem 0 var(--color-block-shadow);
+        border-radius: var(--block-border-radius-large);
+        box-shadow: 0 0 0.25rem 0.025rem var(--color-block-shadow);
 
         b {
+            display: block;
+
             font-weight: 700;
             font-size: 1.45rem;
-            margin-right: var(--block-spacer-tiny);
         }
     }
 
@@ -413,7 +421,7 @@
         background: var(--color-block-light);
         border-radius: 100%;
 
-        transition: $animation-duration ease-in-out all;
+        transition: #{$animation-duration} ease-in-out all;
         cursor: pointer;
         pointer-events: all;
 

@@ -21,6 +21,11 @@ import { useShop } from '@/components/shop/provider';
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
+const AddToCartSkeleton = () => {
+    return <Button disabled={true} className={`${styles['add-to-cart']}`} />;
+};
+AddToCartSkeleton.displayName = 'Nordcom.Products.AddToCart.Skeleton';
+
 export type AddToCartProps = {
     i18n: LocaleDictionary;
     quantity: number;
@@ -159,11 +164,7 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
         </Button>
     );
 };
+
 AddToCart.displayName = 'Nordcom.Products.AddToCart';
-
-AddToCart.skeleton = () => {
-    return <Button disabled={true} className={`${styles['add-to-cart']}`} />;
-};
-(AddToCart.skeleton as any).displayName = 'Nordcom.Products.AddToCart.Skeleton';
-
+AddToCart.skeleton = AddToCartSkeleton;
 export default AddToCart;

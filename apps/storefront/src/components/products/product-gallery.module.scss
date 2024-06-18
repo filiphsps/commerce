@@ -70,7 +70,7 @@
             border-radius: var(--block-border-radius);
             aspect-ratio: 1;
             cursor: pointer;
-            transition: $animation-duration ease-in-out background-color;
+            transition: #{$animation-duration} ease-in-out background-color;
 
             @media (min-width: $breakpoint-mobile) {
                 height: auto;

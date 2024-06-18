@@ -61,20 +61,23 @@ html {
         --block-border-radius: 1.25rem;
         --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
         --block-border-radius-tiny: 0.65rem;
-        --block-border-width: 0.3rem;
-        --block-border-width-large: 0.43rem;
-        --block-border-width-small: 0.18rem;
+        --block-border-width: 0.325rem;
+        --block-border-width-large: 0.425rem;
+        --block-border-width-small: 0.185rem;
 
-        --block-padding: 1rem;
-        --block-padding-small: 0.5rem;
-        --block-padding-large: 1.5rem;
-        --block-padding-larger: 1.75rem;
+        $block-padding: 1.15rem;
+        --block-padding: #{$block-padding};
+        --block-padding-small: #{$block-padding / 2};
+        --block-padding-tiny: #{$block-padding / 3};
+        --block-padding-large: #{$block-padding * 1.5};
+        --block-padding-larger: #{$block-padding * 1.75};
 
-        --block-spacer: 1rem;
-        --block-spacer-small: 0.75rem;
-        --block-spacer-tiny: 0.5rem;
-        --block-spacer-large: 1.5rem;
-        --block-spacer-huge: 2rem;
+        $block-spacer: 1rem;
+        --block-spacer: #{$block-spacer};
+        --block-spacer-small: #{$block-spacer / 2};
+        --block-spacer-tiny: #{$block-spacer / 3};
+        --block-spacer-large: #{$block-spacer * 1.5};
+        --block-spacer-huge: #{$block-spacer * 2};
 
         @media (max-width: $breakpoint-mobile) {
             --block-border-width: 0.3rem;

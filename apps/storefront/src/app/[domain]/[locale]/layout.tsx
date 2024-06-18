@@ -45,7 +45,7 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
         width: 'device-width',
         initialScale: 1,
         interactiveWidget: 'resizes-visual',
-        themeColor: branding.secondary.accent
+        themeColor: branding.secondary.color
     };
 }
 
@@ -130,7 +130,7 @@ export default async function RootLayout({
                                 </ShopLayout>
                             </AnalyticsProvider>
 
-                            <HeaderProvider loaderColor={branding.primary.accent} />
+                            <HeaderProvider loaderColor={branding.primary.color} />
                         </ProvidersRegistry>
 
                         <SocialProfileJsonLd

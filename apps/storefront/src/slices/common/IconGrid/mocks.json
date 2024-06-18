@@ -2,7 +2,13 @@
     {
         "__TYPE__": "SharedSliceContent",
         "variation": "default",
-        "primary": {},
+        "primary": {
+            "background": {
+                "__TYPE__": "FieldContent",
+                "value": "primary",
+                "type": "Select"
+            }
+        },
         "items": [
             {
                 "__TYPE__": "GroupItemContent",
@@ -10,7 +16,6 @@
                     [
                         "icon",
                         {
-                            "__TYPE__": "ImageContent",
                             "origin": {
                                 "id": "main",
                                 "url": "https://images.unsplash.com/photo-1601933973783-43cf8a7d4c5f",
@@ -28,6 +33,9 @@
                                 },
                                 "background": "transparent"
                             },
+                            "credits": null,
+                            "alt": null,
+                            "__TYPE__": "ImageContent",
                             "thumbnails": {}
                         }
                     ],

@@ -5,6 +5,7 @@ import styles from '@/components/products/quantity-selector.module.scss';
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
+import { useCart } from '@shopify/hydrogen-react';
 
 import type { LocaleDictionary } from '@/utils/locale';
 import type { ChangeEvent, KeyboardEventHandler } from 'react';
@@ -53,6 +54,9 @@ const QuantitySelector = ({
 }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantityValue, setQuantityValue] = useState('1');
+
+    const { cartReady } = useCart();
+    disabled = disabled || !cartReady;
 
     const inputRef = useRef<HTMLInputElement>(null);
 

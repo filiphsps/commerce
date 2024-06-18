@@ -11,13 +11,33 @@
             "version": "initial",
             "description": "Default",
             "imageUrl": "",
-            "primary": {},
+            "primary": {
+                "background": {
+                    "type": "Select",
+                    "config": {
+                        "label": "Background Color",
+                        "placeholder": "",
+                        "options": ["primary", "secondary"],
+                        "default_value": "primary"
+                    }
+                }
+            },
             "items": {
                 "icon": {
                     "type": "Image",
-                    "config": { "label": "Icon", "constraint": {}, "thumbnails": [] }
+                    "config": {
+                        "label": "Icon",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
                 },
-                "title": { "type": "Text", "config": { "label": "Title", "placeholder": "" } }
+                "title": {
+                    "type": "Text",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": ""
+                    }
+                }
             }
         }
     ]

@@ -1,6 +1,6 @@
 import { unstable_cache as cache } from 'next/cache';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { TodoError } from '@nordcom/commerce-errors';
 
 import { colord } from 'colord';
@@ -9,13 +9,13 @@ import { colord } from 'colord';
 export const getBrandingColors = async (domain: string) => {
     return cache(
         async (domain: string) => {
-            const shop = await ShopApi(domain, cache);
-            if (!shop.branding?.brandColors) throw new TodoError();
-            const { brandColors: colors } = shop.branding;
+            const shop = await Shop.findByDomain(domain);
+            if (shop.design.accents.length <= 0) throw new TodoError();
+            const accents = shop.design.accents;
 
             // TODO: Deal with variants.
-            const primary = colors!.find(({ type }) => type === 'primary')!;
-            const secondary = colors!.find(({ type }) => type === 'secondary')!;
+            const primary = accents.find(({ type }) => type === 'primary')!;
+            const secondary = accents.find(({ type }) => type === 'secondary')!;
 
             return {
                 primary,
@@ -36,15 +36,15 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
             --color-background: #fefefe;
             --color-foreground: #101418;
 
-            --color-accent-primary: ${branding.primary.accent};
+            --color-accent-primary: ${branding.primary.color};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.accent).lighten(0.175).saturate(0.15).toHex()};
-            --color-accent-primary-dark: ${colord(branding.primary.accent).darken(0.05).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.color).lighten(0.175).saturate(0.15).toHex()};
+            --color-accent-primary-dark: ${colord(branding.primary.color).darken(0.05).toHex()};
 
-            --color-accent-secondary: ${branding.secondary.accent};
+            --color-accent-secondary: ${branding.secondary.color};
             --color-accent-secondary-text: ${branding.secondary.foreground};
-            --color-accent-secondary-light: ${colord(branding.secondary.accent).lighten(0.15).toHex()};
-            --color-accent-secondary-dark: ${colord(branding.secondary.accent).darken(0.15).toHex()};
+            --color-accent-secondary-light: ${colord(branding.secondary.color).lighten(0.225).saturate(0.15).toHex()};
+            --color-accent-secondary-dark: ${colord(branding.secondary.color).darken(0.15).toHex()};
 
             /* TODO: Remove these legacy variables. */
             --accent-primary: var(--color-accent-primary);

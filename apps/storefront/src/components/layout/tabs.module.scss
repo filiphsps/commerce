@@ -29,7 +29,7 @@
         font-weight: 700;
 
         cursor: pointer;
-        transition: $animation-duration ease-in-out;
+        transition: #{$animation-duration} ease-in-out;
         user-select: none;
     }
 

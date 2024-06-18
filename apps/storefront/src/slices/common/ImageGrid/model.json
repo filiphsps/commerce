@@ -15,10 +15,26 @@
             "items": {
                 "image": {
                     "type": "Image",
-                    "config": { "label": "Image", "constraint": {}, "thumbnails": [] }
+                    "config": {
+                        "label": "Image",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
                 },
-                "title": { "type": "Text", "config": { "label": "Title", "placeholder": "" } },
-                "href": { "type": "Text", "config": { "label": "href", "placeholder": "" } }
+                "title": {
+                    "type": "Text",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": ""
+                    }
+                },
+                "href": {
+                    "type": "Text",
+                    "config": {
+                        "label": "href",
+                        "placeholder": ""
+                    }
+                }
             }
         }
     ]

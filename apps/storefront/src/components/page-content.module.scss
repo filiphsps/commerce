@@ -10,9 +10,11 @@
 
     font-size: 16px;
 
-    // See https://web.dev/articles/content-visibility
-    content-visibility: auto;
-    contain-intrinsic-size: auto;
+    &:not([data-slice-type='icon_grid']) {
+        // See https://web.dev/articles/content-visibility
+        content-visibility: auto;
+        contain-intrinsic-size: auto none;
+    }
 
     &:empty {
         display: none;

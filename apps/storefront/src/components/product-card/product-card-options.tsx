@@ -22,6 +22,14 @@ const ProductCardOptions = ({
 }: ProductCardOptionsProps) => {
     if (!selectedVariant || (product.variants.edges.length || 0) <= 1) return null;
 
+    // If we only have two variants and the non-default one is out of stock, we don't need to show the variant selector.
+    if (
+        product.variants.edges.length === 2 &&
+        product.variants.edges.some((edge) => edge.node!.id !== selectedVariant.id && !edge.node!.availableForSale)
+    ) {
+        return null;
+    }
+
     // TODO: Use options rather than variants.
     return (
         <div className={styles.variants}>

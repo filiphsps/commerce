@@ -75,7 +75,7 @@
             stroke-width: 0.25em;
             line-height: 1;
 
-            transition: $animation-duration ease-in-out;
+            transition: #{$animation-duration} ease-in-out;
             transform: translateX(-25%);
             opacity: 0;
         }

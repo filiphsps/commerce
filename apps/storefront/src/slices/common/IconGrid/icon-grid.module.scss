@@ -6,35 +6,63 @@ section.container {
     grid-auto-rows: 1fr;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-large);
+    gap: calc(var(--block-spacer-huge) * 1.25);
 
     @media (min-width: $breakpoint-mobile) {
+        gap: var(--block-spacer-huge);
         grid-template-rows: 100%;
         grid-template-columns: 1fr 1fr 1fr;
     }
 
+    &[data-background='primary'] {
+        --background-color: var(--color-accent-primary);
+        --border-color: var(--color-accent-primary-dark);
+        --color: var(--color-accent-primary-text);
+    }
+    &[data-background='secondary'] {
+        --background-color: var(--color-accent-secondary-light);
+        --border-color: var(--color-accent-secondary);
+        --color: var(--color-accent-primary);
+    }
+
     .item {
-        flex-grow: 1;
-        display: grid;
-        grid-template-columns: 4rem auto;
+        position: relative;
+
+        display: flex;
         justify-content: center;
         align-items: center;
-        gap: var(--block-spacer-large);
 
         height: 100%;
         width: 100%;
-        padding: var(--block-padding-large);
+        padding: calc(var(--block-padding) * 2.55) var(--block-padding) var(--block-padding) var(--block-padding);
+
+        background-color: var(--background-color);
+        color: var(--color);
+        border-color: var(--border-color);
 
         border-radius: var(--block-border-radius);
-        background-color: var(--color-accent-secondary-light);
-        color: var(--accent-secondary-text);
+        border-width: var(--block-border-width);
+        border-style: solid;
 
         .icon {
-            width: 4rem;
-            padding: var(--block-padding-small) 0;
+            --size: 4.5rem;
+
+            z-index: 9999;
+            position: absolute;
+            inset: calc(var(--size) * -0.45) auto auto auto;
+            display: block;
+
+            width: var(--size);
+            height: var(--size);
+            padding: var(--block-padding-small);
 
             object-position: center;
             object-fit: contain;
+
+            background-color: var(--background-color);
+            color: var(--color);
+            border: var(--block-border-width) solid var(--border-color);
+            border-radius: 100%;
 
             -webkit-user-select: none;
             user-select: none;
@@ -42,9 +70,14 @@ section.container {
         }
 
         .title {
-            font-size: 0.95em;
-            font-weight: 600;
-            text-align: left;
+            font-size: 1.05em;
+            font-weight: 700;
+            line-height: 1.05;
+            text-align: center;
+
+            @media (min-width: $breakpoint-mobile) {
+                padding: 0 var(--block-spacer);
+            }
         }
     }
 }

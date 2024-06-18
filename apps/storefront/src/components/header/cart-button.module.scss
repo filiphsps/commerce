@@ -24,7 +24,7 @@ body a.container {
 
     &,
     svg {
-        transition: $animation-duration ease-in-out all;
+        transition: #{$animation-duration} ease-in-out all;
     }
 
     .icon {

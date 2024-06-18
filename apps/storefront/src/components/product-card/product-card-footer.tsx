@@ -4,12 +4,10 @@ import styles from '@/components/product-card/product-card.module.scss';
 
 import { Suspense, useCallback, useState } from 'react';
 
-import { useCart } from '@shopify/hydrogen-react';
-
 import AddToCart from '@/components/products/add-to-cart';
-import { QuantitySelector } from '@/components/products/quantity-selector';
 import { useShop } from '@/components/shop/provider';
-import Pricing from '@/components/typography/pricing';
+
+import ProductCardFooterQuantity from './product-card-footer-quantity';
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -22,7 +20,6 @@ export type ProductCardFooterProps = {
 };
 
 const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
-    const { cartReady } = useCart();
     const { shop } = useShop();
 
     const [quantity, setQuantity] = useState<number>(1);
@@ -38,17 +35,14 @@ const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCard
 
     return (
         <div className={styles.actions}>
-            <div className={styles['quantity-action']}>
-                <Pricing price={selectedVariant.price as any} compareAtPrice={selectedVariant.compareAtPrice as any} />
-
-                <QuantitySelector
-                    className={styles.quantity}
+            <Suspense key={`${shop.id}.product-card.footer.quantity`}>
+                <ProductCardFooterQuantity
                     i18n={i18n}
-                    value={quantity}
-                    update={update}
-                    disabled={!cartReady || !selectedVariant.availableForSale}
+                    selectedVariant={selectedVariant}
+                    quantity={quantity}
+                    setQuantity={update}
                 />
-            </div>
+            </Suspense>
 
             <Suspense key={`${shop.id}.product-card.footer.add-to-cart`} fallback={<AddToCart.skeleton />}>
                 <AddToCart

@@ -37,8 +37,8 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
         <Suspense key={`${shop.id}.product.${product.handle}.card`} fallback={<ProductCard.skeleton />}>
             <div
                 className={`${styles.container} ${className || ''}`}
-                data-available={product.availableForSale}
                 title={description ? `${description}...` : undefined}
+                data-available={product.availableForSale}
                 {...props}
             >
                 {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}

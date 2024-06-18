@@ -73,7 +73,6 @@
                     [
                         "image",
                         {
-                            "__TYPE__": "ImageContent",
                             "url": "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw2fHxmcnVpdHxlbnwwfHx8fDE2ODY3NTU2MzN8MA&ixlib=rb-4.0.3&q=85",
                             "origin": {
                                 "id": "5JQH9Iqnm9o",
@@ -91,6 +90,9 @@
                                     "y": 0
                                 }
                             },
+                            "credits": null,
+                            "alt": null,
+                            "__TYPE__": "ImageContent",
                             "thumbnails": {}
                         }
                     ]
@@ -118,7 +120,6 @@
                     [
                         "image",
                         {
-                            "__TYPE__": "ImageContent",
                             "url": "https://images.unsplash.com/photo-1421494756418-72f0f89c6bfd?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwyOXx8ZnJ1aXR8ZW58MHx8fHwxNjg2NzU1NjMzfDA&ixlib=rb-4.0.3&q=85",
                             "origin": {
                                 "id": "GoKXJaQoLQs",
@@ -136,6 +137,9 @@
                                     "y": 0
                                 }
                             },
+                            "credits": null,
+                            "alt": null,
+                            "__TYPE__": "ImageContent",
                             "thumbnails": {}
                         }
                     ]

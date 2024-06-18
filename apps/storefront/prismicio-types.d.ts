@@ -1318,6 +1318,22 @@ type CollectionSliceVariation = CollectionSliceDefault;
 export type CollectionSlice = prismic.SharedSlice<'collection', CollectionSliceVariation>;
 
 /**
+ * Primary content in *IconGrid → Default → Primary*
+ */
+export interface IconGridSliceDefaultPrimary {
+    /**
+     * Background Color field in *IconGrid → Default → Primary*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: primary
+     * - **API ID Path**: icon_grid.default.primary.background
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    background: prismic.SelectField<'primary' | 'secondary', 'filled'>;
+}
+
+/**
  * Primary content in *IconGrid → Items*
  */
 export interface IconGridSliceDefaultItem {
@@ -1351,7 +1367,7 @@ export interface IconGridSliceDefaultItem {
  */
 export type IconGridSliceDefault = prismic.SharedSliceVariation<
     'default',
-    Record<string, never>,
+    Simplify<IconGridSliceDefaultPrimary>,
     Simplify<IconGridSliceDefaultItem>
 >;
 
@@ -1804,6 +1820,7 @@ declare module '@prismicio/client' {
             CollectionSliceVariation,
             CollectionSliceDefault,
             IconGridSlice,
+            IconGridSliceDefaultPrimary,
             IconGridSliceDefaultItem,
             IconGridSliceVariation,
             IconGridSliceDefault,
