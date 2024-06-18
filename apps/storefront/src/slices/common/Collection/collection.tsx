@@ -2,7 +2,6 @@ import 'server-only';
 
 import styles from './collection.module.scss';
 
-import { type ReactNode } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
 
 import { asText } from '@prismicio/client';
@@ -15,58 +14,64 @@ import { Title } from '@/components/typography/heading';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { CollectionSliceDefault } from '@/prismic/types';
+import type { HTMLProps } from 'react';
 
 type Slice = {
     slice_type: 'collection';
     slice_label: null;
     id?: string | undefined;
 } & CollectionSliceDefault;
+
 export type CollectionContainerProps = {
     slice: Slice;
-    children: ReactNode;
-};
+} & HTMLProps<HTMLDivElement>;
 
 const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'children'>) => {
-    if (!slice || !slice.primary || asText(slice.primary.title).length <= 0) return null;
-    if (!slice.primary.handle) {
-        console.error(new Error('Collection slice is missing a handle.')); // FIXME: Correct error.
+    if (!slice || !slice.primary || !slice.primary.handle) {
         return null;
     }
 
+    const hasTitle = asText(slice.primary.title).length > 0;
+    const hasBody = asText(slice.primary.body).length > 0;
+
+    if (!hasTitle && !hasBody) {
+        return null;
+    }
+
+    const alignment =
+        (slice.primary.alignment === 'left' && styles['align-left']) ||
+        (slice.primary.alignment === 'right' && styles['align-right']) ||
+        styles['align-center'];
+
     return (
         <>
-            <Title
-                as={Link}
-                href={`/collections/${slice.primary.handle!}`}
-                // TODO: i18n.
-                title={`View all products in "${asText(slice.primary.title)}"`}
-                className={`${styles.title} ${
-                    (slice.primary.alignment === 'left' && styles['align-left']) ||
-                    (slice.primary.alignment === 'right' && styles['align-right']) ||
-                    styles['align-center']
-                }`}
-            >
-                <PrismicText data={slice.primary.title} />
-                <FiChevronRight />
-            </Title>
-            <Content
-                className={`${styles.body} ${
-                    (slice.primary.alignment === 'left' && styles['align-left']) ||
-                    (slice.primary.alignment === 'right' && styles['align-right']) ||
-                    styles['align-center']
-                }`}
-            >
-                <PrismicText data={slice.primary.body} />
-            </Content>
+            {hasTitle ? (
+                <Title
+                    as={Link}
+                    href={`/collections/${slice.primary.handle!}`}
+                    // TODO: i18n.
+                    title={`View all products in "${asText(slice.primary.title)}"`}
+                    className={`${styles.title} ${alignment}`}
+                >
+                    <PrismicText data={slice.primary.title} />
+                    <FiChevronRight />
+                </Title>
+            ) : null}
+
+            {hasBody ? (
+                <Content className={`${styles.body} ${alignment}`}>
+                    <PrismicText data={slice.primary.body} />
+                </Content>
+            ) : null}
         </>
     );
 };
 
-const CollectionContainer = async ({ slice, children }: CollectionContainerProps) => {
+const CollectionContainer = async ({ slice, children, className }: CollectionContainerProps) => {
     return (
         <PageContent
             as="section"
-            className={styles.container}
+            className={`${styles.container} ${className || ''}`}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
@@ -78,7 +83,9 @@ const CollectionContainer = async ({ slice, children }: CollectionContainerProps
 };
 
 CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
-    if (!slice || !slice.primary) return null;
+    if (!slice || !slice.primary) {
+        return null;
+    }
 
     return (
         <PageContent

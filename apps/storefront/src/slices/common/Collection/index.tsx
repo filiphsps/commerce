@@ -1,5 +1,7 @@
 import 'server-only';
 
+import styles from './collection.module.scss';
+
 import { Suspense } from 'react';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -36,12 +38,13 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     }
 
     const handle = slice.primary.handle as string;
+    const fullWidth = slice.primary.display === 'full-width';
     const horizontal = slice.primary.direction === 'horizontal';
     const showViewAll = slice.primary.show_view_all_card ?? true;
 
     return (
         <Suspense key={`${shop.id}.collection.${handle}`} fallback={<CollectionSlice.skeleton slice={slice} />}>
-            <CollectionContainer slice={slice}>
+            <CollectionContainer slice={slice} className={fullWidth ? styles.full : undefined}>
                 <CollectionBlock
                     shop={shop}
                     locale={locale}

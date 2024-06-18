@@ -31,7 +31,7 @@
         "prettier": "prettier **/src/**/*.{ts,tsx,scss} --check",
         "format": "concurrently pnpm:format:* && turbo run format",
         "format:eslint": "eslint --fix **/src/**/*.{ts,tsx}",
-        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss}",
+        "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss,json}",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -- vitest run --coverage",
         "slicemachine": "turbo run slicemachine --env-mode=loose"

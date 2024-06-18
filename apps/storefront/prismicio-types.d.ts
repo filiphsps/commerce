@@ -1265,21 +1265,10 @@ export interface CollectionSliceDefaultPrimary {
      * - **API ID Path**: collection.default.primary.direction
      * - **Documentation**: https://prismic.io/docs/field#select
      */
-    direction: prismic.SelectField<'horizontal' | 'vertical' | 'grid', 'filled'>;
+    direction: prismic.SelectField<'horizontal' | 'grid', 'filled'>;
 
     /**
-     * Hide Title field in *Collection → Default → Primary*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: false
-     * - **API ID Path**: collection.default.primary.hide_title
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    hide_title: prismic.BooleanField;
-
-    /**
-     * "View All" Card field in *Collection → Default → Primary*
+     * View All Card field in *Collection → Default → Primary*
      *
      * - **Field Type**: Boolean
      * - **Placeholder**: *None*
@@ -1288,6 +1277,17 @@ export interface CollectionSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/field#boolean
      */
     show_view_all_card: prismic.BooleanField;
+
+    /**
+     * Display field in *Collection → Default → Primary*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: in-container
+     * - **API ID Path**: collection.default.primary.display
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    display: prismic.SelectField<'in-container' | 'full-width', 'filled'>;
 }
 
 /**
