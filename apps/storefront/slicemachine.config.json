@@ -8,6 +8,6 @@
         }
     },
     "libraries": ["./src/slices/common", "./src/slices/navigation", "./src/slices/product"],
-    "localSliceSimulatorURL": "http://localhost:3000/slice-simulator",
+    "localSliceSimulatorURL": "http://localhost:1337/slice-simulator",
     "repositoryName": "swedish-candy-store"
 }

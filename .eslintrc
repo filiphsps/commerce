@@ -12,6 +12,11 @@
         "plugin:react-hooks/recommended",
         "plugin:react/recommended"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "plugins": [
         "@typescript-eslint",
         "eslint-plugin-jsdoc",

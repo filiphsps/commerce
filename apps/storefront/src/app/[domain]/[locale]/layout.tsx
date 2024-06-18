@@ -99,7 +99,7 @@ export default async function RootLayout({
         const locale = Locale.from(localeData);
 
         const shop = await ShopApi(domain, cache);
-        const api = await ShopifyApolloApiClient({ shop });
+        const api = await ShopifyApolloApiClient({ shop, locale });
 
         const branding = await getBrandingColors(domain);
         const i18n = await getDictionary(locale);

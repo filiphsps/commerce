@@ -1,7 +1,6 @@
 import 'the-new-css-reset';
 import '@/styles/app.scss';
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 
@@ -17,6 +16,7 @@ import ProvidersRegistry from '@/components/providers-registry';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const fontPrimary = Public_Sans({
@@ -41,8 +41,9 @@ export default async function RootLayout({
     children: ReactNode;
     params: { domain: string };
 }) {
-    const shop = await ShopApi(domain, cache);
     const locale = Locale.default;
+
+    const shop = await ShopApi(domain, cache);
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const localization = await LocaleApi({ api });
@@ -50,16 +51,10 @@ export default async function RootLayout({
     return (
         <html lang={locale.code} className={`${fontPrimary.variable}`} suppressHydrationWarning={true}>
             <head>
-                <Suspense key={`${shop.id}.styling`}>
-                    <CssVariablesProvider domain={domain} />
-                </Suspense>
+                <CssVariablesProvider domain={domain} />
             </head>
             <body suppressHydrationWarning={true}>
-                <ProvidersRegistry
-                    shop={shop}
-                    locale={locale}
-                    currency={localization?.country.currency.isoCode || 'USD'}
-                >
+                <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
                     {children}
                 </ProvidersRegistry>
             </body>
