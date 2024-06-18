@@ -1,10 +1,6 @@
 import styles from './blog-content.module.scss';
 
-import Image from 'next/image';
-
 import type { Shop } from '@nordcom/commerce-database';
-
-import gravatar from 'gravatar.js';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
@@ -23,23 +19,12 @@ export default async function BlogContent({ shop, locale, blog }: BlogContentPro
     return (
         <>
             <div className={styles.articles}>
-                {await Promise.all(
-                    blog.articles.edges.map(async ({ node: article }) => {
-                        const href = `/blog/${article.handle}/`;
+                {blog.articles.edges.map(({ node: article }) => {
+                    const href = `/blog/${article.handle}/`;
 
-                        let authorAvatar: string | null | undefined = null;
-                        try {
-                            authorAvatar =
-                                (article.authorV2?.email &&
-                                    (await gravatar.resolve(article.authorV2.email, {
-                                        protocol: 'https',
-                                        defaultIcon: 'blank'
-                                    }))) ||
-                                undefined;
-                        } catch {}
-
-                        return (
-                            <article key={article.id} className={styles.article}>
+                    return (
+                        <article key={article.id} className={styles.article}>
+                            <header className={styles.header}>
                                 <div className={styles.date}>
                                     {new Date(article.publishedAt).toLocaleDateString(locale as any, {
                                         weekday: undefined,
@@ -48,35 +33,29 @@ export default async function BlogContent({ shop, locale, blog }: BlogContentPro
                                         day: 'numeric'
                                     })}
                                 </div>
-                                <div className={styles.title}>
-                                    <Link key={article.id} href={href} shop={shop} locale={locale}>
-                                        {article.title}
-                                    </Link>
-                                </div>
-                                <div className={styles.excerpt}>
-                                    <Content
-                                        dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }}
-                                        suppressHydrationWarning={true}
-                                    />
-                                </div>
 
-                                <div className={styles.authors}>
-                                    {authorAvatar ? (
-                                        <div className={styles.author} title={`Written by ${article.authorV2?.name}`}>
-                                            <Image src={authorAvatar} alt={''} width={40} height={40} />
-                                        </div>
-                                    ) : null}
-                                </div>
+                                <div className={styles.author}>{article.authorV2?.name}</div>
+                            </header>
 
-                                <section className={styles.actions}>
-                                    <Button className={styles.action} as={Link} href={href} locale={locale}>
-                                        Read more
-                                    </Button>
-                                </section>
-                            </article>
-                        );
-                    })
-                )}
+                            <div className={styles.title}>
+                                <Link key={article.id} href={href} shop={shop} locale={locale}>
+                                    {article.title}
+                                </Link>
+                            </div>
+
+                            <Content
+                                className={styles.excerpt}
+                                dangerouslySetInnerHTML={{ __html: article.excerptHtml || '' }}
+                            />
+
+                            <section className={styles.actions}>
+                                <Button className={styles.action} as={Link} href={href} locale={locale}>
+                                    Read more
+                                </Button>
+                            </section>
+                        </article>
+                    );
+                })}
             </div>
         </>
     );

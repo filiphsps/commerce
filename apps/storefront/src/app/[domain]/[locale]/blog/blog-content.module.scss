@@ -2,108 +2,75 @@
 
 .articles {
     --article-background: var(--color-bright);
-    --article-border: var(--color-block-dark);
+    --article-border: var(--color-accent-primary);
 
     display: grid;
     grid-template-columns: 1fr;
-    //grid-auto-rows: 1fr;
     gap: var(--block-spacer-large);
 
     @media (min-width: $breakpoint-mobile) {
-        grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+        grid-template-columns: 1fr 1fr;
     }
 
     .article {
         position: relative;
         display: grid;
         grid-template-rows: auto auto 1fr auto;
-        margin-bottom: var(--block-spacer);
+        gap: var(--block-spacer-small);
 
-        @media (min-width: $breakpoint-mobile) {
-            display: grid;
-            grid-template-rows: auto auto 1fr auto;
-            padding: var(--block-padding-large);
-            margin: 0;
-            background: var(--article-background);
-            border: var(--block-border-width) solid var(--article-border);
-            border-radius: var(--block-border-radius);
-        }
+        padding: var(--block-padding-large);
 
-        .date {
-            font-weight: 500;
-            font-size: 1.75rem;
-            line-height: 1.2;
+        background: var(--article-background);
+        border: var(--block-border-width) solid var(--article-border);
+        border-radius: var(--block-border-radius);
+        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            font-weight: 700;
             text-transform: uppercase;
-            color: var(--color-block-black);
+            font-size: 1.25rem;
+            line-height: normal;
+
+            color: var(--color-dark-secondary);
 
             @media (min-width: $breakpoint-mobile) {
                 font-size: 1.5rem;
             }
         }
+
+        .date,
+        .author {
+            display: block;
+        }
+
         .title {
             font-weight: 700;
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             line-height: normal;
-            margin: var(--block-spacer-small) 0 var(--block-spacer) 0;
-
-            @media (min-width: $breakpoint-mobile) {
-                margin: calc(var(--block-spacer-small) / 2) 3.5rem var(--block-spacer) 0;
-                font-size: 2rem;
-                line-height: 1;
-            }
         }
+
         .excerpt {
-            font-size: 1.75rem;
+            font-size: 1.65rem;
             font-weight: 400;
-            line-height: normal;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 1.5rem;
-                line-height: 1.2;
-            }
+            line-height: 1.3;
         }
-        .actions {
-            margin-top: var(--block-spacer-large);
 
-            @media (max-width: $breakpoint-mobile) {
-                margin-top: var(--block-spacer);
-            }
+        .actions {
+            margin-top: var(--block-spacer-small);
 
             .action {
-                // TODO: Fix the design.
-                display: none;
-
                 width: 100%;
-                height: 4.5rem;
-                border-radius: var(--block-border-radius);
-                text-transform: capitalize;
+                height: 4rem;
 
-                @media (max-width: $breakpoint-mobile) {
-                    display: none;
-                }
-            }
-        }
+                text-transform: uppercase;
 
-        .authors {
-            position: absolute;
-            inset: var(--block-padding) var(--block-padding) auto auto;
-
-            @media (max-width: $breakpoint-mobile) {
-                display: none;
-            }
-
-            .author {
-                overflow: hidden;
-                border: var(--block-border-width) solid var(--article-background);
-                border-radius: 100%;
-                height: 3rem;
-                aspect-ratio: 1 / 1;
-
-                img {
-                    height: 100%;
-                    width: 100%;
-                    object-fit: cover;
-                    object-position: center;
+                &:hover {
+                    color: var(--color-accent-primary-text);
+                    background-color: var(--color-accent-primary-dark);
                 }
             }
         }
