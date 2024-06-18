@@ -1,7 +1,6 @@
 import 'the-new-css-reset';
 import '@/styles/app.scss';
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
@@ -131,9 +130,7 @@ export default async function RootLayout({
                                 </ShopLayout>
                             </AnalyticsProvider>
 
-                            <Suspense key={`${shop.id}.layout.providers.header`}>
-                                <HeaderProvider loaderColor={branding.primary.accent} />
-                            </Suspense>
+                            <HeaderProvider loaderColor={branding.primary.accent} />
                         </ProvidersRegistry>
 
                         <SocialProfileJsonLd

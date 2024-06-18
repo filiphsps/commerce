@@ -11,6 +11,7 @@ import { LocaleApi } from '@/api/store';
 import { CssVariablesProvider } from '@/utils/css-variables';
 import { Locale } from '@/utils/locale';
 
+import { AnalyticsProvider } from '@/components/analytics-provider';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata } from 'next';
@@ -55,7 +56,7 @@ export default async function RootLayout({
             </head>
             <body suppressHydrationWarning={true}>
                 <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
-                    {children}
+                    <AnalyticsProvider shop={shop}>{children}</AnalyticsProvider>
                 </ProvidersRegistry>
             </body>
         </html>
