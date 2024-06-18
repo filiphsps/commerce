@@ -1,6 +1,5 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "globalDotEnv": [".env"],
     "globalDependencies": [
         "**/.env.*local",
         "tsconfig.json",
@@ -8,14 +7,15 @@
         "vite.config.ts",
         "**/vite.config.ts",
         "package.json",
-        "**/package.json"
+        "**/package.json",
+        ".env"
     ],
-    "pipeline": {
+    "tasks": {
         "build": {
             "cache": true,
             "dependsOn": ["^build"],
-            "outputs": ["**/.next/**", "!**/.next/cache/**", "!**/coverage/**", "dist/**"],
-            "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
+            "outputs": ["**/.next/**", "!*/**/.next/cache/**", "!*/**/coverage/**", "dist/**"],
+            "inputs": ["$TURBO_DEFAULT$", ".env.production.local", ".env.local", ".env.production", ".env"]
         },
         "clean": {
             "cache": false
@@ -23,7 +23,7 @@
         "dev": {
             "cache": false,
             "persistent": true,
-            "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
+            "inputs": ["$TURBO_DEFAULT$", ".env.development.local", ".env.local", ".env.development", ".env"]
         },
         "lint": {
             "cache": false,
