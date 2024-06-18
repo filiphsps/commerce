@@ -6,7 +6,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { Card, Heading, Input, Label } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import { getShop, getShopTheme, updateShop, updateShopTheme } from '@/utils/fetchers';
 
 import { SettingsBlock } from '@/components/settings-block';
@@ -29,16 +29,16 @@ export const metadata: Metadata = {
 
 export default async function ShopSettingsDesignPage({ params: { id: shopId } }: ShopSettingsDesignPageProps) {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id, shopId);
+    const shop = await getShop(session.user.id!, shopId);
     if (!shop) {
         notFound();
     }
 
-    const shopTheme = await getShopTheme(session.user.id, shopId);
+    const shopTheme = await getShopTheme(session.user.id!, shopId);
     const defaultShopTheme = {
         header: {
             theme: 'primary',
@@ -57,11 +57,11 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         'use server';
 
                         const session = await auth();
-                        if (!session?.user?.id) {
+                        if (!session?.user) {
                             redirect('/auth/login/');
                         }
 
-                        await updateShop(session.user.id, shopId, Object.fromEntries(form.entries()));
+                        await updateShop(session.user.id!, shopId, Object.fromEntries(form.entries()));
                     }}
                 >
                     <Card className={styles.section} padding={false} borderless>
@@ -194,7 +194,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         'use server';
 
                         const session = await auth();
-                        if (!session?.user?.id) {
+                        if (!session?.user) {
                             redirect('/auth/login/');
                         }
 
@@ -207,7 +207,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                         };
 
                         console.debug(`Updating shop theme`, JSON.stringify({ data }, null, 4));
-                        await updateShopTheme(session.user.id, shopId, { data });
+                        await updateShopTheme(session.user.id!, shopId, { data });
                     }}
                 >
                     <ThemeSettings data={shopTheme || null} />

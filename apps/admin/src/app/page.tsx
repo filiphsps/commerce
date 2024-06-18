@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
 
-import { auth, signOut } from '@/utils/auth';
+import { auth, signOut } from '@/auth';
 import { getShopsForUser } from '@/utils/fetchers';
 
 import ActionableCard from '@/components/actionable-card';
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function Overview() {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 

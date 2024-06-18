@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 
 import authConfig from '@/utils/auth.config';
@@ -16,5 +17,5 @@ export const config = {
 const { auth } = NextAuth(authConfig);
 
 export default auth((_req: NextAuthRequest) => {
-    return undefined;
+    return NextResponse.next();
 });

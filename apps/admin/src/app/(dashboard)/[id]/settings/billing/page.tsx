@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { Card, Heading } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
 
 import type { Metadata } from 'next';
@@ -23,11 +23,11 @@ export const metadata: Metadata = {
 
 export default async function ShopSettingsBillingPage({ params: { id: shopId } }: ShopSettingsBillingPageProps) {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id, shopId);
+    const shop = await getShop(session.user.id!, shopId);
     if (!shop) {
         notFound();
     }

@@ -7,7 +7,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Header as NordstarHeader, Label } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
 
 import type { HTMLProps } from 'react';
@@ -18,11 +18,11 @@ export type HeaderProps = {
 export default async function Header({ shopId, className, ...props }: HeaderProps) {
     try {
         const session = await auth();
-        if (!session?.user?.id) {
+        if (!session?.user) {
             redirect('/auth/login/');
         }
 
-        const shop = await getShop(session.user.id, shopId);
+        const shop = await getShop(session.user.id!, shopId);
         if (!shop) {
             notFound();
         }

@@ -8,7 +8,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
 
 import Footer from '@/components/footer';
@@ -26,11 +26,11 @@ export type ShopLayoutProps = {
 
 export async function generateMetadata({ params: { id: shopId } }: ShopLayoutProps): Promise<Metadata> {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id, shopId);
+    const shop = await getShop(session.user.id!, shopId);
     if (!shop) {
         notFound();
     }
@@ -49,11 +49,11 @@ export async function generateMetadata({ params: { id: shopId } }: ShopLayoutPro
 
 export default async function ShopLayout({ children, params: { id: shopId } }: ShopLayoutProps) {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id, shopId);
+    const shop = await getShop(session.user.id!, shopId);
     if (!shop) {
         notFound();
     }

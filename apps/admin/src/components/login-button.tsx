@@ -13,7 +13,7 @@ import { Button } from '@nordcom/nordstar';
 import GithubLight from '@/static/icons/light/github.svg';
 import { toast } from 'sonner';
 
-import type { AuthProvider } from '@/utils/auth';
+import type { AuthProvider } from '@/auth';
 import type { HTMLProps, ReactNode } from 'react';
 
 export type LoginButtonProps = {

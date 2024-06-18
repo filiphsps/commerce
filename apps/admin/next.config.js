@@ -12,6 +12,8 @@ const config = {
     swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
+    skipTrailingSlashRedirect: false,
+    trailingSlash: true,
     transpilePackages: [],
     experimental: {
         esmExternals: 'loose',

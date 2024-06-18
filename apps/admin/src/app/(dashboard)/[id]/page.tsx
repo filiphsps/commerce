@@ -7,7 +7,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Details, Heading } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
 
 import type { Metadata } from 'next';
@@ -25,11 +25,12 @@ export const metadata: Metadata = {
 export default async function ShopPage({ params: { id: shopId } }: ShopPageProps) {
     try {
         const session = await auth();
-        if (!session?.user?.id) {
+        if (!session?.user) {
             redirect('/auth/login/');
         }
 
-        const shop = await getShop(session.user.id, shopId);
+        const shop = await getShop(session.user.id!, shopId);
+        const code = JSON.stringify(shop.toObject(), null, 2);
 
         return (
             <>
@@ -42,7 +43,7 @@ export default async function ShopPage({ params: { id: shopId } }: ShopPageProps
                 <Card className={styles.container}>
                     {/* Dropdown */}
                     <Details label="Raw Shop" className={styles.details}>
-                        <code style={{ whiteSpace: 'pre' }}>{JSON.stringify(shop.toObject(), null, 2)}</code>
+                        <code>{code}</code>
                     </Details>
                 </Card>
             </>

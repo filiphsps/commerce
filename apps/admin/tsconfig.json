@@ -9,6 +9,7 @@
         "jsxImportSource": "react",
         "paths": {
             "@/api/*": ["src/api/*"],
+            "@/auth": ["src/utils/auth.ts"],
             "@/components/*": ["src/components/*"],
             "@/styles/*": ["src/scss/*"],
             "@/utils/*": ["src/utils/*"],

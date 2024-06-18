@@ -1,6 +1,6 @@
 import { SessionProvider } from 'next-auth/react';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 
 import type { ReactNode } from 'react';
 

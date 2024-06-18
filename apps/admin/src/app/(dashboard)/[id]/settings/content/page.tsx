@@ -5,7 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 import {
     getCheckoutProvider,
     getCommerceProvider,
@@ -37,18 +37,18 @@ export const metadata: Metadata = {
 
 export default async function ShopSettingsContentPage({ params: { id: shopId } }: ShopSettingsContentPageProps) {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user) {
         redirect('/auth/login/');
     }
 
-    const shop = await getShop(session.user.id, shopId);
+    const shop = await getShop(session.user.id!, shopId);
     if (!shop) {
         notFound();
     }
 
-    const commerceProvider = await getCommerceProvider(session.user.id, shopId);
+    const commerceProvider = await getCommerceProvider(session.user.id!, shopId);
 
-    const contentProvider = await getContentProvider(session.user.id, shopId);
+    const contentProvider = await getContentProvider(session.user.id!, shopId);
     const defaultContentData = JSON.stringify(
         {
             id: '',
@@ -61,7 +61,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
         0
     );
 
-    const checkoutProvider = await getCheckoutProvider(session.user.id, shopId);
+    const checkoutProvider = await getCheckoutProvider(session.user.id!, shopId);
     const defaultCheckoutData = JSON.stringify({}, null, 0);
 
     return (
@@ -75,7 +75,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         'use server';
 
                         const session = await auth();
-                        if (!session?.user?.id) {
+                        if (!session?.user) {
                             redirect('/auth/login/');
                         }
 
@@ -108,7 +108,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         }
 
                         console.debug(`Updating commerce provider`, JSON.stringify({ type, data }, null, 4));
-                        await updateCommerceProvider(session.user.id, shopId, { type, data });
+                        await updateCommerceProvider(session.user.id!, shopId, { type, data });
                     }}
                 >
                     <CommerceSettings data={commerceProvider || null} />
@@ -125,7 +125,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         'use server';
 
                         const session = await auth();
-                        if (!session?.user?.id) {
+                        if (!session?.user) {
                             redirect('/auth/login/');
                         }
 
@@ -137,7 +137,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         );
 
                         console.debug(`Updating content provider`, { type, data });
-                        await updateContentProvider(session.user.id, shopId, { type, data });
+                        await updateContentProvider(session.user.id!, shopId, { type, data });
                     }}
                 >
                     <Label as="label" htmlFor="type">
@@ -181,7 +181,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         'use server';
 
                         const session = await auth();
-                        if (!session?.user?.id) {
+                        if (!session?.user) {
                             redirect('/auth/login/');
                         }
 
@@ -193,7 +193,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         );
 
                         console.debug(`Updating checkout provider`, { type, data });
-                        await updateCheckoutProvider(session.user.id, shopId, { type, data });
+                        await updateCheckoutProvider(session.user.id!, shopId, { type, data });
                     }}
                 >
                     <Label as="label" htmlFor="type">

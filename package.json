@@ -34,7 +34,7 @@
         "format:prettier": "prettier --write **/src/**/*.{ts,tsx,scss}",
         "typecheck": "turbo run typecheck",
         "test": "dotenv -c -- vitest run --coverage",
-        "slicemachine": "turbo run slicemachine"
+        "slicemachine": "turbo run slicemachine --env-mode=loose"
     },
     "author": {
         "name": "Nordcom Group Inc.",

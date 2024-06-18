@@ -1,5 +1,19 @@
+@import 'globals';
+
 .container {
     .details {
         overflow-x: auto;
+
+        code {
+            white-space: pre-wrap;
+
+            color: var(--color-foreground);
+            background: unset;
+
+            &::before,
+            &::after {
+                content: '';
+            }
+        }
     }
 }

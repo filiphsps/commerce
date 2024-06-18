@@ -1,7 +1,6 @@
 import '@shopify/shopify-api/adapters/cf-worker';
 
 import { ApiVersion, shopifyApi } from '@shopify/shopify-api';
-import { restResources } from '@shopify/shopify-api/rest/admin/2024-04';
 
 export const shopifyAdminApi = shopifyApi({
     userAgentPrefix: 'nordcom',
@@ -19,6 +18,5 @@ export const shopifyAdminApi = shopifyApi({
     ],
     hostName: process.env.NODE_ENV === 'development' ? 'shops.nordcom.io.localhost:3000' : 'shops.nordcom.io',
     isEmbeddedApp: true,
-    apiVersion: ApiVersion.October23,
-    restResources
+    apiVersion: ApiVersion.October23
 });

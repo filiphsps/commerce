@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 import { Heading, Label } from '@nordcom/nordstar';
 
-import { auth } from '@/utils/auth';
+import { auth } from '@/auth';
 
 import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';
@@ -21,7 +21,9 @@ export const metadata: Metadata = {
 
 export default async function IndexAdminPage({}: { params: IndexAdminPageParams }) {
     const session = await auth();
-    if (session) redirect('/');
+    if (!session?.user) {
+        redirect('/auth/login/');
+    }
 
     return (
         <ActionableCard

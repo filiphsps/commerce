@@ -167,8 +167,8 @@ importers:
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@shopify/shopify-api':
-        specifier: 9.7.2
-        version: 9.7.2
+        specifier: 11.0.0
+        version: 11.0.0
       '@vercel/analytics':
         specifier: 1.3.1
         version: 1.3.1(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6))(react@18.2.0)
@@ -1946,11 +1946,11 @@ packages:
     resolution: {integrity: sha512-RGmD/VIW4iHqY+raeHlxdGY/FQpE6ATZHU8LrbwI+16uvT+sfw8d725J/lmzJIgNScJ/NFLg3LyHjitwPpqTxw==}
     engines: {node: '>=14'}
 
-  '@shopify/admin-api-client@0.2.9':
-    resolution: {integrity: sha512-0K/P6e4bofCyk5BQ1OCiw9bq2d2hlxHM3B8FQEQclyMyU/b3oMowhy56sOQQODViaiZoDH/atmeWJwOX1di0Qg==}
+  '@shopify/admin-api-client@1.0.0':
+    resolution: {integrity: sha512-yNLFW+wCmXNnAof6MZKZNPN1CYpFc95UCtQmcqeYc5GLdwvIJVGefUXTPqoBR57jV7b9jF+E6is3mNotEbDlLA==}
 
-  '@shopify/graphql-client@0.10.4':
-    resolution: {integrity: sha512-wbor9lk+GrdvCYnQBY0R/PuEVmOedwZQR0ld4zp1DB6eGaEpuoO5kPB4fk+Kz65mFD9hi2KqK6Nu7/ICsIJSHg==}
+  '@shopify/graphql-client@1.0.0':
+    resolution: {integrity: sha512-K3F13BK6dB17yJASRE9Oyn7Etpj58R3cOwzFHB06yCLhWLGcI7JllK+HxZQTgtA3wbLonG3yxt5ns6XNKitphw==}
 
   '@shopify/hydrogen-react@2024.4.0':
     resolution: {integrity: sha512-CmOIftVO7DRdcs8dzU0DC6je8/lzM+YEuxRmmvlXSgrKvHTKEPToipUaZTHQi3DaZvThw06ZNjYQi5x2RGz57A==}
@@ -1963,11 +1963,11 @@ packages:
     resolution: {integrity: sha512-Ih/6Oe80dynlUsRfEqptWBfsySCqI0rjQvPAjS8HuWeK9nZ+TvmYScfxjucKXZ2deXwAClnU6SMdh3/B1lMMog==}
     engines: {node: ^14.17.0 || >=16.0.0}
 
-  '@shopify/shopify-api@9.7.2':
-    resolution: {integrity: sha512-EZn3xPnB8ftqlse1m2PQBsKLIczd/sor01kImqMW65dPkSYCufEdK54QP7AH/anj2vkYJXVKdGqMunzQWrJAoA==}
+  '@shopify/shopify-api@11.0.0':
+    resolution: {integrity: sha512-FwGquPtXKi56znJ9YxMGEs5yKGZvTNyJ9Q+x/yPH3QoBJo5T9U2GmmlS4eKnjmaIWEgwwxIm5JCBmgxd+7abNw==}
 
-  '@shopify/storefront-api-client@0.3.4':
-    resolution: {integrity: sha512-tI9l+qj1VbqdqMX6EfChnX5OVqLKADJDSRmCUHWlmkSCrNVuJtP+ylzJE70bTekeAA0DOJ+tCUZotbvngp4j+Q==}
+  '@shopify/storefront-api-client@1.0.0':
+    resolution: {integrity: sha512-TAyCsD+d/Fiwek3YM1/60pXpQTUUX99DM3HpcIed09By5/rAQbQhYWwf9rZDBIJnGXqS/fl3VO4Tqp+173tocw==}
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -6636,11 +6636,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@shopify/admin-api-client@0.2.9':
+  '@shopify/admin-api-client@1.0.0':
     dependencies:
-      '@shopify/graphql-client': 0.10.4
+      '@shopify/graphql-client': 1.0.0
 
-  '@shopify/graphql-client@0.10.4': {}
+  '@shopify/graphql-client@1.0.0': {}
 
   '@shopify/hydrogen-react@2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -6658,11 +6658,11 @@ snapshots:
 
   '@shopify/network@3.2.1': {}
 
-  '@shopify/shopify-api@9.7.2':
+  '@shopify/shopify-api@11.0.0':
     dependencies:
-      '@shopify/admin-api-client': 0.2.9
+      '@shopify/admin-api-client': 1.0.0
       '@shopify/network': 3.2.1
-      '@shopify/storefront-api-client': 0.3.4
+      '@shopify/storefront-api-client': 1.0.0
       compare-versions: 6.1.0
       isbot: 5.1.7
       jose: 5.3.0
@@ -6672,9 +6672,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@shopify/storefront-api-client@0.3.4':
+  '@shopify/storefront-api-client@1.0.0':
     dependencies:
-      '@shopify/graphql-client': 0.10.4
+      '@shopify/graphql-client': 1.0.0
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -8063,8 +8063,8 @@ snapshots:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.4.5)
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.2(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.0)
@@ -8086,13 +8086,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0):
     dependencies:
       debug: 4.3.4
       enhanced-resolve: 5.16.1
       eslint: 8.57.0
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.13.1
@@ -8103,14 +8103,14 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.4.5)
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -8122,33 +8122,6 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
-      - supports-color
-
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
-    dependencies:
-      array-includes: 3.1.8
-      array.prototype.findlastindex: 1.2.5
-      array.prototype.flat: 1.3.2
-      array.prototype.flatmap: 1.3.2
-      debug: 3.2.7
-      doctrine: 2.1.0
-      eslint: 8.57.0
-      eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      hasown: 2.0.2
-      is-core-module: 2.13.1
-      is-glob: 4.0.3
-      minimatch: 3.1.2
-      object.fromentries: 2.0.8
-      object.groupby: 1.0.3
-      object.values: 1.2.0
-      semver: 6.3.1
-      tsconfig-paths: 3.15.0
-    optionalDependencies:
-      '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.4.5)
-    transitivePeerDependencies:
-      - eslint-import-resolver-typescript
-      - eslint-import-resolver-webpack
       - supports-color
 
   eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0):

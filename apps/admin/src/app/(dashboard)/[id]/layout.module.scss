@@ -44,14 +44,11 @@
         width: 100%;
 
         &.collaborator {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
             justify-content: center;
             align-items: center;
             min-width: 0;
-
-            & > div {
-                display: contents;
-            }
 
             .avatar {
                 display: flex;
