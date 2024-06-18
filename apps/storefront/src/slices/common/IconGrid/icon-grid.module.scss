@@ -47,7 +47,7 @@ section.container {
         .icon {
             --size: 4.5rem;
 
-            z-index: 9999;
+            z-index: 1;
             position: absolute;
             inset: calc(var(--size) * -0.45) auto auto auto;
             display: block;
