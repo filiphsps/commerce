@@ -83,9 +83,7 @@ const CartSummary = ({ shop, onCheckout, i18n, store }: CartSummaryProps) => {
                         <Label>{t('label-cart-note')}</Label>
                     </header>
 
-                    <Suspense>
-                        <CartNote i18n={i18n} />
-                    </Suspense>
+                    <CartNote i18n={i18n} />
                 </section>
             ) : null}
 
@@ -223,18 +221,16 @@ const CartSummary = ({ shop, onCheckout, i18n, store }: CartSummaryProps) => {
                 {lines && lines.length > 0 ? (
                     <>
                         {cartReady ? (
-                            <Suspense>
-                                <ShopPayButton
-                                    // TODO: Only show this if we're using Shopify.
-                                    width="100%"
-                                    className={`${styles.button} ${styles['shop-button']}`}
-                                    variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
-                                        quantity,
-                                        id
-                                    }))}
-                                    channel="hydrogen"
-                                />
-                            </Suspense>
+                            <ShopPayButton
+                                // TODO: Only show this if we're using Shopify.
+                                width="100%"
+                                className={`${styles.button} ${styles['shop-button']}`}
+                                variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
+                                    quantity,
+                                    id
+                                }))}
+                                channel="hydrogen"
+                            />
                         ) : (
                             <Button className={`${styles.button} ${styles['shop-button']}`} disabled={true} />
                         )}
@@ -243,9 +239,7 @@ const CartSummary = ({ shop, onCheckout, i18n, store }: CartSummaryProps) => {
             </section>
 
             <section className={`${styles.section} ${styles['section-security']}`}>
-                <Suspense>
-                    <AcceptedPaymentMethods store={store} className={styles['payment-methods']} />
-                </Suspense>
+                <AcceptedPaymentMethods store={store} className={styles['payment-methods']} />
 
                 <div className={styles.notice}>
                     <FiLock className={styles.icon} />

@@ -2,7 +2,6 @@ import 'server-only';
 
 import styles from './collapsible-text.module.scss';
 
-import { Suspense } from 'react';
 import { FiChevronUp } from 'react-icons/fi';
 
 import PageContent from '@/components/page-content';
@@ -38,13 +37,9 @@ const CollapsibleText = ({ slice }: CollapsibleTextProps): JSX.Element => {
                     <FiChevronUp className={styles.icon} /> {slice.primary.title}
                 </summary>
 
-                <Suspense>
-                    <ContentContainer>
-                        <Suspense>
-                            <PrismicText data={slice.primary.text} />
-                        </Suspense>
-                    </ContentContainer>
-                </Suspense>
+                <ContentContainer>
+                    <PrismicText data={slice.primary.text} />
+                </ContentContainer>
             </details>
         </PageContent>
     );

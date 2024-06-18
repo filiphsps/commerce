@@ -1,6 +1,5 @@
 import styles from './page.module.scss';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -40,11 +39,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                     />
                 </Link>
             }
-            actions={
-                <Suspense>
-                    <LoginButton provider="github" className={styles.button} />
-                </Suspense>
-            }
+            actions={<LoginButton provider="github" className={styles.button} />}
             footer={<Label>Nordcom Commerce is currently invite only</Label>}
         >
             <Label as="div">Welcome Back</Label>

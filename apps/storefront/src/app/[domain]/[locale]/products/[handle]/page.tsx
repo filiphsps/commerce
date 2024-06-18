@@ -209,19 +209,17 @@ export default async function ProductPage({
         const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
         return (
-            <Suspense key={`${shop.id}.products.${handle}`}>
+            <>
                 <SplitView
                     primaryDesktopWidth={0.42}
                     primaryClassName={styles.headingPrimary}
                     asideDesktopWidth={0.58}
                     aside={
-                        <Suspense key={`${shop.id}.products.${handle}.gallery`}>
-                            <ProductGallery
-                                initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
-                                images={product.images.edges.map((edge) => edge.node)}
-                                className={styles.gallery}
-                            />
-                        </Suspense>
+                        <ProductGallery
+                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
+                            images={product.images.edges.map((edge) => edge.node)}
+                            className={styles.gallery}
+                        />
                     }
                 >
                     <div className={styles.content}>
@@ -252,9 +250,7 @@ export default async function ProductPage({
                             />
                         </SplitView>
 
-                        <Suspense key={`${shop.id}.products.${handle}.content`}>
-                            <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
-                        </Suspense>
+                        <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
 
                         <Suspense key={`${shop.id}.products.${handle}.info-lines`}>
                             <InfoLines product={product} />
@@ -454,7 +450,7 @@ export default async function ProductPage({
                         }
                     ]}
                 />
-            </Suspense>
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

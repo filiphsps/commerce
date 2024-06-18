@@ -40,25 +40,17 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     const showViewAll = slice.primary.show_view_all_card ?? true;
 
     return (
-        <Suspense
-            key={`${shop.id}.collection.${handle}.container`}
-            fallback={<CollectionSlice.skeleton slice={slice} />}
-        >
+        <Suspense key={`${shop.id}.collection.${handle}`} fallback={<CollectionSlice.skeleton slice={slice} />}>
             <CollectionContainer slice={slice}>
-                <Suspense
-                    key={`${shop.id}.collection.${handle}`}
-                    fallback={<CollectionBlock.skeleton isHorizontal={horizontal} />}
-                >
-                    <CollectionBlock
-                        shop={shop}
-                        locale={locale}
-                        handle={handle}
-                        isHorizontal={horizontal}
-                        limit={slice.primary.limit || 16}
-                        showViewAll={showViewAll}
-                        priority={index < 3}
-                    />
-                </Suspense>
+                <CollectionBlock
+                    shop={shop}
+                    locale={locale}
+                    handle={handle}
+                    isHorizontal={horizontal}
+                    limit={slice.primary.limit || 16}
+                    showViewAll={showViewAll}
+                    priority={index < 3}
+                />
             </CollectionContainer>
         </Suspense>
     );

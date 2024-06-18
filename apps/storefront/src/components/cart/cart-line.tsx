@@ -1,6 +1,5 @@
 import styles from '@/components/cart/cart-line.module.scss';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -67,9 +66,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             </div>
 
             <div className={styles['quantity-actions']}>
-                <Suspense>
-                    <CartLineActions i18n={i18n} data={line} />
-                </Suspense>
+                <CartLineActions i18n={i18n} data={line} />
             </div>
         </div>
     );

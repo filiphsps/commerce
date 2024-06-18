@@ -26,7 +26,7 @@ const VendorsSlice = async ({ slice, context: { shop, locale } }: VendorsProps) 
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            <Suspense fallback={<Vendors.skeleton />}>
+            <Suspense key={`${shop.id}.vendors`} fallback={<Vendors.skeleton />}>
                 <Vendors shop={shop} locale={locale} />
             </Suspense>
         </PageContent>

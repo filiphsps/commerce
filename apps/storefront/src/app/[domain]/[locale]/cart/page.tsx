@@ -98,32 +98,27 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const store = await StoreApi({ locale, api });
 
         return (
-            <Suspense key={`${shop.id}.cart.content`}>
-                <CartContent
-                    shop={shop}
-                    locale={locale}
-                    header={<Heading title={page?.title} subtitle={page?.description} />}
-                    slices={
-                        <Suspense
-                            key={`${shop.id}.cart.content.slices`}
-                            fallback={<PrismicPage.skeleton page={page} />}
-                        >
-                            {page ? (
-                                <PrismicPage
-                                    shop={shop}
-                                    locale={locale}
-                                    page={page}
-                                    i18n={i18n}
-                                    handle={'cart'}
-                                    type={'custom_page'}
-                                />
-                            ) : null}
-                        </Suspense>
-                    }
-                    i18n={i18n}
-                    store={store}
-                />
-            </Suspense>
+            <CartContent
+                shop={shop}
+                locale={locale}
+                header={<Heading title={page?.title} subtitle={page?.description} />}
+                slices={
+                    <Suspense key={`${shop.id}.cart.content.slices`} fallback={<PrismicPage.skeleton page={page} />}>
+                        {page ? (
+                            <PrismicPage
+                                shop={shop}
+                                locale={locale}
+                                page={page}
+                                i18n={i18n}
+                                handle={'cart'}
+                                type={'custom_page'}
+                            />
+                        ) : null}
+                    </Suspense>
+                }
+                i18n={i18n}
+                store={store}
+            />
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

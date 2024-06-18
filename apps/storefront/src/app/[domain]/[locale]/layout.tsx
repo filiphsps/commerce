@@ -114,9 +114,7 @@ export default async function RootLayout({
                     suppressHydrationWarning={true}
                 >
                     <head suppressHydrationWarning={true}>
-                        <Suspense key={`${shop.id}.layout.providers.theme`}>
-                            <CssVariablesProvider domain={domain} />
-                        </Suspense>
+                        <CssVariablesProvider domain={domain} />
                     </head>
 
                     <body suppressHydrationWarning={true}>

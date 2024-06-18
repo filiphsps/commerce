@@ -20,17 +20,13 @@ export type ShopLayoutProps = {
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
-            <Suspense key={`${shop.id}.layout.header`} fallback={<Header.skeleton />}>
-                <Header shop={await Shop.findByDomain(shop.domain)} locale={locale} i18n={i18n} />
-            </Suspense>
+            <Header shop={await Shop.findByDomain(shop.domain)} locale={locale} i18n={i18n} />
 
             <Suspense key={`${shop.id}.layout.content`} fallback={<PageContent />}>
                 {children}
             </Suspense>
 
-            <Suspense key={`${shop.id}.layout.footer`} fallback={<Footer.skeleton />}>
-                <Footer shop={shop} locale={locale} i18n={i18n} />
-            </Suspense>
+            <Footer shop={shop} locale={locale} i18n={i18n} />
         </>
     );
 };
