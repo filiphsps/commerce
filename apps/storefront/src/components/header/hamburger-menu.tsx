@@ -12,6 +12,13 @@ export const HamburgerMenu = ({ className, ...props }: HamburgerMenuProps) => {
     const path = usePathname();
 
     useEffect(() => {
+        // Remove focus from the menu when navigating to a new page.
+        // This is done to prevent the menu from showing up when
+        // hovering over the hidden mega menu.
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+
         setOpen(() => false);
     }, [path]);
 

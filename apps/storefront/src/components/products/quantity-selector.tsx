@@ -2,7 +2,7 @@
 
 import styles from '@/components/products/quantity-selector.module.scss';
 
-import { useCallback, useEffect, useRef, useState, type HTMLProps } from 'react';
+import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';

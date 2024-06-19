@@ -3,6 +3,7 @@ import 'server-only';
 import styles from '@/components/header/header.module.scss';
 import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
 
+import { type HTMLProps } from 'react';
 import Image from 'next/image';
 
 import type { ShopBase } from '@nordcom/commerce-db';
@@ -16,7 +17,6 @@ import { HeaderNavigation } from '@/components/header/header-navigation';
 import Link from '@/components/link';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { HTMLProps } from 'react';
 
 export type HeaderProps = {
     shop: ShopBase;
@@ -25,6 +25,7 @@ export type HeaderProps = {
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
 const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
     const navigation = await NavigationApi({ shop, locale });
+
     const {
         logo,
         theme: { ...headerTheme }
