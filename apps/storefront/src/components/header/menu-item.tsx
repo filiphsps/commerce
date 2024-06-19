@@ -57,7 +57,7 @@ export const SubMenuItem = ({ children, data: { handle, title, description }, lo
 
     return (
         <div className={`${styles.subitem} ${(target === route && styles.active) || ''}`}>
-            <Link href={url} title={title}>
+            <Link href={url || '#'} title={title}>
                 <div className={styles.title}>{title}</div>
                 {desc}
             </Link>

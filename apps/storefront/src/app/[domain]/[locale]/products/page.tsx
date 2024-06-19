@@ -27,9 +27,6 @@ import type { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// TODO: Make this dynamic, preferably a configurable default value and then a query param override.
-const PRODUCTS_PER_PAGE = 16 as const;
-
 type FilterParams = {
     page?: string;
 };
@@ -42,12 +39,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'products' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -107,7 +103,6 @@ export default async function ProductsPage({
     try {
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
 
@@ -118,11 +113,11 @@ export default async function ProductsPage({
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         // Deal with pagination before fetching the collection.
-        const pagesInfo = await ProductsPaginationCountApi({ api, filters: { first: PRODUCTS_PER_PAGE } });
+        const pagesInfo = await ProductsPaginationCountApi({ api, filters: {} });
 
         // Do the actual API calls.
-        //const products = await ProductsApi({ api, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);
-        const { page } = await PageApi({ shop, locale, handle: 'products', type: 'custom_page' });
+        //const products = await ProductsApi({ api, filters, cache);
+        const page = await PageApi({ shop, locale, handle: 'products' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
@@ -132,7 +127,7 @@ export default async function ProductsPage({
 
         return (
             <>
-                <Heading title={page?.title || 'Products'} subtitle={page?.description} />
+                <Heading title={page?.title || t('products')} subtitle={page?.description} />
 
                 <ProductsContent />
 

@@ -29,39 +29,40 @@ export type IconGridProps = SliceComponentProps<
  * Component for "IconGrid" Slices.
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
-    const icons = useMemo(
-        () =>
-            (slice.items || []).map(({ icon, title }, index) => {
-                if (slice.items.length <= 0) {
-                    return null;
-                }
+    const { items } = slice;
 
-                const priority = order < 2;
-                return (
-                    <div key={index} className={styles.item}>
-                        {icon.url ? (
-                            <Image
-                                className={styles.icon}
-                                src={icon.url}
-                                alt={icon.alt || ''}
-                                width={35}
-                                height={35}
-                                decoding="async"
-                                loading={priority ? 'eager' : 'lazy'}
-                                priority={priority}
-                                draggable={false}
-                            />
-                        ) : (
-                            <div className={styles.icon} />
-                        )}
-                        <div className={styles.title}>{title}</div>
-                    </div>
-                );
-            }),
-        [slice.items]
-    );
+    const icons = useMemo(() => {
+        if (!slice || items.length <= 0) {
+            return [];
+        }
 
-    if (!(slice as any)) {
+        return items.map(({ icon, title }, index) => {
+            const priority = order < 2;
+
+            return (
+                <div key={index} className={styles.item}>
+                    {icon.url ? (
+                        <Image
+                            className={styles.icon}
+                            src={icon.url}
+                            alt={icon.alt || ''}
+                            width={35}
+                            height={35}
+                            decoding="async"
+                            loading={priority ? 'eager' : 'lazy'}
+                            priority={priority}
+                            draggable={false}
+                        />
+                    ) : (
+                        <div className={styles.icon} />
+                    )}
+                    <div className={styles.title}>{title}</div>
+                </div>
+            );
+        });
+    }, [slice, items]);
+
+    if (icons.length <= 0) {
         return null;
     }
 

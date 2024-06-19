@@ -1,14 +1,12 @@
 import 'server-only';
 
-import { experimental_taintObjectReference as taint } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { headers } from 'next/headers';
 
-import type { Shop } from '@nordcom/commerce-database';
-import { CommerceProviderAuthenticationApi } from '@nordcom/commerce-database';
+import { type Shop, ShopApi } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
-import { setupApollo } from '@/api/client';
+import { createApolloClient } from '@/api/client';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
@@ -16,23 +14,19 @@ import { createStorefrontClient } from '@shopify/hydrogen-react';
 import type { ApiConfig } from '@/api/client';
 
 export const ShopifyApiConfig = async ({
-    shop,
-    noHeaders = true,
-    noCache
+    shop: { domain },
+    noCache = false,
+    noHeaders = true
 }: {
     shop: Shop;
-    noHeaders?: boolean;
     noCache?: boolean;
+    noHeaders?: boolean;
 }): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
 }> => {
-    const commerceProvider = await CommerceProviderAuthenticationApi({
-        shop,
-        cache: noCache ? undefined : cache,
-        taint: noCache ? undefined : taint
-    });
-    if (!shop.commerceProvider || !commerceProvider) throw new UnknownCommerceProviderError();
+    const { commerceProvider } = await ShopApi(domain, !noCache ? cache : undefined, true);
+    if (!commerceProvider) throw new UnknownCommerceProviderError();
 
     const api = createStorefrontClient({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
@@ -68,29 +62,41 @@ type ShopifyApiOptions = {
     shop: Shop;
     locale?: Locale;
     apiConfig?: StorefrontApiConfig;
+    noCache?: boolean;
 };
 
-export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
+export const ShopifyApolloApiClient = async ({
+    shop,
+    locale = Locale.default,
+    apiConfig,
+    noCache
+}: ShopifyApiOptions) => {
     'use server';
+
+    // TODO: Support public headers too.
+    const config = (apiConfig || (await ShopifyApiConfig({ shop, noCache }))).private();
 
     return ApiBuilder({
         shop,
-        locale: locale,
-        api: setupApollo((apiConfig || (await ShopifyApiConfig({ shop }))).private()).getClient()
+        locale,
+        api: createApolloClient(config)
     });
 };
 
 /**
  * Shopify API client using the fetch API instead of Apollo.
  */
-export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
+export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig, noCache }: ShopifyApiOptions) => {
+    'use server';
+
+    // TODO: Support public headers too.
+    const config = (apiConfig || (await ShopifyApiConfig({ shop, noCache }))).private();
+
     return ApiBuilder({
         shop,
         locale,
         api: {
             query: async ({ query, context: { fetchOptions, ...context }, variables }: any) => {
-                const config = (apiConfig || (await ShopifyApiConfig({ shop })))!.private()!;
-
                 const response = await fetch(config.uri, {
                     method: 'POST',
                     headers: config.headers,

@@ -18,10 +18,12 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     const api = await ShopifyApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });
 
-    const pages = (await PagesApi({ shop, locale, exclude: [] })).map(({ url, ...page }) => ({
-        ...page,
-        url: url!.split('/').slice(2).join('/')
-    }));
+    const pages = (await PagesApi({ shop, locale, exclude: [] }))
+        .filter(({ url }) => url)
+        .map(({ url, ...page }) => ({
+            ...page,
+            url: url?.split('/').slice(2).join('/')
+        }));
 
     return getServerSideSitemap(
         locales

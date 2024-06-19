@@ -28,12 +28,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' } as any);
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -87,20 +86,20 @@ export async function generateMetadata({
 export default async function CartPage({ params: { domain, locale: localeData } }: { params: CartPageParams }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const { page } = await PageApi({ shop, locale, handle: 'cart', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'cart' });
+        const store = await StoreApi({ locale, api });
 
         const i18n = await getDictionary(locale);
-        const store = await StoreApi({ locale, api });
+        const { t } = useTranslation('common', i18n);
 
         return (
             <CartContent
                 shop={shop}
                 locale={locale}
-                header={<Heading title={page?.title} subtitle={page?.description} />}
+                header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
                 slices={
                     page ? (
                         <PrismicPage

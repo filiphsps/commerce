@@ -40,8 +40,8 @@ export async function getArticleContent({ year, month, slug }: { year: string; m
             date: date as Date,
             author: {
                 // Parse `Name <email>` into { name, email }.
-                name: author.split('<')[0].trim() as string,
-                email: author.split('<')[1].replace('>', '').trim() as string,
+                name: (author?.split('<')[0]?.trim() as string) || '',
+                email: (author?.split('<')[1]?.replace('>', '').trim() as string) || '',
                 handle
             }
         }

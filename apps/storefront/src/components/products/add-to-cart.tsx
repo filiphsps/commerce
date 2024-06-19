@@ -78,7 +78,7 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
             gtm: {
                 ecommerce: {
                     currency: selectedVariant.price?.currencyCode!,
-                    value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity ?? undefined,
+                    value: ShopifyPriceToNumber(0, selectedVariant.price?.amount) * quantity,
                     items: [
                         {
                             item_id: ProductToMerchantsCenterId({
@@ -97,7 +97,7 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
                             sku: selectedVariant.sku || undefined,
                             currency: selectedVariant.price?.currencyCode!,
                             price: ShopifyPriceToNumber(undefined, selectedVariant.price?.amount!),
-                            quantity: quantity ?? 0
+                            quantity
                         }
                     ]
                 }

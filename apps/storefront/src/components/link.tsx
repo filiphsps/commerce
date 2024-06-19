@@ -11,11 +11,13 @@ import { Locale } from '@/utils/locale';
 
 import { useShop } from '@/components/shop/provider';
 
-type Props = Omit<ComponentProps<typeof BaseLink>, 'locale'> & {
+import type { Url } from 'node:url';
+
+type Props = {
     shop?: Shop;
     locale?: Locale;
-    href?: string;
-};
+    href: Url | string;
+} & Omit<ComponentProps<typeof BaseLink>, 'locale'>;
 
 const isInternal = (href: string, shop?: Shop): boolean => {
     // If the url starts with `/` we're obviously requesting an internal path.
@@ -37,7 +39,7 @@ const isInternal = (href: string, shop?: Shop): boolean => {
 export default function Link({ locale, href, prefetch, ...props }: Props) {
     const shop = useShop();
 
-    if (typeof href !== 'string') {
+    if (!href || typeof href !== 'string') {
         // TODO: Deal with `URL` as `href`.
         console.error(new TypeError(`Link's \`href\` must be of type string. Received \`${typeof href}\` instead.`));
         return null;
@@ -50,7 +52,7 @@ export default function Link({ locale, href, prefetch, ...props }: Props) {
         locale = Locale.default;
     }
 
-    const url = ((href: string, shop?: Shop): string | URL => {
+    const url = ((href: string = '', shop?: Shop): string | URL => {
         const internal = isInternal(href, shop);
 
         if (internal) {
@@ -58,7 +60,7 @@ export default function Link({ locale, href, prefetch, ...props }: Props) {
             // if it does, remove it.
             if (href.startsWith('https://') || href.startsWith('http://')) {
                 // Add the first slash since that would be removed by the `slice`.
-                href = `/${href.split('://')[1]!.split('/').slice(1).join('/')}`;
+                href = `/${href.split('://')[1]!.split('/').slice(1).join('/')}` || '';
             }
 
             // Perform some common fixups.

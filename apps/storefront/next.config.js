@@ -11,15 +11,13 @@ const config = {
     generateEtags: true,
     reactStrictMode: true,
     trailingSlash: true,
-    swcMinify: true,
     productionBrowserSourceMaps: true,
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react'],
+    serverExternalPackages: ['@nordcom/commerce-db', 'mongoose'],
     experimental: {
-        //nextScriptWorkers: true,
-        //ppr: true,
-        esmExternals: 'loose',
-        caseSensitiveRoutes: true,
+        ppr: true,
+        //caseSensitiveRoutes: true,
         instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: [
@@ -32,12 +30,13 @@ const config = {
             'react-icons'
         ],
         scrollRestoration: true,
-        serverComponentsExternalPackages: [],
         serverSourceMaps: true,
-        serverMinification: true,
-        taint: true,
-        webpackBuildWorker: true,
-        parallelServerBuildTraces: true
+        serverMinification: isProduction,
+        //taint: true,
+        webpackBuildWorker: isProduction,
+        parallelServerBuildTraces: true,
+        reactCompiler: true,
+        turbo: {}
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -103,11 +102,13 @@ const config = {
         return process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
     },
 
-    webpack(config) {
+    webpack(config, context) {
         config.experiments = {
             ...config.experiments,
             topLevelAwait: true
         };
+
+        if (context.isServer) config.devtool = 'source-map';
         return config;
     },
 

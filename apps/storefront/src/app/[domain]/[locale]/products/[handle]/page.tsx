@@ -5,15 +5,13 @@ import styles from './page.module.scss';
 import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { ProductJsonLd } from 'next-seo';
 
-import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
-import { ProductReviewsApi } from '@/api/product-reviews';
 import { ShopifyApolloApiClient } from '@/api/shopify';
-import { ProductApi, ProductsApi } from '@/api/shopify/product';
+import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
@@ -28,7 +26,6 @@ import Breadcrumbs from '@/components/informational/breadcrumbs';
 import SplitView from '@/components/layout/split-view';
 import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
-import PrismicPage from '@/components/prismic-page';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
@@ -39,8 +36,9 @@ import { ProductContent, ProductPricing } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
 import type { Metadata } from 'next';
+import type { Product, WithContext } from 'schema-dts';
 
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
     const shops = await ShopsApi();
 
     const pages = (
@@ -80,7 +78,7 @@ export async function generateStaticParams() {
     ).flat(2);
 
     return pages;
-}
+}*/
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
@@ -92,7 +90,6 @@ export async function generateMetadata({
         if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
@@ -102,7 +99,7 @@ export async function generateMetadata({
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
-        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
+        const page = await PageApi({ shop, locale, handle, type: 'product_page' });
         const locales = await LocalesApi({ api });
 
         const title = page?.meta_title || product.seo.title || `${product.vendor} ${product.title}`;
@@ -164,7 +161,6 @@ export default async function ProductPage({
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
@@ -173,8 +169,6 @@ export default async function ProductPage({
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });
-        const reviews = await ProductReviewsApi({ api, product });
-        const { page } = await PageApi({ shop, locale, handle, type: 'product_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
@@ -209,6 +203,80 @@ export default async function ProductPage({
 
         const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
+        const jsonLd: WithContext<Product> = {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            url: `https://${shop.domain}/${locale.code}/products/${handle}/`, // FIXME: Variant.
+            name: `${product.vendor} ${product.title} ${variant.title}`,
+            brand: product.vendor,
+            sku: ProductToMerchantsCenterId({
+                locale: locale,
+                product: {
+                    productGid: product!.id,
+                    variantGid: variant!.id
+                } as any
+            }),
+            mpn: variant.barcode || variant.sku || undefined,
+            image: initialVariant.image?.url,
+            description: product.description || '',
+            offers: [
+                {
+                    '@type': 'Offer',
+                    itemCondition: 'https://schema.org/NewCondition',
+                    availability: variant.availableForSale
+                        ? 'https://schema.org/InStock'
+                        : 'https://schema.org/SoldOut',
+                    url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
+                        parseGid(variant.id).id
+                    }`,
+
+                    priceSpecification: {
+                        '@type': 'PriceSpecification',
+                        price: Number.parseFloat(variant.price.amount),
+                        priceCurrency: variant.price.currencyCode
+                    },
+
+                    // TODO: Make all of the following configurable.
+                    priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
+                    hasMerchantReturnPolicy: {
+                        '@type': 'MerchantReturnPolicy',
+                        applicableCountry: locale.country,
+                        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
+                    },
+                    shippingDetails: {
+                        '@type': 'OfferShippingDetails',
+                        shippingRate: {
+                            '@type': 'MonetaryAmount',
+                            maxValue: 25,
+                            minValue: 0,
+                            currency: variant.price.currencyCode!
+                        },
+                        shippingDestination: [
+                            {
+                                '@type': 'DefinedRegion',
+                                addressCountry: locale.country
+                            }
+                        ],
+                        deliveryTime: {
+                            '@type': 'ShippingDeliveryTime',
+                            handlingTime: {
+                                '@type': 'QuantitativeValue',
+                                minValue: 0,
+                                maxValue: 3,
+                                unitCode: 'DAY'
+                            },
+                            transitTime: {
+                                '@type': 'QuantitativeValue',
+                                minValue: 2,
+                                maxValue: 14,
+                                unitCode: 'DAY'
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+
         return (
             <>
                 <SplitView
@@ -233,7 +301,7 @@ export default async function ProductPage({
                                     <ProductPricing shop={shop} product={product} initialVariant={initialVariant} />
                                 </div>
                             }
-                            style={{ gap: '0', paddingBottom: 'var(--block-spacer-large)' }}
+                            style={{ gap: '0' }}
                             reverse
                         >
                             <Heading
@@ -251,9 +319,9 @@ export default async function ProductPage({
                             />
                         </SplitView>
 
-                        <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
+                        <InfoLines product={product} style={{ paddingBottom: 'var(--block-spacer-huge)' }} />
 
-                        <InfoLines product={product} />
+                        <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
 
                         <Tabs
                             className={styles.tabs}
@@ -271,20 +339,6 @@ export default async function ProductPage({
                                             />
 
                                             <ImportantProductDetails locale={locale} data={product} />
-
-                                            {page?.slices && page.slices.length > 0 ? (
-                                                <>
-                                                    <div className={styles.contentDivider} />
-                                                    <PrismicPage
-                                                        shop={shop}
-                                                        locale={locale}
-                                                        page={page}
-                                                        i18n={i18n}
-                                                        handle={`product-${handle}`}
-                                                        type={'product_page'}
-                                                    />
-                                                </>
-                                            ) : null}
                                         </>
                                     )
                                 },
@@ -298,21 +352,6 @@ export default async function ProductPage({
                     </div>
                 </SplitView>
 
-                {page?.slices2 && page.slices2.length > 0 ? (
-                    <PrismicPage
-                        shop={shop}
-                        locale={locale}
-                        page={
-                            {
-                                slices: page.slices2
-                            } as any
-                        }
-                        i18n={i18n}
-                        handle={`product-${handle}-secondary`}
-                        type={'product_page'}
-                    />
-                ) : null}
-
                 <Suspense
                     key={`${shop.id}.products.${handle}.recommended-products`}
                     fallback={<RecommendedProducts.skeleton />}
@@ -323,110 +362,7 @@ export default async function ProductPage({
                 <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
                 {/* Metadata */}
-                <ProductJsonLd
-                    useAppDir={true}
-                    key={variant.id}
-                    keyOverride={`item_${variant.id}`}
-                    productName={`${product.vendor} ${product.title} ${variant.title}`}
-                    brand={product.vendor}
-                    sku={ProductToMerchantsCenterId({
-                        locale: locale,
-                        product: {
-                            productGid: product!.id,
-                            variantGid: variant!.id
-                        } as any
-                    })}
-                    mpn={variant.barcode || variant.sku || undefined}
-                    images={(product.images.edges.map((edge) => edge.node.url).filter((i) => i) as string[]) || []}
-                    description={product.description || ''}
-                    // TODO: Utility function.
-                    reviews={
-                        reviews.reviews.map(({ rating, title, body, author, createdAt }) => ({
-                            type: 'Review',
-                            author: {
-                                type: 'Person',
-                                name: author
-                            },
-                            datePublished: createdAt,
-                            reviewBody: body, // FIXME: This is shopify rich text schema, we need write a parser.
-                            name: title,
-                            reviewRating: {
-                                bestRating: '5',
-                                ratingValue: rating.toString(),
-                                worstRating: '1'
-                            },
-                            publisher: {
-                                type: 'Organization',
-                                name: shop.name
-                            }
-                        })) || undefined
-                    }
-                    aggregateRating={
-                        (reviews.averageRating && {
-                            ratingValue: reviews.averageRating,
-                            reviewCount: reviews.reviews.length
-                        }) ||
-                        undefined
-                    }
-                    offers={[
-                        {
-                            itemCondition: 'https://schema.org/NewCondition',
-                            availability: variant.availableForSale
-                                ? 'https://schema.org/InStock'
-                                : 'https://schema.org/SoldOut',
-                            url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
-                                parseGid(variant.id).id
-                            }`,
-                            seller: {
-                                name: shop.name
-                            },
-                            priceSpecification: {
-                                type: 'PriceSpecification',
-                                price: Number.parseFloat(variant.price.amount),
-                                priceCurrency: variant.price.currencyCode
-                            },
-
-                            // TODO: Make all of the following configurable.
-                            priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
-                            hasMerchantReturnPolicy: {
-                                type: 'MerchantReturnPolicy',
-                                applicableCountry: locale.country,
-                                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
-                            },
-                            shippingDetails: {
-                                type: 'OfferShippingDetails',
-                                shippingRate: {
-                                    type: 'MonetaryAmount',
-                                    maxValue: 25,
-                                    minValue: 0,
-                                    currency: variant.price.currencyCode!
-                                },
-                                shippingDestination: [
-                                    {
-                                        type: 'DefinedRegion',
-                                        addressCountry: locale.country
-                                    }
-                                ],
-                                cutoffTime: '11:00:00Z',
-                                deliveryTime: {
-                                    type: 'ShippingDeliveryTime',
-                                    handlingTime: {
-                                        type: 'QuantitativeValue',
-                                        minValue: 0,
-                                        maxValue: 3,
-                                        unitCode: 'DAY'
-                                    },
-                                    transitTime: {
-                                        type: 'QuantitativeValue',
-                                        minValue: 2,
-                                        maxValue: 14,
-                                        unitCode: 'DAY'
-                                    }
-                                }
-                            }
-                        }
-                    ]}
-                />
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
             </>
         );
     } catch (error: unknown) {

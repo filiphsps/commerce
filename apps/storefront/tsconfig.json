@@ -16,8 +16,6 @@
             "@/models/*": ["src/models/*"],
             "@/utils/*": ["src/utils/*"],
             "@/styles/*": ["src/scss/*"],
-            "@/auth": ["src/auth/auth.ts"],
-            "@/auth/*": ["src/auth/*"],
             // i18n.
             "@/i18n/*": ["src/locales/*"],
             "@/i18n/dictionary": ["src/utils/dictionary.ts"],
@@ -38,9 +36,10 @@
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "strict": true
+        "strict": true,
+        "target": "ES2017"
     },
     "exclude": ["node_modules"],
-    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
+    "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
     "references": [{ "path": "../../tsconfig.json" }]
 }

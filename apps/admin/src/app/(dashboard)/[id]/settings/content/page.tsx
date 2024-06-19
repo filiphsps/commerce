@@ -53,6 +53,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
         {
             id: '',
             repository: '',
+            repositoryName: '',
             authentication: {
                 token: ''
             }

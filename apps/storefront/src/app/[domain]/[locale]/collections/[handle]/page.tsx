@@ -49,13 +49,12 @@ export async function generateMetadata({
         if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const collection = await CollectionApi({ api, handle, first: 16, after: null }, cache); // TODO: this.
-        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
+        const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
         const locales = await LocalesApi({ api });
 
         // TODO: i18n.
@@ -119,7 +118,6 @@ export default async function CollectionPage({
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
         const query = {
@@ -138,7 +136,7 @@ export default async function CollectionPage({
 
         // Do the actual API calls.
         const collection = await CollectionApi({ api, handle, filters: { first: PRODUCTS_PER_PAGE, after } }, cache);
-        const { page } = await PageApi({ shop, locale, handle, type: 'collection_page' });
+        const page = await PageApi({ shop, locale, handle, type: 'collection_page' });
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
@@ -152,14 +150,6 @@ export default async function CollectionPage({
                 ({ slice_type, variation }) => !(slice_type === 'collection' && (variation as any) === 'full')
             ) || [];
 
-        const pagination = (
-            <Suspense key={`${shop.id}.collection.${handle}.pagination`} fallback={<Pagination knownFirstPage={1} />}>
-                <section className={styles.collection}>
-                    <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                </section>
-            </Suspense>
-        );
-
         return (
             <>
                 <PageContent className={styles.container}>
@@ -169,11 +159,9 @@ export default async function CollectionPage({
                         subtitle={subtitle ? <Content dangerouslySetInnerHTML={{ __html: subtitle }} /> : null}
                     />
 
-                    {pagination}
-
                     <section className={styles.collection}>
                         <Suspense
-                            key={`${shop.id}.collection.${handle}.${JSON.stringify(searchParams, null, 0)}.${page}`}
+                            key={`${shop.id}.collection.${handle}.pagination.collection`}
                             fallback={<CollectionBlock.skeleton />}
                         >
                             <CollectionBlock
@@ -185,7 +173,14 @@ export default async function CollectionPage({
                         </Suspense>
                     </section>
 
-                    {pagination}
+                    <Suspense
+                        key={`${shop.id}.collection.${handle}.pagination`}
+                        fallback={<Pagination knownFirstPage={1} />}
+                    >
+                        <section className={styles.collection}>
+                            <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
+                        </section>
+                    </Suspense>
 
                     <section className={styles.content}>
                         {page && slices && (slices.length || 0) > 0 ? (

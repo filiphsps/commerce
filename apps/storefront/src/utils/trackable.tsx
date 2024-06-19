@@ -203,7 +203,7 @@ const shopifyEventHandler = async (
         hasUserConsent: true, // TODO: Cookie consent.
         ...getClientBrowserParameters(),
         ...pageAnalytics,
-        path: data.path!.replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
+        path: (data.path || '').replace(/^\/[a-z]{2}-[a-z]{2}\//, ''),
         //navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
@@ -335,7 +335,7 @@ function Trackable({ children }: TrackableProps) {
     const { shop, currency, locale } = useShop();
 
     // Only use the domain, not the subdomain.
-    const cookieDomain = shop.domain.split('.').slice(-2).join('.');
+    const cookieDomain = shop.domain.split('.').slice(-2).join('.') || shop.domain;
 
     // TODO: Break these out into a separate hook, to support other providers.
     useShopifyCookies({ hasUserConsent: true, domain: cookieDomain });

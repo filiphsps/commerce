@@ -30,12 +30,16 @@ export default async function SliceSimulatorPage({
     const i18n = await getDictionary({ shop, locale });
 
     return (
-        <SliceSimulator background="unset">
-            <SliceZone
-                components={slices}
-                slices={getSlices(searchParams.state)}
-                context={{ shop, i18n, locale, type: 'custom_page' }}
-            />
-        </SliceSimulator>
+        <SliceSimulator
+            background="unset"
+            sliceZone={(props) => (
+                <SliceZone
+                    {...props}
+                    components={slices}
+                    slices={getSlices(searchParams.state)}
+                    context={{ shop, i18n, locale, type: 'custom_page' }}
+                />
+            )}
+        />
     );
 }

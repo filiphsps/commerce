@@ -1,7 +1,7 @@
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
-import { Error, NoLocalesAvailableError } from '@nordcom/commerce-errors';
+import { Error, NoLocalesAvailableError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
@@ -72,7 +72,7 @@ export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?:
     }
 
     return cache(callback, [shop.id, 'locales'], {
-        tags: [shop.id, 'locales'],
+        tags: [shop.id, shop.domain, 'locales'],
         revalidate: 60 * 60 * 8 // 8 hours.
     })(api);
 };
@@ -88,32 +88,36 @@ export const LocaleApi = async ({ api }: { api: AbstractApi }) => {
 
     return cache(
         async (api: AbstractApi) => {
-            const { data } = await api.query<{ localization: Localization }>(gql`
-                query localization {
-                    localization {
-                        country {
-                            currency {
+            try {
+                const { data } = await api.query<{ localization: Localization }>(gql`
+                    query localization {
+                        localization {
+                            country {
+                                currency {
+                                    isoCode
+                                    name
+                                    symbol
+                                }
                                 isoCode
                                 name
-                                symbol
+                                unitSystem
                             }
-                            isoCode
-                            name
-                            unitSystem
-                        }
-                        language {
-                            isoCode
-                            name
-                        }
-                        market {
-                            id
-                            handle
+                            language {
+                                isoCode
+                                name
+                            }
+                            market {
+                                id
+                                handle
+                            }
                         }
                     }
-                }
-            `);
+                `);
 
-            return data?.localization!;
+                return data?.localization!;
+            } catch (error: unknown) {
+                throw new UnknownApiError((error as any)?.message);
+            }
         },
         [shop.id, locale.code, 'locale'],
         {

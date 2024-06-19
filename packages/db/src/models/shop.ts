@@ -2,8 +2,9 @@ import { Schema } from 'mongoose';
 
 import { db } from '../db';
 
-import type { BaseDocument } from '../db';
+import type { BaseDocument, DocumentExtras } from '../db';
 import type { UserBase } from '.';
+import type { Document } from 'mongoose';
 
 export interface ShopBase extends BaseDocument {
     name: string;
@@ -36,6 +37,7 @@ export interface ShopBase extends BaseDocument {
             alt: string;
         };
     };
+
     contentProvider: {
         id: string;
     } & (
@@ -49,11 +51,21 @@ export interface ShopBase extends BaseDocument {
               type: 'shopify';
           }
     );
-    collaborators: {
-        user: UserBase;
-        permissions: string[];
-    }[];
+
+    collaborators: [
+        {
+            type: {
+                user: UserBase;
+                permissions: string[];
+            };
+            default: [];
+        }
+    ];
 }
+
+export type OnlineShop = Omit<ShopBase, keyof Omit<Document, keyof DocumentExtras> | 'collaborators' | 'schema'> & {
+    collaborators?: ShopBase['collaborators'];
+};
 
 export const ShopSchema = new Schema<ShopBase>(
     {

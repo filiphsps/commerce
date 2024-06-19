@@ -63,9 +63,10 @@ describe('utils', () => {
     });
 
     describe('buildCacheTagArray', () => {
-        it('should build the cache tag array correctly with env', () => {
+        it('should build the cache tag array correctly', () => {
             const shop = {
-                id: '123'
+                id: 'id',
+                domain: 'domain'
             } as Shop;
 
             const locale = {
@@ -74,35 +75,7 @@ describe('utils', () => {
 
             const tags = ['tag1', 'tag2'];
 
-            const env = 'dev';
-
-            const expectedCacheTags = [
-                'dev',
-                'dev.tag1',
-                'dev.tag2',
-                '123dev',
-                '123.en-USdev',
-                '123.en-US.dev.tag1',
-                '123.en-US.dev.tag2'
-            ];
-
-            const cacheTags = buildCacheTagArray(shop, locale, tags, env);
-
-            expect(cacheTags).toEqual(expectedCacheTags);
-        });
-
-        it('should build the cache tag array correctly without env', () => {
-            const shop = {
-                id: '123'
-            } as Shop;
-
-            const locale = {
-                code: 'en-US'
-            } as Locale;
-
-            const tags = ['tag1', 'tag2'];
-
-            const expectedCacheTags = ['tag1', 'tag2', '123', '123.en-US', '123.en-US.tag1', '123.en-US.tag2'];
+            const expectedCacheTags = ['id', 'domain', 'domain.en-US', 'domain.en-US.tag1', 'domain.en-US.tag2'];
 
             const cacheTags = buildCacheTagArray(shop, locale, tags);
 

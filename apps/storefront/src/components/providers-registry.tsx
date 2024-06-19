@@ -4,11 +4,11 @@ import type { Shop } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { CartFragment } from '@/api/shopify/cart';
-import { createClient, linkResolver } from '@/utils/prismic';
-import { PrismicProvider } from '@prismicio/react';
+import { createClient } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
+import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
@@ -26,38 +26,38 @@ const CommerceProvider = ({
     children: ReactNode;
 }) => {
     switch (shop.commerceProvider.type) {
-        case 'shopify':
+        case 'shopify': {
             return (
-                <ShopProvider shop={shop} currency={currency} locale={locale}>
-                    <ShopifyProvider
-                        storefrontId={shop.commerceProvider.storefrontId}
-                        storeDomain={`https://${shop.commerceProvider.domain}`}
-                        storefrontApiVersion="2024-04"
-                        storefrontToken={shop.commerceProvider.authentication.publicToken}
-                        countryIsoCode={locale.country!}
-                        languageIsoCode={locale.language}
-                    >
-                        {children}
-                    </ShopifyProvider>
-                </ShopProvider>
+                <ShopifyProvider
+                    storefrontId={shop.commerceProvider.storefrontId}
+                    storeDomain={`https://${shop.commerceProvider.domain}`}
+                    storefrontApiVersion="2024-04"
+                    storefrontToken={shop.commerceProvider.authentication.publicToken}
+                    countryIsoCode={locale.country!}
+                    languageIsoCode={locale.language}
+                >
+                    {children}
+                </ShopifyProvider>
             );
-        default:
+        }
+        default: {
             throw new UnknownCommerceProviderError();
+        }
     }
 };
 
 const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
     switch (shop.contentProvider.type) {
-        case 'prismic':
-            return (
-                <PrismicProvider client={createClient({ shop, locale })} linkResolver={linkResolver}>
-                    {children}
-                </PrismicProvider>
-            );
-        case 'shopify': // TODO: Handle this.
+        case 'prismic': {
+            return <PrismicRegistry client={createClient({ shop, locale })}>{children}</PrismicRegistry>;
+        }
+        case 'shopify': {
+            // TODO: Handle this.
             return children;
-        default:
+        }
+        default: {
             throw new UnknownContentProviderError(shop.contentProvider);
+        }
     }
 };
 
@@ -73,26 +73,32 @@ const ProvidersRegistry = ({
     children: ReactNode;
 }) => {
     return (
-        <ContentProvider shop={shop} locale={locale}>
+        <ShopProvider shop={shop} currency={currency} locale={locale}>
             <CommerceProvider shop={shop} currency={currency} locale={locale}>
-                <CartProvider cartFragment={CartFragment} languageCode={locale.language} countryCode={locale.country!}>
-                    {children}
+                <ContentProvider shop={shop} locale={locale}>
+                    <CartProvider
+                        cartFragment={CartFragment}
+                        languageCode={locale.language}
+                        countryCode={locale.country!}
+                    >
+                        {children}
 
-                    <ToasterProvider
-                        theme="dark"
-                        position="bottom-left"
-                        expand={true}
-                        duration={5000}
-                        gap={4}
-                        toastOptions={{
-                            classNames: {
-                                toast: 'toast-notification'
-                            }
-                        }}
-                    />
-                </CartProvider>
+                        <ToasterProvider
+                            theme="dark"
+                            position="bottom-left"
+                            expand={true}
+                            duration={5000}
+                            gap={4}
+                            toastOptions={{
+                                classNames: {
+                                    toast: 'toast-notification'
+                                }
+                            }}
+                        />
+                    </CartProvider>
+                </ContentProvider>
             </CommerceProvider>
-        </ContentProvider>
+        </ShopProvider>
     );
 };
 export default ProvidersRegistry;

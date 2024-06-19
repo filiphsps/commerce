@@ -4,8 +4,8 @@
     --fallback-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
         'Helvetica Neue', sans-serif;
 
-    --color-bright: #fefefe;
-    --color-dark: #101418;
+    --color-bright: #ffffff;
+    --color-dark: #222222;
     --color-dark-secondary: #555555;
 
     --color-sale: #b51200;
@@ -14,11 +14,11 @@
 
     --color-lights-out: #051821;
 
-    --color-block: #efefef;
+    --color-block: #f4f4f4;
     --color-block-light: #f5f5f5;
-    --color-block-dark: #9e9e9e;
-    --color-block-darker: #bebebe;
-    --color-block-black: #616161;
+    --color-block-dark: #cacaca;
+    --color-block-darker: #a8a8a8;
+    --color-block-black: #222222;
     --color-block-shadow: rgba(0, 0, 0, 0.4);
 
     --color-gray: #989898;
@@ -27,8 +27,8 @@
     --color-green-dark: #093f09;
     --color-green-light: #e1faea;
 
-    --color-block-success: #95c394;
-    --color-block-success-dark: #658a65;
+    --color-block-success: #3b9e2e;
+    --color-block-success-dark: #2a7221;
     --color-block-success-text: var(--color-dark);
     --color-block-info: #6dc0d5;
     --color-block-info-dark: #1c5d99;
@@ -63,32 +63,26 @@ html {
         --block-border-radius-tiny: 0.65rem;
         --block-border-width: 0.325rem;
         --block-border-width-large: 0.425rem;
-        --block-border-width-small: 0.185rem;
+        --block-border-width-huge: 0.575rem;
+        --block-border-width-small: 0.265rem;
+        --block-border-width-tiny: 0.2rem;
 
-        $block-padding: 1.15rem;
-        --block-padding: #{$block-padding};
-        --block-padding-small: #{$block-padding / 2};
-        --block-padding-tiny: #{$block-padding / 3};
-        --block-padding-large: #{$block-padding * 1.5};
-        --block-padding-larger: #{$block-padding * 1.75};
+        --block-padding: 1.15rem;
+        --block-padding-small: calc(var(--block-padding) / 2);
+        --block-padding-tiny: calc(var(--block-padding) / 3);
+        --block-padding-large: calc(var(--block-padding) * 1.5);
+        --block-padding-huge: calc(var(--block-padding) * 1.75);
 
-        $block-spacer: 1rem;
-        --block-spacer: #{$block-spacer};
-        --block-spacer-small: #{$block-spacer / 2};
-        --block-spacer-tiny: #{$block-spacer / 3};
-        --block-spacer-large: #{$block-spacer * 1.5};
-        --block-spacer-huge: #{$block-spacer * 2};
+        --block-spacer: 1rem;
+        --block-spacer-small: calc(var(--block-spacer) / 2);
+        --block-spacer-tiny: calc(var(--block-spacer) / 3);
+        --block-spacer-large: calc(var(--block-spacer) * 1.5);
+        --block-spacer-huge: calc(var(--block-spacer) * 2);
 
         @media (max-width: $breakpoint-mobile) {
             --block-border-width: 0.3rem;
-
             --block-padding: 1rem;
-            --block-padding-small: 0.6rem;
-            --block-padding-large: 1.5rem;
-
             --block-spacer: 0.75rem;
-            --block-spacer-small: 0.5rem;
-            --block-spacer-large: 1rem;
         }
     }
 }
@@ -143,6 +137,10 @@ body {
         [data-icon] {
             width: 2rem;
         }
+    }
+
+    a:is([href]):where([href=''], [href='#']) {
+        cursor: default;
     }
 
     a:not(:disabled) {
@@ -212,19 +210,25 @@ input[type='search']:is(
     }
 }
 
-svg .primary.design,
-svg .primary {
-    stroke: inherit !important;
-    color: inherit !important;
-    fill: inherit !important;
+svg {
+    font-size: inherit;
+    height: 100%;
+    vertical-align: middle;
+
+    &.primary.design,
+    &.primary {
+        stroke: inherit !important;
+        color: inherit !important;
+        fill: inherit !important;
+    }
 }
 
-:is(a, button):not(:disabled) {
-    cursor: pointer;
+a:is([href]):where([href=''], [href='#']) {
+    cursor: default;
+}
 
-    &:is(:hover, :active) {
-        cursor: pointer;
-    }
+*:is(a:not(:where([href=''], [href='#'])), button):not(:disabled) {
+    cursor: pointer;
 }
 
 hr {

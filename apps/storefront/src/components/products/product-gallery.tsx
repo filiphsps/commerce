@@ -2,10 +2,11 @@
 
 import styles from '@/components/products/product-gallery.module.scss';
 
-import { type HTMLProps, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NextImage from 'next/image';
 
 import type { Image } from '@shopify/hydrogen-react/storefront-api-types';
+import type { HTMLProps } from 'react';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;

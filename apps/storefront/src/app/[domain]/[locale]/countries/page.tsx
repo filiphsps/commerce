@@ -30,12 +30,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'countries' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -93,20 +92,21 @@ export default async function CountriesPage({
 }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const countries = await CountriesApi({ api });
-        const { page } = await PageApi({ shop, locale, handle: 'countries', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'countries' });
 
         const i18n = await getDictionary(locale);
+        const { t } = useTranslation('common', i18n);
 
         return (
             <>
                 <PageContent>
-                    <Heading title={page?.title} subtitle={page?.description} />
+                    <Heading title={page?.title || t('countries')} subtitle={page?.description} />
+
                     <form
                         action={async (formData: FormData) => {
                             'use server';

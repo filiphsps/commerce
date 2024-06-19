@@ -4,7 +4,7 @@ import styles from '@/components/informational/vendors.module.scss';
 
 import type { Shop } from '@nordcom/commerce-database';
 
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';
 
 import Link from '@/components/link';
@@ -19,8 +19,7 @@ export type VendorsProps = {
     className?: string | undefined;
 };
 const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
     const vendors = await VendorsApi({ api });
 

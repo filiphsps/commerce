@@ -81,7 +81,7 @@ export default async function ShopSettingsDesignPage({ params: { id: shopId } }:
                     <Card className={styles.section} padding={false} borderless>
                         <Label as="label">Accents</Label>
                         <Card className={styles.container}>
-                            {shop.design.accents.map(({ type, color, foreground }, index) => (
+                            {shop.design.accents.map(({ type, color, foreground }: any, index: any) => (
                                 <Card key={`accents.${index}`} className={styles.section} padding={false} borderless>
                                     <Label as="label">{type} (Accent)</Label>
                                     <Card className={styles.grid}>

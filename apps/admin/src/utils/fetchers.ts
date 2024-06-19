@@ -3,7 +3,7 @@ import 'server-only';
 import { revalidateTag, unstable_cache as cache } from 'next/cache';
 
 import { prisma } from '@nordcom/commerce-database';
-import type { ShopBase } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
 const revalidateAll = async (userId: string, shopId: string, domain: string) => {
@@ -30,7 +30,7 @@ export async function getShopsForUser(userId: string, skipCache = isDevelopment)
     })();
 }
 
-export async function getShop(userId: string, shopId: string, skipCache = isDevelopment) {
+export async function getShop(userId: string, shopId: string, skipCache = isDevelopment): Promise<any> {
     const action = async () => {
         return await (await Shop.findById(shopId)).populate('collaborators.user').then(async (shop) => {
             await shop!.save();
@@ -45,7 +45,7 @@ export async function getShop(userId: string, shopId: string, skipCache = isDeve
     })();
 }
 
-export async function updateShop(userId: string, shopId: string, data: Partial<ShopBase>) {
+export async function updateShop(userId: string, shopId: string, data: Partial<OnlineShop>) {
     try {
         const sanitized = Object.fromEntries(Object.entries(data).filter(([key]) => !key.startsWith('$')));
 

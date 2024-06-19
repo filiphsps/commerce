@@ -38,7 +38,7 @@ const CollectionSlice = async ({ slice, index, context: { shop, locale } }: Coll
     const handle = slice.primary.handle as string;
     const fullWidth = slice.primary.display === 'full-width';
     const horizontal = slice.primary.direction === 'horizontal';
-    const showViewAll = slice.primary.show_view_all_card ?? true;
+    const showViewAll = slice.primary.show_view_all_card;
 
     return (
         <CollectionContainer slice={slice} className={fullWidth ? styles.full : undefined}>

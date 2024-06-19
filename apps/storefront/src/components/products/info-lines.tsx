@@ -5,6 +5,7 @@ import { FiPackage } from 'react-icons/fi';
 import { Label } from '@/components/typography/label';
 
 import type { Product } from '@/api/product';
+import type { HTMLProps } from 'react';
 
 export type StockStatusProps = {
     product?: Product;
@@ -18,7 +19,7 @@ const StockStatus = ({ product }: StockStatusProps) => {
     return (
         <section className={styles.item} data-status={'available'} title={available}>
             <FiPackage className={styles.icon} />
-            <Label>{available}</Label>
+            <Label className={styles.label}>{available}</Label>
         </section>
     );
 };
@@ -26,12 +27,13 @@ StockStatus.displayName = 'Nordcom.Products.StockStatus';
 
 export type InfoLinesProps = {
     product?: Product;
-};
-const InfoLines = ({ product }: InfoLinesProps) => {
+} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+
+const InfoLines = ({ product, className, ...props }: InfoLinesProps) => {
     if (!product) return null;
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${className}`} {...props}>
             <StockStatus product={product} />
         </div>
     );

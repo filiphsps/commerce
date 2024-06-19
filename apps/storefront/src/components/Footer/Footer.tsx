@@ -7,7 +7,7 @@ import Image from 'next/image';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { FooterApi } from '@/api/footer';
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
 
 import FooterContent from '@/components/Footer/footer-content';
@@ -22,8 +22,7 @@ export type FooterProps = {
     i18n: LocaleDictionary;
 };
 const Footer = async ({ shop, locale, i18n }: FooterProps) => {
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
     const footer = await FooterApi({ shop, locale });
     const store = await StoreApi({ api, locale });

@@ -6,7 +6,7 @@ import headerNavigationStyles from '@/components/header/header-navigation.module
 import { type HTMLProps } from 'react';
 import Image from 'next/image';
 
-import type { ShopBase } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { NavigationApi } from '@/api/navigation';
 
@@ -19,7 +19,7 @@ import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type HeaderProps = {
-    shop: ShopBase;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;

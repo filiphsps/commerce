@@ -1,0 +1,21 @@
+@import 'globals';
+
+.header {
+    display: block;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacer);
+
+    height: 100%;
+
+    font-size: 16px;
+
+    @media (min-width: $breakpoint-mobile) {
+        button {
+            width: max-content;
+        }
+    }
+}

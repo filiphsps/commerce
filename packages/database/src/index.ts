@@ -11,7 +11,7 @@ export type {
     ShopifyContentProvider,
     ShopTheme
 } from './shop';
-export { CommerceProviderAuthenticationApi, ShopApi, ShopsApi } from './shop';
+export { ShopApi, ShopsApi } from './shop';
 export { RestifyObject } from './utils';
 
 // TODO: Place these in the correct place.
