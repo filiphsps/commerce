@@ -29,6 +29,7 @@ interface ReturnsOneQuery {
 
 interface BaseFilterableQuery<I> {
     filter?: FilterQuery<I>;
+    projection?: ProjectionType<I> | undefined;
 }
 
 export class Service<DocType extends BaseDocument, M extends typeof Model<DocType>> {
@@ -74,14 +75,18 @@ export class Service<DocType extends BaseDocument, M extends typeof Model<DocTyp
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>, ReturnsOneQuery]>): Promise<DocType>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType[]>;
     public async find(args: MergeTypes<[BaseQuery, BaseFilterableQuery<DocType>]>): Promise<DocType | DocType[]> {
-        const { id, count, filter } = { id: undefined, count: undefined, ...args };
+        type Model = typeof this.model.find<DocType>;
+        type Req = ReturnType<Model>;
 
-        type Req = ReturnType<typeof this.model.find<DocType>>;
+        const { id, count, filter = {}, projection = undefined } = { id: undefined, count: undefined, ...args };
 
-        let req = this.model.find<DocType>({
-            ...(filter || {}),
-            ...(((id as any) && { _id: id }) || {})
-        });
+        let req = this.model.find<DocType>(
+            {
+                ...filter,
+                ...((id as any) ? { _id: id } : {})
+            },
+            projection
+        );
         req = (await this.mutateQuery<Req>(req, args))();
 
         let res = await req.exec();

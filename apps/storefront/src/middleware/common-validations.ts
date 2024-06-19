@@ -5,7 +5,7 @@ import type { NextURL } from 'next/dist/server/web/next-url';
 export const DOUBLE_SLASHES = /\/\//g;
 
 export const commonValidations = <T extends string | NextURL | URL>(url: T): T => {
-    let path: string;
+    let path: string = '';
     if (typeof url === 'string') {
         path = url;
     } else {

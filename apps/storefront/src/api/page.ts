@@ -1,35 +1,29 @@
 import { unstable_cache as cache } from 'next/cache';
 
 import type { Shop } from '@nordcom/commerce-database';
-import { Error, NotFoundError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
+import { buildCacheTagArray } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
 import type { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
-import type { Client as PrismicClient, PrismicDocument } from '@prismicio/client';
+import type { PrismicDocument } from '@prismicio/client';
 
 export const PagesApi = async ({
     shop,
     locale,
-    client: _client,
     exclude = ['shop', 'countries', 'search', 'cart']
 }: {
     shop: Shop;
     locale: Locale;
-    client?: PrismicClient;
     exclude?: string[];
 }): Promise<PrismicDocument[]> => {
-    if (shop.contentProvider.type !== 'prismic') {
-        // TODO: throw new NotFoundError();.
-        return [];
-    }
-
     return new Promise(async (resolve, reject) => {
-        const client = _client || createClient({ shop, locale });
-
         try {
+            const client = createClient({ shop, locale });
             const pages = await client.getAllByType('custom_page', {
+                limit: 50,
                 lang: locale.code
             });
 
@@ -39,10 +33,10 @@ export const PagesApi = async ({
         } catch (error: unknown) {
             if (Error.isNotFound(error)) {
                 if (!Locale.isDefault(locale)) {
-                    return resolve(await PagesApi({ shop, locale: Locale.default, client, exclude })); // Try again with default locale.
+                    return resolve(await PagesApi({ shop, locale: Locale.default, exclude })); // Try again with default locale.
                 }
 
-                return reject(new NotFoundError(`\`Pages\` for the locale \`${locale.code}\``));
+                return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
             }
 
             console.error(error);
@@ -59,70 +53,68 @@ export type PageDocument<T> = T extends 'collection_page'
       : CustomPageDocument;
 export type PageData<T> = PageDocument<T>['data'];
 
-export type Preloadable<T = unknown> = T & {
-    // eslint-disable-next-line unused-imports/no-unused-vars
-    preload: T extends (...args: infer A) => any ? (...args: A) => void : never;
+type PageTypeMapping = {
+    collection_page: CollectionPageDocument;
+    product_page: ProductPageDocument;
+    custom_page: CustomPageDocument;
+};
+type NarrowedPageType<T> = T extends keyof PageTypeMapping ? PageTypeMapping[T] : never;
+
+export type PageApiProps = {
+    shop: Shop;
+    locale: Locale;
+    handle: string;
 };
 
 /**
  * @todo Generalize api helpers.
  */
-export const PageApi = async <T extends PageType = 'custom_page'>(props: {
-    shop: Shop;
-    locale: Locale;
-    handle: string;
-    client?: PrismicClient;
-    type?: T;
-}): Promise<{
-    page: PageData<T> | null;
-}> => {
-    if (props.shop.contentProvider.type !== 'prismic') {
-        return { page: null };
-    }
+export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 'custom_page'>({
+    shop,
+    locale,
+    type = 'custom_page',
+    handle
+}: PageApiProps & { type?: T | 'custom_page' }): Promise<NarrowedPageType<T>['data'] | null> => {
+    if (!(shop as any)) throw new UnknownShopDomainError();
 
-    return cache(
-        async ({ shop, locale, client: _client, handle, type = 'custom_page' as T }) => {
-            const client = _client || createClient({ shop, locale });
+    const callback = async ({
+        shop,
+        type,
+        locale = Locale.default,
+        handle
+    }: PageApiProps & { type: T | 'custom_page' }) => {
+        try {
+            const client = createClient({ shop, locale });
 
-            try {
-                const { data: page } = await client.getByUID(type, handle, {
-                    lang: locale.code
-                });
+            const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle, {
+                lang: locale.code
+            });
 
-                if (!page) return { page: null };
-
-                return { page };
-            } catch (error) {
-                if (Error.isNotFound(error)) {
-                    if (!Locale.isDefault(locale)) {
-                        return await PageApi({ shop, locale: Locale.default, handle, type, client }); // Try again with default locale.
-                    }
-
-                    // Don't throw on 404.
-                    // TODO: In the future we absolutely should.
-                    return { page: null };
-                }
-
-                if ((error as any)?.message?.includes('unexpected field')) {
-                    return { page: null };
-                }
-
-                throw error;
+            if (!page) {
+                throw new NotFoundError(`"Page" with the handle "${handle}"`);
             }
-        },
-        [props.shop.id, props.locale.code, 'page', props.handle, props.type || 'custom_page'],
-        {
-            tags: [props.shop.id, props.locale.code, 'page', props.handle]
-        }
-    )(props);
-};
 
-/**
- * Preload a page to speed up api calls.
- *
- * @see {@link https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data}
- * @todo Generalize this for all API helpers.
- */
-PageApi.preload = (data: any) => {
-    void PageApi(data);
+            return page;
+        } catch (error) {
+            if (Error.isNotFound(error)) {
+                if (!Locale.isDefault(locale)) {
+                    return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
+                }
+
+                return null;
+            }
+
+            // TODO: Deal with errors properly.
+            // console.error(error);
+            return null;
+        }
+    };
+
+    // Fast-path for no cache.
+    if (!cache || typeof cache !== 'function') return callback({ shop, locale, type, handle });
+
+    return cache(callback, [shop.domain, shop.id], {
+        tags: buildCacheTagArray(shop, locale, [handle, 'prismic', 'page']),
+        revalidate: 60 * 60 * 8 // 8 hours.
+    })({ shop, locale, type, handle });
 };

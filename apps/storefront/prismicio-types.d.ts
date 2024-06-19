@@ -450,7 +450,7 @@ export type HeadDocument<Lang extends string = string> = prismic.PrismicDocument
     Lang
 >;
 
-type MenuItemDocumentDataSlicesSlice = NavigationItemSlice;
+type MenuItemDocumentDataSlicesSlice = never;
 
 /**
  * Content for MenuItem documents
@@ -596,7 +596,18 @@ export type NavigationDocument<Lang extends string = string> = prismic.PrismicDo
     Lang
 >;
 
-type ProductPageDocumentDataSlicesSlice = ProductDescriptionSlice;
+type ProductPageDocumentDataSlicesSlice =
+    | TextBlockSlice
+    | VendorsSlice
+    | ImageGridSlice
+    | CarouselSlice
+    | CollectionSlice
+    | AlertSlice
+    | IconGridSlice
+    | TitleSlice
+    | CollapsibleTextSlice
+    | BannerSlice
+    | SpacingSlice;
 
 type ProductPageDocumentDataSlices2Slice =
     | CollectionSlice
@@ -1668,91 +1679,6 @@ type VendorsSliceVariation = VendorsSliceDefault;
  */
 export type VendorsSlice = prismic.SharedSlice<'vendors', VendorsSliceVariation>;
 
-/**
- * Primary content in *NavigationItem → Default → Primary*
- */
-export interface NavigationItemSliceDefaultPrimary {
-    /**
-     * Title field in *NavigationItem → Default → Primary*
-     *
-     * - **Field Type**: Rich Text
-     * - **Placeholder**: The title/name of the link
-     * - **API ID Path**: navigation_item.default.primary.title
-     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-     */
-    title: prismic.RichTextField;
-
-    /**
-     * Link field in *NavigationItem → Default → Primary*
-     *
-     * - **Field Type**: Link
-     * - **Placeholder**: The target link
-     * - **API ID Path**: navigation_item.default.primary.link
-     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-     */
-    link: prismic.LinkField;
-
-    /**
-     * Child Menu field in *NavigationItem → Default → Primary*
-     *
-     * - **Field Type**: Content Relationship
-     * - **Placeholder**: *None*
-     * - **API ID Path**: navigation_item.default.primary.child_menu
-     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-     */
-    child_menu: prismic.ContentRelationshipField<'menu_item'>;
-}
-
-/**
- * Default variation for NavigationItem Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type NavigationItemSliceDefault = prismic.SharedSliceVariation<
-    'default',
-    Simplify<NavigationItemSliceDefaultPrimary>,
-    never
->;
-
-/**
- * Slice variation for *NavigationItem*
- */
-type NavigationItemSliceVariation = NavigationItemSliceDefault;
-
-/**
- * NavigationItem Shared Slice
- *
- * - **API ID**: `navigation_item`
- * - **Description**: NavigationItem
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type NavigationItemSlice = prismic.SharedSlice<'navigation_item', NavigationItemSliceVariation>;
-
-/**
- * Default variation for Description Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type ProductDescriptionSliceDefault = prismic.SharedSliceVariation<'default', Record<string, never>, never>;
-
-/**
- * Slice variation for *Description*
- */
-type ProductDescriptionSliceVariation = ProductDescriptionSliceDefault;
-
-/**
- * Description Shared Slice
- *
- * - **API ID**: `product_description`
- * - **Description**: A component that automatically renders the description of the current product
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type ProductDescriptionSlice = prismic.SharedSlice<'product_description', ProductDescriptionSliceVariation>;
-
 declare module '@prismicio/client' {
     interface CreateClient {
         (repositoryNameOrEndpoint: string, options?: prismic.ClientConfig): prismic.Client<AllDocumentTypes>;
@@ -1845,14 +1771,7 @@ declare module '@prismicio/client' {
             TitleSliceDefault,
             VendorsSlice,
             VendorsSliceVariation,
-            VendorsSliceDefault,
-            NavigationItemSlice,
-            NavigationItemSliceDefaultPrimary,
-            NavigationItemSliceVariation,
-            NavigationItemSliceDefault,
-            ProductDescriptionSlice,
-            ProductDescriptionSliceVariation,
-            ProductDescriptionSliceDefault
+            VendorsSliceDefault
         };
     }
 }

@@ -11,13 +11,18 @@ import AcceptLanguageParser from 'accept-language-parser';
 import type { NextRequest } from 'next/server';
 
 export const getHostname = async (req: NextRequest): Promise<string> => {
-    let hostname = (req.headers.get('host')!.replace('.localhost', '') || req.nextUrl.host).toLowerCase();
+    let hostname = (req.headers.get('host')?.replace('.localhost', '') || req.nextUrl.host || '').toLowerCase();
 
     // Remove port from hostname.
-    hostname = hostname.split(':')[0]!;
+    hostname = hostname ? hostname.split(':')[0]! : '';
 
     // Deal with development server and Vercel's preview URLs.
-    if (hostname === 'localhost' || hostname.endsWith('.vercel.app') || hostname.endsWith('app.github.dev')) {
+    if (
+        !hostname ||
+        hostname === 'localhost' ||
+        hostname.endsWith('.vercel.app') ||
+        hostname.endsWith('app.github.dev')
+    ) {
         if (process.env.SHOPS_DEV) {
             return 'shops.nordcom.io';
         }
@@ -38,12 +43,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
-    let shop;
-
     if (newUrl.pathname === '/') {
-        if (!shop) {
-            shop = await ShopApi(hostname);
-        }
+        const shop = await ShopApi(hostname);
 
         // Redirect to the primary domain if the hostname doesn't match.
         if (hostname !== shop.domain) {
@@ -70,11 +71,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            if (!shop) {
-                shop = await ShopApi(hostname);
-            }
+            const shop = await ShopApi(hostname);
 
-            const apiConfig = await ShopifyApiConfig({ shop, noHeaders: false, noCache: true });
+            const apiConfig = await ShopifyApiConfig({ shop, noCache: true, noHeaders: false });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api, noCache: true }))
                 .map(({ code }) => code.toLowerCase())
@@ -82,6 +81,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
             const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language') || '';
             const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
+
+            // TODO: Handle-fallback countries.
 
             locale = userLang || locales.at(0);
             if (!locale) {
@@ -102,7 +103,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // Replace locale with locale from cookie if it doesn't match.
     const locale = !!req.cookies.get('localization') ? Locale.from(req.cookies.get('localization')!.value!) : undefined;
     if (locale && newUrl.pathname.match(LOCALE_TEST)) {
-        const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0].replace('/', '');
+        const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0]?.replace('/', '');
         if (urlLocale && urlLocale !== locale.code) {
             newUrl.pathname = newUrl.pathname.replace(LOCALE_TEST, `/${locale.code}`);
         }

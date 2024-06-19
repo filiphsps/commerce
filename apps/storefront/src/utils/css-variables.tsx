@@ -1,29 +1,44 @@
 import { unstable_cache as cache } from 'next/cache';
 
 import { Shop } from '@nordcom/commerce-db';
-import { TodoError } from '@nordcom/commerce-errors';
+import { TodoError, UnknownApiError } from '@nordcom/commerce-errors';
 
-import { colord } from 'colord';
+import { colord, extend } from 'colord';
+import a11yPlugin from 'colord/plugins/a11y';
+
+extend([a11yPlugin]);
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
-    return cache(
-        async (domain: string) => {
-            const shop = await Shop.findByDomain(domain);
-            if (shop.design.accents.length <= 0) throw new TodoError();
-            const accents = shop.design.accents;
+    try {
+        return cache(
+            (domain: string) => {
+                return new Promise(async (resolve, reject) => {
+                    const shop = await Shop.findByDomain(domain);
+                    if (shop.design.accents.length <= 0) {
+                        return reject(new TodoError());
+                    }
+                    const accents = shop.design.accents;
 
-            // TODO: Deal with variants.
-            const primary = accents.find(({ type }) => type === 'primary')!;
-            const secondary = accents.find(({ type }) => type === 'secondary')!;
+                    // TODO: Deal with variants.
+                    const primary = accents
+                        .filter(({ type }) => type === 'primary')
+                        .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
+                    const secondary = accents
+                        .filter(({ type }) => type === 'secondary')
+                        .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
 
-            return {
-                primary,
-                secondary
-            };
-        },
-        [domain, 'branding']
-    )(domain);
+                    return resolve({
+                        primary,
+                        secondary
+                    });
+                });
+            },
+            [domain, 'branding']
+        )(domain);
+    } catch (error: unknown) {
+        throw new UnknownApiError((error as any)?.message);
+    }
 };
 
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
@@ -38,12 +53,12 @@ const CssVariablesProvider = async ({ domain }: { domain: string }) => {
 
             --color-accent-primary: ${branding.primary.color};
             --color-accent-primary-text: ${branding.primary.foreground};
-            --color-accent-primary-light: ${colord(branding.primary.color).lighten(0.175).saturate(0.15).toHex()};
+            --color-accent-primary-light: ${colord(branding.primary.color).lighten(0.115).saturate(0.15).toHex()};
             --color-accent-primary-dark: ${colord(branding.primary.color).darken(0.05).toHex()};
 
             --color-accent-secondary: ${branding.secondary.color};
             --color-accent-secondary-text: ${branding.secondary.foreground};
-            --color-accent-secondary-light: ${colord(branding.secondary.color).lighten(0.225).saturate(0.15).toHex()};
+            --color-accent-secondary-light: ${colord(branding.secondary.color).lighten(0.195).saturate(0.15).toHex()};
             --color-accent-secondary-dark: ${colord(branding.secondary.color).darken(0.15).toHex()};
 
             /* TODO: Remove these legacy variables. */

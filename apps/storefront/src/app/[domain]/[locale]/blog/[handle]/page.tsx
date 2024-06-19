@@ -5,7 +5,6 @@ import styles from './page.module.scss';
 import { unstable_cache as cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { NewsArticleJsonLd } from 'next-seo';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -13,7 +12,9 @@ import { Error } from '@nordcom/commerce-errors';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
+import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import { title } from 'process';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import { Content } from '@/components/typography/content';
@@ -21,6 +22,7 @@ import Heading from '@/components/typography/heading';
 import { Label } from '@/components/typography/label';
 
 import type { Metadata } from 'next';
+import type { Article, WithContext } from 'schema-dts';
 
 /*export async function generateStaticParams() {
     const locale = Locale.default;
@@ -70,9 +72,10 @@ export async function generateMetadata({
     params: ArticlePageParams;
 }): Promise<Metadata> {
     try {
+        if (!isValidHandle(handle)) notFound();
+
         const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
@@ -118,12 +121,39 @@ export default async function ArticlePage({
     params: ArticlePageParams;
 }) {
     try {
+        if (!isValidHandle(handle)) notFound();
+
         const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
         const article = await BlogArticleApi({ api, blogHandle: 'news', handle });
+
+        const jsonLd: WithContext<Article> = {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            url: `https://${shop.domain}/${locale.code}/blog/${handle}/`,
+            headline: title,
+            text: article.content,
+            description: article.seo?.description || article.excerpt || '',
+            articleSection: 'news',
+            image: [article.image?.url!],
+            keywords: article.tags.join(', '),
+            dateCreated: article.publishedAt,
+            datePublished: article.publishedAt,
+            author: {
+                '@type': 'Person',
+                name: article.authorV2?.name!
+            },
+            publisher: {
+                '@type': 'Organization',
+                name: shop.name,
+                logo: {
+                    '@type': 'ImageObject',
+                    url: shop.icons?.favicon?.src!
+                }
+            }
+        };
 
         return (
             <article>
@@ -165,21 +195,8 @@ export default async function ArticlePage({
 
                 <Breadcrumbs shop={shop} title={article.title} />
 
-                <NewsArticleJsonLd
-                    useAppDir={true}
-                    url={`https://${shop.domain}/${locale.code}/blog/${handle}/`}
-                    description={article.seo?.description || article.excerpt || ''}
-                    body={article.content}
-                    title={article.title}
-                    section="news"
-                    images={[article.image?.url!]}
-                    keywords={article.tags.join(', ') || ''}
-                    dateCreated={article.publishedAt}
-                    datePublished={article.publishedAt}
-                    authorName={article.authorV2?.name!}
-                    publisherName={shop.name}
-                    publisherLogo={shop.icons?.favicon?.src!}
-                />
+                {/* Metadata */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
             </article>
         );
     } catch (error: unknown) {

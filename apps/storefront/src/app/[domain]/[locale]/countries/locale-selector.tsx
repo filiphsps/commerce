@@ -43,6 +43,10 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
 
             {markets.flatMap((markets) =>
                 markets.map((country) => {
+                    if (!country.locale) {
+                        return null;
+                    }
+
                     return (
                         <Link
                             key={country.locale}

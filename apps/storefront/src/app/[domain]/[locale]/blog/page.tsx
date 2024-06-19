@@ -9,7 +9,7 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
-import { Locale } from '@/utils/locale';
+import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
 import PrismicPage from '@/components/prismic-page';
@@ -28,13 +28,17 @@ export async function generateMetadata({
     try {
         const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'blog' });
+        const blog = await BlogApi({ api, handle: 'news' });
         const locales = await LocalesApi({ api });
 
-        const title = page?.meta_title || page?.title || 'Blog'; // TODO: Fallback should respect i18n.
+        const i18n = await getDictionary(locale);
+        const { t } = useTranslation('common', i18n); // eslint-disable-line react-hooks/rules-of-hooks
+
+        const title = page?.meta_title || page?.title || blog.seo?.title || t('blog');
+
         const description: string | undefined =
             (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
         return {
@@ -53,7 +57,7 @@ export async function generateMetadata({
             openGraph: {
                 url: `/blog/`,
                 type: 'website',
-                title,
+                title: title!,
                 description,
                 siteName: shop.name,
                 locale: locale.code,
@@ -83,17 +87,20 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
     try {
         const shop = await ShopApi(domain, cache);
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const api = await ShopifyApolloApiClient({ shop, locale });
-        const { page } = await PageApi({ shop, locale, handle: 'blog', type: 'custom_page' });
-
+        const page = await PageApi({ shop, locale, handle: 'blog' });
         const blog = await BlogApi({ api, handle: 'news' });
+
         const i18n = await getDictionary(locale);
+        const { t } = useTranslation('common', i18n);
 
         return (
             <>
-                <Heading title={page?.title} subtitle={page?.description} />
+                <Heading
+                    title={page?.title || blog.title || t('blog')}
+                    subtitle={page?.description || blog.seo?.description}
+                />
 
                 <BlogContent blog={blog} shop={shop} locale={locale} i18n={i18n} />
 
@@ -102,8 +109,8 @@ export default async function BlogPage({ params: { domain, locale: localeData } 
                         shop={shop}
                         locale={locale}
                         page={page}
-                        i18n={i18n}
                         handle={'blog'}
+                        i18n={i18n}
                         type={'custom_page'}
                     />
                 )}

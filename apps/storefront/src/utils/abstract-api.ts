@@ -1,6 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import type { Nullable, Shop } from '@nordcom/commerce-database';
-import type { ShopBase } from '@nordcom/commerce-db';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { DocumentTransform } from '@apollo/client';
 import { visit } from 'graphql';
@@ -39,16 +39,10 @@ export type AbstractApiBuilder<K, Q> = ({
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
-export function buildCacheTagArray(shop: Shop | ShopBase, locale: Locale, tags: string[], env?: string) {
-    const prefix = env ? `${env}.` : '';
+export function buildCacheTagArray(shop: Shop | OnlineShop, locale: Locale, tags: string[]) {
+    const prefix = `${shop.domain}.${locale.code}`;
 
-    return [
-        ...(env ? [env] : []),
-        ...tags.map((tag) => `${prefix}${tag}`),
-        `${shop.id}${prefix.replace('.', '')}`,
-        `${shop.id}.${locale.code}${prefix.replace('.', '')}`,
-        ...tags.map((tag) => `${shop.id}.${locale.code}.${prefix}${tag}`)
-    ];
+    return [shop.id, shop.domain, prefix, ...tags.map((tag) => `${prefix}.${tag}`)];
 }
 
 /**
@@ -80,7 +74,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
                     cache: fetchPolicy || revalidate ? undefined : 'force-cache',
                     next: {
                         revalidate,
-                        tags: buildCacheTagArray(shop, locale, tags, 'shopify')
+                        tags: buildCacheTagArray(shop, locale, tags)
                     }
                 }
             },
@@ -101,7 +95,7 @@ export const ApiBuilder: AbstractShopifyApolloApiBuilder<TypedDocumentNode<any, 
  */
 export const cleanShopifyHtml = (html: string | unknown): Nullable<string> => {
     if (typeof html !== 'string' || !html) return null;
-    let out = html as string;
+    let out = (html as string) || '';
 
     // Remove all non-breaking spaces and replace them with normal spaces.
     // TODO: This is a hacky solution. We should write a proper shopify parser.

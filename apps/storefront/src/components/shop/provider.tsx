@@ -40,6 +40,7 @@ export function ShopProvider({ children, shop, currency, locale }: ShopProviderP
 
     return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
 }
+ShopProvider.displayName = 'Nordcom.ShopProvider';
 
 export const useShop = (): ShopContextValue => {
     const context = useContext(ShopContext);

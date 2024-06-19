@@ -18,8 +18,7 @@
         display: block;
         float: left;
 
-        margin: 0 var(--block-spacer-large) 0 0;
-        padding-bottom: calc(var(--block-spacer-small) / 2);
+        margin: 0 var(--block-padding-large) 0 0;
 
         border-bottom: var(--block-border-width) solid transparent;
         color: var(--color-block-dark);
@@ -29,7 +28,7 @@
         font-weight: 700;
 
         cursor: pointer;
-        transition: #{$animation-duration} ease-in-out;
+        transition: $animation-duration ease-in-out;
         user-select: none;
     }
 

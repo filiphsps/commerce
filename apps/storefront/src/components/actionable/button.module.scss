@@ -13,7 +13,7 @@
     max-height: 100%;
     padding: var(--block-padding-large) var(--block-padding);
 
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     text-align: center;
     line-height: 1;
@@ -23,7 +23,7 @@
     background-color: var(--accent-primary);
     color: var(--accent-primary-text);
 
-    transition: #{$animation-duration} ease-in-out all;
+    transition: $animation-duration ease-in-out all;
     -webkit-user-select: none;
     user-select: none;
 

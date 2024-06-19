@@ -86,14 +86,14 @@ describe('services', () => {
         it('should find multiple documents', async () => {
             const filter = { name: 'John Doe' };
             const result = await service.find({ filter });
-            expect(Model.find).toHaveBeenCalledWith(expect.objectContaining(filter));
+            expect(Model.find).toHaveBeenCalledWith(expect.objectContaining({ ...filter }), undefined);
             expect((result as any).length).toEqual(2);
         });
 
         it('should find one document', async () => {
             const filter = { name: 'John Doe' };
             const result = await service.find({ filter, count: 1 });
-            expect(Model.find).toHaveBeenCalledWith(filter);
+            expect(Model.find).toHaveBeenCalledWith(expect.objectContaining({ ...filter }), undefined);
             //expect(model.limit).toHaveBeenCalledWith(1);
             expect(result._id).toEqual('123');
         });

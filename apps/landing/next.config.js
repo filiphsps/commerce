@@ -20,7 +20,6 @@ const config = {
     experimental: {
         //nextScriptWorkers: true,
         //ppr: true,
-        esmExternals: 'loose',
         caseSensitiveRoutes: true,
         instrumentationHook: isProduction,
         optimizeCss: true,

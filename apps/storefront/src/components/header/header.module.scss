@@ -201,11 +201,6 @@
                 aspect-ratio: 1 / 1;
             }
 
-            svg {
-                font-size: inherit;
-                vertical-align: middle;
-            }
-
             &:empty {
                 display: none;
             }

@@ -5,7 +5,7 @@ import authConfig from '@/utils/auth.config';
 
 import type { NextAuthRequest } from 'next-auth/lib';
 
-export const runtime = 'experimental-edge';
+export const runtime = 'nodejs';
 export const config = {
     matcher: ['/((?!_next|_static|_vercel|instrumentation|assets|favicon.ico|[\\w-]+\\.\\w+).*)'],
     missing: [

@@ -6,25 +6,10 @@ import mongoose from 'mongoose';
 
 import type { Document } from 'mongoose';
 
-interface BaseDocument extends Document {
+export type DocumentExtras = {
     id: string;
-}
-export type { BaseDocument };
-
-mongoose.set('strictQuery', false);
-mongoose.set('strict', false);
-mongoose.set('toJSON', {
-    transform: (doc, ret) => {
-        doc.id = ret._id;
-        return ret;
-    }
-});
-mongoose.set('toObject', {
-    transform: (doc, ret) => {
-        doc.id = ret._id;
-        return ret;
-    }
-});
+};
+export type BaseDocument = Omit<Document, keyof DocumentExtras> & DocumentExtras;
 
 const uri = process.env.MONGODB_URI as string;
 if (!uri) throw new MissingEnvironmentVariableError('MONGODB_URI');
@@ -34,3 +19,8 @@ export const db = await mongoose.connect(uri, {
     autoIndex: true,
     bufferCommands: false
 });
+
+try {
+    db.set('strictQuery', false);
+    db.set('strict', false);
+} catch {}

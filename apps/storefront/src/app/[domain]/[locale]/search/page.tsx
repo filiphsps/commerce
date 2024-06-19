@@ -28,12 +28,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
-        const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
+        const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const locales = await LocalesApi({ api });
 
         const i18n = await getDictionary(locale);
@@ -86,16 +85,16 @@ export async function generateMetadata({
 export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
     try {
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
+        const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
 
-        const { page } = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const i18n = await getDictionary(locale);
+        const { t } = useTranslation('common', i18n);
 
         return (
             <>
-                <Heading title={page?.title} subtitle={page?.description} />
+                <Heading title={page?.title || t('search')} subtitle={page?.description} />
 
                 {page?.slices && page.slices.length > 0 ? (
                     <PrismicPage

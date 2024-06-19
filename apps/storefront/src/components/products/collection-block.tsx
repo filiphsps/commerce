@@ -6,7 +6,7 @@ import { unstable_cache as cache } from 'next/cache';
 
 import type { Shop } from '@nordcom/commerce-database';
 
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
 
 import Link from '@/components/link';
@@ -44,8 +44,7 @@ const CollectionBlock = async ({
     className,
     ...props
 }: CollectionBlockProps) => {
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
     const collection = await CollectionApi(
         {

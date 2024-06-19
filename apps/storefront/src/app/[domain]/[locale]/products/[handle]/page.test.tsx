@@ -24,7 +24,6 @@ describe('app', () => {
                 slices: []
             }
         }) as any as typeof OriginalPageApi;
-        PageApi.preload = vi.fn().mockResolvedValue({});
         return {
             PageApi
         };

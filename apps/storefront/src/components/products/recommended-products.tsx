@@ -6,7 +6,7 @@ import extraStyles from '@/components/products/recommended-products.module.scss'
 
 import type { Shop } from '@nordcom/commerce-database';
 
-import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
 import { getDictionary } from '@/utils/dictionary';
 import { type Locale, useTranslation } from '@/utils/locale';
@@ -25,8 +25,7 @@ export type RecommendedProductsProps = {
 const RecommendedProducts = async ({ shop, locale, product }: RecommendedProductsProps) => {
     if (!product) return null;
 
-    const apiConfig = await ShopifyApiConfig({ shop });
-    const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+    const api = await ShopifyApolloApiClient({ shop, locale });
 
     const recommended = await RecommendationApi({ api, id: product.id });
     const i18n = await getDictionary({ shop, locale });

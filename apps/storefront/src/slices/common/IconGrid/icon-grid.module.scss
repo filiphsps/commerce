@@ -6,10 +6,10 @@ section.container {
     grid-auto-rows: 1fr;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--block-spacer-huge) * 1.25);
+    gap: var(--block-spacer-huge);
 
     @media (min-width: $breakpoint-mobile) {
-        gap: var(--block-spacer-huge);
+        gap: var(--block-spacer-large);
         grid-template-rows: 100%;
         grid-template-columns: 1fr 1fr 1fr;
     }
@@ -22,7 +22,7 @@ section.container {
     &[data-background='secondary'] {
         --background-color: var(--color-accent-secondary-light);
         --border-color: var(--color-accent-secondary);
-        --color: var(--color-accent-primary);
+        --color: var(--color-accent-secondary-text);
     }
 
     .item {
@@ -34,7 +34,7 @@ section.container {
 
         height: 100%;
         width: 100%;
-        padding: calc(var(--block-padding) * 2.55) var(--block-padding) var(--block-padding) var(--block-padding);
+        padding: calc(var(--block-padding) * 2.5) var(--block-padding) var(--block-padding) var(--block-padding);
 
         background-color: var(--background-color);
         color: var(--color);
@@ -54,7 +54,7 @@ section.container {
 
             width: var(--size);
             height: var(--size);
-            padding: var(--block-padding-small);
+            padding: var(--block-padding-tiny);
 
             object-position: center;
             object-fit: contain;
@@ -70,9 +70,9 @@ section.container {
         }
 
         .title {
-            font-size: 1.05em;
-            font-weight: 700;
-            line-height: 1.05;
+            font-size: 1em;
+            font-weight: 600;
+            line-height: normal;
             text-align: center;
 
             @media (min-width: $breakpoint-mobile) {

@@ -69,13 +69,6 @@ vi.mock('next/navigation', async () => {
     };
 });
 
-vi.mock('@/api/product-reviews', () => ({
-    ProductReviewsApi: vi.fn().mockResolvedValue({
-        reviews: [],
-        averageRating: 5
-    })
-}));
-
 vi.mock('@shopify/hydrogen-react', async () => ({
     ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
     flattenConnection: vi.fn().mockImplementation((data) => data),

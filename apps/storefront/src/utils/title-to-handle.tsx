@@ -1,6 +1,5 @@
 export const TitleToHandle = (title: string) => {
-    title = title || '';
-    return title
+    return (title || '')
         .toLowerCase()
         .replace(new RegExp(' ', 'g'), '-')
         .replace(new RegExp('&', 'g'), '')

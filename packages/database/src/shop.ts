@@ -1,8 +1,9 @@
-import { UnknownCommerceProviderError, UnknownShopDomainError } from '@nordcom/commerce-errors';
+import { UnknownApiError, UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import prisma from './prisma';
 
-import type { CacheUtil, TaintUtil } from '.';
+import type { CacheUtil, Optional } from '.';
+import type { JsonValue } from '@prisma/client/runtime/library';
 
 export type ShopTheme = {
     header: {
@@ -11,22 +12,25 @@ export type ShopTheme = {
     };
 };
 
+type ShopifyCommerceProviderAuthenticationSecrets = {
+    token: string | null;
+    customers: {
+        id: string;
+        clientId: string;
+        clientSecret: string;
+    } | null;
+};
+type ShopifyCommerceProviderAuthenticationPublic = {
+    publicToken: string;
+};
 export type ShopifyCommerceProvider = {
     type: 'shopify';
     id: string;
     /** E.g. checkout.sweetsideofsweden.com */
     domain: string;
     storefrontId: string;
-    authentication: {
-        token: string | null;
-        publicToken: string;
-
-        customers: {
-            id: string;
-            clientId: string;
-            clientSecret: string;
-        } | null;
-    };
+    authentication: ShopifyCommerceProviderAuthenticationPublic &
+        Optional<ShopifyCommerceProviderAuthenticationSecrets>;
 };
 export type CommerceProvider = ShopifyCommerceProvider;
 
@@ -35,23 +39,73 @@ export type ShopifyContentProvider = {
 };
 export type PrismicContentProvider = {
     type: 'prismic';
-    id: string;
     repository: string;
+    repositoryName: string;
+
     authentication: {
         token: string | null;
-    };
+    } | null;
 };
 export type ContentProvider = ShopifyContentProvider | PrismicContentProvider;
 
 export type Shop = Awaited<ReturnType<typeof ShopApi>>;
 
-export const ShopApi = async (domain: string, cache?: any) => {
-    const callback = async (domain: string) => {
-        const {
-            commerceProvider: { data: commerceProviderData, ...commerceProvider },
-            ...shop
-        } = await (async () => {
-            const res = await prisma.shop.findFirst({
+const parseContentProvider = ({ type, data }: { type: string; data: JsonValue }, secure = false): ContentProvider => {
+    switch (type) {
+        case 'shopify': {
+            const { authentication, ...provider } = typeof data === 'string' ? JSON.parse(data!.toString()) : data;
+            return {
+                ...(secure ? authentication : {}),
+                ...provider,
+                type
+            } as ShopifyContentProvider;
+        }
+        case 'prismic': {
+            const { authentication, ...provider } = (
+                typeof data === 'string' ? JSON.parse(data!.toString()) : data
+            ) as PrismicContentProvider;
+
+            return {
+                ...(secure ? authentication : {}),
+                ...provider,
+                type
+            } as PrismicContentProvider;
+        }
+        default: {
+            throw new UnknownContentProviderError();
+        }
+    }
+};
+const parseCommerceProvider = ({ type, data }: { type: string; data: JsonValue }, secure = false): CommerceProvider => {
+    switch (type) {
+        case 'shopify': {
+            const {
+                authentication: { publicToken, ...authentication },
+                ...provider
+            } = (typeof data === 'string' ? JSON.parse(data!.toString()) : data) as Omit<
+                ShopifyCommerceProvider,
+                'type'
+            >;
+
+            return {
+                authentication: {
+                    publicToken,
+                    ...(secure ? authentication : {})
+                },
+                ...provider,
+                type
+            } as ShopifyCommerceProvider;
+        }
+        default: {
+            throw new UnknownCommerceProviderError();
+        }
+    }
+};
+
+export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false) => {
+    try {
+        const callback = async (domain: string, secure: boolean) => {
+            const { commerceProvider, contentProvider, ...res } = await prisma.shop.findFirstOrThrow({
                 where: {
                     OR: [
                         {
@@ -109,9 +163,11 @@ export const ShopApi = async (domain: string, cache?: any) => {
                 }
             });
 
-            if (!res) throw new UnknownShopDomainError();
-            else if (!res.commerceProvider) new UnknownCommerceProviderError();
-            else if (!res.commerceProvider.data) new UnknownCommerceProviderError();
+            if (commerceProvider === null || !commerceProvider.data) {
+                new UnknownCommerceProviderError();
+            } else if (!contentProvider?.data) {
+                new UnknownContentProviderError();
+            }
 
             return {
                 ...res,
@@ -120,128 +176,50 @@ export const ShopApi = async (domain: string, cache?: any) => {
                         ? res.theme.data
                         : JSON.parse((res.theme?.data || '{}').toString())) as Partial<ShopTheme>)
                 },
-                commerceProvider: {
-                    ...res.commerceProvider,
-                    data: (typeof res.commerceProvider?.data === 'object'
-                        ? res.commerceProvider.data
-                        : JSON.parse(res.commerceProvider!.data.toString())) as ShopifyCommerceProvider
-                },
-                contentProvider: {
-                    type: res.contentProvider?.type!,
-                    ...(typeof res.contentProvider?.data === 'object'
-                        ? res.contentProvider.data
-                        : JSON.parse(res.contentProvider!.data.toString())) // FIXME: This shouldn't be hardcoded to prismic.
-                } as ContentProvider
+                commerceProvider: parseCommerceProvider(commerceProvider!, secure),
+                contentProvider: parseContentProvider(contentProvider!, secure)
             };
-        })();
-
-        return {
-            ...shop,
-            commerceProvider: {
-                ...commerceProvider,
-                ...commerceProviderData,
-                authentication: {
-                    publicToken: commerceProviderData.authentication.publicToken
-                }
-            }
         };
-    };
 
-    if (!cache || typeof cache !== 'function') {
-        return callback(domain);
+        if (!cache || typeof cache !== 'function') {
+            return callback(domain, secure);
+        }
+
+        return cache(callback, [domain, `secure=${secure}`], {
+            tags: [domain, `secure=${secure}`],
+            revalidate: 60 * 60 * 8 // 8 hours.
+        })(domain, secure) as ReturnType<typeof callback>;
+    } catch (error: unknown) {
+        // throw new UnknownShopDomainError();
+        throw new UnknownApiError((error as any)?.message);
     }
-
-    return cache(async (domain: string) => callback(domain), [domain], {
-        tags: [domain],
-        revalidate: 60 * 60 * 8 // 8 hours.
-    })(domain) as ReturnType<typeof callback>;
 };
 
 export const ShopsApi = async (cache?: any) => {
-    const callback = async () => {
-        const shops = await prisma.shop.findMany({
-            select: {
-                id: true,
-                domain: true
-            },
-            cacheStrategy: {
-                ttl: 60 * 60 * 4 // 4 hours.
-            }
-        });
-
-        return Promise.all(shops.map((shop) => ShopApi(shop.domain)));
-    };
-
-    if (!cache || typeof cache !== 'function') {
-        return callback();
-    }
-
-    return cache(async () => callback(), ['shops'], {
-        tags: ['shops'],
-        revalidate: 60 * 60 * 8 // 8 hours.
-    })() as ReturnType<typeof callback>;
-};
-
-export const CommerceProviderAuthenticationApi = async ({
-    shop,
-    cache,
-    taint
-}: {
-    shop: Shop;
-    cache?: CacheUtil;
-    taint?: TaintUtil;
-}) => {
-    const callback = async (shop: Shop) => {
-        const res = await (async (shop: Shop) => {
-            if (!shop) throw new UnknownShopDomainError();
-            else if (!shop.commerceProvider) throw new UnknownCommerceProviderError();
-
-            switch (shop.commerceProvider.type) {
-                case 'shopify': {
-                    const { data, ...provider } =
-                        (
-                            await prisma.shop.findFirst({
-                                where: {
-                                    domain: shop.domain
-                                },
-                                select: {
-                                    commerceProvider: {
-                                        select: {
-                                            type: true,
-                                            data: true
-                                        }
-                                    }
-                                },
-                                cacheStrategy: {
-                                    ttl: 60 * 60 * 4 // 4 hours.
-                                }
-                            })
-                        )?.commerceProvider || {};
-                    if (!provider || !data) throw new UnknownShopDomainError();
-
-                    return {
-                        ...provider,
-                        ...((typeof data === 'object' ? data : JSON.parse(data.toString())) as ShopifyCommerceProvider)
-                    };
+    try {
+        const callback = async () => {
+            const shops = await prisma.shop.findMany({
+                select: {
+                    id: true,
+                    domain: true
+                },
+                cacheStrategy: {
+                    ttl: 60 * 60 * 4 // 4 hours.
                 }
-                default: {
-                    throw new UnknownCommerceProviderError();
-                }
-            }
-        })(shop);
+            });
 
-        if (!!taint && typeof taint === 'function') {
-            taint('Do not pass commerce provider authentication to the client', res);
+            return Promise.all(shops.map((shop) => ShopApi(shop.domain)));
+        };
+
+        if (!cache || typeof cache !== 'function') {
+            return callback();
         }
-        return res;
-    };
 
-    if (!cache || typeof cache !== 'function') {
-        return await callback(shop);
+        return cache(async () => callback(), ['shops'], {
+            tags: ['shops'],
+            revalidate: 60 * 60 * 8 // 8 hours.
+        })() as ReturnType<typeof callback>;
+    } catch (error: unknown) {
+        throw new UnknownApiError((error as any)?.message);
     }
-
-    return cache(callback, [shop.id, 'commerce', 'authentication'], {
-        tags: [shop.id, `${shop.id}.commerce.authentication`],
-        revalidate: 60 * 60 * 8 // 8 hours.
-    })(shop);
 };

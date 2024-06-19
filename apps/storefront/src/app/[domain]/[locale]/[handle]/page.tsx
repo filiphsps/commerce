@@ -3,11 +3,11 @@ import 'server-only';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
-import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
+import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
-import { PageApi, PagesApi } from '@/api/page';
-import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
+import { PageApi } from '@/api/page';
+import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
@@ -18,7 +18,7 @@ import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
 
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
     const shops = await ShopsApi();
 
     const pages = (
@@ -55,7 +55,7 @@ export async function generateStaticParams() {
     ).flat(2);
 
     return pages;
-}
+}*/
 
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
@@ -67,13 +67,12 @@ export async function generateMetadata({
         if (!isValidHandle(handle)) notFound();
 
         const locale = Locale.from(localeData);
-        if (!locale) notFound();
 
         const shop = await ShopApi(domain, cache);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
-        const { page } = await PageApi({ shop, locale, handle });
+        const page = await PageApi({ shop, locale, handle });
         if (!page) notFound();
         // Extra calls,
 
@@ -119,12 +118,11 @@ export default async function CustomPage({
 
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeCode);
-        if (!locale) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
 
-        const { page } = await PageApi({ shop, locale, handle });
+        const page = await PageApi({ shop, locale, handle } as any);
         if (!page) notFound(); // TODO: Return proper error.
 
         // Get dictionary of strings for the current locale.

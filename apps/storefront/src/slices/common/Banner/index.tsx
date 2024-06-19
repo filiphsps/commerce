@@ -1,8 +1,7 @@
 import styles from './banner.module.scss';
 
-import { asLink } from '@prismicio/client';
+import { PrismicNextLink } from '@prismicio/next';
 
-import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { Content } from '@prismicio/client';
@@ -39,15 +38,14 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
                 </div>
                 <div className={styles.actions}>
                     {slice.items.map((cta, index) => (
-                        <Link
+                        <PrismicNextLink
                             key={index}
                             className={styles.action}
                             data-type={cta.type ? 'primary' : 'default'}
-                            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                            href={((cta.target && asLink(cta.target)?.toString()!) || '')!} // FIXME: Handle this correctly.
+                            field={cta.target}
                         >
                             <PrismicText data={cta.title} />
-                        </Link>
+                        </PrismicNextLink>
                     ))}
                 </div>
             </div>

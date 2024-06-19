@@ -2,17 +2,16 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 
 import { unstable_cache as cache } from 'next/cache';
-import { Public_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { SocialProfileJsonLd } from 'next-seo';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
-import { ShopifyApolloApiClient } from '@/api/shopify';
-import { LocaleApi } from '@/api/store';
+import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
+import { LocaleApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
+import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -24,19 +23,31 @@ import ProvidersRegistry from '@/components/providers-registry';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
-//export const runtime = 'experimental-edge';
-export const revalidate = 60 * 60 * 8; // 8 hours.
+export const runtime = 'nodejs';
 export const dynamic = 'force-static';
-
-const fontPrimary = Public_Sans({
-    weight: 'variable',
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-primary',
-    preload: true
-});
+export const revalidate = 60 * 60 * 8; // 8 hours.
 
 export type LayoutParams = { domain: string; locale: string };
+
+export async function generateStaticParams(): Promise<LayoutParams[]> {
+    const shops = await ShopsApi();
+
+    return (
+        await Promise.all(
+            shops.map(async ({ domain }) => {
+                const shop = await ShopApi(domain, cache, true);
+                const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
+                const api = await ShopifyApiClient({ shop, apiConfig });
+                const locales = await LocalesApi({ api });
+
+                return locales.map(({ code }) => ({
+                    domain: shop.domain,
+                    locale: code
+                }));
+            })
+        )
+    ).flat(1);
+}
 
 export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
     const branding = await getBrandingColors(domain);
@@ -105,81 +116,75 @@ export default async function RootLayout({
         const localization = await LocaleApi({ api });
 
         return (
-            <>
-                <html
-                    lang={locale.code}
-                    className={fontPrimary.variable}
-                    // A bunch of extensions add classes to the `html` element.
-                    suppressHydrationWarning={true}
-                >
-                    <head suppressHydrationWarning={true}>
-                        <CssVariablesProvider domain={domain} />
-                    </head>
+            <html
+                lang={locale.code}
+                className={primaryFont.variable}
+                // A bunch of extensions add classes to the `html` element.
+                suppressHydrationWarning={true}
+            >
+                <head suppressHydrationWarning={true}>
+                    <CssVariablesProvider domain={domain} />
+                </head>
 
-                    <body suppressHydrationWarning={true}>
-                        <ProvidersRegistry
-                            shop={shop}
-                            currency={localization?.country.currency.isoCode}
-                            locale={locale}
-                        >
-                            <AnalyticsProvider shop={shop}>
-                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent as="main" primary={true}>
-                                        {children}
-                                    </PageContent>
-                                </ShopLayout>
-                            </AnalyticsProvider>
+                <body suppressHydrationWarning={true}>
+                    <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
+                        <AnalyticsProvider shop={shop}>
+                            <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                <PageContent as="main" primary={true}>
+                                    {children}
+                                </PageContent>
+                            </ShopLayout>
 
                             <HeaderProvider loaderColor={branding.primary.color} />
-                        </ProvidersRegistry>
+                        </AnalyticsProvider>
+                    </ProvidersRegistry>
 
-                        <SocialProfileJsonLd
-                            // TODO: Get all of this dynamically.
-                            useAppDir={true}
-                            type="Organization"
-                            name={shop.name}
-                            url={`https://${shop.domain}/${locale}/`}
-                            logo={shop.icons?.favicon?.src}
-                            foundingDate="2023"
-                            founders={[
-                                {
-                                    '@type': 'Person',
-                                    name: 'Marcel Sobolewski',
-                                    email: 'marcel@nordcom.io',
-                                    jobTitle: 'Interim Chief Executive Officer'
-                                },
-                                {
-                                    '@type': 'Person',
-                                    name: 'Filiph Siitam Sandström',
-                                    email: 'filiph@nordcom.io',
-                                    jobTitle: 'Chief Technology Officer'
-                                },
-                                {
-                                    '@type': 'Person',
-                                    name: 'Dennis Sahlin',
-                                    email: 'dennis@nordcom.io',
-                                    jobTitle: 'Founder'
-                                },
-                                {
-                                    '@type': 'Person',
-                                    name: 'Albin Dahlqvist',
-                                    email: 'albin@nordcom.io',
-                                    jobTitle: 'Founder'
-                                }
-                            ]}
-                            address={{
-                                '@type': 'PostalAddress',
-                                streetAddress: 'Sädesbingen 20 lgh 1301',
-                                addressLocality: 'Trollhättan',
-                                addressRegion: 'Västra Götaland',
-                                postalCode: '461 61',
-                                addressCountry: 'Sweden'
-                            }}
-                            sameAs={[]}
-                        />
-                    </body>
-                </html>
-            </>
+                    {/*<SocialProfileJsonLd
+                        // TODO: Get all of this dynamically.
+                        useAppDir={true}
+                        type="Organization"
+                        name={shop.name}
+                        url={`https://${shop.domain}/${locale.code}/`}
+                        logo={shop.icons?.favicon?.src}
+                        foundingDate="2023"
+                        founders={[
+                            {
+                                '@type': 'Person',
+                                name: 'Marcel Sobolewski',
+                                email: 'marcel@nordcom.io',
+                                jobTitle: 'Interim Chief Executive Officer'
+                            },
+                            {
+                                '@type': 'Person',
+                                name: 'Filiph Siitam Sandström',
+                                email: 'filiph@nordcom.io',
+                                jobTitle: 'Chief Technology Officer'
+                            },
+                            {
+                                '@type': 'Person',
+                                name: 'Dennis Sahlin',
+                                email: 'dennis@nordcom.io',
+                                jobTitle: 'Founder'
+                            },
+                            {
+                                '@type': 'Person',
+                                name: 'Albin Dahlqvist',
+                                email: 'albin@nordcom.io',
+                                jobTitle: 'Founder'
+                            }
+                        ]}
+                        address={{
+                            '@type': 'PostalAddress',
+                            streetAddress: 'Sädesbingen 20 lgh 1301',
+                            addressLocality: 'Trollhättan',
+                            addressRegion: 'Västra Götaland',
+                            postalCode: '461 61',
+                            addressCountry: 'Sweden'
+                        }}
+                        sameAs={[]}
+                    />*/}
+                </body>
+            </html>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

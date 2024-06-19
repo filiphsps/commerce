@@ -8,29 +8,12 @@ import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
 import type { FooterModel } from '@/models/FooterModel';
-import type { Client as PrismicClient } from '@prismicio/client';
 
-export const FooterApi = async ({
-    shop,
-    locale,
-    client: _client
-}: {
-    shop: Shop;
-    locale: Locale;
-    client?: PrismicClient;
-}): Promise<FooterModel> => {
-    if (shop.contentProvider.type !== 'prismic') {
-        // TODO: Handle non-Prismic content providers.
-        return {
-            address: '',
-            blocks: []
-        };
-    }
+export const FooterApi = async ({ shop, locale }: { shop: Shop; locale: Locale }): Promise<FooterModel> => {
+    const client = createClient({ shop, locale });
 
     return cache(
-        async (shop: Shop, locale: Locale, _client?: PrismicClient) => {
-            const client = _client || createClient({ shop, locale });
-
+        async (shop: Shop, locale: Locale) => {
             try {
                 const res = await client.getSingle('footer', {
                     lang: locale.code
@@ -46,7 +29,7 @@ export const FooterApi = async ({
             } catch (error: unknown) {
                 if (ApiError.isNotFound(error)) {
                     if (!Locale.isDefault(locale)) {
-                        return FooterApi({ shop, locale: Locale.default, client }); // Try again with default locale.
+                        return FooterApi({ shop, locale: Locale.default });
                     }
 
                     throw new NotFoundError(`"Footer" with the locale "${locale.code}"`);
@@ -60,5 +43,5 @@ export const FooterApi = async ({
             tags: buildCacheTagArray(shop, locale, ['footer']),
             revalidate: 60 * 60 * 8 // 8 hours.
         }
-    )(shop, locale, _client);
+    )(shop, locale);
 };

@@ -3,6 +3,7 @@ import '@/styles/app.scss';
 
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
+import { notFound } from 'next/navigation';
 
 import { ShopApi } from '@nordcom/commerce-database';
 
@@ -45,6 +46,10 @@ export default async function RootLayout({
     const locale = Locale.default;
 
     const shop = await ShopApi(domain, cache);
+    if (!shop) {
+        notFound();
+    }
+
     const api = await ShopifyApolloApiClient({ shop, locale });
 
     const localization = await LocaleApi({ api });

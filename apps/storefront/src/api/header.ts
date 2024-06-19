@@ -8,28 +8,12 @@ import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
 import type { HeaderModel } from '@/models/HeaderModel';
-import type { Client as PrismicClient } from '@prismicio/client';
 
-export const HeaderApi = async ({
-    shop,
-    locale,
-    client: _client
-}: {
-    shop: Shop;
-    locale: Locale;
-    client?: PrismicClient;
-}): Promise<HeaderModel> => {
-    if (shop.contentProvider.type !== 'prismic') {
-        // TODO: Handle non-Prismic content providers.
-        return {
-            announcements: []
-        };
-    }
+export const HeaderApi = async ({ shop, locale }: { shop: Shop; locale: Locale }): Promise<HeaderModel> => {
+    const client = createClient({ shop, locale });
 
     return cache(
-        async (shop: Shop, locale: Locale, _client?: PrismicClient) => {
-            const client = _client || createClient({ shop, locale });
-
+        async (shop: Shop, locale: Locale) => {
             try {
                 const res = await client.getSingle('head', {
                     lang: locale.code
@@ -39,7 +23,7 @@ export const HeaderApi = async ({
             } catch (error: unknown) {
                 if (ApiError.isNotFound(error)) {
                     if (!Locale.isDefault(locale)) {
-                        return HeaderApi({ shop, locale: Locale.default, client }); // Try again with default locale.
+                        return HeaderApi({ shop, locale: Locale.default }); // Try again with default locale.
                     }
 
                     throw new NotFoundError(`"Header" with the locale "${locale.code}"`);
@@ -53,5 +37,5 @@ export const HeaderApi = async ({
             tags: buildCacheTagArray(shop, locale, ['header']),
             revalidate: 60 * 60 * 8 // 8 hours.
         }
-    )(shop, locale, _client);
+    )(shop, locale);
 };

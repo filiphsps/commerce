@@ -21,7 +21,7 @@ const input = Object.fromEntries(
 );
 
 const logger = createLogger(undefined, {
-    prefix: process.cwd().split('/').at(-1)
+    prefix: process.cwd()?.split('/').at(-1)
 });
 logger.info(JSON.stringify({ __dirname, ...input }, null, 4));
 

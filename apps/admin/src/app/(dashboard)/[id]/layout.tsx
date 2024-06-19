@@ -130,7 +130,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
                             </Label>
 
                             <div className={styles.settings}>
-                                {shop.collaborators.map(({ user: { id, name, avatar } }) => (
+                                {/*shop.collaborators.map(({ user: { id, name, avatar } }) => (
                                     <Card key={id} className={`${styles.setting} ${styles.collaborator}`}>
                                         {!!avatar ? (
                                             // eslint-disable-next-line @next/next/no-img-element
@@ -149,7 +149,7 @@ export default async function ShopLayout({ children, params: { id: shopId } }: S
 
                                         <Label as="div">{name}</Label>
                                     </Card>
-                                ))}
+                                ))*/}
                             </div>
                         </div>
                     </aside>

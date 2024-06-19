@@ -17,7 +17,37 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
-                        "product_description": {
+                        "text_block": {
+                            "type": "SharedSlice"
+                        },
+                        "vendors": {
+                            "type": "SharedSlice"
+                        },
+                        "image_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "carousel": {
+                            "type": "SharedSlice"
+                        },
+                        "collection": {
+                            "type": "SharedSlice"
+                        },
+                        "alert": {
+                            "type": "SharedSlice"
+                        },
+                        "icon_grid": {
+                            "type": "SharedSlice"
+                        },
+                        "title": {
+                            "type": "SharedSlice"
+                        },
+                        "collapsible_text": {
+                            "type": "SharedSlice"
+                        },
+                        "banner": {
+                            "type": "SharedSlice"
+                        },
+                        "spacing": {
                             "type": "SharedSlice"
                         }
                     }

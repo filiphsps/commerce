@@ -8,11 +8,11 @@ import type { HTMLProps } from 'react';
 
 export type ProductQuantityBreaksItemProps = {
     requiredQuantity: number;
+    className?: string;
 } & HTMLProps<HTMLButtonElement>;
 export const ProductQuantityBreaksItem = ({
     requiredQuantity,
-    style,
-    className,
+    className = '',
     ...props
 }: ProductQuantityBreaksItemProps) => {
     const { quantity, setQuantity } = useQuantity();
@@ -21,7 +21,7 @@ export const ProductQuantityBreaksItem = ({
         <button
             {...props}
             type="button"
-            className={`${styles.item} ${requiredQuantity === quantity ? styles.selected : ''}`}
+            className={`${styles.item} ${requiredQuantity === quantity ? styles.selected : ''} ${className}`}
             onClick={() => setQuantity(requiredQuantity)}
         >
             <div className={styles.quantity}>{requiredQuantity}x</div>
@@ -32,9 +32,9 @@ export const ProductQuantityBreaksItem = ({
 ProductQuantityBreaksItem.displayName = 'Nordcom.Products.QuantityBreaks.Item';
 
 export type ProductQuantityBreaksProps = {} & HTMLProps<HTMLDivElement>;
-export const ProductQuantityBreaks = ({ style, className, ...props }: ProductQuantityBreaksProps) => {
+export const ProductQuantityBreaks = ({ style, className = '', ...props }: ProductQuantityBreaksProps) => {
     return (
-        <section className={styles.container} style={style} {...props}>
+        <section className={`${styles.container} ${className}`} style={style} {...props}>
             <ProductQuantityBreaksItem requiredQuantity={1} />
             <ProductQuantityBreaksItem requiredQuantity={10} />
             <ProductQuantityBreaksItem requiredQuantity={25} />

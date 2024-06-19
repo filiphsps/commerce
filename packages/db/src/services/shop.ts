@@ -3,7 +3,12 @@ import { ShopModel } from '../models';
 import { User } from '.';
 import { Service } from './service';
 
-import type { ShopBase } from '../models';
+import type { OnlineShop, ShopBase } from '../models';
+
+type FindOptions = {
+    convert?: boolean;
+    sensitiveData?: boolean;
+};
 
 export class ShopService extends Service<ShopBase, typeof ShopModel> {
     public constructor() {
@@ -29,18 +34,44 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         });
     }
 
-    public async findByDomain(domain: string) {
-        return await this.find({
+    public async findByDomain(domain: string, options?: FindOptions & { convert: true }): Promise<OnlineShop>;
+    public async findByDomain(domain: string, options?: FindOptions & { convert: false }): Promise<ShopBase>;
+    public async findByDomain(
+        domain: string,
+        { sensitiveData = false, convert = true }: FindOptions = {}
+    ): Promise<OnlineShop | ShopBase> {
+        const shop = await this.find({
+            count: 1,
             filter: {
                 $or: [
-                    { domain: domain },
+                    { domain },
                     {
                         alternativeDomains: domain
                     }
                 ]
             },
-            count: 1
+            projection: {
+                ...(!sensitiveData && {
+                    collaborators: 0
+                })
+            }
         });
+
+        if (!convert) {
+            return shop;
+        }
+
+        const res = shop.toObject<OnlineShop>({
+            getters: true,
+            virtuals: true,
+            versionKey: false,
+            flattenMaps: true,
+            flattenObjectIds: true,
+            useProjection: true,
+            depopulate: true
+        });
+
+        return res;
     }
 }
 
