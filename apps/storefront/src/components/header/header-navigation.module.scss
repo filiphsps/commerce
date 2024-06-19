@@ -157,7 +157,7 @@
                 75ms ease-in-out max-height,
                 75ms ease-in-out height,
                 150ms ease-in-out border,
-                $animation-duration ease-in-out opacity;
+                #{$animation-duration} ease-in-out opacity;
             // Make the hit-box larger, could've been a padding but it obscures the logo
             // e.g., let's not `padding-top: 0.75rem;`.
             border-bottom: 0 solid transparent;

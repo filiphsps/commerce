@@ -28,8 +28,8 @@ section.container {
             height: auto;
             padding: var(--block-padding) var(--block-padding-large);
             transition:
-                $animation-duration ease-in-out background-color,
-                $animation-duration ease-in-out color;
+                #{$animation-duration} ease-in-out background-color,
+                #{$animation-duration} ease-in-out color;
             border-radius: var(--block-border-radius);
             border-top-right-radius: 0;
             border-top-left-radius: 0;
