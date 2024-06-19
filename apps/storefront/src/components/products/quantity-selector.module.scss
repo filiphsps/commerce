@@ -72,6 +72,7 @@
         --length: 1;
 
         width: calc(1.75rem * var(--length)) !important;
+        max-width: 100%;
         height: 100%;
         max-width: max-content;
         min-width: fit-content;
@@ -91,9 +92,9 @@
 
     .button {
         height: 100%;
-        width: 5rem;
+        width: 4rem;
 
-        line-height: 1;
+        line-height: normal;
         font-weight: 400;
         font-size: 2.5rem;
 

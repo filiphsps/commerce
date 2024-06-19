@@ -2,7 +2,7 @@
 
 import styles from '@/components/products/quantity-selector.module.scss';
 
-import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type HTMLProps } from 'react';
 
 import { useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
@@ -151,7 +151,7 @@ const QuantitySelector = ({
                 title={t('decrease')}
                 data-quantity-decrease
             >
-                -
+                {'−'}
             </button>
 
             <input
@@ -185,7 +185,7 @@ const QuantitySelector = ({
                 title={t('increase')}
                 data-quantity-increase
             >
-                +
+                {'+'}
             </button>
         </section>
     );
