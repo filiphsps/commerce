@@ -42,6 +42,27 @@ describe('utils', () => {
             })
         }));
 
+        vi.mock('@nordcom/commerce-db', () => ({
+            Shop: {
+                findByDomain: vi.fn().mockResolvedValue({
+                    design: {
+                        accents: [
+                            {
+                                type: 'primary',
+                                color: '#00ff00',
+                                foreground: '#000000'
+                            },
+                            {
+                                type: 'secondary',
+                                color: '#0000ff',
+                                foreground: '#ffffff'
+                            }
+                        ]
+                    }
+                })
+            }
+        }));
+
         it('should render without crashing', async () => {
             const wrapper = render(await CssVariablesProvider({ domain: 'example.com' }));
 
