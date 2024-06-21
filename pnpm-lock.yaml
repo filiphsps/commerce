@@ -137,8 +137,8 @@ importers:
         specifier: 0.11.2
         version: 0.11.2(@apollo/client@3.10.6(@types/react@18.2.75)(graphql@16.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6))(react@18.2.0)
       '@auth/core':
-        specifier: 0.33.0
-        version: 0.33.0
+        specifier: 0.34.0
+        version: 0.34.0
       '@next/third-parties':
         specifier: 14.2.1
         version: 14.2.1(next@14.2.1(@babel/core@7.24.6)(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6))(react@18.2.0)
@@ -918,8 +918,8 @@ packages:
       nodemailer:
         optional: true
 
-  '@auth/core@0.33.0':
-    resolution: {integrity: sha512-QPWvnoAbolCO7I8/h3xITwS59bjA2fZRG+p4Qf2ZSMuPE3AFO9xYI3xjwdXZ0jl772aL7Ya8ZUedxCatXgwMZg==}
+  '@auth/core@0.34.0':
+    resolution: {integrity: sha512-iIsca94pLuAnbMpzd0uPAlRQDVAMYhMS9KoUAjc395bXoi9Ng3nLh6vhzrB1sV1vmEpvmUPmCYnE14kJ5UdiJg==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -5859,7 +5859,7 @@ snapshots:
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
 
-  '@auth/core@0.33.0':
+  '@auth/core@0.34.0':
     dependencies:
       '@panva/hkdf': 1.1.1
       '@types/cookie': 0.6.0
