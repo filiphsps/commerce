@@ -23,10 +23,6 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
         hostname.endsWith('.vercel.app') ||
         hostname.endsWith('app.github.dev')
     ) {
-        if (process.env.SHOPS_DEV) {
-            return 'shops.nordcom.io';
-        }
-
         return 'swedish-candy-store.com';
     }
 
@@ -42,15 +38,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     let newUrl = req.nextUrl.clone();
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
-
-    if (newUrl.pathname === '/') {
-        const shop = await ShopApi(hostname);
-
-        // Redirect to the primary domain if the hostname doesn't match.
-        if (hostname !== shop.domain) {
-            newUrl.hostname = shop.domain;
-        }
-    }
 
     // API.
     if (

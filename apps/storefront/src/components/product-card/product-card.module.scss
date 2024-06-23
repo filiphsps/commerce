@@ -5,7 +5,7 @@
     flex: 1 auto;
     overflow: hidden;
     display: grid;
-    grid-template-rows: 16rem 1fr 10rem;
+    grid-template-rows: auto 1fr 10rem;
     grid-template-areas: 'product-image' 'product-details' 'product-actions';
 
     height: 100%;
@@ -54,7 +54,7 @@
         position: relative;
         grid-area: product-image;
 
-        height: 16rem;
+        height: 14rem;
         width: 100%;
 
         border-radius: var(--block-border-radius-small);
@@ -105,20 +105,13 @@
         height: 100%;
 
         font-size: 2.05rem;
-        line-height: normal;
+        font-weight: 700;
+        line-height: 1.1;
 
+        overflow: hidden;
         -webkit-hyphens: auto;
         hyphens: auto;
-
-        .title {
-            font-size: inherit;
-            font-weight: 700;
-            line-height: 1.1;
-
-            -webkit-hyphens: auto;
-            hyphens: auto;
-            word-wrap: break-word;
-        }
+        word-wrap: break-word;
 
         .brand {
             display: block;
@@ -128,9 +121,6 @@
             font-weight: 800;
             font-size: 0.7em;
             line-height: normal;
-
-            -webkit-hyphens: auto;
-            hyphens: auto;
 
             opacity: 0.65;
         }
@@ -301,8 +291,7 @@
         font-size: 0.75rem;
     }
 
-    &[data-skeleton],
-    [data-skeleton] & {
+    &[data-skeleton] {
         box-shadow: none;
         background-color: var(--color-block-dark);
 
@@ -346,7 +335,7 @@
     justify-content: center;
     align-items: center;
     gap: calc(var(--block-spacer-small) / 2);
-    padding: calc(var(--block-padding) / 1.25) var(--block-padding);
+    padding: var(--block-padding-small) var(--block-padding);
 
     background: var(--accent-primary-light);
     color: var(--accent-primary-text);
@@ -357,11 +346,12 @@
     font-size: 1.25rem;
     line-height: 1;
     text-align: center;
+    text-shadow: 0 0 0.25rem var(--color-dark);
 
     &[data-variant='discount'] {
         z-index: 1;
         position: absolute;
-        --inset: calc(var(--block-spacer-tiny) - var(--block-border-width) / 2);
+        --inset: var(--block-spacer-tiny);
         inset: var(--inset) auto auto var(--inset);
         justify-content: center;
         align-items: center;
@@ -376,9 +366,7 @@
 
         b {
             display: block;
-
             font-weight: 700;
-            font-size: 1.45rem;
         }
     }
 

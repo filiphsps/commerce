@@ -10,7 +10,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
-import { ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
@@ -38,49 +38,24 @@ import { ImportantProductDetails, ProductDetails } from './product-details';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
-/*export async function generateStaticParams() {
-    const shops = await ShopsApi();
+export type ProductPageParams = { domain: string; locale: string; handle: string };
 
-    const pages = (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        //const api = await ShopifyApiClient({ shop, locale });
-                        //await LocalesApi({ api });
+/*export async function generateStaticParams({
+    params: { domain, locale: localeData }
+}: {
+    params: Omit<ProductPageParams, 'handle'>;
+}): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
+    const locale = Locale.from(localeData);
 
-                        // TODO: Prefetch all locales when it's feasible.
-                        const locales = [Locale.from('en-US')];
-                        return await Promise.all(
-                            locales
-                                .map(async (locale) => {
-                                    try {
-                                        const api = await ShopifyApolloApiClient({ shop, locale });
-                                        const products = await ProductsApi({ api });
+    const shop = await ShopApi(domain, cache, true);
+    const api = await ShopifyApiClient({ shop, locale });
+    const { products } = await ProductsApi({ api });
 
-                                        return products.products.map(({ node: { handle } }) => ({
-                                            domain: shop.domain,
-                                            locale: locale.code,
-                                            handle
-                                        }));
-                                    } catch {
-                                        return null;
-                                    }
-                                })
-                                .filter((_) => _)
-                        );
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    return pages;
+    return products.map(({ node: { handle } }) => ({
+        handle
+    }));
 }*/
 
-export type ProductPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
@@ -88,14 +63,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         if (!isValidHandle(handle)) notFound();
-
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache);
+        const shop = await ShopApi(domain, cache, true);
 
         // Setup the AbstractApi client.
-        const api = await ShopifyApolloApiClient({ shop, locale });
+        const api = await ShopifyApiClient({ shop, locale });
 
         // Do the actual API calls.
         const product = await ProductApi({ api, handle });

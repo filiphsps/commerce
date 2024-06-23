@@ -41,10 +41,6 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
 
 export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?: boolean }): Promise<Locale[]> => {
     const shop = api.shop();
-    if (shop.commerceProvider.type !== 'shopify') {
-        // TODO: Do this properly.
-        return [Locale.default];
-    }
 
     const callback = async (api: AbstractApi) => {
         const countries = await CountriesApi({ api });

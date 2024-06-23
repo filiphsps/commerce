@@ -1,6 +1,12 @@
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import createWithBundleAnalyzer from '@next/bundle-analyzer';
+
+const withBundleAnalyzer = createWithBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true'
+});
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const isProduction = process.env.NODE_ENV !== 'development' ? true : false; // Deliberately using a ternary here for clarity.
 
@@ -32,9 +38,9 @@ const config = {
         scrollRestoration: true,
         serverSourceMaps: true,
         serverMinification: isProduction,
-        //taint: true,
-        webpackBuildWorker: isProduction,
+        webpackBuildWorker: true,
         parallelServerBuildTraces: true,
+        parallelServerCompiles: true,
         reactCompiler: true,
         turbo: {}
     },
@@ -116,4 +122,4 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default config;
+export default withBundleAnalyzer(config);

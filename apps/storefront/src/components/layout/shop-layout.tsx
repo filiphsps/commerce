@@ -21,7 +21,7 @@ const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => 
         <>
             <Header domain={shop.domain} locale={locale} i18n={i18n} />
 
-            {children}
+            <Suspense fallback={<PageContent />}>{children}</Suspense>
 
             <Suspense fallback={<Footer.skeleton />}>
                 <Footer shop={shop} locale={locale} i18n={i18n} />

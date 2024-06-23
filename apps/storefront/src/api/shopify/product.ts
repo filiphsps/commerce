@@ -25,6 +25,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     description
     vendor
     tags
+    trackingParameters
     seo {
         description
     }
@@ -103,6 +104,7 @@ export const PRODUCT_FRAGMENT = `
     vendor
     productType
     tags
+    trackingParameters
     seo {
         title
         description

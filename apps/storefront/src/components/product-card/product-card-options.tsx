@@ -16,16 +16,19 @@ export type ProductCardOptionsProps = {
 
 const ProductCardOptions = ({
     locale,
-    data: product,
+    data: {
+        variants: { edges: variants }
+    },
     selectedVariant,
     setSelectedVariant
 }: ProductCardOptionsProps) => {
-    if (!selectedVariant || (product.variants.edges.length || 0) <= 1) return null;
-
-    // If we only have two variants and the non-default one is out of stock, we don't need to show the variant selector.
     if (
-        product.variants.edges.length === 2 &&
-        product.variants.edges.some((edge) => edge.node!.id !== selectedVariant.id && !edge.node!.availableForSale)
+        !selectedVariant ||
+        !variants ||
+        variants.length <= 1 ||
+        // If we only have two variants and the non-default one is out of stock, we don't need to show the variant selector.
+        (variants.length === 2 &&
+            variants.some(({ node: { id, availableForSale } }) => id !== selectedVariant.id && !availableForSale))
     ) {
         return null;
     }
@@ -33,38 +36,35 @@ const ProductCardOptions = ({
     // TODO: Use options rather than variants.
     return (
         <div className={styles.variants}>
-            {product.variants.edges &&
-                product.variants.edges.length > 1 &&
-                product.variants.edges.map((edge, index) => {
-                    if (!edge.node || index >= 3) return null; //TODO: handle more than 3 variants on the card.
-                    const variant = edge.node! as ProductVariant;
-                    let title = variant.title;
+            {variants.map(({ node: variant }, index) => {
+                if (index >= 3) return null; //TODO: handle more than 3 variants on the card.
 
-                    if (
-                        variant.selectedOptions.length === 1 &&
-                        variant.selectedOptions[0]!.name === 'Size' &&
-                        variant.weight &&
-                        variant.weightUnit
-                    ) {
-                        title = ConvertToLocalMeasurementSystem({
-                            locale: locale,
-                            weight: variant.weight,
-                            weightUnit: variant.weightUnit
-                        });
-                    }
+                let title = variant.title;
+                if (
+                    variant.selectedOptions.length === 1 &&
+                    variant.selectedOptions[0]!.name === 'Size' &&
+                    variant.weight &&
+                    variant.weightUnit
+                ) {
+                    title = ConvertToLocalMeasurementSystem({
+                        locale: locale,
+                        weight: variant.weight,
+                        weightUnit: variant.weightUnit
+                    });
+                }
 
-                    return (
-                        <button
-                            key={variant.id}
-                            title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
-                            onClick={() => setSelectedVariant(variant)}
-                            className={styles.variant}
-                            data-active={selectedVariant.id === variant.id}
-                        >
-                            {title}
-                        </button>
-                    );
-                })}
+                return (
+                    <button
+                        key={variant.id}
+                        title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
+                        onClick={() => setSelectedVariant(variant)}
+                        className={styles.variant}
+                        data-active={selectedVariant.id === variant.id}
+                    >
+                        {title}
+                    </button>
+                );
+            })}
         </div>
     );
 };

@@ -2,10 +2,9 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { Suspense, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import AddToCart from '@/components/products/add-to-cart';
-import { useShop } from '@/components/shop/provider';
 
 import ProductCardFooterQuantity from './product-card-footer-quantity';
 
@@ -20,8 +19,6 @@ export type ProductCardFooterProps = {
 };
 
 const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
-    const { shop } = useShop();
-
     const [quantity, setQuantity] = useState<number>(1);
     const update = useCallback(
         (value: number) => {
@@ -35,24 +32,20 @@ const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCard
 
     return (
         <div className={styles.actions}>
-            <Suspense key={`${shop.id}.product-card.footer.quantity`}>
-                <ProductCardFooterQuantity
-                    i18n={i18n}
-                    selectedVariant={selectedVariant}
-                    quantity={quantity}
-                    setQuantity={update}
-                />
-            </Suspense>
+            <ProductCardFooterQuantity
+                i18n={i18n}
+                selectedVariant={selectedVariant}
+                quantity={quantity}
+                setQuantity={update}
+            />
 
-            <Suspense key={`${shop.id}.product-card.footer.add-to-cart`} fallback={<AddToCart.skeleton />}>
-                <AddToCart
-                    i18n={i18n}
-                    className={styles.button}
-                    quantity={quantity}
-                    data={product}
-                    variant={selectedVariant}
-                />
-            </Suspense>
+            <AddToCart
+                i18n={i18n}
+                className={styles.button}
+                quantity={quantity}
+                data={product}
+                variant={selectedVariant}
+            />
         </div>
     );
 };

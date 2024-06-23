@@ -4,6 +4,7 @@ import styles from '@/components/product-card/product-card.module.scss';
 
 import { memo } from 'react';
 
+import { createProductSearchParams } from '@/api/product';
 import { deepEqual } from '@/utils/deep-equal';
 
 import Link from '@/components/link';
@@ -16,15 +17,12 @@ export type ProductCardTitleProps = {
 const ProductCardTitle = memo(({ data: product }: ProductCardTitleProps) => {
     if (!product) return null;
 
-    // TODO: Hotlink to variant.
-    // TODO: `product.trackingParameters`.
+    const href = `/products/${product.handle}/${createProductSearchParams({ product })}`;
 
     return (
-        <Link href={`/products/${product.handle}/`} className={styles.header}>
-            <h3 className={styles.title}>
-                {product.vendor ? <span className={styles.brand}>{product.vendor}</span> : null}
-                {product.title ? product.title : null}
-            </h3>
+        <Link href={href} className={styles.header}>
+            {product.vendor ? <span className={styles.brand}>{product.vendor}</span> : null}
+            {product.title ? product.title : null}
         </Link>
     );
 }, deepEqual);

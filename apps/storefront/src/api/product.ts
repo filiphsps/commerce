@@ -30,3 +30,9 @@ export type Product = ShopifyProduct & {
 } & OmitTypeName<Omit<ShopifyProduct, 'descriptionHtml' | 'variants'>>;
 
 export type ProductFilters = SearchResultItemConnection['productFilters'];
+
+export const createProductSearchParams = ({ product: { trackingParameters } }: { product: Product }): string => {
+    // TODO: Hotlink to non-default variants.
+    const params = new URLSearchParams(trackingParameters || '');
+    return params.toString();
+};

@@ -1,6 +1,7 @@
 import 'the-new-css-reset';
 import '@/styles/app.scss';
 
+import { type ReactNode, Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -21,7 +22,6 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-static';
@@ -30,7 +30,7 @@ export const revalidate = 60 * 60 * 8; // 8 hours.
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateStaticParams(): Promise<LayoutParams[]> {
-    const shops = await ShopsApi();
+    const shops = await ShopsApi(cache);
 
     return (
         await Promise.all(
@@ -123,17 +123,21 @@ export default async function RootLayout({
                 suppressHydrationWarning={true}
             >
                 <head suppressHydrationWarning={true}>
-                    <CssVariablesProvider domain={domain} />
+                    <Suspense fallback={null}>
+                        <CssVariablesProvider domain={domain} />
+                    </Suspense>
                 </head>
 
                 <body suppressHydrationWarning={true}>
                     <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
                         <AnalyticsProvider shop={shop}>
-                            <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                <PageContent as="main" primary={true}>
-                                    {children}
-                                </PageContent>
-                            </ShopLayout>
+                            <Suspense fallback={<ShopLayout.skeleton />}>
+                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                    <PageContent as="main" primary={true}>
+                                        {children}
+                                    </PageContent>
+                                </ShopLayout>
+                            </Suspense>
 
                             <HeaderProvider loaderColor={branding.primary.color} />
                         </AnalyticsProvider>
