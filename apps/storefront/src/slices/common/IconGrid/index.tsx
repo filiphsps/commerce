@@ -2,7 +2,6 @@ import 'server-only';
 
 import styles from './icon-grid.module.scss';
 
-import { useMemo } from 'react';
 import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -31,39 +30,7 @@ export type IconGridProps = SliceComponentProps<
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
     const { items } = slice;
 
-    const icons = useMemo(() => {
-        if (!slice || items.length <= 0) {
-            return [];
-        }
-
-        return items.map(({ icon, title }, index) => {
-            const priority = order < 2;
-
-            return (
-                <div key={`${title}_${index}`} className={styles.item}>
-                    {icon.url ? (
-                        <Image
-                            className={styles.icon}
-                            src={icon.url}
-                            alt={icon.alt || ''}
-                            width={35}
-                            height={35}
-                            quality={75}
-                            decoding="async"
-                            loading={priority ? 'eager' : 'lazy'}
-                            priority={priority}
-                            draggable={false}
-                        />
-                    ) : (
-                        <div className={styles.icon} />
-                    )}
-                    <div className={styles.title}>{title}</div>
-                </div>
-            );
-        });
-    }, [slice]);
-
-    if (icons.length <= 0) {
+    if (!slice || items.length <= 0) {
         return null;
     }
 
@@ -75,7 +42,31 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
             data-slice-variation={slice.variation}
             data-background={slice.primary.background || 'secondary'}
         >
-            {icons}
+            {items.map(({ icon, title }, index) => {
+                const priority = order < 2;
+
+                return (
+                    <div key={`${title}_${index}`} className={styles.item}>
+                        {icon.url ? (
+                            <Image
+                                className={styles.icon}
+                                src={icon.url}
+                                alt={icon.alt || ''}
+                                width={35}
+                                height={35}
+                                quality={75}
+                                decoding="async"
+                                loading={priority ? 'eager' : 'lazy'}
+                                priority={priority}
+                                draggable={false}
+                            />
+                        ) : (
+                            <div className={styles.icon} />
+                        )}
+                        <div className={styles.title}>{title}</div>
+                    </div>
+                );
+            })}
         </PageContent>
     );
 };

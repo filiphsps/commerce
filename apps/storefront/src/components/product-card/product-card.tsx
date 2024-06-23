@@ -6,9 +6,9 @@ import type { Shop } from '@nordcom/commerce-database';
 
 import { getDictionary } from '@/utils/dictionary';
 
-import ProductCardActions from '@/components/product-card/product-card-actions';
 import ProductCardBadges from '@/components/product-card/product-card-badges';
-import ProductCardImage from '@/components/product-card/product-card-image';
+import ProductCardFooter from '@/components/product-card/product-card-footer';
+import ProductCardHeader from '@/components/product-card/product-card-header';
 import ProductCardTitle from '@/components/product-card/product-card-title';
 
 import type { Product } from '@/api/product';
@@ -38,13 +38,13 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
             {...props}
         >
             {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
-            <ProductCardImage shop={shop} data={product} priority={priority}>
-                <ProductCardBadges data={product} />
-            </ProductCardImage>
+            <ProductCardBadges data={product} />
 
-            <ProductCardActions data={product} locale={locale} i18n={i18n}>
+            <ProductCardHeader shop={shop} data={product} priority={priority}>
                 <ProductCardTitle data={product} />
-            </ProductCardActions>
+            </ProductCardHeader>
+
+            <ProductCardFooter data={product} locale={locale} i18n={i18n} />
         </div>
     );
 };

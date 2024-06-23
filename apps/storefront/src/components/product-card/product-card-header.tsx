@@ -50,7 +50,7 @@ export type ProductCardImageProps = {
     children?: ReactNode;
 };
 
-const ProductCardImage = ({ shop, data: product, priority = false, children }: ProductCardImageProps) => {
+const ProductCardHeader = ({ shop, data: product, priority = false, children }: ProductCardImageProps) => {
     const selectedVariant = FirstAvailableVariant(product);
     if (!product || !selectedVariant) return null;
 
@@ -67,7 +67,7 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
     const href = `/products/${product.handle}/${createProductSearchParams({ product })}`;
 
     return (
-        <Link href={href || ''} className={styles['image-container']}>
+        <Link href={href || ''} className={styles.header}>
             <VariantImage image={{ ...image, altText: image.altText || title }} priority={priority} />
 
             {children}
@@ -75,5 +75,5 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
     );
 };
 
-ProductCardImage.displayName = 'Nordcom.ProductCard.Image';
-export default ProductCardImage;
+ProductCardHeader.displayName = 'Nordcom.ProductCard.Header';
+export default ProductCardHeader;

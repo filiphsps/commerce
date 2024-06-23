@@ -2,51 +2,42 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { useCallback, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import AddToCart from '@/components/products/add-to-cart';
+import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
-import ProductCardFooterQuantity from './product-card-footer-quantity';
+import ProductCardActions from '@/components/product-card/product-card-actions';
+import ProductCardOptions from '@/components/product-card/product-card-options';
+import Pricing from '@/components/typography/pricing';
 
-import type { Product, ProductVariant } from '@/api/product';
-import type { LocaleDictionary } from '@/utils/locale';
+import type { Product } from '@/api/product';
+import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardFooterProps = {
+    data?: Product;
+    locale: Locale;
     i18n: LocaleDictionary;
-
-    selectedVariant: ProductVariant;
-    data: Product;
+    children?: ReactNode;
 };
-
-const ProductCardFooter = ({ i18n, data: product, selectedVariant }: ProductCardFooterProps) => {
-    const [quantity, setQuantity] = useState<number>(1);
-    const update = useCallback(
-        (value: number) => {
-            if (value === quantity) return;
-            setQuantity(value);
-        },
-        [quantity]
-    );
-
-    if (!selectedVariant) return null;
+const ProductCardFooter = ({ data: product, i18n, locale, children }: ProductCardFooterProps) => {
+    const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
+    if (!product) return null;
 
     return (
-        <div className={styles.actions}>
-            <ProductCardFooterQuantity
-                i18n={i18n}
-                selectedVariant={selectedVariant}
-                quantity={quantity}
-                setQuantity={update}
-            />
+        <>
+            <div className={styles.body}>
+                <Pricing price={selectedVariant.price as any} />
 
-            <AddToCart
-                i18n={i18n}
-                className={styles.button}
-                quantity={quantity}
-                data={product}
-                variant={selectedVariant}
-            />
-        </div>
+                <ProductCardOptions
+                    locale={locale}
+                    data={product}
+                    selectedVariant={selectedVariant}
+                    setSelectedVariant={(variant) => setSelectedVariant(() => variant)}
+                />
+            </div>
+
+            <ProductCardActions i18n={i18n} data={product} selectedVariant={selectedVariant} />
+        </>
     );
 };
 

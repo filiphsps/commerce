@@ -35,7 +35,7 @@ export type AddToCartProps = {
 } & Omit<HTMLProps<HTMLButtonElement>, 'data'>;
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
+const AddToCart = ({ children, className, i18n, quantity = 0, type, data, variant, ...props }: AddToCartProps) => {
     const { locale } = useShop();
 
     const queueEvent = useTrackable((context) => context.queueEvent);
@@ -57,14 +57,6 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
             toast.warning(`The cart is still loading, please try again in a few seconds!`);
             return;
         }
-
-        clearTimeout(animation);
-        setAnimation(
-            setTimeout(() => {
-                clearTimeout(animation);
-                setAnimation(() => undefined);
-            }, 3000)
-        );
 
         linesAdd([
             {
@@ -117,10 +109,22 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
                 </p>
             </>
         );
+
+        clearTimeout(animation);
+
+        if (children) return;
+        setAnimation(
+            setTimeout(() => {
+                clearTimeout(animation);
+                setAnimation(() => undefined);
+            }, 3000)
+        );
     }, [linesAdd, selectedVariant, quantity, ready]);
 
     const [label, setLabel] = useState<string>(t('add-to-cart'));
     useEffect(() => {
+        if (children) return;
+
         if (animation) {
             const newLabel = t('added-to-cart');
 
@@ -160,7 +164,7 @@ const AddToCart = ({ i18n, className, quantity = 0, type, data, variant, ...prop
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
         >
-            {label}
+            {children || label}
         </Button>
     );
 };

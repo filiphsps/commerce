@@ -14,9 +14,9 @@
 
     --color-lights-out: #051821;
 
-    --color-block: #f4f4f4;
+    --color-block: #f3f3f3;
     --color-block-light: #f5f5f5;
-    --color-block-dark: #cacaca;
+    --color-block-dark: #d8d8d8;
     --color-block-darker: #a8a8a8;
     --color-block-black: #222222;
     --color-block-shadow: rgba(0, 0, 0, 0.4);
@@ -52,7 +52,7 @@ html {
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
         // Components:
-        --component-product-card-width: 20rem;
+        --component-product-card-width: 21rem;
 
         // Layouting:
         --page-width: #{$page-width};

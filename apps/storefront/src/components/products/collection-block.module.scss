@@ -30,9 +30,8 @@
         grid-auto-rows: 1fr;
         grid-template-columns: 1fr 1fr;
 
-        @media (min-width: $breakpoint-mobile) {
+        @media (min-width: $breakpoint-mobile-small) {
             justify-content: start;
-            gap: var(--block-spacer);
             grid-template-columns: repeat(auto-fill, minmax(var(--component-product-card-width), 1fr));
         }
 

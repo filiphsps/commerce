@@ -2,9 +2,9 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -38,8 +38,8 @@ import { ImportantProductDetails, ProductDetails } from './product-details';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
-export const dynamic = 'auto';
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 

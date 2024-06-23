@@ -1,14 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import React from 'react';
-
 import { render } from '@/utils/test/react';
 
-import ProductCardImage from '@/components/product-card/product-card-image';
+import ProductCardHeader from '@/components/product-card/product-card-header';
 
 describe('components', () => {
     describe('product-card', () => {
-        describe('ProductCardImage', () => {
+        describe('ProductCardHeader', () => {
             vi.mock('@shopify/hydrogen-react', async () => {
                 return {
                     useProduct: vi.fn().mockReturnValue({
@@ -25,7 +23,7 @@ describe('components', () => {
             });
 
             it('renders without crashing when no image is supplied', () => {
-                expect(() => render(<ProductCardImage shop={{} as any} />)).not.toThrow();
+                expect(() => render(<ProductCardHeader shop={{} as any} />)).not.toThrow();
             });
         });
     });

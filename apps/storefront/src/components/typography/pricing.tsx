@@ -1,5 +1,7 @@
 import styles from '@/components/typography/pricing.module.scss';
 
+import { Fragment } from 'react/jsx-runtime';
+
 import { Money } from '@shopify/hydrogen-react';
 
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
@@ -7,30 +9,34 @@ import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
 export type PricingProps = {
     price?: MoneyV2 | null;
     compareAtPrice?: MoneyV2 | null;
+
+    wrapperFallback?: boolean;
 };
-const Pricing = ({ price, compareAtPrice }: PricingProps) => {
+const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProps) => {
+    const As = compareAtPrice && wrapperFallback ? 'div' : Fragment;
+
     return (
-        <>
+        <As>
             {price ? (
                 <Money
-                    as={'div'}
                     data={price}
-                    className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
                     data-sale={compareAtPrice ? true : undefined}
+                    data-pricing
+                    as={'div'}
+                    className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
                     suppressHydrationWarning={true}
                 />
             ) : null}
             {compareAtPrice ? (
-                <div className={styles.previous}>
-                    <Money
-                        data={compareAtPrice}
-                        as={'s'}
-                        className={`${styles.price} ${styles.dash}`}
-                        suppressHydrationWarning={true}
-                    />
-                </div>
+                <Money
+                    data={compareAtPrice}
+                    data-previous-pricing
+                    as={'s'}
+                    className={`${styles.price} ${styles.previous} ${styles.dash}`}
+                    suppressHydrationWarning={true}
+                />
             ) : null}
-        </>
+        </As>
     );
 };
 

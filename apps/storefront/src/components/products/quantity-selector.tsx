@@ -60,16 +60,6 @@ const QuantitySelector = ({
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const updateLength = useCallback(
-        (value: string | number) => {
-            const length = value.toString().length;
-            if (inputRef.current) {
-                inputRef.current.style.setProperty('--length', length.toString());
-            }
-        },
-        [inputRef, quantityValue]
-    );
-
     const updateQuantity = useCallback(
         (value: string | number) => {
             if (typeof value === 'string' && value === '') return;
@@ -81,7 +71,6 @@ const QuantitySelector = ({
         },
         [update, quantity]
     );
-
     const decrease = useCallback(() => {
         if (allowDecreaseToZero ? quantity <= 0 : quantity <= 1) {
             return;
@@ -123,7 +112,6 @@ const QuantitySelector = ({
             const parsedValue = QuantityInputFilter(value, quantityValue);
 
             setQuantityValue(parsedValue);
-            updateLength(parsedValue);
         },
         [quantityValue]
     );
@@ -134,7 +122,6 @@ const QuantitySelector = ({
         }
 
         setQuantityValue(quantity.toString());
-        updateLength(quantity);
     }, [quantity]);
 
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);

@@ -1,18 +1,14 @@
 .price {
     color: var(--color-dark);
-
-    // font-variant-numeric: tabular-nums;
 }
 
 .current {
-    grid-area: pricing;
     position: relative;
-    display: inline-block;
 
     height: 100%;
 
     font-size: 1.25em;
-    line-height: normal;
+    line-height: 1.25;
     font-weight: 700;
 
     &.sale {
@@ -23,22 +19,18 @@
 }
 
 .previous {
-    grid-area: previous-pricing;
     position: relative;
-    display: inline-block;
 
     height: 100%;
 
     font-size: 0.85em;
+    line-height: normal;
     font-weight: 600;
 
     &,
     .price {
         color: var(--color-block-black);
     }
-
-    // Optically balance.
-    padding-bottom: 0.05rem;
 }
 
 .dash {
