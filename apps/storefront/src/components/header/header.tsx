@@ -3,10 +3,10 @@ import 'server-only';
 import styles from '@/components/header/header.module.scss';
 import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
 
-import { type HTMLProps } from 'react';
+import { type HTMLProps, Suspense } from 'react';
 import Image from 'next/image';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
+import { Shop } from '@nordcom/commerce-db';
 
 import { NavigationApi } from '@/api/navigation';
 
@@ -19,11 +19,12 @@ import Link from '@/components/link';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type HeaderProps = {
-    shop: OnlineShop;
+    domain: string;
     locale: Locale;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'className'>;
-const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) => {
+const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) => {
+    const shop = await Shop.findByDomain(domain);
     const navigation = await NavigationApi({ shop, locale });
 
     const {
@@ -38,7 +39,9 @@ const HeaderComponent = async ({ shop, locale, i18n, ...props }: HeaderProps) =>
             data-theme-variant={headerTheme.variant || 'default'}
         >
             <HeaderContainer {...props}>
-                <HamburgerMenu />
+                <Suspense fallback={<div />}>
+                    <HamburgerMenu />
+                </Suspense>
 
                 <Link href={'/'} className={styles.logo}>
                     {logo.src ? (

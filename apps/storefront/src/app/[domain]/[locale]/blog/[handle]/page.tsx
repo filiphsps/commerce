@@ -2,6 +2,7 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -193,7 +194,9 @@ export default async function ArticlePage({
                     suppressHydrationWarning={true}
                 />
 
-                <Breadcrumbs shop={shop} title={article.title} />
+                <Suspense fallback={null}>
+                    <Breadcrumbs shop={shop} title={article.title} />
+                </Suspense>
 
                 {/* Metadata */}
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

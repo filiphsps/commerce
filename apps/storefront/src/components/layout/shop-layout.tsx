@@ -1,9 +1,8 @@
 import 'server-only';
 
-import { type HTMLProps, type ReactNode } from 'react';
+import { type HTMLProps, type ReactNode, Suspense } from 'react';
 
 import type { Shop as ShopModel } from '@nordcom/commerce-database';
-import { Shop } from '@nordcom/commerce-db';
 
 import Footer from '@/components/Footer';
 import Header from '@/components/header/header';
@@ -20,20 +19,20 @@ export type ShopLayoutProps = {
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
-            {/*<Header shop={await Shop.findByDomain(shop.domain)} locale={locale} i18n={i18n} />*/}
-            <Header shop={await Shop.findByDomain(shop.domain)} locale={locale} i18n={i18n} />
+            <Header domain={shop.domain} locale={locale} i18n={i18n} />
 
             {children}
 
-            <Footer shop={shop} locale={locale} i18n={i18n} />
+            <Suspense fallback={<Footer.skeleton />}>
+                <Footer shop={shop} locale={locale} i18n={i18n} />
+            </Suspense>
         </>
     );
 };
 
 ShopLayout.skeleton = () => (
     <>
-        {/*TODO: Skeleton for this.*/}
-        <header />
+        <Header.skeleton />
         <PageContent />
         <Footer.skeleton />
     </>

@@ -202,7 +202,9 @@ export default async function CollectionPage({
                     ) : null}
                 </PageContent>
 
-                <Breadcrumbs shop={shop} title={collection.title} />
+                <Suspense fallback={null}>
+                    <Breadcrumbs shop={shop} title={collection.title} />
+                </Suspense>
 
                 {/* Metadata */}
                 <script

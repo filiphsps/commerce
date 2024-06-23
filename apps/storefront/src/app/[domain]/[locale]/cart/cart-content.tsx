@@ -1,5 +1,7 @@
 import styles from './cart-content.module.scss';
 
+import { type ReactNode, Suspense } from 'react';
+
 import type { Shop } from '@nordcom/commerce-database';
 
 import { CartLines } from '@/components/cart/cart-lines';
@@ -10,7 +12,6 @@ import { CartSidebar } from './cart-sidebar';
 
 import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
-import type { ReactNode } from 'react';
 
 export type CartContentProps = {
     shop: Shop;
@@ -37,7 +38,9 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
 
             {slices}
 
-            <Breadcrumbs shop={shop} />
+            <Suspense fallback={null}>
+                <Breadcrumbs shop={shop} />
+            </Suspense>
         </PageContent>
     );
 }

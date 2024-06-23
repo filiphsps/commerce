@@ -6,10 +6,10 @@ section.container {
     grid-auto-rows: 1fr;
     justify-content: center;
     align-items: center;
-    gap: var(--block-spacer-huge);
+    gap: var(--block-spacer);
 
     @media (min-width: $breakpoint-mobile) {
-        gap: var(--block-spacer-large);
+        gap: var(--block-spacer);
         grid-template-rows: 100%;
         grid-template-columns: 1fr 1fr 1fr;
     }
@@ -31,38 +31,27 @@ section.container {
         display: flex;
         justify-content: center;
         align-items: center;
+        gap: var(--block-spacer);
 
         height: 100%;
         width: 100%;
-        padding: calc(var(--block-padding) * 2.5) var(--block-padding) var(--block-padding) var(--block-padding);
+        padding: var(--block-padding-small);
 
         background-color: var(--background-color);
         color: var(--color);
-        border-color: var(--border-color);
-
+        border: var(--block-border-width-small) solid var(--border-color);
         border-radius: var(--block-border-radius);
-        border-width: var(--block-border-width);
-        border-style: solid;
 
         .icon {
-            --size: 4.5rem;
+            --size: 2.45rem;
 
-            z-index: 1;
-            position: absolute;
-            inset: calc(var(--size) * -0.45) auto auto auto;
             display: block;
 
             width: var(--size);
             height: var(--size);
-            padding: var(--block-padding-tiny);
 
             object-position: center;
             object-fit: contain;
-
-            background-color: var(--background-color);
-            color: var(--color);
-            border: var(--block-border-width) solid var(--border-color);
-            border-radius: 100%;
 
             -webkit-user-select: none;
             user-select: none;
@@ -70,14 +59,9 @@ section.container {
         }
 
         .title {
-            font-size: 1em;
+            font-size: 1.65rem;
             font-weight: 600;
             line-height: normal;
-            text-align: center;
-
-            @media (min-width: $breakpoint-mobile) {
-                padding: 0 var(--block-spacer);
-            }
         }
     }
 }

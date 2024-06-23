@@ -284,11 +284,13 @@ export default async function ProductPage({
                     primaryClassName={styles.headingPrimary}
                     asideDesktopWidth={0.58}
                     aside={
-                        <ProductGallery
-                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
-                            images={product.images.edges.map((edge) => edge.node)}
-                            className={styles.gallery}
-                        />
+                        <Suspense key={`${shop.id}.products.${handle}.gallery`} fallback={<div />}>
+                            <ProductGallery
+                                initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
+                                images={product.images.edges.map((edge) => edge.node)}
+                                className={styles.gallery}
+                            />
+                        </Suspense>
                     }
                 >
                     <div className={styles.content}>
@@ -321,7 +323,9 @@ export default async function ProductPage({
 
                         <InfoLines product={product} style={{ paddingBottom: 'var(--block-spacer-huge)' }} />
 
-                        <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
+                        <Suspense key={`${shop.id}.products.${handle}.content`} fallback={null}>
+                            <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
+                        </Suspense>
 
                         <Tabs
                             className={styles.tabs}
@@ -338,7 +342,12 @@ export default async function ProductPage({
                                                 }}
                                             />
 
-                                            <ImportantProductDetails locale={locale} data={product} />
+                                            <Suspense
+                                                key={`${shop.id}.products.${handle}.important-details`}
+                                                fallback={null}
+                                            >
+                                                <ImportantProductDetails locale={locale} data={product} />
+                                            </Suspense>
                                         </>
                                     )
                                 },

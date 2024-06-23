@@ -22,12 +22,12 @@ export const HeaderNavigation = ({ locale, menu, className, ...props }: HeaderNa
         <nav {...props} className={`${styles.container} ${styles.centered} ${className || ''}`}>
             {menu?.map?.((item: any, index: number) => {
                 return (
-                    <MenuItem key={item.handle + `${index}`} data={item} locale={locale}>
+                    <MenuItem key={item.handle + `${index}`} data={item}>
                         {item.children.length > 0 && (
                             <HeaderNavigationChildItems>
                                 <div className={styles.content}>
                                     {item.children.map((item: any, index: number) => (
-                                        <SubMenuItem key={item.handle + `${index}`} data={item} locale={locale} />
+                                        <SubMenuItem key={item.handle + `${index}`} data={item} />
                                     ))}
                                 </div>
                             </HeaderNavigationChildItems>

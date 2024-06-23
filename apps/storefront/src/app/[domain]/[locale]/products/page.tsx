@@ -135,7 +135,9 @@ export default async function ProductsPage({
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Breadcrumbs shop={shop} title={t('products')} />
+                <Suspense fallback={null}>
+                    <Breadcrumbs shop={shop} title={t('products')} />
+                </Suspense>
             </>
         );
     } catch (error: unknown) {

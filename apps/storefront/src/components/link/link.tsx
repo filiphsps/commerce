@@ -13,7 +13,7 @@ import { useShop } from '@/components/shop/provider';
 
 import type { Url } from 'node:url';
 
-type Props = {
+export type LinkProps = {
     shop?: Shop;
     locale?: Locale;
     href: Url | string;
@@ -36,7 +36,7 @@ const isInternal = (href: string, shop?: Shop): boolean => {
 };
 
 // FIXME: i18n provider?
-export default function Link({ locale, href, prefetch, ...props }: Props) {
+export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
     const shop = useShop();
 
     if (!href || typeof href !== 'string') {
