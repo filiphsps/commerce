@@ -4,8 +4,6 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
-export const runtime = 'nodejs';
-
 export type AppleIconRouteParams = {
     domain: string;
 };

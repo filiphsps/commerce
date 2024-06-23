@@ -18,9 +18,6 @@ import ProvidersRegistry from '@/components/providers-registry';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
 const fontPrimary = Public_Sans({
     weight: 'variable',
     subsets: ['latin'],

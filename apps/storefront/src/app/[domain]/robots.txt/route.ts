@@ -4,8 +4,6 @@ import { ShopApi } from '@nordcom/commerce-database';
 
 import type { MetadataRoute } from 'next';
 
-export const runtime = 'nodejs';
-
 type Rules = Extract<MetadataRoute.Robots['rules'], Array<any>>;
 type Rule = Rules[number];
 const nextRobotsSchemaParser = (schema: MetadataRoute.Robots): string => {

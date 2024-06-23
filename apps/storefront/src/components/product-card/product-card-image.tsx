@@ -33,7 +33,7 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
             height={100}
             width={100}
             quality={75}
-            sizes="(max-width: 950px) 25vw, 100px"
+            sizes="(max-width: 950px) 25vw, 85px"
             decoding="async"
             draggable={false}
             loading={priority ? 'eager' : 'lazy'}

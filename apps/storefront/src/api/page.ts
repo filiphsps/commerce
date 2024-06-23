@@ -1,9 +1,6 @@
-import { unstable_cache as cache } from 'next/cache';
-
 import type { Shop } from '@nordcom/commerce-database';
 import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
-import { buildCacheTagArray } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
@@ -19,37 +16,27 @@ export const PagesApi = async ({
     locale: Locale;
     exclude?: string[];
 }): Promise<PrismicDocument[] | null> => {
-    const callback = async ({ shop, locale, exclude }: { shop: Shop; locale: Locale; exclude: string[] }) => {
-        try {
-            const client = createClient({ shop, locale });
+    try {
+        const client = createClient({ shop, locale });
 
-            const pages = await client.getAllByType('custom_page', {
-                lang: locale.code
-            });
+        const pages = await client.getAllByType('custom_page', {
+            lang: locale.code
+        });
 
-            return pages.filter(({ uid }) => !exclude.includes(uid!));
-        } catch (error) {
-            if (Error.isNotFound(error)) {
-                if (!Locale.isDefault(locale)) {
-                    return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
-                }
-
-                return null;
+        return pages.filter(({ uid }) => !exclude.includes(uid!));
+    } catch (error) {
+        if (Error.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
             }
 
-            // TODO: Deal with errors properly.
-            // console.error(error);
             return null;
         }
-    };
 
-    // Fast-path for no cache.
-    if (!cache || typeof cache !== 'function') return callback({ shop, locale, exclude });
-
-    return cache(callback, [shop.domain, shop.id], {
-        tags: buildCacheTagArray(shop, locale, ['prismic', 'pages']),
-        revalidate: 60 * 60 * 8 // 8 hours.
-    })({ shop, locale, exclude });
+        // TODO: Deal with errors properly.
+        // console.error(error);
+        return null;
+    }
 };
 
 export type PageType = 'collection_page' | 'product_page' | 'custom_page';
@@ -84,44 +71,29 @@ export const PageApi = async <T extends keyof PageTypeMapping | 'custom_page' = 
 }: PageApiProps & { type?: T | 'custom_page' }): Promise<NarrowedPageType<T>['data'] | null> => {
     if (!(shop as any)) throw new UnknownShopDomainError();
 
-    const callback = async ({
-        shop,
-        type,
-        locale = Locale.default,
-        handle
-    }: PageApiProps & { type: T | 'custom_page' }) => {
-        try {
-            const client = createClient({ shop, locale });
+    try {
+        const client = createClient({ shop, locale });
 
-            const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle, {
-                lang: locale.code
-            });
+        const { data: page } = await client.getByUID<NarrowedPageType<T>>(type, handle, {
+            lang: locale.code
+        });
 
-            if (!page) {
-                throw new NotFoundError(`"Page" with the handle "${handle}"`);
+        if (!page) {
+            throw new NotFoundError(`"Page" with the handle "${handle}"`);
+        }
+
+        return page;
+    } catch (error) {
+        if (Error.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
             }
 
-            return page;
-        } catch (error) {
-            if (Error.isNotFound(error)) {
-                if (!Locale.isDefault(locale)) {
-                    return await PageApi({ shop, locale: Locale.default, type, handle }); // Try again with default locale.
-                }
-
-                return null;
-            }
-
-            // TODO: Deal with errors properly.
-            // console.error(error);
             return null;
         }
-    };
 
-    // Fast-path for no cache.
-    if (!cache || typeof cache !== 'function') return callback({ shop, locale, type, handle });
-
-    return cache(callback, [shop.domain, shop.id], {
-        tags: buildCacheTagArray(shop, locale, [handle, 'prismic', 'page']),
-        revalidate: 60 * 60 * 8 // 8 hours.
-    })({ shop, locale, type, handle });
+        // TODO: Deal with errors properly.
+        // console.error(error);
+        return null;
+    }
 };

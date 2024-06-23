@@ -6,9 +6,8 @@ import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { validateSize } from './validate-size';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-static';
-export const revalidate = 60 * 60 * 8; // 8 hours.
+export const revalidate = 28800; // 8 hours.
 
 export type FaviconRouteParams = {
     domain: string;

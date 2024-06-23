@@ -2,6 +2,7 @@ import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
 
+import { type HTMLProps, Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -14,7 +15,6 @@ import ProductCard from '@/components/product-card/product-card';
 
 import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
-import type { HTMLProps } from 'react';
 
 export type CollectionBlockCommonProps = {
     isHorizontal?: boolean;
@@ -68,13 +68,9 @@ const CollectionBlock = async ({
         >
             <div className={styles.content}>
                 {products.map((product, index) => (
-                    <ProductCard
-                        key={product.id}
-                        shop={shop}
-                        locale={locale}
-                        data={product}
-                        priority={priority && index < 2}
-                    />
+                    <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
+                        <ProductCard shop={shop} locale={locale} data={product} priority={priority && index < 2} />
+                    </Suspense>
                 ))}
 
                 {showViewAll ? (

@@ -4,7 +4,6 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, MethodNotAllowedError, UnknownApiError } from '@nordcom/commerce-errors';
 
-export const runtime = 'nodejs';
 const headers = { 'Cache-Control': 'no-store' };
 
 export type RevalidateApiRouteParams = {

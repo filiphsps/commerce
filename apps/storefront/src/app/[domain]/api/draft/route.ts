@@ -8,8 +8,6 @@ import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { redirectToPreviewURL } from '@prismicio/next';
 
-export const runtime = 'nodejs';
-
 export type DraftApiRouteParams = {
     domain: string;
 };

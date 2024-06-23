@@ -1,5 +1,5 @@
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
-import { gql } from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import type { Product } from '@/api/product';
 import type { AbstractApi } from '@/utils/abstract-api';

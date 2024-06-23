@@ -1,6 +1,6 @@
 import styles from './cart-content.module.scss';
 
-import { type ReactNode, Suspense } from 'react';
+import { type ReactNode } from 'react';
 
 import type { Shop } from '@nordcom/commerce-database';
 
@@ -38,9 +38,7 @@ export default function CartContent({ shop, locale, i18n, header, slices, store 
 
             {slices}
 
-            <Suspense fallback={null}>
-                <Breadcrumbs shop={shop} />
-            </Suspense>
+            <Breadcrumbs shop={shop} />
         </PageContent>
     );
 }

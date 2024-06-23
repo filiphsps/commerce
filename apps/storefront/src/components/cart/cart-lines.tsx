@@ -29,23 +29,21 @@ const CartLines = ({ shop, i18n }: CartContentProps) => {
     }
 
     return (
-        <Suspense key={`${shop.id}.cart.lines`} fallback={<CartLine.skeleton />}>
-            <div className={styles.container}>
-                {!noItems ? (
-                    <>
-                        {lines.map((item) => {
-                            if (!item) return null;
+        <div className={styles.container}>
+            {!noItems ? (
+                <>
+                    {lines.map((item) => {
+                        if (!item) return null;
 
-                            return (
-                                <Suspense key={`${shop.id}.cart.lines.${item.id}`} fallback={<CartLine.skeleton />}>
-                                    <CartLine i18n={i18n} data={item as any} />
-                                </Suspense>
-                            );
-                        })}
-                    </>
-                ) : null}
-            </div>
-        </Suspense>
+                        return (
+                            <Suspense key={`${shop.id}.cart.lines.${item.id}`} fallback={<CartLine.skeleton />}>
+                                <CartLine i18n={i18n} data={item as any} />
+                            </Suspense>
+                        );
+                    })}
+                </>
+            ) : null}
+        </div>
     );
 };
 

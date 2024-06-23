@@ -40,7 +40,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
             const priority = order < 2;
 
             return (
-                <div key={index} className={styles.item}>
+                <div key={`${title}_${index}`} className={styles.item}>
                     {icon.url ? (
                         <Image
                             className={styles.icon}
@@ -48,6 +48,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                             alt={icon.alt || ''}
                             width={35}
                             height={35}
+                            quality={75}
                             decoding="async"
                             loading={priority ? 'eager' : 'lazy'}
                             priority={priority}
@@ -60,7 +61,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                 </div>
             );
         });
-    }, [slice, items]);
+    }, [slice]);
 
     if (icons.length <= 0) {
         return null;
@@ -79,28 +80,5 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
     );
 };
 IconGrid.displayName = 'Nordcom.Slices.IconGrid';
-
-IconGrid.skeleton = ({ slice }: { slice?: Content.CollectionSlice }) => {
-    if (!slice) {
-        return null;
-    }
-
-    return (
-        <PageContent
-            as="section"
-            className={styles.container}
-            data-slice-type={slice.slice_type}
-            data-slice-variation={slice.variation}
-        >
-            {(slice.items.length > 0 ? slice.items : []).map(({ title }, index) => (
-                <div key={index} className={styles.item} data-skeleton>
-                    <div className={styles.icon} />
-                    <div className={styles.title}>{title}</div>
-                </div>
-            ))}
-        </PageContent>
-    );
-};
-(IconGrid.skeleton as any).displayName = 'Nordcom.Slices.IconGrid.Skeleton';
 
 export default IconGrid;

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -107,12 +108,14 @@ export default async function SearchPage({ params: { domain, locale: localeData 
                     />
                 ) : null}
 
-                <SearchContent
-                    //client={await ShopifyApolloApiClient({ shop, locale })}
-                    shop={shop}
-                    locale={locale}
-                    i18n={i18n}
-                />
+                <Suspense fallback={null}>
+                    <SearchContent
+                        //client={await ShopifyApolloApiClient({ shop, locale })}
+                        shop={shop}
+                        locale={locale}
+                        i18n={i18n}
+                    />
+                </Suspense>
             </>
         );
     } catch (error: unknown) {

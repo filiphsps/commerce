@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '@/utils/test/react';
 
-import Link from '@/components/link/link';
+import Link from '@/components/link';
 
 import type { Locale } from '@/utils/locale';
 

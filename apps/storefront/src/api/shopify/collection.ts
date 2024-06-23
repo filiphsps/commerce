@@ -1,11 +1,9 @@
-import { unstable_cache as cache } from 'next/cache';
-
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
 import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
-import { gql } from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
@@ -114,12 +112,11 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
-    const callback = async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
-        try {
-            const { data, errors } = await api.query<{
-                collection: QueryRoot['collection'];
-            }>(
-                gql`
+    try {
+        const { data, errors } = await api.query<{
+            collection: QueryRoot['collection'];
+        }>(
+            gql`
                     query collection(
                         $handle: String!
                         $first: Int
@@ -176,41 +173,34 @@ export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions
                         }
                     }
                 `,
-                {
-                    handle: handle,
-                    ...extractLimitLikeFilters(filters),
-                    ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
-                        sorting: sorting,
-                        before: before,
-                        after: after
-                    }))(filters)
-                },
-                {
-                    tags: [shop.id, locale.code, `collection`, handle, filtersTag]
-                }
-            );
-
-            if (errors) {
-                throw new UnknownApiError();
-            } else if (!data?.collection) {
-                throw new NotFoundError(`"Collection" with the handle "${handle}"`);
+            {
+                handle: handle,
+                ...extractLimitLikeFilters(filters),
+                ...(({ sorting = 'COLLECTION_DEFAULT', before = null, after = null }) => ({
+                    sorting: sorting,
+                    before: before,
+                    after: after
+                }))(filters)
+            },
+            {
+                tags: [shop.id, locale.code, `collection`, handle, filtersTag]
             }
+        );
 
-            return {
-                ...data.collection,
-                descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
-            };
-        } catch (error: unknown) {
-            console.error(error);
-            throw error;
+        if (errors) {
+            throw new UnknownApiError();
+        } else if (!data?.collection) {
+            throw new NotFoundError(`"Collection" with the handle "${handle}"`);
         }
-    };
 
-    if (!cache || typeof cache !== 'function') {
-        return await callback({ api, handle }, filters);
+        return {
+            ...data.collection,
+            descriptionHtml: cleanShopifyHtml(data.collection.descriptionHtml) || ''
+        };
+    } catch (error: unknown) {
+        console.error(error);
+        throw error;
     }
-
-    return cache(callback, [shop.id, locale.code, 'collection', handle, filtersTag])({ api, handle }, filters);
 };
 
 export const CollectionPaginationCountApi = async ({
@@ -229,101 +219,84 @@ export const CollectionPaginationCountApi = async ({
     const filters = 'filters' in props ? props.filters : /** @deprecated */ (props as CollectionFilters);
     const filtersTag = JSON.stringify(filters, null, 0);
 
-    return cache(
-        async ({ api, handle }: CollectionOptions, filters: CollectionFilters) => {
-            const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
-                const { data, errors } = await api.query<{
-                    collection: QueryRoot['collection'];
-                }>(
-                    gql`
-                        query collection(
-                            $handle: String!
-                            $first: Int
-                            $sorting: ProductCollectionSortKeys
-                            $before: String
-                            $after: String
-                        ) {
-                            collection(handle: $handle) {
-                                id
-                                handle
-                                products(first: $first, sortKey: $sorting, before: $before, after: $after) {
-                                    edges {
-                                        cursor
-                                        node {
-                                            id
-                                        }
-                                    }
-                                    pageInfo {
-                                        hasNextPage
-                                    }
+    const countProducts = async (count: number = 0, cursors: string[] = [], after: string | null = null) => {
+        const { data, errors } = await api.query<{
+            collection: QueryRoot['collection'];
+        }>(
+            gql`
+                query collection(
+                    $handle: String!
+                    $first: Int
+                    $sorting: ProductCollectionSortKeys
+                    $before: String
+                    $after: String
+                ) {
+                    collection(handle: $handle) {
+                        id
+                        handle
+                        products(first: $first, sortKey: $sorting, before: $before, after: $after) {
+                            edges {
+                                cursor
+                                node {
+                                    id
                                 }
                             }
+                            pageInfo {
+                                hasNextPage
+                            }
                         }
-                    `,
-                    {
-                        handle: handle,
-                        ...extractLimitLikeFilters(filters),
-                        ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
-                            sorting: sorting,
-                            after: after
-                        }))(filters)
-                    },
-                    {
-                        fetchPolicy: 'no-cache',
-                        tags: [
-                            shop.id,
-                            locale.code,
-                            `collection`,
-                            'pagination',
-                            'count',
-                            handle,
-                            filtersTag,
-                            `pos=${count}`
-                        ]
                     }
-                );
-
-                if (errors) throw new UnknownApiError();
-                else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0)
-                    return {
-                        count,
-                        cursors
-                    };
-
-                const cursor = data.collection.products.edges.at(-1)!.cursor;
-                if (data.collection.products.pageInfo.hasNextPage) {
-                    const res = await countProducts(count, [cursor, ...cursors], cursor);
-
-                    count += res.count;
-                    cursors = res.cursors;
                 }
+            `,
+            {
+                handle: handle,
+                ...extractLimitLikeFilters(filters),
+                ...(({ sorting = 'COLLECTION_DEFAULT' }) => ({
+                    sorting: sorting,
+                    after: after
+                }))(filters)
+            },
+            {
+                fetchPolicy: 'no-cache',
+                tags: [shop.id, locale.code, `collection`, 'pagination', 'count', handle, filtersTag, `pos=${count}`]
+            }
+        );
 
-                return {
-                    count: count + data.collection.products.edges.length,
-                    cursors
-                };
+        if (errors) throw new UnknownApiError();
+        else if (!data?.collection?.products.edges || data.collection.products.edges.length <= 0)
+            return {
+                count,
+                cursors
             };
 
-            try {
-                const { count: products, cursors } = await countProducts(0);
+        const cursor = data.collection.products.edges.at(-1)!.cursor;
+        if (data.collection.products.pageInfo.hasNextPage) {
+            const res = await countProducts(count, [cursor, ...cursors], cursor);
 
-                const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
-                const pages = Math.ceil(products / perPage);
-                return {
-                    pages,
-                    cursors: cursors.reverse(),
-                    products
-                };
-            } catch (error: unknown) {
-                console.error(error);
-                throw error;
-            }
-        },
-        [shop.id, locale.code, 'collection', 'pagination', handle, filtersTag],
-        {
-            tags: [shop.id, locale.code, `collection`, 'pagination', handle, filtersTag]
+            count += res.count;
+            cursors = res.cursors;
         }
-    )({ api, handle }, filters);
+
+        return {
+            count: count + data.collection.products.edges.length,
+            cursors
+        };
+    };
+
+    try {
+        const { count: products, cursors } = await countProducts(0);
+
+        const perPage = ((extractLimitLikeFilters(filters) as any)?.first || 30) as number;
+        const pages = Math.ceil(products / perPage);
+        return {
+            pages,
+            cursors: cursors.reverse(),
+            products
+        };
+    } catch (error: unknown) {
+        console.error(error);
+        throw error;
+    }
 };
 
 export const CollectionsApi = async (

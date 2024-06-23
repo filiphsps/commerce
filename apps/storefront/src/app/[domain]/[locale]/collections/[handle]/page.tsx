@@ -160,10 +160,7 @@ export default async function CollectionPage({
                     />
 
                     <section className={styles.collection}>
-                        <Suspense
-                            key={`${shop.id}.collection.${handle}.pagination.collection`}
-                            fallback={<CollectionBlock.skeleton />}
-                        >
+                        <Suspense fallback={<CollectionBlock.skeleton />}>
                             <CollectionBlock
                                 shop={shop}
                                 locale={locale}
@@ -173,14 +170,11 @@ export default async function CollectionPage({
                         </Suspense>
                     </section>
 
-                    <Suspense
-                        key={`${shop.id}.collection.${handle}.pagination`}
-                        fallback={<Pagination knownFirstPage={1} />}
-                    >
-                        <section className={styles.collection}>
+                    <section className={styles.collection}>
+                        <Suspense fallback={null}>
                             <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
-                        </section>
-                    </Suspense>
+                        </Suspense>
+                    </section>
 
                     <section className={styles.content}>
                         {page && slices && (slices.length || 0) > 0 ? (
@@ -202,9 +196,7 @@ export default async function CollectionPage({
                     ) : null}
                 </PageContent>
 
-                <Suspense fallback={null}>
-                    <Breadcrumbs shop={shop} title={collection.title} />
-                </Suspense>
+                <Breadcrumbs shop={shop} title={collection.title} />
 
                 {/* Metadata */}
                 <script

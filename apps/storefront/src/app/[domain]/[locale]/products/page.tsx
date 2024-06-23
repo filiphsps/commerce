@@ -93,18 +93,10 @@ export async function generateMetadata({
     }
 }
 
-export default async function ProductsPage({
-    params: { domain, locale: localeData },
-    searchParams
-}: {
-    params: ProductsPageParams;
-    searchParams: FilterParams;
-}) {
+export default async function ProductsPage({ params: { domain, locale: localeData } }: { params: ProductsPageParams }) {
     try {
         // Creates a locale object from a locale code (e.g. `en-US`).
         const locale = Locale.from(localeData);
-
-        if (searchParams.page && isNaN(parseInt(searchParams.page))) notFound();
 
         // Fetch the current shop.
         const shop = await ShopApi(domain, cache);
@@ -129,15 +121,12 @@ export default async function ProductsPage({
             <>
                 <Heading title={page?.title || t('products')} subtitle={page?.description} />
 
-                <ProductsContent />
-
-                <Suspense key={`${shop.id}.products.pagination`} fallback={<Pagination knownFirstPage={1} />}>
+                <Suspense fallback={null}>
+                    <ProductsContent />
                     <Pagination knownFirstPage={1} knownLastPage={pagesInfo.pages} />
                 </Suspense>
 
-                <Suspense fallback={null}>
-                    <Breadcrumbs shop={shop} title={t('products')} />
-                </Suspense>
+                <Breadcrumbs shop={shop} title={t('products')} />
             </>
         );
     } catch (error: unknown) {

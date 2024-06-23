@@ -1,7 +1,7 @@
 import { NotFoundError } from '@nordcom/commerce-errors';
 
 import { TitleToHandle } from '@/utils/title-to-handle';
-import { gql } from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import type { VendorModel } from '@/models/VendorModel';
 import type { AbstractApi } from '@/utils/abstract-api';

@@ -6,8 +6,6 @@ import { shopifyAdminApi } from './shopify';
 
 import type { NextRequest } from 'next/server';
 
-export const dynamic = 'force-dynamic';
-
 export const GET = async (req: NextRequest, _context: any) => {
     const searchParams = req.nextUrl.searchParams;
 

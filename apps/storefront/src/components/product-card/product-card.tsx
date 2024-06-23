@@ -2,8 +2,6 @@ import 'server-only';
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { Suspense } from 'react';
-
 import type { Shop } from '@nordcom/commerce-database';
 
 import { getDictionary } from '@/utils/dictionary';
@@ -33,23 +31,21 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
     const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
 
     return (
-        <Suspense fallback={<ProductCard.skeleton />}>
-            <div
-                className={`${styles.container} ${className || ''}`}
-                title={description ? `${description}...` : undefined}
-                data-available={product.availableForSale}
-                {...props}
-            >
-                {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
-                <ProductCardImage shop={shop} data={product} priority={priority}>
-                    <ProductCardBadges data={product} />
-                </ProductCardImage>
+        <div
+            className={`${styles.container} ${className || ''}`}
+            title={description ? `${description}...` : undefined}
+            data-available={product.availableForSale}
+            {...props}
+        >
+            {/*<ProductCardQuickActions data={product} locale={locale} i18n={i18n} />*/}
+            <ProductCardImage shop={shop} data={product} priority={priority}>
+                <ProductCardBadges data={product} />
+            </ProductCardImage>
 
-                <ProductCardActions data={product} locale={locale} i18n={i18n}>
-                    <ProductCardTitle data={product} />
-                </ProductCardActions>
-            </div>
-        </Suspense>
+            <ProductCardActions data={product} locale={locale} i18n={i18n}>
+                <ProductCardTitle data={product} />
+            </ProductCardActions>
+        </div>
     );
 };
 ProductCard.displayName = 'Nordcom.ProductCard';

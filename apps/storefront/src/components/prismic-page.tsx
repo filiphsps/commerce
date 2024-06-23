@@ -27,7 +27,7 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     type = 'custom_page' as T
 }: PageParams<T>) {
     return (
-        <Suspense key={`${shop.id}.page.${handle}.PrismicPage`} fallback={<PrismicPage.skeleton page={page} />}>
+        <Suspense fallback={<PrismicPage.skeleton page={page} />}>
             <SliceZone
                 slices={page.slices || []}
                 components={slices}

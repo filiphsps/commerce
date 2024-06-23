@@ -2,8 +2,6 @@ import 'server-only';
 
 import styles from './vendors.module.scss';
 
-import { Suspense } from 'react';
-
 import Vendors from '@/components/informational/vendors';
 import PageContent from '@/components/page-content';
 
@@ -26,9 +24,7 @@ const VendorsSlice = async ({ slice, context: { shop, locale } }: VendorsProps) 
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            <Suspense key={`${shop.id}.vendors`} fallback={<Vendors.skeleton />}>
-                <Vendors shop={shop} locale={locale} />
-            </Suspense>
+            <Vendors shop={shop} locale={locale} />
         </PageContent>
     );
 };

@@ -1,4 +1,4 @@
-import { gql } from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import type { RedirectModel } from '@/models/RedirectModel';
 import type { AbstractApi } from '@/utils/abstract-api';

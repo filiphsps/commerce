@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-static';
-export const revalidate = 60 * 60 * 8; // 8 hours.
+export const revalidate = 28800; // 8 hours.
 
 export type FaviconRouteParams = {
     domain: string;

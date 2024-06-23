@@ -32,6 +32,6 @@ export const PagesApi = async (shop: Shop, cache?: any) => {
     const tags = ['shops', shop.id, 'pages', 'page']; // TODO: Utility function.
     return cache(async () => callback(), tags, {
         tags,
-        revalidate: 60 * 60 * 8 // 8 hours.
+        revalidate: 28800 // 8 hours.
     })() as ReturnType<typeof callback>;
 };

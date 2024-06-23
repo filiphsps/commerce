@@ -24,8 +24,8 @@ import ProvidersRegistry from '@/components/providers-registry';
 import type { Metadata, Viewport } from 'next';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-static';
-export const revalidate = 60 * 60 * 8; // 8 hours.
+export const dynamic = 'auto';
+export const revalidate = 28800; // 8 hours.
 
 export type LayoutParams = { domain: string; locale: string };
 
@@ -131,13 +131,11 @@ export default async function RootLayout({
                 <body suppressHydrationWarning={true}>
                     <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
                         <AnalyticsProvider shop={shop}>
-                            <Suspense fallback={<ShopLayout.skeleton />}>
-                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                    <PageContent as="main" primary={true}>
-                                        {children}
-                                    </PageContent>
-                                </ShopLayout>
-                            </Suspense>
+                            <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                <PageContent as="main" primary={true}>
+                                    {children}
+                                </PageContent>
+                            </ShopLayout>
 
                             <HeaderProvider loaderColor={branding.primary.color} />
                         </AnalyticsProvider>

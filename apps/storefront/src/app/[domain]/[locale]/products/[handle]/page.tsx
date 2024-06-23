@@ -38,6 +38,9 @@ import { ImportantProductDetails, ProductDetails } from './product-details';
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
+export const dynamic = 'auto';
+export const revalidate = 3600;
+
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 
 /*export async function generateStaticParams({
@@ -258,13 +261,11 @@ export default async function ProductPage({
                     primaryClassName={styles.headingPrimary}
                     asideDesktopWidth={0.58}
                     aside={
-                        <Suspense key={`${shop.id}.products.${handle}.gallery`} fallback={<div />}>
-                            <ProductGallery
-                                initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
-                                images={product.images.edges.map((edge) => edge.node)}
-                                className={styles.gallery}
-                            />
-                        </Suspense>
+                        <ProductGallery
+                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
+                            images={product.images.edges.map((edge) => edge.node)}
+                            className={styles.gallery}
+                        />
                     }
                 >
                     <div className={styles.content}>
@@ -274,7 +275,9 @@ export default async function ProductPage({
                             asideClassName={styles.headingAside}
                             aside={
                                 <div className={styles.pricing}>
-                                    <ProductPricing shop={shop} product={product} initialVariant={initialVariant} />
+                                    <Suspense fallback={null}>
+                                        <ProductPricing shop={shop} product={product} initialVariant={initialVariant} />
+                                    </Suspense>
                                 </div>
                             }
                             style={{ gap: '0' }}
@@ -297,7 +300,7 @@ export default async function ProductPage({
 
                         <InfoLines product={product} style={{ paddingBottom: 'var(--block-spacer-huge)' }} />
 
-                        <Suspense key={`${shop.id}.products.${handle}.content`} fallback={null}>
+                        <Suspense fallback={null}>
                             <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
                         </Suspense>
 
@@ -316,10 +319,7 @@ export default async function ProductPage({
                                                 }}
                                             />
 
-                                            <Suspense
-                                                key={`${shop.id}.products.${handle}.important-details`}
-                                                fallback={null}
-                                            >
+                                            <Suspense fallback={null}>
                                                 <ImportantProductDetails locale={locale} data={product} />
                                             </Suspense>
                                         </>
@@ -335,10 +335,7 @@ export default async function ProductPage({
                     </div>
                 </SplitView>
 
-                <Suspense
-                    key={`${shop.id}.products.${handle}.recommended-products`}
-                    fallback={<RecommendedProducts.skeleton />}
-                >
+                <Suspense fallback={<RecommendedProducts.skeleton />}>
                     <RecommendedProducts shop={shop} locale={locale} product={product} />
                 </Suspense>
 

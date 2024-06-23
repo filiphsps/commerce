@@ -187,7 +187,7 @@ export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false)
 
         return cache(callback, [domain, `secure=${secure}`], {
             tags: [domain, `secure=${secure}`],
-            revalidate: 60 * 60 * 8 // 8 hours.
+            revalidate: 28800 // 8 hours.
         })(domain, secure) as ReturnType<typeof callback>;
     } catch (error: unknown) {
         // throw new UnknownShopDomainError();
@@ -217,7 +217,7 @@ export const ShopsApi = async (cache?: any) => {
 
         return cache(async () => callback(), ['shops'], {
             tags: ['shops'],
-            revalidate: 60 * 60 * 8 // 8 hours.
+            revalidate: 28800 // 8 hours.
         })() as ReturnType<typeof callback>;
     } catch (error: unknown) {
         throw new UnknownApiError((error as any)?.message);

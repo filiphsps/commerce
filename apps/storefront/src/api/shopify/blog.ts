@@ -1,4 +1,4 @@
-import { gql } from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 import type { AbstractApi } from '@/utils/abstract-api';
 import type { Article, ArticleSortKeys, Blog } from '@shopify/hydrogen-react/storefront-api-types';

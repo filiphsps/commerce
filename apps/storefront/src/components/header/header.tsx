@@ -3,7 +3,7 @@ import 'server-only';
 import styles from '@/components/header/header.module.scss';
 import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
 
-import { type HTMLProps, Suspense } from 'react';
+import { type HTMLProps } from 'react';
 import Image from 'next/image';
 
 import { Shop } from '@nordcom/commerce-db';
@@ -39,9 +39,7 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
             data-theme-variant={headerTheme.variant || 'default'}
         >
             <HeaderContainer {...props}>
-                <Suspense fallback={<div />}>
-                    <HamburgerMenu />
-                </Suspense>
+                <HamburgerMenu />
 
                 <Link href={'/'} className={styles.logo}>
                     {logo.src ? (

@@ -10,7 +10,6 @@ import { getSlices, SliceSimulator } from '@slicemachine/adapter-next/simulator'
 
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export type SliceSimulatorPageParams = { domain: string };
