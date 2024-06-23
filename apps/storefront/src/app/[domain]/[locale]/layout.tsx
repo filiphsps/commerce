@@ -30,7 +30,7 @@ export const revalidate = 60 * 60 * 8; // 8 hours.
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateStaticParams(): Promise<LayoutParams[]> {
-    const shops = await ShopsApi();
+    const shops = await ShopsApi(cache);
 
     return (
         await Promise.all(

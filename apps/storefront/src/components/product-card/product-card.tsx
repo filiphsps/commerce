@@ -30,11 +30,10 @@ export type ProductCardProps = {
 };
 const ProductCard = async ({ shop, locale, data: product, priority, className, ...props }: ProductCardProps) => {
     const i18n = await getDictionary({ shop, locale });
-
     const description = (product.seo.description || product.description || '').slice(0, DESCRIPTION_LENGTH).trimEnd();
 
     return (
-        <Suspense key={`${shop.id}.product.${product.handle}.card`} fallback={<ProductCard.skeleton />}>
+        <Suspense fallback={<ProductCard.skeleton />}>
             <div
                 className={`${styles.container} ${className || ''}`}
                 title={description ? `${description}...` : undefined}

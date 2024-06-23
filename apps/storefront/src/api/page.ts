@@ -13,36 +13,43 @@ import type { PrismicDocument } from '@prismicio/client';
 export const PagesApi = async ({
     shop,
     locale,
-    exclude = ['shop', 'countries', 'search', 'cart']
+    exclude = ['homepage', 'shop', 'countries', 'search', 'cart']
 }: {
     shop: Shop;
     locale: Locale;
     exclude?: string[];
-}): Promise<PrismicDocument[]> => {
-    return new Promise(async (resolve, reject) => {
+}): Promise<PrismicDocument[] | null> => {
+    const callback = async ({ shop, locale, exclude }: { shop: Shop; locale: Locale; exclude: string[] }) => {
         try {
             const client = createClient({ shop, locale });
+
             const pages = await client.getAllByType('custom_page', {
-                limit: 50,
                 lang: locale.code
             });
 
-            // TODO: Remove filter once we've migrated away from "special" pages
-            const filtered = pages.filter(({ uid }) => !exclude.includes(uid!));
-            return resolve(filtered);
-        } catch (error: unknown) {
+            return pages.filter(({ uid }) => !exclude.includes(uid!));
+        } catch (error) {
             if (Error.isNotFound(error)) {
                 if (!Locale.isDefault(locale)) {
-                    return resolve(await PagesApi({ shop, locale: Locale.default, exclude })); // Try again with default locale.
+                    return await PagesApi({ shop, locale: Locale.default }); // Try again with default locale.
                 }
 
-                return reject(new NotFoundError(`"Pages" for the locale "${locale.code}"`));
+                return null;
             }
 
-            console.error(error);
-            return reject(error);
+            // TODO: Deal with errors properly.
+            // console.error(error);
+            return null;
         }
-    });
+    };
+
+    // Fast-path for no cache.
+    if (!cache || typeof cache !== 'function') return callback({ shop, locale, exclude });
+
+    return cache(callback, [shop.domain, shop.id], {
+        tags: buildCacheTagArray(shop, locale, ['prismic', 'pages']),
+        revalidate: 60 * 60 * 8 // 8 hours.
+    })({ shop, locale, exclude });
 };
 
 export type PageType = 'collection_page' | 'product_page' | 'custom_page';

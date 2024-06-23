@@ -32,9 +32,9 @@ const config = {
         scrollRestoration: true,
         serverSourceMaps: true,
         serverMinification: isProduction,
-        //taint: true,
-        webpackBuildWorker: isProduction,
+        webpackBuildWorker: true,
         parallelServerBuildTraces: true,
+        parallelServerCompiles: true,
         reactCompiler: true,
         turbo: {}
     },

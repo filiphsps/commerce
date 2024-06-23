@@ -7,6 +7,7 @@ import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
 
+import { createProductSearchParams } from '@/api/product';
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
@@ -62,10 +63,8 @@ const ProductCardImage = ({ shop, data: product, priority = false, children }: P
     );
     if (!image) return null;
 
-    // TODO: Hotlink to variant.
     const title = `${product.vendor} ${product.title} by ${shop.name}`;
-    const params = new URLSearchParams(product.trackingParameters ? `?${product.trackingParameters}` : '');
-    const href = `/products/${product.handle}/?${params.toString()}`;
+    const href = `/products/${product.handle}/${createProductSearchParams({ product })}`;
 
     return (
         <Link href={href || ''} className={styles['image-container']}>

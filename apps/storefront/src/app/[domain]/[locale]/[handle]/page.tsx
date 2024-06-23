@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
-import { PageApi } from '@/api/page';
+import { PageApi, PagesApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
@@ -18,46 +18,24 @@ import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
 
-/*export async function generateStaticParams() {
-    const shops = await ShopsApi();
-
-    const pages = (
-        await Promise.all(
-            shops
-                .map(async (shop) => {
-                    try {
-                        const api = await ShopifyApiClient({ shop });
-                        const locales = await LocalesApi({ api });
-
-                        return await Promise.all(
-                            locales
-                                .map(async (locale) => {
-                                    try {
-                                        const pages = await PagesApi({ shop, locale });
-
-                                        return pages.map(({ uid }) => ({
-                                            domain: shop.domain,
-                                            locale: locale.code,
-                                            handle: uid === 'homepage' ? undefined : uid
-                                        }));
-                                    } catch {
-                                        return null;
-                                    }
-                                })
-                                .filter((_) => _)
-                        );
-                    } catch {
-                        return null;
-                    }
-                })
-                .filter((_) => _)
-        )
-    ).flat(2);
-
-    return pages;
-}*/
-
 export type CustomPageParams = { domain: string; locale: string; handle: string };
+
+export async function generateStaticParams({
+    params: { domain, locale: localeData }
+}: {
+    params: Omit<CustomPageParams, 'handle'>;
+}): Promise<Omit<CustomPageParams, 'domain' | 'locale'>[]> {
+    const locale = Locale.from(localeData);
+
+    const shop = await ShopApi(domain, cache, true);
+    const pages = await PagesApi({ shop, locale });
+    if (!pages) return [];
+
+    return pages.map(({ uid }) => ({
+        handle: uid!
+    }));
+}
+
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
 }: {
@@ -74,7 +52,6 @@ export async function generateMetadata({
         // Do the actual API calls.
         const page = await PageApi({ shop, locale, handle });
         if (!page) notFound();
-        // Extra calls,
 
         const locales = await LocalesApi({ api });
 
