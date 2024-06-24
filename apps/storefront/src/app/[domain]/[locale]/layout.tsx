@@ -25,7 +25,9 @@ import type { Metadata, Viewport } from 'next';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
-export const revalidate = 28800; // 8 hours.
+export const dynamicParams = true;
+export const revalidate = false;
+export const preferredRegion = 'home';
 
 export type LayoutParams = { domain: string; locale: string };
 

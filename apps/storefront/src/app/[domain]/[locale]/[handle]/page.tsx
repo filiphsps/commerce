@@ -18,6 +18,11 @@ import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+export const revalidate = false;
+
 export type CustomPageParams = { domain: string; locale: string; handle: string };
 
 export async function generateStaticParams({
@@ -60,7 +65,7 @@ export async function generateMetadata({
         const path = handle === 'homepage' ? '/' : `/${handle}/`;
 
         const title = page.meta_title || page.title || handle;
-        const description = (page.meta_description && asText(page.meta_description)) || page.description || undefined;
+        const description = asText(page.meta_description) || page.description || undefined;
         return {
             title,
             description,

@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { unstable_cache as cache } from 'next/cache';
-import { headers } from 'next/headers';
 
 import { type Shop, ShopApi } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
@@ -35,16 +34,6 @@ export const ShopifyApiConfig = async ({
         contentType: 'json'
     });
 
-    let buyerIp: string | undefined = undefined;
-    if (!noHeaders) {
-        const clientHeaders = headers();
-        buyerIp =
-            clientHeaders.get('cf-connecting-ip') ||
-            clientHeaders.get('x-forwarded-for') ||
-            clientHeaders.get('x-real-ip') ||
-            undefined;
-    }
-
     return {
         public: () => ({
             uri: api.getStorefrontApiUrl(),
@@ -52,7 +41,9 @@ export const ShopifyApiConfig = async ({
         }),
         private: () => ({
             uri: api.getStorefrontApiUrl(),
-            headers: api.getPrivateTokenHeaders({ buyerIp })
+            headers: api.getPrivateTokenHeaders({
+                buyerIp: undefined // TODO: Ser buyerIp.
+            })
         })
     };
 };

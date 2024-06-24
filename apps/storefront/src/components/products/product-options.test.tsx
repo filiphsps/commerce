@@ -69,7 +69,7 @@ describe.skip('components', () => {
 
     describe('ProductOptions', () => {
         it('renders all options and values', async () => {
-            const { unmount } = render(<ProductOptions initialVariant={variants[0] as any} />);
+            const { unmount } = render(<ProductOptions />);
 
             for (const option of options) {
                 expect(await screen.findByText(option.name)).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe.skip('components', () => {
         });
 
         it.todo('converts grams to ounces when locale is en-US', async () => {
-            render(<ProductOptions initialVariant={variants[0] as any} />);
+            render(<ProductOptions />);
 
             // We can't use sizeOptionValues[0] because it's in grams.
             const target = await screen.findByRole('link', { name: /4oz/i });
@@ -93,7 +93,7 @@ describe.skip('components', () => {
         });
 
         it('disables options that are out of stock or unavailable', async () => {
-            render(<ProductOptions initialVariant={variants[0] as any} />);
+            render(<ProductOptions />);
 
             const target = await screen.findByRole('link', { name: variants[0]!.title });
 
@@ -102,7 +102,7 @@ describe.skip('components', () => {
         });
 
         it('should call setSelectedOptions when an option is clicked', async () => {
-            render(<ProductOptions initialVariant={variants[0] as any} />);
+            render(<ProductOptions />);
 
             const variant = variants.at(-1)!;
             const target = await screen.findByRole('link', { name: variant.title });

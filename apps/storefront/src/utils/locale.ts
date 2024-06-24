@@ -256,13 +256,16 @@ export const ConvertToLocalMeasurementSystem = ({
     };
     // TODO: Support more than just US here, because apparently there's a lot
     //        more countries out there using imperial.
-    const metric = locale.country && locale.country.toLowerCase() !== 'us';
+    const metric = locale.country ? locale.country.toLowerCase() !== 'us' : true;
     const unit = weightUnitToConvertUnits(weightUnit);
 
     // TODO: Do this properly.
-    const targetUnit = (metric && 'g') || 'oz';
-    if (unit === targetUnit) return `${Math.ceil(weight)}${targetUnit}`; // TODO: Precision should be depending on unit.
+    const targetUnit = metric ? 'g' : 'oz';
 
-    const res = ConvertUnits(weight).from(unit).to(targetUnit);
-    return `${Math.ceil(res)}${targetUnit}`; // TODO: Precision should be depending on unit.
+    if (unit !== targetUnit) weight = ConvertUnits(weight).from(unit).to(targetUnit);
+
+    let res = ((Math.round(weight) * 100) / 100).toFixed(metric ? 0 : 2).toString();
+    if (res.endsWith('.00')) res = res.slice(0, -3);
+
+    return `${res}${targetUnit}`;
 };

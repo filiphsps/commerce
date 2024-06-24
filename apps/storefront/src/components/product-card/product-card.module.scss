@@ -27,8 +27,8 @@
     border-radius: var(--block-border-radius);
 
     scroll-snap-align: center;
-    contain-intrinsic-size: var(--component-product-card-width) auto;
-    content-visibility: auto;
+    /*contain-intrinsic-size: var(--component-product-card-width) auto;
+    content-visibility: auto;*/
 
     &[data-available='false'] {
         opacity: 0.75;

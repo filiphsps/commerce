@@ -22,6 +22,10 @@ const config = {
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react'],
     serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
+    devIndicators: {
+        buildActivity: true,
+        buildActivityPosition: 'bottom-left'
+    },
     experimental: {
         ppr: true,
         //caseSensitiveRoutes: true,
@@ -38,7 +42,6 @@ const config = {
         ],
         scrollRestoration: true,
         serverSourceMaps: true,
-        serverMinification: isProduction,
         webpackBuildWorker: true,
         parallelServerBuildTraces: true,
         parallelServerCompiles: true,

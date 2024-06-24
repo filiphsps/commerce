@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';
-export const revalidate = 28800; // 8 hours.
+export const revalidate = false;
 
 export type FaviconRouteParams = {
     domain: string;

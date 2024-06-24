@@ -60,7 +60,7 @@ export async function generateMetadata({
         // TODO: i18n.
         const title = `${page?.meta_title || collection.seo.title || collection.title}${searchParams.page ? ` -  Page ${searchParams.page}` : ''}`;
         const description: string | undefined =
-            (page?.meta_description && asText(page.meta_description)) ||
+            asText(page?.meta_description) ||
             collection.seo.description ||
             collection.description.substring(0, 150) ||
             undefined;
@@ -141,8 +141,7 @@ export default async function CollectionPage({
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary(locale);
 
-        const subtitle =
-            (page?.meta_description && asText(page.meta_description)) || collection.seo.description || null;
+        const subtitle = asText(page?.meta_description) || collection.seo.description || null;
 
         // Filter any left-over legacy collection slices.
         const slices =
