@@ -8,8 +8,7 @@ Sentry.init({
     dsn: 'https://69f04d1649cfe353ec27e6a30ca412d5@o4506147853828096.ingest.us.sentry.io/4507483915091968',
 
     // Adjust this value in production, or use tracesSampler for greater control
-    tracesSampleRate: 0.15,
-    tracePropagationTargets: ['localhost', /^https:\/\/swedish-candy-store\.io\/api/],
+    tracesSampleRate: 0.3,
     // Set profilesSampleRate to 1.0 to profile every transaction.
     // Since profilesSampleRate is relative to tracesSampleRate,
     // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate
@@ -25,9 +24,8 @@ Sentry.init({
 
     integrations: [
         Sentry.replayIntegration({
-            // Additional Replay configuration goes in here, for example:
-            maskAllText: true,
-            blockAllMedia: true
+            maskAllText: false,
+            blockAllMedia: false
         }),
         // Add browser profiling integration to the list of integrations
         Sentry.browserProfilingIntegration()

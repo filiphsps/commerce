@@ -1,5 +1,4 @@
 import { Shop } from '@nordcom/commerce-db';
-import { TodoError } from '@nordcom/commerce-errors';
 
 import { colord, extend } from 'colord';
 import a11yPlugin from 'colord/plugins/a11y';
@@ -10,8 +9,9 @@ extend([a11yPlugin]);
 export const getBrandingColors = async (domain: string) => {
     const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     if (shop.design.accents.length <= 0) {
-        throw new TodoError();
+        return null;
     }
+
     const accents = shop.design.accents;
 
     // TODO: Deal with variants.
@@ -30,6 +30,9 @@ export const getBrandingColors = async (domain: string) => {
 
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
     const branding = await getBrandingColors(domain);
+    if (!branding) {
+        return null;
+    }
 
     // TODO: Background and foreground colors.
     return (

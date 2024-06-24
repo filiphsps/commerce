@@ -64,7 +64,7 @@ const CollectionBlock = async ({
     return (
         <section
             {...props}
-            className={`${styles.container} ${isHorizontal ? styles.horizontal : styles.vertical} ${products.length <= 6 ? styles.small : ''} ${className ? className : ''}`}
+            className={`${styles.container} ${isHorizontal ? styles.horizontal : styles.vertical} ${className ? className : ''}`}
         >
             <div className={styles.content}>
                 {products.map((product, index) => (

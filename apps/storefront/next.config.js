@@ -25,7 +25,7 @@ const config = {
     experimental: {
         ppr: true,
         //caseSensitiveRoutes: true,
-        instrumentationHook: true,
+        instrumentationHook: isProduction,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',

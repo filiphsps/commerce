@@ -9,30 +9,19 @@
     scrollbar-color: var(--color-block-black) var(--color-block);
     scrollbar-width: thin;
 
-    // FIXME: This wont be correct if the "view all" card isn't present.
-    &.small {
-        --component-product-card-width: calc(100% / 2);
-        @media (min-width: $breakpoint-mobile) {
-            --component-product-card-width: calc(100% / 4);
-        }
-        @media (min-width: $breakpoint-tablet) {
-            --component-product-card-width: calc(100% / 5);
-        }
-        @media (min-width: $breakpoint-tablet-medium) {
-            --component-product-card-width: calc(100% / 7);
-        }
-    }
-
     .content {
         display: grid;
-        gap: var(--block-spacer-large);
+        gap: var(--block-spacer);
         grid-auto-columns: 1fr;
         grid-auto-rows: 1fr;
         grid-template-columns: 1fr 1fr;
 
-        @media (min-width: $breakpoint-mobile-small) {
+        @media (min-width: 560px) {
             justify-content: start;
-            grid-template-columns: repeat(auto-fill, minmax(var(--component-product-card-width), 1fr));
+            grid-template-columns: repeat(
+                auto-fill,
+                minmax(calc(calc(var(--component-product-card-width)) - var(--block-spacer) * 2), 1fr)
+            );
         }
 
         .viewAll {
@@ -86,6 +75,27 @@
 
     &.vertical {
         display: block;
+
+        .content {
+            // FIXME: This wont be correct if the "view all" card isn't present.
+            --component-product-card-width: calc(100% / 2);
+
+            @media (min-width: 560px) and (max-width: 835px) {
+                --component-product-card-width: calc(100% / 3);
+            }
+            @media (min-width: 835px) and (max-width: $breakpoint-tablet) {
+                --component-product-card-width: calc(100% / 4);
+            }
+            @media (min-width: $breakpoint-tablet) and (max-width: $breakpoint-tablet-medium) {
+                --component-product-card-width: calc(100% / 4);
+            }
+            @media (min-width: $breakpoint-tablet-medium) and (max-width: 1335px) {
+                --component-product-card-width: calc(100% / 5);
+            }
+            @media (min-width: 1335px) {
+                --component-product-card-width: calc(100% / 7);
+            }
+        }
     }
 
     &.horizontal {

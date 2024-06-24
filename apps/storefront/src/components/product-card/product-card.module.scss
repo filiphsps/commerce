@@ -1,7 +1,11 @@
 @import 'globals';
 
 .container {
-    --padding: calc(var(--block-padding) * 0.75);
+    --padding: calc(var(--block-padding) - var(--block-border-width) * 2);
+
+    @media (min-width: $breakpoint-mobile) {
+        --padding: var(--block-padding-small);
+    }
 
     position: relative;
     overflow: hidden;
@@ -23,7 +27,7 @@
     border-radius: var(--block-border-radius);
 
     scroll-snap-align: center;
-    contain-intrinsic-size: var(--component-product-card-width) 42rem;
+    contain-intrinsic-size: var(--component-product-card-width) auto;
     content-visibility: auto;
 
     &[data-available='false'] {
@@ -31,25 +35,38 @@
         filter: brightness(0.85);
 
         background: var(--color-block);
+        border-color: var(--color-block) !important;
         color: var(--color-dark);
+
+        .actions {
+            display: none;
+        }
+    }
+
+    [data-pricing] {
+        display: inline-block;
+
+        font-size: 1.1em;
+        line-height: 1.05;
+        font-weight: 700;
+
+        @media (min-width: $breakpoint-mobile) {
+            font-size: 1.15em;
+            line-height: normal;
+        }
     }
 
     &:is(:has([data-variant='discount'])) {
         border-color: var(--color-sale);
 
         :is([data-pricing]) {
-            font-weight: 800;
+            font-weight: 850;
             color: var(--color-sale);
         }
     }
 
-    [data-pricing] {
-        display: block;
-    }
-
     @media (min-width: $breakpoint-mobile) {
-        min-height: 35.5rem;
-
+        min-height: 34rem;
         box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     }
 
@@ -62,10 +79,11 @@
         height: 100%;
         width: 100%;
 
+        text-align: left;
+
         .image {
-            aspect-ratio: 1.35 / 1;
             width: 100%;
-            height: auto;
+            height: 14rem;
             padding: calc(var(--padding) * 1.75) var(--padding);
 
             background-color: var(--color-bright);
@@ -74,6 +92,10 @@
             object-position: center;
 
             //transition: $animation-duration ease-in-out transform;
+
+            @media (min-width: $breakpoint-mobile) {
+                height: 16rem;
+            }
         }
         &:is(:hover, :active, :focus) .image {
             //transform: scale(1.1);
@@ -81,15 +103,27 @@
 
         .title {
             padding: 0 var(--padding);
-            padding-bottom: 0;
 
             font-weight: 600;
-            font-size: 1.25em;
-            line-height: 1.15;
+            font-size: 1em;
+            line-height: 1;
 
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+
+            margin-left: -0.075rem;
+
+            @media (min-width: 380px) and (max-width: $breakpoint-mobile) {
+                font-size: 1.05em;
+            }
+
+            @media (min-width: $breakpoint-mobile) {
+                font-size: 1.25em;
+                line-height: 1.15;
+
+                margin-left: -0.15rem;
+            }
         }
 
         .brand {
@@ -98,12 +132,20 @@
 
             opacity: 0.75;
             font-weight: 700;
-            font-size: 0.8em;
+            font-size: 0.75em;
 
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
             text-transform: uppercase;
+
+            @media (max-width: $breakpoint-mobile) {
+                padding-top: calc(var(--padding) * 2);
+            }
+
+            @media (min-width: $breakpoint-mobile) {
+                font-size: 0.8em;
+            }
         }
     }
 
@@ -119,15 +161,22 @@
     .actions {
         display: grid;
         grid-template-columns: 1fr auto;
-        grid-template-rows: 1fr;
-        gap: var(--block-spacer-small);
+        grid-template-rows: 4.5rem;
+        gap: var(--block-spacer);
         justify-content: center;
         align-items: center;
 
         height: 100%;
         width: 100%;
         padding: var(--padding);
-        padding-top: 0;
+
+        @media (min-width: $breakpoint-mobile) {
+            grid-template-rows: 1fr;
+        }
+        @media (min-width: $breakpoint-tablet) {
+            gap: var(--block-spacer-small);
+            grid-template-rows: 1fr;
+        }
 
         .quantity {
             display: grid;
@@ -136,18 +185,25 @@
             width: 100%;
 
             background-color: var(--color-bright);
-            border-color: var(--color-block-dark);
+            border-width: 0;
 
-            box-shadow: none;
+            button {
+                font-weight: 700;
+            }
         }
         .button {
-            aspect-ratio: 1 / 1;
             height: 100%;
-            width: auto;
+            width: 4.5rem;
+            padding: 0;
 
-            border: var(--block-border-width) solid var(--color-accent-primary-dark);
+            svg {
+                stroke-width: 2.5;
+            }
 
-            box-shadow: none;
+            @media (min-width: $breakpoint-mobile) {
+                aspect-ratio: 1 / 1;
+                width: auto;
+            }
         }
     }
 
@@ -156,18 +212,20 @@
         align-items: flex-end;
         justify-content: flex-start;
         gap: var(--block-spacer-tiny);
+
         width: 100%;
         height: 100%;
         height: fit-content;
+        padding-top: var(--block-spacer-huge);
 
         font-size: 1.75rem;
 
-        &:empty {
-            display: none;
+        @media (min-width: $breakpoint-mobile) {
+            padding-top: var(--block-spacer-large);
         }
 
-        @media (max-width: $breakpoint-mobile) {
-            padding-bottom: var(--block-spacer-large);
+        &:empty {
+            display: none;
         }
 
         .variant {

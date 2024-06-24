@@ -52,7 +52,10 @@ html {
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
         // Components:
-        --component-product-card-width: 21rem;
+        --component-product-card-width: 18rem;
+        @media (min-width: 375px) {
+            --component-product-card-width: 20rem;
+        }
 
         // Layouting:
         --page-width: #{$page-width};
