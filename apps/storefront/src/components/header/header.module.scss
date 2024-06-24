@@ -67,6 +67,7 @@
 @media (max-width: $breakpoint-header) {
     [data-menu-open='true'] {
         .container {
+            content-visibility: visible;
             border-bottom-color: var(--accent-secondary-dark);
             box-shadow: 0 1rem 1rem -0.75rem var(--color-block-shadow);
         }

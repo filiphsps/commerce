@@ -2,6 +2,7 @@ import 'server-only';
 
 import styles from './icon-grid.module.scss';
 
+import { useMemo } from 'react';
 import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
@@ -28,21 +29,9 @@ export type IconGridProps = SliceComponentProps<
  * Component for "IconGrid" Slices.
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
-    const { items } = slice;
-
-    if (!slice || items.length <= 0) {
-        return null;
-    }
-
-    return (
-        <PageContent
-            as="section"
-            className={styles.container}
-            data-slice-type={slice.slice_type}
-            data-slice-variation={slice.variation}
-            data-background={slice.primary.background || 'secondary'}
-        >
-            {items.map(({ icon, title }, index) => {
+    const items = useMemo(
+        () =>
+            (slice.items || []).map(({ icon, title }, index) => {
                 const priority = order < 2;
 
                 return (
@@ -66,10 +55,37 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                         <div className={styles.title}>{title}</div>
                     </div>
                 );
-            })}
+            }),
+        [slice.items]
+    );
+
+    if (!slice || items.length <= 0) {
+        return null;
+    }
+
+    return (
+        <PageContent
+            as="section"
+            className={styles.container}
+            data-slice-type={slice.slice_type}
+            data-slice-variation={slice.variation}
+            data-background={slice.primary.background || 'secondary'}
+        >
+            {items}
         </PageContent>
     );
 };
 IconGrid.displayName = 'Nordcom.Slices.IconGrid';
+
+IconGrid.skeleton = ({ slice }: IconGridProps) => (
+    <PageContent as="section" className={styles.container} data-skeleton>
+        {slice.items.map(({ title }, index) => (
+            <div key={`${title}_${index}`} className={styles.item}>
+                <div className={styles.icon} />
+                <div className={styles.title}>{title}</div>
+            </div>
+        ))}
+    </PageContent>
+);
 
 export default IconGrid;

@@ -2,7 +2,7 @@
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import { type ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 
@@ -17,9 +17,8 @@ export type ProductCardFooterProps = {
     data?: Product;
     locale: Locale;
     i18n: LocaleDictionary;
-    children?: ReactNode;
 };
-const ProductCardFooter = ({ data: product, i18n, locale, children }: ProductCardFooterProps) => {
+const ProductCardFooter = ({ data: product, i18n, locale }: ProductCardFooterProps) => {
     const [selectedVariant, setSelectedVariant] = useState(FirstAvailableVariant(product)!);
     if (!product) return null;
 

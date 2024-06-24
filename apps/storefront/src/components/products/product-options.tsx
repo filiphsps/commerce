@@ -14,7 +14,7 @@ import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
 export type ProductOptionProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
-export const ProductOptions = ({ style, className, ...props }: ProductOptionProps) => {
+export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
     const { locale } = useShop();
 
     const {

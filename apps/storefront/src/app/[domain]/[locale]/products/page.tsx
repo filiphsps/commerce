@@ -27,10 +27,6 @@ import type { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-type FilterParams = {
-    page?: string;
-};
-
 export type ProductsPageParams = { domain: string; locale: string };
 export async function generateMetadata({
     params: { domain, locale: localeData }

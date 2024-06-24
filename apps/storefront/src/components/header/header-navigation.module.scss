@@ -124,6 +124,7 @@
 
                 /* NOTE: DO NOT "@media (hover: hover) and (pointer: fine)" this one! */
                 .submenu {
+                    content-visibility: visible;
                     z-index: 1;
                     max-height: 100vh;
                     border-bottom: var(--block-border-width) solid var(--accent-secondary);
@@ -133,6 +134,7 @@
             // Firefox doesn't support `:is()`, so we have to do this.
             &:hover .submenu {
                 opacity: 1;
+                content-visibility: visible;
                 max-height: 100vh !important;
             }
         }
@@ -174,6 +176,7 @@
 
                 max-height: 0;
                 opacity: 0;
+                content-visibility: hidden;
                 box-shadow: 0 1rem 1rem -1rem var(--color-block-shadow);
             }
 

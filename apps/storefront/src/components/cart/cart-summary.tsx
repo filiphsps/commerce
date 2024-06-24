@@ -30,7 +30,7 @@ type CartSummaryProps = {
     /** @deprecated */
     store: StoreModel;
 };
-const CartSummary = ({ shop, onCheckout, i18n, store }: CartSummaryProps) => {
+const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
     const { totalQuantity, lines, cost, note, discountCodes, cartReady } = useCart();
     const { currency } = useShop();

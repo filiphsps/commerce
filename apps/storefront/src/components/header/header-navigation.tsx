@@ -17,7 +17,7 @@ type HeaderNavigationProps = {
     menu: any;
     locale: Locale;
 } & HTMLProps<HTMLDivElement>;
-export const HeaderNavigation = ({ locale, menu, className, ...props }: HeaderNavigationProps) => {
+export const HeaderNavigation = ({ menu, className, ...props }: HeaderNavigationProps) => {
     return (
         <nav {...props} className={`${styles.container} ${styles.centered} ${className || ''}`}>
             {menu?.map?.((item: any, index: number) => {

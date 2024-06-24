@@ -7,25 +7,29 @@ extend([a11yPlugin]);
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
-    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
-    if (shop.design.accents.length <= 0) {
+    try {
+        const shop = await Shop.findByDomain(domain, { sensitiveData: true });
+        if (shop.design.accents.length <= 0) {
+            return null;
+        }
+
+        const accents = shop.design.accents;
+
+        // TODO: Deal with variants.
+        const primary = accents
+            .filter(({ type }) => type === 'primary')
+            .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
+        const secondary = accents
+            .filter(({ type }) => type === 'secondary')
+            .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
+
+        return {
+            primary,
+            secondary
+        };
+    } catch {
         return null;
     }
-
-    const accents = shop.design.accents;
-
-    // TODO: Deal with variants.
-    const primary = accents
-        .filter(({ type }) => type === 'primary')
-        .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
-    const secondary = accents
-        .filter(({ type }) => type === 'secondary')
-        .sort((a, b) => (colord(a.color).luminance() < colord(b.color).luminance() ? -1 : 1))[0];
-
-    return {
-        primary,
-        secondary
-    };
 };
 
 const CssVariablesProvider = async ({ domain }: { domain: string }) => {
