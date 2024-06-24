@@ -38,7 +38,7 @@
 
             @media (min-width: $breakpoint-mobile) {
                 height: auto;
-                padding: 0 0 calc(var(--block-padding-large) * 2) 0;
+                padding: 0 0 calc(var(--block-padding-large) * 1.65) 0;
                 object-position: top center;
 
                 aspect-ratio: 1 / 1;
@@ -58,7 +58,7 @@
         .preview {
             overflow: hidden;
             width: auto;
-            height: 6rem;
+            height: 3rem;
             padding: var(--block-padding);
             flex-grow: 0;
             flex-shrink: 1;
@@ -74,7 +74,7 @@
 
             @media (min-width: $breakpoint-mobile) {
                 height: auto;
-                width: 10rem;
+                width: 5rem;
             }
 
             &.active {

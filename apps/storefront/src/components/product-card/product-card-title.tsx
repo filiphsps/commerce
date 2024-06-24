@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from '@/components/product-card/product-card.module.scss';
-
 import type { Product } from '@/api/product';
 
 export type ProductCardTitleProps = {
@@ -10,8 +8,12 @@ export type ProductCardTitleProps = {
 const ProductCardTitle = ({ data: product }: ProductCardTitleProps) => {
     return (
         <>
-            <div className={styles.brand}>{product.vendor}</div>
-            <div className={styles.title}>{product.title}</div>
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 pt-2 text-sm font-semibold leading-none">
+                {product.vendor}
+            </div>
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 text-lg font-medium leading-tight">
+                {product.title}
+            </div>
         </>
     );
 };

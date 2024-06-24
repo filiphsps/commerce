@@ -35,7 +35,7 @@ section.container {
 
         height: 100%;
         width: 100%;
-        padding: var(--block-padding-small);
+        padding: 0.5rem 1rem;
 
         background-color: var(--background-color);
         color: var(--color);
@@ -59,7 +59,7 @@ section.container {
         }
 
         .title {
-            font-size: 1.65rem;
+            font-size: 0.85rem;
             font-weight: 600;
             line-height: normal;
         }

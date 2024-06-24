@@ -1,6 +1,6 @@
-import styles from '@/components/informational/accepted-payment-methods.module.scss';
-
 import Image from 'next/image';
+
+import { clsx } from 'clsx';
 
 import type { StoreModel } from '@/models/StoreModel';
 import type { HTMLProps } from 'react';
@@ -9,17 +9,20 @@ export type AcceptedPaymentMethodsProps = {
     store: StoreModel;
 } & HTMLProps<HTMLDivElement>;
 export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedPaymentMethodsProps) => {
-    const methods = store.payment?.methods.map((i) => i.toLowerCase());
-    const wallets = store.payment?.wallets.map((i) => i.toLowerCase());
+    const methods = store.payment?.methods.map((i) => i.toLowerCase()) || [];
+    const wallets = store.payment?.wallets.map((i) => i.toLowerCase()) || [];
+    const items = [...methods, ...wallets];
 
-    if ((!methods || methods.length <= 0) && (!wallets || wallets.length <= 0)) return null;
+    if (!items.length) {
+        return null;
+    }
 
     return (
-        <div {...props} className={`${styles.container}${className ? ` ${className}` : ''}`}>
-            {methods?.map((method) => (
+        <div {...props} className={clsx(className, 'flex flex-wrap items-center justify-center gap-1')}>
+            {methods.map((method) => (
                 <Image
                     key={method}
-                    className={styles.item}
+                    className={'h-8 w-10 object-contain object-center'}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}
                     height={15}
@@ -32,10 +35,10 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
                 />
             ))}
 
-            {wallets?.map((method) => (
+            {wallets.map((method) => (
                 <Image
                     key={method}
-                    className={styles.item}
+                    className={'h-8 w-10 object-contain object-center'}
                     src={`/assets/payments/${method}.svg`}
                     alt={method}
                     height={15}

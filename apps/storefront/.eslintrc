@@ -14,7 +14,7 @@
     ],
     "settings": {
         "next": {
-            "rootDir": "apps/landing/"
+            "rootDir": "apps/storefront/"
         }
     }
 }

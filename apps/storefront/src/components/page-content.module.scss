@@ -11,7 +11,7 @@
     font-size: 16px;
 
     // See https://web.dev/articles/content-visibility
-    content-visibility: auto;
+    //content-visibility: auto;
     contain-intrinsic-size: auto none;
 
     &:empty {
@@ -28,6 +28,6 @@ body .container.primary:first-of-type {
     min-height: calc(100vh - 10rem);
 
     @media (min-width: $breakpoint-mobile) {
-        min-height: calc(100vh - 18rem);
+        min-height: calc(100vh - 14rem);
     }
 }

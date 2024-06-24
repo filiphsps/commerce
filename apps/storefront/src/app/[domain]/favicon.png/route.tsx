@@ -13,6 +13,12 @@ export type FaviconRouteParams = {
     domain: string;
 };
 export async function GET(req: NextRequest, { params: { domain } }: { params: FaviconRouteParams }) {
+    if (process.env.NODE_ENV !== 'production') {
+        return NextResponse.json({
+            status: 200
+        });
+    }
+
     const url = new URL(req.url);
     let width = url.searchParams.get('width') ? Number.parseFloat(url.searchParams.get('width')!) : null;
     let height = url.searchParams.get('height') ? Number.parseFloat(url.searchParams.get('height')!) : null;

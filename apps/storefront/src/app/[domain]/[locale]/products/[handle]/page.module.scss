@@ -67,6 +67,8 @@ div.description {
 .vendor {
     display: block;
     width: 100%;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 @media (min-width: $breakpoint-mobile) {

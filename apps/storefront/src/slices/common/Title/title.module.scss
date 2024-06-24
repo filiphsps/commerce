@@ -2,7 +2,7 @@
 
 .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
     gap: var(--block-spacer);
 
     .content {
@@ -27,7 +27,7 @@
 
         @media (min-width: $breakpoint-mobile) {
             font-size: 3.75rem;
-            line-height: 4rem;
+            line-height: 2rem;
         }
     }
 }

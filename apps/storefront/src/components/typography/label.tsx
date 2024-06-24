@@ -1,4 +1,5 @@
-import styles from '@/components/typography/label.module.scss';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 import type { ElementType, HTMLProps, ReactNode } from 'react';
 
@@ -9,10 +10,13 @@ export type LabelProps = {
 export const Label = ({ children, as, className, ...props }: LabelProps) => {
     if (!children) return null;
 
-    const AsComponent = as || 'div';
+    const AsComponent = as || 'label';
 
     return (
-        <AsComponent {...props} className={`${styles.container} ${className || ''}`}>
+        <AsComponent
+            {...props}
+            className={twMerge(clsx('block text-sm font-extrabold uppercase leading-tight', className))}
+        >
             {children}
         </AsComponent>
     );

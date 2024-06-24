@@ -182,68 +182,68 @@ export default async function ProductPage({
         const jsonLd: WithContext<Product> = {
             '@context': 'https://schema.org',
             '@type': 'Product',
-            url: `https://${shop.domain}/${locale.code}/products/${handle}/`,
-            name: `${product.vendor} ${product.title}`,
-            brand: product.vendor,
-            image: initialVariant.image?.url,
-            description: product.description || '',
-            offers: product.variants.edges.map(({ node: variant }) => ({
+            'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
+            'name': `${product.vendor} ${product.title}`,
+            'brand': product.vendor,
+            'image': initialVariant.image?.url,
+            'description': product.description || '',
+            'offers': product.variants.edges.map(({ node: variant }) => ({
                 '@type': 'Offer',
-                itemCondition: 'https://schema.org/NewCondition',
-                availability: variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-                url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
+                'itemCondition': 'https://schema.org/NewCondition',
+                'availability': variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+                'url': `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
                     parseGid(variant.id).id
                 }`,
 
-                sku: ProductToMerchantsCenterId({
+                'sku': ProductToMerchantsCenterId({
                     locale: locale,
                     product: {
                         productGid: product!.id,
                         variantGid: variant!.id
                     } as any
                 }),
-                mpn: variant.barcode || variant.sku || undefined,
+                'mpn': variant.barcode || variant.sku || undefined,
 
-                priceSpecification: {
+                'priceSpecification': {
                     '@type': 'PriceSpecification',
-                    price: Number.parseFloat(variant.price.amount),
-                    priceCurrency: variant.price.currencyCode
+                    'price': Number.parseFloat(variant.price.amount),
+                    'priceCurrency': variant.price.currencyCode
                 },
 
                 // TODO: Make all of the following configurable.
-                priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
-                hasMerchantReturnPolicy: {
+                'priceValidUntil': `${new Date().getFullYear() + 1}-12-31`,
+                'hasMerchantReturnPolicy': {
                     '@type': 'MerchantReturnPolicy',
-                    applicableCountry: locale.country,
-                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
+                    'applicableCountry': locale.country,
+                    'returnPolicyCategory': 'https://schema.org/MerchantReturnNotPermitted'
                 },
-                shippingDetails: {
+                'shippingDetails': {
                     '@type': 'OfferShippingDetails',
-                    shippingRate: {
+                    'shippingRate': {
                         '@type': 'MonetaryAmount',
-                        maxValue: 25,
-                        minValue: 0,
-                        currency: variant.price.currencyCode!
+                        'maxValue': 25,
+                        'minValue': 0,
+                        'currency': variant.price.currencyCode!
                     },
-                    shippingDestination: [
+                    'shippingDestination': [
                         {
                             '@type': 'DefinedRegion',
-                            addressCountry: locale.country
+                            'addressCountry': locale.country
                         }
                     ],
-                    deliveryTime: {
+                    'deliveryTime': {
                         '@type': 'ShippingDeliveryTime',
-                        handlingTime: {
+                        'handlingTime': {
                             '@type': 'QuantitativeValue',
-                            minValue: 0,
-                            maxValue: 3,
-                            unitCode: 'DAY'
+                            'minValue': 0,
+                            'maxValue': 3,
+                            'unitCode': 'DAY'
                         },
-                        transitTime: {
+                        'transitTime': {
                             '@type': 'QuantitativeValue',
-                            minValue: 2,
-                            maxValue: 14,
-                            unitCode: 'DAY'
+                            'minValue': 2,
+                            'maxValue': 14,
+                            'unitCode': 'DAY'
                         }
                     }
                 }

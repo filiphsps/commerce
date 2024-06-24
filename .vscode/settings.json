@@ -15,6 +15,7 @@
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    //"editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "editor.renderWhitespace": "all",
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit",
@@ -37,13 +38,15 @@
         "workbench.editor.restoreViewState": false
     },
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/*.tsbuildinfo": true
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.next": true,
+        "**/.svn": true,
+        "**/*.tsbuildinfo": true,
+        "**/CVS": true,
+        "**/node_modules": true,
+        "**/Thumbs.db": true
     },
     "files.autoSave": "off",
     "files.trimTrailingWhitespace": true,
@@ -139,8 +142,16 @@
     },
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
-    "prettier.requireConfig": false,
+    "prettier.requireConfig": true,
+    "prettier.configPath": "./.prettierrc",
     "github.copilot.advanced": {
         "length": 1200
-    }
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "prettier.prettierPath": "./node_modules/prettier"
 }

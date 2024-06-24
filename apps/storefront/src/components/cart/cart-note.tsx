@@ -1,5 +1,3 @@
-import styles from '@/components/cart/cart-note.module.scss';
-
 import { useEffect, useState } from 'react';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
@@ -20,7 +18,7 @@ const CartNote = ({ i18n }: { i18n: LocaleDictionary }) => {
 
     return (
         <MultilineInput
-            className={styles.input}
+            className="h-16"
             value={text}
             placeholder={t('placeholder-cart-note')}
             onChange={(e: any) => setText(e.target.value)}

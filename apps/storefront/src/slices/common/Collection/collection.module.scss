@@ -40,27 +40,18 @@
 
     a:is(:hover):not(:disabled) {
         color: var(--color-accent-primary);
-
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
-        text-underline-offset: var(--block-border-width);
     }
 
     .title {
         display: flex;
         align-items: center;
 
-        font-size: 1.25em;
+        font-size: 1.25rem;
         font-weight: 600;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 1.5em;
-        }
     }
 
     .body {
-        max-width: 64rem;
+        max-width: 62rem;
     }
 
     &.full {

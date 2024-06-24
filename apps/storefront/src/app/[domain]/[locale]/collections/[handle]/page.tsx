@@ -204,9 +204,9 @@ export default async function CollectionPage({
                         __html: JSON.stringify({
                             '@context': 'https://schema.org',
                             '@type': 'CollectionPage',
-                            name: collection.title,
-                            description: collection.description,
-                            url: `https://${shop.domain}/${locale.code}/collections/${handle}/`
+                            'name': collection.title,
+                            'description': collection.description,
+                            'url': `https://${shop.domain}/${locale.code}/collections/${handle}/`
                         })
                     }}
                 />

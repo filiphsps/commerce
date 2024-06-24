@@ -19,8 +19,8 @@
     border-radius: var(--block-border-radius);
     list-style-type: none;
 
-    font-size: 1.5rem;
-    line-height: 1.75rem;
+    font-size: 0.75rem;
+    line-height: normal;
     font-weight: 600;
 
     .item {
@@ -30,7 +30,7 @@
         align-items: center;
         white-space: nowrap;
 
-        height: 3.5rem;
+        height: 1.75rem;
 
         -webkit-user-select: none;
         user-select: none;
@@ -49,8 +49,8 @@
             justify-content: flex-start;
             align-items: center;
 
-            height: 3.25rem;
-            padding: var(--block-padding);
+            height: 1.75rem;
+            padding: 0.15rem 0.75rem;
 
             background-color: var(--color-block);
             color: var(--color-block-black);
@@ -64,12 +64,10 @@
         }
 
         .icon {
-            width: 1.5rem;
+            width: 1rem;
             padding: 0;
 
-            font-size: 1.5em;
-
-            stroke-width: 0.15em;
+            font-size: 0.75rem;
         }
 
         .link {

@@ -75,9 +75,10 @@
 }
 
 .content {
-    --header-height: 7rem;
+    --header-height: 4.5rem;
+
     @media (min-width: $breakpoint-header) {
-        --header-height: 6.5rem;
+        --header-height: 4rem;
     }
 
     display: grid;
@@ -105,8 +106,8 @@
         align-items: center;
 
         width: fit-content;
-        height: calc(var(--header-height) - calc(calc(var(--block-padding) - 0.25rem) * 2));
-        padding: calc(var(--block-padding) - 0.25rem);
+        height: calc(var(--header-height) - calc(var(--block-padding) * 2));
+        padding: var(--block-padding);
 
         text-align: left;
 
@@ -119,8 +120,8 @@
         user-select: none;
 
         @media (min-width: $breakpoint-header) {
-            height: 4.75rem;
-            transform: translateX(calc(calc(var(--block-padding) - 0.25rem) * -1));
+            height: 3.5rem;
+            transform: translateX(calc(var(--block-padding) * -1));
 
             &:is(:hover, :active) {
                 background-color: var(--accent-secondary);
@@ -171,7 +172,7 @@
         }
 
         .SearchBar {
-            max-width: 24rem;
+            max-width: 11rem;
 
             input {
                 height: 100%;

@@ -16,7 +16,7 @@
             justify-content: stretch;
             align-items: stretch;
             grid-template-areas: 'overview-banner overview-content';
-            grid-template-columns: minmax(32rem, 1fr) auto;
+            grid-template-columns: minmax(16rem, 1fr) auto;
         }
 
         &.align-right {
@@ -24,7 +24,7 @@
             justify-content: stretch;
             align-items: stretch;
             grid-template-areas: 'overview-content overview-banner';
-            grid-template-columns: auto minmax(32rem, 1fr);
+            grid-template-columns: auto minmax(16rem, 1fr);
         }
 
         &.align-center {
@@ -39,7 +39,7 @@
     }
 
     .content {
-        padding: calc(var(--block-padding-large) * 2);
+        padding: calc(var(--block-padding-large) * 1.65);
     }
 
     .image {

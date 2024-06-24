@@ -11,12 +11,12 @@
         flex-direction: column;
         flex-grow: 1;
         position: fixed;
-        inset: 7rem 0 0 -105vw;
+        inset: 4.5rem 0 0 -105vw;
 
         width: 42rem;
         max-width: 95vw;
-        height: calc(100vh - 7.15rem);
-        height: calc(100dvh - 7.15rem);
+        height: calc(100vh - 4.5rem);
+        height: calc(100dvh - 4.5rem);
         padding: var(--block-padding) var(--block-padding-large) var(--block-padding-large) var(--block-padding-large);
 
         background-color: var(--background);
@@ -29,7 +29,7 @@
         font-size: 16px;
 
         [data-menu-open='true'] & {
-            inset: 7rem 0 0 0;
+            inset: 4.5rem 0 0 0;
         }
     }
 
@@ -41,7 +41,7 @@
         color: inherit;
 
         font-weight: 600;
-        font-size: 1.65rem;
+        font-size: 0.85rem;
         text-transform: uppercase;
 
         &:hover {
@@ -75,12 +75,11 @@
         cursor: pointer;
 
         & > a {
-            font-size: 1.25em;
+            font-size: 1.5rem;
             font-weight: 700;
 
             @media (min-width: $breakpoint-header) {
-                font-size: 1em;
-                font-weight: inherit;
+                font-size: 1rem;
             }
         }
 
@@ -108,7 +107,7 @@
 
                 height: 100%;
 
-                font-size: 1.75rem;
+                font-size: 1rem;
             }
         }
 
@@ -172,7 +171,7 @@
                 z-index: -1;
                 overflow: hidden;
                 position: absolute;
-                inset: 5.45rem 0 auto 0;
+                inset: 4rem 0 auto 0;
 
                 max-height: 0;
                 opacity: 0;
@@ -184,14 +183,14 @@
                 gap: var(--block-spacer-large);
 
                 max-width: var(--page-width);
-                padding: 1rem 2rem 1rem 2rem;
+                padding: 0.5rem 1rem;
                 margin: 0 auto;
 
                 @media (min-width: $breakpoint-header) {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+                    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
 
-                    padding: 2rem 2rem 1rem 2rem;
+                    padding: 1rem 1rem 0.5rem 1rem;
                 }
 
                 .subitem {
@@ -211,28 +210,26 @@
                     }
 
                     .title {
-                        min-height: 2rem;
-
                         line-height: normal;
-                        font-size: 1.25em;
+                        font-size: 1.15rem;
                         font-weight: 700;
 
                         @media (min-width: $breakpoint-header) {
-                            font-size: 1em;
                             font-weight: 600;
+                            font-size: 1rem;
                         }
                     }
 
                     .description {
                         font-weight: 500;
-                        font-size: 1em;
+                        font-size: 1rem;
                         line-height: normal;
                         text-transform: none;
                         opacity: 0.75;
-                        margin-top: 0.5rem;
+                        margin-top: 0.25rem;
 
                         @media (min-width: $breakpoint-header) {
-                            font-size: 1.35rem;
+                            font-size: 0.75rem;
                         }
                     }
                 }

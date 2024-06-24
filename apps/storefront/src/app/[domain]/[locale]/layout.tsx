@@ -1,5 +1,6 @@
 import 'the-new-css-reset';
 import '@/styles/app.scss';
+import '@/styles/global.css';
 
 import { type ReactNode, Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';

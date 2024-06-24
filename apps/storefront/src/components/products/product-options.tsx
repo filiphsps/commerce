@@ -45,82 +45,83 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
 
     return (
         <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`}>
-            {options?.map((option, index) =>
-                option?.values ? (
-                    <Fragment key={`${option.name}_option`}>
-                        <Label
-                            className={styles.label}
-                            data-options={option.values.length}
-                            suppressHydrationWarning={true}
-                        >
-                            {option.name}
-                        </Label>
-                        <div
-                            className={styles.options}
-                            data-options={option.values.length}
-                            suppressHydrationWarning={true}
-                        >
-                            {option.values.map((value) => {
-                                if (!value || !variants) return null;
+            {options?.map(
+                (option, index) =>
+                    option?.values ? (
+                        <Fragment key={`${option.name}_option`}>
+                            <Label
+                                className={styles.label}
+                                data-options={option.values.length}
+                                suppressHydrationWarning={true}
+                            >
+                                {option.name}
+                            </Label>
+                            <div
+                                className={styles.options}
+                                data-options={option.values.length}
+                                suppressHydrationWarning={true}
+                            >
+                                {option.values.map((value) => {
+                                    if (!value || !variants) return null;
 
-                                // FIXME: Handle options to variant properly.
-                                const matchingVariant = variants.find((variant) =>
-                                    variant!.title?.toLowerCase().includes(value.toLowerCase())
-                                );
+                                    // FIXME: Handle options to variant properly.
+                                    const matchingVariant = variants.find((variant) =>
+                                        variant!.title?.toLowerCase().includes(value.toLowerCase())
+                                    );
 
-                                let href = `/products/${handle}/`;
-                                if (matchingVariant?.id) {
-                                    href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
-                                }
+                                    let href = `/products/${handle}/`;
+                                    if (matchingVariant?.id) {
+                                        href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
+                                    }
 
-                                const inStock = isOptionInStock(option.name!, value!);
-                                const isSelected = selectedOptions?.[option.name!] === value;
+                                    const inStock = isOptionInStock(option.name!, value!);
+                                    const isSelected = selectedOptions?.[option.name!] === value;
 
-                                const title = `${product.vendor} ${product.title} - ${matchingVariant?.title}`;
-                                const label =
-                                    matchingVariant && option.name === 'Size'
-                                        ? ConvertToLocalMeasurementSystem({
-                                              locale,
-                                              weight: matchingVariant.weight!,
-                                              weightUnit: matchingVariant.weightUnit!
-                                          })
-                                        : null;
+                                    const title = `${product.vendor} ${product.title} - ${matchingVariant?.title}`;
+                                    const label =
+                                        matchingVariant && option.name === 'Size'
+                                            ? ConvertToLocalMeasurementSystem({
+                                                  locale,
+                                                  weight: matchingVariant.weight!,
+                                                  weightUnit: matchingVariant.weightUnit!
+                                              })
+                                            : null;
 
-                                return (
-                                    <Link
-                                        key={`${option.name}_${value}`}
-                                        aria-disabled={!inStock}
-                                        aria-selected={isSelected}
-                                        title={title}
-                                        className={clsx(
-                                            styles.option,
-                                            isSelected && styles.selected,
-                                            !inStock && styles.disabled,
-                                            styles.clickable
-                                        )}
-                                        onClick={() =>
-                                            setSelectedOptions({
-                                                ...(selectedOptions as any),
-                                                [option.name!]: value!
-                                            })
-                                        }
-                                        locale={locale}
-                                        href={href}
-                                        replace={true}
-                                        shallow={true}
-                                        prefetch={false}
-                                        // The user's locale might differ from ours.
-                                        suppressHydrationWarning={true}
-                                    >
-                                        {label || title}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </Fragment>
-                ) : (
-                    <div key={`empty_${index}`} /> // Empty div to keep the grid layout
-                )
+                                    return (
+                                        <Link
+                                            key={`${option.name}_${value}`}
+                                            aria-disabled={!inStock}
+                                            aria-selected={isSelected}
+                                            title={title}
+                                            className={clsx(
+                                                styles.option,
+                                                isSelected && styles.selected,
+                                                !inStock && styles.disabled,
+                                                styles.clickable
+                                            )}
+                                            onClick={() =>
+                                                setSelectedOptions({
+                                                    ...(selectedOptions as any),
+                                                    [option.name!]: value!
+                                                })
+                                            }
+                                            locale={locale}
+                                            href={href}
+                                            replace={true}
+                                            shallow={true}
+                                            prefetch={false}
+                                            // The user's locale might differ from ours.
+                                            suppressHydrationWarning={true}
+                                        >
+                                            {label || title}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </Fragment>
+                    ) : (
+                        <div key={`empty_${index}`} />
+                    ) // Empty div to keep the grid layout
             )}
         </div>
     );

@@ -37,8 +37,6 @@ export type QuantitySelectorProps = {
     value?: number;
     disabled?: boolean;
     allowDecreaseToZero?: boolean;
-    allowDecimal?: boolean;
-    allowNegative?: boolean;
 } & HTMLProps<HTMLDivElement>;
 
 const QuantitySelector = ({
@@ -48,8 +46,6 @@ const QuantitySelector = ({
     update,
     disabled,
     allowDecreaseToZero = false,
-    allowDecimal = false,
-    allowNegative = false,
     ...props
 }: QuantitySelectorProps) => {
     const { t } = useTranslation('common', i18n);

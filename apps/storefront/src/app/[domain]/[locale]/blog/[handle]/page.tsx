@@ -132,25 +132,25 @@ export default async function ArticlePage({
         const jsonLd: WithContext<Article> = {
             '@context': 'https://schema.org',
             '@type': 'Article',
-            url: `https://${shop.domain}/${locale.code}/blog/${handle}/`,
-            headline: title,
-            text: article.content,
-            description: article.seo?.description || article.excerpt || '',
-            articleSection: 'news',
-            image: [article.image?.url!],
-            keywords: article.tags.join(', '),
-            dateCreated: article.publishedAt,
-            datePublished: article.publishedAt,
-            author: {
+            'url': `https://${shop.domain}/${locale.code}/blog/${handle}/`,
+            'headline': title,
+            'text': article.content,
+            'description': article.seo?.description || article.excerpt || '',
+            'articleSection': 'news',
+            'image': [article.image?.url!],
+            'keywords': article.tags.join(', '),
+            'dateCreated': article.publishedAt,
+            'datePublished': article.publishedAt,
+            'author': {
                 '@type': 'Person',
-                name: article.authorV2?.name!
+                'name': article.authorV2?.name!
             },
-            publisher: {
+            'publisher': {
                 '@type': 'Organization',
-                name: shop.name,
-                logo: {
+                'name': shop.name,
+                'logo': {
                     '@type': 'ImageObject',
-                    url: shop.icons?.favicon?.src!
+                    'url': shop.icons?.favicon?.src!
                 }
             }
         };

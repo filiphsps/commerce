@@ -44,12 +44,12 @@
         align-items: center;
         height: 100%;
         max-height: 100%;
-        min-height: calc(5rem - var(--block-border-width) * 2);
+        min-height: calc(2.5rem - var(--block-border-width) * 2);
 
         border: none;
         outline: none;
 
-        font-size: 1.75rem;
+        font-size: 1rem;
         font-variant: common-ligatures tabular-nums slashed-zero;
         text-align: center;
         transition:
@@ -87,14 +87,14 @@
 
     .button {
         height: 100%;
-        width: 4rem;
+        width: 3rem;
 
         line-height: normal;
-        font-weight: 400;
-        font-size: 2.5rem;
+        font-weight: 700;
+        font-size: 1rem;
 
         @media (min-width: $breakpoint-mobile) {
-            font-size: 2rem;
+            font-size: 1rem;
         }
 
         &:is(:hover, :active):not(:disabled) {

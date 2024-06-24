@@ -8,7 +8,6 @@
     "cacheDirectories": [
         ".next/cache"
     ],
-    "prettier": "@nordcom/prettier",
     "scripts": {
         "start": "next start -p $PORT",
         "dev": "next dev",

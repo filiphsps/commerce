@@ -6,7 +6,7 @@
 }
 
 .container {
-    top: 8rem;
+    top: 4rem;
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
@@ -17,7 +17,7 @@
         display: flex;
         justify-content: flex-end;
         flex-direction: column;
-        //gap: calc(var(--block-spacer-small) / 4);
+        gap: var(--block-spacer-small);
 
         .breakdown {
             font-size: 1.5rem;
@@ -27,14 +27,9 @@
                 font-size: 1.35rem;
             }
 
-            .label {
-                font-size: inherit;
-                font-weight: inherit;
-            }
-
             .money {
                 font-weight: 700;
-                font-size: 0.95em;
+                font-size: 1rem;
                 line-height: 1;
                 align-self: flex-start;
             }
@@ -42,14 +37,14 @@
     }
 
     .button {
-        --button-height: 5rem;
+        --button-height: 3.75rem;
 
         overflow: hidden;
 
         height: var(--button-height);
     }
     .shop-button {
-        --button-height: 4.5rem;
+        --button-height: 3.25rem;
         --shop-pay-button-height: var(--button-height);
 
         overflow: hidden;
@@ -63,12 +58,11 @@
         gap: 0;
         padding: var(--block-padding-large);
         border-radius: var(--block-border-radius);
-        font-size: 1em;
         line-height: normal;
 
         .icon {
             width: 2.5rem;
-            height: 2rem;
+            height: 2.5rem;
             margin-left: -2rem;
             padding: 0.25rem 0 0.25rem 0.25rem;
 
@@ -97,7 +91,7 @@
 .section {
     display: flex;
     flex-direction: column;
-    gap: var(--block-spacer-small);
+    gap: var(--block-spacer);
     padding: var(--block-padding);
     border-radius: var(--block-border-radius);
     background-color: var(--color-block);
@@ -106,22 +100,12 @@
 
     &.section-security {
         text-align: center;
+        margin-top: var(--block-spacer-huge);
     }
-    @media (max-width: $breakpoint-mobile) {
-        &.section-actions:is([data-floating-ui]) {
-            z-index: 5;
-            position: fixed;
-            inset: auto 0 0 0;
 
-            width: 100vw;
-            padding: var(--block-padding-large);
-
-            background-color: var(--color-accent-secondary-light);
-
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            box-shadow: 0 0 5rem 0 var(--color-block-shadow);
-        }
+    &.section-actions {
+        padding: 0;
+        background-color: unset;
     }
 
     .header,
@@ -132,7 +116,6 @@
         gap: var(--block-spacer);
         align-items: space-between;
         justify-content: center;
-        min-height: 2rem;
         height: 100%;
         color: var(--color-dark);
 
@@ -140,10 +123,12 @@
         .money {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             height: 100%;
+        }
 
-            font-size: inherit;
-            line-height: inherit;
+        .label {
+            align-items: flex-end;
         }
     }
 
@@ -160,97 +145,70 @@
             font-weight: 800;
         }
 
-        &.totals {
-            margin-top: var(--block-padding-small);
-            padding: var(--block-padding-small) 0;
-            border-top: calc(var(--block-border-width) / 1.5) dotted var(--color-gray);
-
-            .label {
-                font-size: 1.75rem;
-                align-self: flex-end;
-            }
-
-            .money {
-                font-weight: 700;
-                font-size: 2.5rem;
-                line-height: 2.5rem;
-            }
-        }
-
         &.breakdown {
             .label {
                 text-transform: capitalize;
             }
         }
+    }
+}
 
-        &.discounted {
-            .money {
-                z-index: 1;
-                position: relative;
-                color: var(--color-green-dark);
+@media (max-width: $breakpoint-mobile) {
+    .section.section-actions {
+        z-index: 1;
+        position: fixed;
+        inset: auto 0 0 0;
 
-                &::before {
-                    content: var(--discount-prefix);
-                }
+        width: 100%;
+        padding: var(--block-padding-large);
 
-                &::after {
-                    content: '';
-                    z-index: -2;
-                    position: absolute;
-                    inset: 0.05em -0.35em;
-                    padding: 0 var(--block-padding-small);
-                    background: var(--color-green-light);
-                    color: var(--color-green);
-                    border-radius: var(--block-border-radius-tiny);
-                    pointer-events: none;
-                }
-            }
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: var(--color-block);
 
-            &.shipping .money::before {
-                content: '';
-            }
+        box-shadow: 0 -0.25rem 1rem 0rem var(--color-block-shadow);
+    }
+}
+
+.discounted {
+    .money {
+        z-index: 1;
+        position: relative;
+        color: var(--color-green-dark);
+
+        &::before {
+            content: var(--discount-prefix);
+        }
+
+        &::after {
+            content: '';
+            z-index: -2;
+            position: absolute;
+            inset: 0.05em -0.35em;
+            padding: 0 var(--block-padding-small);
+            background: var(--color-green-light);
+            color: var(--color-green);
+            border-radius: var(--block-border-radius-tiny);
+            pointer-events: none;
         }
     }
 
-    .notice {
-        font-size: 0.9em;
-        font-weight: 500;
-        line-height: normal;
-        text-transform: initial;
+    &.shipping .money::before {
+        content: '';
+    }
+}
 
-        color: var(--color-dark-secondary);
+.totals {
+    margin-top: var(--block-padding-small);
+    border-top: calc(var(--block-border-width) / 1.5) dotted var(--color-gray);
 
-        .icon {
-            height: 0.9em;
-            margin-right: 0.25em;
-
-            font-size: 0.8em;
-            line-height: 1;
-            stroke-width: 0.35em;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: calc(var(--block-border-width) / 2);
-
-            &:is(:hover, :active) {
-                color: var(--accent-primary-light);
-            }
-        }
+    .label {
+        font-size: 1rem;
+        align-self: flex-end;
     }
 
-    .payment-methods {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(3.75rem, 1fr));
-        gap: calc(var(--block-spacer-small) / 4);
-        justify-content: flex-start;
-
-        img {
-            height: auto;
-            width: 100%;
-        }
+    .money {
+        font-weight: 700;
+        font-size: 1.25rem;
     }
 }

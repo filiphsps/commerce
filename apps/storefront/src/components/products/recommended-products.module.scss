@@ -6,7 +6,7 @@
     gap: var(--block-spacer);
 
     @media (min-width: $breakpoint-mobile) {
-        padding: var(--block-padding-large) 0 0 0;
+        padding-top: var(--block-padding-large);
 
         background-color: var(--color-block);
 
