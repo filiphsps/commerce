@@ -34,8 +34,7 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
         });
     }
 
-    public async findByDomain(domain: string, options?: FindOptions & { convert: true }): Promise<OnlineShop>;
-    public async findByDomain(domain: string, options?: FindOptions & { convert: false }): Promise<ShopBase>;
+    public async findByDomain(domain: string, options?: FindOptions): Promise<OnlineShop | ShopBase>;
     public async findByDomain(
         domain: string,
         { sensitiveData = false, convert = true }: FindOptions = {}

@@ -8,7 +8,7 @@ extend([a11yPlugin]);
 
 // TODO: Generalize this
 export const getBrandingColors = async (domain: string) => {
-    const shop = await Shop.findByDomain(domain);
+    const shop = await Shop.findByDomain(domain, { sensitiveData: true });
     if (shop.design.accents.length <= 0) {
         throw new TodoError();
     }

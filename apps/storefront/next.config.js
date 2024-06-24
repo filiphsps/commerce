@@ -87,21 +87,26 @@ const config = {
     },
 
     env: {
-        // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
     serverRuntimeConfig: {
-        // Database.
-        POSTGRES_PRISMA_ACCELERATE_URL: process.env.POSTGRES_PRISMA_ACCELERATE_URL,
-
-        // Prismic.
-        PRISMIC_TOKEN:
-            'MC5aTHhyYmhJQUFDWUE0V09B.77-9F--_ve-_vWsB77-977-9BWfvv73vv70mFQfvv73vv70TYO-_vXfvv71t77-9O--_vRzvv73vv71e77-9cw',
-
-        // Misc.
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
+    },
+
+    async headers() {
+        return [
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Document-Policy',
+                        value: 'js-profiling'
+                    }
+                ]
+            }
+        ];
     },
 
     async generateBuildId() {

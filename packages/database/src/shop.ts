@@ -7,8 +7,8 @@ import {
 
 import prisma from './prisma';
 
-import type { JsonValue } from '@prisma/client/runtime/library';
 import type { CacheUtil, Optional } from '.';
+import type { JsonValue } from '@prisma/client/runtime/library';
 
 export type ShopTheme = {
     header: {
@@ -186,7 +186,7 @@ export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false)
                     contentProvider: parseContentProvider(contentProvider!, secure)
                 };
             } catch {
-                return null; // TODO: This this ugly hack.
+                return {} as never; // TODO: This this ugly hack.
             }
         };
 
