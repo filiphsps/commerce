@@ -8,6 +8,7 @@ import { gql } from '@apollo/client';
 import type { Product } from '@/api/product';
 import type { AbstractApi, ApiOptions } from '@/utils/abstract-api';
 import type {
+    Maybe,
     ProductConnection,
     ProductEdge,
     ProductSortKeys,
@@ -228,7 +229,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
     if (!handle) throw new Error('400: Invalid handle');
 
     try {
-        const { data, errors } = await api.query<{ product: Product }>(
+        const { data, errors } = await api.query<{ product: Maybe<Product> }>(
             gql`
                     query product($handle: String!) {
                         product(handle: $handle) {
@@ -246,7 +247,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
 
         if (errors) {
             throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
-        } else if (!data?.product.handle) {
+        } else if (!data?.product?.handle) {
             throw new NotFoundError(`"Product" with the handle "${handle}"`);
         } else if (data.product.handle !== handle) {
             throw new Error(

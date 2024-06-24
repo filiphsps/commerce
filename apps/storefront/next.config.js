@@ -2,6 +2,7 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import createWithBundleAnalyzer from '@next/bundle-analyzer';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withBundleAnalyzer = createWithBundleAnalyzer({
     enabled: process.env.ANALYZE === 'true'
@@ -20,11 +21,11 @@ const config = {
     productionBrowserSourceMaps: true,
     compress: true,
     transpilePackages: ['@shopify/hydrogen-react'],
-    serverExternalPackages: ['@nordcom/commerce-db', 'mongoose'],
+    serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
     experimental: {
         ppr: true,
         //caseSensitiveRoutes: true,
-        instrumentationHook: isProduction,
+        instrumentationHook: true,
         optimizeCss: true,
         optimizePackageImports: [
             '@apollo/client',
@@ -122,4 +123,13 @@ const config = {
     skipTrailingSlashRedirect: true
 };
 
-export default withBundleAnalyzer(config);
+export default withSentryConfig(withBundleAnalyzer(config), {
+    org: 'nordcom',
+    project: 'commerce',
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    silent: !process.env.CI,
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+    automaticVercelMonitors: true
+});

@@ -1,9 +1,14 @@
-import { UnknownApiError, UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
+import {
+    UnknownApiError,
+    UnknownCommerceProviderError,
+    UnknownContentProviderError,
+    UnknownShopDomainError
+} from '@nordcom/commerce-errors';
 
 import prisma from './prisma';
 
-import type { CacheUtil, Optional } from '.';
 import type { JsonValue } from '@prisma/client/runtime/library';
+import type { CacheUtil, Optional } from '.';
 
 export type ShopTheme = {
     header: {
@@ -105,80 +110,84 @@ const parseCommerceProvider = ({ type, data }: { type: string; data: JsonValue }
 export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false) => {
     try {
         const callback = async (domain: string, secure: boolean) => {
-            const { commerceProvider, contentProvider, ...res } = await prisma.shop.findFirstOrThrow({
-                where: {
-                    OR: [
-                        {
-                            domain: domain
+            try {
+                const { commerceProvider, contentProvider, ...res } = await prisma.shop.findFirstOrThrow({
+                    where: {
+                        OR: [
+                            {
+                                domain: domain
+                            },
+                            {
+                                alternativeDomains: {
+                                    has: domain
+                                }
+                            }
+                        ]
+                    },
+                    select: {
+                        id: true,
+                        name: true,
+                        domain: true,
+                        icons: {
+                            select: {
+                                favicon: true
+                            }
                         },
-                        {
-                            alternativeDomains: {
-                                has: domain
+                        logos: {
+                            select: {
+                                primary: true,
+                                alternative: true
+                            }
+                        },
+                        theme: {
+                            select: {
+                                data: true
+                            }
+                        },
+                        branding: {
+                            select: {
+                                brandColors: true
+                            }
+                        },
+                        thirdParty: true,
+                        commerceProvider: {
+                            select: {
+                                type: true,
+                                data: true
+                            }
+                        },
+                        contentProvider: {
+                            select: {
+                                id: true,
+                                type: true,
+                                data: true
                             }
                         }
-                    ]
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    domain: true,
-                    icons: {
-                        select: {
-                            favicon: true
-                        }
                     },
-                    logos: {
-                        select: {
-                            primary: true,
-                            alternative: true
-                        }
-                    },
-                    theme: {
-                        select: {
-                            data: true
-                        }
-                    },
-                    branding: {
-                        select: {
-                            brandColors: true
-                        }
-                    },
-                    thirdParty: true,
-                    commerceProvider: {
-                        select: {
-                            type: true,
-                            data: true
-                        }
-                    },
-                    contentProvider: {
-                        select: {
-                            id: true,
-                            type: true,
-                            data: true
-                        }
+                    cacheStrategy: {
+                        ttl: 60 * 60 * 4 // 4 hours.
                     }
-                },
-                cacheStrategy: {
-                    ttl: 60 * 60 * 4 // 4 hours.
+                });
+
+                if (commerceProvider === null || !commerceProvider.data) {
+                    throw new UnknownCommerceProviderError();
+                } else if (!contentProvider?.data) {
+                    throw new UnknownContentProviderError();
                 }
-            });
 
-            if (commerceProvider === null || !commerceProvider.data) {
-                new UnknownCommerceProviderError();
-            } else if (!contentProvider?.data) {
-                new UnknownContentProviderError();
+                return {
+                    ...res,
+                    theme: {
+                        ...((typeof res.theme?.data === 'object'
+                            ? res.theme.data
+                            : JSON.parse((res.theme?.data || '{}').toString())) as Partial<ShopTheme>)
+                    },
+                    commerceProvider: parseCommerceProvider(commerceProvider!, secure),
+                    contentProvider: parseContentProvider(contentProvider!, secure)
+                };
+            } catch {
+                return null; // TODO: This this ugly hack.
             }
-
-            return {
-                ...res,
-                theme: {
-                    ...((typeof res.theme?.data === 'object'
-                        ? res.theme.data
-                        : JSON.parse((res.theme?.data || '{}').toString())) as Partial<ShopTheme>)
-                },
-                commerceProvider: parseCommerceProvider(commerceProvider!, secure),
-                contentProvider: parseContentProvider(contentProvider!, secure)
-            };
         };
 
         if (!cache || typeof cache !== 'function') {
@@ -190,8 +199,7 @@ export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false)
             revalidate: 28800 // 8 hours.
         })(domain, secure) as ReturnType<typeof callback>;
     } catch (error: unknown) {
-        // throw new UnknownShopDomainError();
-        throw new UnknownApiError((error as any)?.message);
+        throw new UnknownShopDomainError();
     }
 };
 
