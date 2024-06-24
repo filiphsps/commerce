@@ -5,7 +5,6 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
-import { Locale } from '@/utils/locale';
 import AcceptLanguageParser from 'accept-language-parser';
 
 import type { NextRequest } from 'next/server';
@@ -85,15 +84,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         // since we want to support fully dynamic locales we need to
         // set the locale in the path instead.
         newUrl.pathname = `/${locale}${newUrl.pathname || '/'}`;
-    }
-
-    // Replace locale with locale from cookie if it doesn't match.
-    const locale = !!req.cookies.get('localization') ? Locale.from(req.cookies.get('localization')!.value!) : undefined;
-    if (locale && newUrl.pathname.match(LOCALE_TEST)) {
-        const urlLocale = newUrl.pathname.match(LOCALE_TEST)?.[0]?.replace('/', '');
-        if (urlLocale && urlLocale !== locale.code) {
-            newUrl.pathname = newUrl.pathname.replace(LOCALE_TEST, `/${locale.code}`);
-        }
     }
 
     // Validate that we don't now have more than one locale in the path,

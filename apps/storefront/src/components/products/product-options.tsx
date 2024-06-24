@@ -7,17 +7,14 @@ import { Fragment, type HTMLProps } from 'react';
 
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
+import { clsx } from 'clsx';
 
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 import { Label } from '@/components/typography/label';
 
-import type { ProductVariant } from '@/api/product';
-
-export type ProductOptionProps = {
-    initialVariant: ProductVariant;
-} & HTMLProps<HTMLDivElement>;
-export const ProductOptions = ({ initialVariant, style, className, ...props }: ProductOptionProps) => {
+export type ProductOptionProps = {} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+export const ProductOptions = ({ style, className, ...props }: ProductOptionProps) => {
     const { locale } = useShop();
 
     const {
@@ -47,7 +44,7 @@ export const ProductOptions = ({ initialVariant, style, className, ...props }: P
     );
 
     return (
-        <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`} style={style || {}}>
+        <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`}>
             {options?.map((option, index) =>
                 option?.values ? (
                     <Fragment key={`${option.name}_option`}>
@@ -64,71 +61,58 @@ export const ProductOptions = ({ initialVariant, style, className, ...props }: P
                             suppressHydrationWarning={true}
                         >
                             {option.values.map((value) => {
-                                if (!value) return null;
-                                let title = value;
-
-                                if (option.name === 'Size' && value && value.toLowerCase().endsWith('g')) {
-                                    title = ConvertToLocalMeasurementSystem({
-                                        locale,
-                                        weight: Number.parseFloat(value.replaceAll(' ', '')!.slice(0, -1)),
-                                        weightUnit: 'GRAMS'
-                                    });
-                                }
+                                if (!value || !variants) return null;
 
                                 // FIXME: Handle options to variant properly.
-                                const matchingVariant =
-                                    (value &&
-                                        title &&
-                                        variants
-                                            ?.filter((variant) => variant)
-                                            .find(
-                                                (variant) =>
-                                                    variant!.title?.toLowerCase().includes(value!.toLowerCase()) ||
-                                                    variant!.title?.toLowerCase().includes(title!.toLowerCase())
-                                            )) ||
-                                    undefined;
-                                let href = `/products/${handle}/`;
-                                let asComponent: any = undefined;
+                                const matchingVariant = variants.find((variant) =>
+                                    variant!.title?.toLowerCase().includes(value.toLowerCase())
+                                );
 
+                                let href = `/products/${handle}/`;
                                 if (matchingVariant?.id) {
-                                    if (matchingVariant.id !== initialVariant.id)
-                                        href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
+                                    href = `${href}?variant=${parseGid(matchingVariant.id).id}`;
                                 }
 
                                 const inStock = isOptionInStock(option.name!, value!);
-                                const extraProps = {
-                                    locale: locale,
-                                    href: href,
-                                    replace: true,
-                                    onClick: () =>
-                                        setSelectedOptions({
-                                            ...(selectedOptions as any),
-                                            [option.name!]: value!
-                                        }),
+                                const isSelected = selectedOptions?.[option.name!] === value;
 
-                                    ...(!inStock && {
-                                        disabled: !inStock,
-                                        'aria-disabled': !inStock
-                                    })
-                                };
+                                const title = `${product.vendor} ${product.title} - ${matchingVariant?.title}`;
+                                const label =
+                                    matchingVariant && option.name === 'Size'
+                                        ? ConvertToLocalMeasurementSystem({
+                                              locale,
+                                              weight: matchingVariant.weight!,
+                                              weightUnit: matchingVariant.weightUnit!
+                                          })
+                                        : null;
 
                                 return (
                                     <Link
                                         key={`${option.name}_${value}`}
-                                        as={asComponent}
-                                        title={`${product.vendor} ${product.title} - ${
-                                            title || matchingVariant?.title
-                                        }${!inStock ? ' (Out of stock)' : ''}`} // TODO: i18n.
-                                        className={`${styles.option} ${
-                                            selectedOptions?.[option.name!] === value ? styles.selected : ''
-                                        } ${!inStock ? styles.disabled : ''} ${
-                                            asComponent !== 'div' ? styles.clickable : ''
-                                        }`}
-                                        {...extraProps}
+                                        aria-disabled={!inStock}
+                                        aria-selected={isSelected}
+                                        title={title}
+                                        className={clsx(
+                                            styles.option,
+                                            isSelected && styles.selected,
+                                            !inStock && styles.disabled,
+                                            styles.clickable
+                                        )}
+                                        onClick={() =>
+                                            setSelectedOptions({
+                                                ...(selectedOptions as any),
+                                                [option.name!]: value!
+                                            })
+                                        }
+                                        locale={locale}
+                                        href={href}
+                                        replace={true}
+                                        shallow={true}
+                                        prefetch={false}
                                         // The user's locale might differ from ours.
                                         suppressHydrationWarning={true}
                                     >
-                                        {title}
+                                        {label || title}
                                     </Link>
                                 );
                             })}
@@ -143,7 +127,7 @@ export const ProductOptions = ({ initialVariant, style, className, ...props }: P
 };
 ProductOptions.displayName = 'Nordcom.Products.Options';
 
-ProductOptions.skeleton = () => {
+export const ProductOptionsSkeleton = () => {
     return <div className={actionsStyles['product-options']} />;
 };
-(ProductOptions.skeleton as any).displayName = 'Nordcom.Products.Options.Skeleton';
+ProductOptionsSkeleton.displayName = 'Nordcom.Products.Options.Skeleton';

@@ -108,6 +108,8 @@ const parseCommerceProvider = ({ type, data }: { type: string; data: JsonValue }
 };
 
 export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false) => {
+    if (!domain) throw new UnknownShopDomainError();
+
     try {
         const callback = async (domain: string, secure: boolean) => {
             try {
@@ -194,7 +196,7 @@ export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false)
             return callback(domain, secure);
         }
 
-        return cache(callback, [domain, `secure=${secure}`], {
+        return cache(callback, [domain, `secure=${secure ? 'true' : 'false'}`], {
             tags: [domain, `secure=${secure}`],
             revalidate: 28800 // 8 hours.
         })(domain, secure) as ReturnType<typeof callback>;

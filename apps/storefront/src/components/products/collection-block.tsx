@@ -87,6 +87,7 @@ const CollectionBlock = async ({
         </section>
     );
 };
+CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
 CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => (
     <section className={`${styles.container}${isHorizontal ? ` ${styles.horizontal}` : ''}`} data-skeleton>

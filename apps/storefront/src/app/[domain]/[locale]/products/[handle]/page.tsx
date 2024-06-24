@@ -32,23 +32,25 @@ import { RecommendedProducts } from '@/components/products/recommended-products'
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
 
-import { ProductContent, ProductPricing } from './product-content';
+import { ProductContent, ProductContentSkeleton, ProductPricing, ProductPricingSkeleton } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
 import type { Metadata } from 'next';
 import type { Product, WithContext } from 'schema-dts';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const runtime = 'nodejs';
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+export const revalidate = false;
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 
-/*export async function generateStaticParams({
-    params: { domain, locale: localeData }
+export async function generateStaticParams({
+    params //: { domain, locale: localeData }
 }: {
     params: Omit<ProductPageParams, 'handle'>;
 }): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
-    const locale = Locale.from(localeData);
+    /*const locale = Locale.from(localeData);
 
     const shop = await ShopApi(domain, cache, true);
     const api = await ShopifyApiClient({ shop, locale });
@@ -56,8 +58,10 @@ export type ProductPageParams = { domain: string; locale: string; handle: string
 
     return products.map(({ node: { handle } }) => ({
         handle
-    }));
-}*/
+    }));*/
+
+    return [];
+}
 
 export async function generateMetadata({
     params: { domain, locale: localeData, handle }
@@ -170,88 +174,80 @@ export default async function ProductPage({
             return result;
         };
 
-        const initialVariant =
-            product.variants.edges.length > 1 ? FirstAvailableVariant(product) : product.variants.edges[0]!.node!;
-
-        const variant = initialVariant;
-        if (!variant) {
-            notFound();
-        }
+        const initialVariant = FirstAvailableVariant(product);
+        if (!initialVariant) notFound();
 
         const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
 
         const jsonLd: WithContext<Product> = {
             '@context': 'https://schema.org',
             '@type': 'Product',
-            url: `https://${shop.domain}/${locale.code}/products/${handle}/`, // FIXME: Variant.
-            name: `${product.vendor} ${product.title} ${variant.title}`,
+            url: `https://${shop.domain}/${locale.code}/products/${handle}/`,
+            name: `${product.vendor} ${product.title}`,
             brand: product.vendor,
-            sku: ProductToMerchantsCenterId({
-                locale: locale,
-                product: {
-                    productGid: product!.id,
-                    variantGid: variant!.id
-                } as any
-            }),
-            mpn: variant.barcode || variant.sku || undefined,
             image: initialVariant.image?.url,
             description: product.description || '',
-            offers: [
-                {
-                    '@type': 'Offer',
-                    itemCondition: 'https://schema.org/NewCondition',
-                    availability: variant.availableForSale
-                        ? 'https://schema.org/InStock'
-                        : 'https://schema.org/SoldOut',
-                    url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
-                        parseGid(variant.id).id
-                    }`,
+            offers: product.variants.edges.map(({ node: variant }) => ({
+                '@type': 'Offer',
+                itemCondition: 'https://schema.org/NewCondition',
+                availability: variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+                url: `https://${shop.domain}/${locale.code}/products/${product.handle}/?variant=${
+                    parseGid(variant.id).id
+                }`,
 
-                    priceSpecification: {
-                        '@type': 'PriceSpecification',
-                        price: Number.parseFloat(variant.price.amount),
-                        priceCurrency: variant.price.currencyCode
-                    },
+                sku: ProductToMerchantsCenterId({
+                    locale: locale,
+                    product: {
+                        productGid: product!.id,
+                        variantGid: variant!.id
+                    } as any
+                }),
+                mpn: variant.barcode || variant.sku || undefined,
 
-                    // TODO: Make all of the following configurable.
-                    priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
-                    hasMerchantReturnPolicy: {
-                        '@type': 'MerchantReturnPolicy',
-                        applicableCountry: locale.country,
-                        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
+                priceSpecification: {
+                    '@type': 'PriceSpecification',
+                    price: Number.parseFloat(variant.price.amount),
+                    priceCurrency: variant.price.currencyCode
+                },
+
+                // TODO: Make all of the following configurable.
+                priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
+                hasMerchantReturnPolicy: {
+                    '@type': 'MerchantReturnPolicy',
+                    applicableCountry: locale.country,
+                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted'
+                },
+                shippingDetails: {
+                    '@type': 'OfferShippingDetails',
+                    shippingRate: {
+                        '@type': 'MonetaryAmount',
+                        maxValue: 25,
+                        minValue: 0,
+                        currency: variant.price.currencyCode!
                     },
-                    shippingDetails: {
-                        '@type': 'OfferShippingDetails',
-                        shippingRate: {
-                            '@type': 'MonetaryAmount',
-                            maxValue: 25,
+                    shippingDestination: [
+                        {
+                            '@type': 'DefinedRegion',
+                            addressCountry: locale.country
+                        }
+                    ],
+                    deliveryTime: {
+                        '@type': 'ShippingDeliveryTime',
+                        handlingTime: {
+                            '@type': 'QuantitativeValue',
                             minValue: 0,
-                            currency: variant.price.currencyCode!
+                            maxValue: 3,
+                            unitCode: 'DAY'
                         },
-                        shippingDestination: [
-                            {
-                                '@type': 'DefinedRegion',
-                                addressCountry: locale.country
-                            }
-                        ],
-                        deliveryTime: {
-                            '@type': 'ShippingDeliveryTime',
-                            handlingTime: {
-                                '@type': 'QuantitativeValue',
-                                minValue: 0,
-                                maxValue: 3,
-                                unitCode: 'DAY'
-                            },
-                            transitTime: {
-                                '@type': 'QuantitativeValue',
-                                minValue: 2,
-                                maxValue: 14,
-                                unitCode: 'DAY'
-                            }
+                        transitTime: {
+                            '@type': 'QuantitativeValue',
+                            minValue: 2,
+                            maxValue: 14,
+                            unitCode: 'DAY'
                         }
                     }
                 }
-            ]
+            }))
         };
 
         return (
@@ -262,7 +258,7 @@ export default async function ProductPage({
                     asideDesktopWidth={0.58}
                     aside={
                         <ProductGallery
-                            initialImageId={variant.image?.id || product.images.edges[0]?.node.id}
+                            initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                             images={product.images.edges.map((edge) => edge.node)}
                             className={styles.gallery}
                         />
@@ -275,8 +271,8 @@ export default async function ProductPage({
                             asideClassName={styles.headingAside}
                             aside={
                                 <div className={styles.pricing}>
-                                    <Suspense fallback={null}>
-                                        <ProductPricing shop={shop} product={product} initialVariant={initialVariant} />
+                                    <Suspense fallback={<ProductPricingSkeleton />}>
+                                        <ProductPricing product={product} />
                                     </Suspense>
                                 </div>
                             }
@@ -300,8 +296,8 @@ export default async function ProductPage({
 
                         <InfoLines product={product} style={{ paddingBottom: 'var(--block-spacer-huge)' }} />
 
-                        <Suspense fallback={null}>
-                            <ProductContent shop={shop} product={product} initialVariant={initialVariant} i18n={i18n} />
+                        <Suspense fallback={<ProductContentSkeleton />}>
+                            <ProductContent shop={shop} product={product} i18n={i18n} />
                         </Suspense>
 
                         <Tabs
@@ -328,7 +324,11 @@ export default async function ProductPage({
                                 {
                                     id: 'details',
                                     label: 'Details',
-                                    children: <ProductDetails locale={locale} data={product} />
+                                    children: (
+                                        <Suspense fallback={null}>
+                                            <ProductDetails locale={locale} data={product} />
+                                        </Suspense>
+                                    )
                                 }
                             ]}
                         />

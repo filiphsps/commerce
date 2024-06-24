@@ -206,8 +206,7 @@ export const StoreApi = async ({
         return {
             id: extraStoreDetails?.id || '',
             name: store?.store_name || extraStoreDetails?.name || '', // FIXME: Throw error instead of empty string.
-            description:
-                (store?.description && asText(store?.description)) || extraStoreDetails?.description || undefined,
+            description: asText(store?.description) || extraStoreDetails?.description || undefined,
             i18n: {
                 locales
             },

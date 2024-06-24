@@ -50,7 +50,7 @@ export async function generateMetadata({
         const { t } = useTranslation('common', i18n);
 
         const title = page?.meta_title || page?.title || t('products');
-        const description = (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
+        const description = asText(page?.meta_description) || page?.description || undefined;
         return {
             title,
             description,

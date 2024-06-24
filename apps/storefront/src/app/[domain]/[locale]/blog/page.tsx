@@ -39,8 +39,7 @@ export async function generateMetadata({
 
         const title = page?.meta_title || page?.title || blog.seo?.title || t('blog');
 
-        const description: string | undefined =
-            (page?.meta_description && asText(page.meta_description)) || page?.description || undefined;
+        const description: string | undefined = asText(page?.meta_description) || page?.description || undefined;
         return {
             title,
             description,
