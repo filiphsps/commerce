@@ -1,216 +1,30 @@
 @import 'globals';
 
-.container {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-areas: 'image details quantity';
-    grid-template-columns: auto 1fr 10rem;
-    gap: var(--block-spacer);
-
-    padding: var(--block-padding);
-    height: 100%;
+.quantity {
     width: 100%;
+    height: 2.5rem;
+    max-height: 100%;
 
-    background-color: var(--color-block);
+    vertical-align: middle;
 
-    font-size: inherit;
+    border: none;
+    background: var(--color-block);
 
-    border-radius: var(--block-border-radius);
-
-    @media (min-width: $breakpoint-mobile) {
-        grid-template-columns: auto 1fr 10rem;
-        gap: var(--block-spacer);
-
-        padding: var(--block-padding);
+    button:is([data-quantity-decrease], [data-quantity-increase]) {
+        width: 3.5rem;
     }
 
-    .badge {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: nowrap;
-        vertical-align: middle;
-
-        padding: calc(var(--block-padding-small) / 1.35) calc(var(--block-padding) / 1.5);
-
-        font-size: 0.55em;
-        font-weight: 600;
-        text-align: center;
-        line-height: 1;
-
-        background: var(--color-accent-primary-light);
-        color: var(--accent-primary-text);
-
-        border-radius: var(--block-border-radius);
-
-        &.discount {
-            background-color: var(--color-sale);
-            color: var(--color-bright);
-
-            text-transform: uppercase;
-        }
-
-        @media (min-width: $breakpoint-mobile) {
-            padding: calc(var(--block-padding-small) / 1.25) calc(var(--block-padding) / 1.5);
-
-            font-size: 0.6em;
-        }
-    }
-
-    .image {
-        grid-area: image;
-        display: block;
-
-        height: 100%;
-        padding: var(--block-padding-small);
-
-        background-color: var(--color-bright);
-
-        object-fit: contain;
-        object-position: center;
-        border-radius: var(--block-border-radius);
-    }
-
-    .details {
-        grid-area: details;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        gap: var(--block-spacer-small);
-        flex-grow: 1;
-        flex-wrap: wrap;
-
-        height: 100%;
+    input {
         width: 100%;
-        padding: var(--block-spacer-small) 0;
-
-        font-size: 0.85em;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 0.9em;
-        }
-
-        .title {
-            gap: calc(var(--block-spacer-small) / 4);
-
-            font-size: 1.25em;
-            font-weight: 700;
-            line-height: 1.15;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 1.23em;
-            }
-
-            span {
-                margin-right: calc(var(--block-spacer-small) / 2);
-            }
-
-            &:is(:hover, :active) {
-                color: var(--color-accent-primary-light);
-            }
-        }
-
-        .pricing {
-            display: flex;
-            gap: calc(var(--block-spacer-small) / 4);
-            align-items: flex-end;
-            justify-content: flex-end;
-
-            font-size: 0.9em;
-            line-height: 1;
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 1em;
-            }
-
-            > div {
-                display: flex;
-                align-items: flex-end;
-                justify-content: flex-end;
-
-                height: 100%;
-                padding-bottom: 0;
-
-                s {
-                    display: block;
-                    height: 1.1em;
-
-                    line-height: inherit;
-
-                    &::before {
-                        bottom: 0;
-                    }
-
-                    @media (min-width: $breakpoint-mobile) {
-                        height: 1.05em;
-                    }
-                }
-            }
-        }
     }
 
-    .quantity-actions {
-        overflow: hidden;
-        grid-area: quantity;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        flex-direction: column;
-        gap: var(--block-spacer);
-        width: 100%;
+    input,
+    button {
+        height: 100%;
+        min-height: 100%;
+    }
 
-        .quantity {
-            width: 100%;
-            height: 3.5rem;
-            max-height: 100%;
-            margin-bottom: 0;
-
-            vertical-align: middle;
-
-            border: none;
-            background: var(--color-bright);
-
-            @media (min-width: $breakpoint-mobile) {
-                max-height: 3.75rem;
-            }
-
-            input {
-                width: 100%;
-            }
-
-            input,
-            button {
-                height: 100%;
-                min-height: 100%;
-            }
-
-            button:hover:not(:active) {
-                background: var(--color-block-dark);
-            }
-        }
-
-        .remove {
-            height: 3rem;
-            max-height: 100%;
-            padding: calc(var(--block-spacer-small) / 1.5);
-
-            background-color: rgba(0, 0, 0, 0.1);
-            color: var(--color-dark);
-            border: none;
-
-            box-shadow: none;
-            aspect-ratio: 1;
-
-            @media (min-width: $breakpoint-mobile) {
-                height: 3.25rem;
-            }
-
-            &:is(:hover, :active, :focus) {
-                background-color: var(--color-danger);
-                color: var(--color-bright);
-            }
-        }
+    button:hover:not(:active) {
+        background: var(--color-block-dark);
     }
 }

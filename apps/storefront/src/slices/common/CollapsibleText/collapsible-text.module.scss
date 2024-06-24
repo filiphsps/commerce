@@ -16,7 +16,7 @@
         appearance: none;
         transition: 150ms ease-in-out;
         font-size: 1.5rem;
-        line-height: 1.75rem;
+        line-height: normal;
         font-weight: 500;
 
         .summary {
@@ -27,7 +27,7 @@
             gap: var(--block-spacer);
             justify-self: flex-start;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1rem;
             line-height: 2.5rem;
             font-weight: 700;
             cursor: pointer;
@@ -46,7 +46,7 @@
 
             .icon {
                 width: 2rem;
-                font-size: 2rem;
+                font-size: 1rem;
                 line-height: 2rem;
                 transition: 150ms ease-in-out;
             }

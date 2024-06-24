@@ -5,6 +5,7 @@ import styles from '@/components/product-card/product-card.module.scss';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { getDictionary } from '@/utils/dictionary';
+import clsx from 'clsx';
 
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardFooter from '@/components/product-card/product-card-footer';
@@ -32,7 +33,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
     return (
         <div
-            className={`${styles.container} ${className || ''}`}
+            className={clsx(styles.container, className)}
             title={description ? `${description}...` : undefined}
             data-available={product.availableForSale}
             {...props}
@@ -50,13 +51,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 };
 ProductCard.displayName = 'Nordcom.ProductCard';
 
-ProductCard.skeleton = () => (
-    <div className={styles.container} data-skeleton>
-        <div className={styles.image}></div>
-        <div></div>
-        <div></div>
-    </div>
-);
+ProductCard.skeleton = () => <div className={styles.container} data-skeleton />;
 (ProductCard.skeleton as any).displayName = 'Nordcom.ProductCard.Skeleton';
 
 export default ProductCard;

@@ -13,6 +13,7 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
+import clsx from 'clsx';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/actionable/button';
@@ -22,7 +23,7 @@ import type { Product, ProductVariant } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
 const AddToCartSkeleton = () => {
-    return <Button disabled={true} className={`${styles['add-to-cart']}`} />;
+    return <Button disabled={true} className={styles['add-to-cart']} />;
 };
 AddToCartSkeleton.displayName = 'Nordcom.Products.AddToCart.Skeleton';
 
@@ -148,14 +149,14 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
         }
     }, [animation, selectedVariant]);
 
-    const disabled = !ready || !selectedVariant!.availableForSale || !quantity;
+    const disabled = !ready || !selectedVariant?.availableForSale || !quantity;
 
     return (
         <Button
             aria-disabled={disabled}
             aria-label={tCart('add-n-to-your-cart', quantity)}
             {...props}
-            className={`${styles['add-to-cart']} ${className || ''}`}
+            className={clsx(styles['add-to-cart'], className)}
             disabled={disabled}
             as="button"
             type={type || ('button' as const)}

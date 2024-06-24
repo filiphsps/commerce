@@ -66,8 +66,8 @@
     }
 
     @media (min-width: $breakpoint-mobile) {
-        min-height: 34rem;
-        box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
+        min-height: 17rem;
+        box-shadow: 0 0 0.5rem -0.25rem var(--color-block-shadow);
     }
 
     .header {
@@ -83,7 +83,7 @@
 
         .image {
             width: 100%;
-            height: 14rem;
+            height: 7rem;
             padding: calc(var(--padding) * 1.75) var(--padding);
 
             background-color: var(--color-bright);
@@ -94,58 +94,11 @@
             //transition: $animation-duration ease-in-out transform;
 
             @media (min-width: $breakpoint-mobile) {
-                height: 16rem;
+                height: 8rem;
             }
         }
         &:is(:hover, :active, :focus) .image {
             //transform: scale(1.1);
-        }
-
-        .title {
-            padding: 0 var(--padding);
-
-            font-weight: 600;
-            font-size: 1em;
-            line-height: 1;
-
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-
-            margin-left: -0.075rem;
-
-            @media (min-width: 380px) and (max-width: $breakpoint-mobile) {
-                font-size: 1.05em;
-            }
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 1.25em;
-                line-height: 1.15;
-
-                margin-left: -0.15rem;
-            }
-        }
-
-        .brand {
-            padding: var(--padding);
-            padding-bottom: 0;
-
-            opacity: 0.75;
-            font-weight: 700;
-            font-size: 0.75em;
-
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            text-transform: uppercase;
-
-            @media (max-width: $breakpoint-mobile) {
-                padding-top: calc(var(--padding) * 2);
-            }
-
-            @media (min-width: $breakpoint-mobile) {
-                font-size: 0.8em;
-            }
         }
     }
 
@@ -161,7 +114,7 @@
     .actions {
         display: grid;
         grid-template-columns: 1fr auto;
-        grid-template-rows: 4.5rem;
+        grid-template-rows: 1fr;
         gap: var(--block-spacer);
         justify-content: center;
         align-items: center;
@@ -189,11 +142,12 @@
 
             button {
                 font-weight: 700;
+                width: 2rem;
             }
         }
         .button {
             height: 100%;
-            width: 4.5rem;
+            width: 2rem;
             padding: 0;
 
             svg {
@@ -218,7 +172,7 @@
         height: fit-content;
         padding-top: var(--block-spacer-huge);
 
-        font-size: 1.75rem;
+        font-size: 0.875rem;
 
         @media (min-width: $breakpoint-mobile) {
             padding-top: var(--block-spacer-large);
@@ -256,8 +210,14 @@
     }
 
     &[data-skeleton] {
+        display: block;
+
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        min-height: 16rem;
+
         box-shadow: none;
-        background-color: var(--color-block-dark);
     }
 }
 
@@ -289,10 +249,10 @@
     border-bottom-left-radius: var(--block-border-radius);
 
     font-weight: 500;
-    font-size: 1.25rem;
+    font-size: 0.75rem;
     line-height: 1;
     text-align: center;
-    text-shadow: 0 0 0.25rem var(--color-dark);
+    text-shadow: 0 0 0.125rem var(--color-dark);
 
     &[data-variant='discount'] {
         z-index: 1;
@@ -323,6 +283,6 @@
     &[data-variant='vegan'] {
         background: rgba(var(--color-green-rgb), 0.9);
         color: var(--color-bright);
-        text-shadow: 0 0 0.25rem var(--color-dark);
+        text-shadow: 0 0 0.125rem var(--color-dark);
     }
 }

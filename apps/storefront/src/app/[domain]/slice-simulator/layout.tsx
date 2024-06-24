@@ -1,5 +1,6 @@
 import 'the-new-css-reset';
 import '@/styles/app.scss';
+import '@/styles/global.css';
 
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';

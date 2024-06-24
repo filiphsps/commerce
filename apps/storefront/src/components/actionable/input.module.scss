@@ -7,7 +7,7 @@
     border-radius: var(--block-border-radius);
     color: var(--color-dark);
     background: var(--color-bright);
-    font-size: 1.25rem;
+    font-size: 0.65rem;
     line-height: 1.25rem;
     font-weight: 600;
     outline: none;
@@ -55,25 +55,6 @@
 }
 
 .textarea {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    padding: var(--block-padding-small);
-    border: var(--block-border-width) solid var(--color-bright);
-    border-radius: var(--block-border-radius);
-    color: var(--color-dark);
-    background: var(--color-bright);
-    font-size: 1.25rem;
-    line-height: 1.25;
-    font-weight: 600;
-    outline: none;
-    resize: none;
-
-    @media (max-width: 950px) {
-        font-size: 1.5rem;
-        line-height: 1.75rem;
-    }
-
     &:active,
     &:focus,
     &:hover {

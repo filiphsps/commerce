@@ -1,31 +1,19 @@
 @import 'globals';
 
 .title {
-    font-size: 2.75rem;
+    font-size: 1.85rem;
     line-height: normal;
     font-weight: 600;
     color: var(--color-dark);
     transition: 150ms ease-in-out color;
 
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 2.5rem;
-    }
-
     &.bold {
-        font-size: 3.75rem;
-        line-height: 1.2;
+        font-size: 1.95rem;
         font-weight: 700;
         color: var(--accent-primary);
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 3.45rem;
-        }
     }
 
     a:is(:hover, :focus, :focus-within) & {
-        text-decoration: underline;
-        text-decoration-style: dotted;
-        text-decoration-thickness: 0.2rem;
         text-underline-offset: var(--block-border-width);
 
         color: var(--accent-primary-light);
@@ -33,29 +21,17 @@
 }
 
 .subtitle {
-    font-size: 2rem;
-    line-height: 1.15;
+    font-size: 0.85rem;
     font-weight: 400;
     color: var(--color-dark);
     transition: 150ms ease-in-out all;
 
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 1.75rem;
-    }
-
     &.bold {
-        font-size: 3rem;
-        line-height: 1;
+        font-size: 0.95rem;
         font-weight: 500;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 2.5rem;
-        }
     }
 
     &:is(:hover, :focus, :focus-within):has(a:not(:disabled)) {
-        text-decoration: underline;
-        text-decoration-thickness: 0.2rem;
         color: var(--accent-secondary);
     }
 }

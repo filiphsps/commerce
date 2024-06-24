@@ -25,7 +25,7 @@ export const code = {
     render: 'Code',
     children: ['inline'],
     attributes: {
-        content: {
+        'content': {
             type: String
         },
         'data-language': {
@@ -46,6 +46,10 @@ export const heading = {
         const { level, ...attributes } = node.transformAttributes(config);
         const children = node.transformChildren(config);
 
-        return new Tag(this.render as any, { ...attributes, level: `h${level}`, 'data-level': `h${level}` }, children);
+        return new Tag(
+            this.render as any,
+            { ...attributes, 'level': `h${level}`, 'data-level': `h${level}` },
+            children
+        );
     }
 };

@@ -8,6 +8,7 @@ import type { Shop } from '@nordcom/commerce-database';
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
 import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
+import { clsx } from 'clsx';
 
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
@@ -90,22 +91,22 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
             <section className={styles.section}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
-                    <div>
+                    <Label>
                         {totalQuantity} {Pluralize({ count: totalQuantity || 0, noun: 'item' })}
-                    </div>
+                    </Label>
                 </header>
 
                 <div className={styles.lines}>
-                    <div className={`${styles['line-item']} ${styles.breakdown}`}>
-                        <Label className={styles.label}>{t('shipping')}</Label>
-                        <div className={styles.money}>{'TBD*'}</div>
+                    <div className="flex items-center justify-between">
+                        <Label className="font-medium capitalize">{t('shipping')}</Label>
+                        <div className="text-base font-bold">{'TBD*'}</div>
                     </div>
 
-                    <div className={`${styles['line-item']} ${styles.breakdown}`}>
-                        <Label className={styles.label}>{t('subtotal')}</Label>
+                    <div className="flex items-center justify-between">
+                        <Label className="font-medium capitalize">{t('subtotal')}</Label>
                         {cost?.subtotalAmount ? (
                             <Money
-                                className={styles.money}
+                                className="text-base font-bold"
                                 data={{
                                     currencyCode: cost.subtotalAmount.currencyCode,
                                     amount:
@@ -121,13 +122,13 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         <>
                             {sale ? (
                                 <div
-                                    className={`${styles['line-item']} ${styles.breakdown} ${styles.discounted}`}
+                                    className={clsx(styles.discounted, 'flex items-center justify-between')}
                                     title={`${salePercentage}% OFF`}
                                 >
-                                    <Label className={styles.label}>{t('discount')}</Label>
+                                    <Label className="font-medium capitalize">{t('discount')}</Label>
                                     {cartReady ? (
                                         <Money
-                                            className={styles.money}
+                                            className={clsx(styles.money, 'text-base font-bold')}
                                             data={{
                                                 currencyCode: cost?.totalAmount?.currencyCode,
                                                 amount: sale.toString()
@@ -180,8 +181,8 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         </div>
                     ) : null}
 
-                    <div className={`${styles['line-item']} ${styles.breakdown} ${styles.totals}`}>
-                        <Label className={styles.label}>{t('estimated-total')}</Label>
+                    <div className={clsx(styles.totals, 'flex items-center justify-between')}>
+                        <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
                         {cost?.totalAmount ? (
                             <Money
                                 className={styles.money}
@@ -196,7 +197,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         ) : null}
                     </div>
 
-                    <div className={styles.notice}>{`*${t('shipping-calculated-at-checkout')}`}</div>
+                    <div className={'text-xs font-bold opacity-50'}>{`*${t('shipping-calculated-at-checkout')}`}</div>
                 </div>
             </section>
 
@@ -208,11 +209,11 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
 
             <section className={`${styles.section} ${styles['section-actions']}`}>
                 <Button
-                    className={`${styles.button} ${styles['checkout-button']}`}
+                    className={clsx(styles.button, styles['checkout-button'], 'text-lg uppercase')}
                     disabled={!cartReady || (totalQuantity || 0) <= 0 || !lines}
                     onClick={onCheckout}
                 >
-                    <Label>{t('continue-to-checkout')}</Label>
+                    <span>{t('continue-to-checkout')}</span>
                     <FiChevronRight className={styles.icon} />
                 </Button>
 
@@ -222,7 +223,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                             <ShopPayButton
                                 // TODO: Only show this if we're using Shopify.
                                 width="100%"
-                                className={`${styles.button} ${styles['shop-button']}`}
+                                className={clsx(styles.button, styles['shop-button'])}
                                 variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
                                     quantity,
                                     id
@@ -230,17 +231,17 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                                 channel="hydrogen"
                             />
                         ) : (
-                            <Button className={`${styles.button} ${styles['shop-button']}`} disabled={true} />
+                            <Button className={clsx(styles.button, styles['shop-button'])} disabled={true} />
                         )}
                     </>
                 ) : null}
             </section>
 
-            <section className={`${styles.section} ${styles['section-security']}`}>
-                <AcceptedPaymentMethods store={store} className={styles['payment-methods']} />
+            <section className={clsx(styles.section, styles['section-security'])}>
+                <AcceptedPaymentMethods store={store} />
 
-                <div className={styles.notice}>
-                    <FiLock className={styles.icon} />
+                <div className={'text-sm leading-tight'}>
+                    <FiLock className={'stroke mr-1 inline h-3 stroke-2'} />
                     Safely complete your purchase through Nordcom Group Inc.&apos;s trusted partner&apos;s
                     <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
                         {' '}

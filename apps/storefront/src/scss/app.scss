@@ -40,53 +40,39 @@
 
 html {
     font-family: var(--font-primary, var(--fallback-font));
-
-    // FIXME: Refactor all of the styling so we can use '16px' as the base font size.
-    font-size: 0.55rem;
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 0.59rem;
-    }
+    font-size: 16px;
 
     &:root {
         --accent-primary-text: var(--color-accent-primary-text, var(--color-bright));
         --accent-secondary-text: var(--color-accent-secondary-text, var(--color-dark));
 
         // Components:
-        --component-product-card-width: 18rem;
-        @media (min-width: 375px) {
-            --component-product-card-width: 20rem;
-        }
+        --component-product-card-width: 12rem;
 
         // Layouting:
         --page-width: #{$page-width};
 
-        --block-border-radius-large: 2rem;
-        --block-border-radius: 1.25rem;
+        --block-border-radius-large: 1rem;
+        --block-border-radius: 0.75rem;
         --block-border-radius-small: calc(var(--block-border-radius) * 0.75);
-        --block-border-radius-tiny: 0.65rem;
-        --block-border-width: 0.325rem;
+        --block-border-radius-tiny: 0.325rem;
+        --block-border-width: 0.1625rem;
         --block-border-width-large: 0.425rem;
-        --block-border-width-huge: 0.575rem;
-        --block-border-width-small: 0.265rem;
-        --block-border-width-tiny: 0.2rem;
+        --block-border-width-huge: 0.255rem;
+        --block-border-width-small: 0.135rem;
+        --block-border-width-tiny: 0.1rem;
 
-        --block-padding: 1.15rem;
+        --block-padding: 0.6rem;
         --block-padding-small: calc(var(--block-padding) / 2);
         --block-padding-tiny: calc(var(--block-padding) / 3);
         --block-padding-large: calc(var(--block-padding) * 1.5);
-        --block-padding-huge: calc(var(--block-padding) * 1.75);
+        --block-padding-huge: calc(var(--block-padding) * 1.5);
 
-        --block-spacer: 1rem;
+        --block-spacer: 0.55rem;
         --block-spacer-small: calc(var(--block-spacer) / 2);
         --block-spacer-tiny: calc(var(--block-spacer) / 3);
-        --block-spacer-large: calc(var(--block-spacer) * 1.5);
-        --block-spacer-huge: calc(var(--block-spacer) * 2);
-
-        @media (max-width: $breakpoint-mobile) {
-            --block-border-width: 0.3rem;
-            --block-padding: 1rem;
-            --block-spacer: 0.75rem;
-        }
+        --block-spacer-large: calc(var(--block-spacer) * 1.35);
+        --block-spacer-huge: calc(var(--block-spacer) * 1.5);
     }
 }
 
@@ -112,7 +98,6 @@ body {
         padding: var(--block-padding-large);
 
         font-family: var(--font-primary);
-        font-size: 1.5rem;
         font-weight: 500;
         line-height: normal;
 
@@ -138,7 +123,7 @@ body {
         }
 
         [data-icon] {
-            width: 2rem;
+            width: 1rem;
         }
     }
 
@@ -193,7 +178,7 @@ input[type='search']:is(
         overflow: visible;
 
         height: 100vh;
-        margin-top: 7.25rem;
+        margin-top: 3.625rem;
 
         overscroll-behavior: none none;
     }
@@ -241,6 +226,6 @@ hr {
 
 [data-skeleton] {
     animation: shimmer 2s linear infinite;
-    background: linear-gradient(to right, var(--color-bright) 0%, var(--color-block) 25%, var(--color-bright) 50%);
+    background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-darker) 25%, var(--color-block) 50%);
     background-size: 200% 100%;
 }

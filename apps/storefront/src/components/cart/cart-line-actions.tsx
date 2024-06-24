@@ -5,20 +5,21 @@ import styles from '@/components/cart/cart-line.module.scss';
 import { useCallback } from 'react';
 import { CgTrash } from 'react-icons/cg';
 
+import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { useCart } from '@shopify/hydrogen-react';
+import clsx from 'clsx';
 
-import { Button } from '@/components/actionable/button';
 import { QuantitySelector } from '@/components/products/quantity-selector';
 
 import type { Product, ProductVariant } from '@/api/product';
-import type { LocaleDictionary } from '@/utils/locale';
 import type { CartLine as ShopifyCartLine } from '@shopify/hydrogen-react/storefront-api-types';
 
 interface CartLineProps {
     i18n: LocaleDictionary;
     data: ShopifyCartLine;
 }
-const CartLineActions = ({ i18n, data: line }: CartLineProps) => {
+
+const CartLineQuantityAction = ({ i18n, data: line }: CartLineProps) => {
     const { linesRemove, linesUpdate, cartReady } = useCart();
 
     const update = useCallback(
@@ -47,27 +48,40 @@ const CartLineActions = ({ i18n, data: line }: CartLineProps) => {
     }
 
     return (
-        <>
-            <QuantitySelector
-                className={styles.quantity}
-                i18n={i18n}
-                disabled={!cartReady}
-                value={line.quantity}
-                update={update}
-                allowDecreaseToZero={true}
-            />
-
-            <Button
-                className={styles.remove}
-                // TODO: i18n.
-                title={`Remove "${product.vendor} ${product.title} - ${variant.title}" from the cart`}
-                onClick={() => linesRemove([line.id!])}
-            >
-                <CgTrash />
-            </Button>
-        </>
+        <QuantitySelector
+            className={clsx(styles.quantity, 'max-w-48')}
+            i18n={i18n}
+            disabled={!cartReady}
+            value={line.quantity}
+            update={update}
+            allowDecreaseToZero={true}
+        />
     );
 };
 
-CartLineActions.displayName = 'Nordcom.Cart.Line.Actions';
-export { CartLineActions };
+const CartLineRemoveAction = ({ i18n, data: line }: CartLineProps) => {
+    const { linesRemove, cartReady } = useCart();
+
+    const { t } = useTranslation('cart', i18n);
+
+    const product: Required<Product> = line.merchandise.product! as any;
+    const variant: Required<ProductVariant> = line.merchandise! as any;
+    if (!product || !variant) {
+        console.error(`Product or product variant not found for line ${line.id}`);
+        return null;
+    }
+
+    return (
+        <button
+            aria-disabled={!cartReady}
+            disabled={!cartReady}
+            className={'appearance-none'}
+            title={t('remove-from-cart', `${product.vendor} ${product.title} - ${variant.title}`)}
+            onClick={() => linesRemove([line.id!])}
+        >
+            <CgTrash className="py-2 text-2xl hover:text-red-600" />
+        </button>
+    );
+};
+
+export { CartLineQuantityAction, CartLineRemoveAction };

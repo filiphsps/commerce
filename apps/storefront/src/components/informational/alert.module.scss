@@ -2,7 +2,7 @@
 
 .container {
     display: grid;
-    grid-template-columns: 4rem 1fr;
+    grid-template-columns: 2rem 1fr;
     grid-template-rows: 1fr;
     gap: var(--block-padding-large);
     width: 100%;
@@ -34,7 +34,7 @@
         justify-content: flex-start;
         align-items: center;
         font-size: 1.5rem;
-        line-height: 1.75rem;
+        line-height: normal;
         color: var(--color);
 
         a {

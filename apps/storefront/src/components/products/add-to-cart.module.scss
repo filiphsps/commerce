@@ -2,13 +2,9 @@
 
 .add-to-cart {
     gap: calc(var(--block-spacer-small) / 2);
-    font-size: 1.45rem;
+    font-size: 1rem;
     border-radius: var(--block-border-radius);
     text-transform: uppercase;
-
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 1.35rem;
-    }
 }
 
 .add-to-cart[data-ready='false'] {

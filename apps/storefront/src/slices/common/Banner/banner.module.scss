@@ -15,15 +15,15 @@
         align-items: center;
         grid-template-rows: 1fr;
         gap: var(--block-padding-large);
-        padding: calc(var(--block-padding-large) * 2) var(--block-padding-large);
+        padding: calc(var(--block-padding-large) * 1.65) var(--block-padding-large);
         min-height: 30vh;
         max-width: var(--page-width);
 
         @media (min-width: $breakpoint-mobile) {
-            gap: calc(var(--block-padding-large) * 2);
+            gap: calc(var(--block-padding-large) * 1.65);
         }
         @media (min-width: $page-width) {
-            padding: 4rem 10rem;
+            padding: 2rem 10rem;
         }
 
         .header {
@@ -34,7 +34,7 @@
 
             p {
                 padding-top: var(--block-padding-large);
-                font-size: 2rem;
+                font-size: 1rem;
                 line-height: 2.5rem;
                 font-weight: 400;
 
@@ -79,7 +79,7 @@
             }
 
             @media (min-width: 950px) {
-                gap: calc(var(--block-padding-large) * 2);
+                gap: calc(var(--block-padding-large) * 1.65);
             }
 
             .action {
@@ -90,7 +90,7 @@
 
                 font-weight: 500;
                 font-size: 1.5rem;
-                line-height: 1.75rem;
+                line-height: normal;
                 text-align: center;
 
                 border-radius: calc(var(--block-border-radius-large) * 2);
@@ -112,8 +112,8 @@
 
                 @media (min-width: 950px) {
                     padding: var(--block-padding-large) calc(var(--block-padding-large) * 4);
-                    font-size: 1.75rem;
-                    line-height: 2rem;
+                    font-size: 1rem;
+                    line-height: normal;
                 }
             }
         }
@@ -134,13 +134,8 @@
             .header {
                 p {
                     padding-top: 0;
-                    font-size: 1.75rem;
-                    line-height: 2.25rem;
-
-                    @media (min-width: 950px) {
-                        font-size: 2rem;
-                        line-height: 2.5rem;
-                    }
+                    font-size: 1rem;
+                    line-height: normal;
                 }
 
                 h1,
@@ -161,12 +156,12 @@
 
             .actions {
                 .action {
-                    font-size: 1.25rem;
+                    font-size: 0.65rem;
                     line-height: 1;
                     padding: var(--block-padding) var(--block-padding-large);
 
                     @media (min-width: $breakpoint-mobile) {
-                        padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 2);
+                        padding: calc(var(--block-padding) * 1.25) calc(var(--block-padding-large) * 1.65);
                         font-size: 1.5rem;
                         line-height: 1.1;
                     }

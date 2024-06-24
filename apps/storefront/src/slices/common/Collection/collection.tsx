@@ -93,7 +93,6 @@ CollectionContainer.skeleton = ({ slice }: { slice?: Slice }) => {
             className={styles.container}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            data-skeleton
         >
             <CollectionContainerHeader slice={slice} />
 

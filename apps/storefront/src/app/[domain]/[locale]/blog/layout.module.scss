@@ -17,14 +17,14 @@
     .sidebar-wrapper {
         .sidebar {
             position: sticky;
-            top: 10rem;
+            top: 6rem;
             display: flex;
             flex-direction: column;
             flex-shrink: 1;
             gap: calc(var(--block-spacer-large) * 2);
 
             @media (min-width: $breakpoint-mobile) {
-                width: 28rem;
+                width: 16rem;
             }
 
             .section {
@@ -38,12 +38,8 @@
 
                 a {
                     display: block;
-                    font-size: 1.75rem;
-                    line-height: 1.1;
-
-                    @media (min-width: $breakpoint-mobile) {
-                        font-size: 1.5rem;
-                    }
+                    font-size: 0.85rem;
+                    line-height: normal;
                 }
             }
         }

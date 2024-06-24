@@ -2,6 +2,9 @@ import styles from '@/components/actionable/input.module.scss';
 
 import type { As } from '@nordcom/nordstar';
 
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
 export type InputProps<T extends As> = {
@@ -35,7 +38,17 @@ const MultilineInput = <T extends As>({
     ...props
 }: MultilineInputProps<T>) => {
     return (
-        <Tag draggable={false} {...props} className={`${styles.textarea}${className ? ` ${className}` : ''}`}>
+        <Tag
+            draggable={false}
+            {...props}
+            className={twMerge(
+                clsx(
+                    styles.textarea,
+                    'border-primary outline-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs outline outline-0 focus:outline-2',
+                    className
+                )
+            )}
+        >
             {children}
         </Tag>
     );

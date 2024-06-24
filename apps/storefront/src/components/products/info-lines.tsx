@@ -2,6 +2,8 @@ import styles from '@/components/products/info-lines.module.scss';
 
 import { FiPackage } from 'react-icons/fi';
 
+import clsx from 'clsx';
+
 import { Label } from '@/components/typography/label';
 
 import type { Product } from '@/api/product';
@@ -33,7 +35,7 @@ const InfoLines = ({ product, className, ...props }: InfoLinesProps) => {
     if (!product) return null;
 
     return (
-        <div className={`${styles.container} ${className}`} {...props}>
+        <div className={clsx(styles.container, className)} {...props}>
             <StockStatus product={product} />
         </div>
     );

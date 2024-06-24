@@ -2,7 +2,7 @@
 
 section.container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
     gap: var(--block-spacer);
     width: 100%;
 

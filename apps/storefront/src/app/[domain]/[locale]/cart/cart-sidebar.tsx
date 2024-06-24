@@ -1,12 +1,11 @@
 'use client';
 
-import styles from '@/components/typography/label.module.scss';
-
 import type { Shop } from '@nordcom/commerce-database';
 
 import { Checkout } from '@/utils/checkout';
 import { useTrackable } from '@/utils/trackable';
 import { useCart } from '@shopify/hydrogen-react';
+import { clsx } from 'clsx';
 import { toast } from 'sonner';
 
 import { CartSummary } from '@/components/cart/cart-summary';
@@ -28,7 +27,7 @@ export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: 
     const trackable = useTrackable();
 
     return (
-        <aside {...props} className={`${styles.container} ${className || ''}`}>
+        <aside {...props} className={clsx(className, 'block')}>
             <CartSummary
                 shop={shop}
                 onCheckout={async () => {

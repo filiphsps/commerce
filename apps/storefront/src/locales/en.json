@@ -18,7 +18,8 @@
         "shipping-calculated-at-checkout": "Shipping calculated at checkout",
         "shipping": "Shipping",
         "subtotal": "Subtotal",
-        "view-cart": "View your shopping cart"
+        "view-cart": "View your shopping cart",
+        "remove-from-cart": "Remove {0} from the cart"
     },
     "common": {
         "add-to-cart": "Add to Cart",
@@ -35,7 +36,8 @@
         "out-of-stock": "Out of Stock",
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
-        "search": "Search"
+        "search": "Search",
+        "remove": "Remove"
     },
     "product": {
         "recommendations": "Other customers also enjoy these products together",

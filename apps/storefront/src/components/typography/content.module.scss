@@ -6,6 +6,8 @@
     font-weight: 500;
     line-height: normal;
 
+    font-size: 0.95rem;
+
     & :is(b, strong) {
         font-weight: 700;
     }
@@ -66,8 +68,8 @@
 
     ul {
         padding-left: 1rem;
-        font-size: 1.75rem;
-        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0.85rem;
         opacity: 0.85;
 
         li {
@@ -103,7 +105,7 @@
         padding-bottom: 1rem;
     }
     h4 {
-        font-size: 2rem;
+        font-size: 1rem;
         line-height: normal;
         padding-bottom: 1rem;
     }
