@@ -1,9 +1,9 @@
-import '@/styles/app.scss';
 import 'the-new-css-reset';
+import '@/styles/app.scss';
 
+import { type ReactNode, Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
-import { Suspense, type ReactNode } from 'react';
 
 import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';

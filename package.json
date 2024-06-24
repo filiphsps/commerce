@@ -75,7 +75,6 @@
         "concurrently": "8.2.2",
         "dotenv-cli": "7.4.2",
         "eslint-config-prettier": "9.1.0",
-        "eslint-plugin-import": "2.29.1",
         "eslint-plugin-jsdoc": "48.2.15",
         "eslint-plugin-jsx-a11y": "6.9.0",
         "eslint": "8.57.0",

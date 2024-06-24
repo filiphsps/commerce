@@ -20,7 +20,6 @@
     "plugins": [
         "@typescript-eslint",
         "eslint-plugin-jsdoc",
-        "import",
         "jsx-a11y",
         "prettier",
         "react-hooks",
