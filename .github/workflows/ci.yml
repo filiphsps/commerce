@@ -23,12 +23,15 @@ env:
     SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
     SHOPIFY_API_SECRET_KEY: ${{ secrets.SHOPIFY_API_SECRET_KEY }}
     AUTH_SECRET: 'development-secret'
+    SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+    SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
 
 jobs:
     build:
         name: 🔨 Build
         needs: [lint, typecheck]
-        timeout-minutes: 15
+        timeout-minutes: 25
         runs-on: ubuntu-latest
         steps:
             - name: 🕶️ Checkout repository
