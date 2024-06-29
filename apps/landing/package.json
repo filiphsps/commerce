@@ -98,7 +98,7 @@
         "@types/react-dom": "18.2.24",
         "@types/react": "18.2.75",
         "concurrently": "8.2.2",
-        "critters": "0.0.22",
+        "critters": "0.0.24",
         "eslint-config-next": "14.2.1",
         "eslint": "8.57.0",
         "graphql": "16.9.0",
