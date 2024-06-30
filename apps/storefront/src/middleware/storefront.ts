@@ -62,7 +62,6 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
             const apiConfig = await ShopifyApiConfig({ shop, noCache: true, noHeaders: false });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api, noCache: true }))
-                .map(({ code }) => code.toLowerCase())
                 .sort((a, b) => a.localeCompare(b));
 
             const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language') || '';
