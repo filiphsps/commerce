@@ -1,8 +1,8 @@
-import styles from '@/components/typography/heading.module.scss';
-
 import { Fragment } from 'react';
 
 import type { As } from '@nordcom/nordstar';
+
+import { cn } from '@/utils/tailwind';
 
 import type { ComponentProps, CSSProperties, HTMLProps, ReactNode } from 'react';
 
@@ -22,7 +22,13 @@ export const Title = <T extends As>({ as: Tag = 'h1' as T, bold, className, key,
         <AsComponent
             key={key}
             {...props}
-            className={`${styles.title} ${(bold && styles.bold) || ''} ${className || ''}`}
+            className={cn(
+                'text-3xl font-medium leading-snug',
+                props.href && 'hover:text-primary focus:text-primary cursor-pointer',
+                bold && 'text-primary font-bold',
+                props.href && bold && 'hover:underline focus:underline',
+                className
+            )}
         />
     );
 };
@@ -40,13 +46,7 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
     const fallback: keyof JSX.IntrinsicElements = 'div';
     const AsComponent = as || fallback;
 
-    return (
-        <AsComponent
-            key={key}
-            {...props}
-            className={`${styles.subtitle} ${(bold && styles.bold) || ''} ${className || ''}`}
-        />
-    );
+    return <AsComponent key={key} {...props} className={cn('text-sm', bold && 'font-extrabold', className)} />;
 };
 
 type HeadingProps = {

@@ -50,7 +50,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                     option?.values ? (
                         <Fragment key={`${option.name}_option`}>
                             <Label
-                                className={styles.label}
+                                className="text-gray-600"
                                 data-options={option.values.length}
                                 suppressHydrationWarning={true}
                             >
@@ -97,7 +97,8 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 styles.option,
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
-                                                styles.clickable
+                                                styles.clickable,
+                                                'text-sm'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({

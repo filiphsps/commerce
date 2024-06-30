@@ -1,19 +1,9 @@
 @import 'globals';
 
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer);
+    padding: 0 !important;
 
-    @media (min-width: $breakpoint-mobile) {
-        padding-top: var(--block-padding-large);
-
-        background-color: var(--color-block);
-
-        border-radius: var(--block-border-radius);
-
-        & > h3 {
-            padding: 0 var(--block-padding-large);
-        }
+    .card {
+        min-width: var(--component-product-card-width);
     }
 }

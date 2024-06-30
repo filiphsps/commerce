@@ -16,10 +16,8 @@
     white-space: nowrap;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    border-radius: var(--block-border-radius);
     list-style-type: none;
 
-    font-size: 0.75rem;
     line-height: normal;
     font-weight: 600;
 
@@ -30,16 +28,14 @@
         align-items: center;
         white-space: nowrap;
 
-        height: 1.75rem;
-
         -webkit-user-select: none;
         user-select: none;
 
         &:last-child {
+            font-weight: 700;
+
             .link {
                 color: var(--color-accent-primary-light);
-
-                font-weight: 800;
             }
         }
 
@@ -49,13 +45,9 @@
             justify-content: flex-start;
             align-items: center;
 
-            height: 1.75rem;
-            padding: 0.15rem 0.75rem;
-
             background-color: var(--color-block);
             color: var(--color-block-black);
 
-            border-radius: var(--block-border-radius);
             transition:
                 $animation-duration ease-in-out color,
                 $animation-duration ease-in-out background-color;
@@ -64,10 +56,13 @@
         }
 
         .icon {
+            height: 100%;
             width: 1rem;
             padding: 0;
+            vertical-align: middle;
 
-            font-size: 0.75rem;
+            text-align: center;
+            font-size: 1rem;
         }
 
         .link {

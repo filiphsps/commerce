@@ -18,8 +18,8 @@
     height: 100%;
     width: 100%;
     min-width: var(--component-product-card-width);
-    @media (max-width: 560px)  {
-        min-width: auto;
+    @media (max-width: 560px) {
+        min-width: min-content;
     }
 
     font-size: 16px;

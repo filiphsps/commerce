@@ -1,5 +1,7 @@
 import styles from '@/components/layout/split-view.module.scss';
 
+import { cn } from '@/utils/tailwind';
+
 import type { HTMLProps, ReactNode } from 'react';
 
 type ContainerProps = {
@@ -63,9 +65,7 @@ const SplitView = ({
     const primaryComponent = (
         <Primary
             style={{ '--desktop-width': _primaryDesktopWidth }}
-            className={`${primaryClassName || ''} ${
-                (typeof primaryDesktopWidth === 'string' && styles.specific) || ''
-            }`}
+            className={cn(primaryClassName, typeof primaryDesktopWidth === 'string' && styles.specific)}
         >
             {children}
         </Primary>
@@ -73,7 +73,7 @@ const SplitView = ({
     const asideComponent = (
         <Aside
             style={{ '--desktop-width': _asideDesktopWidth }}
-            className={`${asideClassName || ''} ${typeof asideDesktopWidth === 'string' ? styles.specific : ''}`}
+            className={cn(asideClassName, typeof asideDesktopWidth === 'string' && styles.specific)}
         >
             {aside}
         </Aside>

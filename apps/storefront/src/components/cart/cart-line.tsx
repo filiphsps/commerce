@@ -72,7 +72,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
                         href={`/products/${line.merchandise.product.handle}?variant=${parseGid(line.merchandise.id).id}`}
                         className="flex w-full flex-col"
                     >
-                        <Label className="">{product.vendor}</Label>
+                        <Label>{product.vendor}</Label>
                         <div className="text-lg font-semibold leading-tight">
                             {product.title} <span className="text-sm">({variant.title})</span>
                         </div>

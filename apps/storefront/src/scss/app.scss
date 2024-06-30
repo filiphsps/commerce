@@ -130,13 +130,6 @@ body {
     a:is([href]):where([href=''], [href='#']) {
         cursor: default;
     }
-
-    a:not(:disabled) {
-        &:is(:hover, :active, :focus) {
-            color: var(--accent-primary-light);
-            text-decoration-color: var(--accent-primary-light);
-        }
-    }
 }
 
 html,
@@ -226,6 +219,6 @@ hr {
 
 [data-skeleton] {
     animation: shimmer 2s linear infinite;
-    background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-darker) 25%, var(--color-block) 50%);
+    background: linear-gradient(to right, var(--color-block) 0%, var(--color-block-dark) 25%, var(--color-block) 50%);
     background-size: 200% 100%;
 }

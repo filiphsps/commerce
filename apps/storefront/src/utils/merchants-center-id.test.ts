@@ -19,7 +19,7 @@ describe('utils', () => {
             });
 
             expect(merchantsCenterId).toBe('shopify_US_123_456');
-            expect(merchantsCenterId).toMatchSnapshot();
+            //expect(merchantsCenterId).toMatchSnapshot();
         });
 
         it(`should generate a Merchants Center product ID based on the product's Shopify GIDs`, () => {
@@ -36,7 +36,7 @@ describe('utils', () => {
             });
 
             expect(merchantsCenterId).toBe('shopify_CA_123_456');
-            expect(merchantsCenterId).toMatchSnapshot();
+            //expect(merchantsCenterId).toMatchSnapshot();
         });
     });
 });

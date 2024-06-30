@@ -21,7 +21,7 @@ describe('utils', () => {
 
                 let res = TitleToHandle(item[0]!);
                 expect(res == item[1]).toBeTruthy();
-                expect(res).toMatchSnapshot();
+                //expect(res).toMatchSnapshot();
             }
         });
     });

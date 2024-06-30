@@ -1,9 +1,9 @@
 'use client';
 
-import styles from '@/components/products/product-gallery.module.scss';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useEffect, useState } from 'react';
-import NextImage from 'next/image';
+import { cn } from '@/utils/tailwind';
+import { Image as ShopifyImage } from '@shopify/hydrogen-react';
 
 import type { Image } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
@@ -13,62 +13,101 @@ export type ProductGalleryProps = {
     images: Image[] | null;
 } & HTMLProps<HTMLDivElement>;
 const ProductGallery = ({ initialImageId, images, className, ...props }: ProductGalleryProps) => {
-    const [selected, setSelected] = useState(initialImageId || images?.[0]?.id);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [selected, setSelected] = useState<Image | null>(null);
+    const [next, setNext] = useState<Image | null>(null);
+
+    const setImage = useCallback(
+        (image: Image) => {
+            // Prevent the user from spamming the buttons.
+            if (loading) return;
+
+            setLoading(true);
+            setNext(image);
+        },
+        [loading]
+    );
 
     useEffect(() => {
-        if (!initialImageId) return;
-        else if (initialImageId == selected) return;
+        if (selected || !images) return;
 
-        setSelected(initialImageId);
-    }, [initialImageId]);
+        const target = initialImageId ? images.find(({ id }) => id === initialImageId) : images[0];
+        if (!target) return;
+
+        setImage(target);
+    }, [, images, initialImageId]);
 
     if (!images || images.length <= 0) return null;
 
-    const image = images.find((image) => image && image.id === selected) || images[0];
-    if (!image) return null;
+    const image = next || selected;
+    const loadingProps = { ...(!image || loading ? { 'data-skeleton': true } : {}) };
 
     return (
-        <div draggable={false} className={`${styles.gallery}${className ? ` ${className}` : ''}`} {...props}>
-            <section>
-                <NextImage
-                    src={image.url || image.src || ''}
-                    alt={image.altText || ''}
-                    title={image.altText || undefined}
-                    width={250}
-                    height={250}
-                    sizes="(max-width: 920px) 125px, 500px"
-                    priority={true}
-                    loading="eager"
-                    decoding="async"
-                />
-            </section>
+        <section draggable={false} className={cn('flex flex-col gap-2', className)} {...props}>
+            <div className="rounded-lg bg-gray-100 p-8 md:p-16" {...loadingProps}>
+                {image ? (
+                    <ShopifyImage
+                        className={cn(
+                            'opacity-1 aspect-square h-full w-full object-contain object-center transition-opacity duration-500',
+                            loading && 'opacity-0 transition-none'
+                        )}
+                        src={image.url!}
+                        alt={image.altText!}
+                        title={image.altText!}
+                        //width={500}
+                        height={500}
+                        sizes="(max-width: 920px) 90vw, 500px"
+                        loading="eager"
+                        decoding="async"
+                        onLoad={() => {
+                            setTimeout(() => setLoading(() => false), 250);
 
-            {(images.length > 1 && (
-                <aside>
-                    {images.map((image) => (
-                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                        <div
-                            key={image.id}
-                            onClick={() => setSelected(image.id)}
-                            className={`${styles.preview} ${image.id === selected ? styles.active : ''}`}
-                        >
-                            <NextImage
-                                src={image.url}
-                                alt={image.altText || ''}
-                                title={image.altText || undefined}
-                                width={75}
-                                height={75}
-                                sizes="(max-width: 920px) 50px, 250px"
-                                priority={true}
-                                loading="eager"
-                                decoding="async"
-                            />
-                        </div>
-                    ))}
+                            if (!next) return;
+                            setSelected(() => next);
+                            setNext(null);
+                        }}
+                    />
+                ) : (
+                    <div className="aspect-square h-full w-full" />
+                )}
+            </div>
+
+            {image && images.length > 1 ? (
+                <aside className="grid grid-cols-3 gap-2 md:grid-cols-4">
+                    {images
+                        .filter(({ id }) => image.id !== id)
+                        .map((image, index) => {
+                            return (
+                                <button
+                                    aria-label={`Enlarge image #${index + 1}`}
+                                    key={image.id}
+                                    onClick={() => setImage(image)}
+                                    className={cn(
+                                        'hover:border-primary appearance-none rounded-lg border-0 border-solid border-gray-300 bg-gray-100 p-4 transition-all hover:border-4 focus:border-4 md:p-8'
+                                    )}
+                                    {...loadingProps}
+                                >
+                                    <ShopifyImage
+                                        className={cn(
+                                            'aspect-square h-full w-full object-contain object-center transition-opacity duration-500',
+                                            loading && 'opacity-0 transition-none'
+                                        )}
+                                        style={{ transitionDelay: `${(index + 1) * 250}ms` }}
+                                        src={image.url!}
+                                        alt={image.altText!}
+                                        title={image.altText!}
+                                        //width={175}
+                                        height={175}
+                                        sizes="(max-width: 920px) 75px, 175px"
+                                        loading="eager"
+                                        decoding="async"
+                                    />
+                                </button>
+                            );
+                        })}
                 </aside>
-            )) ||
-                null}
-        </div>
+            ) : null}
+        </section>
     );
 };
 

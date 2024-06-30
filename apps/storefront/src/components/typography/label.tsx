@@ -3,7 +3,7 @@ import { cn } from '@/utils/tailwind';
 import type { ElementType, HTMLProps, ReactNode } from 'react';
 
 export type LabelProps = {
-    children: ReactNode;
+    children?: ReactNode;
     as?: ElementType;
 } & HTMLProps<HTMLLabelElement>;
 export const Label = ({ children, as, className, ...props }: LabelProps) => {

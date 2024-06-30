@@ -7,6 +7,7 @@ import { Suspense, useState } from 'react';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { useProduct } from '@shopify/hydrogen-react';
 
 import AddToCart from '@/components/products/add-to-cart';
@@ -31,8 +32,10 @@ export const ProductActionsContainer = ({ shop, className, i18n, ...props }: Pro
 
     return (
         <>
-            <div {...props} className={`${styles.options} ${className || ''}`}>
-                <Label style={{ gridArea: 'quantity-label' }}>{t('quantity')}</Label>
+            <div {...props} className={cn(styles.options, className)}>
+                <Label className="text-gray-600" style={{ gridArea: 'quantity-label' }}>
+                    {t('quantity')}
+                </Label>
 
                 <QuantitySelector
                     update={(value) => {

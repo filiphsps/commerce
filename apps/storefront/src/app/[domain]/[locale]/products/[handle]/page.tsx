@@ -1,7 +1,5 @@
 import 'server-only';
 
-import styles from './page.module.scss';
-
 import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
@@ -16,21 +14,18 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { isValidHandle } from '@/utils/handle';
-import { Locale } from '@/utils/locale';
+import { Locale, useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
-import SplitView from '@/components/layout/split-view';
-import { Tabs } from '@/components/layout/tabs';
 import Link from '@/components/link';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
-import Heading from '@/components/typography/heading';
 
 import { ProductContent, ProductContentSkeleton, ProductPricing, ProductPricingSkeleton } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
@@ -153,6 +148,7 @@ export default async function ProductPage({
 
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
+        const { t } = useTranslation('product', i18n);
 
         // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
         // This function is used to deal with the title in the product's description
@@ -252,92 +248,78 @@ export default async function ProductPage({
 
         return (
             <>
-                <SplitView
-                    primaryDesktopWidth={0.42}
-                    primaryClassName={styles.headingPrimary}
-                    asideDesktopWidth={0.58}
-                    aside={
+                <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap md:gap-8">
+                    <div className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-3xl'}>
                         <ProductGallery
                             initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
                             images={product.images.edges.map((edge) => edge.node)}
-                            className={styles.gallery}
-                        />
-                    }
-                >
-                    <div className={styles.content}>
-                        <SplitView
-                            primaryDesktopWidth={'100%'}
-                            asideDesktopWidth={'14rem'}
-                            asideClassName={styles.headingAside}
-                            aside={
-                                <div className={styles.pricing}>
-                                    <Suspense fallback={<ProductPricingSkeleton />}>
-                                        <ProductPricing product={product} />
-                                    </Suspense>
-                                </div>
-                            }
-                            style={{ gap: '0' }}
-                            reverse
-                        >
-                            <Heading
-                                title={product.title}
-                                subtitle={
-                                    <Link
-                                        href={`/collections/${TitleToHandle(product.vendor)}`}
-                                        className={styles.vendor}
-                                    >
-                                        {product.vendor}
-                                    </Link>
-                                }
-                                reverse
-                                bold
-                            />
-                        </SplitView>
-
-                        <InfoLines product={product} style={{ paddingBottom: 'var(--block-spacer-huge)' }} />
-
-                        <Suspense fallback={<ProductContentSkeleton />}>
-                            <ProductContent shop={shop} product={product} i18n={i18n} />
-                        </Suspense>
-
-                        <Tabs
-                            className={styles.tabs}
-                            data={[
-                                {
-                                    id: 'information',
-                                    label: 'Information',
-                                    children: (
-                                        <>
-                                            <Content
-                                                className={styles.description}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: content
-                                                }}
-                                            />
-
-                                            <Suspense fallback={null}>
-                                                <ImportantProductDetails locale={locale} data={product} />
-                                            </Suspense>
-                                        </>
-                                    )
-                                },
-                                {
-                                    id: 'details',
-                                    label: 'Details',
-                                    children: (
-                                        <Suspense fallback={null}>
-                                            <ProductDetails locale={locale} data={product} />
-                                        </Suspense>
-                                    )
-                                }
-                            ]}
+                            className="h-full w-full"
                         />
                     </div>
-                </SplitView>
 
-                <Suspense fallback={<RecommendedProducts.skeleton />}>
-                    <RecommendedProducts shop={shop} locale={locale} product={product} />
-                </Suspense>
+                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch md:gap-8">
+                        <div className="flex h-auto w-full flex-col justify-start gap-2">
+                            <header className="flex flex-col">
+                                <div className="text-3xl font-bold leading-tight">
+                                    <h1 className="text-inherit">
+                                        {product.title} &mdash; {product.productType}
+                                    </h1>
+                                </div>
+
+                                <Link
+                                    className="hover:text-primary text-lg normal-case text-gray-600 transition-colors"
+                                    href={`/collections/${TitleToHandle(product.vendor)}`}
+                                >
+                                    {product.vendor}
+                                </Link>
+                            </header>
+
+                            <div className="flex flex-row items-center gap-2 md:gap-4">
+                                <Suspense fallback={<ProductPricingSkeleton />}>
+                                    <ProductPricing product={product} />
+                                </Suspense>
+                            </div>
+
+                            <InfoLines product={product} />
+                        </div>
+
+                        <div className="flex flex-col items-stretch justify-start gap-2">
+                            <Suspense fallback={<ProductContentSkeleton />}>
+                                <ProductContent shop={shop} product={product} i18n={i18n} />
+                            </Suspense>
+                        </div>
+
+                        <Suspense fallback={<Content />}>
+                            <Content
+                                dangerouslySetInnerHTML={{
+                                    __html: content
+                                }}
+                            />
+                        </Suspense>
+
+                        <section className="mt-8 flex w-full flex-col gap-4 xl:rounded-lg xl:bg-gray-100 xl:p-4">
+                            <Suspense fallback={null}>
+                                <ImportantProductDetails locale={locale} data={product} />
+                            </Suspense>
+
+                            <Suspense fallback={<div />}>
+                                <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
+                                    <ProductDetails locale={locale} data={product} />
+                                </div>
+                            </Suspense>
+                        </section>
+                    </div>
+                </section>
+
+                <div className="flex flex-col gap-4 pt-8 md:gap-8">
+                    <section className="flex flex-col gap-4 rounded-lg bg-gray-100 p-4">
+                        <h3 className="center text-lg font-semibold leading-none md:text-xl">{t('recommendations')}</h3>
+
+                        <Suspense fallback={<RecommendedProducts.skeleton />}>
+                            <RecommendedProducts shop={shop} locale={locale} product={product} />
+                        </Suspense>
+                    </section>
+                </div>
 
                 <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 

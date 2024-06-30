@@ -30,16 +30,6 @@
     top: 10rem;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--block-spacer-huge);
-
-    height: 100%;
-
-    font-size: 16px;
-}
-
 .tabs {
     margin-top: var(--block-spacer);
 }
@@ -52,15 +42,8 @@
 }
 
 div.description {
-    font-size: 18px;
-
     h2 {
         padding-bottom: var(--block-spacer-large);
-        font-size: 1.75em;
-
-        @media (min-width: $breakpoint-mobile) {
-            font-size: 2em;
-        }
     }
 }
 

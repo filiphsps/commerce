@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
 
+import { cn } from '@/utils/tailwind';
+
 import Link from '@/components/link';
 
 type BreadcrumbsProps = {
@@ -21,9 +23,23 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
 
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
-        <section className={styles.breadcrumbs} itemScope itemType="https://schema.org/BreadcrumbList">
-            <div className={styles.item} itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                <Link className={styles.link} href="/" itemType="https://schema.org/Thing" itemProp="item">
+        <section
+            className={cn(styles.breadcrumbs, 'gap-1 rounded-lg px-1 py-2')}
+            itemScope
+            itemType="https://schema.org/BreadcrumbList"
+        >
+            <div
+                className={cn(styles.item, 'gap-1')}
+                itemProp="itemListElement"
+                itemScope
+                itemType="https://schema.org/ListItem"
+            >
+                <Link
+                    className={cn(styles.link, 'rounded-lg px-1 text-sm')}
+                    href="/"
+                    itemType="https://schema.org/Thing"
+                    itemProp="item"
+                >
                     <span itemProp="name">{shop.name}</span>
                 </Link>
                 <meta itemProp="position" content="1" />
@@ -34,13 +50,13 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
             {path.map((entry, index) => (
                 <div
                     key={entry}
-                    className={styles.item}
+                    className={cn(styles.item, 'gap-1')}
                     itemProp="itemListElement"
                     itemScope
                     itemType="https://schema.org/ListItem"
                 >
                     <Link
-                        className={styles.link}
+                        className={cn(styles.link, 'rounded-lg px-1 text-sm')}
                         href={hrefs[index]!}
                         itemType="https://schema.org/Thing"
                         itemProp="item"

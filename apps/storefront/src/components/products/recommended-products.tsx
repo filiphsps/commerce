@@ -10,9 +10,9 @@ import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
 import { getDictionary } from '@/utils/dictionary';
 import { type Locale, useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 import ProductCard from '@/components/product-card/product-card';
-import Heading from '@/components/typography/heading';
 
 import type { Product } from '@/api/product';
 
@@ -21,8 +21,9 @@ export type RecommendedProductsProps = {
     locale: Locale;
 
     product?: Product;
+    className?: string;
 };
-const RecommendedProducts = async ({ shop, locale, product }: RecommendedProductsProps) => {
+const RecommendedProducts = async ({ shop, locale, product, className }: RecommendedProductsProps) => {
     if (!product) return null;
 
     const api = await ShopifyApolloApiClient({ shop, locale });
@@ -32,15 +33,11 @@ const RecommendedProducts = async ({ shop, locale, product }: RecommendedProduct
     const { t } = useTranslation('product', i18n);
 
     return (
-        <section className={`${styles.container} ${styles.horizontal} ${extraStyles.container}`}>
-            <Heading title={t('recommendations')} titleAs={'h3'} />
-
-            <div className={styles.content}>
-                {recommended.map((product) => (
-                    <ProductCard key={product.id} shop={shop} locale={locale} data={product} />
-                ))}
-            </div>
-        </section>
+        <div className={cn(styles.container, styles.content, styles.horizontal, extraStyles.container, className)}>
+            {recommended.map((product) => (
+                <ProductCard key={product.id} shop={shop} locale={locale} data={product} className={extraStyles.card} />
+            ))}
+        </div>
     );
 };
 RecommendedProducts.displayName = 'Nordcom.Products.RecommendedProducts';

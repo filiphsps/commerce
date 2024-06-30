@@ -10,7 +10,7 @@
     @media (min-width: $breakpoint-mobile) {
         display: grid;
         grid-template-areas: 'quantity-label options' 'quantity options' '. options';
-        grid-template-rows: auto 2.5rem 1fr;
+        grid-template-rows: auto 3rem 1fr;
         grid-template-columns: auto 1fr;
         gap: calc(var(--block-spacer-small) / 2) var(--block-spacer-large);
     }
@@ -21,6 +21,8 @@
         display: flex;
         flex-direction: column;
         gap: var(--block-spacer);
+
+        height: 100%;
 
         @media (max-width: $breakpoint-mobile) {
             &:has([data-options='1']) {
@@ -42,9 +44,5 @@
 
 .button {
     min-height: 3.5rem;
-    font-size: 1.25rem;
-
-    @media (min-width: $breakpoint-mobile) {
-        font-size: 1rem;
-    }
+    font-size: 1rem;
 }

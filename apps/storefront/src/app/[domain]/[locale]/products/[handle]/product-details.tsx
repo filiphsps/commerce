@@ -4,6 +4,7 @@ import styles from './product-details.module.scss';
 
 import { getDictionary } from '@/utils/dictionary';
 import { useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { parseMetafield } from '@shopify/hydrogen-react';
 
 import { Alert } from '@/components/informational/alert';
@@ -39,28 +40,51 @@ const ProductDetails = async ({
 
     return (
         <>
-            {parsedIngredients ? (
-                <div className={styles.block}>
-                    <Label className={styles.label}>Ingredients</Label>
-                    <p>{parsedIngredients}</p>
-                </div>
-            ) : null}
-
             {parsedFlavors ? (
-                <div className={styles.block}>
-                    <Label className={styles.label}>Flavor Profile(s)</Label>
-                    <p>{parsedFlavors.join(', ')}.</p>
+                <div
+                    className={cn(
+                        styles.block,
+                        'xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
+                    )}
+                >
+                    <Label className="xl:text-base xl:font-normal xl:normal-case xl:text-gray-600">
+                        Flavor Profile(s)
+                    </Label>
+                    <p className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
+                        {parsedFlavors.join(', ')}.
+                    </p>
                 </div>
             ) : null}
 
             {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
-                <div className={styles.block}>
-                    <Label className={styles.label}>{t('skus')}</Label>
-                    {variants.map(({ node: { sku, title } }) => (
-                        <p key={sku}>
-                            {title}: {sku}
-                        </p>
-                    ))}
+                <div
+                    className={cn(
+                        styles.block,
+                        'xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
+                    )}
+                >
+                    <Label className="normal-case xl:text-base xl:font-normal xl:text-gray-600">{t('skus')}</Label>
+                    <div className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
+                        {variants.map(({ node: { sku, title } }) => (
+                            <p key={sku} className="xl:text-inherit">
+                                {title}: {sku}
+                            </p>
+                        ))}
+                    </div>
+                </div>
+            ) : null}
+
+            {parsedIngredients ? (
+                <div
+                    className={cn(
+                        styles.block,
+                        'col-span-2 xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
+                    )}
+                >
+                    <Label className="xl:text-base xl:font-normal xl:normal-case xl:text-gray-600">Ingredients</Label>
+                    <p className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
+                        {parsedIngredients}
+                    </p>
                 </div>
             ) : null}
         </>

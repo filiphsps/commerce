@@ -4,7 +4,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--block-spacer-small);
+
     padding-bottom: var(--block-spacer-small);
+    height: 100%;
 
     .option {
         display: flex;
@@ -12,13 +14,12 @@
         gap: var(--block-spacer-small);
         justify-content: center;
         align-items: center;
-        min-height: 2.5rem;
+        min-height: 3rem;
         padding: var(--block-padding-small) var(--block-padding);
         border: var(--block-border-width) solid var(--color-block);
         border-radius: var(--block-border-radius);
         color: var(--color-dark);
         text-align: center;
-        font-size: 1rem;
         font-weight: 700;
         transition: 150ms ease-in-out;
         -webkit-user-select: none;

@@ -1,6 +1,4 @@
-import styles from '@/components/products/info-lines.module.scss';
-
-import { FiPackage } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 
 import { cn } from '@/utils/tailwind';
 
@@ -19,9 +17,12 @@ const StockStatus = ({ product }: StockStatusProps) => {
     const available = `In stock and available`;
 
     return (
-        <section className={styles.item} data-status={'available'} title={available}>
-            <FiPackage className={styles.icon} />
-            <Label className={styles.label}>{available}</Label>
+        <section
+            className={cn('flex items-center justify-start gap-2 *:leading-none *:text-green-600')}
+            title={available}
+        >
+            <FiCheck className="stroke-2 align-middle text-base" />
+            <Label className="text-lg font-semibold normal-case">{available}</Label>
         </section>
     );
 };
@@ -35,7 +36,7 @@ const InfoLines = ({ product, className, ...props }: InfoLinesProps) => {
     if (!product) return null;
 
     return (
-        <div className={cn(styles.container, className)} {...props}>
+        <div className={cn('flex w-full select-none flex-col items-start gap-4', className)} {...props}>
             <StockStatus product={product} />
         </div>
     );

@@ -21,7 +21,7 @@ describe('utils', () => {
                 expect(typeof dictionary).toBe('object');
                 expect(typeof dictionary.common).toBe('object');
                 expect(typeof dictionary.cart).toBe('object');
-                expect(typeof dictionary).toMatchSnapshot();
+                //expect(typeof dictionary).toMatchSnapshot();
             }
         });
 

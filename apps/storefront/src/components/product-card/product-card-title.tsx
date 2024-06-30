@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { Label } from '@/components/typography/label';
+
 import type { Product } from '@/api/product';
 
 export type ProductCardTitleProps = {
@@ -8,10 +10,10 @@ export type ProductCardTitleProps = {
 const ProductCardTitle = ({ data: product }: ProductCardTitleProps) => {
     return (
         <>
-            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 pt-2 text-sm font-semibold leading-none">
+            <Label className="overflow-hidden text-ellipsis whitespace-nowrap px-1 pt-2 text-sm leading-none opacity-75">
                 {product.vendor}
-            </div>
-            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 text-lg font-medium leading-tight">
+            </Label>
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 text-lg font-semibold leading-tight">
                 {product.title}
             </div>
         </>

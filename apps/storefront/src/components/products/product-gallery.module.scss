@@ -18,6 +18,7 @@
 
     img {
         object-fit: contain;
+        object-position: center;
     }
 
     section {
@@ -35,11 +36,11 @@
             width: 100%;
 
             object-fit: contain;
+            object-position: center;
 
             @media (min-width: $breakpoint-mobile) {
                 height: auto;
                 padding: 0 0 calc(var(--block-padding-large) * 1.65) 0;
-                object-position: top center;
 
                 aspect-ratio: 1 / 1;
             }
