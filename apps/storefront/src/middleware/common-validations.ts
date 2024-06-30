@@ -43,6 +43,13 @@ export const commonValidations = <T extends string | NextURL | URL>(url: T): T =
         }
     }
 
+    // Check casing of locale, eg make sure it's `en-US` and not `en-us`.
+    const localeMatch = path.match(/\/([a-zA-Z]{2}-[a-zA-Z]{2})/g);
+    if (localeMatch) {
+        const locale = localeMatch[0]!.split('-');
+        path = path.replace(localeMatch[0]!, `${locale[0].toLowerCase()}-${locale[1].toUpperCase()}`);
+    }
+
     if (typeof url === 'string') {
         return path as T;
     } else {
