@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
@@ -12,9 +12,9 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
     AnalyticsEventName as ShopifyAnalyticsEventName,
+    ShopifySalesChannel,
     getClientBrowserParameters,
     sendShopifyAnalytics,
-    ShopifySalesChannel,
     useCart,
     useShop as useShopify,
     useShopifyCookies
@@ -268,6 +268,23 @@ const handleEvent = async (
         }
 
         window.dataLayer = [];
+    }
+
+    if (window.dataLayer.length <= 0) {
+        // FIXME: Actually get the consent status.
+        window.dataLayer.push({
+            google_tag_params: {
+                consent_info: {
+                    ad_storage: 'granted',
+                    analytics_storage: 'granted',
+                    ad_user_data: 'granted',
+                    ad_personalization: 'granted',
+                    functionality_storage: 'granted',
+                    personalization_storage: 'granted',
+                    security_storage: 'granted'
+                }
+            }
+        });
     }
 
     switch (shop.commerceProvider.type) {
