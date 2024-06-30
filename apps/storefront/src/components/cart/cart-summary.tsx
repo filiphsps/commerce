@@ -7,8 +7,8 @@ import type { Shop } from '@nordcom/commerce-database';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
+import { cn } from '@/utils/tailwind';
 import { Money, ShopPayButton, useCart } from '@shopify/hydrogen-react';
-import { clsx } from 'clsx';
 
 import { Button } from '@/components/actionable/button';
 import { CartCoupons } from '@/components/cart/cart-coupons';
@@ -122,13 +122,13 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         <>
                             {sale ? (
                                 <div
-                                    className={clsx(styles.discounted, 'flex items-center justify-between')}
+                                    className={cn(styles.discounted, 'flex items-center justify-between')}
                                     title={`${salePercentage}% OFF`}
                                 >
                                     <Label className="font-medium capitalize">{t('discount')}</Label>
                                     {cartReady ? (
                                         <Money
-                                            className={clsx(styles.money, 'text-base font-bold')}
+                                            className={cn(styles.money, 'text-base font-bold')}
                                             data={{
                                                 currencyCode: cost?.totalAmount?.currencyCode,
                                                 amount: sale.toString()
@@ -181,7 +181,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                         </div>
                     ) : null}
 
-                    <div className={clsx(styles.totals, 'flex items-center justify-between')}>
+                    <div className={cn(styles.totals, 'flex items-center justify-between')}>
                         <Label className="text-xl font-bold capitalize">{t('estimated-total')}</Label>
                         {cost?.totalAmount ? (
                             <Money
@@ -209,7 +209,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
 
             <section className={`${styles.section} ${styles['section-actions']}`}>
                 <Button
-                    className={clsx(styles.button, styles['checkout-button'], 'text-lg uppercase')}
+                    className={cn(styles.button, styles['checkout-button'], 'text-lg uppercase')}
                     disabled={!cartReady || (totalQuantity || 0) <= 0 || !lines}
                     onClick={onCheckout}
                 >
@@ -223,7 +223,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                             <ShopPayButton
                                 // TODO: Only show this if we're using Shopify.
                                 width="100%"
-                                className={clsx(styles.button, styles['shop-button'])}
+                                className={cn(styles.button, styles['shop-button'])}
                                 variantIdsAndQuantities={lines.map(({ quantity, merchandise: { id } }: any) => ({
                                     quantity,
                                     id
@@ -231,13 +231,13 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                                 channel="hydrogen"
                             />
                         ) : (
-                            <Button className={clsx(styles.button, styles['shop-button'])} disabled={true} />
+                            <Button className={cn(styles.button, styles['shop-button'])} disabled={true} />
                         )}
                     </>
                 ) : null}
             </section>
 
-            <section className={clsx(styles.section, styles['section-security'])}>
+            <section className={cn(styles.section, styles['section-security'])}>
                 <AcceptedPaymentMethods store={store} />
 
                 <div className={'text-sm leading-tight'}>

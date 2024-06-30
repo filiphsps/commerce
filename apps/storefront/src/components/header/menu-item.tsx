@@ -31,7 +31,7 @@ export const MenuItem = ({ data, children }: MenuItemProps) => {
 
 export type SubMenuItemProps = {
     children?: ReactNode;
-    data: NavigationItem;
+    data: NavigationItem['children'][0];
 };
 export const SubMenuItem = ({ children, data: { handle, title, description } }: SubMenuItemProps) => {
     let target: string = handle || '/';

@@ -1,8 +1,7 @@
 import Image from 'next/image';
 
+import { cn } from '@/utils/tailwind';
 import { Money, parseGid } from '@shopify/hydrogen-react';
-import clsx from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
 import { CartLineQuantityAction, CartLineRemoveAction } from '@/components/cart/cart-line-actions';
 import Link from '@/components/link';
@@ -45,7 +44,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     const pricing = (
         <>
             <Money
-                className={twMerge(clsx('text-xl font-bold leading-tight', discount && 'font-extrabold text-red-500'))}
+                className={cn('text-xl font-bold leading-tight', discount && 'font-extrabold text-red-500')}
                 data={{
                     amount: (Number.parseFloat(variant.price.amount) * line.quantity).toString(),
                     currencyCode: variant.price.currencyCode
@@ -90,49 +89,6 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
             </div>
         </div>
     );
-
-    /*return (
-        <div
-            className={clsx(
-                'flex w-full flex-nowrap gap-2 border-0 border-b-2 border-solid border-gray-200 pb-2',
-                discount > 0 && styles.sale
-            )}
-        >
-            {variant.image ? (
-                <Image
-                    alt={variant.image.altText || variant.title}
-                    className="block h-full w-24 rounded-lg bg-white object-contain object-center"
-                    src={variant.image.url}
-                    width={45}
-                    height={45}
-                    draggable={false}
-                />
-            ) : null}
-
-            <div className="flex w-full gap-2">
-                <div className="flex w-full flex-col gap-2 p-2">
-                    <Link
-                        href={`/products/${line.merchandise.product.handle}`}
-                        className="block text-base leading-tight"
-                    >
-                        {product.vendor} {product.title}
-                        <span className="ml-1 font-semibold">{variant.title}</span>
-                    </Link>
-
-                    <div className="flex gap-2">
-                        <CartLineActions i18n={i18n} data={line} />
-                    </div>
-                </div>
-
-                <div className="flex w-14 flex-col items-center gap-2">
-                    {discount > 0 ? (
-                        <span className={`${styles.badge} ${styles.discount}`}>{discount}% off</span>
-                    ) : null}
-                    <Pricing price={variant.price} compareAtPrice={variant.compareAtPrice} />
-                </div>
-            </div>
-        </div>
-    );*/
 };
 
 CartLine.skeleton = () => (

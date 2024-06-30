@@ -5,7 +5,7 @@ import styles from '@/components/product-card/product-card.module.scss';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { getDictionary } from '@/utils/dictionary';
-import clsx from 'clsx';
+import { cn } from '@/utils/tailwind';
 
 import ProductCardBadges from '@/components/product-card/product-card-badges';
 import ProductCardFooter from '@/components/product-card/product-card-footer';
@@ -33,7 +33,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
     return (
         <div
-            className={clsx(styles.container, className)}
+            className={cn(styles.container, className)}
             title={description ? `${description}...` : undefined}
             data-available={product.availableForSale}
             {...props}

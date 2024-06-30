@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { clsx } from 'clsx';
+import { cn } from '@/utils/tailwind';
 
 import type { StoreModel } from '@/models/StoreModel';
 import type { HTMLProps } from 'react';
@@ -18,7 +18,7 @@ export const AcceptedPaymentMethods = ({ store, className, ...props }: AcceptedP
     }
 
     return (
-        <div {...props} className={clsx(className, 'flex flex-wrap items-center justify-center gap-1')}>
+        <div {...props} className={cn(className, 'flex flex-wrap items-center justify-center gap-1')}>
             {methods.map((method) => (
                 <Image
                     key={method}

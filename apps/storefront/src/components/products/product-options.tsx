@@ -6,8 +6,8 @@ import styles from '@/components/products/product-options.module.scss';
 import { Fragment, type HTMLProps } from 'react';
 
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { parseGid, useProduct } from '@shopify/hydrogen-react';
-import { clsx } from 'clsx';
 
 import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
@@ -93,7 +93,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                             aria-disabled={!inStock}
                                             aria-selected={isSelected}
                                             title={title}
-                                            className={clsx(
+                                            className={cn(
                                                 styles.option,
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,

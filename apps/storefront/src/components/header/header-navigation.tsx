@@ -1,7 +1,10 @@
 import styles from '@/components/header/header-navigation.module.scss';
 
+import { cn } from '@/utils/tailwind';
+
 import { MenuItem, SubMenuItem } from '@/components/header/menu-item';
 
+import type { NavigationItem } from '@/api/navigation';
 import type { Locale } from '@/utils/locale';
 import type { HTMLProps, ReactNode } from 'react';
 
@@ -14,19 +17,19 @@ export const HeaderNavigationChildItems = (props: HeaderNavigationChildItemsProp
 
 type HeaderNavigationProps = {
     children?: ReactNode;
-    menu: any;
+    menu: NavigationItem[];
     locale: Locale;
 } & HTMLProps<HTMLDivElement>;
 export const HeaderNavigation = ({ menu, className, ...props }: HeaderNavigationProps) => {
     return (
-        <nav {...props} className={`${styles.container} ${styles.centered} ${className || ''}`}>
-            {menu?.map?.((item: any, index: number) => {
+        <nav {...props} className={cn(styles.container, styles.centered, className)}>
+            {menu.map((item, index: number) => {
                 return (
                     <MenuItem key={item.handle + `${index}`} data={item}>
                         {item.children.length > 0 && (
                             <HeaderNavigationChildItems>
                                 <div className={styles.content}>
-                                    {item.children.map((item: any, index: number) => (
+                                    {item.children.map((item, index: number) => (
                                         <SubMenuItem key={item.handle + `${index}`} data={item} />
                                     ))}
                                 </div>

@@ -1,7 +1,6 @@
 import 'server-only';
 
 import styles from '@/components/header/header.module.scss';
-import headerNavigationStyles from '@/components/header/header-navigation.module.scss';
 
 import { type HTMLProps } from 'react';
 import Image from 'next/image';
@@ -73,7 +72,7 @@ HeaderComponent.skeleton = () => (
             <div className={styles.content}>
                 <div className={styles.logo} />
 
-                <nav className={headerNavigationStyles.container} />
+                <nav />
                 <div className={styles.actions} />
             </div>
         </header>

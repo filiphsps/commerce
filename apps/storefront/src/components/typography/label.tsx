@@ -1,5 +1,4 @@
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/utils/tailwind';
 
 import type { ElementType, HTMLProps, ReactNode } from 'react';
 
@@ -13,10 +12,7 @@ export const Label = ({ children, as, className, ...props }: LabelProps) => {
     const AsComponent = as || 'label';
 
     return (
-        <AsComponent
-            {...props}
-            className={twMerge(clsx('block text-sm font-extrabold uppercase leading-tight', className))}
-        >
+        <AsComponent {...props} className={cn('block text-sm font-extrabold uppercase leading-tight', className)}>
             {children}
         </AsComponent>
     );

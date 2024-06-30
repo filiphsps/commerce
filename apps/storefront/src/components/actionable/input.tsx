@@ -2,8 +2,7 @@ import styles from '@/components/actionable/input.module.scss';
 
 import type { As } from '@nordcom/nordstar';
 
-import clsx from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/utils/tailwind';
 
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 
@@ -41,12 +40,10 @@ const MultilineInput = <T extends As>({
         <Tag
             draggable={false}
             {...props}
-            className={twMerge(
-                clsx(
-                    styles.textarea,
-                    'border-primary outline-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs outline outline-0 focus:outline-2',
-                    className
-                )
+            className={cn(
+                styles.textarea,
+                'border-primary outline-primary w-full resize-none appearance-none rounded-md bg-white p-2 text-xs outline outline-0 focus:outline-2',
+                className
             )}
         >
             {children}

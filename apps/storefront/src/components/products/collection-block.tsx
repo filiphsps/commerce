@@ -9,7 +9,7 @@ import type { Shop } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
-import clsx from 'clsx';
+import { cn } from '@/utils/tailwind';
 
 import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';
@@ -63,7 +63,7 @@ const CollectionBlock = async ({
     if (!collection || !products || products.length <= 0) return null;
 
     return (
-        <section {...props} className={clsx(styles.container, isHorizontal && styles.horizontal, className)}>
+        <section {...props} className={cn(styles.container, isHorizontal && styles.horizontal, className)}>
             <div className={styles.content}>
                 {products.map((product, index) => (
                     <Suspense key={product.id} fallback={<ProductCard.skeleton />}>
@@ -88,7 +88,7 @@ const CollectionBlock = async ({
 CollectionBlock.displayName = 'Nordcom.Products.CollectionBlock';
 
 CollectionBlock.skeleton = ({ isHorizontal }: Pick<CollectionBlockProps, 'isHorizontal'>) => (
-    <section className={clsx(styles.container, isHorizontal && styles.horizontal)}>
+    <section className={cn(styles.container, isHorizontal && styles.horizontal)}>
         <div className={styles.content}>
             <ProductCard.skeleton />
             <ProductCard.skeleton />

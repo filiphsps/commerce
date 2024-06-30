@@ -11,9 +11,9 @@ import { TodoError } from '@nordcom/commerce-errors';
 import { useTranslation } from '@/utils/locale';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
+import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
-import clsx from 'clsx';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/actionable/button';
@@ -156,7 +156,7 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
             aria-disabled={disabled}
             aria-label={tCart('add-n-to-your-cart', quantity)}
             {...props}
-            className={clsx(styles['add-to-cart'], className)}
+            className={cn(styles['add-to-cart'], className)}
             disabled={disabled}
             as="button"
             type={type || ('button' as const)}

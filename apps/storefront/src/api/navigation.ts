@@ -4,46 +4,16 @@ import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
-import type { Image } from '@/api/nordcom';
 import type { NavigationDocument } from '@/prismic/types';
 
 export type NavigationItem = {
     title: string;
     handle?: string;
-    description?: string;
     children: Array<{
         title: string;
-        handle?: string;
+        handle: string;
+        description?: string;
     }>;
-};
-
-export type ThirdLevelMenuEntry = {
-    id: string;
-
-    url: string;
-    title: string;
-    description?: string;
-    image?: Image;
-};
-export type SecondLevelMenuEntry = {
-    id: string;
-
-    url?: string;
-    title: string;
-    description?: string;
-    image?: Image;
-    children: ThirdLevelMenuEntry[];
-};
-export type TopLevelMenuEntry = {
-    id: string;
-
-    url?: string;
-    title: string;
-    children: SecondLevelMenuEntry[];
-};
-
-export type MegaMenuBase = {
-    children: TopLevelMenuEntry[];
 };
 
 export const NavigationApi = async ({
