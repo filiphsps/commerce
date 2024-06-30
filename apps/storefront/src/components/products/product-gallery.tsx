@@ -79,8 +79,8 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                         .map((image, index) => {
                             return (
                                 <button
-                                    aria-label={`Enlarge image #${index + 1}`}
                                     key={image.id}
+                                    aria-label={`Enlarge image #${index + 1}`}
                                     onClick={() => setImage(image)}
                                     className={cn(
                                         'hover:border-primary appearance-none rounded-lg border-0 border-solid border-gray-300 bg-gray-100 p-4 transition-all hover:border-4 focus:border-4 md:p-8'

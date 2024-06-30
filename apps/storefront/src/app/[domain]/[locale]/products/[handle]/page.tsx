@@ -1,8 +1,8 @@
 import 'server-only';
 
-import { Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -246,6 +246,11 @@ export default async function ProductPage({
             }))
         };
 
+        let title = product.title.trim();
+        if (title.endsWith(product.productType)) {
+            title = title.slice(0, -product.productType.length).trim();
+        }
+
         return (
             <>
                 <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap md:gap-8">
@@ -262,7 +267,7 @@ export default async function ProductPage({
                             <header className="flex flex-col">
                                 <div className="text-3xl font-bold leading-tight">
                                     <h1 className="text-inherit">
-                                        {product.title} &mdash; {product.productType}
+                                        {title} &mdash; {product.productType}
                                     </h1>
                                 </div>
 
@@ -296,22 +301,22 @@ export default async function ProductPage({
                                 }}
                             />
                         </Suspense>
-
-                        <section className="mt-8 flex w-full flex-col gap-4 xl:rounded-lg xl:bg-gray-100 xl:p-4">
-                            <Suspense fallback={null}>
-                                <ImportantProductDetails locale={locale} data={product} />
-                            </Suspense>
-
-                            <Suspense fallback={<div />}>
-                                <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
-                                    <ProductDetails locale={locale} data={product} />
-                                </div>
-                            </Suspense>
-                        </section>
                     </div>
                 </section>
 
                 <div className="flex flex-col gap-4 pt-8 md:gap-8">
+                    <section className="mt-8 flex w-full flex-col gap-4 xl:rounded-lg xl:bg-gray-100 xl:p-4">
+                        <Suspense fallback={null}>
+                            <ImportantProductDetails locale={locale} data={product} />
+                        </Suspense>
+
+                        <Suspense fallback={<div />}>
+                            <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
+                                <ProductDetails locale={locale} data={product} />
+                            </div>
+                        </Suspense>
+                    </section>
+
                     <section className="flex flex-col gap-4 rounded-lg bg-gray-100 p-4">
                         <h3 className="center text-lg font-semibold leading-none md:text-xl">{t('recommendations')}</h3>
 
