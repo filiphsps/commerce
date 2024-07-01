@@ -5,7 +5,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
-import AcceptLanguageParser from 'accept-language-parser';
+import { resolveAcceptLanguage } from 'resolve-accept-language';
 
 import type { NextRequest } from 'next/server';
 
@@ -61,13 +61,14 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
             const apiConfig = await ShopifyApiConfig({ shop, noCache: true, noHeaders: false });
             const api = await ShopifyApiClient({ shop, apiConfig });
-            const locales = (await LocalesApi({ api, noCache: true }))
-                .map((locale) => locale.code);
+            const locales = (await LocalesApi({ api, noCache: true })).map((locale) => locale.code);
 
-            const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language') || '';
-            const userLang = AcceptLanguageParser.pick(locales, acceptLanguageHeader);
+            const acceptLanguageHeader = req.headers.get('accept-language') || req.headers.get('Accept-Language');
+            if (!acceptLanguageHeader) {
+                console.warn(`Invalid or missing "accept-language" header.`, req);
+            }
 
-            // TODO: Handle-fallback countries.
+            const userLang = resolveAcceptLanguage(acceptLanguageHeader ?? '', locales, 'en-US'); // FIXME: Tenant-configurable default locale.
 
             locale = userLang || locales.at(0);
             if (!locale) {
