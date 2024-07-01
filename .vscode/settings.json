@@ -153,5 +153,11 @@
     "[scss]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
-    "prettier.prettierPath": "./node_modules/prettier"
+    "prettier.prettierPath": "./node_modules/prettier",
+    "tailwindCSS.classAttributes": ["class", "className", "ngClass", ".*Styles"],
+    "tailwindCSS.experimental.classRegex": [
+        ["Styles \\=([^;]*);", "'([^']*)'"],
+        ["Styles \\=([^;]*);", "\"([^\"]*)\""],
+        ["Styles \\=([^;]*);", "\\`([^\\`]*)\\`"]
+    ]
 }

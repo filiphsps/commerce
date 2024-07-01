@@ -10,10 +10,10 @@ export type ProductCardTitleProps = {
 const ProductCardTitle = ({ data: product }: ProductCardTitleProps) => {
     return (
         <>
-            <Label className="overflow-hidden text-ellipsis whitespace-nowrap px-1 pt-2 text-sm leading-none opacity-75">
+            <Label className="overflow-hidden text-ellipsis whitespace-nowrap pt-2 text-sm leading-none opacity-75">
                 {product.vendor}
             </Label>
-            <div className="overflow-hidden text-ellipsis whitespace-nowrap px-1 text-lg font-semibold leading-tight">
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold leading-tight">
                 {product.title}
             </div>
         </>

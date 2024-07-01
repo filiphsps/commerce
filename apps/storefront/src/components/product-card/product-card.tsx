@@ -33,7 +33,7 @@ const ProductCard = async ({ shop, locale, data: product, priority, className, .
 
     return (
         <div
-            className={cn(styles.container, className)}
+            className={cn(styles.container, 'p-1', className)}
             title={description ? `${description}...` : undefined}
             data-available={product.availableForSale}
             {...props}
