@@ -1,12 +1,5 @@
 @import 'globals';
 
-.add-to-cart {
-    gap: calc(var(--block-spacer-small) / 2);
-    font-size: 1rem;
-    border-radius: var(--block-border-radius);
-    text-transform: uppercase;
-}
-
 .add-to-cart[data-ready='false'] {
     cursor: progress;
 }

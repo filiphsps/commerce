@@ -110,8 +110,6 @@
         grid-template-rows: 1fr auto;
         justify-content: flex-start;
         align-items: flex-start;
-
-        padding: 0 var(--padding);
     }
 
     .actions {
@@ -124,7 +122,7 @@
 
         height: 100%;
         width: 100%;
-        padding: var(--padding);
+        padding: var(--padding) 0;
 
         @media (min-width: $breakpoint-mobile) {
             grid-template-rows: 1fr;

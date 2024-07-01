@@ -10,6 +10,7 @@ import type { Shop } from '@nordcom/commerce-database';
 import { createProductSearchParams } from '@/api/product';
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { cn } from '@/utils/tailwind';
 
 import Link from '@/components/link';
 
@@ -26,7 +27,7 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
 
     return (
         <Image
-            className={styles.image}
+            className={cn(styles.image, 'rounded-lg')}
             src={image.url}
             alt={image.altText!}
             title={image.altText!}
