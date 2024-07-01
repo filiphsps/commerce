@@ -8,20 +8,22 @@ export default {
             },
             colors: {
                 primary: {
-                    light: 'var(--color-primary-light)',
+                    light: 'var(--color-accent-primary-light)',
                     DEFAULT: 'var(--color-accent-primary)',
                     dark: 'var(--color-accent-primary-dark)',
+                    foreground: 'var(--color-accent-primary-text)'
                 },
                 secondary: {
-                    light: 'var(--color-secondary-light)',
+                    light: 'var(--color-accent-secondary-light)',
                     DEFAULT: 'var(--color-accent-secondary)',
                     dark: 'var(--color-accent-secondary-dark)',
+                    foreground: 'var(--color-accent-secondary-text)'
                 }
             },
             strokeWidth: {
-                '1': '0.15rem',
-                '2': '0.2rem',
-                '3': '0.25rem',
+                1: '0.15rem',
+                2: '0.2rem',
+                3: '0.25rem'
             }
         }
     },
