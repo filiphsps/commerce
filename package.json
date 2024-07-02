@@ -103,7 +103,7 @@
     },
     "overrides": {
         "@typescript-eslint/typescript-estree": "7.14.1",
-        "esbuild": "0.22.0",
+        "esbuild": "0.23.0",
         "psl": "npm:@filiphsandstrom/psl@2.0.0"
     },
     "packageManager": "pnpm@9.4.0"
