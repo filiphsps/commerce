@@ -2,6 +2,7 @@ import styles from '@/components/typography/pricing.module.scss';
 
 import { Fragment } from 'react/jsx-runtime';
 
+import { cn } from '@/utils/tailwind';
 import { Money } from '@shopify/hydrogen-react';
 
 import type { MoneyV2 } from '@shopify/hydrogen-react/storefront-api-types';
@@ -23,7 +24,7 @@ const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProp
                     data-sale={compareAtPrice ? true : undefined}
                     data-pricing
                     as={'div'}
-                    className={`${styles.price} ${styles.current} ${compareAtPrice ? styles.sale : ''}`}
+                    className={cn(styles.price, styles.current, compareAtPrice && 'font-extrabold text-red-500')}
                     suppressHydrationWarning={true}
                 />
             ) : null}

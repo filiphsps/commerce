@@ -46,7 +46,7 @@ export function ProductContentSkeleton({}) {
 export type ProductPricingProps = {
     product: Product;
 } & PricingProps;
-export function ProductPricing({ product, ...props }: ProductPricingProps) {
+export function ProductPricing({ product }: ProductPricingProps) {
     const searchParams = useSearchParams();
     const variant = useMemo(
         () =>

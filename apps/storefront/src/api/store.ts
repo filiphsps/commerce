@@ -38,7 +38,7 @@ export const CountriesApi = async ({ api }: { api: AbstractApi }): Promise<Count
     return localData?.localization.availableCountries! || [];
 };
 
-export const LocalesApi = async ({ api, noCache }: { api: AbstractApi; noCache?: boolean }): Promise<Locale[]> => {
+export const LocalesApi = async ({ api }: { api: AbstractApi }): Promise<Locale[]> => {
     const countries = await CountriesApi({ api });
 
     const locales = countries.flatMap((country) =>

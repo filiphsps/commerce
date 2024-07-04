@@ -8,8 +8,7 @@ import type { Shop } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
-import { getDictionary } from '@/utils/dictionary';
-import { type Locale, useTranslation } from '@/utils/locale';
+import { type Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 
 import ProductCard from '@/components/product-card/product-card';
@@ -27,10 +26,7 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     if (!product) return null;
 
     const api = await ShopifyApolloApiClient({ shop, locale });
-
     const recommended = await RecommendationApi({ api, id: product.id });
-    const i18n = await getDictionary({ shop, locale });
-    const { t } = useTranslation('product', i18n);
 
     return (
         <div className={cn(styles.container, styles.content, styles.horizontal, extraStyles.container, className)}>

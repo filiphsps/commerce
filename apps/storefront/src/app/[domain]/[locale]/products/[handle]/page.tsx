@@ -40,11 +40,13 @@ export const revalidate = false;
 
 export type ProductPageParams = { domain: string; locale: string; handle: string };
 
-export async function generateStaticParams({
-    params //: { domain, locale: localeData }
-}: {
-    params: Omit<ProductPageParams, 'handle'>;
-}): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
+export async function generateStaticParams(
+    {
+        //params: { domain, locale: localeData }
+    }: {
+        params: Omit<ProductPageParams, 'handle'>;
+    }
+): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
     /*const locale = Locale.from(localeData);
 
     const shop = await ShopApi(domain, cache, true);

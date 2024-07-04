@@ -14,17 +14,7 @@ import { ShopProvider } from '@/components/shop/provider';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
 
-const CommerceProvider = ({
-    shop,
-    currency,
-    locale,
-    children
-}: {
-    shop: Shop;
-    currency: CurrencyCode;
-    locale: Locale;
-    children: ReactNode;
-}) => {
+const CommerceProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
         case 'shopify': {
             return (
@@ -74,7 +64,7 @@ const ProvidersRegistry = ({
 }) => {
     return (
         <ShopProvider shop={shop} currency={currency} locale={locale}>
-            <CommerceProvider shop={shop} currency={currency} locale={locale}>
+            <CommerceProvider shop={shop} locale={locale}>
                 <ContentProvider shop={shop} locale={locale}>
                     <CartProvider
                         cartFragment={CartFragment}
