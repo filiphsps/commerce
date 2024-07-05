@@ -60,7 +60,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 <button
                     title={t('decrease')}
                     disabled={!cartReady || quantity < 1}
-                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit disabled:opacity-25"
+                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit disabled:opacity-25"
                     onClick={() => update(quantity - 1)}
                 >
                     -
@@ -77,7 +77,7 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
                 <button
                     title={t('increase')}
                     disabled={!cartReady}
-                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14"
+                    className="active:bg-primary active:text-primary-foreground hover:bg-primary hover:text-primary-foreground w-14 text-xl"
                     onClick={() => update(quantity + 1)}
                 >
                     +

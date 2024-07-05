@@ -1,11 +1,10 @@
 import 'server-only';
 
-import styles from '@/components/informational/vendors.module.scss';
-
 import type { Shop } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';
+import { cn } from '@/utils/tailwind';
 
 import Link from '@/components/link';
 
@@ -32,7 +31,10 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
                 // TODO: Figure out if we should link to the collection or a filtered product list.
                 href={`/collections/${vendor.handle}/`}
                 {...props}
-                className={`${styles.vendor}${className ? ` ${className}` : ''}`}
+                className={cn(
+                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-xl p-2 text-sm font-semibold transition-colors md:mr-0',
+                    className
+                )}
             >
                 {vendor.title}
             </Link>
@@ -41,12 +43,12 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
 };
 
 Vendors.skeleton = () => (
-    <div className={styles.container} data-skeleton>
-        <div className={styles.vendor} />
-        <div className={styles.vendor} />
-        <div className={styles.vendor} />
-        <div className={styles.vendor} />
-    </div>
+    <>
+        <div className="w-12 rounded-xl p-2" data-skeleton />
+        <div className="w-12 rounded-xl p-2" data-skeleton />
+        <div className="w-12 rounded-xl p-2" data-skeleton />
+        <div className="w-12 rounded-xl p-2" data-skeleton />
+    </>
 );
 
 Vendors.displayName = 'Nordcom.Vendors';
