@@ -59,7 +59,7 @@
         "@nordcom/prettier": "0.1.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.0",
-        "glob": "10.4.2",
+        "glob": "10.4.3",
         "rimraf": "5.0.8",
         "typescript": "5.5.3",
         "vite-plugin-dts": "3.8.3",
