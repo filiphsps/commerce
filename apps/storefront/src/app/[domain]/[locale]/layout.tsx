@@ -38,7 +38,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
     return (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                const shop = await ShopApi(domain, cache, true);
+                const shop = await ShopApi(domain, cache);
                 const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
                 const api = await ShopifyApiClient({ shop, apiConfig });
                 const locales = await LocalesApi({ api });
@@ -63,18 +63,23 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
     };
 }
 
-export async function generateMetadata({ params: { domain, locale } }: { params: LayoutParams }): Promise<Metadata> {
+export async function generateMetadata({
+    params: { domain, locale: localeData }
+}: {
+    params: LayoutParams;
+}): Promise<Metadata> {
     try {
+        const locale = Locale.from(localeData);
         const shop = await ShopApi(domain, cache);
 
         return {
-            metadataBase: new URL(`https://${shop.domain}/${locale}/`),
+            metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
             title: {
                 absolute: shop.name,
                 // Allow tenants to customize this.
                 // For example allow them to use other separators
                 // like `·`, `—` etc.
-                template: `%s - ${shop.name}`
+                template: `%s - ${shop.name} ${locale.country!}`
             },
             icons: {
                 icon: ['/favicon.png'],
