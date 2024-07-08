@@ -1,13 +1,11 @@
 import 'server-only';
 
-import styles from './icon-grid.module.scss';
-
 import { useMemo } from 'react';
 import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
 
-import PageContent from '@/components/page-content';
+import { cn } from '@/utils/tailwind';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';
@@ -29,16 +27,25 @@ export type IconGridProps = SliceComponentProps<
  * Component for "IconGrid" Slices.
  */
 const IconGrid = ({ slice, index: order }: IconGridProps) => {
+    const background = slice.primary.background;
+
     const items = useMemo(
         () =>
             (slice.items || []).map(({ icon, title }, index) => {
                 const priority = order < 2;
 
                 return (
-                    <div key={`${title}_${index}`} className={styles.item}>
+                    <div
+                        key={`${title}_${index}`}
+                        className={cn(
+                            'flex items-center justify-center gap-4 rounded-lg p-4',
+                            background === 'primary' && 'bg-primary text-primary-foreground',
+                            background === 'secondary' && 'bg-secondary-light text-secondary-foreground'
+                        )}
+                    >
                         {icon.url ? (
                             <Image
-                                className={styles.icon}
+                                className="h-8 w-8 select-none object-contain object-center md:h-6 md:w-6"
                                 src={icon.url}
                                 alt={icon.alt || ''}
                                 width={35}
@@ -49,10 +56,8 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                                 priority={priority}
                                 draggable={false}
                             />
-                        ) : (
-                            <div className={styles.icon} />
-                        )}
-                        <div className={styles.title}>{title}</div>
+                        ) : null}
+                        <div className="leading-none">{title}</div>
                     </div>
                 );
             }),
@@ -64,28 +69,15 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
     }
 
     return (
-        <PageContent
-            as="section"
-            className={styles.container}
+        <section
+            className="grid w-full grid-cols-1 gap-2 md:grid-cols-3"
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
-            data-background={slice.primary.background || 'secondary'}
         >
             {items}
-        </PageContent>
+        </section>
     );
 };
 IconGrid.displayName = 'Nordcom.Slices.IconGrid';
-
-IconGrid.skeleton = ({ slice }: IconGridProps) => (
-    <PageContent as="section" className={styles.container} data-skeleton>
-        {slice.items.map(({ title }, index) => (
-            <div key={`${title}_${index}`} className={styles.item}>
-                <div className={styles.icon} />
-                <div className={styles.title}>{title}</div>
-            </div>
-        ))}
-    </PageContent>
-);
 
 export default IconGrid;
