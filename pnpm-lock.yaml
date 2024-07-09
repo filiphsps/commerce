@@ -300,8 +300,8 @@ importers:
         specifier: 3.3.2
         version: 3.3.2
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -487,8 +487,8 @@ importers:
         specifier: 3.3.2
         version: 3.3.2
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -683,8 +683,8 @@ importers:
         specifier: 3.3.2
         version: 3.3.2
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       schema-dts:
         specifier: 1.1.2
         version: 1.1.2(typescript@5.5.3)
@@ -735,8 +735,8 @@ importers:
         specifier: 5.12.0
         version: 5.12.0
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -784,8 +784,8 @@ importers:
         specifier: 10.4.4
         version: 10.4.4
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       server-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -823,8 +823,8 @@ importers:
         specifier: 10.4.4
         version: 10.4.4
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -863,8 +863,8 @@ importers:
         specifier: 10.4.4
         version: 10.4.4
       rimraf:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       typescript:
         specifier: 5.5.3
         version: 5.5.3
@@ -5822,9 +5822,9 @@ packages:
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
-  rimraf@5.0.8:
-    resolution: {integrity: sha512-XSh0V2/yNhDEi8HwdIefD8MLgs4LQXPag/nEJWs3YUc3Upn+UHa1GyIkEg9xSSNt7HnkO5FjTvmcRzgf+8UZuw==}
-    engines: {node: '>=18'}
+  rimraf@5.0.9:
+    resolution: {integrity: sha512-3i7b8OcswU6CpU8Ej89quJD4O98id7TtVM5U4Mybh84zQXdrFmDLouWBEEaD/QfO3gDDfH+AGFCGsR7kngzQnA==}
+    engines: {node: 14 >=14.20 || 16 >=16.20 || >=18}
     hasBin: true
 
   rollup@3.29.4:
@@ -12628,7 +12628,7 @@ snapshots:
     dependencies:
       glob: 7.2.3
 
-  rimraf@5.0.8:
+  rimraf@5.0.9:
     dependencies:
       glob: 10.4.4
 
