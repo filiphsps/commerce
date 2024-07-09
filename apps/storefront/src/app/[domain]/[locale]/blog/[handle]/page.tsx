@@ -24,6 +24,11 @@ import { Label } from '@/components/typography/label';
 import type { Metadata } from 'next';
 import type { Article, WithContext } from 'schema-dts';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+export const revalidate = false;
+
 /*export async function generateStaticParams() {
     const locale = Locale.default;
     const shops = await ShopsApi();
