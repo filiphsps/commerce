@@ -20,10 +20,6 @@
                         "allowTargetBlank": true,
                         "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
                     }
-                },
-                "background": {
-                    "type": "Color",
-                    "config": { "label": "Background", "placeholder": "#cce2cb" }
                 }
             },
             "items": {
@@ -38,54 +34,11 @@
                 },
                 "target": {
                     "type": "Link",
-                    "config": { "label": "Target", "placeholder": "", "select": null }
-                },
-                "type": {
-                    "type": "Boolean",
                     "config": {
-                        "label": "Button",
-                        "placeholder_false": "secondary",
-                        "placeholder_true": "primary",
-                        "default_value": true
-                    }
-                }
-            }
-        },
-        {
-            "id": "simpleSlim",
-            "name": "Simple - Slim",
-            "docURL": "...",
-            "version": "initial",
-            "description": "Default",
-            "imageUrl": "",
-            "primary": {
-                "content": {
-                    "type": "StructuredText",
-                    "config": {
-                        "label": "Primary content",
+                        "label": "Target",
                         "placeholder": "",
-                        "allowTargetBlank": true,
-                        "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                        "select": null
                     }
-                },
-                "background": {
-                    "type": "Color",
-                    "config": { "label": "Background", "placeholder": "#cce2cb" }
-                }
-            },
-            "items": {
-                "title": {
-                    "type": "StructuredText",
-                    "config": {
-                        "label": "Title",
-                        "placeholder": "",
-                        "allowTargetBlank": true,
-                        "single": "strong,em,paragraph,rtl,preformatted"
-                    }
-                },
-                "target": {
-                    "type": "Link",
-                    "config": { "label": "Target", "placeholder": "", "select": null }
                 },
                 "type": {
                     "type": "Boolean",

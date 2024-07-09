@@ -7,9 +7,9 @@
                 "__TYPE__": "StructuredTextContent",
                 "value": [
                     {
-                        "type": "heading1",
+                        "type": "paragraph",
                         "content": {
-                            "text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms.",
+                            "text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms. Showing their honest commitment to helping the environment.",
                             "spans": [
                                 {
                                     "type": "strong",
@@ -17,14 +17,6 @@
                                     "end": 7
                                 }
                             ]
-                        },
-                        "direction": "ltr"
-                    },
-                    {
-                        "type": "paragraph",
-                        "content": {
-                            "text": "showing their honest commitment to helping the environment.",
-                            "spans": []
                         },
                         "direction": "ltr"
                     }
@@ -97,66 +89,6 @@
                                     "direction": "ltr"
                                 }
                             ]
-                        }
-                    ],
-                    [
-                        "type",
-                        {
-                            "__TYPE__": "BooleanContent",
-                            "value": false
-                        }
-                    ]
-                ]
-            }
-        ]
-    },
-    {
-        "__TYPE__": "SharedSliceContent",
-        "variation": "simpleSlim",
-        "primary": {
-            "content": {
-                "__TYPE__": "StructuredTextContent",
-                "value": [
-                    {
-                        "type": "paragraph",
-                        "content": {
-                            "text": "Esse occaecat nulla esse eiusmod minim incididunt laboris elit sit sint commodo duis."
-                        }
-                    }
-                ]
-            },
-            "background": {
-                "__TYPE__": "FieldContent",
-                "value": "#48d910",
-                "type": "Color"
-            }
-        },
-        "items": [
-            {
-                "__TYPE__": "GroupItemContent",
-                "value": [
-                    [
-                        "title",
-                        {
-                            "__TYPE__": "StructuredTextContent",
-                            "value": [
-                                {
-                                    "type": "paragraph",
-                                    "content": {
-                                        "text": "Irure excepteur excepteur adipisicing laboris ad nulla et."
-                                    }
-                                }
-                            ]
-                        }
-                    ],
-                    [
-                        "target",
-                        {
-                            "__TYPE__": "LinkContent",
-                            "value": {
-                                "__TYPE__": "ExternalLink",
-                                "url": "https://prismic.io"
-                            }
                         }
                     ],
                     [
