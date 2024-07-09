@@ -183,7 +183,7 @@ export default async function ProductPage({
             'url': `https://${shop.domain}/${locale.code}/products/${handle}/`,
             'name': `${product.vendor} ${product.title}`,
             'brand': product.vendor,
-            'image': initialVariant.image?.url,
+            'image': initialVariant.image?.url || product.images.edges[0]?.node.url,
             'description': product.description || '',
             'offers': product.variants.edges.map(({ node: variant }) => ({
                 '@type': 'Offer',
