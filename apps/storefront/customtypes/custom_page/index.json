@@ -40,9 +40,6 @@
                 "fieldset": "Slice Zone",
                 "config": {
                     "choices": {
-                        "carousel": {
-                            "type": "SharedSlice"
-                        },
                         "collection": {
                             "type": "SharedSlice"
                         },
@@ -65,9 +62,6 @@
                             "type": "SharedSlice"
                         },
                         "banner": {
-                            "type": "SharedSlice"
-                        },
-                        "spacing": {
                             "type": "SharedSlice"
                         },
                         "title": {

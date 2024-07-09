@@ -23,7 +23,7 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            <div className="flex flex-col items-center justify-center text-center text-2xl leading-snug md:text-4xl md:leading-tight">
+            <div className="flex flex-col items-center justify-center gap-2 text-center md:max-w-[800px]">
                 <PrismicText data={slice.primary.content} />
             </div>
 

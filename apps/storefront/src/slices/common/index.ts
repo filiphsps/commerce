@@ -2,25 +2,21 @@
 
 import Alert from './Alert';
 import Banner from './Banner';
-import Carousel from './Carousel';
 import CollapsibleText from './CollapsibleText';
 import Collection from './Collection';
 import IconGrid from './IconGrid';
 import ImageGrid from './ImageGrid';
 import Overview from './Overview';
-import Spacing from './Spacing';
 import Title from './Title';
 import Vendors from './Vendors';
 
 export const components = {
     alert: Alert,
     banner: Banner,
-    carousel: Carousel,
     collapsible_text: CollapsibleText,
     collection: Collection,
     icon_grid: IconGrid,
     image_grid: ImageGrid,
-    spacing: Spacing,
     text_block: Overview,
     title: Title,
     vendors: Vendors

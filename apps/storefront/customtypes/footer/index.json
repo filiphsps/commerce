@@ -25,11 +25,26 @@
                             "icon": "dehaze",
                             "display": "list",
                             "non-repeat": {
-                                "title": { "type": "Text", "config": { "label": "Title" } }
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                }
                             },
                             "repeat": {
-                                "title": { "type": "Text", "config": { "label": "Title" } },
-                                "handle": { "type": "Text", "config": { "label": "Handle" } }
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                },
+                                "handle": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Handle"
+                                    }
+                                }
                             }
                         }
                     }

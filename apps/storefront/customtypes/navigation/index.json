@@ -18,16 +18,38 @@
                             "icon": "apps",
                             "display": "list",
                             "non-repeat": {
-                                "title": { "type": "Text", "config": { "label": "Title" } },
-                                "handle": { "type": "Text", "config": { "label": "Handle" } }
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                },
+                                "handle": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Handle"
+                                    }
+                                }
                             },
                             "repeat": {
-                                "title": { "type": "Text", "config": { "label": "Title" } },
+                                "title": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Title"
+                                    }
+                                },
                                 "description": {
                                     "type": "Text",
-                                    "config": { "label": "Description" }
+                                    "config": {
+                                        "label": "Description"
+                                    }
                                 },
-                                "handle": { "type": "Text", "config": { "label": "Handle" } }
+                                "handle": {
+                                    "type": "Text",
+                                    "config": {
+                                        "label": "Handle"
+                                    }
+                                }
                             }
                         }
                     }

@@ -44,12 +44,6 @@
                         },
                         "image_grid": {
                             "type": "SharedSlice"
-                        },
-                        "carousel": {
-                            "type": "SharedSlice"
-                        },
-                        "spacing": {
-                            "type": "SharedSlice"
                         }
                     }
                 }

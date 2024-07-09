@@ -26,9 +26,6 @@
                         "image_grid": {
                             "type": "SharedSlice"
                         },
-                        "carousel": {
-                            "type": "SharedSlice"
-                        },
                         "collection": {
                             "type": "SharedSlice"
                         },
@@ -45,9 +42,6 @@
                             "type": "SharedSlice"
                         },
                         "banner": {
-                            "type": "SharedSlice"
-                        },
-                        "spacing": {
                             "type": "SharedSlice"
                         }
                     }
@@ -88,9 +82,6 @@
                 "config": {
                     "choices": {
                         "collection": {
-                            "type": "SharedSlice"
-                        },
-                        "carousel": {
                             "type": "SharedSlice"
                         },
                         "text_block": {

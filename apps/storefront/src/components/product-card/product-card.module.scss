@@ -112,56 +112,6 @@
         align-items: flex-start;
     }
 
-    .actions {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-rows: 1fr;
-        gap: var(--block-spacer);
-        justify-content: center;
-        align-items: center;
-
-        height: 100%;
-        width: 100%;
-        padding: var(--padding) 0;
-
-        @media (min-width: $breakpoint-mobile) {
-            grid-template-rows: 1fr;
-        }
-        @media (min-width: $breakpoint-tablet) {
-            gap: var(--block-spacer-small);
-            grid-template-rows: 1fr;
-        }
-
-        .quantity {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            height: 100%;
-            width: 100%;
-
-            background-color: var(--color-bright);
-            border-width: 0;
-
-            button {
-                font-weight: 700;
-                width: 2rem;
-            }
-        }
-        .button {
-            height: 100%;
-            width: 2rem;
-            padding: 0;
-
-            svg {
-                stroke-width: 2.5;
-            }
-
-            @media (min-width: $breakpoint-mobile) {
-                aspect-ratio: 1 / 1;
-                width: auto;
-            }
-        }
-    }
-
     .variants {
         display: inline-flex;
         align-items: flex-end;

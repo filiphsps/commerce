@@ -77,9 +77,7 @@ type CollectionPageDocumentDataSlicesSlice =
     | BannerSlice
     | IconGridSlice
     | CollapsibleTextSlice
-    | ImageGridSlice
-    | CarouselSlice
-    | SpacingSlice;
+    | ImageGridSlice;
 
 /**
  * Content for Collection documents
@@ -144,7 +142,6 @@ export type CollectionPageDocument<Lang extends string = string> = prismic.Prism
 >;
 
 type CustomPageDocumentDataSlicesSlice =
-    | CarouselSlice
     | CollectionSlice
     | ImageGridSlice
     | TextBlockSlice
@@ -153,7 +150,6 @@ type CustomPageDocumentDataSlicesSlice =
     | IconGridSlice
     | AlertSlice
     | BannerSlice
-    | SpacingSlice
     | TitleSlice;
 
 /**
@@ -600,18 +596,15 @@ type ProductPageDocumentDataSlicesSlice =
     | TextBlockSlice
     | VendorsSlice
     | ImageGridSlice
-    | CarouselSlice
     | CollectionSlice
     | AlertSlice
     | IconGridSlice
     | TitleSlice
     | CollapsibleTextSlice
-    | BannerSlice
-    | SpacingSlice;
+    | BannerSlice;
 
 type ProductPageDocumentDataSlices2Slice =
     | CollectionSlice
-    | CarouselSlice
     | TextBlockSlice
     | ImageGridSlice
     | IconGridSlice
@@ -969,94 +962,6 @@ type BannerSliceVariation = BannerSliceDefault;
 export type BannerSlice = prismic.SharedSlice<'banner', BannerSliceVariation>;
 
 /**
- * Primary content in *Carousel → Default → Primary*
- */
-export interface CarouselSliceDefaultPrimary {
-    /**
-     * Delay field in *Carousel → Default → Primary*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: 3000
-     * - **API ID Path**: carousel.default.primary.delay
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    delay: prismic.KeyTextField;
-}
-
-/**
- * Primary content in *Carousel → Items*
- */
-export interface CarouselSliceDefaultItem {
-    /**
-     * Image field in *Carousel → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: carousel.items[].image
-     * - **Documentation**: https://prismic.io/docs/field#image
-     */
-    image: prismic.ImageField<never>;
-
-    /**
-     * Mobile Image field in *Carousel → Items*
-     *
-     * - **Field Type**: Image
-     * - **Placeholder**: *None*
-     * - **API ID Path**: carousel.items[].mobile_image
-     * - **Documentation**: https://prismic.io/docs/field#image
-     */
-    mobile_image: prismic.ImageField<never>;
-
-    /**
-     * href field in *Carousel → Items*
-     *
-     * - **Field Type**: Text
-     * - **Placeholder**: *None*
-     * - **API ID Path**: carousel.items[].href
-     * - **Documentation**: https://prismic.io/docs/field#key-text
-     */
-    href: prismic.KeyTextField;
-
-    /**
-     * Defer field in *Carousel → Items*
-     *
-     * - **Field Type**: Boolean
-     * - **Placeholder**: *None*
-     * - **Default Value**: true
-     * - **API ID Path**: carousel.items[].defer
-     * - **Documentation**: https://prismic.io/docs/field#boolean
-     */
-    defer: prismic.BooleanField;
-}
-
-/**
- * Default variation for Carousel Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type CarouselSliceDefault = prismic.SharedSliceVariation<
-    'default',
-    Simplify<CarouselSliceDefaultPrimary>,
-    Simplify<CarouselSliceDefaultItem>
->;
-
-/**
- * Slice variation for *Carousel*
- */
-type CarouselSliceVariation = CarouselSliceDefault;
-
-/**
- * Carousel Shared Slice
- *
- * - **API ID**: `carousel`
- * - **Description**: Carousel
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type CarouselSlice = prismic.SharedSlice<'carousel', CarouselSliceVariation>;
-
-/**
  * Primary content in *CollapsibleText → Default → Primary*
  */
 export interface CollapsibleTextSliceDefaultPrimary {
@@ -1375,71 +1280,6 @@ type ImageGridSliceVariation = ImageGridSliceDefault;
 export type ImageGridSlice = prismic.SharedSlice<'image_grid', ImageGridSliceVariation>;
 
 /**
- * Normal variation for Spacing Slice
- *
- * - **API ID**: `normal`
- * - **Description**: Normal
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type SpacingSliceNormal = prismic.SharedSliceVariation<'normal', Record<string, never>, never>;
-
-/**
- * Large variation for Spacing Slice
- *
- * - **API ID**: `large`
- * - **Description**: Normal
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type SpacingSliceLarge = prismic.SharedSliceVariation<'large', Record<string, never>, never>;
-
-/**
- * Small variation for Spacing Slice
- *
- * - **API ID**: `small`
- * - **Description**: Normal
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type SpacingSliceSmall = prismic.SharedSliceVariation<'small', Record<string, never>, never>;
-
-/**
- * Primary content in *Spacing → Custom → Primary*
- */
-export interface SpacingSliceCustomPrimary {
-    /**
-     * Scaling field in *Spacing → Custom → Primary*
-     *
-     * - **Field Type**: Number
-     * - **Placeholder**: *None*
-     * - **API ID Path**: spacing.custom.primary.scaling
-     * - **Documentation**: https://prismic.io/docs/field#number
-     */
-    scaling: prismic.NumberField;
-}
-
-/**
- * Custom variation for Spacing Slice
- *
- * - **API ID**: `custom`
- * - **Description**: Normal
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type SpacingSliceCustom = prismic.SharedSliceVariation<'custom', Simplify<SpacingSliceCustomPrimary>, never>;
-
-/**
- * Slice variation for *Spacing*
- */
-type SpacingSliceVariation = SpacingSliceNormal | SpacingSliceLarge | SpacingSliceSmall | SpacingSliceCustom;
-
-/**
- * Spacing Shared Slice
- *
- * - **API ID**: `spacing`
- * - **Description**: Spacing
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type SpacingSlice = prismic.SharedSlice<'spacing', SpacingSliceVariation>;
-
-/**
  * Primary content in *Overview → Items*
  */
 export interface TextBlockSliceDefaultItem {
@@ -1645,11 +1485,6 @@ declare module '@prismicio/client' {
             BannerSliceDefaultItem,
             BannerSliceVariation,
             BannerSliceDefault,
-            CarouselSlice,
-            CarouselSliceDefaultPrimary,
-            CarouselSliceDefaultItem,
-            CarouselSliceVariation,
-            CarouselSliceDefault,
             CollapsibleTextSlice,
             CollapsibleTextSliceDefaultPrimary,
             CollapsibleTextSliceVariation,
@@ -1667,13 +1502,6 @@ declare module '@prismicio/client' {
             ImageGridSliceDefaultItem,
             ImageGridSliceVariation,
             ImageGridSliceDefault,
-            SpacingSlice,
-            SpacingSliceCustomPrimary,
-            SpacingSliceVariation,
-            SpacingSliceNormal,
-            SpacingSliceLarge,
-            SpacingSliceSmall,
-            SpacingSliceCustom,
             TextBlockSlice,
             TextBlockSliceDefaultItem,
             TextBlockSliceVariation,

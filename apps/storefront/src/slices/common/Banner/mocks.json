@@ -7,9 +7,9 @@
                 "__TYPE__": "StructuredTextContent",
                 "value": [
                     {
-                        "type": "paragraph",
+                        "type": "heading1",
                         "content": {
-                            "text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms. Showing their honest commitment to helping the environment.",
+                            "text": "Marabou proudly sources at least 30% of cocoa from Rainforest Alliance certified farms.",
                             "spans": [
                                 {
                                     "type": "strong",
@@ -17,6 +17,22 @@
                                     "end": 7
                                 }
                             ]
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Showing their honest commitment to helping the environment.",
+                            "spans": []
+                        },
+                        "direction": "ltr"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "",
+                            "spans": []
                         },
                         "direction": "ltr"
                     }
