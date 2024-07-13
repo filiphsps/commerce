@@ -69,7 +69,7 @@ importers:
         version: 6.9.0(eslint@8.57.0)
       eslint-plugin-prettier:
         specifier: 5.1.3
-        version: 5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.2)
+        version: 5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.3)
       eslint-plugin-react:
         specifier: 7.34.3
         version: 7.34.3(eslint@8.57.0)
@@ -95,14 +95,14 @@ importers:
         specifier: 8.4.0
         version: 8.4.0
       prettier:
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.3.3
+        version: 3.3.3
       prettier-eslint:
         specifier: 16.3.0
         version: 16.3.0
       prettier-plugin-tailwindcss:
         specifier: 0.6.5
-        version: 0.6.5(prettier@3.3.2)
+        version: 0.6.5(prettier@3.3.3)
       prisma:
         specifier: 5.12.0
         version: 5.12.0
@@ -297,8 +297,8 @@ importers:
         specifier: 14.3.2
         version: 14.3.2
       prettier:
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.3.3
+        version: 3.3.3
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -484,8 +484,8 @@ importers:
         specifier: 14.3.2
         version: 14.3.2
       prettier:
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.3.3
+        version: 3.3.3
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -680,8 +680,8 @@ importers:
         specifier: 8.4.39
         version: 8.4.39
       prettier:
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.3.3
+        version: 3.3.3
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -5584,8 +5584,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+  prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -8677,7 +8677,7 @@ snapshots:
       newtype-ts: 0.3.5(fp-ts@2.16.6)(monocle-ts@2.3.13(fp-ts@2.16.6))
       node-fetch: 3.3.2
       p-limit: 4.0.0
-      prettier: 3.3.2
+      prettier: 3.3.3
       r19: 0.1.8
       rc9: 2.1.2
       semver: 7.6.2
@@ -8699,7 +8699,7 @@ snapshots:
       io-ts: 2.2.21(fp-ts@2.16.6)
       io-ts-reporters: 2.0.1(fp-ts@2.16.6)(io-ts@2.2.21(fp-ts@2.16.6))
       p-limit: 4.0.0
-      prettier: 3.3.2
+      prettier: 3.3.3
       prismic-ts-codegen: 0.1.20(@prismicio/client@7.5.0)(@prismicio/types@0.2.9)
     transitivePeerDependencies:
       - '@prismicio/types'
@@ -10388,7 +10388,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.5.3))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.5.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.3(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.0)
@@ -10416,7 +10416,7 @@ snapshots:
       enhanced-resolve: 5.16.1
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.5.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.5.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.13.1
@@ -10438,7 +10438,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.6.0(eslint@8.57.0)(typescript@5.5.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -10501,10 +10501,10 @@ snapshots:
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.0
 
-  eslint-plugin-prettier@5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.2):
+  eslint-plugin-prettier@5.1.3(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@8.57.0))(eslint@8.57.0)(prettier@3.3.3):
     dependencies:
       eslint: 8.57.0
-      prettier: 3.3.2
+      prettier: 3.3.3
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.8
     optionalDependencies:
@@ -12370,7 +12370,7 @@ snapshots:
       indent-string: 4.0.0
       lodash.merge: 4.6.2
       loglevel-colored-level-prefix: 1.0.0
-      prettier: 3.3.2
+      prettier: 3.3.3
       pretty-format: 29.7.0
       require-relative: 0.8.7
       typescript: 5.5.3
@@ -12382,11 +12382,11 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-tailwindcss@0.6.5(prettier@3.3.2):
+  prettier-plugin-tailwindcss@0.6.5(prettier@3.3.3):
     dependencies:
-      prettier: 3.3.2
+      prettier: 3.3.3
 
-  prettier@3.3.2: {}
+  prettier@3.3.3: {}
 
   pretty-format@24.9.0:
     dependencies:
