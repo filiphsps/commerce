@@ -9,8 +9,8 @@ import { notFound } from 'next/navigation';
 import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
-import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
-import { LocaleApi, LocalesApi } from '@/api/store';
+import { ShopifyApolloApiClient } from '@/api/shopify';
+import { LocaleApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
@@ -30,7 +30,7 @@ export const dynamicParams = true;
 export const revalidate = false;
 export const preferredRegion = 'home';
 
-export type LayoutParams = { domain: string; locale: string };
+export type LayoutParams = { domain: string };
 
 export async function generateStaticParams(): Promise<LayoutParams[]> {
     const shops = await ShopsApi(cache);
@@ -39,14 +39,10 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
         await Promise.all(
             shops.map(async ({ domain }) => {
                 const shop = await ShopApi(domain, cache);
-                const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
-                const api = await ShopifyApiClient({ shop, apiConfig });
-                const locales = await LocalesApi({ api });
 
-                return locales.map(({ code }) => ({
-                    domain: shop.domain,
-                    locale: code
-                }));
+                return {
+                    domain: shop.domain
+                };
             })
         )
     ).flat(1);
@@ -63,23 +59,18 @@ export async function generateViewport({ params: { domain } }: { params: LayoutP
     };
 }
 
-export async function generateMetadata({
-    params: { domain, locale: localeData }
-}: {
-    params: LayoutParams;
-}): Promise<Metadata> {
+export async function generateMetadata({ params: { domain } }: { params: LayoutParams }): Promise<Metadata> {
     try {
-        const locale = Locale.from(localeData);
         const shop = await ShopApi(domain, cache);
 
         return {
-            metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
+            metadataBase: new URL(`https://${shop.domain}/business/`),
             title: {
                 absolute: shop.name,
                 // Allow tenants to customize this.
                 // For example allow them to use other separators
                 // like `·`, `—` etc.
-                template: `%s - ${shop.name} ${locale.country!}`
+                template: `%s - ${shop.name} Business`
             },
             icons: {
                 icon: ['/favicon.png'],
@@ -108,13 +99,13 @@ export async function generateMetadata({
 
 export default async function RootLayout({
     children,
-    params: { domain, locale: localeData }
+    params: { domain }
 }: {
     children: ReactNode;
     params: LayoutParams;
 }) {
     try {
-        const locale = Locale.from(localeData);
+        const locale = Locale.default;
 
         const shop = await ShopApi(domain, cache);
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -125,7 +116,7 @@ export default async function RootLayout({
 
         return (
             <html
-                lang={locale.code}
+                lang="en"
                 className={primaryFont.variable}
                 // A bunch of extensions add classes to the `html` element.
                 suppressHydrationWarning={true}
@@ -148,51 +139,6 @@ export default async function RootLayout({
                             <HeaderProvider loaderColor={branding?.primary.color || ''} />
                         </AnalyticsProvider>
                     </ProvidersRegistry>
-
-                    {/*<SocialProfileJsonLd
-                        // TODO: Get all of this dynamically.
-                        useAppDir={true}
-                        type="Organization"
-                        name={shop.name}
-                        url={`https://${shop.domain}/${locale.code}/`}
-                        logo={shop.icons?.favicon?.src}
-                        foundingDate="2023"
-                        founders={[
-                            {
-                                '@type': 'Person',
-                                name: 'Marcel Sobolewski',
-                                email: 'marcel@nordcom.io',
-                                jobTitle: 'Interim Chief Executive Officer'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Filiph Siitam Sandström',
-                                email: 'filiph@nordcom.io',
-                                jobTitle: 'Chief Technology Officer'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Dennis Sahlin',
-                                email: 'dennis@nordcom.io',
-                                jobTitle: 'Founder'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Albin Dahlqvist',
-                                email: 'albin@nordcom.io',
-                                jobTitle: 'Founder'
-                            }
-                        ]}
-                        address={{
-                            '@type': 'PostalAddress',
-                            streetAddress: 'Sädesbingen 20 lgh 1301',
-                            addressLocality: 'Trollhättan',
-                            addressRegion: 'Västra Götaland',
-                            postalCode: '461 61',
-                            addressCountry: 'Sweden'
-                        }}
-                        sameAs={[]}
-                    />*/}
                 </body>
             </html>
         );
