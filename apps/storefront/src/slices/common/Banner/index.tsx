@@ -19,11 +19,11 @@ const Banner = ({ slice }: BannerProps): JSX.Element => {
 
     return (
         <section
-            className="bg-primary text-primary-foreground flex flex-col items-center justify-center gap-8 rounded-lg p-8 md:p-16"
+            className="bg-primary text-primary-foreground flex flex-col items-center justify-center gap-4 rounded-lg p-8"
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            <div className="flex flex-col items-center justify-center gap-2 text-center md:max-w-[800px]">
+            <div className="flex flex-col items-center justify-center gap-1 text-center md:max-w-[800px]">
                 <PrismicText data={slice.primary.content} />
             </div>
 
