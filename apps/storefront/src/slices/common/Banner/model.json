@@ -50,6 +50,69 @@
                     }
                 }
             }
+        },
+        {
+            "id": "aside",
+            "name": "Aside",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "content": {
+                    "type": "StructuredText",
+                    "config": {
+                        "label": "Primary content",
+                        "placeholder": "",
+                        "allowTargetBlank": true,
+                        "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                    }
+                },
+                "background": {
+                    "type": "Image",
+                    "config": {
+                        "label": "Background",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
+                },
+                "image": {
+                    "type": "Image",
+                    "config": {
+                        "label": "Image",
+                        "constraint": {},
+                        "thumbnails": []
+                    }
+                }
+            },
+            "items": {
+                "title": {
+                    "type": "StructuredText",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": "",
+                        "allowTargetBlank": true,
+                        "single": "strong,em,paragraph,rtl,preformatted"
+                    }
+                },
+                "target": {
+                    "type": "Link",
+                    "config": {
+                        "label": "Target",
+                        "placeholder": "",
+                        "select": null
+                    }
+                },
+                "type": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Button",
+                        "placeholder_false": "secondary",
+                        "placeholder_true": "primary",
+                        "default_value": true
+                    }
+                }
+            }
         }
     ]
 }

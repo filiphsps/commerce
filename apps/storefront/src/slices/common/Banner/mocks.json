@@ -117,5 +117,136 @@
                 ]
             }
         ]
+    },
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "aside",
+        "primary": {
+            "content": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Enim sunt dolor anim nostrud magna ex labore ex amet minim nisi labore proident Lorem enim."
+                        }
+                    }
+                ]
+            },
+            "background": {
+                "origin": {
+                    "id": "main",
+                    "url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+                    "width": 3882,
+                    "height": 2584
+                },
+                "url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?rect=0%2C685%2C3882%2C1213&w=1024&h=320",
+                "width": 1024,
+                "height": 320,
+                "edit": {
+                    "zoom": 1,
+                    "crop": {
+                        "x": 0,
+                        "y": 685
+                    },
+                    "background": "transparent"
+                },
+                "credits": null,
+                "alt": null,
+                "__TYPE__": "ImageContent",
+                "thumbnails": {}
+            },
+            "image": {
+                "origin": {
+                    "id": "main",
+                    "url": "https://images.unsplash.com/photo-1593642633279-1796119d5482",
+                    "width": 4016,
+                    "height": 6016
+                },
+                "url": "https://images.unsplash.com/photo-1593642633279-1796119d5482?rect=0%2C1000%2C4016%2C4016&w=500&h=500",
+                "width": 500,
+                "height": 500,
+                "edit": {
+                    "zoom": 1,
+                    "crop": {
+                        "x": 0,
+                        "y": 1000
+                    },
+                    "background": "transparent"
+                },
+                "credits": null,
+                "alt": null,
+                "__TYPE__": "ImageContent",
+                "thumbnails": {}
+            }
+        },
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Action",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "target",
+                        {
+                            "__TYPE__": "LinkContent",
+                            "value": {
+                                "__TYPE__": "ExternalLink",
+                                "url": "http://twitter.com"
+                            }
+                        }
+                    ],
+                    [
+                        "type",
+                        {
+                            "__TYPE__": "BooleanContent",
+                            "value": false
+                        }
+                    ]
+                ]
+            },
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": [
+                    [
+                        "title",
+                        {
+                            "__TYPE__": "StructuredTextContent",
+                            "value": [
+                                {
+                                    "type": "paragraph",
+                                    "content": {
+                                        "text": "Hello world",
+                                        "spans": []
+                                    },
+                                    "direction": "ltr"
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        "type",
+                        {
+                            "__TYPE__": "BooleanContent",
+                            "value": true
+                        }
+                    ]
+                ]
+            }
+        ]
     }
 ]
