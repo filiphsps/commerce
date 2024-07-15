@@ -948,9 +948,93 @@ export type BannerSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Banner → Aside → Primary*
+ */
+export interface BannerSliceAsidePrimary {
+    /**
+     * Primary content field in *Banner → Aside → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.aside.primary.content
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    content: prismic.RichTextField;
+
+    /**
+     * Background field in *Banner → Aside → Primary*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.aside.primary.background
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */
+    background: prismic.ImageField<never>;
+
+    /**
+     * Image field in *Banner → Aside → Primary*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.aside.primary.image
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */
+    image: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *Banner → Items*
+ */
+export interface BannerSliceAsideItem {
+    /**
+     * Title field in *Banner → Items*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Target field in *Banner → Items*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.items[].target
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    target: prismic.LinkField;
+
+    /**
+     * Button field in *Banner → Items*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: banner.items[].type
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    type: prismic.BooleanField;
+}
+
+/**
+ * Aside variation for Banner Slice
+ *
+ * - **API ID**: `aside`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type BannerSliceAside = prismic.SharedSliceVariation<
+    'aside',
+    Simplify<BannerSliceAsidePrimary>,
+    Simplify<BannerSliceAsideItem>
+>;
+
+/**
  * Slice variation for *Banner*
  */
-type BannerSliceVariation = BannerSliceDefault;
+type BannerSliceVariation = BannerSliceDefault | BannerSliceAside;
 
 /**
  * Banner Shared Slice
@@ -1483,8 +1567,11 @@ declare module '@prismicio/client' {
             BannerSlice,
             BannerSliceDefaultPrimary,
             BannerSliceDefaultItem,
+            BannerSliceAsidePrimary,
+            BannerSliceAsideItem,
             BannerSliceVariation,
             BannerSliceDefault,
+            BannerSliceAside,
             CollapsibleTextSlice,
             CollapsibleTextSliceDefaultPrimary,
             CollapsibleTextSliceVariation,
