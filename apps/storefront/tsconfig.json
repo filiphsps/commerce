@@ -21,6 +21,7 @@
             "@/i18n/dictionary": ["src/utils/dictionary.ts"],
             // Prismic.
             "@/slices/*": ["src/slices/*"],
+            "@/slices/navigation": ["src/slices/navigation/index.ts"],
             "@/slices": ["src/slices/index"],
             "@/prismic/types": ["prismicio-types.d.ts"],
             // Assets.

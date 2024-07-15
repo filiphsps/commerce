@@ -34,7 +34,12 @@
         "quantity": "Mengde",
         "increase": "Øke",
         "decrease": "Redusere",
-        "search": "Søk"
+        "search": "Søk",
+        "contact": "Kontakte",
+        "email": "E-post",
+        "phone": "Telefon",
+        "email-tooltip": "Send oss en e-post",
+        "phone-tooltip": "Ring oss"
     },
     "product": {
         "recommendations": "Andre kunder liker også disse produktene sammen",

@@ -1,8 +1,10 @@
+import 'server-only';
+
 import { unstable_cache as cache } from 'next/cache';
 
 import { ShopApi } from '@nordcom/commerce-database';
 
-import { components as slices } from '@/slices';
+import { components } from '@/slices';
 import { getDictionary } from '@/utils/dictionary';
 import { Locale } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
@@ -31,9 +33,18 @@ export default async function SliceSimulatorPage({
     return (
         <SliceSimulator background="unset">
             <SliceZone
-                components={slices}
-                slices={getSlices(searchParams.state)}
-                context={{ shop, i18n, locale, type: 'custom_page' }}
+                slices={getSlices(searchParams.state) || []}
+                components={components}
+                context={{
+                    shop,
+                    i18n,
+                    locale,
+                    type: 'custom_page',
+                    uid: 'homepage',
+                    handle: 'homepage',
+                    pathname: '/hello-world/',
+                    menu: '__SLICE_MACHINE_TEST__'
+                }}
             />
         </SliceSimulator>
     );

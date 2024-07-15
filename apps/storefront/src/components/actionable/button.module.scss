@@ -53,6 +53,9 @@
     }
 
     &:is(:disabled):not([data-success]) {
+        box-shadow: none;
+        cursor: not-allowed;
+
         &:not([data-ready='false']) {
             background-color: var(--color-block-dark);
             color: var(--color-block-black);
@@ -61,10 +64,6 @@
             background-color: var(--color-accent-primary-dark);
             opacity: 0.5;
         }
-
-        box-shadow: none;
-
-        cursor: not-allowed;
 
         svg {
             display: none;

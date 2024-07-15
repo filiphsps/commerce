@@ -106,10 +106,6 @@
 
         padding: var(--block-padding-large) 0;
 
-        @media (min-width: $breakpoint-mobile) {
-            padding: var(--block-padding-large);
-        }
-
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
 
@@ -119,5 +115,9 @@
 
         // Attempt at fixing performance on iOS/iPadOS webkit
         -webkit-overflow-scrolling: touch;
+
+        @media (min-width: $breakpoint-mobile) {
+            padding: var(--block-padding-large);
+        }
     }
 }

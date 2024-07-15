@@ -12,16 +12,9 @@
     height: 2.5rem;
     padding: var(--block-padding-small) 0;
 
-    background-color: transparent;
-    color: var(--accent-secondary-text);
     font-weight: 400;
     line-height: 1;
     text-align: center;
-
-    &,
-    svg {
-        transition: $animation-duration ease-in-out all;
-    }
 
     .icon {
         overflow: hidden;
@@ -38,40 +31,21 @@
         text-align: left;
     }
 
-    &:not(:disabled):is(:hover, :active, :focus) {
-        &:is([data-items='0']) {
-            &,
-            svg {
-                color: var(--color-accent-primary);
-                stroke: var(--color-accent-primary);
-            }
-        }
-    }
-
     svg {
-        color: var(--accent-secondary-text);
-        stroke: var(--accent-secondary-text);
         stroke-width: 2.75;
     }
 
     &[data-items] {
-        border-radius: 2.5rem;
+        border-radius: calc(var(--block-border-radius-large) * 2);
 
         &:not([data-items='0'], :disabled) {
             gap: var(--block-spacer);
 
-            padding: var(--block-padding-small) calc(var(--block-padding) * 1.25);
-
-            background-color: var(--color-accent-primary);
-            color: var(--accent-primary-text);
+            padding: var(--block-padding-small) var(--block-padding-large);
+            min-width: fit-content;
 
             @media (min-width: $breakpoint-mobile) {
-                padding: var(--block-padding-small) var(--block-padding);
-            }
-
-            svg {
-                color: var(--accent-primary-text);
-                stroke: var(--accent-primary-text);
+                padding: var(--block-padding-small) calc(var(--block-padding-large) * 1.25);
             }
 
             .quantity {
@@ -79,14 +53,8 @@
                 padding: 0.15rem 0 0 0.15rem;
             }
 
-            &:is(:hover, :active) {
+            &:is(:active, :focus) {
                 background-color: var(--color-bright);
-
-                &,
-                svg {
-                    color: var(--color-dark);
-                    stroke: var(--color-dark);
-                }
             }
         }
     }

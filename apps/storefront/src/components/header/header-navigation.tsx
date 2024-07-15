@@ -1,43 +1,35 @@
-import styles from '@/components/header/header-navigation.module.scss';
+'use client';
 
+import { usePathname } from 'next/navigation';
+
+import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
+import { SliceZone } from '@prismicio/react';
 
-import { MenuItem, SubMenuItem } from '@/components/header/menu-item';
+import type { MenuDocumentData } from '@/prismic/types';
+import type { HTMLProps } from 'react';
 
-import type { NavigationItem } from '@/api/navigation';
-import type { Locale } from '@/utils/locale';
-import type { HTMLProps, ReactNode } from 'react';
+export const LINK_STYLES =
+    'flex h-full cursor-pointer select-none flex-nowrap items-center justify-center text-nowrap border-0 border-b-2 border-t-2 border-solid border-transparent border-t-transparent bg-transparent py-3 font-medium leading-none text-gray-800 transition-all duration-150 *:duration-150 hover:underline md:px-1';
 
-type HeaderNavigationChildItemsProps = {
-    children?: ReactNode;
-} & HTMLProps<HTMLDivElement>;
-export const HeaderNavigationChildItems = (props: HeaderNavigationChildItemsProps) => {
-    return <div {...props} className={`${styles.submenu} ${props.className || ''}`} />;
-};
+export const LINK_ACTIVE_MENU_STYLES = 'bg-gray-100 px-2 font-semibold text-black md:px-2 -mx-2 md:-mx-1';
+export const LINK_ACTIVE_STYLES = 'border-b-primary font-bold text-primary';
 
 type HeaderNavigationProps = {
-    children?: ReactNode;
-    menu: NavigationItem[];
-    locale: Locale;
+    slices: MenuDocumentData['slices'];
 } & HTMLProps<HTMLDivElement>;
-export const HeaderNavigation = ({ menu, className, ...props }: HeaderNavigationProps) => {
+export const HeaderNavigation = ({ slices = [], className, ...props }: HeaderNavigationProps) => {
+    const pathname = usePathname();
+
     return (
-        <nav {...props} className={cn(styles.container, styles.centered, className)}>
-            {menu.map((item, index: number) => {
-                return (
-                    <MenuItem key={item.handle + `${index}`} data={item}>
-                        {item.children.length > 0 && (
-                            <HeaderNavigationChildItems>
-                                <div className={styles.content}>
-                                    {item.children.map((item, index: number) => (
-                                        <SubMenuItem key={item.handle + `${index}`} data={item} />
-                                    ))}
-                                </div>
-                            </HeaderNavigationChildItems>
-                        )}
-                    </MenuItem>
-                );
-            })}
+        <nav
+            className={cn(
+                'flex w-full grow items-center justify-start gap-5 overflow-x-auto px-3 md:max-w-[var(--page-width)] md:flex-row md:gap-6 md:overflow-hidden md:px-1 lg:px-3',
+                className
+            )}
+            {...props}
+        >
+            <SliceZone slices={slices} components={menuSlices} context={{ isHeader: true, pathname }} />
         </nav>
     );
 };

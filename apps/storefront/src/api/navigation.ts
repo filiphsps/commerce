@@ -4,7 +4,7 @@ import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
-import type { NavigationDocument } from '@/prismic/types';
+import type { MenuDocument, MenuDocumentData, NavigationDocument } from '@/prismic/types';
 
 export type NavigationItem = {
     title: string;
@@ -42,6 +42,28 @@ export const NavigationApi = async ({
             }
 
             throw new NotFoundError(`"Navigation" with the locale "${locale.code}"`);
+        }
+
+        throw error;
+    }
+};
+
+export const MenuApi = async ({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<MenuDocumentData> => {
+    const client = createClient({ shop, locale });
+
+    try {
+        const menu = await client.getSingle<MenuDocument>('menu', {
+            lang: locale.code.toLowerCase()
+        });
+
+        return menu.data;
+    } catch (error: unknown) {
+        if (ApiError.isNotFound(error)) {
+            if (!Locale.isDefault(locale)) {
+                return MenuApi({ shop, locale: Locale.default }); // Try again with default locale.
+            }
+
+            throw new NotFoundError(`"Menu" with the locale "${locale.code}"`);
         }
 
         throw error;

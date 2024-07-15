@@ -1,0 +1,57 @@
+[
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "title": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Ut aliqua id velit non ex exercitation laboris quis eu ut cillum."
+                        }
+                    }
+                ]
+            },
+            "href": {
+                "__TYPE__": "LinkContent",
+                "value": {
+                    "__TYPE__": "ExternalLink",
+                    "url": "https://prismic.io"
+                }
+            }
+        },
+        "items": []
+    },
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "highlighted",
+        "primary": {
+            "title": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Aliquip cillum fugiat enim fugiat laborum quis excepteur sint. Sint nulla eiusmod laborum."
+                        }
+                    }
+                ]
+            },
+            "href": {
+                "__TYPE__": "LinkContent",
+                "value": {
+                    "__TYPE__": "ExternalLink",
+                    "url": "https://slicemachine.dev"
+                }
+            }
+        },
+        "items": [
+            {
+                "__TYPE__": "GroupItemContent",
+                "value": []
+            }
+        ]
+    }
+]

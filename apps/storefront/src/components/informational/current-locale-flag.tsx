@@ -2,6 +2,8 @@ import styles from '@/components/informational/current-locale-flag.module.scss';
 
 import Image from 'next/image';
 
+import { cn } from '@/utils/tailwind';
+
 import type { Locale } from '@/utils/locale';
 import type { ComponentProps } from 'react';
 
@@ -20,7 +22,7 @@ export const CurrentLocaleFlag = ({
     return (
         <Image
             {...props}
-            className={`${styles.flag} ${className}`}
+            className={cn(styles.flag, className)}
             alt={alt!}
             aria-label={alt}
             width={width || '24'}

@@ -19,7 +19,7 @@
     }
 
     &.primary {
-        padding: calc(var(--block-spacer-large) * 2) var(--block-spacer-large);
+        padding: var(--block-spacer-large);
         gap: calc(var(--block-spacer-large) * 1.5);
     }
 }

@@ -1,0 +1,500 @@
+[
+    {
+        "__TYPE__": "SharedSliceContent",
+        "variation": "default",
+        "primary": {
+            "title": {
+                "__TYPE__": "StructuredTextContent",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "content": {
+                            "text": "Et exercitation sit ex non tempor culpa ex veniam veniam ea minim et velit aute aliqua."
+                        }
+                    }
+                ]
+            },
+            "links": {
+                "__TYPE__": "GroupContentType",
+                "value": [
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Laboris aute proident nisi pariatur",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "https://prismic.io"
+                                    }
+                                }
+                            ],
+                            [
+                                "image",
+                                {
+                                    "__TYPE__": "ImageContent",
+                                    "url": "https://images.unsplash.com/photo-1519087318609-bfb5c04c27f5?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxMXx8Y2FuZHl8ZW58MHx8fHwxNzIxOTc2ODgyfDA&ixlib=rb-4.0.3&q=85&rect=0%2C1222%2C5184%2C1013&w=256&h=50",
+                                    "alt": "person holding a candy pack on white plastic box",
+                                    "origin": {
+                                        "id": "dbOV1qSiL-c",
+                                        "url": "https://images.unsplash.com/photo-1519087318609-bfb5c04c27f5?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxMXx8Y2FuZHl8ZW58MHx8fHwxNzIxOTc2ODgyfDA&ixlib=rb-4.0.3&q=85",
+                                        "width": 5184,
+                                        "height": 3456
+                                    },
+                                    "width": 256,
+                                    "height": 50,
+                                    "edit": {
+                                        "background": "transparent",
+                                        "zoom": 1,
+                                        "crop": {
+                                            "x": 0,
+                                            "y": 1222
+                                        }
+                                    },
+                                    "thumbnails": {
+                                        "desktop": {
+                                            "url": "https://images.unsplash.com/photo-1519087318609-bfb5c04c27f5?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxMXx8Y2FuZHl8ZW58MHx8fHwxNzIxOTc2ODgyfDA&ixlib=rb-4.0.3&q=85&rect=0%2C1222%2C5184%2C1013&w=1024&h=200",
+                                            "alt": "person holding a candy pack on white plastic box",
+                                            "origin": {
+                                                "id": "dbOV1qSiL-c",
+                                                "url": "https://images.unsplash.com/photo-1519087318609-bfb5c04c27f5?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxMXx8Y2FuZHl8ZW58MHx8fHwxNzIxOTc2ODgyfDA&ixlib=rb-4.0.3&q=85",
+                                                "width": 5184,
+                                                "height": 3456
+                                            },
+                                            "width": 1024,
+                                            "height": 200,
+                                            "edit": {
+                                                "background": "transparent",
+                                                "zoom": 1,
+                                                "crop": {
+                                                    "x": 0,
+                                                    "y": 1222
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
+                            [
+                                "description",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Fugiat eiusmod cupidatat adipisicing incididunt enim incididunt est tempor ut sunt consectetur commodo cupidatat.",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "shadow",
+                                {
+                                    "__TYPE__": "BooleanContent",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                "image_position",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "center",
+                                    "type": "Select"
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Fugiat eiusmod cupidatat",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "/test/",
+                                        "target": ""
+                                    }
+                                }
+                            ],
+                            [
+                                "description",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Fugiat eiusmod cupidatat adipisicing incididunt enim incididunt est tempor ut sunt consectetur commodo cupidatat.",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "image",
+                                {
+                                    "__TYPE__": "ImageContent",
+                                    "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1341%2C5688%2C1111&w=256&h=50",
+                                    "alt": "orange fruits under blue sky during daytime",
+                                    "origin": {
+                                        "id": "eaOjEz8746k",
+                                        "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "width": 5688,
+                                        "height": 3792
+                                    },
+                                    "width": 256,
+                                    "height": 50,
+                                    "edit": {
+                                        "background": "transparent",
+                                        "zoom": 1,
+                                        "crop": {
+                                            "x": 0,
+                                            "y": 1341
+                                        }
+                                    },
+                                    "thumbnails": {
+                                        "desktop": {
+                                            "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1341%2C5688%2C1111&w=1024&h=200",
+                                            "alt": "orange fruits under blue sky during daytime",
+                                            "origin": {
+                                                "id": "eaOjEz8746k",
+                                                "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                                "width": 5688,
+                                                "height": 3792
+                                            },
+                                            "width": 1024,
+                                            "height": 200,
+                                            "edit": {
+                                                "background": "transparent",
+                                                "zoom": 1,
+                                                "crop": {
+                                                    "x": 0,
+                                                    "y": 1341
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
+                            [
+                                "shadow",
+                                {
+                                    "__TYPE__": "BooleanContent",
+                                    "value": false
+                                }
+                            ],
+                            [
+                                "image_position",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "type": "Select",
+                                    "value": "top"
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "description",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Fugiat eiusmod cupidatat adipisicing incididunt enim incididunt est tempor ut sunt consectetur commodo cupidatat.",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Incididunt enim",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ExternalLink",
+                                        "url": "/test/",
+                                        "target": ""
+                                    }
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Adipisicing",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ImageLink",
+                                        "id": "SDX4_TQcxGU",
+                                        "name": "sliced lemon fruit on blue surface",
+                                        "kind": "image",
+                                        "url": "https://images.unsplash.com/photo-1603824231744-517ef271df7e?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwzfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "size": "0",
+                                        "height": "2470",
+                                        "width": "3690"
+                                    }
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Cupidatat",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "shadow",
+                                {
+                                    "__TYPE__": "BooleanContent",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ImageLink",
+                                        "id": "SDX4_TQcxGU",
+                                        "name": "sliced lemon fruit on blue surface",
+                                        "kind": "image",
+                                        "url": "https://images.unsplash.com/photo-1603824231744-517ef271df7e?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwzfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "size": "0",
+                                        "height": "2470",
+                                        "width": "3690"
+                                    }
+                                }
+                            ],
+                            [
+                                "image",
+                                {
+                                    "__TYPE__": "ImageContent",
+                                    "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1341%2C5688%2C1111&w=256&h=50",
+                                    "alt": "orange fruits under blue sky during daytime",
+                                    "origin": {
+                                        "id": "eaOjEz8746k",
+                                        "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "width": 5688,
+                                        "height": 3792
+                                    },
+                                    "width": 256,
+                                    "height": 50,
+                                    "edit": {
+                                        "background": "transparent",
+                                        "zoom": 1,
+                                        "crop": {
+                                            "x": 0,
+                                            "y": 1341
+                                        }
+                                    },
+                                    "thumbnails": {
+                                        "desktop": {
+                                            "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1341%2C5688%2C1111&w=1024&h=200",
+                                            "alt": "orange fruits under blue sky during daytime",
+                                            "origin": {
+                                                "id": "eaOjEz8746k",
+                                                "url": "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHwxfHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                                "width": 5688,
+                                                "height": 3792
+                                            },
+                                            "width": 1024,
+                                            "height": 200,
+                                            "edit": {
+                                                "background": "transparent",
+                                                "zoom": 1,
+                                                "crop": {
+                                                    "x": 0,
+                                                    "y": 1341
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        ]
+                    },
+                    {
+                        "__TYPE__": "GroupItemContent",
+                        "value": [
+                            [
+                                "title",
+                                {
+                                    "__TYPE__": "StructuredTextContent",
+                                    "value": [
+                                        {
+                                            "type": "paragraph",
+                                            "content": {
+                                                "text": "Fugiat",
+                                                "spans": []
+                                            },
+                                            "direction": "ltr"
+                                        }
+                                    ]
+                                }
+                            ],
+                            [
+                                "href",
+                                {
+                                    "__TYPE__": "LinkContent",
+                                    "value": {
+                                        "__TYPE__": "ImageLink",
+                                        "id": "agP9RgnWZAY",
+                                        "name": "orange fruit on brown wooden table",
+                                        "kind": "image",
+                                        "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "size": "0",
+                                        "height": "4114",
+                                        "width": "5143"
+                                    }
+                                }
+                            ],
+                            [
+                                "image",
+                                {
+                                    "__TYPE__": "ImageContent",
+                                    "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1555%2C5143%2C1004&w=256&h=50",
+                                    "alt": "orange fruit on brown wooden table",
+                                    "origin": {
+                                        "id": "agP9RgnWZAY",
+                                        "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                        "width": 5143,
+                                        "height": 4114
+                                    },
+                                    "width": 256,
+                                    "height": 50,
+                                    "edit": {
+                                        "background": "transparent",
+                                        "zoom": 1,
+                                        "crop": {
+                                            "x": 0,
+                                            "y": 1555
+                                        }
+                                    },
+                                    "thumbnails": {
+                                        "desktop": {
+                                            "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85&rect=0%2C1555%2C5143%2C1004&w=1024&h=200",
+                                            "alt": "orange fruit on brown wooden table",
+                                            "origin": {
+                                                "id": "agP9RgnWZAY",
+                                                "url": "https://images.unsplash.com/photo-1610040855959-27944b04f12d?crop=entropy&cs=srgb&fm=jpg&ixid=M3wzMzc0NjN8MHwxfHNlYXJjaHw0fHxjaXRydXMlMjBmcnVpdHxlbnwwfHx8fDE3MjE5MzYwMjZ8MA&ixlib=rb-4.0.3&q=85",
+                                                "width": 5143,
+                                                "height": 4114
+                                            },
+                                            "width": 1024,
+                                            "height": 200,
+                                            "edit": {
+                                                "background": "transparent",
+                                                "zoom": 1,
+                                                "crop": {
+                                                    "x": 0,
+                                                    "y": 1555
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        "items": []
+    }
+]
