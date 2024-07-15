@@ -1,6 +1,6 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { unstable_cache as cache } from 'next/cache';
 import { Public_Sans } from 'next/font/google';
@@ -46,9 +46,7 @@ export default async function RootLayout({
     const locale = Locale.default;
 
     const shop = await ShopApi(domain, cache);
-    if (!shop) {
-        notFound();
-    }
+    if (!shop) notFound();
 
     const api = await ShopifyApolloApiClient({ shop, locale });
 
