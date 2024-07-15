@@ -83,6 +83,13 @@
                         "constraint": {},
                         "thumbnails": []
                     }
+                },
+                "text_color": {
+                    "type": "Color",
+                    "config": {
+                        "label": "Text color",
+                        "placeholder": ""
+                    }
                 }
             },
             "items": {

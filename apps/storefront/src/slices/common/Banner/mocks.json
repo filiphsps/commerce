@@ -178,6 +178,11 @@
                 "alt": null,
                 "__TYPE__": "ImageContent",
                 "thumbnails": {}
+            },
+            "text_color": {
+                "__TYPE__": "FieldContent",
+                "value": "#47f137",
+                "type": "Color"
             }
         },
         "items": [

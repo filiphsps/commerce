@@ -980,6 +980,16 @@ export interface BannerSliceAsidePrimary {
      * - **Documentation**: https://prismic.io/docs/field#image
      */
     image: prismic.ImageField<never>;
+
+    /**
+     * Text color field in *Banner → Aside → Primary*
+     *
+     * - **Field Type**: Color
+     * - **Placeholder**: *None*
+     * - **API ID Path**: banner.aside.primary.text_color
+     * - **Documentation**: https://prismic.io/docs/field#color
+     */
+    text_color: prismic.ColorField;
 }
 
 /**
