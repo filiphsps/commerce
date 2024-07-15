@@ -24,6 +24,9 @@ export default {
                 1: '0.15rem',
                 2: '0.2rem',
                 3: '0.25rem'
+            },
+            aspectRatio: {
+                '3/2': '3 / 2'
             }
         }
     },

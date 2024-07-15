@@ -15,6 +15,7 @@ import { getDictionary } from '@/i18n/dictionary';
 import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
@@ -126,7 +127,7 @@ export default async function RootLayout({
         return (
             <html
                 lang={locale.code}
-                className={primaryFont.variable}
+                className={cn(primaryFont.variable, 'overflow-x-hidden overscroll-x-none')}
                 // A bunch of extensions add classes to the `html` element.
                 suppressHydrationWarning={true}
             >
@@ -136,63 +137,18 @@ export default async function RootLayout({
                     </Suspense>
                 </head>
 
-                <body suppressHydrationWarning={true}>
+                <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">
                     <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
                         <AnalyticsProvider shop={shop}>
-                            <ShopLayout shop={shop} locale={locale} i18n={i18n}>
-                                <PageContent as="main" primary={true}>
-                                    {children}
-                                </PageContent>
-                            </ShopLayout>
-
-                            <HeaderProvider loaderColor={branding?.primary.color || ''} />
+                            <HeaderProvider loaderColor={branding?.primary.color || ''}>
+                                <ShopLayout shop={shop} locale={locale} i18n={i18n}>
+                                    <PageContent as="main" primary={true}>
+                                        {children}
+                                    </PageContent>
+                                </ShopLayout>
+                            </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>
-
-                    {/*<SocialProfileJsonLd
-                        // TODO: Get all of this dynamically.
-                        useAppDir={true}
-                        type="Organization"
-                        name={shop.name}
-                        url={`https://${shop.domain}/${locale.code}/`}
-                        logo={shop.icons?.favicon?.src}
-                        foundingDate="2023"
-                        founders={[
-                            {
-                                '@type': 'Person',
-                                name: 'Marcel Sobolewski',
-                                email: 'marcel@nordcom.io',
-                                jobTitle: 'Interim Chief Executive Officer'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Filiph Siitam Sandström',
-                                email: 'filiph@nordcom.io',
-                                jobTitle: 'Chief Technology Officer'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Dennis Sahlin',
-                                email: 'dennis@nordcom.io',
-                                jobTitle: 'Founder'
-                            },
-                            {
-                                '@type': 'Person',
-                                name: 'Albin Dahlqvist',
-                                email: 'albin@nordcom.io',
-                                jobTitle: 'Founder'
-                            }
-                        ]}
-                        address={{
-                            '@type': 'PostalAddress',
-                            streetAddress: 'Sädesbingen 20 lgh 1301',
-                            addressLocality: 'Trollhättan',
-                            addressRegion: 'Västra Götaland',
-                            postalCode: '461 61',
-                            addressCountry: 'Sweden'
-                        }}
-                        sameAs={[]}
-                    />*/}
                 </body>
             </html>
         );

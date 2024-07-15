@@ -196,8 +196,9 @@ export const ShopApi = async (domain: string, cache?: CacheUtil, secure = false)
             return callback(domain, secure);
         }
 
-        return cache(callback, [domain, `secure=${secure ? 'true' : 'false'}`], {
-            tags: [domain, `secure=${secure}`],
+        const tags = [`secure=${secure ? 'true' : 'false'}`, `cache=${!!cache ? 'true' : 'false'}`];
+        return cache(callback, [domain, ...tags], {
+            tags: [domain, ...tags],
             revalidate: 28800 // 8 hours.
         })(domain, secure) as ReturnType<typeof callback>;
     } catch (error: unknown) {

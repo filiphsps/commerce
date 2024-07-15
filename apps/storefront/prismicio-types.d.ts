@@ -446,6 +446,39 @@ export type HeadDocument<Lang extends string = string> = prismic.PrismicDocument
     Lang
 >;
 
+type MenuDocumentDataSlicesSlice = DropdownSlice | LinkSlice;
+
+/**
+ * Content for Menu documents
+ */
+interface MenuDocumentData {
+    /**
+     * Slice Zone field in *Menu*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: menu.slices[]
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */
+    slices: prismic.SliceZone<MenuDocumentDataSlicesSlice>;
+}
+
+/**
+ * Menu document from Prismic
+ *
+ * - **API ID**: `menu`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type MenuDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+    Simplify<MenuDocumentData>,
+    'menu',
+    Lang
+>;
+
 type MenuItemDocumentDataSlicesSlice = never;
 
 /**
@@ -829,6 +862,7 @@ export type AllDocumentTypes =
     | CustomPageDocument
     | FooterDocument
     | HeadDocument
+    | MenuDocument
     | MenuItemDocument
     | NavigationDocument
     | ProductPageDocument
@@ -1529,6 +1563,211 @@ type VendorsSliceVariation = VendorsSliceDefault;
  */
 export type VendorsSlice = prismic.SharedSlice<'vendors', VendorsSliceVariation>;
 
+/**
+ * Item in *Dropdown → Default → Primary → Links*
+ */
+export interface DropdownSliceDefaultPrimaryLinksItem {
+    /**
+     * Title field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.links[].title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * href field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.links[].href
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    href: prismic.LinkField;
+
+    /**
+     * Image (optional) field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Image
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.links[].image
+     * - **Documentation**: https://prismic.io/docs/field#image
+     */
+    image: prismic.ImageField<'desktop'>;
+
+    /**
+     * Image Position (optional) field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Select
+     * - **Placeholder**: *None*
+     * - **Default Value**: center
+     * - **API ID Path**: dropdown.default.primary.links[].image_position
+     * - **Documentation**: https://prismic.io/docs/field#select
+     */
+    image_position: prismic.SelectField<'center' | 'right' | 'left' | 'top' | 'bottom', 'filled'>;
+
+    /**
+     * Description (optional) field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.links[].description
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    description: prismic.RichTextField;
+
+    /**
+     * Shadow field in *Dropdown → Default → Primary → Links*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: dropdown.default.primary.links[].shadow
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    shadow: prismic.BooleanField;
+}
+
+/**
+ * Primary content in *Dropdown → Default → Primary*
+ */
+export interface DropdownSliceDefaultPrimary {
+    /**
+     * Title field in *Dropdown → Default → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * Links field in *Dropdown → Default → Primary*
+     *
+     * - **Field Type**: Group
+     * - **Placeholder**: *None*
+     * - **API ID Path**: dropdown.default.primary.links[]
+     * - **Documentation**: https://prismic.io/docs/field#group
+     */
+    links: prismic.GroupField<Simplify<DropdownSliceDefaultPrimaryLinksItem>>;
+}
+
+/**
+ * Default variation for Dropdown Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type DropdownSliceDefault = prismic.SharedSliceVariation<
+    'default',
+    Simplify<DropdownSliceDefaultPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *Dropdown*
+ */
+type DropdownSliceVariation = DropdownSliceDefault;
+
+/**
+ * Dropdown Shared Slice
+ *
+ * - **API ID**: `dropdown`
+ * - **Description**: Dropdown
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type DropdownSlice = prismic.SharedSlice<'dropdown', DropdownSliceVariation>;
+
+/**
+ * Primary content in *Link → Default → Primary*
+ */
+export interface LinkSliceDefaultPrimary {
+    /**
+     * Title field in *Link → Default → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: link.default.primary.title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * href field in *Link → Default → Primary*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: link.default.primary.href
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    href: prismic.LinkField;
+}
+
+/**
+ * Default variation for Link Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSliceDefault = prismic.SharedSliceVariation<'default', Simplify<LinkSliceDefaultPrimary>, never>;
+
+/**
+ * Primary content in *Link → Highlighted → Primary*
+ */
+export interface LinkSliceHighlightedPrimary {
+    /**
+     * Title field in *Link → Highlighted → Primary*
+     *
+     * - **Field Type**: Rich Text
+     * - **Placeholder**: *None*
+     * - **API ID Path**: link.highlighted.primary.title
+     * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+     */
+    title: prismic.RichTextField;
+
+    /**
+     * href field in *Link → Highlighted → Primary*
+     *
+     * - **Field Type**: Link
+     * - **Placeholder**: *None*
+     * - **API ID Path**: link.highlighted.primary.href
+     * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+     */
+    href: prismic.LinkField;
+}
+
+/**
+ * Highlighted variation for Link Slice
+ *
+ * - **API ID**: `highlighted`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSliceHighlighted = prismic.SharedSliceVariation<
+    'highlighted',
+    Simplify<LinkSliceHighlightedPrimary>,
+    never
+>;
+
+/**
+ * Slice variation for *Link*
+ */
+type LinkSliceVariation = LinkSliceDefault | LinkSliceHighlighted;
+
+/**
+ * Link Shared Slice
+ *
+ * - **API ID**: `link`
+ * - **Description**: Link
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSlice = prismic.SharedSlice<'link', LinkSliceVariation>;
+
 declare module '@prismicio/client' {
     interface CreateClient {
         (repositoryNameOrEndpoint: string, options?: prismic.ClientConfig): prismic.Client<AllDocumentTypes>;
@@ -1554,6 +1793,9 @@ declare module '@prismicio/client' {
             HeadDocumentData,
             HeadDocumentDataAnnouncementsItem,
             HeadDocumentDataNavigationItem,
+            MenuDocument,
+            MenuDocumentData,
+            MenuDocumentDataSlicesSlice,
             MenuItemDocument,
             MenuItemDocumentData,
             MenuItemDocumentDataSlicesSlice,
@@ -1609,7 +1851,18 @@ declare module '@prismicio/client' {
             TitleSliceDefault,
             VendorsSlice,
             VendorsSliceVariation,
-            VendorsSliceDefault
+            VendorsSliceDefault,
+            DropdownSlice,
+            DropdownSliceDefaultPrimaryLinksItem,
+            DropdownSliceDefaultPrimary,
+            DropdownSliceVariation,
+            DropdownSliceDefault,
+            LinkSlice,
+            LinkSliceDefaultPrimary,
+            LinkSliceHighlightedPrimary,
+            LinkSliceVariation,
+            LinkSliceDefault,
+            LinkSliceHighlighted
         };
     }
 }

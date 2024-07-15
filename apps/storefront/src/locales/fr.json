@@ -34,7 +34,12 @@
         "quantity": "Quantité",
         "increase": "Augmenter",
         "decrease": "Diminuer",
-        "search": "Recherche"
+        "search": "Recherche",
+        "contact": "Contact",
+        "email": "Email",
+        "phone": "Téléphone",
+        "email-tooltip": "Envoyez-nous un e-mail",
+        "phone-tooltip": "Appelez-nous"
     },
     "product": {
         "recommendations": "D'autres clients ont également apprécié ces produits ensemble",

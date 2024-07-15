@@ -1,8 +1,10 @@
 import Image from 'next/image';
 
+import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
-import { PrismicNextLink } from '@prismicio/next';
+import { asLink } from '@prismicio/client';
 
+import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { BannerSliceAside } from '@/prismic/types';
@@ -29,25 +31,29 @@ export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element
                     className="flex flex-col items-start justify-center gap-1 text-left drop-shadow-sm md:max-w-[600px]"
                     style={{
                         color: textColor ?? undefined,
-                        textShadow: background.url ? '1px 1px 10px black' : undefined
+                        textShadow: background.url ? '1px 1px 10px #000' : undefined
                     }}
                 >
                     <PrismicText data={slice.primary.content} />
                 </div>
                 <div className="flex w-full items-start justify-start gap-4 empty:hidden md:max-w-[600px]">
-                    {slice.items.map((cta, index) => (
-                        <PrismicNextLink
-                            key={index}
-                            className={cn(
-                                'flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
-                                cta.type &&
-                                    'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
-                            )}
-                            field={cta.target}
-                        >
-                            <PrismicText data={cta.title} />
-                        </PrismicNextLink>
-                    ))}
+                    {slice.items.map(({ type, target: href, title }, index) => {
+                        const target = asLink(href, { linkResolver });
+
+                        return (
+                            <Link
+                                key={index}
+                                className={cn(
+                                    'flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
+                                    type &&
+                                        'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
+                                )}
+                                href={target}
+                            >
+                                <PrismicText data={title} />
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
 

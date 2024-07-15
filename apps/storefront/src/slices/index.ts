@@ -1,5 +1,9 @@
 import { components as commonComponents } from '@/slices/common';
+import { components as menuComponents } from '@/slices/navigation';
 
 export const components = {
-    ...commonComponents
+    ...commonComponents,
+    ...menuComponents
 };
+
+export default components;

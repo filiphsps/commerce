@@ -3,10 +3,6 @@
 .container {
     --padding: calc(var(--block-padding) - var(--block-border-width) * 2);
 
-    @media (min-width: $breakpoint-mobile) {
-        --padding: var(--block-padding-small);
-    }
-
     position: relative;
     overflow: hidden;
 
@@ -18,9 +14,6 @@
     height: 100%;
     width: 100%;
     min-width: var(--component-product-card-width);
-    @media (max-width: 560px) {
-        min-width: min-content;
-    }
 
     font-size: 16px;
 
@@ -44,6 +37,13 @@
         .actions {
             display: none;
         }
+    }
+
+    @media (min-width: $breakpoint-mobile) {
+        --padding: var(--block-padding-small);
+    }
+    @media (max-width: 560px) {
+        min-width: min-content;
     }
 
     [data-pricing] {

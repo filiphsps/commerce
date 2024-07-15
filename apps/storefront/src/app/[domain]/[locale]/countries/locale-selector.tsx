@@ -8,6 +8,7 @@ import Image from 'next/image';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { Locale } from '@/utils/locale';
+import { byIso as countryLookup } from 'country-code-lookup';
 
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';
@@ -47,6 +48,11 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                         return null;
                     }
 
+                    let info: ReturnType<typeof countryLookup> | null = null;
+                    try {
+                        info = countryLookup(country.country);
+                    } catch {}
+
                     return (
                         <Link
                             key={country.locale}
@@ -79,7 +85,7 @@ export default function LocaleSelector({ shop, countries, locale }: LocaleSelect
                                 />
                             </div>
                             <Label>
-                                {country.country} ({country.language})
+                                {info?.country ?? country.country} ({country.language})
                             </Label>
                             <Label>{country.currency}</Label>
                         </Link>

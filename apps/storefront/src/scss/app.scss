@@ -166,17 +166,6 @@ input[type='search']:is(
     appearance: none;
 }
 
-@media (max-width: $breakpoint-mobile) {
-    body[data-menu-open='true'] {
-        overflow: visible;
-
-        height: 100vh;
-        margin-top: 3.625rem;
-
-        overscroll-behavior: none none;
-    }
-}
-
 #nprogress {
     pointer-events: none;
 

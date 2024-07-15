@@ -20,7 +20,7 @@ const config = {
     trailingSlash: true,
     productionBrowserSourceMaps: true,
     compress: true,
-    transpilePackages: ['@shopify/hydrogen-react'],
+    transpilePackages: ['@shopify/hydrogen-react', '@prismicio/client', '@slicemachine/adapter-next'],
     serverExternalPackages: ['@sentry/profiling-node', '@nordcom/commerce-db', 'mongoose'],
     devIndicators: {
         buildActivity: true,
@@ -31,15 +31,7 @@ const config = {
         //caseSensitiveRoutes: true,
         instrumentationHook: isProduction,
         optimizeCss: true,
-        optimizePackageImports: [
-            '@apollo/client',
-            '@nordcom/nordstar',
-            '@prismicio/client',
-            '@prismicio/next',
-            '@prismicio/react',
-            '@shopify/hydrogen-react',
-            'react-icons'
-        ],
+        optimizePackageImports: ['@apollo/client', '@nordcom/nordstar', '@shopify/hydrogen-react', 'react-icons'],
         scrollRestoration: true,
         serverSourceMaps: true,
         webpackBuildWorker: true,

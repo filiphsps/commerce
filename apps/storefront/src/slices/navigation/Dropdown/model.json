@@ -1,0 +1,99 @@
+{
+    "id": "dropdown",
+    "type": "SharedSlice",
+    "name": "Dropdown",
+    "description": "Dropdown",
+    "variations": [
+        {
+            "id": "default",
+            "name": "Default",
+            "docURL": "...",
+            "version": "initial",
+            "description": "Default",
+            "imageUrl": "",
+            "primary": {
+                "title": {
+                    "type": "StructuredText",
+                    "config": {
+                        "label": "Title",
+                        "placeholder": "",
+                        "allowTargetBlank": true,
+                        "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                    }
+                },
+                "links": {
+                    "type": "Group",
+                    "config": {
+                        "label": "Links",
+                        "repeat": true,
+                        "fields": {
+                            "title": {
+                                "type": "StructuredText",
+                                "config": {
+                                    "label": "Title",
+                                    "placeholder": "",
+                                    "allowTargetBlank": true,
+                                    "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                                }
+                            },
+                            "href": {
+                                "type": "Link",
+                                "config": {
+                                    "label": "href",
+                                    "placeholder": "",
+                                    "allowTargetBlank": false,
+                                    "select": null
+                                }
+                            },
+                            "image": {
+                                "type": "Image",
+                                "config": {
+                                    "label": "Image (optional)",
+                                    "constraint": {
+                                        "width": 256,
+                                        "height": 50
+                                    },
+                                    "thumbnails": [
+                                        {
+                                            "name": "desktop",
+                                            "width": 1024,
+                                            "height": 200
+                                        }
+                                    ]
+                                }
+                            },
+                            "image_position": {
+                                "type": "Select",
+                                "config": {
+                                    "label": "Image Position (optional)",
+                                    "placeholder": "",
+                                    "options": ["center", "right", "left", "top", "bottom"],
+                                    "default_value": "center"
+                                }
+                            },
+                            "description": {
+                                "type": "StructuredText",
+                                "config": {
+                                    "label": "Description (optional)",
+                                    "placeholder": "",
+                                    "allowTargetBlank": true,
+                                    "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                                }
+                            },
+                            "shadow": {
+                                "type": "Boolean",
+                                "config": {
+                                    "label": "Shadow",
+                                    "placeholder_false": "false",
+                                    "placeholder_true": "true",
+                                    "default_value": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "items": {}
+        }
+    ]
+}

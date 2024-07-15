@@ -25,6 +25,10 @@ export default defineProject({
                 replacement: resolve(__dirname, './src/slices')
             },
             {
+                find: '@/slices/navigation',
+                replacement: resolve(__dirname, './src/slices/navigation')
+            },
+            {
                 find: '@',
                 replacement: resolve(__dirname, './src')
             }

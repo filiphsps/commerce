@@ -5,6 +5,7 @@ import styles from '@/components/header/cart-button.module.scss';
 import { FiShoppingBag } from 'react-icons/fi';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
 import Link from '@/components/link';
@@ -21,16 +22,25 @@ const CartButton = ({ locale, i18n }: CartButtonProps) => {
         <Link
             href="/cart/"
             locale={locale}
-            className={styles.container}
+            className={cn(
+                'group',
+                styles.container,
+                'bg-transparent text-black',
+                totalQuantity &&
+                    'bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground shadow-sm transition-all duration-150 hover:shadow-lg'
+            )}
             data-items={totalQuantity || 0}
             title={t('view-cart')}
             suppressHydrationWarning={true}
         >
-            <div className={styles.quantity} suppressHydrationWarning={true}>
+            <div
+                className={cn(styles.quantity, 'group-hover:text-secondary-foreground')}
+                suppressHydrationWarning={true}
+            >
                 {totalQuantity ? totalQuantity : null}
             </div>
 
-            <FiShoppingBag className={styles.icon} />
+            <FiShoppingBag className={cn(styles.icon, 'group-hover:text-secondary-foreground')} />
         </Link>
     );
 };

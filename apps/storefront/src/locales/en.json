@@ -37,7 +37,12 @@
         "quantity-too-low": "Too Low Quantity",
         "quantity": "Quantity",
         "search": "Search",
-        "remove": "Remove"
+        "remove": "Remove",
+        "contact": "Contact",
+        "email": "Email",
+        "phone": "Phone",
+        "email-tooltip": "Send us an email",
+        "phone-tooltip": "Call us"
     },
     "product": {
         "recommendations": "People with similar taste as you also loved these",

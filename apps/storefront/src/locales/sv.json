@@ -32,7 +32,12 @@
         "quantity": "Antal",
         "increase": "Öka",
         "decrease": "Minska",
-        "search": "Sök"
+        "search": "Sök",
+        "contact": "Kontakta",
+        "email": "E-post",
+        "phone": "Telefon",
+        "email-tooltip": "Skicka oss ett e-postmeddelande",
+        "phone-tooltip": "Ring oss"
     },
     "product": {
         "recommendations": "Komplettera upplevelsen med dessa populära tillägg",

@@ -2,10 +2,10 @@ import type { PrismicContentProvider, Shop } from '@nordcom/commerce-database';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { InvalidShopError } from '@nordcom/commerce-errors';
 
-import { Locale } from '@/utils/locale';
 import * as prismic from '@prismicio/client';
 import { enableAutoPreviews } from '@prismicio/next';
 
+import type { Locale } from '@/utils/locale';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
 type CreateClientOptions = {
@@ -44,23 +44,23 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
 };
 
 export const linkResolver: LinkResolverFunction<any> = (doc) => {
-    const { code: locale } = Locale.from(doc.lang || Locale.default.code)!;
-
     // TODO: Deal with tenants that don't use locales in their paths.
+    //const { code: locale } = Locale.from(doc.lang || Locale.default.code)!;
+
     if (doc.type === 'custom_page') {
-        if (doc.uid === 'homepage') return `/${locale}/`;
-        else if (doc.uid === 'countries') return `/${locale}/countries/`;
-        else if (doc.uid === 'search') return `/${locale}/search/`;
-        else if (doc.uid === 'cart') return `/${locale}/cart/`;
-        else if (doc.uid === 'blog') return `/${locale}/blog/`;
+        if (doc.uid === 'homepage') return `/`;
+        else if (doc.uid === 'countries') return `/countries/`;
+        else if (doc.uid === 'search') return `/search/`;
+        else if (doc.uid === 'cart') return `/cart/`;
+        else if (doc.uid === 'blog') return `/blog/`;
         // TODO: Handle pages with multi-level paths.
-        else if (doc.uid) return `/${locale}/${doc.uid}/`;
+        else if (doc.uid) return `/${doc.uid}/`;
     } else if (doc.type === 'product_page') {
-        return `/${locale}/products/${doc.uid}/`;
+        return `/products/${doc.uid}/`;
     } else if (doc.type === 'collection_page') {
-        return `/${locale}/collection/${doc.uid}/`;
+        return `/collections/${doc.uid}/`;
     } else if (doc.type === 'article_page') {
-        return `/${locale}/blog/${doc.uid}/`;
+        return `/blog/${doc.uid}/`;
     }
 
     return null;
