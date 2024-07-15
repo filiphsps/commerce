@@ -110,7 +110,7 @@
         "schema-dts": "1.1.2",
         "server-only": "0.0.1",
         "slice-machine-ui": "2.2.1",
-        "tailwindcss": "3.4.4",
+        "tailwindcss": "3.4.5",
         "typescript": "5.5.3",
         "vitest": "1.5.0"
     }
