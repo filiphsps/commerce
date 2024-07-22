@@ -29,6 +29,12 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
         defaultParams: {
             lang: locale.code
         },
+        fetchOptions: {
+            next: {
+                revalidate: 60 * 60 * 24, // 24 hours
+                tags: [shop.domain, 'prismic']
+            }
+        },
         ...config
     });
 
