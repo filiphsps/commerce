@@ -97,7 +97,7 @@
         "@types/react-dom": "18.2.24",
         "@types/react": "18.2.75",
         "autoprefixer": "10.4.19",
-        "babel-plugin-react-compiler": "0.0.0-experimental-696af53-20240625",
+        "babel-plugin-react-compiler": "0.0.0-experimental-f1f288c-20240725",
         "concurrently": "8.2.2",
         "critters": "0.0.24",
         "eslint-config-next": "14.2.1",
