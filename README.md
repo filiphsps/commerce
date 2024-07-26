@@ -22,8 +22,10 @@ Multi-tenenant headless e-commerce solution as a service.
 
 -   2019-2024: Filiph Siitam Sandström - [@filiphsps](https://github.com/filiphsps).
 -   2023-2024: Nordcom Group Inc. - [@NordcomInc](https://github.com/NordcomInc).
+-   2024:      Nordcom AB - [@NordcomInc](https://github.com/NordcomInc).
 
 ### Legal
 
--   © 2019-2023 Filiph Siitam Sandström.
+-   © 2019-2024 Filiph Siitam Sandström.
 -   © 2023 Nordcom Group Inc.
+-   © 2024 Nordcom AB.

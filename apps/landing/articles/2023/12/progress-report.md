@@ -20,4 +20,4 @@ completely redesigned and replaced, but it has served as a way to test [`Nordsta
 Changes will be included in the next progress report, and we'll also be able to share more details about the release then. Until then, have a great holiday and a happy new year!
 
 > **Filiph Siitam Sandström**\
-> Chief Technology Officer at Nordcom Group Inc.
+> Chief Technology Officer at Nordcom AB

@@ -33,7 +33,7 @@
         "slicemachine": "turbo run slicemachine --env-mode=loose"
     },
     "author": {
-        "name": "Nordcom Group Inc.",
+        "name": "Nordcom AB",
         "email": "hi@nordcom.io",
         "url": "https://nordcom.io/"
     },

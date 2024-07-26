@@ -10,7 +10,7 @@
 
 #### Documentation
 
-An theoretical unreachable code path has been taken (eg, switch case fall through, if else block or similar), this is a sign of a greater underlying problem and should be reported to Nordcom Group Inc. ASAP so we can investigate it.
+An theoretical unreachable code path has been taken (eg, switch case fall through, if else block or similar), this is a sign of a greater underlying problem and should be reported to Nordcom AB ASAP so we can investigate it.
 
 {% /card %}
 

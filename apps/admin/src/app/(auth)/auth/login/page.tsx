@@ -31,7 +31,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
                 <Link href="/" title="Nordcom Commerce">
                     <Image
                         src="https://shops.nordcom.io/logo.svg"
-                        alt="Nordcom Group Inc.'s Logo"
+                        alt="Nordcom AB's Logo"
                         height={75}
                         width={150}
                         draggable={false}

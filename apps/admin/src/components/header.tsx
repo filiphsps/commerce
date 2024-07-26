@@ -34,7 +34,7 @@ export default async function Header({ shopId, className, ...props }: HeaderProp
                         <Image
                             className={styles.logo}
                             src="https://shops.nordcom.io/logo.svg"
-                            alt="Nordcom Group Inc.'s Logo"
+                            alt="Nordcom AB's Logo"
                             height={75}
                             width={150}
                             draggable={false}

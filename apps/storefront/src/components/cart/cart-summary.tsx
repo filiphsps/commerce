@@ -242,7 +242,7 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
 
                 <div className={'text-sm leading-tight'}>
                     <FiLock className={'stroke mr-1 inline h-3 stroke-2'} />
-                    Safely complete your purchase through Nordcom Group Inc.&apos;s trusted partner&apos;s
+                    Safely complete your purchase through Nordcom AB&apos;s trusted partner&apos;s
                     <Link href="https://www.shopify.com/security/pci-compliant" rel="nofollow" target="_blank">
                         {' '}
                         PCI DSS compliant{' '}

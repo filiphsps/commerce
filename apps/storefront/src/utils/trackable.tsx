@@ -1,7 +1,7 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
@@ -11,9 +11,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,

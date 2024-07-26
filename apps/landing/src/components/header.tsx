@@ -18,7 +18,7 @@ export default async function Header({ className, ...props }: HeaderProps) {
                     <Image
                         className={styles.logo}
                         src={logo}
-                        alt="Nordcom Group Inc.'s Logo"
+                        alt="Nordcom AB's Logo"
                         height={75}
                         width={150}
                         draggable={false}

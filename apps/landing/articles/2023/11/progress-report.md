@@ -68,4 +68,4 @@ A lot more of the site is now automatically tested before getting deployed, whil
 While I can't give an estimate yet my goal is **between the 13th and 17th of November**. To be able to hit that I need y'all to visit the automatically deploying staging environment and look for and report issues, bugs and other roadblocks that need urgent attention. I am however not looking for design or feature feedback till after the release of `v2.0` as there's already enough in the backlog.
 
 > **Filiph Siitam Sandström**\
-> Chief Technology Officer at Nordcom Group Inc.
+> Chief Technology Officer at Nordcom AB

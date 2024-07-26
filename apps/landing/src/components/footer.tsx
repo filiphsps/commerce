@@ -49,9 +49,7 @@ export default function Footer({ className, ...props }: FooterProps) {
                     </section>
                     <section className={styles.section}>
                         <div>
-                            <Link href="https://nordcom.io/">
-                                &copy; 2023-{new Date().getFullYear()} Nordcom Group Inc.
-                            </Link>
+                            <Link href="https://nordcom.io/">&copy; 2023-{new Date().getFullYear()} Nordcom AB</Link>
                         </div>
                     </section>
                 </div>

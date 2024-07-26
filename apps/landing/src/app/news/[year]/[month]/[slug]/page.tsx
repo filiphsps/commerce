@@ -41,7 +41,7 @@ export async function generateMetadata({
     return {
         title,
         description,
-        publisher: 'Nordcom Group Inc.',
+        publisher: 'Nordcom AB',
         alternates: {
             canonical: url
         },

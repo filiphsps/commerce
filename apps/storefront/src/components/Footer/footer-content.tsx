@@ -45,7 +45,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                 <div className="flex gap-2 text-sm font-black uppercase">
                     {copyright}
                     <Link href={`https://nordcom.io/`} target="_blank">
-                        Nordcom Group Inc.
+                        Nordcom AB
                     </Link>
                 </div>
             </div>
