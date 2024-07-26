@@ -1,10 +1,9 @@
-import Link from 'next/link';
-
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 
+import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { DropdownSliceDefaultPrimaryLinksItem, Simplify } from '@/prismic/types';
