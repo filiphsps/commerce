@@ -22,7 +22,7 @@ export type CartSidebarProps = {
     /** @deprecated */
     store: StoreModel;
 } & HTMLProps<HTMLDivElement>;
-export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: CartSidebarProps) => {
+export const CartSidebar = ({ shop, i18n, locale, store, className, children, ...props }: CartSidebarProps) => {
     const cart = useCart();
     const trackable = useTrackable();
 
@@ -50,7 +50,9 @@ export const CartSidebar = ({ shop, i18n, locale, store, className, ...props }: 
                 }}
                 i18n={i18n}
                 store={store}
-            />
+            >
+                {children}
+            </CartSummary>
         </aside>
     );
 };

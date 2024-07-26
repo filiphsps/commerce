@@ -20,6 +20,7 @@ import { Label } from '@/components/typography/label';
 import { AcceptedPaymentMethods } from '../informational/accepted-payment-methods';
 
 import type { StoreModel } from '@/models/StoreModel';
+import type { ReactNode } from 'react';
 
 // TODO: Configurable free shipping.
 
@@ -27,11 +28,12 @@ type CartSummaryProps = {
     shop: Shop;
     onCheckout: any;
     i18n: LocaleDictionary;
+    children?: ReactNode;
 
     /** @deprecated */
     store: StoreModel;
 };
-const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
+const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) => {
     const { t } = useTranslation('cart', i18n);
     const { totalQuantity, lines, cost, note, discountCodes, cartReady } = useCart();
     const { currency } = useShop();
@@ -78,16 +80,6 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
 
     return (
         <div className={styles.container}>
-            {(totalQuantity || 0) > 0 ? (
-                <section className={styles.section}>
-                    <header className={styles.header}>
-                        <Label>{t('label-cart-note')}</Label>
-                    </header>
-
-                    <CartNote i18n={i18n} />
-                </section>
-            ) : null}
-
             <section className={styles.section}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
@@ -201,6 +193,8 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                 </div>
             </section>
 
+            {children}
+
             {discountCodes && discountCodes.length > 0 ? (
                 <section className={styles.section}>
                     <CartCoupons />
@@ -250,6 +244,16 @@ const CartSummary = ({ onCheckout, i18n, store }: CartSummaryProps) => {
                     checkout powered by Stripe and/or Shopify.
                 </div>
             </section>
+
+            {(totalQuantity || 0) > 0 ? (
+                <section className={styles.section}>
+                    <header className={styles.header}>
+                        <Label>{t('label-cart-note')}</Label>
+                    </header>
+
+                    <CartNote i18n={i18n} />
+                </section>
+            ) : null}
         </div>
     );
 };

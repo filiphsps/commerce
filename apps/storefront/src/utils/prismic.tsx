@@ -61,6 +61,8 @@ export const linkResolver: LinkResolverFunction<any> = (doc) => {
         return `/collections/${doc.uid}/`;
     } else if (doc.type === 'article_page') {
         return `/blog/${doc.uid}/`;
+    } else if (doc.type === 'cart_page') {
+        return `/cart/`;
     }
 
     return null;

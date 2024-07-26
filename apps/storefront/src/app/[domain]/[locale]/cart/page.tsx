@@ -13,7 +13,6 @@ import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 
-import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';
 
 import CartContent from './cart-content';
@@ -99,18 +98,6 @@ export default async function CartPage({ params: { domain, locale: localeData } 
                 shop={shop}
                 locale={locale}
                 header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
-                slices={
-                    page ? (
-                        <PrismicPage
-                            shop={shop}
-                            locale={locale}
-                            page={page}
-                            i18n={i18n}
-                            handle={'cart'}
-                            type={'custom_page'}
-                        />
-                    ) : null
-                }
                 i18n={i18n}
                 store={store}
             />

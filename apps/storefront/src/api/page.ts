@@ -4,7 +4,12 @@ import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 
-import type { CollectionPageDocument, CustomPageDocument, ProductPageDocument } from '@/prismic/types';
+import type {
+    CartPageDocument,
+    CollectionPageDocument,
+    CustomPageDocument,
+    ProductPageDocument
+} from '@/prismic/types';
 import type { PrismicDocument } from '@prismicio/client';
 
 export const PagesApi = async ({
@@ -39,18 +44,21 @@ export const PagesApi = async ({
     }
 };
 
-export type PageType = 'collection_page' | 'product_page' | 'custom_page';
+export type PageType = 'collection_page' | 'product_page' | 'cart_page' | 'custom_page';
 export type PageDocument<T> = T extends 'collection_page'
     ? CollectionPageDocument
     : T extends 'product_page'
       ? ProductPageDocument
-      : CustomPageDocument;
+      : T extends 'cart_page'
+        ? CartPageDocument
+        : CustomPageDocument;
 export type PageData<T> = PageDocument<T>['data'];
 
 type PageTypeMapping = {
     collection_page: CollectionPageDocument;
     product_page: ProductPageDocument;
     custom_page: CustomPageDocument;
+    cart_page: CartPageDocument;
 };
 type NarrowedPageType<T> = T extends keyof PageTypeMapping ? PageTypeMapping[T] : never;
 

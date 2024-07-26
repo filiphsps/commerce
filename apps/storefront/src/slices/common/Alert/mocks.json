@@ -5,8 +5,8 @@
         "primary": {
             "severity": {
                 "__TYPE__": "FieldContent",
-                "value": "info",
-                "type": "Select"
+                "type": "Select",
+                "value": "callout"
             },
             "content": {
                 "__TYPE__": "StructuredTextContent",
@@ -18,6 +18,10 @@
                         }
                     }
                 ]
+            },
+            "show_icon": {
+                "__TYPE__": "BooleanContent",
+                "value": true
             }
         },
         "items": []

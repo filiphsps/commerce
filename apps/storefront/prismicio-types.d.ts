@@ -68,6 +68,61 @@ export type ArticlePageDocument<Lang extends string = string> = prismic.PrismicD
     Lang
 >;
 
+type CartPageDocumentDataSlicesSlice = AlertSlice;
+
+type CartPageDocumentDataSidebarSlicesSlice = AlertSlice;
+
+type CartPageDocumentDataBottomSlicesSlice = AlertSlice;
+
+/**
+ * Content for Cart documents
+ */
+interface CartPageDocumentData {
+    /**
+     * Slice Zone field in *Cart*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: cart_page.slices[]
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */
+    slices: prismic.SliceZone<CartPageDocumentDataSlicesSlice> /**
+     * Slice Zone field in *Cart*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: cart_page.sidebar_slices[]
+     * - **Tab**: Sidebar
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */;
+    sidebar_slices: prismic.SliceZone<CartPageDocumentDataSidebarSlicesSlice> /**
+     * Slice Zone field in *Cart*
+     *
+     * - **Field Type**: Slice Zone
+     * - **Placeholder**: *None*
+     * - **API ID Path**: cart_page.bottom_slices[]
+     * - **Tab**: Bottom
+     * - **Documentation**: https://prismic.io/docs/field#slices
+     */;
+    bottom_slices: prismic.SliceZone<CartPageDocumentDataBottomSlicesSlice>;
+}
+
+/**
+ * Cart document from Prismic
+ *
+ * - **API ID**: `cart_page`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CartPageDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
+    Simplify<CartPageDocumentData>,
+    'cart_page',
+    Lang
+>;
+
 type CollectionPageDocumentDataSlicesSlice =
     | TitleSlice
     | AlertSlice
@@ -858,6 +913,7 @@ export type StoreDocument<Lang extends string = string> = prismic.PrismicDocumen
 
 export type AllDocumentTypes =
     | ArticlePageDocument
+    | CartPageDocument
     | CollectionPageDocument
     | CustomPageDocument
     | FooterDocument
@@ -881,7 +937,7 @@ export interface AlertSliceDefaultPrimary {
      * - **API ID Path**: alert.default.primary.severity
      * - **Documentation**: https://prismic.io/docs/field#select
      */
-    severity: prismic.SelectField<'info' | 'success' | 'warning' | 'error', 'filled'>;
+    severity: prismic.SelectField<'info' | 'success' | 'warning' | 'error' | 'callout', 'filled'>;
 
     /**
      * Content field in *Alert → Default → Primary*
@@ -892,6 +948,17 @@ export interface AlertSliceDefaultPrimary {
      * - **Documentation**: https://prismic.io/docs/field#rich-text-title
      */
     content: prismic.RichTextField;
+
+    /**
+     * Icon field in *Alert → Default → Primary*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: alert.default.primary.show_icon
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    show_icon: prismic.BooleanField;
 }
 
 /**
@@ -1778,6 +1845,11 @@ declare module '@prismicio/client' {
             ArticlePageDocument,
             ArticlePageDocumentData,
             ArticlePageDocumentDataSlicesSlice,
+            CartPageDocument,
+            CartPageDocumentData,
+            CartPageDocumentDataSlicesSlice,
+            CartPageDocumentDataSidebarSlicesSlice,
+            CartPageDocumentDataBottomSlicesSlice,
             CollectionPageDocument,
             CollectionPageDocumentData,
             CollectionPageDocumentDataSlicesSlice,

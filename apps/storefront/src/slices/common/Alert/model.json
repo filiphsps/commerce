@@ -17,7 +17,7 @@
                     "config": {
                         "label": "Severity",
                         "placeholder": "",
-                        "options": ["info", "success", "warning", "error"],
+                        "options": ["info", "success", "warning", "error", "callout"],
                         "default_value": "info"
                     }
                 },
@@ -28,6 +28,15 @@
                         "placeholder": "",
                         "allowTargetBlank": true,
                         "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                    }
+                },
+                "show_icon": {
+                    "type": "Boolean",
+                    "config": {
+                        "label": "Icon",
+                        "placeholder_false": "hide",
+                        "placeholder_true": "show",
+                        "default_value": true
                     }
                 }
             },

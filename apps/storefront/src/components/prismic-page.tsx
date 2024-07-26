@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import type { Optional, Shop } from '@nordcom/commerce-database';
 
-import { components, components as slices } from '@/slices';
+import { components } from '@/slices';
 import { SliceZone } from '@prismicio/react';
 
 import type { PageData, PageType } from '@/api/page';
@@ -14,7 +14,8 @@ type PageParams<T extends PageType> = {
     shop: Shop;
     locale: Locale;
     i18n: LocaleDictionary;
-    page: PageData<T>;
+    page?: PageData<T>;
+    slices?: PageData<T>['slices'];
     handle: string;
     type?: T;
 };
@@ -23,14 +24,17 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     locale,
     i18n,
     page,
+    slices,
     handle,
     type = 'custom_page' as T
 }: PageParams<T>) {
+    if (!page && !slices) return null;
+
     return (
-        <Suspense fallback={<PrismicPage.skeleton page={page} shop={shop} />}>
+        <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
             <SliceZone
-                slices={page.slices || []}
-                components={slices}
+                slices={page?.slices || slices || []}
+                components={components}
                 context={{ shop, i18n, locale, type, uid: handle, handle }}
             />
         </Suspense>
@@ -42,13 +46,17 @@ PrismicPage.displayName = 'Nordcom.PrismicPage';
 // TODO: Add {slice}.skeleton components as children.
 PrismicPage.skeleton = <T extends PageType = 'custom_page'>({
     page,
+    slices,
     shop
-}: Optional<Pick<PageParams<T>, 'page' | 'shop'>> = {}) => {
-    if (!page || !page.slices || page.slices.length <= 0) return <div />;
+}: Optional<Pick<PageParams<T>, 'page' | 'slices' | 'shop'>> = {}) => {
+    if (!page && !slices) return <div />;
+
+    const items = page?.slices || slices || [];
+    if (items.length <= 0) return <div />;
 
     return (
         <>
-            {page.slices.map((slice) => {
+            {items.map((slice) => {
                 if (!(slice as any)?.slice_type) return null;
 
                 const Slice = components[slice.slice_type] as any;
