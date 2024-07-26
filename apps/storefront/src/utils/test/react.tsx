@@ -13,9 +13,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
         domain: 'example.com'
     } as any;
+    const newShop = {
+        domain: 'example.com',
+        integrations: {}
+    } as any;
 
     return (
-        <ShopProvider shop={shop} locale={Locale.default} currency={'USD'}>
+        <ShopProvider shop={shop} newShop={newShop} locale={Locale.default} currency={'USD'}>
             <Trackable>{children}</Trackable>
         </ShopProvider>
     );

@@ -45,8 +45,9 @@ export function ProductContentSkeleton({}) {
 
 export type ProductPricingProps = {
     product: Product;
+    reverse?: boolean;
 } & PricingProps;
-export function ProductPricing({ product }: ProductPricingProps) {
+export function ProductPricing({ product, reverse = false }: ProductPricingProps) {
     const searchParams = useSearchParams();
     const variant = useMemo(
         () =>
@@ -61,7 +62,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
     const price = variant.price;
     const compareAtPrice = variant.compareAtPrice;
 
-    return (
+    const compareAtPriceElement = (
         <>
             {compareAtPrice ? (
                 <Money
@@ -70,6 +71,10 @@ export function ProductPricing({ product }: ProductPricingProps) {
                     suppressHydrationWarning={true}
                 />
             ) : null}
+        </>
+    );
+    const priceElement = (
+        <>
             {price ? (
                 <Money
                     data={price}
@@ -77,6 +82,18 @@ export function ProductPricing({ product }: ProductPricingProps) {
                     suppressHydrationWarning={true}
                 />
             ) : null}
+        </>
+    );
+
+    return reverse ? (
+        <>
+            {priceElement}
+            {compareAtPriceElement}
+        </>
+    ) : (
+        <>
+            {compareAtPriceElement}
+            {priceElement}
         </>
     );
 }

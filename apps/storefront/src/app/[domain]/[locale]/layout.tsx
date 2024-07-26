@@ -1,6 +1,6 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { type ReactNode, Suspense } from 'react';
 
@@ -18,6 +18,7 @@ import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';
+import { OkendoMetaProvider } from '@/components/integrations/okendo';
 import ShopLayout from '@/components/layout/shop-layout';
 import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
@@ -140,6 +141,8 @@ export default async function RootLayout({
                     <Suspense fallback={null}>
                         <CssVariablesProvider domain={domain} />
                     </Suspense>
+
+                    <OkendoMetaProvider shop={shop} />
                 </head>
 
                 <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">

@@ -65,6 +65,12 @@ export interface ShopBase extends BaseDocument {
         id: string;
     };
 
+    integrations: {
+        okendo?: {
+            subscriberId: string;
+        };
+    };
+
     collaborators: [
         {
             type: {
@@ -221,6 +227,18 @@ export const ShopSchema = new Schema<ShopBase>(
             },
             domain: {
                 type: Schema.Types.String,
+                required: false
+            }
+        },
+
+        integrations: {
+            okendo: {
+                type: {
+                    subscriberId: {
+                        type: Schema.Types.String,
+                        required: true
+                    }
+                },
                 required: false
             }
         },

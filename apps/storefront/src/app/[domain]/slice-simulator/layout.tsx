@@ -1,8 +1,8 @@
 import 'server-only';
 
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
 import { Shop } from '@nordcom/commerce-db';
 

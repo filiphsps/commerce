@@ -180,6 +180,54 @@ input[type='search']:is(
     }
 }
 
+[data-oke-container] {
+    .oke-poweredBy,
+    .oke-w-controls a.oke-poweredBy {
+        display: none;
+    }
+
+    &:empty {
+        display: none !important;
+    }
+
+    &.okeReviews {
+        padding: 0 !important;
+
+        &:not(:empty) {
+            padding: 4rem 0px;
+        }
+
+        &,
+        .oke-sr-label-text {
+            font-family: inherit !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        a,
+        button {
+            &,
+            &.oke-button {
+                -webkit-appearance: none;
+                appearance: none;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.25rem;
+
+                padding: 0.75rem 1rem;
+
+                font-weight: 700;
+                text-align: center;
+                line-height: 1;
+
+                border-radius: var(--block-border-radius);
+            }
+        }
+    }
+}
+
 svg {
     font-size: inherit;
     height: 100%;

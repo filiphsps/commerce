@@ -20,6 +20,7 @@ import { parseGid } from '@shopify/hydrogen-react';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
+import { OkendoReviewsWidget, OkendoStarsWidget } from '@/components/integrations/okendo';
 import Link from '@/components/link';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
@@ -265,38 +266,42 @@ export default async function ProductPage({
                         />
                     </div>
 
-                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch lg:gap-8">
-                        <div className="flex h-auto w-full flex-col justify-start gap-2 border-0 border-b-2 border-solid border-gray-300 pb-6 pt-2 lg:border-0 lg:p-0">
-                            <header className="flex flex-col gap-1">
-                                <div className="text-3xl font-bold leading-none">
-                                    <h1 className="text-inherit">
-                                        {title} &mdash; {product.productType}
-                                    </h1>
-                                </div>
+                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch md:gap-8">
+                        <header className="flex h-auto w-full flex-col justify-start gap-1">
+                            <div className="text-3xl font-bold *:leading-tight">
+                                <h1 className="text-inherit">
+                                    {title} &mdash; {product.productType}
+                                </h1>
+                            </div>
 
+                            <div className="flex flex-col items-start justify-stretch gap-2 md:h-5 md:flex-row md:items-center md:gap-2">
                                 <Link
-                                    className="hover:text-primary text-lg normal-case text-gray-600 transition-colors"
+                                    className="hover:text-primary grow text-lg normal-case leading-none text-gray-600 transition-colors"
                                     href={`/collections/${TitleToHandle(product.vendor)}`}
                                 >
                                     {product.vendor}
                                 </Link>
-                            </header>
 
-                            <div className="flex flex-col md:gap-1">
-                                <div className="flex flex-row items-center gap-2 md:gap-4">
-                                    <Suspense fallback={<ProductPricingSkeleton />}>
-                                        <ProductPricing product={product} />
-                                    </Suspense>
-                                </div>
-
-                                <InfoLines product={product} />
+                                <OkendoStarsWidget
+                                    product={product}
+                                    className=":text-sm :font-extrabold :text-gray-600 h-4 leading-none [&_svg]:h-4"
+                                />
                             </div>
-                        </div>
 
-                        <div className="flex flex-col items-stretch justify-start gap-2">
-                            <Suspense fallback={<ProductContentSkeleton />}>
-                                <ProductContent shop={shop} product={product} i18n={i18n} />
-                            </Suspense>
+                            <div className="flex flex-row items-center gap-2 py-4 md:pt-2">
+                                <Suspense fallback={<ProductPricingSkeleton />}>
+                                    <ProductPricing product={product} reverse />
+                                </Suspense>
+                            </div>
+                        </header>
+
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-col items-stretch justify-start gap-2">
+                                <Suspense fallback={<ProductContentSkeleton />}>
+                                    <ProductContent shop={shop} product={product} i18n={i18n} />
+                                </Suspense>
+                            </div>
+                            <InfoLines product={product} />
                         </div>
 
                         <Suspense fallback={<Content />}>
@@ -309,16 +314,10 @@ export default async function ProductPage({
                     </div>
                 </section>
 
-                <div className="flex flex-col gap-4 pt-8 md:gap-8">
-                    <section className="mt-8 flex w-full flex-col gap-4 xl:rounded-lg xl:bg-gray-100 xl:p-4">
-                        <Suspense fallback={null}>
+                <div className="flex flex-col gap-4">
+                    <section className="flex w-full flex-col gap-4 empty:hidden xl:rounded-lg xl:bg-gray-100 xl:p-4">
+                        <Suspense>
                             <ImportantProductDetails locale={locale} data={product} />
-                        </Suspense>
-
-                        <Suspense fallback={<div />}>
-                            <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
-                                <ProductDetails locale={locale} data={product} />
-                            </div>
                         </Suspense>
                     </section>
 
@@ -327,6 +326,20 @@ export default async function ProductPage({
 
                         <Suspense fallback={<RecommendedProducts.skeleton />}>
                             <RecommendedProducts shop={shop} locale={locale} product={product} />
+                        </Suspense>
+                    </section>
+
+                    <section className="rounded-lg bg-gray-100 p-4">
+                        <Suspense>
+                            <OkendoReviewsWidget product={product} className="p-0" />
+                        </Suspense>
+                    </section>
+
+                    <section className="flex w-full flex-col py-4 xl:rounded-lg">
+                        <Suspense>
+                            <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
+                                <ProductDetails locale={locale} data={product} />
+                            </div>
                         </Suspense>
                     </section>
                 </div>

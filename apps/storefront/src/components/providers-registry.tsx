@@ -8,6 +8,7 @@ import { createClient } from '@/utils/prismic';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
+import { OkendoProvider } from '@/components/integrations/okendo';
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
 
@@ -53,6 +54,10 @@ const ContentProvider = ({ shop, locale, children }: { shop: OnlineShop; locale:
     }
 };
 
+const IntegrationsProvider = ({ shop, children }: { shop: OnlineShop; children: ReactNode }) => {
+    return <OkendoProvider shop={shop}>{children}</OkendoProvider>;
+};
+
 const ProvidersRegistry = ({
     shop,
     currency = 'USD',
@@ -73,7 +78,7 @@ const ProvidersRegistry = ({
                         languageCode={locale.language}
                         countryCode={locale.country!}
                     >
-                        {children}
+                        <IntegrationsProvider shop={shop}>{children}</IntegrationsProvider>
 
                         <ToasterProvider
                             theme="dark"
