@@ -127,7 +127,7 @@ export default async function RootLayout({
         return (
             <html
                 lang={locale.code}
-                className={cn(primaryFont.variable, 'overflow-x-hidden overscroll-x-none')}
+                className={cn(primaryFont.variable, 'overscroll-x-none')}
                 // A bunch of extensions add classes to the `html` element.
                 suppressHydrationWarning={true}
             >
