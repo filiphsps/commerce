@@ -1,10 +1,10 @@
-import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
+import 'the-new-css-reset';
 
-import { type ReactNode, Suspense } from 'react';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
+import { type ReactNode, Suspense } from 'react';
 
 import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
@@ -76,11 +76,11 @@ export async function generateMetadata({
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
             title: {
-                absolute: shop.name,
+                absolute: `${shop.name} ${locale.country!}`.trim()
                 // Allow tenants to customize this.
                 // For example allow them to use other separators
                 // like `·`, `—` etc.
-                template: `%s - ${shop.name} ${locale.country!}`
+                // template: `%s - ${shop.name} ${locale.country!}`
             },
             icons: {
                 icon: ['/favicon.png'],

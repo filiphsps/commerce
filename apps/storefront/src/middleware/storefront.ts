@@ -86,7 +86,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = `/${locale}${newUrl.pathname || '/'}`;
     }
 
-    // TEMP: Redirect to english
+    // TEMP: Redirect to english.
     if (!newUrl.pathname.startsWith('/en-')) {
         const path = newUrl.pathname.split('-').at(-1);
         newUrl.pathname = `/en-${path}`;
