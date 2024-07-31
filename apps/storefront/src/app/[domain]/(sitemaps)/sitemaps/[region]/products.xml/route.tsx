@@ -1,5 +1,5 @@
-import { unstable_cache as cache } from 'next/cache';
 import { getServerSideSitemap } from 'next-sitemap';
+import { unstable_cache as cache } from 'next/cache';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
@@ -9,10 +9,10 @@ import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 
-import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
+import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
 export async function GET(
     _: NextRequest,
@@ -28,7 +28,11 @@ export async function GET(
     const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
     const allLocales = await LocalesApi({ api });
-    const locales = allLocales.filter(({ country }) => country?.toLowerCase() === region.toLowerCase());
+
+    // FIXME: Remove duplicate locales.
+    const locales = allLocales.filter(
+        ({ country, language }) => country?.toLowerCase() === region.toLowerCase() && language.toLowerCase() === 'en'
+    );
 
     let res,
         products: Product[] = [];
