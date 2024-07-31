@@ -17,8 +17,6 @@ export async function GET(
     _: NextRequest,
     { params: { domain, region: regionData } }: { params: DynamicSitemapRouteParams & { region: string } }
 ) {
-    console.log(domain, regionData);
-
     const region = regionData.split('-').at(-1)?.split('.').at(0);
     if (!region) {
         throw new NotFoundError(`"Region" with the handle "${regionData}"`);
