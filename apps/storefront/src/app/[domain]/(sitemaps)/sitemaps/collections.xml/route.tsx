@@ -1,3 +1,4 @@
+import { unstable_cache as cache } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSideSitemap } from 'next-sitemap';
 
@@ -17,7 +18,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await ShopApi(domain, undefined, true);
+        const shop = await ShopApi(domain, cache, true);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });

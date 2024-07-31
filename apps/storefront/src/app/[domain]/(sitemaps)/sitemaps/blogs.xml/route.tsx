@@ -1,3 +1,4 @@
+import { unstable_cache as cache } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSideSitemap } from 'next-sitemap';
 
@@ -16,7 +17,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await ShopApi(domain, undefined, true);
+        const shop = await ShopApi(domain, cache, true);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
@@ -34,7 +35,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
                         (article) =>
                             ({
                                 // TODO: Support more than one blog.
-                                loc: `https://${shop.domain}/${locale}/blog/${article.handle}/`,
+                                loc: `https://${shop.domain}/${code}/blog/${article.handle}/`,
                                 changefreq: 'never',
                                 lastmod: article.publishedAt,
                                 alternateRefs: locales

@@ -1,3 +1,4 @@
+import { unstable_cache as cache } from 'next/cache';
 import { getServerSideSitemap } from 'next-sitemap';
 
 import { ShopApi } from '@nordcom/commerce-database';
@@ -22,7 +23,7 @@ export async function GET(
         throw new NotFoundError(`"Region" with the handle "${regionData}"`);
     }
 
-    const shop = await ShopApi(domain, undefined, true);
+    const shop = await ShopApi(domain, cache, true);
     const locale = Locale.from(`en-${region}`);
     const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
