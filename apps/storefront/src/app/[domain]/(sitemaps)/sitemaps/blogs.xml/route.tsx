@@ -2,15 +2,14 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSideSitemap } from 'next-sitemap';
 
 import { ShopApi } from '@nordcom/commerce-database';
-import { Error, UnknownApiError } from '@nordcom/commerce-errors';
+import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
-import { CollectionsPaginationApi } from '@/api/shopify/collection';
+import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
 
-import type { DynamicSitemapRouteParams } from '../sitemap.xml/route';
-import type { Collection } from '@shopify/hydrogen-react/storefront-api-types';
+import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { ISitemapField } from 'next-sitemap';
 
 export const dynamic = 'force-dynamic';
@@ -23,26 +22,25 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 
-        let res,
-            collections: Collection[] = [];
-        while ((res = await CollectionsPaginationApi({ api, limit: 75, after: res?.page_info.end_cursor }))) {
-            collections.push(...res.collections.map(({ node: collection }) => collection));
-            if (!res.page_info.has_next_page) break;
-        }
+        // TODO: const blogs = await BlogsApi({ api });
+        const blog = await BlogApi({ api, handle: 'news' });
+        if (!blog) throw new NotFoundError(`"Blog" with the handle "${'news'}"`);
 
+        const articles = blog.articles.edges.map(({ node: article }) => article) || [];
         return getServerSideSitemap(
             locales
                 .map(({ code }) => {
-                    return collections.map(
-                        (collection) =>
+                    return articles.map(
+                        (article) =>
                             ({
-                                loc: `https://${shop.domain}/${code}/collections/${collection.handle}/`,
-                                changefreq: 'daily',
-                                lastmod: collection.updatedAt,
+                                // TODO: Support more than one blog.
+                                loc: `https://${shop.domain}/${locale}/blog/${article.handle}/`,
+                                changefreq: 'never',
+                                lastmod: article.publishedAt,
                                 alternateRefs: locales
-                                    .filter(({ code: _code }) => code !== _code)
+                                    .filter(({ code: c }) => code !== c)
                                     .map(({ code }) => ({
-                                        href: `https://${shop.domain}/${code}/collections/${collection.handle}/`,
+                                        href: `https://${shop.domain}/${code}/blog/${article.handle}/`,
                                         hreflang: code,
                                         hrefIsAbsolute: true
                                     })),
