@@ -86,6 +86,16 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = `/${locale}${newUrl.pathname || '/'}`;
     }
 
+    // TEMP: Redirect to english
+    if (!newUrl.pathname.startsWith('/en-')) {
+        const path = newUrl.pathname.split('-').at(-1);
+        newUrl.pathname = `/en-${path}`;
+
+        if (newUrl.href !== req.nextUrl.href) {
+            return NextResponse.redirect(newUrl, { status: 302 });
+        }
+    }
+
     // Validate that we don't now have more than one locale in the path,
     // for example `/en-US/de-DE/en-gb/de-de/about/` which should instead
     // be `/en-US/about/`. This can occur for numerous reasons; for example
