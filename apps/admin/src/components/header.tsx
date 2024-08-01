@@ -1,14 +1,13 @@
 import styles from '@/components/header.module.scss';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
-
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Header as NordstarHeader, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 
 import type { HTMLProps } from 'react';
 

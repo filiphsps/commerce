@@ -1,6 +1,5 @@
-import Image from 'next/image';
-
 import { cn } from '@/utils/tailwind';
+import Image from 'next/image';
 
 import type { StoreModel } from '@/models/StoreModel';
 import type { HTMLProps } from 'react';

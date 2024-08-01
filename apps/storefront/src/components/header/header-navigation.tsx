@@ -1,10 +1,9 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
+import { usePathname } from 'next/navigation';
 
 import type { MenuDocumentData } from '@/prismic/types';
 import type { HTMLProps } from 'react';

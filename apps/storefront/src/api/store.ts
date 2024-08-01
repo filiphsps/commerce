@@ -1,11 +1,10 @@
-import { notFound } from 'next/navigation';
-
 import { Error, NoLocalesAvailableError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { gql } from '@apollo/client';
 import { asText } from '@prismicio/client';
+import { notFound } from 'next/navigation';
 
 import type { StoreModel } from '@/models/StoreModel';
 import type { StoreDocument } from '@/prismic/types';

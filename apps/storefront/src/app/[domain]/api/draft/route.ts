@@ -1,12 +1,11 @@
-import { unstable_cache as cache } from 'next/cache';
-import { draftMode } from 'next/headers';
-import { type NextRequest, NextResponse } from 'next/server';
-
 import { ShopApi } from '@nordcom/commerce-database';
 
 import { Locale } from '@/utils/locale';
 import { createClient } from '@/utils/prismic';
 import { redirectToPreviewURL } from '@prismicio/next';
+import { unstable_cache as cache } from 'next/cache';
+import { draftMode } from 'next/headers';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export type DraftApiRouteParams = {
     domain: string;

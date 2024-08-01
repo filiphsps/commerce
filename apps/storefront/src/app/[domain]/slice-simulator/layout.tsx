@@ -4,9 +4,6 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
 
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-
 import { ShopApi } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -15,6 +12,8 @@ import { CssVariablesProvider } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';

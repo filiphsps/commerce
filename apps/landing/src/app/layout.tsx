@@ -1,11 +1,10 @@
 import '@/styles/app.scss';
 import styles from './layout.module.scss';
 
-import { Montserrat } from 'next/font/google';
-
 import { View } from '@nordcom/nordstar';
 
 import { GeistMono } from 'geist/font/mono';
+import { Montserrat } from 'next/font/google';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';

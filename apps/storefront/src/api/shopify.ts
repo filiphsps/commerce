@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { unstable_cache as cache } from 'next/cache';
-
 import { type Shop, ShopApi } from '@nordcom/commerce-database';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
@@ -9,6 +7,7 @@ import { createApolloClient } from '@/api/client';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
+import { unstable_cache as cache } from 'next/cache';
 
 import type { ApiConfig } from '@/api/client';
 

@@ -1,8 +1,6 @@
 import 'server-only';
 
 import { Suspense } from 'react';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -19,6 +17,8 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Link from '@/components/link';

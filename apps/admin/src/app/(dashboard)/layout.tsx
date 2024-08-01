@@ -1,6 +1,5 @@
-import { SessionProvider } from 'next-auth/react';
-
 import { auth } from '@/auth';
+import { SessionProvider } from 'next-auth/react';
 
 import type { ReactNode } from 'react';
 

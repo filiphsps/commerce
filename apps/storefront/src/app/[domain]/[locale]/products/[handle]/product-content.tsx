@@ -3,12 +3,12 @@
 import styles from './page.module.scss';
 
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { cn } from '@/utils/tailwind';
 import { Money, ProductProvider } from '@shopify/hydrogen-react';
+import { useSearchParams } from 'next/navigation';
 
 import { ProductActionsContainer } from '@/components/products/product-actions-container';
 import { QuantityProvider } from '@/components/products/quantity-provider';

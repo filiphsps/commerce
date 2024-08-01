@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
-
 import { ShopApi } from '@nordcom/commerce-database';
 
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
+import { NextResponse } from 'next/server';
 import { resolveAcceptLanguage } from 'resolve-accept-language';
 
 import type { NextRequest } from 'next/server';

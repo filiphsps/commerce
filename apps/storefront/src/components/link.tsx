@@ -1,13 +1,13 @@
 'use client';
 
 import { type ComponentProps } from 'react';
-import BaseLink from 'next/link';
 
 import type { Shop } from '@nordcom/commerce-database';
 import { TypeError } from '@nordcom/commerce-errors';
 
 import { commonValidations } from '@/middleware/common-validations';
 import { Locale } from '@/utils/locale';
+import BaseLink from 'next/link';
 
 import { useShop } from '@/components/shop/provider';
 

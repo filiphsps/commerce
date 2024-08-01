@@ -1,11 +1,11 @@
 import 'server-only';
 
 import { type HTMLProps } from 'react';
-import Image from 'next/image';
 
 import { Shop } from '@nordcom/commerce-db';
 
 import { MenuApi } from '@/api/navigation';
+import Image from 'next/image';
 
 import { CartButton } from '@/components/header/cart-button';
 import { HeaderMenu } from '@/components/header/header-menu';

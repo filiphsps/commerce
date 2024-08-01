@@ -2,10 +2,6 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { unstable_cache as cache } from 'next/cache';
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -14,6 +10,9 @@ import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
+import { unstable_cache as cache } from 'next/cache';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { title } from 'process';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';

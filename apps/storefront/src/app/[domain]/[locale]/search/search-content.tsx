@@ -3,12 +3,12 @@
 import styles from './search-content.module.scss';
 
 import { useCallback, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import debounce from 'lodash.debounce';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
 

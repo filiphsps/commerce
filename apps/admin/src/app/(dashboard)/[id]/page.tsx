@@ -2,13 +2,12 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { notFound, redirect } from 'next/navigation';
-
 import { Error } from '@nordcom/commerce-errors';
 import { Card, Details, Heading } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
+import { notFound, redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 

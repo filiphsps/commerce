@@ -1,9 +1,10 @@
 import styles from '@/components/back-button.module.scss';
 
 import { BiChevronLeft } from 'react-icons/bi';
-import Link from 'next/link';
 
 import { Label } from '@nordcom/nordstar';
+
+import Link from 'next/link';
 
 import type { HTMLProps } from 'react';
 

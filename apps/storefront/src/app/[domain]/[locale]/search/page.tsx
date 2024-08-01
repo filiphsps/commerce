@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { Suspense } from 'react';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -13,6 +11,8 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import PrismicPage from '@/components/prismic-page';
 import Heading from '@/components/typography/heading';

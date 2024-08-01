@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 import type { Nullable, Shop } from '@nordcom/commerce-database';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
@@ -21,6 +20,7 @@ import {
 } from '@shopify/hydrogen-react';
 import { track as vercelTrack } from '@vercel/analytics/react';
 import debounce from 'lodash.debounce';
+import { usePathname } from 'next/navigation';
 import { createContext, useContext, useContextSelector } from 'use-context-selector';
 
 import { useShop } from '@/components/shop/provider';

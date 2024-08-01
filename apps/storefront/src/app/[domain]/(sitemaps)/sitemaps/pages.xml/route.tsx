@@ -1,11 +1,10 @@
-import { getServerSideSitemap } from 'next-sitemap';
-
 import { ShopApi } from '@nordcom/commerce-database';
 
 import { PagesApi } from '@/api/page';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { getServerSideSitemap } from 'next-sitemap';
 
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { NextRequest } from 'next/server';

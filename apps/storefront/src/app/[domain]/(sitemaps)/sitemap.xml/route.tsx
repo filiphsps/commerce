@@ -1,7 +1,7 @@
+import { ShopApi } from '@nordcom/commerce-database';
+
 import { unstable_cache as cache } from 'next/cache';
 import { getServerSideSitemapIndex } from 'next-sitemap';
-
-import { ShopApi } from '@nordcom/commerce-database';
 
 import type { NextRequest } from 'next/server';
 

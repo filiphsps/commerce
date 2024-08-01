@@ -3,13 +3,13 @@ import 'server-only';
 import styles from './layout.module.scss';
 
 import { BiBook, BiCreditCardFront, BiHomeAlt, BiImage, BiRocket, BiStats, BiWrench } from 'react-icons/bi';
-import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
 
 import { Button, Card, Heading, Label, View } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { getShop } from '@/utils/fetchers';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';

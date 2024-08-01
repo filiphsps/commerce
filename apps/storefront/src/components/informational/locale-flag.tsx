@@ -1,7 +1,6 @@
-import Image from 'next/image';
-
 import { cn } from '@/utils/tailwind';
 import { byIso as countryLookup } from 'country-code-lookup';
+import Image from 'next/image';
 
 import type { Locale } from '@/utils/locale';
 import type { ComponentProps } from 'react';

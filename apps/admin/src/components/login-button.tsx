@@ -3,14 +3,14 @@
 import styles from '@/components/login-button.module.scss';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 
 import { UnknownApiError } from '@nordcom/commerce-errors';
 import { Button } from '@nordcom/nordstar';
 
 import GithubLight from '@/static/icons/light/github.svg';
+import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import type { AuthProvider } from '@/auth';

@@ -1,8 +1,7 @@
-import Image from 'next/image';
-
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink } from '@prismicio/client';
+import Image from 'next/image';
 
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';

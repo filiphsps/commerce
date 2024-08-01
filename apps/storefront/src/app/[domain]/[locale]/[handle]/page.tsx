@@ -1,8 +1,5 @@
 import 'server-only';
 
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
@@ -13,6 +10,8 @@ import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import PrismicPage from '@/components/prismic-page';
 

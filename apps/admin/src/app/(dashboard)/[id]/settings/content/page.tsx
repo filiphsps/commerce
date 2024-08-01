@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { notFound, redirect } from 'next/navigation';
-
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 import { Button, Card, Heading, Label } from '@nordcom/nordstar';
 
@@ -16,6 +14,7 @@ import {
     updateContentProvider
 } from '@/utils/fetchers';
 import { ContentProviderType } from '@prisma/client';
+import { notFound, redirect } from 'next/navigation';
 
 import { SettingsBlock } from '@/components/settings-block';
 

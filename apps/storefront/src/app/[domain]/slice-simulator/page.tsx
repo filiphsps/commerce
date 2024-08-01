@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { unstable_cache as cache } from 'next/cache';
-
 import { ShopApi } from '@nordcom/commerce-database';
 
 import { components } from '@/slices';
@@ -9,6 +7,7 @@ import { getDictionary } from '@/utils/dictionary';
 import { Locale } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
 import { getSlices, SliceSimulator } from '@slicemachine/adapter-next/simulator';
+import { unstable_cache as cache } from 'next/cache';
 
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
 

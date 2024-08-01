@@ -2,13 +2,12 @@ import 'server-only';
 
 import styles from '@/components/Footer/footer.module.scss';
 
-import Image from 'next/image';
-
 import type { Shop } from '@nordcom/commerce-database';
 
 import { FooterApi } from '@/api/footer';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { StoreApi } from '@/api/store';
+import Image from 'next/image';
 
 import FooterContent from '@/components/Footer/footer-content';
 import Link from '@/components/link';

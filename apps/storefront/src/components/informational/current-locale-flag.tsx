@@ -1,8 +1,7 @@
 import styles from '@/components/informational/current-locale-flag.module.scss';
 
-import Image from 'next/image';
-
 import { cn } from '@/utils/tailwind';
+import Image from 'next/image';
 
 import type { Locale } from '@/utils/locale';
 import type { ComponentProps } from 'react';

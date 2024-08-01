@@ -3,12 +3,12 @@
 import styles from './countries.module.scss';
 
 import { useRef } from 'react';
-import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { Locale } from '@/utils/locale';
 import { byIso as countryLookup } from 'country-code-lookup';
+import Image from 'next/image';
 
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';

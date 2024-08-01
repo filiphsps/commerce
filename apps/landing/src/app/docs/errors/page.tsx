@@ -1,10 +1,10 @@
 import styles from './page.module.scss';
 
-import Link from 'next/link';
-
 import type { Error } from '@nordcom/commerce-errors';
 import { getAllErrorCodes, getErrorFromCode, MissingContextProviderError } from '@nordcom/commerce-errors';
 import { Card, Heading } from '@nordcom/nordstar';
+
+import Link from 'next/link';
 
 import type { Metadata } from 'next';
 

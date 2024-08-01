@@ -1,7 +1,6 @@
+import authConfig from '@/utils/auth.config';
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
-
-import authConfig from '@/utils/auth.config';
 
 import type { NextAuthRequest } from 'next-auth/lib';
 

@@ -1,11 +1,10 @@
 import styles from '@/components/header.module.scss';
 
-import Image from 'next/image';
-import Link from 'next/link';
-
 import { Button, Header as NordstarHeader } from '@nordcom/nordstar';
 
 import logo from '@/static/logo.svg';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import type { HTMLProps } from 'react';
 

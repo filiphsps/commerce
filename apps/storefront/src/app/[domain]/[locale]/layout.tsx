@@ -3,8 +3,6 @@ import '@/styles/app.scss';
 import '@/styles/global.css';
 
 import { type ReactNode, Suspense } from 'react';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
 
 import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
@@ -16,6 +14,8 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { HeaderProvider } from '@/components/header/header-provider';

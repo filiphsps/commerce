@@ -1,14 +1,13 @@
 import styles from './layout.module.scss';
 
-import { unstable_cache as cache } from 'next/cache';
-import { notFound } from 'next/navigation';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound } from 'next/navigation';
 
 import Link from '@/components/link';
 import { Label } from '@/components/typography/label';

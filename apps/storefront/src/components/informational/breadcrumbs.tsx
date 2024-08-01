@@ -3,11 +3,11 @@
 import styles from '@/components/informational/breadcrumbs.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
-import { usePathname } from 'next/navigation';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { cn } from '@/utils/tailwind';
+import { usePathname } from 'next/navigation';
 
 import Link from '@/components/link';
 

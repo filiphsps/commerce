@@ -1,11 +1,11 @@
 import 'server-only';
 
 import { useMemo } from 'react';
-import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { cn } from '@/utils/tailwind';
+import Image from 'next/image';
 
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Content } from '@prismicio/client';

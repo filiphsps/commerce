@@ -104,7 +104,7 @@
                     // Side effect imports and styles.
                     ["^\\u0000", "vitest", "^.+\\.s?css$"],
                     // Node.js built-ins.
-                    ["^node:", "^react", "^next"],
+                    ["^node:", "^react", "^/next"],
                     // Our packages.
                     ["^@nordcom(/.*|$)"],
                     // Path aliases.

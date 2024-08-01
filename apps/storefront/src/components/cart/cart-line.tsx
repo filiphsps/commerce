@@ -1,7 +1,6 @@
-import Image from 'next/image';
-
 import { cn } from '@/utils/tailwind';
 import { Money, parseGid } from '@shopify/hydrogen-react';
+import Image from 'next/image';
 
 import { CartLineQuantityAction, CartLineRemoveAction } from '@/components/cart/cart-line-actions';
 import Link from '@/components/link';

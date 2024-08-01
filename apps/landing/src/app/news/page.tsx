@@ -1,8 +1,8 @@
 import styles from './page.module.scss';
 
-import Link from 'next/link';
-
 import { Card, Heading } from '@nordcom/nordstar';
+
+import Link from 'next/link';
 
 import { getArticles } from './[year]/[month]/[slug]/articles';
 

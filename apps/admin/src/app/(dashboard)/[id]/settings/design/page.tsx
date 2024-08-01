@@ -2,12 +2,11 @@ import 'server-only';
 
 import styles from './settings.module.scss';
 
-import { notFound, redirect } from 'next/navigation';
-
 import { Card, Heading, Input, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
 import { getShop, getShopTheme, updateShop, updateShopTheme } from '@/utils/fetchers';
+import { notFound, redirect } from 'next/navigation';
 
 import { SettingsBlock } from '@/components/settings-block';
 

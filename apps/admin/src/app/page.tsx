@@ -1,13 +1,12 @@
 import styles from './page.module.scss';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-
 import { Accented, Button, Heading, Label, View } from '@nordcom/nordstar';
 
 import { auth, signOut } from '@/auth';
 import { getShopsForUser } from '@/utils/fetchers';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import ActionableCard from '@/components/actionable-card';
 

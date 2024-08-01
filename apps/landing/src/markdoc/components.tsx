@@ -1,7 +1,7 @@
+import { Card, Heading } from '@nordcom/nordstar';
+
 import Link from 'next/link';
 import Script from 'next/script';
-
-import { Card, Heading } from '@nordcom/nordstar';
 
 import type { ReactNode } from 'react';
 

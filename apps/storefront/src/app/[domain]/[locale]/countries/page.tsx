@@ -1,9 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { unstable_cache as cache } from 'next/cache';
-import { cookies } from 'next/headers';
-import { notFound, redirect } from 'next/navigation';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 
@@ -13,6 +9,9 @@ import { CountriesApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
+import { cookies } from 'next/headers';
+import { notFound, redirect } from 'next/navigation';
 
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';

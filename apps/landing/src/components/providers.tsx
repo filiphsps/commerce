@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import NextTopLoader from 'nextjs-toploader';
 
 import { Theme } from '@nordcom/commerce-marketing-common';
 import { NordstarProvider } from '@nordcom/nordstar';
 
 import { GoogleTagManager } from '@next/third-parties/google';
+import { usePathname, useRouter } from 'next/navigation';
+import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 import { Toaster } from 'sonner';
 

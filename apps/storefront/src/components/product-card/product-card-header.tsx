@@ -3,7 +3,6 @@
 import styles from '@/components/product-card/product-card.module.scss';
 
 import { memo, useMemo } from 'react';
-import Image from 'next/image';
 
 import type { Shop } from '@nordcom/commerce-database';
 
@@ -11,6 +10,7 @@ import { createProductSearchParams } from '@/api/product';
 import { deepEqual } from '@/utils/deep-equal';
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { cn } from '@/utils/tailwind';
+import Image from 'next/image';
 
 import Link from '@/components/link';
 

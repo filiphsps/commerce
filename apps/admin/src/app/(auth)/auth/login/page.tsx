@@ -1,12 +1,11 @@
 import styles from './page.module.scss';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-
 import { Heading, Label } from '@nordcom/nordstar';
 
 import { auth } from '@/auth';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import ActionableCard from '@/components/actionable-card';
 import LoginButton from '@/components/login-button';

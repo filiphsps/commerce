@@ -1,11 +1,11 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import NextTopLoader from 'nextjs-toploader';
 
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
+import { usePathname, useRouter } from 'next/navigation';
+import NextTopLoader from 'nextjs-toploader';
 import * as NProgress from 'nprogress';
 
 import type { ReactNode } from 'react';

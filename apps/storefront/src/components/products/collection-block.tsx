@@ -3,13 +3,13 @@ import 'server-only';
 import styles from '@/components/products/collection-block.module.scss';
 
 import { type HTMLProps, Suspense } from 'react';
-import { unstable_cache as cache } from 'next/cache';
 
 import type { Shop } from '@nordcom/commerce-database';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
 import { cn } from '@/utils/tailwind';
+import { unstable_cache as cache } from 'next/cache';
 
 import Link from '@/components/link';
 import ProductCard from '@/components/product-card/product-card';

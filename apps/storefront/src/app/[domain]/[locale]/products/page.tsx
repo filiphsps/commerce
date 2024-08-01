@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { Suspense } from 'react';
-import { unstable_cache as cache } from 'next/cache';
-import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
@@ -14,6 +12,8 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
+import { unstable_cache as cache } from 'next/cache';
+import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
 import Breadcrumbs from '@/components/informational/breadcrumbs';

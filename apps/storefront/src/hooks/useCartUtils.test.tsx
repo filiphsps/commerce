@@ -1,11 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useSearchParams } from 'next/navigation';
-
 import { useCartUtils } from '@/hooks/useCartUtils';
 import { Locale } from '@/utils/locale';
 import { act, renderHook, waitFor } from '@/utils/test/react';
 import { useCart } from '@shopify/hydrogen-react';
+import { useSearchParams } from 'next/navigation';
 
 import type { Mock } from 'vitest';
 

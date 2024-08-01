@@ -1,7 +1,3 @@
-import { unstable_cache as cache } from 'next/cache';
-import { type NextRequest, NextResponse } from 'next/server';
-import { getServerSideSitemap } from 'next-sitemap';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
@@ -9,6 +5,9 @@ import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
+import { unstable_cache as cache } from 'next/cache';
+import { type NextRequest, NextResponse } from 'next/server';
+import { getServerSideSitemap } from 'next-sitemap';
 
 import type { DynamicSitemapRouteParams } from '../../sitemap.xml/route';
 import type { ISitemapField } from 'next-sitemap';

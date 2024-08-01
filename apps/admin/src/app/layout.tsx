@@ -1,8 +1,7 @@
 import '@/styles/app.scss';
 
-import { Montserrat } from 'next/font/google';
-
 import { GeistMono } from 'geist/font/mono';
+import { Montserrat } from 'next/font/google';
 
 import { Providers } from '@/components/providers';
 

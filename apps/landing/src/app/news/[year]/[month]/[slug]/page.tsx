@@ -1,14 +1,14 @@
 import styles from './page.module.scss';
 
 import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 
 import { Heading } from '@nordcom/nordstar';
 
 import { components } from '@/markdoc';
 import Markdoc from '@markdoc/markdoc';
 import gravatar from 'gravatar.js';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import { Content } from '@/components/content';
 

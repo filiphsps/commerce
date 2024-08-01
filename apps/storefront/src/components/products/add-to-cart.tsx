@@ -4,7 +4,6 @@
 import styles from '@/components/products/add-to-cart.module.scss';
 
 import { type HTMLProps, useCallback, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 import { TodoError } from '@nordcom/commerce-errors';
 
@@ -14,6 +13,7 @@ import { ShopifyPriceToNumber } from '@/utils/pricing';
 import { cn } from '@/utils/tailwind';
 import { useTrackable } from '@/utils/trackable';
 import { useCart, useProduct } from '@shopify/hydrogen-react';
+import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/actionable/button';

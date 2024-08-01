@@ -1,8 +1,8 @@
-import { ImageResponse } from 'next/og';
-import { type NextRequest, NextResponse } from 'next/server';
-
 import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
+
+import { ImageResponse } from 'next/og';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export type AppleIconRouteParams = {
     domain: string;

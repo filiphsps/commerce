@@ -1,8 +1,8 @@
-import { ImageResponse } from 'next/og';
-import { type NextRequest, NextResponse } from 'next/server';
-
 import { Shop } from '@nordcom/commerce-db';
 import { NotFoundError } from '@nordcom/commerce-errors';
+
+import { ImageResponse } from 'next/og';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { validateSize } from './validate-size';
 
