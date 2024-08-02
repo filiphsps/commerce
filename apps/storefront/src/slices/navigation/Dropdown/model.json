@@ -58,6 +58,11 @@
                                             "name": "desktop",
                                             "width": 1024,
                                             "height": 200
+                                        },
+                                        {
+                                            "name": "large desktop",
+                                            "width": 2048,
+                                            "height": 400
                                         }
                                     ]
                                 }

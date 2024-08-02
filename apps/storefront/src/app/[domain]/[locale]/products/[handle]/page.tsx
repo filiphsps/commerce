@@ -255,6 +255,8 @@ export default async function ProductPage({
 
         return (
             <>
+                <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
+
                 <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap md:gap-8">
                     <div className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-3xl'}>
                         <ProductGallery
@@ -327,8 +329,6 @@ export default async function ProductPage({
                         </Suspense>
                     </section>
                 </div>
-
-                <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
                 {/* Metadata */}
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
