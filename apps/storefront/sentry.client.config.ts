@@ -7,6 +7,14 @@ import * as Sentry from '@sentry/nextjs';
 Sentry.init({
     dsn: 'https://69f04d1649cfe353ec27e6a30ca412d5@o4506147853828096.ingest.us.sentry.io/4507483915091968',
 
+    ignoreErrors: [
+        'HierarchyRequestError',
+        'ApolloError',
+        'The operation would yield an incorrect node tree.',
+        "Failed to execute 'removeChild'",
+        `Unexpected token '<', "<html> <h"... is not valid JSON`
+    ],
+
     // Adjust this value in production, or use tracesSampler for greater control
     tracesSampleRate: 0.3,
     // Set profilesSampleRate to 1.0 to profile every transaction.
