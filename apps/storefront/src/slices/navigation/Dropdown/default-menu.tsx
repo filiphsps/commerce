@@ -3,22 +3,28 @@ import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
 import { PrismicNextImage } from '@prismicio/next';
 
+import { useHeaderMenu } from '@/components/header/header-provider';
 import Link from '@/components/link';
 import { PrismicText } from '@/components/typography/prismic-text';
 
 import type { DropdownSliceDefaultPrimaryLinksItem, Simplify } from '@/prismic/types';
 import type { SliceComponentProps } from '@prismicio/react';
 
+const MENU_COMMON_STYLES = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3';
+const MENU_ITEM_COMMON_STYLES =
+    'group/item hover:border-primary hover:text-primary flex h-full grow overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75';
+const TITLE_COMMON_STYLES = 'text-xl leading-none py-2 font-semibold';
+
 type DropdownDefaultMenuProps = Pick<SliceComponentProps<Content.DropdownSlice>, 'slice'>;
 export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
-    const commonStyles = 'h-full w-full max-w-[var(--page-width)] px-3 py-4 md:px-4 2xl:px-3';
+    const { closeMenu } = useHeaderMenu();
     const links = slice.primary.links || [];
 
     // fixed top-28  group-data-[scrolled=false]/body:top-36
     return (
         <nav
             className={cn(
-                commonStyles,
+                MENU_COMMON_STYLES,
                 'flex flex-col gap-2 md:grid md:auto-rows-max md:grid-cols-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-4'
             )}
         >
@@ -34,13 +40,6 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                     return null;
                 }
 
-                const titleStyles = 'text-xl leading-none py-2 font-semibold';
-
-                let commonStyles = cn(
-                    'group/item hover:border-primary hover:text-primary flex h-full grow overflow-hidden rounded-lg border border-solid border-gray-300 bg-white transition-colors duration-75',
-                    background && 'grid grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
-                    description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]'
-                );
                 let gradientStyles = '';
                 let imagePositionStyles = 'object-center';
 
@@ -75,7 +74,16 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                 }
 
                 return (
-                    <Link key={`${slice.id}_${target}_${index}`} href={target} className={cn(commonStyles)}>
+                    <Link
+                        key={`${slice.id}_${target}_${index}`}
+                        href={target}
+                        className={cn(
+                            MENU_ITEM_COMMON_STYLES,
+                            background && 'grid grid-cols-1 grid-rows-1 items-center justify-start xl:grid-rows-1',
+                            description && background && 'grid-rows-[4.25rem_1fr] xl:grid-rows-[4.25rem_1fr]'
+                        )}
+                        onClick={() => closeMenu()}
+                    >
                         {background ? (
                             <div
                                 className={cn(
@@ -105,7 +113,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                     className={cn(
                                         'absolute inset-0 flex h-full w-full items-end justify-start p-2 text-white',
                                         gradientStyles,
-                                        titleStyles
+                                        TITLE_COMMON_STYLES
                                     )}
                                     style={{
                                         textShadow: `1px 1px ${gradientStyles ? '8px' : '1px'} #000`
@@ -118,7 +126,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
 
                         <div className={cn('h-full p-2 pt-2 text-gray-600 empty:hidden group-hover/item:text-inherit')}>
                             {!background ? (
-                                <div className={cn(titleStyles, 'pt-1')}>
+                                <div className={cn(TITLE_COMMON_STYLES, 'pt-1')}>
                                     <PrismicText data={title} styled={false} bare={true} />
                                 </div>
                             ) : null}

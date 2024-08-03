@@ -49,6 +49,7 @@ export const InfoBar = ({ className, locale, i18n, ...props }: InfoBarProps) => 
                             href="mailto:support@swedish-candy-store.com"
                             className={LINK_STYLES}
                             title={t('email-tooltip')}
+                            data-nosnippet
                         >
                             <FiMail className="h-3" style={{ strokeWidth: 2.5 }} />
                             {t('email')}
@@ -56,7 +57,12 @@ export const InfoBar = ({ className, locale, i18n, ...props }: InfoBarProps) => 
 
                         {divider}
 
-                        <Link href="tel:+1-866-502-5580" className={LINK_STYLES} title={t('phone-tooltip')}>
+                        <Link
+                            href="tel:+1-866-502-5580"
+                            className={LINK_STYLES}
+                            title={t('phone-tooltip')}
+                            data-nosnippet
+                        >
                             <FiPhone className="h-3" style={{ strokeWidth: 2.5 }} />
                             {t('phone')}
                         </Link>
