@@ -7,8 +7,10 @@ import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
 import { ShopifyApolloApiClient } from '@/api/shopify';
+import { SearchApi } from '@/api/shopify/search';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
+import { showSearchFilter } from '@/utils/flags';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
 import { notFound } from 'next/navigation';
@@ -19,6 +21,10 @@ import Heading from '@/components/typography/heading';
 import SearchContent from './search-content';
 
 import type { Metadata } from 'next';
+
+// TODO: Figure out a better way to deal with query params.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
@@ -82,7 +88,17 @@ export async function generateMetadata({
     }
 }
 
-export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
+type SearchParams = {
+    q?: string;
+};
+
+export default async function SearchPage({
+    params: { domain, locale: localeData },
+    searchParams
+}: {
+    params: SearchPageParams;
+    searchParams: SearchParams;
+}) {
     try {
         const locale = Locale.from(localeData);
 
@@ -91,6 +107,14 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
+
+        const query = searchParams.q?.toString() || null;
+
+        const client = await ShopifyApolloApiClient({ shop, locale });
+
+        const { products, productFilters } = query
+            ? await SearchApi({ query, client })
+            : { products: [], productFilters: [] };
 
         return (
             <>
@@ -109,10 +133,13 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 
                 <Suspense fallback={null}>
                     <SearchContent
-                        //client={await ShopifyApolloApiClient({ shop, locale })}
-                        shop={shop}
                         locale={locale}
                         i18n={i18n}
+                        showFilters={await showSearchFilter()}
+                        data={{
+                            products,
+                            productFilters
+                        }}
                     />
                 </Suspense>
             </>
