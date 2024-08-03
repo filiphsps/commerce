@@ -43,6 +43,10 @@ export default defineProject({
 
         setupFiles: [`${__dirname}/vitest.setup.ts`],
 
+        sequence: {
+            hooks: 'parallel'
+        },
+
         globals: true,
         deps: {
             web: {

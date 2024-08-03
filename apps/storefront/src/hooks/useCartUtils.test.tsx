@@ -6,13 +6,12 @@ import { act, renderHook, waitFor } from '@/utils/test/react';
 import { useCart } from '@shopify/hydrogen-react';
 import { useSearchParams } from 'next/navigation';
 
-import type { Mock } from 'vitest';
-
 vi.mock('next/navigation', () => ({
     useSearchParams: vi.fn()
 }));
 
-vi.mock('@shopify/hydrogen-react', () => ({
+vi.mock('@shopify/hydrogen-react', async () => ({
+    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
     useCart: vi.fn(),
     useShopifyCookies: vi.fn().mockReturnValue({})
 }));
@@ -23,9 +22,9 @@ const GER = Locale.from('de-DE')!;
 describe('hooks', () => {
     describe('useCartUtils', () => {
         beforeEach(() => {
-            (useSearchParams as Mock<any, any>).mockReturnValue({});
+            (useSearchParams as any).mockReturnValue({});
 
-            (useCart as Mock<any, any>).mockReturnValue({
+            (useCart as any).mockReturnValue({
                 error: undefined,
 
                 buyerIdentity: {
@@ -79,7 +78,7 @@ describe('hooks', () => {
 
         it('should add discount code to cart when present in URL', async () => {
             const discount = ['COUPON_CODE'];
-            (useSearchParams as Mock<any, any>).mockReturnValue({
+            (useSearchParams as any).mockReturnValue({
                 discount: discount
             });
 

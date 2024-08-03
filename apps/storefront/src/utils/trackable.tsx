@@ -10,9 +10,9 @@ import { BuildConfig } from '@/utils/build-config';
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { ShopifyPriceToNumber } from '@/utils/pricing';
 import {
-    AnalyticsEventName as ShopifyAnalyticsEventName,
     getClientBrowserParameters,
     sendShopifyAnalytics,
+    AnalyticsEventName as ShopifyAnalyticsEventName,
     ShopifySalesChannel,
     useCart,
     useShop as useShopify,
@@ -207,7 +207,7 @@ const shopifyEventHandler = async (
         //navigationType: 'navigate', // TODO: do this properly.
 
         totalValue: value,
-        products: products.map((line) => ({
+        products: (products || []).map((line) => ({
             productGid: line.product_id!,
             variantGid: line.variant_id!,
             name: line.item_name!,
@@ -442,7 +442,7 @@ function Trackable({ children }: TrackableProps) {
 
         // Flush the queue.
         Promise.allSettled(
-            events.map(({ type, event }) => {
+            (events || []).map(({ type, event }) => {
                 return handleEvent(
                     type,
                     {

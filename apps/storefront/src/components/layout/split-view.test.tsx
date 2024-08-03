@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import React from 'react';
-
 import { render } from '@/utils/test/react';
 
 import SplitView from '@/components/layout/split-view';
@@ -10,6 +8,7 @@ describe('components', () => {
     describe('SplitView', () => {
         vi.mock('@shopify/hydrogen-react', async () => {
             return {
+                ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),

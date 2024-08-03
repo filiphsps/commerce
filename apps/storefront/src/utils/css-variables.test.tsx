@@ -7,6 +7,7 @@ describe('utils', () => {
     describe('CssVariablesProvider', () => {
         vi.mock('@shopify/hydrogen-react', async () => {
             return {
+                ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),

@@ -7,6 +7,7 @@ describe('components', () => {
     describe('PrismicPage', () => {
         vi.mock('@shopify/hydrogen-react', async () => {
             return {
+                ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),

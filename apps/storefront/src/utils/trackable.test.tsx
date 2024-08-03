@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import React from 'react';
-
 import { render } from '@/utils/test/react';
 import { Trackable } from '@/utils/trackable';
 
@@ -9,6 +7,7 @@ describe('components', () => {
     describe('Trackable', () => {
         vi.mock('@shopify/hydrogen-react', async () => {
             return {
+                ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                 useCart: vi.fn().mockReturnValue({
                     status: 'idle'
                 }),

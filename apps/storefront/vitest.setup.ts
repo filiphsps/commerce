@@ -49,6 +49,20 @@ vi.mock('@nordcom/commerce-database', () => ({
     })
 }));
 
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.demo.nordcom.io',
+            commerceProvider: {
+                type: 'shopify' as const,
+                domain: 'mock.shop' as const
+            },
+            contentProvider: {}
+        })
+    }
+}));
+
 // Mock the `prismic` module as it requires a valid Prismic repository,
 // which we don't have in our tests. It's up to prismic to test their
 // service, not us. We would only cause unnecessary conflicts and
@@ -69,7 +83,7 @@ vi.mock('next/navigation', async () => {
     };
 });
 
-vi.mock('@shopify/hydrogen-react', async () => ({
+vi.mock('@shopify/hydrogen-react', async (importOriginal) => ({
     ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
     flattenConnection: vi.fn().mockImplementation((data) => data),
     createStorefrontClient: () => ({

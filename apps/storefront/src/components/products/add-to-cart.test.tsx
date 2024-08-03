@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import React from 'react';
-
 import { render } from '@/utils/test/react';
 
 import AddToCart from '@/components/products/add-to-cart';
@@ -10,6 +8,7 @@ describe('components', () => {
     describe('AddToCart', () => {
         vi.mock('@shopify/hydrogen-react', async () => {
             return {
+                ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                 useProduct: vi.fn().mockReturnValue({
                     selectedVariant: {
                         availableForSale: true

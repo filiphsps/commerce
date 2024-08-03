@@ -9,6 +9,7 @@ describe('components', () => {
         describe('ProductCardHeader', () => {
             vi.mock('@shopify/hydrogen-react', async () => {
                 return {
+                    ...((await vi.importActual('@shopify/hydrogen-react')) || {}),
                     useProduct: vi.fn().mockReturnValue({
                         selectedVariant: {
                             availableForSale: true

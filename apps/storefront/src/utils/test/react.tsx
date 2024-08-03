@@ -1,5 +1,5 @@
-import '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
+import '@testing-library/react';
 
 import { Locale } from '@/utils/locale';
 import { Trackable } from '@/utils/trackable';
@@ -11,7 +11,14 @@ import type { ReactElement, ReactNode } from 'react';
 
 const Providers = ({ children }: { children: ReactNode }) => {
     const shop = {
-        domain: 'example.com'
+        id: 'mock-shop-id',
+        domain: 'example.com',
+        commerceProvider: {
+            type: 'shopify' as const,
+            domain: 'mock.shop' as const,
+            id: 'mock-shop-id'
+        },
+        contentProvider: {}
     } as any;
 
     return (
