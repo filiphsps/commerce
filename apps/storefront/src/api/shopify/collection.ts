@@ -1,7 +1,7 @@
 import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
 import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
 
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify';
 import { cleanShopifyHtml } from '@/utils/abstract-api';
 import { gql } from '@apollo/client';
 

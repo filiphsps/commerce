@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { shopifyContextTransform } from '@/utils/abstract-api';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
@@ -15,7 +13,10 @@ export const createApolloClient = ({ uri, headers }: ApiConfig) => {
         ssrMode: false,
         link: new HttpLink({
             uri,
-            headers,
+            headers: {
+                ...headers
+                //'Content-Type': 'application/graphql'
+            },
             fetchOptions: {
                 next: {
                     revalidate: 3600,

@@ -40,7 +40,7 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
         await Promise.all(
             shops.map(async ({ domain }) => {
                 const shop = await ShopApi(domain, cache);
-                const apiConfig = await ShopifyApiConfig({ shop });
+                const apiConfig = (await ShopifyApiConfig({ shop })).private();
                 const api = await ShopifyApiClient({ shop, apiConfig });
                 const locales = await LocalesApi({ api });
 

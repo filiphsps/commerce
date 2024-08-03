@@ -6,7 +6,7 @@ import { ShopApi } from '@nordcom/commerce-database';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
-import { ShopifyApolloApiClient } from '@/api/shopify';
+import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
@@ -19,7 +19,13 @@ import Heading from '@/components/typography/heading';
 
 import SearchContent from './search-content';
 
+import { Product } from '@/api/product';
+import { SearchApi } from '@/api/shopify/search';
 import type { Metadata } from 'next';
+
+// TODO: Figure out a better way to deal with query params.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export type SearchPageParams = { domain: string; locale: string };
 export async function generateMetadata({
@@ -31,7 +37,8 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
 
         const shop = await ShopApi(domain, cache);
-        const api = await ShopifyApolloApiClient({ shop, locale });
+        const apiConfig = (await ShopifyApiConfig({ shop })).private();
+        const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
 
         const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
         const locales = await LocalesApi({ api });
@@ -83,15 +90,36 @@ export async function generateMetadata({
     }
 }
 
-export default async function SearchPage({ params: { domain, locale: localeData } }: { params: SearchPageParams }) {
+type SearchParams = {
+    q?: string;
+};
+
+export default async function SearchPage({
+    params: { domain, locale: localeData },
+    searchParams
+}: {
+    params: SearchPageParams;
+    searchParams: SearchParams;
+}) {
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await ShopApi(domain, cache, true);
         const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
 
         const i18n = await getDictionary(locale);
         const { t } = useTranslation('common', i18n);
+
+        const query = searchParams.q?.toString() || null;
+
+        const apiConfig = (await ShopifyApiConfig({ shop })).private();
+        const client = await ShopifyApolloApiClient({ shop, locale, apiConfig });
+
+        let products: Product[] = [];
+        if (query) {
+            const { products: p } = await SearchApi({ query, client });
+            products = p;
+        }
 
         return (
             <>
@@ -110,10 +138,11 @@ export default async function SearchPage({ params: { domain, locale: localeData 
 
                 <Suspense fallback={null}>
                     <SearchContent
-                        //client={await ShopifyApolloApiClient({ shop, locale })}
-                        shop={shop}
                         locale={locale}
                         i18n={i18n}
+                        data={{
+                            products
+                        }}
                     />
                 </Suspense>
             </>

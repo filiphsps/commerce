@@ -24,7 +24,7 @@ export async function GET(
 
     const shop = await ShopApi(domain, cache, true);
     const locale = Locale.from(`en-${region}`);
-    const apiConfig = await ShopifyApiConfig({ shop });
+    const apiConfig = (await ShopifyApiConfig({ shop })).private();
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
     const allLocales = await LocalesApi({ api });
 

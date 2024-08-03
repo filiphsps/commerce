@@ -13,7 +13,7 @@ import type { ISitemapField } from 'next-sitemap';
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     const shop = await ShopApi(domain);
     const locale = Locale.default;
-    const apiConfig = await ShopifyApiConfig({ shop });
+    const apiConfig = (await ShopifyApiConfig({ shop })).private();
     const api = await ShopifyApiClient({ shop, locale, apiConfig });
     const locales = await LocalesApi({ api });
 

@@ -1,4 +1,4 @@
-import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
+import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify';
 import { gql } from '@apollo/client';
 
 import type { Product } from '@/api/product';
