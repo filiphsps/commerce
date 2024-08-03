@@ -8,7 +8,6 @@ import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { unstable_cache as cache } from 'next/cache';
-import { headers } from 'next/headers';
 
 import type { ApiConfig } from '@/api/client';
 
@@ -32,13 +31,13 @@ export const ShopifyApiConfig = async ({
         contentType: 'json'
     });
 
-    // TODO: Find a better way to get the buyer IP.
+    // TODO: Find a way to get the buyer IP.
     let buyerIp: string | undefined = undefined;
-    try {
+    /*try {
         buyerIp = headers().get('x-forwarded-for') || undefined;
     } catch (error) {
         console.error(error);
-    }
+    }*/
 
     return {
         public: () => ({
