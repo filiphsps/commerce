@@ -4,6 +4,7 @@ import styles from './collection.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
 
+import { cn } from '@/utils/tailwind';
 import { asText } from '@prismicio/client';
 
 import Link from '@/components/link';
@@ -43,27 +44,38 @@ const CollectionContainerHeader = ({ slice }: Omit<CollectionContainerProps, 'ch
         (slice.primary.alignment === 'right' && styles['align-right']) ||
         styles['align-center'];
 
-    return (
-        <>
-            {hasTitle ? (
-                <Title
-                    as={Link}
-                    href={`/collections/${slice.primary.handle!}`}
-                    // TODO: i18n.
-                    title={`View all products in "${asText(slice.primary.title)}"`}
-                    className={`${styles.title} ${alignment}`}
-                >
-                    <PrismicText data={slice.primary.title} />
-                    <FiChevronRight />
-                </Title>
-            ) : null}
+    const title = hasTitle ? (
+        <Title
+            as={Link}
+            href={`/collections/${slice.primary.handle!}`}
+            // TODO: i18n.
+            title={`View all products in "${asText(slice.primary.title)}"`}
+            className={cn(
+                styles.title,
+                alignment,
+                'group flex items-center gap-1 text-xl font-bold leading-snug hover:underline lg:text-2xl'
+            )}
+        >
+            <PrismicText data={slice.primary.title} styled={false} bare={true} />
+            <FiChevronRight
+                style={{ strokeWidth: 3.5 }}
+                className="text-3xl transition-transform group-hover:scale-125 md:text-xl"
+            />
+        </Title>
+    ) : null;
 
-            {hasBody ? (
-                <Content className={`${styles.body} ${alignment}`}>
-                    <PrismicText data={slice.primary.body} />
-                </Content>
-            ) : null}
-        </>
+    const body = hasBody ? (
+        <Content className={cn(styles.body, alignment, 'font-semibold')}>
+            <PrismicText data={slice.primary.body} />
+        </Content>
+    ) : null;
+
+    if (hasTitle && !hasBody) return title;
+    return (
+        <header className="flex w-full flex-col gap-1">
+            {title}
+            {body}
+        </header>
     );
 };
 
@@ -71,7 +83,7 @@ const CollectionContainer = async ({ slice, children, className }: CollectionCon
     return (
         <PageContent
             as="section"
-            className={`${styles.container} ${className || ''}`}
+            className={cn(styles.container, 'gap-4', className)}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >

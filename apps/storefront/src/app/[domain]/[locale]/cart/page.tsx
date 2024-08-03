@@ -12,6 +12,7 @@ import { asText } from '@prismicio/client';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Heading from '@/components/typography/heading';
 
 import CartContent from './cart-content';
@@ -93,13 +94,17 @@ export default async function CartPage({ params: { domain, locale: localeData } 
         const { t } = useTranslation('common', i18n);
 
         return (
-            <CartContent
-                shop={shop}
-                locale={locale}
-                header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
-                i18n={i18n}
-                store={store}
-            />
+            <>
+                <CartContent
+                    shop={shop}
+                    locale={locale}
+                    header={<Heading title={page?.title || t('cart')} subtitle={page?.description} />}
+                    i18n={i18n}
+                    store={store}
+                />
+
+                <Breadcrumbs shop={shop} />
+            </>
         );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {

@@ -1,6 +1,7 @@
 import styles from '@/components/Footer/footer.module.scss';
 
 import { useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 import { AcceptedPaymentMethods } from '@/components/informational/accepted-payment-methods';
 import { CurrentLocaleFlag } from '@/components/informational/current-locale-flag';
@@ -22,12 +23,12 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
 
     return (
         /* TODO: This should be configurable in prismic. */
-        <div className={styles.legal}>
-            <div className={styles['bottom-block']}>
+        <div className={cn(styles.legal, 'h-full w-full gap-8 pt-6 md:gap-4 lg:pt-12')}>
+            <div className="flex flex-col items-center justify-end gap-2 md:items-start">
                 <AcceptedPaymentMethods store={store!} />
 
                 <div className={styles['legal-and-copyrights']}>
-                    <div className="flex flex-wrap gap-4 gap-y-0 *:text-sm *:font-black *:uppercase">
+                    <div className="flex flex-wrap gap-4 gap-y-0 *:text-xs *:font-black *:uppercase *:lg:text-sm">
                         <Link href="/contact/">Contact</Link>
                         <Link href="https://nordcom.io/legal/terms-of-service/" target="_blank">
                             Terms of Service
@@ -37,12 +38,12 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                 </div>
             </div>
 
-            <div className={styles['bottom-block']}>
+            <div className="flex flex-col items-center justify-end gap-2 md:items-end">
                 <Link className="block h-8" href="/countries/" title={t('language-and-region-settings')}>
                     <CurrentLocaleFlag locale={locale} />
                 </Link>
 
-                <div className="flex gap-2 text-sm font-black uppercase">
+                <div className="flex gap-2 text-xs font-black uppercase lg:text-sm">
                     {copyright}
                     <Link href={`https://nordcom.io/`} target="_blank">
                         Nordcom AB

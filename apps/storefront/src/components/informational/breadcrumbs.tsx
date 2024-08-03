@@ -1,6 +1,7 @@
 'use client';
 
 import styles from '@/components/informational/breadcrumbs.module.scss';
+import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
 
@@ -10,37 +11,45 @@ import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
 
 import Link from '@/components/link';
+import { useShop } from '@/components/shop/provider';
 
 type BreadcrumbsProps = {
     shop: Shop;
     title?: string;
 };
 const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
+    const { locale } = useShop();
     const route = usePathname();
     const path = route.split('/').slice(2, -1);
 
     if (!path || path.length <= 0) return null;
 
+    const textStyles = 'text-sm md:text-xs leading-none';
+    const blockStyles = 'gap-1 lg:gap-2';
+
     const hrefs = path.map((_, index) => `/${path.slice(0, index + 1).join('/')}`);
     return (
         <section
-            className={cn(styles.breadcrumbs, 'gap-1 rounded-lg px-1 py-2')}
+            className={cn(styles.breadcrumbs, overflowStyles.container, blockStyles, 'rounded-lg p-2')}
             itemScope
             itemType="https://schema.org/BreadcrumbList"
         >
             <div
-                className={cn(styles.item, 'gap-1')}
+                className={cn(styles.item, blockStyles)}
                 itemProp="itemListElement"
                 itemScope
                 itemType="https://schema.org/ListItem"
             >
                 <Link
-                    className={cn(styles.link, 'rounded-lg px-1 text-sm')}
+                    className={cn(styles.link, textStyles, 'rounded-lg px-1')}
                     href="/"
                     itemType="https://schema.org/Thing"
                     itemProp="item"
                 >
-                    <span itemProp="name">{shop.name}</span>
+                    <span itemProp="name">
+                        {shop.name}
+                        {locale.country ? ` (${locale.country.toUpperCase()})` : ''}
+                    </span>
                 </Link>
                 <meta itemProp="position" content="1" />
 
@@ -50,13 +59,13 @@ const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {
             {path.map((entry, index) => (
                 <div
                     key={entry}
-                    className={cn(styles.item, 'gap-1')}
+                    className={cn(styles.item, textStyles, blockStyles)}
                     itemProp="itemListElement"
                     itemScope
                     itemType="https://schema.org/ListItem"
                 >
                     <Link
-                        className={cn(styles.link, 'rounded-lg px-1 text-sm')}
+                        className={cn(styles.link, textStyles, 'rounded-lg px-1')}
                         href={hrefs[index]!}
                         itemType="https://schema.org/Thing"
                         itemProp="item"

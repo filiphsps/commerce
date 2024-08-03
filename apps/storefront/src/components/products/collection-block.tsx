@@ -1,6 +1,7 @@
 import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
+import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { type HTMLProps, Suspense } from 'react';
 
@@ -63,7 +64,14 @@ const CollectionBlock = async ({
     if (!collection || !products || products.length <= 0) return null;
 
     return (
-        <section {...props} className={cn(styles.container, isHorizontal && styles.horizontal, className)}>
+        <section
+            {...props}
+            className={cn(
+                styles.container,
+                isHorizontal && `${styles.horizontal} ${overflowStyles.container}`,
+                className
+            )}
+        >
             <div className={styles.content}>
                 {products.map((product, index) => (
                     <Suspense key={product.id} fallback={<ProductCard.skeleton />}>

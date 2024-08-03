@@ -1,6 +1,9 @@
 import 'server-only';
 
 import styles from './vendors.module.scss';
+import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
+
+import { cn } from '@/utils/tailwind';
 
 import Vendors from '@/components/informational/vendors';
 import PageContent from '@/components/page-content';
@@ -20,7 +23,7 @@ const VendorsSlice = async ({ slice, context: { shop, locale } }: VendorsProps) 
     return (
         <PageContent
             as="section"
-            className={styles.container}
+            className={cn(styles.container, overflowStyles.container)}
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >

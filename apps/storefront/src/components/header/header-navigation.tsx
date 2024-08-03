@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '@/components/header/header-navigation.module.scss';
+import styles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';

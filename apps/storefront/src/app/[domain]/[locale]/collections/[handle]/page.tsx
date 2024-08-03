@@ -154,6 +154,8 @@ export default async function CollectionPage({
 
         return (
             <>
+                <Breadcrumbs shop={shop} title={collection.title} />
+
                 <PageContent className={styles.container}>
                     <Heading
                         title={page?.meta_title || collection.seo.title || collection.title}
@@ -197,8 +199,6 @@ export default async function CollectionPage({
                         </section>
                     ) : null}
                 </PageContent>
-
-                <Breadcrumbs shop={shop} title={collection.title} />
 
                 {/* Metadata */}
                 <script

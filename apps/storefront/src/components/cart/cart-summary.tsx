@@ -80,6 +80,8 @@ const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) =>
 
     return (
         <div className={styles.container}>
+            {children}
+
             <section className={styles.section}>
                 <header className={styles.header}>
                     <Label>{t('order-summary')}</Label>
@@ -193,15 +195,7 @@ const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) =>
                 </div>
             </section>
 
-            {children}
-
-            {discountCodes && discountCodes.length > 0 ? (
-                <section className={styles.section}>
-                    <CartCoupons />
-                </section>
-            ) : null}
-
-            <section className={`${styles.section} ${styles['section-actions']}`}>
+            <section className={cn(styles.section, styles['section-actions'], 'mt-4')}>
                 <Button
                     className={cn(styles.button, styles['checkout-button'], 'text-lg uppercase')}
                     disabled={!cartReady || (totalQuantity || 0) <= 0 || !lines}
@@ -210,8 +204,16 @@ const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) =>
                     <span>{t('continue-to-checkout')}</span>
                     <FiChevronRight className={styles.icon} />
                 </Button>
+            </section>
 
-                {lines && lines.length > 0 ? (
+            {discountCodes && discountCodes.length > 0 ? (
+                <section className={styles.section}>
+                    <CartCoupons />
+                </section>
+            ) : null}
+
+            {lines && lines.length > 0 ? (
+                <section className={`${styles.section} ${styles['section-actions']}`}>
                     <>
                         {cartReady ? (
                             <ShopPayButton
@@ -228,8 +230,8 @@ const CartSummary = ({ onCheckout, i18n, store, children }: CartSummaryProps) =>
                             <Button className={cn(styles.button, styles['shop-button'])} disabled={true} />
                         )}
                     </>
-                ) : null}
-            </section>
+                </section>
+            ) : null}
 
             <section className={cn(styles.section, styles['section-security'])}>
                 <AcceptedPaymentMethods store={store} />

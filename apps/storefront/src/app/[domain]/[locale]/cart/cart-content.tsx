@@ -5,9 +5,9 @@ import { type ReactNode } from 'react';
 import type { Shop } from '@nordcom/commerce-database';
 
 import { PageApi } from '@/api/page';
+import { cn } from '@/utils/tailwind';
 
 import { CartLines } from '@/components/cart/cart-lines';
-import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PageContent from '@/components/page-content';
 import PrismicPage from '@/components/prismic-page';
 
@@ -30,8 +30,8 @@ export default async function CartContent({ shop, locale, i18n, header, store }:
 
     return (
         <PageContent className={styles.container}>
-            <section className={styles.content}>
-                <div className="flex flex-col gap-4">
+            <section className={cn(styles.content, 'gap-4 lg:gap-8')}>
+                <div className="flex flex-col gap-4 border-0 border-b-2 border-solid border-gray-300 md:border-0">
                     <PrismicPage
                         shop={shop}
                         locale={locale}
@@ -68,8 +68,6 @@ export default async function CartContent({ shop, locale, i18n, header, store }:
                 handle={'cart'}
                 type={'cart_page'}
             />
-
-            <Breadcrumbs shop={shop} />
         </PageContent>
     );
 }

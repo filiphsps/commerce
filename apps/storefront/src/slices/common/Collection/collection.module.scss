@@ -6,7 +6,7 @@
     justify-self: flex-start;
     align-self: flex-start;
     align-items: flex-start;
-    gap: var(--block-spacer-large);
+    gap: 1rem;
 
     &:not(.full) {
         @media (min-width: $breakpoint-mobile) {
@@ -16,47 +16,43 @@
             color: var(--foreground);
         }
     }
-
-    @media (min-width: $breakpoint-mobile) {
-        .align-left {
-            justify-self: flex-start;
-            align-self: flex-start;
-            align-items: flex-start;
-            text-align: left;
-        }
-        .align-center {
-            justify-self: center;
-            align-self: center;
-            align-items: center;
-            text-align: center;
-        }
-        .align-right {
-            justify-self: flex-end;
-            align-self: flex-end;
-            align-items: flex-end;
-            text-align: right;
-        }
-    }
-
     a:is(:hover):not(:disabled) {
         color: var(--color-accent-primary);
-    }
-
-    .title {
-        display: flex;
-        align-items: center;
-
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .body {
-        max-width: 62rem;
     }
 
     &.full {
         .full-collection {
             padding: 0;
         }
+    }
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.body {
+    max-width: 62rem;
+}
+
+@media (min-width: $breakpoint-mobile) {
+    .align-left {
+        justify-self: flex-start;
+        align-self: flex-start;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .align-center {
+        justify-self: center;
+        align-self: center;
+        align-items: center;
+        text-align: center;
+    }
+    .align-right {
+        justify-self: flex-end;
+        align-self: flex-end;
+        align-items: flex-end;
+        text-align: right;
     }
 }

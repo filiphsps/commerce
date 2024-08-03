@@ -9,9 +9,9 @@
 
 @keyframes scroll-shadow-inset {
     from {
-        box-shadow: inset -10px 0px 10px -10px rgb(0 0 0 / 0.75);
+        box-shadow: inset -15px 0px 15px -15px var(--scroll-bar-color, rgb(0 0 0 / 0.95));
     }
     to {
-        box-shadow: inset 10px 0px 10px -10px rgb(0 0 0 / 0.75);
+        box-shadow: inset 15px 0px 15px -15px var(--scroll-bar-color, rgb(0 0 0 / 0.95));
     }
 }

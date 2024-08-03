@@ -3,6 +3,7 @@ import 'server-only';
 
 import styles from '@/components/products/collection-block.module.scss';
 import extraStyles from '@/components/products/recommended-products.module.scss';
+import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import type { Shop } from '@nordcom/commerce-database';
 
@@ -29,7 +30,16 @@ const RecommendedProducts = async ({ shop, locale, product, className }: Recomme
     const recommended = await RecommendationApi({ api, id: product.id });
 
     return (
-        <div className={cn(styles.container, styles.content, styles.horizontal, extraStyles.container, className)}>
+        <div
+            className={cn(
+                styles.container,
+                styles.content,
+                styles.horizontal,
+                overflowStyles.container,
+                extraStyles.container,
+                className
+            )}
+        >
             {recommended.map((product) => (
                 <ProductCard key={product.id} shop={shop} locale={locale} data={product} className={extraStyles.card} />
             ))}

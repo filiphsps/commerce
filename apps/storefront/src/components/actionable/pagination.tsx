@@ -1,10 +1,12 @@
 'use client';
 
 import styles from '@/components/actionable/pagination.module.scss';
+import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbDots } from 'react-icons/tb';
 
+import { cn } from '@/utils/tailwind';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 import Link from '@/components/link';
@@ -81,7 +83,7 @@ const Pagination = ({
     })();
 
     return (
-        <nav role="navigation" aria-label="pagination" className={styles.container}>
+        <nav role="navigation" aria-label="pagination" className={cn(styles.container, overflowStyles.container)}>
             {currentPage !== 1 ? (
                 <Link className={styles.action} href={previousHref}>
                     <FiChevronLeft />

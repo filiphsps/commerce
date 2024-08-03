@@ -266,10 +266,10 @@ export default async function ProductPage({
                         />
                     </div>
 
-                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch md:gap-8">
-                        <div className="flex h-auto w-full flex-col justify-start gap-2">
-                            <header className="flex flex-col">
-                                <div className="text-3xl font-bold leading-tight">
+                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch lg:gap-8">
+                        <div className="flex h-auto w-full flex-col justify-start gap-2 border-0 border-b-2 border-solid border-gray-300 pb-6 pt-2 lg:border-0 lg:p-0">
+                            <header className="flex flex-col gap-1">
+                                <div className="text-3xl font-bold leading-none">
                                     <h1 className="text-inherit">
                                         {title} &mdash; {product.productType}
                                     </h1>
@@ -283,13 +283,15 @@ export default async function ProductPage({
                                 </Link>
                             </header>
 
-                            <div className="flex flex-row items-center gap-2 md:gap-4">
-                                <Suspense fallback={<ProductPricingSkeleton />}>
-                                    <ProductPricing product={product} />
-                                </Suspense>
-                            </div>
+                            <div className="flex flex-col md:gap-1">
+                                <div className="flex flex-row items-center gap-2 md:gap-4">
+                                    <Suspense fallback={<ProductPricingSkeleton />}>
+                                        <ProductPricing product={product} />
+                                    </Suspense>
+                                </div>
 
-                            <InfoLines product={product} />
+                                <InfoLines product={product} />
+                            </div>
                         </div>
 
                         <div className="flex flex-col items-stretch justify-start gap-2">

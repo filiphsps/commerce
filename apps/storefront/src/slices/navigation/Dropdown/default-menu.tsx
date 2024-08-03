@@ -116,7 +116,9 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         TITLE_COMMON_STYLES
                                     )}
                                     style={{
-                                        textShadow: `1px 1px ${gradientStyles ? '8px' : '1px'} #000`
+                                        textShadow: !background_color
+                                            ? `1px 1px ${gradientStyles ? '8px' : '1px'} #000`
+                                            : undefined
                                     }}
                                 >
                                     <PrismicText data={title} styled={false} bare={true} />

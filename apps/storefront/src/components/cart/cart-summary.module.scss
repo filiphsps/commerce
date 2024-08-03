@@ -6,7 +6,8 @@
 }
 
 .container {
-    top: 4rem;
+    top: 8rem;
+    position: sticky;
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
@@ -92,7 +93,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--block-spacer);
-    padding: var(--block-padding);
+    padding: var(--block-padding-large);
     border-radius: var(--block-border-radius);
     background-color: var(--color-block);
     color: var(--color-dark);
@@ -150,23 +151,6 @@
                 text-transform: capitalize;
             }
         }
-    }
-}
-
-@media (max-width: $breakpoint-mobile) {
-    .section.section-actions {
-        z-index: 1;
-        position: fixed;
-        inset: auto 0 0 0;
-
-        width: 100%;
-        padding: var(--block-padding-large);
-
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        background-color: var(--color-block);
-
-        box-shadow: 0 -0.25rem 1rem 0rem var(--color-block-shadow);
     }
 }
 

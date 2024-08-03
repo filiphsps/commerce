@@ -38,14 +38,16 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                     <div
                         key={`${title}_${index}`}
                         className={cn(
-                            'flex items-center justify-center gap-4 rounded-lg p-4',
-                            background === 'primary' && 'bg-primary text-primary-foreground',
-                            background === 'secondary' && 'bg-secondary-light text-secondary-foreground'
+                            'flex items-center justify-center gap-4 rounded-lg border-2 border-solid border-transparent p-4',
+                            background === 'primary' && 'bg-primary text-primary-foreground border-primary-dark',
+                            background === 'secondary' &&
+                                'bg-secondary-light text-secondary-foreground border-secondary'
                         )}
                     >
                         {icon.url ? (
                             <Image
                                 className="h-8 w-8 select-none object-contain object-center md:h-6 md:w-6"
+                                style={{ strokeWidth: 2.5 }}
                                 src={icon.url}
                                 alt={icon.alt || ''}
                                 width={35}
@@ -57,7 +59,7 @@ const IconGrid = ({ slice, index: order }: IconGridProps) => {
                                 draggable={false}
                             />
                         ) : null}
-                        <div className="leading-none">{title}</div>
+                        <div className="text-sm font-semibold leading-tight lg:text-base">{title}</div>
                     </div>
                 );
             }),

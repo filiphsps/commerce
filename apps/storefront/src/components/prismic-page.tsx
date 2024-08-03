@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import type { Optional, Shop } from '@nordcom/commerce-database';
 
 import { components } from '@/slices';
+import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
 
 import type { PageData, PageType } from '@/api/page';
@@ -18,6 +19,7 @@ type PageParams<T extends PageType> = {
     slices?: PageData<T>['slices'];
     handle: string;
     type?: T;
+    className?: string;
 };
 function PrismicPage<T extends PageType = 'custom_page'>({
     shop,
@@ -26,17 +28,20 @@ function PrismicPage<T extends PageType = 'custom_page'>({
     page,
     slices,
     handle,
-    type = 'custom_page' as T
+    type = 'custom_page' as T,
+    className
 }: PageParams<T>) {
     if (!page && !slices) return null;
 
     return (
         <Suspense fallback={<PrismicPage.skeleton page={page} slices={slices} shop={shop} />}>
-            <SliceZone
-                slices={page?.slices || slices || []}
-                components={components}
-                context={{ shop, i18n, locale, type, uid: handle, handle }}
-            />
+            <section className={cn('flex flex-col gap-6 empty:hidden lg:gap-8', className)}>
+                <SliceZone
+                    slices={page?.slices || slices || []}
+                    components={components}
+                    context={{ shop, i18n, locale, type, uid: handle, handle }}
+                />
+            </section>
         </Suspense>
     );
 }

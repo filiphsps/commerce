@@ -16,6 +16,6 @@ section.container {
 
         width: 100vw;
         padding: var(--block-padding);
-        margin: calc(var(--block-padding) * -1);
+        margin: calc(var(--block-spacer-large) * -1);
     }
 }

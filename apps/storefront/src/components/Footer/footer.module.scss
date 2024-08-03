@@ -9,12 +9,8 @@
     color: var(--accent-primary-text);
     margin-top: var(--block-padding-large);
     padding-top: var(--block-padding);
-    padding-bottom: 6rem;
 
     .content {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 1.5rem;
         width: var(--page-width);
         max-width: 100%;
         padding: var(--block-padding-large);
@@ -22,7 +18,6 @@
         .blocks {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1rem;
             justify-content: space-between;
             align-items: start;
             text-align: left;
@@ -31,28 +26,19 @@
 
             @media (min-width: $breakpoint-mobile) {
                 display: flex;
-                gap: var(--block-spacer-large);
             }
 
             .block {
-                display: flex;
                 grid-auto-rows: auto;
-                align-items: start;
-                justify-content: flex-end;
                 flex-direction: column;
                 flex-grow: 1;
                 width: 100%;
                 height: 100%;
-                gap: 0.25rem;
 
-                font-size: 0.85rem;
-                line-height: 1.5;
-                font-weight: 400;
-
-                .title {
-                    font-size: 1.15rem;
-                    font-weight: 700;
-                    text-transform: uppercase;
+                @media (max-width: $breakpoint-mobile) {
+                    &:empty {
+                        display: none !important;
+                    }
                 }
 
                 .logo {
@@ -78,7 +64,6 @@
 
                 a {
                     display: block;
-                    font-weight: inherit;
                 }
 
                 @media (min-width: $breakpoint-mobile) {
@@ -113,8 +98,6 @@
         .legal {
             display: grid;
             grid-template-columns: 1fr;
-            padding-top: var(--block-spacer-large);
-            gap: calc(var(--block-spacer-large) * 2);
 
             @media (min-width: $breakpoint-mobile) {
                 grid-template-columns: 1fr 1fr;
@@ -200,8 +183,6 @@
 
         @media (min-width: $breakpoint-mobile) {
             align-items: flex-end;
-
-            height: 2rem;
         }
 
         .policy {
@@ -213,7 +194,6 @@
                 display: flex;
                 justify-content: center;
                 align-items: flex-end;
-                height: 2rem;
                 padding: 0;
                 font-weight: 800;
                 font-size: 0.85rem;
@@ -223,7 +203,6 @@
 
         .copyright {
             display: flex;
-            height: 2rem;
             gap: var(--block-spacer-small);
 
             font-size: 0.75rem;

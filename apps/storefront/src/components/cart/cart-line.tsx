@@ -62,7 +62,7 @@ const CartLine = ({ i18n, data: line }: CartLineProps) => {
     );
 
     return (
-        <div className="flex w-full gap-4 border-0 border-t-2 border-solid border-gray-300 py-2">
+        <div className="flex w-full gap-2 border-0 border-t-2 border-solid border-gray-300 py-2 md:gap-4">
             {image}
 
             <div className="flex w-full flex-row gap-2">

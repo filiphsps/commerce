@@ -22,7 +22,7 @@ const StockStatus = ({ product }: StockStatusProps) => {
             title={available}
         >
             <FiCheck className="stroke-2 align-middle text-base" />
-            <Label className="text-lg font-semibold normal-case">{available}</Label>
+            <Label className="text-base font-semibold normal-case lg:text-lg">{available}</Label>
         </section>
     );
 };
