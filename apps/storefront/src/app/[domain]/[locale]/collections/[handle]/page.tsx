@@ -40,7 +40,7 @@ type FilterParams = {
 export type CollectionPageParams = { domain: string; locale: string; handle: string };
 export async function generateMetadata({
     params: { domain, locale: localeData, handle },
-    searchParams
+    searchParams: { page: pageParam }
 }: {
     params: CollectionPageParams;
     searchParams: FilterParams;
@@ -58,7 +58,7 @@ export async function generateMetadata({
         const locales = await LocalesApi({ api });
 
         // TODO: i18n.
-        const title = `${page?.meta_title || collection.seo.title || collection.title}${searchParams.page ? ` -  Page ${searchParams.page}` : ''}`;
+        const title = `${page?.meta_title || collection.seo.title || collection.title}${pageParam ? ` -  Page ${pageParam}` : ''}`;
         const description: string | undefined =
             asText(page?.meta_description) ||
             collection.seo.description ||
@@ -67,6 +67,9 @@ export async function generateMetadata({
         return {
             title,
             description,
+            robots: {
+                index: pageParam && Number.parseInt(pageParam) > 1 ? false : true
+            },
             alternates: {
                 canonical: `https://${shop.domain}/${locale.code}/collections/${handle}/`,
                 languages: locales.reduce(

@@ -55,12 +55,11 @@
         .item {
             height: 3rem;
             width: 2.75rem;
+            border-radius: var(--block-border-width-large);
 
             @media (min-width: $breakpoint-mobile) {
                 width: 3.5rem;
             }
-
-            border-radius: var(--block-border-width-large);
 
             &:is([data-selected='true']) {
                 background: var(--color-accent-primary);
