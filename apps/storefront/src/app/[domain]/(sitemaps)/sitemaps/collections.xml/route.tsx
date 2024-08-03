@@ -19,7 +19,7 @@ export async function GET(_: NextRequest, { params: { domain } }: { params: Dyna
     try {
         const shop = await ShopApi(domain, cache, true);
         const locale = Locale.default;
-        const apiConfig = await ShopifyApiConfig({ shop, noHeaders: true });
+        const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });
         const locales = await LocalesApi({ api });
 

@@ -297,6 +297,18 @@ interface CustomPageDocumentData {
      * - **Documentation**: https://prismic.io/docs/field#key-text
      */
     keywords: prismic.KeyTextField;
+
+    /**
+     * noindex field in *Page*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: false
+     * - **API ID Path**: custom_page.noindex
+     * - **Tab**: SEO & Metadata
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    noindex: prismic.BooleanField;
 }
 
 /**

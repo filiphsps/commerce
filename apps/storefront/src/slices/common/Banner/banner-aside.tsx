@@ -60,7 +60,7 @@ export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element
                 src={image.url!}
                 width={image.dimensions?.width!}
                 height={image.dimensions?.height!}
-                alt={image.alt!}
+                alt={image.alt || image.copyright || ''}
                 className="col-span-2 hidden h-full w-full object-cover object-center md:flex"
             />
         </section>

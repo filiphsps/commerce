@@ -32,7 +32,7 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
                 href={`/collections/${vendor.handle}/`}
                 {...props}
                 className={cn(
-                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-xl p-2 text-sm font-semibold transition-colors md:mr-0',
+                    'bg-secondary-light hover:bg-primary hover:text-primary-foreground mr-2 flex items-center justify-center rounded-lg p-2 text-sm font-semibold transition-colors md:mr-0',
                     className
                 )}
             >
@@ -44,10 +44,10 @@ const Vendors = async ({ shop, locale, className, ...props }: VendorsProps) => {
 
 Vendors.skeleton = () => (
     <>
-        <div className="w-12 rounded-xl p-2" data-skeleton />
-        <div className="w-12 rounded-xl p-2" data-skeleton />
-        <div className="w-12 rounded-xl p-2" data-skeleton />
-        <div className="w-12 rounded-xl p-2" data-skeleton />
+        <div className="w-12 rounded-lg p-2" data-skeleton />
+        <div className="w-12 rounded-lg p-2" data-skeleton />
+        <div className="w-12 rounded-lg p-2" data-skeleton />
+        <div className="w-12 rounded-lg p-2" data-skeleton />
     </>
 );
 

@@ -103,6 +103,15 @@
                     "label": "Keywords",
                     "placeholder": ""
                 }
+            },
+            "noindex": {
+                "type": "Boolean",
+                "config": {
+                    "label": "noindex",
+                    "placeholder_false": "false",
+                    "placeholder_true": "true",
+                    "default_value": false
+                }
             }
         }
     }

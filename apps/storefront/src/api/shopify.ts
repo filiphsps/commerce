@@ -8,17 +8,16 @@ import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 import { unstable_cache as cache } from 'next/cache';
+import { headers } from 'next/headers';
 
 import type { ApiConfig } from '@/api/client';
 
 export const ShopifyApiConfig = async ({
     shop: { domain },
-    noCache = false,
-    noHeaders = true
+    noCache = false
 }: {
     shop: Shop;
     noCache?: boolean;
-    noHeaders?: boolean;
 }): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
@@ -33,6 +32,14 @@ export const ShopifyApiConfig = async ({
         contentType: 'json'
     });
 
+    // TODO: Find a better way to get the buyer IP.
+    let buyerIp: string | undefined = undefined;
+    try {
+        buyerIp = headers().get('x-forwarded-for') || undefined;
+    } catch (error) {
+        console.error(error);
+    }
+
     return {
         public: () => ({
             uri: api.getStorefrontApiUrl(),
@@ -41,7 +48,7 @@ export const ShopifyApiConfig = async ({
         private: () => ({
             uri: api.getStorefrontApiUrl(),
             headers: api.getPrivateTokenHeaders({
-                buyerIp: undefined // TODO: Ser buyerIp.
+                buyerIp
             })
         })
     };

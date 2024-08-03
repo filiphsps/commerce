@@ -58,7 +58,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         if (!locale) {
             const shop = await ShopApi(hostname);
 
-            const apiConfig = await ShopifyApiConfig({ shop, noCache: true, noHeaders: false });
+            const apiConfig = await ShopifyApiConfig({ shop, noCache: true });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 

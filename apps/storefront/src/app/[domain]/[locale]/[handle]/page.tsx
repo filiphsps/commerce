@@ -13,6 +13,7 @@ import { asText } from '@prismicio/client';
 import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
+import Breadcrumbs from '@/components/informational/breadcrumbs';
 import PrismicPage from '@/components/prismic-page';
 
 import type { Metadata } from 'next';
@@ -109,7 +110,14 @@ export default async function CustomPage({
         // Get dictionary of strings for the current locale.
         const i18n = await getDictionary({ shop, locale });
 
-        return <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />;
+        const breadcrumbs = handle !== 'homepage' && page.title ? <Breadcrumbs shop={shop} title={page.title} /> : null;
+
+        return (
+            <>
+                {breadcrumbs}
+                <PrismicPage shop={shop} locale={locale} page={page} i18n={i18n} handle={handle} />
+            </>
+        );
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
             notFound();
