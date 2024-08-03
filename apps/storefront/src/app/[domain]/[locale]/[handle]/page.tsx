@@ -66,6 +66,16 @@ export async function generateMetadata({
 
         const title = page.meta_title || page.title || handle;
         const description = asText(page.meta_description) || page.description || undefined;
+        const images = page.meta_image.url
+            ? [
+                  {
+                      url: page.meta_image.url!,
+                      width: page.meta_image.dimensions.width!,
+                      height: page.meta_image.dimensions.height!
+                  }
+              ]
+            : [];
+
         return {
             title,
             description,
@@ -78,8 +88,16 @@ export async function generateMetadata({
                     }),
                     {}
                 )
+            },
+            openGraph: {
+                url: handle,
+                type: 'website',
+                title,
+                description,
+                siteName: shop.name,
+                locale: locale.code,
+                images
             }
-            // TODO: Metadata.
         };
     } catch (error: unknown) {
         if (Error.isNotFound(error)) {
