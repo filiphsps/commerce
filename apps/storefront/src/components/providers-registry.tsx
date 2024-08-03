@@ -79,7 +79,10 @@ const ProvidersRegistry = ({
                             expand={true}
                             duration={5000}
                             gap={4}
+                            visibleToasts={2}
+                            pauseWhenPageIsHidden={true}
                             toastOptions={{
+                                duration: 2500,
                                 classNames: {
                                     toast: 'toast-notification'
                                 }
