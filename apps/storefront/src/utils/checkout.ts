@@ -1,4 +1,4 @@
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 
@@ -42,7 +42,7 @@ export const Checkout = async ({
     cart,
     trackable
 }: {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     cart: CartWithActions;
     trackable: TrackableContextValue;

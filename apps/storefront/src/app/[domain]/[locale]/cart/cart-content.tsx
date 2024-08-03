@@ -2,7 +2,7 @@ import styles from './cart-content.module.scss';
 
 import { type ReactNode } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { PageApi } from '@/api/page';
 import { cn } from '@/utils/tailwind';
@@ -17,7 +17,7 @@ import type { StoreModel } from '@/models/StoreModel';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type CartContentProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     header: ReactNode;

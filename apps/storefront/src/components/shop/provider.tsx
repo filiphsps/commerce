@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
 type ShopContextReturns = {};
 
 export interface ShopProviderBase {
-    shop: Shop;
+    shop: OnlineShop;
     /**
      * @todo TODO: This should be a part of the `shop` object.
      */

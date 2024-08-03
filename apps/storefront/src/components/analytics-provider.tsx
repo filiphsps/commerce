@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Trackable } from '@/utils/trackable';
 //import { useReportWebVitals } from 'next/web-vitals';
@@ -13,7 +13,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { ReactNode } from 'react';
 
 export type AnalyticsProviderProps = {
-    shop: Shop;
+    shop: OnlineShop;
     children: ReactNode;
 };
 export const AnalyticsProvider = ({ shop, children }: AnalyticsProviderProps) => {

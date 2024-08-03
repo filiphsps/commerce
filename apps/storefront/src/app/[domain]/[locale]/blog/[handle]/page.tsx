@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from './page.module.scss';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -10,7 +10,6 @@ import { BlogArticleApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
-import { unstable_cache as cache } from 'next/cache';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { title } from 'process';
@@ -30,7 +29,7 @@ export const revalidate = false;
 
 /*export async function generateStaticParams() {
     const locale = Locale.default;
-    const shops = await ShopsApi();
+    const shops = await Shop.findAll();
 
     const pages = (
         await Promise.all(
@@ -78,7 +77,7 @@ export async function generateMetadata({
     try {
         if (!isValidHandle(handle)) notFound();
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -127,7 +126,7 @@ export default async function ArticlePage({
     try {
         if (!isValidHandle(handle)) notFound();
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });

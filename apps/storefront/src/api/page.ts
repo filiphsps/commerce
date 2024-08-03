@@ -1,4 +1,4 @@
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { Error, NotFoundError, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
@@ -17,7 +17,7 @@ export const PagesApi = async ({
     locale,
     exclude = ['homepage', 'shop', 'countries', 'search', 'cart']
 }: {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     exclude?: string[];
 }): Promise<PrismicDocument[] | null> => {
@@ -63,7 +63,7 @@ type PageTypeMapping = {
 type NarrowedPageType<T> = T extends keyof PageTypeMapping ? PageTypeMapping[T] : never;
 
 export type PageApiProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     handle: string;
 };

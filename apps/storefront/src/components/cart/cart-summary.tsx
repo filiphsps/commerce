@@ -3,7 +3,7 @@ import styles from '@/components/cart/cart-summary.module.scss';
 import { useEffect, useState } from 'react';
 import { FiChevronRight, FiLock } from 'react-icons/fi';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { Pluralize } from '@/utils/pluralize';
@@ -25,7 +25,7 @@ import type { ReactNode } from 'react';
 // TODO: Configurable free shipping.
 
 type CartSummaryProps = {
-    shop: Shop;
+    shop: OnlineShop;
     onCheckout: any;
     i18n: LocaleDictionary;
     children?: ReactNode;

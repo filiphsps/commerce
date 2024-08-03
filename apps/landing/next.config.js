@@ -78,7 +78,6 @@ const config = {
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },
     serverRuntimeConfig: {
-        POSTGRES_PRISMA_ACCELERATE_URL: process.env.POSTGRES_PRISMA_ACCELERATE_URL,
         ENVIRONMENT: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
         GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'unknown'
     },

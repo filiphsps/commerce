@@ -1,6 +1,4 @@
-import { ShopApi } from '@nordcom/commerce-database';
-
-import { unstable_cache as cache } from 'next/cache';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { getServerSideSitemapIndex } from 'next-sitemap';
 
 import type { NextRequest } from 'next/server';
@@ -9,7 +7,7 @@ export type DynamicSitemapRouteParams = {
     domain: string;
 };
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await ShopApi(domain, cache);
+    const shop = await findShopByDomainOverHttp(domain);
     const href = `https://${shop.domain}/sitemaps`;
 
     return getServerSideSitemapIndex([

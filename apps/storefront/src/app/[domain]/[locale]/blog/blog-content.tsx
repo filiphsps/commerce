@@ -1,6 +1,6 @@
 import styles from './blog-content.module.scss';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Button } from '@/components/actionable/button';
 import Link from '@/components/link';
@@ -10,7 +10,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { Blog } from '@shopify/hydrogen-react/storefront-api-types';
 
 type BlogContentProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     blog: Blog;

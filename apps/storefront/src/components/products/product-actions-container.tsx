@@ -4,7 +4,7 @@ import styles from '@/components/products/product-actions-container.module.scss'
 
 import { Suspense, useState } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
@@ -19,7 +19,7 @@ import type { LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
-    shop: Shop;
+    shop: OnlineShop;
     i18n: LocaleDictionary;
 } & Omit<HTMLProps<HTMLDivElement>, 'children'>;
 

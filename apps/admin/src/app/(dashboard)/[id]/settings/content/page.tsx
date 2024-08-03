@@ -13,7 +13,6 @@ import {
     updateCommerceProvider,
     updateContentProvider
 } from '@/utils/fetchers';
-import { ContentProviderType } from '@prisma/client';
 import { notFound, redirect } from 'next/navigation';
 
 import { SettingsBlock } from '@/components/settings-block';
@@ -79,7 +78,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                             redirect('/auth/login/');
                         }
 
-                        const type = form.get('type')?.toString().toLowerCase() as ContentProviderType;
+                        const type = form.get('type')?.toString().toLowerCase();
 
                         let data;
                         switch (type) {
@@ -144,7 +143,7 @@ export default async function ShopSettingsContentPage({ params: { id: shopId } }
                         Type
                     </Label>
                     <Card as="select" name="type" title="Type" defaultValue={contentProvider?.type}>
-                        {Object.values(ContentProviderType).map((e) => (
+                        {['todo'].map((e) => (
                             <option key={e} value={e}>
                                 {e}
                             </option>

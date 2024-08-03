@@ -1,5 +1,4 @@
-import { ShopApi } from '@nordcom/commerce-database';
-
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { commonValidations } from '@/middleware/common-validations';
@@ -18,13 +17,18 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
     if (
         !hostname ||
         hostname === 'localhost' ||
-        hostname.endsWith('.vercel.app') ||
-        hostname.endsWith('app.github.dev')
+        hostname.includes('vercel.app') ||
+        hostname.includes('app.github.dev')
     ) {
         return 'swedish-candy-store.com';
     }
 
-    return hostname;
+    try {
+        const shop = await findShopByDomainOverHttp(hostname);
+        return shop.domain;
+    } catch {
+        return hostname;
+    }
 };
 
 const FILE_TEST = /\.[a-zA-Z]{2,6}$/gi;
@@ -56,9 +60,9 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
-            const shop = await ShopApi(hostname);
+            const shop = await findShopByDomainOverHttp(hostname);
 
-            const apiConfig = await ShopifyApiConfig({ shop, noCache: true });
+            const apiConfig = await ShopifyApiConfig({ shop });
             const api = await ShopifyApiClient({ shop, apiConfig });
             const locales = (await LocalesApi({ api })).map((locale) => locale.code);
 

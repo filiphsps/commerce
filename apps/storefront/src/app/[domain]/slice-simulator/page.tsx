@@ -1,13 +1,12 @@
 import 'server-only';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 
 import { components } from '@/slices';
 import { getDictionary } from '@/utils/dictionary';
 import { Locale } from '@/utils/locale';
 import { SliceZone } from '@prismicio/react';
 import { getSlices, SliceSimulator } from '@slicemachine/adapter-next/simulator';
-import { unstable_cache as cache } from 'next/cache';
 
 import type { SliceSimulatorParams } from '@slicemachine/adapter-next/simulator';
 
@@ -24,7 +23,7 @@ export default async function SliceSimulatorPage({
     const locale = Locale.default;
 
     // Fetch the current shop.
-    const shop = await ShopApi(domain, cache);
+    const shop = await Shop.findByDomain(domain);
 
     // Get dictionary of strings for the current locale.
     const i18n = await getDictionary({ shop, locale });

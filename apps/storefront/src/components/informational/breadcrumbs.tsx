@@ -5,7 +5,7 @@ import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { FiChevronRight } from 'react-icons/fi';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { cn } from '@/utils/tailwind';
 import { usePathname } from 'next/navigation';
@@ -14,7 +14,7 @@ import Link from '@/components/link';
 import { useShop } from '@/components/shop/provider';
 
 type BreadcrumbsProps = {
-    shop: Shop;
+    shop: OnlineShop;
     title?: string;
 };
 const Breadcrumbs = ({ shop, title }: BreadcrumbsProps) => {

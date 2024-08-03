@@ -4,7 +4,7 @@ import styles from './search-content.module.scss';
 
 import { useCallback, useState } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import debounce from 'lodash.debounce';
@@ -15,7 +15,7 @@ import { Button } from '@/components/actionable/button';
 import type { Product, ProductFilters } from '@/api/product';
 
 export type SearchContentProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     //client: AbstractApi;
     i18n: LocaleDictionary;

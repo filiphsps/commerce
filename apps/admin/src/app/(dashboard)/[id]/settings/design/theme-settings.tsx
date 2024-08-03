@@ -2,13 +2,11 @@
 
 import styles from './settings.module.scss';
 
-import type { ShopTheme } from '@nordcom/commerce-database';
+import type { ShopTheme } from '@nordcom/commerce-db';
 import { Card, Input, Label } from '@nordcom/nordstar';
 
-import type { ShopTheme as ShopThemeValue } from '@prisma/client/edge';
-
 export type CommerceSettingsProps = {
-    data: ShopThemeValue | null;
+    data: any | null;
 };
 
 const ThemeSettings = ({ data: settings }: CommerceSettingsProps) => {

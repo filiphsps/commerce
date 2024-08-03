@@ -1,4 +1,4 @@
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import type { LanguageCode, Locale, LocaleDictionary } from '@/utils/locale';
 
@@ -159,14 +159,16 @@ export type DictionaryLanguageCode = keyof typeof dictionaries;
  *
  * @param {object} props - The data
  * @param {Locale} props.locale - Locale to get dictionary for.
- * @param {Shop} props.shop - Shop to get dictionary for.
+ * @param {OnlineShop} props.shop - Shop to get dictionary for.
  * @returns {Promise<LocaleDictionary>} Promise with dictionary.
  */
-export const getDictionary = async (props: { shop: Shop; locale: Locale } | Locale): Promise<LocaleDictionary> => {
-    let locale: Locale, shop: Shop | undefined;
+export const getDictionary = async (
+    props: { shop: OnlineShop; locale: Locale } | Locale
+): Promise<LocaleDictionary> => {
+    let locale: Locale, shop: OnlineShop | undefined;
 
     if (Object.hasOwn(props, 'shop')) {
-        const temp = props as { shop: Shop; locale: Locale };
+        const temp = props as { shop: OnlineShop; locale: Locale };
         locale = temp.locale;
         // eslint-disable-next-line unused-imports/no-unused-vars
         shop = temp.shop;

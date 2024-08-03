@@ -1,12 +1,11 @@
 import styles from './layout.module.scss';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { Locale } from '@/utils/locale';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import Link from '@/components/link';
@@ -25,7 +24,7 @@ export default async function BlogLayout({
     params: BlogLayoutParams;
 }) {
     try {
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });

@@ -1,4 +1,4 @@
-import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
+import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { NotFoundError, TodoError, UnknownApiError, UnreachableError } from '@nordcom/commerce-errors';
 
 import { PRODUCT_FRAGMENT_MINIMAL } from '@/api/shopify/product';
@@ -104,7 +104,10 @@ type CollectionOptions = ApiOptions &
  * @param {CollectionFilters} [options.filters] - The filters to apply to the collection.
  * @returns {Promise<Collection>} The collection.
  */
-export const CollectionApi = async ({ api, handle, ...props }: CollectionOptions, cache?: any): Promise<Collection> => {
+export const CollectionApi = async (
+    { api, handle, ...props }: CollectionOptions,
+    _cache?: any
+): Promise<Collection> => {
     if (!handle) throw new Error('400: Invalid handle');
     const shop = api.shop();
     const locale = api.locale();

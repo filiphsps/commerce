@@ -2,7 +2,8 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
-import type { Optional, Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
+import type { Optional } from '@nordcom/commerce-db';
 
 import { components } from '@/slices';
 import { cn } from '@/utils/tailwind';
@@ -12,7 +13,7 @@ import type { PageData, PageType } from '@/api/page';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 type PageParams<T extends PageType> = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     page?: PageData<T>;

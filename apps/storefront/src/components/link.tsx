@@ -2,7 +2,7 @@
 
 import { type ComponentProps } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { TypeError } from '@nordcom/commerce-errors';
 
 import { commonValidations } from '@/middleware/common-validations';
@@ -14,12 +14,12 @@ import { useShop } from '@/components/shop/provider';
 import type { Url } from 'node:url';
 
 export type LinkProps = {
-    shop?: Shop;
+    shop?: OnlineShop;
     locale?: Locale;
     href: Url | string;
 } & Omit<ComponentProps<typeof BaseLink>, 'locale'>;
 
-const isInternal = (href: string, shop?: Shop): boolean => {
+const isInternal = (href: string, shop?: OnlineShop): boolean => {
     // If the url starts with `/` we're obviously requesting an internal path.
     if (href.startsWith('/')) {
         return true;
@@ -52,7 +52,7 @@ export default function Link({ locale, href, prefetch, ...props }: LinkProps) {
         locale = Locale.default;
     }
 
-    const url = ((href: string = '', shop?: Shop): string | URL => {
+    const url = ((href: string = '', shop?: OnlineShop): string | URL => {
         const internal = isInternal(href, shop);
 
         if (internal) {

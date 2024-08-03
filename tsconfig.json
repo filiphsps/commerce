@@ -37,7 +37,7 @@
         "typeRoots": ["node_modules/@types", "./packages/**/src/@types"],
         "useDefineForClassFields": true
     },
-    "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/*.test.ts", "**/dist.*", "node_modules"],
+    "exclude": ["**/.turbo", "**/coverage", "**/*.stories.ts", "**/dist.*", "node_modules"],
     "include": ["packages", "./packages/**/src/*.*", "@types/declaration.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

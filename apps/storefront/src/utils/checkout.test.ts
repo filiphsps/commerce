@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Checkout } from '@/utils/checkout';
 import { Locale } from '@/utils/locale';
@@ -76,7 +76,7 @@ describe('utils', () => {
             }
         } as any;
 
-        const shop: Shop = {
+        const shop: OnlineShop = {
             commerceProvider: {
                 type: 'shopify' as const,
                 id: 'shopid',

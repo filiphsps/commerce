@@ -137,15 +137,17 @@ describe('app', () => {
             };
         });
 
-        vi.mock('@nordcom/commerce-database', () => ({
-            ShopApi: vi.fn().mockResolvedValue({
-                id: 'mock-shop-id',
-                domains: 'staging.demo.nordcom.io',
-                commerceProvider: {
-                    type: 'shopify' as const,
-                    domain: 'mock.shop' as const
-                }
-            })
+        vi.mock('@nordcom/commerce-db', () => ({
+            Shop: {
+                findByDomain: vi.fn().mockResolvedValue({
+                    id: 'mock-shop-id',
+                    domains: 'staging.demo.nordcom.io',
+                    commerceProvider: {
+                        type: 'shopify' as const,
+                        domain: 'mock.shop' as const
+                    }
+                })
+            }
         }));
 
         it('renders the product title and vendor', async () => {

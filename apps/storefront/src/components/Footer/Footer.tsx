@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from '@/components/Footer/footer.module.scss';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { FooterApi } from '@/api/footer';
 import { ShopifyApolloApiClient } from '@/api/shopify';
@@ -17,7 +17,7 @@ import { PrismicText } from '@/components/typography/prismic-text';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type FooterProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
 };

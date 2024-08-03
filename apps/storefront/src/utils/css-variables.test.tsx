@@ -15,31 +15,33 @@ describe('utils', () => {
             };
         });
 
-        vi.mock('@nordcom/commerce-database', () => ({
-            ShopApi: vi.fn().mockResolvedValue({
-                id: 'mock-shop-id',
-                domains: 'staging.demo.nordcom.io',
-                branding: {
-                    brandColors: [
-                        {
-                            type: 'primary',
-                            accent: '#00ff00',
-                            foreground: '#000000',
-                            background: '#ffffff'
-                        },
-                        {
-                            type: 'secondary',
-                            accent: '#0000ff',
-                            foreground: '#ffffff',
-                            background: '#000000'
-                        }
-                    ]
-                },
-                commerceProvider: {
-                    type: 'shopify' as const,
-                    domain: 'mock.shop' as const
-                }
-            })
+        vi.mock('@nordcom/commerce-db', () => ({
+            Shop: {
+                findByDomain: vi.fn().mockResolvedValue({
+                    id: 'mock-shop-id',
+                    domains: 'staging.demo.nordcom.io',
+                    branding: {
+                        brandColors: [
+                            {
+                                type: 'primary',
+                                accent: '#00ff00',
+                                foreground: '#000000',
+                                background: '#ffffff'
+                            },
+                            {
+                                type: 'secondary',
+                                accent: '#0000ff',
+                                foreground: '#ffffff',
+                                background: '#000000'
+                            }
+                        ]
+                    },
+                    commerceProvider: {
+                        type: 'shopify' as const,
+                        domain: 'mock.shop' as const
+                    }
+                })
+            }
         }));
 
         vi.mock('@nordcom/commerce-db', () => ({

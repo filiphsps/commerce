@@ -4,12 +4,8 @@ import { useState } from 'react';
 
 import { Input } from '@nordcom/nordstar';
 
-import { CommerceProviderType } from '@prisma/client/edge';
-
-import type { CommerceProvider } from '@prisma/client/edge';
-
 export type CommerceSettingsProps = {
-    data: CommerceProvider | null;
+    data: any | null;
 };
 
 type ShopifyCommerceProviderData = {
@@ -111,7 +107,7 @@ const ShopifySettings = ({ data: settings }: CommerceSettingsProps) => {
 };
 
 const CommerceSettings = ({ data }: CommerceSettingsProps) => {
-    const commerceTypes = Object.values(CommerceProviderType);
+    const commerceTypes = ['todo'];
     const [type, setType] = useState(data?.type || commerceTypes[0]!);
 
     return (
@@ -126,14 +122,14 @@ const CommerceSettings = ({ data }: CommerceSettingsProps) => {
                 defaultValue={type}
                 value={undefined}
             >
-                {Object.values(CommerceProviderType).map((e) => (
+                {['todo'].map((e) => (
                     <option key={e} value={e}>
                         {e}
                     </option>
                 ))}
             </Input>
 
-            {type === CommerceProviderType.shopify && <ShopifySettings data={data} />}
+            {type === 'shopify' && <ShopifySettings data={data} />}
         </>
     );
 };

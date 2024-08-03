@@ -72,6 +72,19 @@ export class ShopService extends Service<ShopBase, typeof ShopModel> {
 
         return res;
     }
+
+    public async findAll({ ...args }: Parameters<typeof this.find>[0] | undefined = {}) {
+        return await this.find({
+            ...args,
+            filter: {},
+            projection: {
+                collaborators: 0,
+                contentProvider: 0,
+                commerceProvider: 0,
+                thirdParty: 0
+            }
+        });
+    }
 }
 
 export const Shop = new ShopService();

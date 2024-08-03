@@ -4,7 +4,7 @@ import '@/styles/global.css';
 
 import { type ReactNode, Suspense } from 'react';
 
-import { ShopApi, ShopsApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownShopDomainError } from '@nordcom/commerce-errors';
 
 import { ShopifyApiClient, ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
@@ -14,7 +14,6 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -34,12 +33,16 @@ export const preferredRegion = 'home';
 export type LayoutParams = { domain: string; locale: string };
 
 export async function generateStaticParams(): Promise<LayoutParams[]> {
-    const shops = await ShopsApi(cache);
+    const shops = await Shop.findAll();
 
     return (
         await Promise.all(
             shops.map(async ({ domain }) => {
-                const shop = await ShopApi(domain, cache);
+                const shop = await Shop.findByDomain(domain);
+                if (shop.domain.includes('demo')) {
+                    return null as any as LayoutParams;
+                }
+
                 const apiConfig = await ShopifyApiConfig({ shop });
                 const api = await ShopifyApiClient({ shop, apiConfig });
                 const locales = await LocalesApi({ api });
@@ -50,7 +53,9 @@ export async function generateStaticParams(): Promise<LayoutParams[]> {
                 }));
             })
         )
-    ).flat(1);
+    )
+        .flat(1)
+        .filter((_) => _);
 }
 
 export async function generateViewport({ params: { domain } }: { params: LayoutParams }): Promise<Viewport> {
@@ -71,7 +76,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     try {
         const locale = Locale.from(localeData);
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
 
         return {
             metadataBase: new URL(`https://${shop.domain}/${locale.code}/`),
@@ -117,7 +122,7 @@ export default async function RootLayout({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const branding = await getBrandingColors(domain);

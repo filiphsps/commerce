@@ -1,6 +1,5 @@
-import { ShopApi } from '@nordcom/commerce-database';
-
 import { PagesApi } from '@/api/page';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiClient, ShopifyApiConfig } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
@@ -11,7 +10,7 @@ import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
-    const shop = await ShopApi(domain);
+    const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.default;
     const apiConfig = await ShopifyApiConfig({ shop });
     const api = await ShopifyApiClient({ shop, locale, apiConfig });

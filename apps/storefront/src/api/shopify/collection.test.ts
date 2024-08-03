@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Locale } from '@/utils/locale';
 
@@ -61,7 +61,7 @@ describe('api', () => {
                             }
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as Shop
+                        shop: () => ({}) as OnlineShop
                     };
 
                     const collection = await CollectionApi({ api, handle: 'test-collection', filters: {} });
@@ -159,7 +159,7 @@ describe('api', () => {
                             }
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as Shop
+                        shop: () => ({}) as OnlineShop
                     };
 
                     const handle = 'test-collection';
@@ -257,7 +257,7 @@ describe('api', () => {
                             }
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as Shop
+                        shop: () => ({}) as OnlineShop
                     };
 
                     const collections = await CollectionsApi({ client });
@@ -341,7 +341,7 @@ describe('api', () => {
                             }
                         }),
                         locale: () => Locale.default,
-                        shop: () => ({}) as Shop
+                        shop: () => ({}) as OnlineShop
                     };
 
                     const collections = await CollectionsPaginationApi({ api, filters: {} });

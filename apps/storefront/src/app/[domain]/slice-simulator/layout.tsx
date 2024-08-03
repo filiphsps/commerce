@@ -4,7 +4,7 @@ import 'the-new-css-reset';
 import '@/styles/app.scss';
 import '@/styles/global.css';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocaleApi } from '@/api/store';
@@ -12,7 +12,6 @@ import { CssVariablesProvider } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -44,7 +43,7 @@ export default async function RootLayout({
 }) {
     const locale = Locale.default;
 
-    const shop = await ShopApi(domain, cache);
+    const shop = await Shop.findByDomain(domain);
     if (!shop) notFound();
 
     const api = await ShopifyApolloApiClient({ shop, locale });

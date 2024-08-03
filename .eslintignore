@@ -14,5 +14,4 @@ public/
 *.env
 *.log
 *.bak
-*.test.*
 *.d.ts

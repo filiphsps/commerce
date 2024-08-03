@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -11,7 +11,6 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import PrismicPage from '@/components/prismic-page';
@@ -30,7 +29,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
@@ -87,7 +86,7 @@ export default async function SearchPage({ params: { domain, locale: localeData 
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const page = await PageApi({ shop, locale, handle: 'search', type: 'custom_page' });
 
         const i18n = await getDictionary(locale);

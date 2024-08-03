@@ -22,9 +22,6 @@ importers:
       '@nordcom/prettier':
         specifier: 0.1.1
         version: 0.1.1
-      '@prisma/client':
-        specifier: 5.12.0
-        version: 5.12.0(prisma@5.12.0)
       '@types/node':
         specifier: 20.12.7
         version: 20.12.7
@@ -97,9 +94,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: 0.6.5
         version: 0.6.5(prettier@3.3.3)
-      prisma:
-        specifier: 5.12.0
-        version: 5.12.0
       turbo:
         specifier: 2.0.5
         version: 2.0.5
@@ -136,9 +130,6 @@ importers:
       '@next/third-parties':
         specifier: 14.2.1
         version: 14.2.1(next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.8))(react@18.2.0)
-      '@nordcom/commerce-database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -151,12 +142,6 @@ importers:
       '@nordcom/nordstar':
         specifier: 0.0.57
         version: 0.0.57(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@prisma/client':
-        specifier: 5.12.0
-        version: 5.12.0(prisma@5.12.0)
-      '@prisma/extension-accelerate':
-        specifier: 1.1.0
-        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -323,9 +308,6 @@ importers:
       '@next/third-parties':
         specifier: 14.2.1
         version: 14.2.1(next@14.2.1(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.8))(react@18.2.0)
-      '@nordcom/commerce-database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -338,12 +320,6 @@ importers:
       '@nordcom/nordstar':
         specifier: 0.0.57
         version: 0.0.57(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@prisma/client':
-        specifier: 5.12.0
-        version: 5.12.0(prisma@5.12.0)
-      '@prisma/extension-accelerate':
-        specifier: 1.1.0
-        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@shopify/hydrogen-react':
         specifier: 2024.4.0
         version: 2024.4.0(@types/react@18.2.75)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -504,9 +480,6 @@ importers:
       '@next/third-parties':
         specifier: 14.2.1
         version: 14.2.1(next@15.0.0-canary.100(@babel/core@7.24.7)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@0.0.0-experimental-f1f288c-20240725)(react-dom@19.0.0-rc-8269d55d-20240802(react@19.0.0-rc-8269d55d-20240802))(react@19.0.0-rc-8269d55d-20240802)(sass@1.77.8))(react@19.0.0-rc-8269d55d-20240802)
-      '@nordcom/commerce-database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@nordcom/commerce-db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -516,12 +489,6 @@ importers:
       '@nordcom/nordstar':
         specifier: 0.0.57
         version: 0.0.57(react-dom@19.0.0-rc-8269d55d-20240802(react@19.0.0-rc-8269d55d-20240802))(react@19.0.0-rc-8269d55d-20240802)
-      '@prisma/client':
-        specifier: 5.12.0
-        version: 5.12.0(prisma@5.12.0)
-      '@prisma/extension-accelerate':
-        specifier: 1.1.0
-        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
       '@prismicio/client':
         specifier: 7.4.1
         version: 7.4.1
@@ -700,58 +667,6 @@ importers:
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.14.9)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
-
-  packages/database:
-    dependencies:
-      '@nordcom/commerce-errors':
-        specifier: workspace:*
-        version: link:../errors
-      '@prisma/client':
-        specifier: 5.12.0
-        version: 5.12.0(prisma@5.12.0)
-      '@prisma/extension-accelerate':
-        specifier: 1.1.0
-        version: 1.1.0(@prisma/client@5.12.0(prisma@5.12.0))
-    devDependencies:
-      '@nordcom/prettier':
-        specifier: 0.1.1
-        version: 0.1.1
-      '@types/node':
-        specifier: 20.12.7
-        version: 20.12.7
-      concurrently:
-        specifier: 8.2.2
-        version: 8.2.2
-      eslint:
-        specifier: 8.57.0
-        version: 8.57.0
-      glob:
-        specifier: 11.0.0
-        version: 11.0.0
-      prisma:
-        specifier: 5.12.0
-        version: 5.12.0
-      rimraf:
-        specifier: 6.0.1
-        version: 6.0.1
-      server-only:
-        specifier: 0.0.1
-        version: 0.0.1
-      typescript:
-        specifier: 5.5.4
-        version: 5.5.4
-      vite:
-        specifier: 5.3.5
-        version: 5.3.5(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1)
-      vite-plugin-dts:
-        specifier: 3.8.3
-        version: 3.8.3(@types/node@20.12.7)(rollup@4.18.0)(typescript@5.5.4)(vite@5.3.5(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1))
-      vite-tsconfig-paths:
-        specifier: 4.3.2
-        version: 4.3.2(typescript@5.5.4)(vite@5.3.5(@types/node@20.12.7)(sass@1.77.8)(terser@5.31.1))
-      vitest:
-        specifier: 1.5.0
-        version: 1.5.0(@types/node@20.12.7)(happy-dom@14.3.2)(sass@1.77.8)(terser@5.31.1)
 
   packages/db:
     dependencies:
@@ -1901,36 +1816,6 @@ packages:
 
   '@polka/url@1.0.0-next.25':
     resolution: {integrity: sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==}
-
-  '@prisma/client@5.12.0':
-    resolution: {integrity: sha512-bk/+KPpRm0+IzqFCtAxrj+/TNiHzulspnO+OkysaYY/atc/eX0Gx8V3tTLxbHKVX0LKD4Hi8KKCcSbU1U72n7Q==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-
-  '@prisma/debug@5.12.0':
-    resolution: {integrity: sha512-wK3fQLxPLMqf5riT5ZIhl8NffPSzFUwtzFX5CH7z/oI9Swmo9UhQlUgZABIVgdXSJ5OAlmRcDZtDKaMApIl8sg==}
-
-  '@prisma/engines-version@5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab':
-    resolution: {integrity: sha512-6yvO8s80Tym61aB4QNtYZfWVmE3pwqe807jEtzm8C5VDe7nw8O1FGX3TXUaXmWV0fQTIAfRbeL2Gwrndabp/0g==}
-
-  '@prisma/engines@5.12.0':
-    resolution: {integrity: sha512-rFNRul9JGu0d3tf8etBgmDQ4NVoDwgGrRguvQOc8i+c6g7xPjRuu4aKzMMvHWUuccvRx5+fs1KMBxQ0x2THt+Q==}
-
-  '@prisma/extension-accelerate@1.1.0':
-    resolution: {integrity: sha512-sESjhBZ4ywQjAVpKzsfhxyNu+9txIM5I6M1MPBaJBq/xDlqmniIAhlwIEt9KLtO80zqPxqbZYes18zrkgYqNiQ==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      '@prisma/client': '>=4.16.1'
-
-  '@prisma/fetch-engine@5.12.0':
-    resolution: {integrity: sha512-qkHQbZ1hspvOwcImvqY4yj7+FUlw0+uP+6tu3g24V4ULHOXLLkvr5ZZc6vy26OF0hkbD3kcDJCeutFis3poKgg==}
-
-  '@prisma/get-platform@5.12.0':
-    resolution: {integrity: sha512-81Ptv9YJnwTArEBPQ2Lvu58sZPxy4OixKxVVgysFan6A3bFP7q8gIg15WTjsRuH4WXh6B667EM9sqoMTNu0fLQ==}
 
   '@prisma/instrumentation@5.17.0':
     resolution: {integrity: sha512-c1Sle4ji8aasMcYfBBHFM56We4ljfenVtRmS8aY06BllS7SoU6SmJBwG7vil+GHiR0Yrh+t9iBwt4AY0Jr4KNQ==}
@@ -5491,11 +5376,6 @@ packages:
   pretty-format@3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
 
-  prisma@5.12.0:
-    resolution: {integrity: sha512-zxw4WSIvpsyNbpv8r7Fxgm7nwTFVmD6wbN6VuH13lClOceSANDOMl4jO3oxE6VzhjxmnEJqOGZjON2T2UpmLag==}
-    engines: {node: '>=16.13'}
-    hasBin: true
-
   prismic-ts-codegen@0.1.21:
     resolution: {integrity: sha512-zZazslixGkZxZP9nOz7HPjtPXAJjxzpUloOoWuC6XuYMW1x1+DmXI6YrhwnBAf7vvBJkeNoN4/+0bemvUiDZbg==}
     engines: {node: '>=12.7.0'}
@@ -7899,35 +7779,6 @@ snapshots:
 
   '@polka/url@1.0.0-next.25': {}
 
-  '@prisma/client@5.12.0(prisma@5.12.0)':
-    optionalDependencies:
-      prisma: 5.12.0
-
-  '@prisma/debug@5.12.0': {}
-
-  '@prisma/engines-version@5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab': {}
-
-  '@prisma/engines@5.12.0':
-    dependencies:
-      '@prisma/debug': 5.12.0
-      '@prisma/engines-version': 5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab
-      '@prisma/fetch-engine': 5.12.0
-      '@prisma/get-platform': 5.12.0
-
-  '@prisma/extension-accelerate@1.1.0(@prisma/client@5.12.0(prisma@5.12.0))':
-    dependencies:
-      '@prisma/client': 5.12.0(prisma@5.12.0)
-
-  '@prisma/fetch-engine@5.12.0':
-    dependencies:
-      '@prisma/debug': 5.12.0
-      '@prisma/engines-version': 5.12.0-21.473ed3124229e22d881cb7addf559799debae1ab
-      '@prisma/get-platform': 5.12.0
-
-  '@prisma/get-platform@5.12.0':
-    dependencies:
-      '@prisma/debug': 5.12.0
-
   '@prisma/instrumentation@5.17.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -10213,8 +10064,8 @@ snapshots:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.5.4)
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.35.0(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.0)
@@ -10236,13 +10087,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0):
     dependencies:
       debug: 4.3.5
       enhanced-resolve: 5.16.1
       eslint: 8.57.0
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.13.1
@@ -10253,18 +10104,28 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.5.4)
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-module-utils@2.8.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
+    dependencies:
+      debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 8.0.0(eslint@8.57.0)(typescript@5.5.4)
+      eslint: 8.57.0
+      eslint-import-resolver-node: 0.3.9
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -10274,7 +10135,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-module-utils: 2.8.1(@typescript-eslint/parser@8.0.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0)
       hasown: 2.0.2
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -10285,7 +10146,7 @@ snapshots:
       semver: 6.3.1
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 7.2.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/parser': 8.0.0(eslint@8.57.0)(typescript@5.5.4)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -12184,10 +12045,6 @@ snapshots:
       react-is: 18.3.1
 
   pretty-format@3.8.0: {}
-
-  prisma@5.12.0:
-    dependencies:
-      '@prisma/engines': 5.12.0
 
   prismic-ts-codegen@0.1.21(@prismicio/client@7.6.0)(@prismicio/types@0.2.9):
     dependencies:

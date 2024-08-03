@@ -23,7 +23,7 @@ export const {
         error: '/auth/login/'
     },
     callbacks: {
-        async session({ token, session, ...args }) {
+        async session({ token, session, ..._args }) {
             return {
                 ...session,
                 user: {
@@ -33,7 +33,7 @@ export const {
                 ...token
             };
         },
-        async jwt({ token, ...args }) {
+        async jwt({ token, ..._args }) {
             return token;
         }
     },

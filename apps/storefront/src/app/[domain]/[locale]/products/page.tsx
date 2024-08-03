@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -12,7 +12,6 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound, redirect, RedirectType } from 'next/navigation';
 
 import Pagination from '@/components/actionable/pagination';
@@ -36,7 +35,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'products' });
@@ -95,7 +94,7 @@ export default async function ProductsPage({ params: { domain, locale: localeDat
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
