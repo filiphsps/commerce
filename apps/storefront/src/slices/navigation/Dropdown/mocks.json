@@ -49,7 +49,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1544731612-de7f96afe55f",
@@ -67,6 +66,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -85,7 +87,9 @@
                                                     "y": 1792
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -104,7 +108,9 @@
                                                     "y": 1391
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
                                 }
@@ -138,6 +144,14 @@
                                     "__TYPE__": "FieldContent",
                                     "value": "center",
                                     "type": "Select"
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#372c86",
+                                    "type": "Color"
                                 }
                             ]
                         ]
@@ -191,7 +205,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5",
@@ -209,6 +222,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -227,7 +243,9 @@
                                                     "y": 928
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -246,7 +264,9 @@
                                                     "y": 1619
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
                                 }
@@ -264,6 +284,14 @@
                                     "__TYPE__": "FieldContent",
                                     "type": "Select",
                                     "value": "top"
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#b23adb",
+                                    "type": "Color"
                                 }
                             ]
                         ]
@@ -317,7 +345,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1596195689404-24d8a8d1c6ea",
@@ -335,6 +362,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -353,7 +383,9 @@
                                                     "y": 1594
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -372,9 +404,19 @@
                                                     "y": 2616
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#170fb0",
+                                    "type": "Color"
                                 }
                             ]
                         ]
@@ -417,7 +459,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1493119508027-2b584f234d6c",
@@ -435,6 +476,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -453,7 +497,9 @@
                                                     "y": 1609
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -472,9 +518,19 @@
                                                     "y": 1803
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#422515",
+                                    "type": "Color"
                                 }
                             ]
                         ]
@@ -524,7 +580,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1586952518485-11b180e92764",
@@ -542,6 +597,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -560,7 +618,9 @@
                                                     "y": 1619
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -579,9 +639,19 @@
                                                     "y": 1823
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#556359",
+                                    "type": "Color"
                                 }
                             ]
                         ]
@@ -624,7 +694,6 @@
                             [
                                 "image",
                                 {
-                                    "__TYPE__": "ImageContent",
                                     "origin": {
                                         "id": "main",
                                         "url": "https://images.unsplash.com/photo-1560457079-9a6532ccb118",
@@ -642,6 +711,9 @@
                                         },
                                         "background": "transparent"
                                     },
+                                    "credits": null,
+                                    "alt": null,
+                                    "__TYPE__": "ImageContent",
                                     "thumbnails": {
                                         "desktop": {
                                             "origin": {
@@ -660,7 +732,9 @@
                                                     "y": 1609
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         },
                                         "large desktop": {
                                             "origin": {
@@ -679,9 +753,19 @@
                                                     "y": 1626
                                                 },
                                                 "background": "transparent"
-                                            }
+                                            },
+                                            "credits": null,
+                                            "alt": null
                                         }
                                     }
+                                }
+                            ],
+                            [
+                                "background_color",
+                                {
+                                    "__TYPE__": "FieldContent",
+                                    "value": "#c6743d",
+                                    "type": "Color"
                                 }
                             ]
                         ]

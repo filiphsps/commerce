@@ -67,6 +67,13 @@
                                     ]
                                 }
                             },
+                            "background_color": {
+                                "type": "Color",
+                                "config": {
+                                    "label": "Background Color (optional)",
+                                    "placeholder": ""
+                                }
+                            },
                             "image_position": {
                                 "type": "Select",
                                 "config": {

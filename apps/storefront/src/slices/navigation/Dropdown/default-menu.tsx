@@ -23,7 +23,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
             )}
         >
             {links.map((item, index) => {
-                const { title, image, href } = item;
+                const { title, image, href, background_color } = item;
 
                 const background = image.url ? image : null;
                 const description = item.description.length > 0 ? item.description : null;
@@ -79,8 +79,10 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         {background ? (
                             <div
                                 className={cn(
-                                    'bg-primary text-primary-foreground relative h-full shrink-0 overflow-hidden'
+                                    'text-primary-foreground relative h-full shrink-0 overflow-hidden',
+                                    !background_color && 'bg-primary' // FIXME: Deal with text color when custom bg color is used.
                                 )}
+                                style={{ backgroundColor: background_color || undefined }}
                             >
                                 <PrismicNextImage
                                     field={
