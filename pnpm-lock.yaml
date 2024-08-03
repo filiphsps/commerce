@@ -589,8 +589,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(react@19.0.0-rc-8269d55d-20240802)
       resolve-accept-language:
-        specifier: 3.1.4
-        version: 3.1.4
+        specifier: 3.1.5
+        version: 3.1.5
       sass:
         specifier: 1.77.8
         version: 1.77.8
@@ -5666,8 +5666,8 @@ packages:
   reselect@4.1.8:
     resolution: {integrity: sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==}
 
-  resolve-accept-language@3.1.4:
-    resolution: {integrity: sha512-DQRxwkorvukwbGTgfR6x9bOP0VgB1nWiERLUwubNrivTNZKX0vWgHD6x03NIgykLNET+6YPtV5bxJiNXGIQX7A==}
+  resolve-accept-language@3.1.5:
+    resolution: {integrity: sha512-PwcFAxAJzxxCsNFTTVlliNTCuUQ3j/vya2FZhpzLt89ib7r4h28oPVxNanzW1PnI2ei989cLQtNRgLLme9bWRA==}
     engines: {node: ^14.18.1 || >=16.0.0}
 
   resolve-from@4.0.0:
@@ -12363,7 +12363,7 @@ snapshots:
 
   reselect@4.1.8: {}
 
-  resolve-accept-language@3.1.4: {}
+  resolve-accept-language@3.1.5: {}
 
   resolve-from@4.0.0: {}
 

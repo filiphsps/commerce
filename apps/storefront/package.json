@@ -75,7 +75,7 @@
         "react-dom": "19.0.0-rc-8269d55d-20240802",
         "react-icons": "5.1.0",
         "react": "19.0.0-rc-8269d55d-20240802",
-        "resolve-accept-language": "3.1.4",
+        "resolve-accept-language": "3.1.5",
         "sass": "1.77.8",
         "sharp": "0.33.4",
         "sonner": "1.5.0",
