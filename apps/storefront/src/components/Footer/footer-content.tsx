@@ -27,7 +27,7 @@ const FooterContent = ({ locale, i18n, store }: FooterContentProps) => {
                 <AcceptedPaymentMethods store={store!} />
 
                 <div className={styles['legal-and-copyrights']}>
-                    <div className="flex gap-4 *:text-sm *:font-black *:uppercase">
+                    <div className="flex flex-wrap gap-4 gap-y-0 *:text-sm *:font-black *:uppercase">
                         <Link href="/contact/">Contact</Link>
                         <Link href="https://nordcom.io/legal/terms-of-service/" target="_blank">
                             Terms of Service
