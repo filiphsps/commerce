@@ -5,13 +5,13 @@ import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { unstable_cache as cache } from 'next/cache';
 import { getServerSideSitemap } from 'next-sitemap';
+import { unstable_cache as cache } from 'next/cache';
 
-import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 import type { Product } from '@shopify/hydrogen-react/storefront-api-types';
-import type { NextRequest } from 'next/server';
 import type { ISitemapField } from 'next-sitemap';
+import type { NextRequest } from 'next/server';
+import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
 
 export async function GET(
     _: NextRequest,
@@ -47,13 +47,13 @@ export async function GET(
                     loc: `https://${shop.domain}/${locale.code}/products/${product.handle}/`,
                     changefreq: 'daily',
                     lastmod: product.updatedAt,
-                    alternateRefs: locales
+                    alternateRefs: [] /*locales
                         .filter(({ code }) => code !== locale.code)
                         .map(({ code }) => ({
                             href: `https://${shop.domain}/${code}/products/${product.handle}/`,
                             hreflang: code,
                             hrefIsAbsolute: true
-                        })),
+                        }))*/, // FIXME: Deal with alternates.
                     //priority: 0.9,
                     trailingSlash: true
                 }) as ISitemapField
