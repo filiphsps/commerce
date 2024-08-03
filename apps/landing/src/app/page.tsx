@@ -21,7 +21,7 @@ export default async function IndexAdminPage({}: { params: IndexAdminPageParams 
         <>
             <div className={`${styles.heading}`}>
                 <Heading>
-                    Commerce by <Accented>Nordcom</Accented> Group Inc
+                    Commerce by <Accented>Nordcom</Accented> AB
                 </Heading>
                 <Heading level="h2">
                     Turns out you can have your cake and eat it too! Get all of the benefits of going{' '}
