@@ -100,7 +100,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                         } as any
                                     }
                                     className={cn(
-                                        'pointer-events-none h-full w-full object-cover object-center',
+                                        'pointer-events-none h-full w-full object-cover',
                                         imagePositionStyles
                                     )}
                                     draggable={false}
