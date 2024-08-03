@@ -10,9 +10,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json<ApiData>({
         definitions: {
-            newFeature: {
-                description: 'Controls whether the new feature is visible',
-                origin: 'https://example.com/#new-feature',
+            'search-filter': {
+                description: 'Controls if the search filter is visible',
                 options: [
                     { value: false, label: 'Off' },
                     { value: true, label: 'On' }

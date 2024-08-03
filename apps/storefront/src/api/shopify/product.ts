@@ -23,6 +23,7 @@ export const PRODUCT_FRAGMENT_MINIMAL = `
     title
     description
     vendor
+    productType
     tags
     trackingParameters
     seo {

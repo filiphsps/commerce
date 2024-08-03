@@ -26,6 +26,7 @@ env:
     SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
     MONGODB_DATA_API_TOKEN: ${{ secrets.MONGODB_DATA_API_TOKEN }}
     MONGODB_DATA_API_URI: ${{ secrets.MONGODB_DATA_API_URI }}
+    EDGE_CONFIG: ${{ secrets.EDGE_CONFIG }}
 
 jobs:
     build:

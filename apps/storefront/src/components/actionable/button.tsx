@@ -8,12 +8,18 @@ import type { ComponentProps, ReactNode } from 'react';
 
 export type ButtonProps<T extends As> = {
     as?: As;
-
     children: ReactNode;
+    styled?: boolean;
 } & ComponentProps<T>;
-export const Button = <T extends As>({ as: Tag = 'button' as T, children, className, ...props }: ButtonProps<T>) => {
+export const Button = <T extends As>({
+    as: Tag = 'button' as T,
+    styled = true,
+    children,
+    className,
+    ...props
+}: ButtonProps<T>) => {
     return (
-        <Tag draggable={false} {...props} className={cn(styles.container, className)}>
+        <Tag draggable={false} {...props} className={cn(styled && styles.container, className)}>
             {children}
         </Tag>
     );
