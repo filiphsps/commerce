@@ -1,0 +1,17 @@
+@import 'globals';
+
+// FIXME: Make this generic.
+.container {
+    overflow-x: auto;
+    animation: scroll-shadow-inset linear;
+    animation-timeline: scroll(self inline);
+}
+
+@keyframes scroll-shadow-inset {
+    from {
+        box-shadow: inset -10px 0px 10px -10px rgb(0 0 0 / 0.75);
+    }
+    to {
+        box-shadow: inset 10px 0px 10px -10px rgb(0 0 0 / 0.75);
+    }
+}

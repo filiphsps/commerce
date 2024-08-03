@@ -1,5 +1,7 @@
 'use client';
 
+import styles from '@/components/header/header-navigation.module.scss';
+
 import { components as menuSlices } from '@/slices/navigation';
 import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
@@ -24,6 +26,7 @@ export const HeaderNavigation = ({ slices = [], className, ...props }: HeaderNav
         <nav
             className={cn(
                 'flex w-full grow items-center justify-start gap-6 overflow-x-auto px-3 md:max-w-[var(--page-width)] md:flex-row md:overflow-hidden md:px-1 lg:px-3',
+                styles.container,
                 className
             )}
             {...props}
