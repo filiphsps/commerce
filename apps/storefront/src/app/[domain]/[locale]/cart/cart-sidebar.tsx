@@ -1,6 +1,6 @@
 'use client';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Checkout } from '@/utils/checkout';
 import { cn } from '@/utils/tailwind';
@@ -15,7 +15,7 @@ import type { Locale, LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type CartSidebarProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
 

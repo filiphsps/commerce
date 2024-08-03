@@ -25,16 +25,10 @@ const HeaderComponent = async ({ domain, locale, i18n, ...props }: HeaderProps) 
     const menu = await MenuApi({ shop, locale });
     const slices = menu.slices;
 
-    const {
-        logo,
-        theme: { ...headerTheme }
-    } = shop.design.header;
-
+    const { logo } = shop.design.header;
     return (
         <section
             className="sticky top-0 z-10 flex w-full flex-col items-center overscroll-contain shadow-none transition-shadow duration-150 group-data-[menu-open=true]/body:shadow-xl group-data-[scrolled=true]/body:shadow-xl md:max-h-[95dvh]"
-            data-theme={headerTheme.accent || 'primary'}
-            data-theme-variant={headerTheme.variant || 'default'}
             {...props}
         >
             <section className="flex h-16 w-full flex-col items-center bg-white">

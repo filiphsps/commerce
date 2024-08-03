@@ -2,7 +2,7 @@ import styles from './page.module.scss';
 
 import { Suspense } from 'react';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -50,7 +50,7 @@ export async function generateMetadata({
 
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const collection = await CollectionApi({ api, handle, first: 16, after: null }, cache); // TODO: this.
@@ -128,7 +128,7 @@ export default async function CollectionPage({
         };
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });

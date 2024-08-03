@@ -1,5 +1,4 @@
-import { ShopApi } from '@nordcom/commerce-database';
-
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import type { MetadataRoute } from 'next';
@@ -70,7 +69,7 @@ export type RobotsParams = {
     domain: string;
 };
 export async function GET(_: NextRequest, { params: { domain } }: { params: RobotsParams }): Promise<any> {
-    const shop = await ShopApi(domain);
+    const shop = await findShopByDomainOverHttp(domain);
 
     return new NextResponse(
         nextRobotsSchemaParser({

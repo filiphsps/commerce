@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error, UnknownLocaleError } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -9,7 +9,6 @@ import { CountriesApi, LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 
@@ -30,7 +29,7 @@ export async function generateMetadata({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const page = await PageApi({ shop, locale, handle: 'countries' });
@@ -92,7 +91,7 @@ export default async function CountriesPage({
     try {
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const api = await ShopifyApolloApiClient({ shop, locale });
 
         const countries = await CountriesApi({ api });

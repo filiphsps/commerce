@@ -1,4 +1,4 @@
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { ApiError, NotFoundError } from '@nordcom/commerce-errors';
 
 import { Locale } from '@/utils/locale';
@@ -6,7 +6,7 @@ import { createClient } from '@/utils/prismic';
 
 import type { FooterModel } from '@/models/FooterModel';
 
-export const FooterApi = async ({ shop, locale }: { shop: Shop; locale: Locale }): Promise<FooterModel> => {
+export const FooterApi = async ({ shop, locale }: { shop: OnlineShop; locale: Locale }): Promise<FooterModel> => {
     const client = createClient({ shop, locale });
 
     try {

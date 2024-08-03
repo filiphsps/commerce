@@ -1,16 +1,16 @@
 import 'server-only';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi, PagesApi } from '@/api/page';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { isValidHandle } from '@/utils/handle';
 import { Locale } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -32,7 +32,7 @@ export async function generateStaticParams({
 }): Promise<Omit<CustomPageParams, 'domain' | 'locale'>[]> {
     const locale = Locale.from(localeData);
 
-    const shop = await ShopApi(domain, cache, true);
+    const shop = await findShopByDomainOverHttp(domain);
     const pages = await PagesApi({ shop, locale });
     if (!pages) return [];
 
@@ -51,7 +51,7 @@ export async function generateMetadata({
 
         const locale = Locale.from(localeData);
 
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
         // Do the actual API calls.
@@ -120,7 +120,7 @@ export default async function CustomPage({
         const locale = Locale.from(localeCode);
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
 
         const page = await PageApi({ shop, locale, handle } as any);
         if (!page) notFound(); // TODO: Return proper error.

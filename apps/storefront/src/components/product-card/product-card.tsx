@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from '@/components/product-card/product-card.module.scss';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { getDictionary } from '@/utils/dictionary';
 import { cn } from '@/utils/tailwind';
@@ -18,7 +18,7 @@ import type { Locale } from '@/utils/locale';
 const DESCRIPTION_LENGTH = 160;
 
 export type ProductCardProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
 
     // TODO: Use satisfied.

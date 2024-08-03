@@ -5,7 +5,7 @@ import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
 import { type HTMLProps, Suspense } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { CollectionApi } from '@/api/shopify/collection';
@@ -23,7 +23,7 @@ export type CollectionBlockCommonProps = {
 } & HTMLProps<HTMLDivElement>;
 
 export type CollectionBlockProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
 
     handle: string;

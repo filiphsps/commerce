@@ -8,6 +8,7 @@ export function AuthAdapter(): Adapter {
             try {
                 return (await User.find({ id })).toObject();
             } catch (error: unknown) {
+                console.error(error);
                 return null;
             }
         },
@@ -31,6 +32,7 @@ export function AuthAdapter(): Adapter {
                     })
                 ).toObject();
             } catch (error: unknown) {
+                console.error(error);
                 return null;
             }
         },
@@ -44,6 +46,7 @@ export function AuthAdapter(): Adapter {
                     })
                 ).toObject();
             } catch (error: unknown) {
+                console.error(error);
                 return null;
             }
         },
@@ -126,6 +129,7 @@ export function AuthAdapter(): Adapter {
                     ...account
                 };
             } catch (error: unknown) {
+                console.error(error);
                 return null;
             }
         },

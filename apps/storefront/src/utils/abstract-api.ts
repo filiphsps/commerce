@@ -1,6 +1,5 @@
 /* eslint-disable unused-imports/no-unused-vars */
-import type { Nullable, Shop } from '@nordcom/commerce-database';
-import type { OnlineShop } from '@nordcom/commerce-db';
+import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 
 import { DocumentTransform } from '@apollo/client';
 import { visit } from 'graphql';
@@ -14,7 +13,7 @@ export type ApiOptions = { api: AbstractApi };
 
 export type AbstractApi<Q = any> = {
     locale: () => Locale;
-    shop: () => Shop;
+    shop: () => OnlineShop;
     query: <T>(
         query: Q,
         variables?: Record<string, string | number | boolean | object | Array<string | number | object> | null>,
@@ -33,13 +32,13 @@ export type AbstractApiBuilder<K, Q> = ({
 }: {
     api: K;
     locale: Locale;
-    shop: Shop;
+    shop: OnlineShop;
     fetchPolicy?: FetchPolicy;
 }) => AbstractApi<Q>;
 
 export type AbstractShopifyApolloApiBuilder<Q> = AbstractApiBuilder<ApolloClient<any>, Q>;
 
-export function buildCacheTagArray(shop: Shop | OnlineShop, locale: Locale, tags: string[]) {
+export function buildCacheTagArray(shop: OnlineShop, locale: Locale, tags: string[]) {
     const prefix = `${shop.domain}.${locale.code}`;
 
     return [shop.id, shop.domain, prefix, ...tags.map((tag) => `${prefix}.${tag}`)];
@@ -53,7 +52,7 @@ export function buildCacheTagArray(shop: Shop | OnlineShop, locale: Locale, tags
  * @param {object} options - The api options.
  * @param {ApolloClient<any>} options.api - The Apollo client to use.
  * @param {Locale} options.locale - The locale to use.
- * @param {Shop} options.shop - The locale to use.
+ * @param {OnlineShop} options.shop - The locale to use.
  * @param {FetchPolicy | undefined} options.fetchPolicy - The fetch policy to use.
  * @returns {AbstractApiBuilder} The AbstractApiBuilder.
  */

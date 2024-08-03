@@ -2,7 +2,7 @@ import 'server-only';
 
 import { useMemo } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { cn } from '@/utils/tailwind';
 import Image from 'next/image';
@@ -17,7 +17,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 export type IconGridProps = SliceComponentProps<
     Content.IconGridSlice,
     {
-        shop: Shop;
+        shop: OnlineShop;
         locale: Locale;
         i18n: LocaleDictionary;
     }

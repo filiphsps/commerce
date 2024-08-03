@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Model } from 'mongoose';
+
 import { Service } from './service';
 
 import type { BaseDocument } from '../db';

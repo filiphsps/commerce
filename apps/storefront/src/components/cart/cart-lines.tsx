@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { useCart } from '@shopify/hydrogen-react';
 
@@ -12,7 +12,7 @@ import { Label } from '@/components/typography/label';
 import type { LocaleDictionary } from '@/utils/locale';
 
 type CartContentProps = {
-    shop: Shop;
+    shop: OnlineShop;
     i18n: LocaleDictionary;
 };
 const CartLines = ({ shop, i18n }: CartContentProps) => {

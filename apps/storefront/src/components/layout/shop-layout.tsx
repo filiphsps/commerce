@@ -2,7 +2,7 @@ import 'server-only';
 
 import { type HTMLProps, type ReactNode, Suspense } from 'react';
 
-import type { Shop as ShopModel } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import Footer from '@/components/Footer';
 import Header from '@/components/header/header';
@@ -12,7 +12,7 @@ import PageContent from '@/components/page-content';
 import type { Locale, LocaleDictionary } from '@/utils/locale';
 
 export type ShopLayoutProps = {
-    shop: ShopModel;
+    shop: OnlineShop;
     locale: Locale;
     i18n: LocaleDictionary;
     children: ReactNode;

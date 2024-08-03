@@ -4,7 +4,7 @@ import styles from './page.module.scss';
 
 import { useMemo, useState } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { cn } from '@/utils/tailwind';
 import { Money, ProductProvider } from '@shopify/hydrogen-react';
@@ -18,7 +18,7 @@ import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductContentProps = {
-    shop: Shop;
+    shop: OnlineShop;
     product: Product;
     i18n: LocaleDictionary;
 };

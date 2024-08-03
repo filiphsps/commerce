@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ApiBuilder, buildCacheTagArray } from '@/utils/abstract-api';
 import { ApolloClient } from '@apollo/client';
@@ -67,7 +67,7 @@ describe('utils', () => {
             const shop = {
                 id: 'id',
                 domain: 'domain'
-            } as Shop;
+            } as OnlineShop;
 
             const locale = {
                 code: 'en-US'

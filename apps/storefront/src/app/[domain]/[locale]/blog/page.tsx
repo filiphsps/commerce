@@ -1,4 +1,4 @@
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -8,7 +8,6 @@ import { LocalesApi } from '@/api/store';
 import { getDictionary } from '@/i18n/dictionary';
 import { Locale, useTranslation } from '@/utils/locale';
 import { asText } from '@prismicio/client';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import PrismicPage from '@/components/prismic-page';
@@ -25,7 +24,7 @@ export async function generateMetadata({
     params: BlogPageParams;
 }): Promise<Metadata> {
     try {
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });
@@ -83,7 +82,7 @@ export async function generateMetadata({
 
 export default async function BlogPage({ params: { domain, locale: localeData } }: { params: BlogPageParams }) {
     try {
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         const locale = Locale.from(localeData);
 
         const api = await ShopifyApolloApiClient({ shop, locale });

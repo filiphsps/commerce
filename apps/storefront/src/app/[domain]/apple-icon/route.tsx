@@ -1,6 +1,6 @@
-import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ImageResponse } from 'next/og';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Ap
     try {
         let src!: string;
 
-        const shop = await ShopApi(domain);
+        const shop = await findShopByDomainOverHttp(domain);
         if (shop.icons?.favicon?.src) {
             src = shop.icons.favicon.src;
         } else {

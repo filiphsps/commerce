@@ -1,11 +1,10 @@
-import { ShopApi } from '@nordcom/commerce-database';
 import { NotFoundError } from '@nordcom/commerce-errors';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductsPaginationApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { unstable_cache as cache } from 'next/cache';
 import { getServerSideSitemap } from 'next-sitemap';
 
 import type { DynamicSitemapRouteParams } from '../../../sitemap.xml/route';
@@ -22,7 +21,7 @@ export async function GET(
         throw new NotFoundError(`"Region" with the handle "${regionData}"`);
     }
 
-    const shop = await ShopApi(domain, cache, true);
+    const shop = await findShopByDomainOverHttp(domain);
     const locale = Locale.from(`en-${region}`);
     const apiConfig = await ShopifyApiConfig({ shop });
     const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });

@@ -6,6 +6,14 @@ import type { BaseDocument, DocumentExtras } from '../db';
 import type { UserBase } from '.';
 import type { Document } from 'mongoose';
 
+// TODO: Remove this.
+export type ShopTheme = {
+    header: {
+        theme: 'primary' | 'secondary';
+        themeVariant: 'default' | 'light' | 'dark';
+    };
+};
+
 export interface ShopBase extends BaseDocument {
     name: string;
     domain: string;
@@ -17,10 +25,6 @@ export interface ShopBase extends BaseDocument {
                 height: number;
                 src: string;
                 alt: string;
-            };
-            theme: {
-                accent: 'primary' | 'secondary';
-                variant: 'default' | 'dark' | 'light';
             };
         };
         accents: {
@@ -38,19 +42,28 @@ export interface ShopBase extends BaseDocument {
         };
     };
 
-    contentProvider: {
-        id: string;
-    } & (
+    contentProvider:
         | {
               type: 'prismic';
               authentication: {
                   token: string;
               };
+              repositoryName: string;
+              repository: string;
           }
         | {
               type: 'shopify';
-          }
-    );
+          };
+    commerceProvider: {
+        type: 'shopify';
+        authentication: {
+            token: string;
+            publicToken: string;
+        };
+        storefrontId: string;
+        domain: string;
+        id: string;
+    };
 
     collaborators: [
         {
@@ -61,6 +74,10 @@ export interface ShopBase extends BaseDocument {
             default: [];
         }
     ];
+
+    thirdParty?: {
+        googleTagManager?: string;
+    };
 }
 
 export type OnlineShop = Omit<ShopBase, keyof Omit<Document, keyof DocumentExtras> | 'collaborators' | 'schema'> & {
@@ -106,20 +123,6 @@ export const ShopSchema = new Schema<ShopBase>(
                     alt: {
                         type: Schema.Types.String,
                         required: true
-                    }
-                },
-                theme: {
-                    accent: {
-                        type: Schema.Types.String,
-                        enum: ['primary', 'secondary'],
-                        required: true,
-                        default: 'primary'
-                    },
-                    variant: {
-                        type: Schema.Types.String,
-                        enum: ['default', 'dark', 'light'],
-                        required: true,
-                        default: 'default'
                     }
                 }
             },
@@ -176,15 +179,49 @@ export const ShopSchema = new Schema<ShopBase>(
                 required: true,
                 default: 'prismic'
             },
-            id: {
+            authentication: {
+                token: {
+                    type: Schema.Types.String,
+                    required: false
+                }
+            },
+            repositoryName: {
                 type: Schema.Types.String,
-                required: true
+                required: false
+            },
+            repository: {
+                type: Schema.Types.String,
+                required: false
+            }
+        },
+        commerceProvider: {
+            type: {
+                type: Schema.Types.String,
+                enum: ['shopify'],
+                required: true,
+                default: 'shopify'
             },
             authentication: {
                 token: {
                     type: Schema.Types.String,
-                    required: true
+                    required: false
+                },
+                publicToken: {
+                    type: Schema.Types.String,
+                    required: false
                 }
+            },
+            id: {
+                type: Schema.Types.String,
+                required: false
+            },
+            storefrontId: {
+                type: Schema.Types.String,
+                required: false
+            },
+            domain: {
+                type: Schema.Types.String,
+                required: false
             }
         },
 
@@ -205,6 +242,13 @@ export const ShopSchema = new Schema<ShopBase>(
             ],
             required: true,
             default: []
+        },
+
+        thirdParty: {
+            googleTagManager: {
+                type: Schema.Types.String,
+                required: false
+            }
         }
     },
     {

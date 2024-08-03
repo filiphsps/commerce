@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { prisma } from '@nordcom/commerce-database';
 import type { OnlineShop } from '@nordcom/commerce-db';
 import { Shop } from '@nordcom/commerce-db';
 
@@ -64,254 +63,33 @@ export async function updateShop(userId: string, shopId: string, data: Partial<O
 }
 
 export async function createShop(userId: string) {
-    try {
-        const response = await prisma.shop.create({
-            data: {
-                id: 'sweet-side-of-sweden',
-                name: 'Sweet Side of Sweden',
-                domain: 'www.sweetsideofsweden.com',
-                alternativeDomains: ['sweetsideofsweden.com', 'staging.sweetsideofsweden.com'],
-                collaborators: {
-                    create: {
-                        userId
-                    }
-                }
-            }
-        });
-
-        await revalidateAll(userId, response.id, response.domain);
-        return response;
-    } catch (error: any) {
-        console.error(error);
-        return {
-            error: error.message
-        };
-    }
+    return {} as any;
 }
 
 export async function getCommerceProvider(userId: string, shopId: string) {
-    return await cache(
-        async () => {
-            return (
-                await prisma.shop.findUnique({
-                    where: {
-                        id: shopId,
-                        collaborators: { some: { userId } }
-                    },
-                    select: {
-                        commerceProvider: true
-                    },
-                    cacheStrategy: {
-                        ttl: 60 * 60 * 4 // 4 hours.
-                    }
-                })
-            )?.commerceProvider;
-        },
-        ['admin', shopId, userId, 'commerce-provider'],
-        {
-            revalidate: 120,
-            tags: [
-                'admin',
-                shopId,
-                `admin.user.${userId}.shop.${shopId}`,
-                `admin.user.${userId}.shop.${shopId}.commerce-provider`
-            ]
-        }
-    )();
+    return {} as any;
 }
 export async function updateCommerceProvider(userId: string, shopId: string, data: any) {
-    try {
-        const response = await prisma.shop.update({
-            where: {
-                id: shopId,
-                collaborators: { some: { userId } }
-            },
-            data: {
-                commerceProvider: {
-                    upsert: {
-                        update: data,
-                        create: data
-                    }
-                }
-            }
-        });
-
-        await revalidateAll(userId, shopId, response.domain);
-        return response;
-    } catch (error: any) {
-        console.error(error);
-
-        return {
-            error: error.message
-        };
-    }
+    return {} as any;
 }
 
 export async function getContentProvider(userId: string, shopId: string) {
-    return await cache(
-        async () => {
-            return (
-                await prisma.shop.findUnique({
-                    where: {
-                        id: shopId,
-                        collaborators: { some: { userId } }
-                    },
-                    select: {
-                        contentProvider: true
-                    }
-                })
-            )?.contentProvider;
-        },
-        [
-            'admin',
-            shopId,
-            `admin.user.${userId}.shop.${shopId}`,
-            `admin.user.${userId}.shop.${shopId}.content-provider`
-        ],
-        {
-            revalidate: 120,
-            tags: [
-                'admin',
-                shopId,
-                `admin.user.${userId}.shop.${shopId}`,
-                `admin.user.${userId}.shop.${shopId}.content-provider`
-            ]
-        }
-    )();
+    return {} as any;
 }
 export async function updateContentProvider(userId: string, shopId: string, data: any) {
-    try {
-        const response = await prisma.shop.update({
-            where: {
-                id: shopId,
-                collaborators: { some: { userId } }
-            },
-            data: {
-                contentProvider: {
-                    upsert: {
-                        update: data,
-                        create: data
-                    }
-                }
-            }
-        });
-
-        await revalidateAll(userId, shopId, response.domain);
-        return response;
-    } catch (error: any) {
-        console.error(error);
-        return {
-            error: error.message
-        };
-    }
+    return {} as any;
 }
 
 export async function getCheckoutProvider(userId: string, shopId: string) {
-    return await cache(
-        async () => {
-            return (
-                await prisma.shop.findUnique({
-                    where: {
-                        id: shopId,
-                        collaborators: { some: { userId } }
-                    },
-                    select: {
-                        checkoutProvider: true
-                    }
-                })
-            )?.checkoutProvider;
-        },
-        [
-            'admin',
-            shopId,
-            `admin.user.${userId}.shop.${shopId}`,
-            `admin.user.${userId}.shop.${shopId}.checkout-provider`
-        ],
-        {
-            revalidate: 120,
-            tags: [
-                'admin',
-                shopId,
-                `admin.user.${userId}.shop.${shopId}`,
-                `admin.user.${userId}.shop.${shopId}.checkout-provider`
-            ]
-        }
-    )();
+    return {} as any;
 }
 export async function updateCheckoutProvider(userId: string, shopId: string, data: any) {
-    try {
-        const response = await prisma.shop.update({
-            where: {
-                id: shopId,
-                collaborators: { some: { userId } }
-            },
-            data: {
-                checkoutProvider: {
-                    upsert: {
-                        update: data,
-                        create: data
-                    }
-                }
-            }
-        });
-
-        await revalidateAll(userId, shopId, response.domain);
-        return response;
-    } catch (error: any) {
-        console.error(error);
-
-        return {
-            error: error.message
-        };
-    }
+    return {} as any;
 }
 
 export async function getShopTheme(userId: string, shopId: string) {
-    return await cache(
-        async () => {
-            return (
-                await prisma.shop.findUnique({
-                    where: {
-                        id: shopId,
-                        collaborators: { some: { userId } }
-                    },
-                    select: {
-                        theme: true
-                    }
-                })
-            )?.theme;
-        },
-        ['admin', shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`],
-        {
-            revalidate: 120,
-            tags: ['admin', shopId, `admin.user.${userId}.shop.${shopId}`, `admin.user.${userId}.shop.${shopId}.theme`]
-        }
-    )();
+    return {} as any;
 }
 export async function updateShopTheme(userId: string, shopId: string, data: any) {
-    try {
-        const response = await prisma.shop.update({
-            where: {
-                id: shopId,
-                collaborators: { some: { userId } }
-            },
-            data: {
-                theme: {
-                    upsert: {
-                        update: data,
-                        create: data
-                    }
-                }
-            }
-        });
-
-        await revalidateAll(userId, shopId, response.domain);
-        return response;
-    } catch (error: any) {
-        console.error(error);
-
-        return {
-            error: error.message
-        };
-    }
+    return {} as any;
 }

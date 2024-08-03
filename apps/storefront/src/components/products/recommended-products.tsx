@@ -5,7 +5,7 @@ import styles from '@/components/products/collection-block.module.scss';
 import extraStyles from '@/components/products/recommended-products.module.scss';
 import overflowStyles from '@/styles/horizontal-overflow-scroll.module.scss';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { RecommendationApi } from '@/api/shopify/recommendation';
@@ -17,7 +17,7 @@ import ProductCard from '@/components/product-card/product-card';
 import type { Product } from '@/api/product';
 
 export type RecommendedProductsProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
 
     product?: Product;

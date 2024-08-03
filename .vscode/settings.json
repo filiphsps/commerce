@@ -135,9 +135,6 @@
     "typescript.inlayHints.variableTypes.enabled": true,
     "typescript.inlayHints.parameterTypes.enabled": true,
     "prettier.printWidth": 120,
-    "[prisma]": {
-        "editor.defaultFormatter": "Prisma.prisma"
-    },
     "[markdown]": {
         "editor.formatOnType": true
     },

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Nullable, Shop } from '@nordcom/commerce-database';
+import type { Nullable, OnlineShop } from '@nordcom/commerce-db';
 import { MissingContextProviderError } from '@nordcom/commerce-errors';
 
 import { usePrevious } from '@/hooks/usePrevious';
@@ -149,7 +149,7 @@ const pathToShopifyPageType = (path: string): ShopifyPageType => {
 };
 
 export type AnalyticsEventActionProps = {
-    shop: Shop;
+    shop: OnlineShop;
     currency: CurrencyCode;
     locale: Locale;
     shopify: ShopifyContextValue;

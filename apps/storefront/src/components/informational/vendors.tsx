@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { ShopifyApolloApiClient } from '@/api/shopify';
 import { VendorsApi } from '@/api/shopify/vendor';
@@ -12,7 +12,7 @@ import type { VendorModel } from '@/models/VendorModel';
 import type { Locale } from '@/utils/locale';
 
 export type VendorsProps = {
-    shop: Shop;
+    shop: OnlineShop;
     locale: Locale;
 
     className?: string | undefined;

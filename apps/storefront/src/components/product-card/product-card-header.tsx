@@ -4,7 +4,7 @@ import styles from '@/components/product-card/product-card.module.scss';
 
 import { memo, useMemo } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { createProductSearchParams } from '@/api/product';
 import { deepEqual } from '@/utils/deep-equal';
@@ -45,7 +45,7 @@ const VariantImage = memo(({ image, priority }: VariantImageProps) => {
 VariantImage.displayName = 'Nordcom.ProductCard.Image.VariantImage';
 
 export type ProductCardImageProps = {
-    shop: Shop;
+    shop: OnlineShop;
     data?: Product;
     priority?: boolean;
     children?: ReactNode;

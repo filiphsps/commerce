@@ -2,7 +2,7 @@ import 'server-only';
 
 import { Suspense } from 'react';
 
-import { ShopApi } from '@nordcom/commerce-database';
+import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
@@ -17,7 +17,6 @@ import { ProductToMerchantsCenterId } from '@/utils/merchants-center-id';
 import { TitleToHandle } from '@/utils/title-to-handle';
 import { asText } from '@prismicio/client';
 import { parseGid } from '@shopify/hydrogen-react';
-import { unstable_cache as cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
@@ -49,7 +48,7 @@ export async function generateStaticParams(
 ): Promise<Omit<ProductPageParams, 'domain' | 'locale'>[]> {
     /*const locale = Locale.from(localeData);
 
-    const shop = await ShopApi(domain, cache, true);
+    const shop = await Shop.findByDomain(domain);
     const api = await ShopifyApiClient({ shop, locale });
     const { products } = await ProductsApi({ api });
 
@@ -70,7 +69,7 @@ export async function generateMetadata({
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache, true);
+        const shop = await Shop.findByDomain(domain);
 
         // Setup the AbstractApi client.
         const api = await ShopifyApiClient({ shop, locale });
@@ -141,7 +140,7 @@ export default async function ProductPage({
         const locale = Locale.from(localeData);
 
         // Fetch the current shop.
-        const shop = await ShopApi(domain, cache);
+        const shop = await Shop.findByDomain(domain);
         // Setup the AbstractApi client.
         const api = await ShopifyApolloApiClient({ shop, locale });
 

@@ -1,6 +1,5 @@
-import type { PrismicContentProvider, Shop } from '@nordcom/commerce-database';
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { InvalidShopError } from '@nordcom/commerce-errors';
+import { InvalidShopError, TodoError } from '@nordcom/commerce-errors';
 
 import * as prismic from '@prismicio/client';
 import { enableAutoPreviews } from '@prismicio/next';
@@ -9,7 +8,7 @@ import type { Locale } from '@/utils/locale';
 import type { Client, ClientConfig, LinkResolverFunction } from '@prismicio/client';
 
 type CreateClientOptions = {
-    shop: OnlineShop | Shop;
+    shop: OnlineShop;
     locale: Locale;
 } & ClientConfig;
 
@@ -18,10 +17,11 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
         throw new InvalidShopError("Prismic isn't configured for this shop.");
     }
 
-    const contentProvider = shop.contentProvider as PrismicContentProvider;
-    const repository = contentProvider.repositoryName || contentProvider.repository.split('//')[1].split('.')[0];
+    const contentProvider = shop.contentProvider;
+    if (contentProvider.type !== 'prismic') throw new TodoError();
 
-    const accessToken = contentProvider.authentication?.token || undefined;
+    const repository = contentProvider.repository || contentProvider.repositoryName;
+    const accessToken = contentProvider.authentication.token || undefined;
 
     const client = prismic.createClient(repository, {
         accessToken,
@@ -32,7 +32,7 @@ export const createClient = ({ shop, locale, ...config }: CreateClientOptions): 
         fetchOptions: {
             next: {
                 revalidate: 60 * 60 * 24, // 24 hours
-                tags: [shop.domain, 'prismic']
+                tags: [shop.id, shop.domain, 'prismic']
             }
         },
         ...config

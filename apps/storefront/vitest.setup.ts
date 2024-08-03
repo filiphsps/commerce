@@ -38,15 +38,17 @@ vi.mock('@/utils/build-config', () => ({
     }
 }));
 
-vi.mock('@nordcom/commerce-database', () => ({
-    ShopApi: vi.fn().mockResolvedValue({
-        id: 'mock-shop-id',
-        domain: 'staging.demo.nordcom.io',
-        commerceProvider: {
-            type: 'shopify' as const,
-            domain: 'mock.shop' as const
-        }
-    })
+vi.mock('@nordcom/commerce-db', () => ({
+    Shop: {
+        findByDomain: vi.fn().mockResolvedValue({
+            id: 'mock-shop-id',
+            domain: 'staging.demo.nordcom.io',
+            commerceProvider: {
+                type: 'shopify' as const,
+                domain: 'mock.shop' as const
+            }
+        })
+    }
 }));
 
 // Mock the `prismic` module as it requires a valid Prismic repository,

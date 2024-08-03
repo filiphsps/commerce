@@ -1,4 +1,4 @@
-import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-database';
+import type { Identifiable, LimitFilters, Nullable } from '@nordcom/commerce-db';
 import { NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
 import { extractLimitLikeFilters } from '@/api/shopify/collection';

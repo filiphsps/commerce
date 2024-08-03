@@ -4,7 +4,7 @@ import styles from './countries.module.scss';
 
 import { useRef } from 'react';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import { Locale } from '@/utils/locale';
 import { byIso as countryLookup } from 'country-code-lookup';
@@ -16,7 +16,7 @@ import { Label } from '@/components/typography/label';
 import type { Country } from '@shopify/hydrogen-react/storefront-api-types';
 
 type LocaleSelectorProps = {
-    shop: Shop;
+    shop: OnlineShop;
     countries: Country[];
     locale: Locale;
 };

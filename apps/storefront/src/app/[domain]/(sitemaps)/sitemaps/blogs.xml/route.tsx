@@ -1,11 +1,10 @@
-import { ShopApi } from '@nordcom/commerce-database';
 import { Error, NotFoundError, UnknownApiError } from '@nordcom/commerce-errors';
 
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ShopifyApiConfig, ShopifyApolloApiClient } from '@/api/shopify';
 import { BlogApi } from '@/api/shopify/blog';
 import { LocalesApi } from '@/api/store';
 import { Locale } from '@/utils/locale';
-import { unstable_cache as cache } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSideSitemap } from 'next-sitemap';
 
@@ -16,7 +15,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_: NextRequest, { params: { domain } }: { params: DynamicSitemapRouteParams }) {
     try {
-        const shop = await ShopApi(domain, cache, true);
+        const shop = await findShopByDomainOverHttp(domain);
         const locale = Locale.default;
         const apiConfig = await ShopifyApiConfig({ shop });
         const api = await ShopifyApolloApiClient({ shop, locale, apiConfig });

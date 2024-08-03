@@ -1,28 +1,26 @@
 import 'server-only';
 
-import { type Shop, ShopApi } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError } from '@nordcom/commerce-errors';
 
 import { createApolloClient } from '@/api/client';
+import { findShopByDomainOverHttp } from '@/api/shop';
 import { ApiBuilder } from '@/utils/abstract-api';
 import { Locale } from '@/utils/locale';
 import { createStorefrontClient } from '@shopify/hydrogen-react';
-import { unstable_cache as cache } from 'next/cache';
 
 import type { ApiConfig } from '@/api/client';
 
 export const ShopifyApiConfig = async ({
-    shop: { domain },
-    noCache = false
+    shop: { domain }
 }: {
-    shop: Shop;
-    noCache?: boolean;
+    shop: OnlineShop;
 }): Promise<{
     public: () => ApiConfig;
     private: () => ApiConfig;
 }> => {
-    const { commerceProvider } = await ShopApi(domain, !noCache ? cache : undefined, true);
-    if (!commerceProvider) throw new UnknownCommerceProviderError();
+    const { commerceProvider } = await findShopByDomainOverHttp(domain);
+    if (!commerceProvider.domain) throw new UnknownCommerceProviderError();
 
     const api = createStorefrontClient({
         publicStorefrontToken: commerceProvider.authentication.publicToken,
@@ -55,22 +53,16 @@ export const ShopifyApiConfig = async ({
 
 type StorefrontApiConfig = Awaited<ReturnType<typeof ShopifyApiConfig>>;
 type ShopifyApiOptions = {
-    shop: Shop;
+    shop: OnlineShop;
     locale?: Locale;
     apiConfig?: StorefrontApiConfig;
-    noCache?: boolean;
 };
 
-export const ShopifyApolloApiClient = async ({
-    shop,
-    locale = Locale.default,
-    apiConfig,
-    noCache
-}: ShopifyApiOptions) => {
+export const ShopifyApolloApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
     'use server';
 
     // TODO: Support public headers too.
-    const config = (apiConfig || (await ShopifyApiConfig({ shop, noCache }))).private();
+    const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
 
     return ApiBuilder({
         shop,
@@ -82,11 +74,11 @@ export const ShopifyApolloApiClient = async ({
 /**
  * Shopify API client using the fetch API instead of Apollo.
  */
-export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig, noCache }: ShopifyApiOptions) => {
+export const ShopifyApiClient = async ({ shop, locale = Locale.default, apiConfig }: ShopifyApiOptions) => {
     'use server';
 
     // TODO: Support public headers too.
-    const config = (apiConfig || (await ShopifyApiConfig({ shop, noCache }))).private();
+    const config = (apiConfig || (await ShopifyApiConfig({ shop }))).private();
 
     return ApiBuilder({
         shop,

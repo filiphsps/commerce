@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from './collection.module.scss';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 
 import CollectionContainer from '@/slices/common/Collection/collection';
 
@@ -18,7 +18,7 @@ import type { SliceComponentProps } from '@prismicio/react';
 export type CollectionProps = SliceComponentProps<
     Content.CollectionSlice,
     {
-        shop: Shop;
+        shop: OnlineShop;
         locale: Locale;
         i18n: LocaleDictionary;
     }

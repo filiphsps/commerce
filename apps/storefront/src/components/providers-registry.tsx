@@ -1,6 +1,6 @@
 'use client';
 
-import type { Shop } from '@nordcom/commerce-database';
+import type { OnlineShop } from '@nordcom/commerce-db';
 import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nordcom/commerce-errors';
 
 import { CartFragment } from '@/api/shopify/cart';
@@ -14,9 +14,11 @@ import { ShopProvider } from '@/components/shop/provider';
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
 
-const CommerceProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
+const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
         case 'shopify': {
+            if (!shop.commerceProvider.domain) throw new UnknownCommerceProviderError();
+
             return (
                 <ShopifyProvider
                     storefrontId={shop.commerceProvider.storefrontId}
@@ -36,7 +38,7 @@ const CommerceProvider = ({ shop, locale, children }: { shop: Shop; locale: Loca
     }
 };
 
-const ContentProvider = ({ shop, locale, children }: { shop: Shop; locale: Locale; children: ReactNode }) => {
+const ContentProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.contentProvider.type) {
         case 'prismic': {
             return <PrismicRegistry client={createClient({ shop, locale })}>{children}</PrismicRegistry>;
@@ -57,7 +59,7 @@ const ProvidersRegistry = ({
     locale,
     children
 }: {
-    shop: Shop;
+    shop: OnlineShop;
     currency?: CurrencyCode;
     locale: Locale;
     children: ReactNode;
