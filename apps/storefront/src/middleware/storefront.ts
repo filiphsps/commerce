@@ -45,7 +45,8 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     if (
         newUrl.pathname.match(FILE_TEST) ||
         newUrl.pathname.includes('/api') ||
-        newUrl.pathname.includes('/slice-simulator')
+        newUrl.pathname.includes('/slice-simulator') ||
+        newUrl.pathname.includes('/.well-known')
     ) {
         // Do not mess with status or headers here.
         let target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;

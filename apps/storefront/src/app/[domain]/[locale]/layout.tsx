@@ -14,6 +14,7 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
+import { VercelToolbar } from '@vercel/toolbar/next';
 import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -23,6 +24,7 @@ import PageContent from '@/components/page-content';
 import ProvidersRegistry from '@/components/providers-registry';
 
 import type { Metadata, Viewport } from 'next';
+import type { WebPage, WithContext } from 'schema-dts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'auto';
@@ -119,6 +121,23 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
+    const shouldInjectToolbar = process.env.NODE_ENV === 'development';
+
+    const jsonLd: WithContext<WebPage> = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        'potentialAction': [
+            {
+                '@type': 'SearchAction',
+                'target': {
+                    '@type': 'EntryPoint',
+                    'urlTemplate': `https://${domain}/search/?q={search_term_string}`
+                },
+                'query': 'required name=search_term_string'
+            }
+        ]
+    };
+
     try {
         const locale = Locale.from(localeData);
 
@@ -154,6 +173,11 @@ export default async function RootLayout({
                             </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>
+
+                    {shouldInjectToolbar ? <VercelToolbar /> : null}
+
+                    {/* Metadata */}
+                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
                 </body>
             </html>
         );

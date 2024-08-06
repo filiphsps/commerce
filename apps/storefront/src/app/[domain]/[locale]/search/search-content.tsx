@@ -184,7 +184,7 @@ export default function SearchContent({
                                     !availableForSale && 'border-gray-100 opacity-35 brightness-75'
                                 )}
                             >
-                                <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white">
+                                <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-1">
                                     {image ? (
                                         <ShopifyImage
                                             className={'h-full w-full object-contain object-center'}
