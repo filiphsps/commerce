@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params: { domain } }: { params: Pr
 
     if (shop.contentProvider.type !== 'prismic') {
         // TODO: Handle non-Prismic content providers.
-        return NextResponse.json({ status: 404 });
+        return NextResponse.json({ status: 404, message: 'Non-Prismic content providers are not supported.' });
     }
 
     const client = createClient({ shop, locale: Locale.default });
