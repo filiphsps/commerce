@@ -229,6 +229,8 @@ type ProductsOptions = ApiOptions & {
 export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Product> => {
     if (!handle) throw new Error('400: Invalid handle');
 
+    const shop = api.shop();
+
     try {
         const { data, errors } = await api.query<{ product: Maybe<Product> }>(
             gql`
@@ -249,7 +251,7 @@ export const ProductApi = async ({ api, handle }: ProductOptions): Promise<Produ
         if (errors) {
             throw new Error(`500: ${errors.map((e: any) => e.message).join('\n')}`);
         } else if (!data?.product?.handle) {
-            throw new NotFoundError(`"Product" with the handle "${handle}"`);
+            throw new NotFoundError(`"Product" with the handle "${handle}" on shop "${shop.id}"`);
         } else if (data.product.handle !== handle) {
             throw new Error(
                 `500: Product handle doesn't match requested handle ("${data.product.handle}" !== "${handle}")`
