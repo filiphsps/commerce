@@ -43,7 +43,7 @@ export const BannerAside = ({ slice }: { slice: BannerSliceAside }): JSX.Element
                             <Link
                                 key={index}
                                 className={cn(
-                                    'flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg',
+                                    'flex items-center gap-2 rounded-full bg-white px-4 py-2 text-black drop-shadow-sm transition-colors hover:bg-black hover:text-white md:px-6 md:py-3 md:text-lg font-semibold',
                                     type &&
                                         'bg-secondary text-secondary-foreground hover:bg-secondary-dark hover:text-secondary-foreground'
                                 )}
