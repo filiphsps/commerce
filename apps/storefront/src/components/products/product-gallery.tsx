@@ -44,7 +44,10 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
 
     return (
         <section draggable={false} className={cn('flex flex-col gap-2', className)} {...props}>
-            <div className="rounded-lg bg-gray-100 p-8 md:p-16" {...loadingProps}>
+            <div
+                className="relative rounded-lg border-2 border-solid border-gray-100 bg-white p-8 md:p-16"
+                {...loadingProps}
+            >
                 {image ? (
                     <ShopifyImage
                         className={cn(
@@ -70,6 +73,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                 ) : (
                     <div className="aspect-square h-full w-full" />
                 )}
+                {image?.altText ? <div className="absolute bottom-2 left-2 opacity-75">{image.altText}</div> : null}
             </div>
 
             {image && images.length > 1 ? (

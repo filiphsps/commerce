@@ -47,6 +47,8 @@
     "product": {
         "recommendations": "People with similar taste as you also loved these",
         "skus": "SKUs",
-        "add-to-wishlist": "Add to Wishlist"
+        "add-to-wishlist": "Add to Wishlist",
+        "by": "by",
+        "browse-all-products-by-brand": "Browse all products by {0}"
     }
 }

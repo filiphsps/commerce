@@ -256,7 +256,7 @@ export default async function ProductPage({
             <>
                 <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
-                <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap md:gap-8">
+                <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
                     <div className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-3xl'}>
                         <ProductGallery
                             initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
@@ -265,7 +265,7 @@ export default async function ProductPage({
                         />
                     </div>
 
-                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 md:justify-stretch lg:gap-8">
+                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-4 md:justify-stretch lg:gap-8 lg:p-6">
                         <div className="flex h-auto w-full flex-col justify-start gap-2 border-0 border-b-2 border-solid border-gray-300 pb-6 pt-2 lg:border-0 lg:p-0">
                             <header className="flex flex-col gap-1">
                                 <div className="text-3xl font-bold leading-none">
@@ -277,8 +277,9 @@ export default async function ProductPage({
                                 <Link
                                     className="hover:text-primary text-lg normal-case text-gray-600 transition-colors"
                                     href={`/collections/${TitleToHandle(product.vendor)}`}
+                                    title={t('browse-all-products-by-brand', product.vendor)}
                                 >
-                                    {product.vendor}
+                                    {t('by')} <span className="font-semibold">{product.vendor}</span>
                                 </Link>
                             </header>
 

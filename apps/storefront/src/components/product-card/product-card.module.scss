@@ -17,10 +17,7 @@
 
     font-size: 16px;
 
-    background-color: var(--product-card-color-background, var(--color-accent-secondary-light));
     color: var(--product-card-color-foreground, var(--accent-secondary-text));
-    border: var(--block-border-width) solid var(--product-card-color-background, var(--color-accent-secondary));
-    border-radius: var(--block-border-radius);
 
     scroll-snap-align: center;
     /*contain-intrinsic-size: var(--component-product-card-width) auto;
@@ -41,9 +38,6 @@
 
     @media (min-width: $breakpoint-mobile) {
         --padding: var(--block-padding-small);
-    }
-    @media (max-width: 560px) {
-        min-width: min-content;
     }
 
     [data-pricing] {

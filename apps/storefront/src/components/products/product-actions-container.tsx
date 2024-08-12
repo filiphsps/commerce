@@ -45,7 +45,7 @@ export const ProductActionsContainer = ({ shop, className, i18n, ...props }: Pro
                     value={quantity}
                     i18n={i18n}
                     style={{ gridArea: 'quantity' }}
-                    className="min-h-12"
+                    className="min-h-12 bg-white"
                 />
 
                 <Suspense

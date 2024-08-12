@@ -98,7 +98,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'text-sm'
+                                                'bg-white text-sm'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({
