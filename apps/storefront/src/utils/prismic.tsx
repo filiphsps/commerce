@@ -1,5 +1,5 @@
 import type { OnlineShop } from '@nordcom/commerce-db';
-import { InvalidShopError, TodoError } from '@nordcom/commerce-errors';
+import { InvalidShopError } from '@nordcom/commerce-errors';
 
 import * as prismic from '@prismicio/client';
 import { enableAutoPreviews } from '@prismicio/next';
@@ -13,12 +13,12 @@ type CreateClientOptions = {
 } & ClientConfig;
 
 export const createClient = ({ shop, locale, ...config }: CreateClientOptions): Client => {
-    if (shop.contentProvider.type !== 'prismic') {
+    const contentProvider = shop.contentProvider;
+    if (!contentProvider) {
+        throw new InvalidShopError("Shop doesn't have a content provider.");
+    } else if (contentProvider.type !== 'prismic') {
         throw new InvalidShopError("Prismic isn't configured for this shop.");
     }
-
-    const contentProvider = shop.contentProvider;
-    if (contentProvider.type !== 'prismic') throw new TodoError();
 
     const repository = contentProvider.repository || contentProvider.repositoryName;
     const accessToken = contentProvider.authentication.token || undefined;
