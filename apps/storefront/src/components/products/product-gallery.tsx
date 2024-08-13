@@ -75,7 +75,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                         <div className="aspect-square h-full w-full" />
                     )}
                     {image?.altText ? (
-                        <div className="absolute bottom-2 left-2 rounded-lg bg-gray-100 bg-opacity-60 p-1 px-2 text-sm font-semibold text-gray-700 lg:text-base">
+                        <div className="absolute bottom-2 left-2 rounded-lg bg-gray-100 bg-opacity-60 p-1 px-2 text-sm font-semibold text-gray-600 lg:text-base">
                             {image.altText}
                         </div>
                     ) : null}

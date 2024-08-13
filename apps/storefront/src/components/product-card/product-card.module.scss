@@ -143,7 +143,6 @@
 /* TODO: Move these into it's own component. */
 .badges {
     position: absolute;
-    inset: 0;
 
     z-index: 1;
     pointer-events: none;
@@ -159,49 +158,8 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: calc(var(--block-spacer-small) / 2);
-    padding: var(--block-padding);
 
-    background: var(--accent-primary-light);
-    color: var(--accent-primary-text);
-
-    border-bottom-left-radius: var(--block-border-radius);
-
-    font-weight: 500;
-    font-size: 0.75rem;
-    line-height: 1;
     text-align: center;
-    text-shadow: 0 0 0.125rem var(--color-dark);
 
-    &[data-variant='discount'] {
-        z-index: 1;
-        position: absolute;
-        --inset: var(--block-spacer-small);
-        inset: var(--inset) auto auto var(--inset);
-        justify-content: center;
-        align-items: center;
-
-        gap: var(--block-spacer-tiny);
-
-        pointer-events: none;
-        background: var(--color-sale);
-        color: var(--color-bright);
-        border-radius: var(--block-border-radius-large);
-        box-shadow: 0 0 0.25rem 0.025rem var(--color-block-shadow);
-
-        b {
-            display: block;
-            font-weight: 700;
-        }
-    }
-
-    &[data-variant='new'] {
-        background: var(--accent-primary-light);
-        color: var(--accent-primary-text);
-    }
-    &[data-variant='vegan'] {
-        background: rgba(var(--color-green-rgb), 0.9);
-        color: var(--color-bright);
-        text-shadow: 0 0 0.125rem var(--color-dark);
-    }
+    pointer-events: none;
 }

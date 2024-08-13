@@ -46,6 +46,7 @@
     },
     "product": {
         "add-to-wishlist": "Add to Wishlist",
+        "attributes": "Attributes",
         "browse-all-products-by-brand": "Browse all products by {0}",
         "by": "by",
         "new": "New",

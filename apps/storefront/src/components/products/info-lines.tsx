@@ -18,11 +18,11 @@ const StockStatus = ({ product }: StockStatusProps) => {
 
     return (
         <section
-            className={cn('flex items-center justify-start gap-2 *:leading-none *:text-green-600')}
+            className={cn('flex items-center justify-start gap-1 *:leading-none *:text-green-600')}
             title={available}
         >
             <FiCheck className="stroke-2 align-middle text-base" />
-            <Label className="text-base font-semibold normal-case lg:text-lg">{available}</Label>
+            <Label className="text-base font-semibold normal-case">{available}</Label>
         </section>
     );
 };

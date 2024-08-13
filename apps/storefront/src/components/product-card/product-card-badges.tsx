@@ -1,7 +1,8 @@
-import styles from '@/components/product-card/product-card.module.scss';
-
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
 import { useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
+
+import { AttributeIcon } from '../products/attribute-icon';
 
 import type { Product } from '@/api/product';
 import type { LocaleDictionary } from '@/utils/locale';
@@ -10,6 +11,9 @@ export type ProductCardBadgesProps = {
     data: Product;
     i18n: LocaleDictionary;
 };
+
+const COMMON_BADGE_STYLES =
+    'flex  gap-1 rounded-2xl p-[0.4rem] px-2 text-xs font-semibold shadow-sm items-center justify-center uppercase';
 
 const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
@@ -33,27 +37,30 @@ const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
 
     return (
         <>
-            {discount > 1 ? ( // Handle rounding-errors.
-                <div className={styles.badge} data-variant="discount" data-nosnippet={true}>
-                    {t('percentage-off', discount)}
-                </div>
-            ) : null}
+            <div className={cn('absolute inset-1 bottom-auto flex flex-wrap justify-between gap-1 empty:hidden')}>
+                {discount > 1 ? ( // Handle rounding-errors.
+                    <div className={cn(COMMON_BADGE_STYLES, 'bg-sale-stripes text-white')} data-nosnippet={true}>
+                        {t('percentage-off', discount)}
+                    </div>
+                ) : null}
 
-            {shouldShowBadge ? (
-                <div className={styles.badges}>
-                    {isNewProduct && (
-                        <div className={styles.badge} data-variant="new" data-nosnippet={true}>
-                            {t('new')}
-                        </div>
-                    )}
+                {shouldShowBadge ? (
+                    <>
+                        {isVegan && (
+                            <div className={cn(COMMON_BADGE_STYLES, 'bg-green-500 text-white')}>
+                                <AttributeIcon data={'vegan'} className="text-lg" />
+                                {t('vegan')}
+                            </div>
+                        )}
 
-                    {isVegan && (
-                        <div className={styles.badge} data-variant="vegan">
-                            {t('vegan')}
-                        </div>
-                    )}
-                </div>
-            ) : null}
+                        {isNewProduct && (
+                            <div className={cn(COMMON_BADGE_STYLES, 'bg-gray-100 text-gray-700')} data-nosnippet={true}>
+                                {t('new')}
+                            </div>
+                        )}
+                    </>
+                ) : null}
+            </div>
         </>
     );
 };

@@ -14,9 +14,9 @@ import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
 
 const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 rounded-lg bg-white p-4';
-const LABEL_STYLES = 'text-sm leading-none text-gray-800';
+const LABEL_STYLES = 'leading-none';
 const CONTENT_STYLES =
-    'flex items-start justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
+    'flex items-start justify-center rounded-lg bg-gray-100 p-1 px-2 text-base font-semibold leading-tight hyphens-auto h-min gap-1';
 
 export type ProductDetailsProps = {
     locale: Locale;
@@ -46,13 +46,13 @@ const ProductDetails = async ({
         <>
             {parsedFlavors ? (
                 <div className={cn(COMMON_STYLES, '')}>
-                    <Label className={cn(LABEL_STYLES)}>Flavor Profile(s)</Label>
+                    <Label className={cn(LABEL_STYLES)}>{t('attributes')}</Label>
                     <div className="flex h-full flex-wrap items-start gap-1">
                         {parsedFlavors.length > 0
                             ? parsedFlavors.map((flavor) => (
                                   <div key={flavor} className={cn(CONTENT_STYLES)}>
                                       {/* TODO: Evolve `AttributeIcon` to `AttributeBadge`. */}
-                                      <AttributeIcon data={flavor} className="h-4 stroke-current text-xs" />
+                                      <AttributeIcon data={flavor} className="stroke-current" />
 
                                       {flavor}
                                   </div>
@@ -78,7 +78,7 @@ const ProductDetails = async ({
             {parsedIngredients ? (
                 <div className={cn(COMMON_STYLES, 'break-words')}>
                     <Label className={cn(LABEL_STYLES)}>Ingredients</Label>
-                    <p className={cn('text-xs leading-tight')}>{parsedIngredients}</p>
+                    <p className={cn('text-base leading-tight')}>{parsedIngredients}</p>
                 </div>
             ) : null}
         </>

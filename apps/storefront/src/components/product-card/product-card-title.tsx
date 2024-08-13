@@ -15,7 +15,7 @@ const ProductCardTitle = ({ data: product, oneLine = false }: ProductCardTitlePr
         <>
             <Label
                 className={cn(
-                    'pt-2 text-sm leading-tight opacity-75',
+                    'pt-2 text-sm leading-tight text-gray-700',
                     oneLine && 'overflow-hidden text-ellipsis whitespace-nowrap'
                 )}
             >
@@ -23,7 +23,7 @@ const ProductCardTitle = ({ data: product, oneLine = false }: ProductCardTitlePr
             </Label>
             <div
                 className={cn(
-                    'pb-1 text-lg font-semibold leading-[1.15]',
+                    'pb-1 text-lg font-semibold leading-[1.15] text-black',
                     oneLine && 'overflow-hidden text-ellipsis whitespace-nowrap'
                 )}
             >

@@ -1,5 +1,6 @@
-import { LuApple, LuBanana, LuCoffee, LuIceCream } from 'react-icons/lu';
-import { PiPlant } from 'react-icons/pi';
+import { LuApple, LuBanana, LuCakeSlice, LuCandy, LuCarrot, LuCoffee, LuIceCream, LuWine } from 'react-icons/lu';
+import { PiBeerBottleBold, PiPlant } from 'react-icons/pi';
+import { TbMelon, TbSalt } from 'react-icons/tb';
 
 import { cn } from '@/utils/tailwind';
 
@@ -22,22 +23,44 @@ export function AttributeIcon({ data = '', className, style = {}, ...props }: At
     // TODO: Hire somebody to do this.
     const icon = data.toLowerCase().trim();
     switch (icon) {
+        case 'apple':
+            Tag = LuApple;
+            break;
         case 'banana':
             Tag = LuBanana;
+            break;
+        case 'cake':
+            Tag = LuCakeSlice;
+            break;
+        case 'carrot':
+            Tag = LuCarrot;
             break;
         case 'coffee':
             Tag = LuCoffee;
             break;
-        case 'apple':
-            Tag = LuApple;
+        case 'cola':
+        case 'soda':
+            Tag = PiBeerBottleBold;
+            break;
+        case 'watermelon':
+        case 'melon':
+            Tag = TbMelon;
             break;
         case 'ice cream':
             Tag = LuIceCream;
             break;
+        case 'salt':
+            Tag = TbSalt;
+        case 'sweet':
+            Tag = LuCandy;
+            break;
         case 'toffee':
-            return null; // TODO
+            break; // TODO
         case 'vegan':
-            Tag = PiPlant; // TODO
+            Tag = PiPlant;
+            break;
+        case 'wine':
+            Tag = LuWine;
             break;
     }
 
@@ -47,7 +70,7 @@ export function AttributeIcon({ data = '', className, style = {}, ...props }: At
             data-nosnippet={true}
             className={cn('stroke-inherit', className)}
             style={{
-                strokeWidth: 3.5,
+                strokeWidth: 2.5,
                 ...style
             }}
             {...props}

@@ -271,7 +271,7 @@ export default async function ProductPage({
                                     <div className="flex items-center gap-1 pb-2 empty:hidden">
                                         {isProductVegan(product) ? (
                                             <div
-                                                className="flex h-[1.60rem] translate-y-[0.15rem] items-center justify-center gap-1 rounded-2xl bg-green-500 px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
+                                                className="flex items-center justify-center gap-1 rounded-2xl bg-green-500 p-[0.4rem] px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
                                                 title={t('this-product-is-vegan')}
                                                 data-nosnippet={true}
                                             >
@@ -281,13 +281,13 @@ export default async function ProductPage({
                                         ) : null}
                                     </div>
 
-                                    <div className="flex w-full grow flex-wrap gap-1 text-3xl font-bold leading-none lg:leading-[1.15]">
+                                    <div className="flex w-full grow flex-wrap text-3xl font-bold leading-none lg:leading-[1.1]">
                                         <TitleTag className="text-inherit">{title}</TitleTag>
                                         &ndash; {product.productType}
                                     </div>
 
                                     <Link
-                                        className="hover:text-primary text-lg normal-case leading-[1.15] text-gray-600 transition-colors"
+                                        className="hover:text-primary normal-case leading-[1.2] text-gray-600 transition-colors md:text-lg"
                                         href={`/collections/${TitleToHandle(product.vendor)}`}
                                         title={t('browse-all-products-by-brand', product.vendor)}
                                     >
