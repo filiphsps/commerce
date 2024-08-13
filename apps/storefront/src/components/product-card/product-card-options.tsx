@@ -3,6 +3,7 @@
 import styles from '@/components/product-card/product-card.module.scss';
 
 import { ConvertToLocalMeasurementSystem } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 
 import type { Product, ProductVariant } from '@/api/product';
 import type { Locale } from '@/utils/locale';
@@ -58,7 +59,7 @@ const ProductCardOptions = ({
                         key={variant.id}
                         title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
                         onClick={() => setSelectedVariant(variant)}
-                        className={styles.variant}
+                        className={cn(styles.variant, 'bg-white')}
                         data-active={selectedVariant.id === variant.id}
                     >
                         {title}
