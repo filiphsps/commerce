@@ -6,6 +6,29 @@
     "status": true,
     "json": {
         "Main": {
+            "phone": {
+                "type": "Text",
+                "config": {
+                    "label": "Support Phone Number",
+                    "placeholder": "+46 70-241 29 07"
+                }
+            },
+            "email": {
+                "type": "Text",
+                "config": {
+                    "label": "Support Email",
+                    "placeholder": "hi@nordcom.io"
+                }
+            },
+            "show_info_bar": {
+                "type": "Boolean",
+                "config": {
+                    "label": "Show Info Bar",
+                    "placeholder_false": "Hide",
+                    "placeholder_true": "Show",
+                    "default_value": true
+                }
+            },
             "slices": {
                 "type": "Slices",
                 "fieldset": "Slice Zone",

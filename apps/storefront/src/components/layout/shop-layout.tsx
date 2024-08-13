@@ -20,7 +20,7 @@ export type ShopLayoutProps = {
 const ShopLayout = async ({ shop, locale, i18n, children }: ShopLayoutProps) => {
     return (
         <>
-            <InfoBar locale={locale} i18n={i18n} />
+            <InfoBar locale={locale} i18n={i18n} shop={shop} />
             <Header domain={shop.domain} locale={locale} i18n={i18n} />
 
             {children}

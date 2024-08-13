@@ -567,6 +567,40 @@ type MenuDocumentDataSlicesSlice = DropdownSlice | LinkSlice;
  */
 interface MenuDocumentData {
     /**
+     * Support Phone Number field in *Menu*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: +46 70-241 29 07
+     * - **API ID Path**: menu.phone
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    phone: prismic.KeyTextField;
+
+    /**
+     * Support Email field in *Menu*
+     *
+     * - **Field Type**: Text
+     * - **Placeholder**: hi@nordcom.io
+     * - **API ID Path**: menu.email
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#key-text
+     */
+    email: prismic.KeyTextField;
+
+    /**
+     * Show Info Bar field in *Menu*
+     *
+     * - **Field Type**: Boolean
+     * - **Placeholder**: *None*
+     * - **Default Value**: true
+     * - **API ID Path**: menu.show_info_bar
+     * - **Tab**: Main
+     * - **Documentation**: https://prismic.io/docs/field#boolean
+     */
+    show_info_bar: prismic.BooleanField;
+
+    /**
      * Slice Zone field in *Menu*
      *
      * - **Field Type**: Slice Zone

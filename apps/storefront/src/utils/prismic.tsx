@@ -14,7 +14,7 @@ type CreateClientOptions = {
 
 export const createClient = ({ shop, locale, ...config }: CreateClientOptions): Client => {
     const contentProvider = shop.contentProvider;
-    if (!contentProvider) {
+    if (!(contentProvider as any)) {
         throw new InvalidShopError("Shop doesn't have a content provider.");
     } else if (contentProvider.type !== 'prismic') {
         throw new InvalidShopError("Prismic isn't configured for this shop.");
