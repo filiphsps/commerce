@@ -133,8 +133,8 @@ export function ProductSavings({ i18n, product, className }: ProductSavingsProps
 
                 <div className="flex items-center gap-1 font-black">
                     {t('percentage-off', discount)}
-                    <span className="hidden lg:block">&mdash;</span>
-                    <span className="hidden font-bold lg:block">{t('what-a-deal')}</span>
+                    <span className="hidden xl:block">&mdash;</span>
+                    <span className="hidden font-bold xl:block">{t('what-a-deal')}</span>
                 </div>
             </div>
         </>
