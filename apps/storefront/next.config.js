@@ -45,6 +45,7 @@ const config = {
         webpackBuildWorker: true
     },
     images: {
+        path: 'https://cloudflare-image.filiph-sandstrom.workers.dev/',
         dangerouslyAllowSVG: true,
         remotePatterns: [
             {

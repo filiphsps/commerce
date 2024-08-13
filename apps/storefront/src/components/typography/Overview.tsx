@@ -1,6 +1,6 @@
 import styles from '@/components/typography/overview.module.scss';
 
-import { PrismicNextImage } from '@prismicio/next';
+import Image from 'next/image';
 
 import { Content } from '@/components/typography/content';
 
@@ -37,11 +37,14 @@ export const Overview: FunctionComponent<OverviewProps> = ({ body, image, imageS
             {...(style ? { style } : {})}
             className={`${styles.container} ${styles[`align-${layout}`] || ''} ${className || ''}`}
         >
-            <PrismicNextImage
+            <Image
                 className={`${styles.image} ${imageStyle === 'cover' ? styles.expand : ''}`}
-                field={image as any}
+                src={image.url!}
+                alt={image.alt!}
+                width={image.dimensions.width}
+                height={image.dimensions.height}
+                quality={70}
                 sizes="(max-width: 1150px) 250px, 250px"
-                fallbackAlt=""
                 decoding="async"
             />
             <Content className={styles.content}>{body}</Content>

@@ -1,7 +1,7 @@
 import { linkResolver } from '@/utils/prismic';
 import { cn } from '@/utils/tailwind';
 import { asLink, type Content } from '@prismicio/client';
-import { PrismicNextImage } from '@prismicio/next';
+import Image from 'next/image';
 
 import { useHeaderMenu } from '@/components/header/header-provider';
 import Link from '@/components/link';
@@ -84,7 +84,7 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                         )}
                         onClick={() => closeMenu()}
                     >
-                        {background ? (
+                        {background && image && image.url ? (
                             <div
                                 className={cn(
                                     'text-primary-foreground relative h-full shrink-0 overflow-hidden',
@@ -92,13 +92,12 @@ export const DropdownDefaultMenu = ({ slice }: DropdownDefaultMenuProps) => {
                                 )}
                                 style={{ backgroundColor: background_color || undefined }}
                             >
-                                <PrismicNextImage
-                                    field={
-                                        {
-                                            ...image,
-                                            alt: image.alt || `© ${image.copyright}` || ''
-                                        } as any
-                                    }
+                                <Image
+                                    src={image.url}
+                                    alt={image.alt || `© ${image.copyright}` || ''}
+                                    width={image.dimensions.width}
+                                    height={image.dimensions.height}
+                                    quality={80}
                                     className={cn(
                                         'pointer-events-none h-full w-full object-cover',
                                         imagePositionStyles
