@@ -5,7 +5,7 @@ import { FiSearch } from 'react-icons/fi';
 
 import { type Locale, type LocaleDictionary, useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { Image as ShopifyImage } from '@shopify/hydrogen-react';
+import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/actionable/button';
@@ -186,7 +186,7 @@ export default function SearchContent({
                             >
                                 <div className="flex aspect-square h-full w-auto shrink-0 grow-0 items-center justify-center overflow-hidden bg-white p-1">
                                     {image ? (
-                                        <ShopifyImage
+                                        <Image
                                             className={'h-full w-full object-contain object-center'}
                                             src={image.url!}
                                             alt={image.altText!}

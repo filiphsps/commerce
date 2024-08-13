@@ -2,7 +2,7 @@ import 'server-only';
 
 import styles from './image-grid.module.scss';
 
-import { PrismicNextImage } from '@prismicio/next';
+import Image from 'next/image';
 
 import Link from '@/components/link';
 import PageContent from '@/components/page-content';
@@ -26,32 +26,37 @@ const ImageGrid = ({ slice, index }: ImageGridProps): JSX.Element => {
             data-slice-type={slice.slice_type}
             data-slice-variation={slice.variation}
         >
-            {slice.items.map(({ href, title, image }) => (
-                <Link key={href!} className={styles.item} href={href!} title={title!}>
-                    <PrismicNextImage
-                        fallbackAlt={image.alt ? '' : undefined}
-                        style={{
-                            width: '100%',
-                            height: 'auto',
-                            aspectRatio: '21 / 6',
-                            objectFit: 'cover',
-                            objectPosition: '20% center',
-                            transition: '150ms ease-in-out'
-                        }}
-                        field={image}
-                        width={300}
-                        height={200}
-                        sizes="(max-width: 950px) 250px, 25vw"
-                        loader={undefined}
-                        // If we're positioned high up in the page, we want to load the image
-                        // immediately. Otherwise, we can wait until the browser decides to.
-                        priority={index < 3}
-                    />
-                    <div className={styles['title-container']}>
-                        <div className={styles.title}>{title}</div>
-                    </div>
-                </Link>
-            ))}
+            {slice.items.map(({ href, title, image }) => {
+                if (!image || !image.url) return null;
+
+                return (
+                    <Link key={href!} className={styles.item} href={href!} title={title!}>
+                        <Image
+                            src={image.url!}
+                            alt={image.alt!}
+                            width={300}
+                            height={200}
+                            quality={70}
+                            style={{
+                                width: '100%',
+                                height: 'auto',
+                                aspectRatio: '21 / 6',
+                                objectFit: 'cover',
+                                objectPosition: '20% center',
+                                transition: '150ms ease-in-out'
+                            }}
+                            sizes="(max-width: 950px) 250px, 25vw"
+                            loader={undefined}
+                            // If we're positioned high up in the page, we want to load the image
+                            // immediately. Otherwise, we can wait until the browser decides to.
+                            priority={index < 3}
+                        />
+                        <div className={styles['title-container']}>
+                            <div className={styles.title}>{title}</div>
+                        </div>
+                    </Link>
+                );
+            })}
         </PageContent>
     );
 };

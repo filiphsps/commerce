@@ -3,22 +3,22 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { cn } from '@/utils/tailwind';
-import { Image as ShopifyImage } from '@shopify/hydrogen-react';
+import Image from 'next/image';
 
-import type { Image } from '@shopify/hydrogen-react/storefront-api-types';
+import type { Image as ShopifyImage } from '@shopify/hydrogen-react/storefront-api-types';
 import type { HTMLProps } from 'react';
 
 export type ProductGalleryProps = {
     initialImageId?: string | null;
-    images: Image[] | null;
+    images: ShopifyImage[] | null;
 } & HTMLProps<HTMLDivElement>;
 const ProductGallery = ({ initialImageId, images, className, ...props }: ProductGalleryProps) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [selected, setSelected] = useState<Image | null>(null);
-    const [next, setNext] = useState<Image | null>(null);
+    const [selected, setSelected] = useState<ShopifyImage | null>(null);
+    const [next, setNext] = useState<ShopifyImage | null>(null);
 
     const setImage = useCallback(
-        (image: Image) => {
+        (image: ShopifyImage) => {
             // Prevent the user from spamming the buttons.
             if (loading) return;
 
@@ -50,7 +50,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                     {...loadingProps}
                 >
                     {image ? (
-                        <ShopifyImage
+                        <Image
                             className={cn(
                                 'opacity-1 h-full max-h-72 w-full object-contain object-center transition-opacity duration-500 md:max-h-[48rem] md:min-h-[36rem]',
                                 loading && 'opacity-0 transition-none'
@@ -96,7 +96,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                                         )}
                                         {...loadingProps}
                                     >
-                                        <ShopifyImage
+                                        <Image
                                             className={cn(
                                                 'h-14 w-14 object-contain object-center transition-opacity duration-500 md:aspect-square md:h-full md:w-full',
                                                 loading && 'opacity-0 transition-none'
@@ -105,7 +105,7 @@ const ProductGallery = ({ initialImageId, images, className, ...props }: Product
                                             src={image.url!}
                                             alt={image.altText!}
                                             title={image.altText!}
-                                            //width={175}
+                                            width={175}
                                             height={175}
                                             sizes="(max-width: 920px) 75px, 175px"
                                             loading="eager"
