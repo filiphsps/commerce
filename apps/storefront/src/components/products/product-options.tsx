@@ -44,20 +44,21 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
     );
 
     return (
-        <div {...props} className={`${actionsStyles['product-options']} ${className || ''}`}>
+        <div {...props} className={cn('flex flex-col gap-1', className)}>
             {options?.map(
                 (option, index) =>
                     option?.values ? (
                         <Fragment key={`${option.name}_option`}>
                             <Label
-                                className="text-gray-600"
+                                className="h-fit text-gray-600"
                                 data-options={option.values.length}
                                 suppressHydrationWarning={true}
                             >
                                 {option.name}
                             </Label>
+
                             <div
-                                className={styles.options}
+                                className={cn(styles.options)}
                                 data-options={option.values.length}
                                 suppressHydrationWarning={true}
                             >
@@ -98,7 +99,7 @@ export const ProductOptions = ({ className, ...props }: ProductOptionProps) => {
                                                 isSelected && styles.selected,
                                                 !inStock && styles.disabled,
                                                 styles.clickable,
-                                                'bg-white text-sm'
+                                                'h-12 bg-white text-sm'
                                             )}
                                             onClick={() =>
                                                 setSelectedOptions({

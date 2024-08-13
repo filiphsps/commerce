@@ -24,6 +24,7 @@ import { usePathname } from 'next/navigation';
 import { createContext, useContext, useContextSelector } from 'use-context-selector';
 
 import { useShop } from '@/components/shop/provider';
+import { isPreviewEnvironment } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { CartWithActions, ShopifyPageViewPayload } from '@shopify/hydrogen-react';
@@ -33,7 +34,7 @@ import type { ReactNode } from 'react';
 
 // FIXME: Create or use a proper logging solution.
 const TrackableLogger = (message: string, data?: any, service?: string) => {
-    if (BuildConfig.environment !== 'development') return;
+    if (!isPreviewEnvironment()) return;
 
     console.debug(`[nordcom-commerce]${!!service ? `[${service}]` : ''}: ${message}`, data || undefined);
 };

@@ -1,15 +1,20 @@
 import styles from '@/components/product-card/product-card.module.scss';
 
 import { FirstAvailableVariant } from '@/utils/first-available-variant';
+import { useTranslation } from '@/utils/locale';
 
 import type { Product } from '@/api/product';
+import type { LocaleDictionary } from '@/utils/locale';
 
 export type ProductCardBadgesProps = {
     data: Product;
+    i18n: LocaleDictionary;
 };
 
-const ProductCardBadges = ({ data: product }: ProductCardBadgesProps) => {
+const ProductCardBadges = ({ data: product, i18n }: ProductCardBadgesProps) => {
     const selectedVariant = FirstAvailableVariant(product);
+    const { t } = useTranslation('product', i18n);
+
     if (!selectedVariant) return null;
 
     const isNewProduct =
@@ -24,25 +29,27 @@ const ProductCardBadges = ({ data: product }: ProductCardBadgesProps) => {
         const current = Number.parseFloat(selectedVariant.price!.amount!);
         discount = Math.round((100 * (compare - current)) / compare);
     }
+    const shouldShowBadge = isNewProduct || isVegan;
 
     return (
         <>
             {discount > 1 ? ( // Handle rounding-errors.
-                <div className={styles.badge} data-variant="discount">
-                    <b>{discount}%</b> OFF
+                <div className={styles.badge} data-variant="discount" data-nosnippet={true}>
+                    {t('percentage-off', discount)}
                 </div>
             ) : null}
 
-            {isNewProduct || isVegan ? (
+            {shouldShowBadge ? (
                 <div className={styles.badges}>
                     {isNewProduct && (
-                        <div className={styles.badge} data-variant="new">
-                            New!
+                        <div className={styles.badge} data-variant="new" data-nosnippet={true}>
+                            {t('new')}
                         </div>
                     )}
+
                     {isVegan && (
                         <div className={styles.badge} data-variant="vegan">
-                            Vegan
+                            {t('vegan')}
                         </div>
                     )}
                 </div>

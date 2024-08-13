@@ -6,6 +6,7 @@ import { Shop } from '@nordcom/commerce-db';
 import { Error } from '@nordcom/commerce-errors';
 
 import { PageApi } from '@/api/page';
+import { isProductVegan } from '@/api/product';
 import { ShopifyApiClient, ShopifyApolloApiClient } from '@/api/shopify';
 import { ProductApi } from '@/api/shopify/product';
 import { LocalesApi } from '@/api/store';
@@ -21,12 +22,13 @@ import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/informational/breadcrumbs';
 import Link from '@/components/link';
+import { AttributeIcon } from '@/components/products/attribute-icon';
 import { InfoLines } from '@/components/products/info-lines';
 import { ProductGallery } from '@/components/products/product-gallery';
 import { RecommendedProducts } from '@/components/products/recommended-products';
 import { Content } from '@/components/typography/content';
 
-import { ProductContent, ProductContentSkeleton, ProductPricing, ProductPricingSkeleton } from './product-content';
+import { ProductContent, ProductPricing, ProductSavings } from './product-content';
 import { ImportantProductDetails, ProductDetails } from './product-details';
 
 import type { Metadata } from 'next';
@@ -128,6 +130,8 @@ export async function generateMetadata({
     }
 }
 
+const fallback = <div className="min-h-4 w-full rounded-lg bg-gray-300 p-4" data-skeleton />;
+
 export default async function ProductPage({
     params: { domain, locale: localeData, handle }
 }: {
@@ -151,30 +155,11 @@ export default async function ProductPage({
         const i18n = await getDictionary({ shop, locale });
         const { t } = useTranslation('product', i18n);
 
-        // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
-        // This function is used to deal with the title in the product's description
-        // and to make sure it's the correct h tag.
-        const todoImproperWayToHandleDescriptionFix = (description?: string): string | null => {
-            if (!description) return null;
-            let result = description;
-
-            const titleTags = new RegExp('(?<=<h1>)(.+?)(?=</h1>)').exec(description)?.[0];
-
-            if (titleTags) {
-                const title = titleTags.replaceAll(/<[^>]*>/g, '');
-
-                result = result.replace(`<h1>${titleTags}</h1>\n`, '');
-                // Replace h1 with h2
-                result = `<h2>${title}</h2>\n${result}`;
-            }
-
-            return result;
-        };
-
         const initialVariant = FirstAvailableVariant(product);
         if (!initialVariant) notFound();
 
-        const content = todoImproperWayToHandleDescriptionFix(product.descriptionHtml) || '';
+        // TODO: Create a proper `shopify-html-parser` to convert the HTML to React components.
+        const content = product.descriptionHtml || '';
 
         const jsonLd: WithContext<Product> = {
             '@context': 'https://schema.org',
@@ -252,85 +237,107 @@ export default async function ProductPage({
             title = title.slice(0, -product.productType.length).trim();
         }
 
+        // If the product description contains a <h1> tag, replace our h1 with a div to avoid multiple h1s.
+        let TitleTag: any = 'h1';
+        if (content.length < 5 && content.includes('<h1')) {
+            TitleTag = 'div';
+        }
+
         return (
             <>
                 <Breadcrumbs shop={shop} title={`${product.vendor} ${product.title}`} />
 
-                <section className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
-                    <div className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-3xl'}>
-                        <ProductGallery
-                            initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
-                            images={product.images.edges.map((edge) => edge.node)}
-                            className="h-full w-full"
-                        />
-                    </div>
+                <div className="flex flex-col gap-4 md:flex-row md:flex-nowrap">
+                    <section className={'flex h-auto w-full md:w-1/2 md:shrink-0 lg:w-full lg:max-w-[52rem]'}>
+                        <Suspense fallback={fallback}>
+                            <ProductGallery
+                                initialImageId={initialVariant.image?.id || product.images.edges[0]?.node.id}
+                                images={product.images.edges.map((edge) => edge.node)}
+                                className="h-full w-full"
+                            />
+                        </Suspense>
+                    </section>
 
-                    <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-4 md:justify-stretch lg:gap-8 lg:p-6">
-                        <div className="flex h-auto w-full flex-col justify-start gap-2 border-0 border-b-2 border-solid border-gray-300 pb-6 pt-2 lg:border-0 lg:p-0">
-                            <header className="flex flex-col gap-1">
-                                <div className="text-3xl font-bold leading-none">
-                                    <h1 className="text-inherit">
-                                        {title} &mdash; {product.productType}
-                                    </h1>
-                                </div>
-
-                                <Link
-                                    className="hover:text-primary text-lg normal-case text-gray-600 transition-colors"
-                                    href={`/collections/${TitleToHandle(product.vendor)}`}
-                                    title={t('browse-all-products-by-brand', product.vendor)}
-                                >
-                                    {t('by')} <span className="font-semibold">{product.vendor}</span>
-                                </Link>
-                            </header>
-
-                            <div className="flex flex-col md:gap-1">
-                                <div className="flex flex-row items-center gap-2 md:gap-4">
-                                    <Suspense fallback={<ProductPricingSkeleton />}>
-                                        <ProductPricing product={product} />
-                                    </Suspense>
-                                </div>
-
-                                <InfoLines product={product} />
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col items-stretch justify-start gap-2">
-                            <Suspense fallback={<ProductContentSkeleton />}>
-                                <ProductContent shop={shop} product={product} i18n={i18n} />
+                    <section className="flex flex-col gap-3">
+                        <div>
+                            <Suspense fallback={<div className="h-4 w-full" data-skeleton />}>
+                                <ProductSavings product={product} i18n={i18n} />
                             </Suspense>
                         </div>
 
-                        <Suspense fallback={<Content />}>
-                            <Content
-                                dangerouslySetInnerHTML={{
-                                    __html: content
-                                }}
-                            />
-                        </Suspense>
-                    </div>
-                </section>
+                        <div className="flex h-auto w-full flex-col items-stretch justify-start gap-6 overflow-clip rounded-lg bg-gray-100 p-3 md:justify-stretch lg:gap-8 lg:p-5">
+                            <div className="flex h-auto w-full flex-col justify-start gap-3 lg:gap-4 lg:p-0">
+                                <header className="flex flex-col gap-1">
+                                    <div className="flex items-center gap-1 pb-2 empty:hidden">
+                                        {isProductVegan(product) ? (
+                                            <div
+                                                className="flex h-[1.60rem] translate-y-[0.15rem] items-center justify-center gap-1 rounded-2xl bg-green-500 px-3 text-xs font-semibold uppercase leading-none text-white shadow-sm"
+                                                title={t('this-product-is-vegan')}
+                                                data-nosnippet={true}
+                                            >
+                                                <AttributeIcon data={'vegan'} className="text-lg" />
+                                                {t('vegan')}
+                                            </div>
+                                        ) : null}
+                                    </div>
 
-                <div className="flex flex-col gap-4 pt-8 md:gap-8">
-                    <section className="mt-8 flex w-full flex-col gap-4 xl:rounded-lg xl:bg-gray-100 xl:p-4">
-                        <Suspense fallback={null}>
-                            <ImportantProductDetails locale={locale} data={product} />
-                        </Suspense>
+                                    <div className="flex w-full grow flex-wrap gap-1 text-3xl font-bold leading-none lg:leading-[1.15]">
+                                        <TitleTag className="text-inherit">{title}</TitleTag>
+                                        &ndash; {product.productType}
+                                    </div>
 
-                        <Suspense fallback={<div />}>
-                            <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2">
-                                <ProductDetails locale={locale} data={product} />
+                                    <Link
+                                        className="hover:text-primary text-lg normal-case leading-[1.15] text-gray-600 transition-colors"
+                                        href={`/collections/${TitleToHandle(product.vendor)}`}
+                                        title={t('browse-all-products-by-brand', product.vendor)}
+                                    >
+                                        {t('by')} <span className="font-semibold">{product.vendor}</span>
+                                    </Link>
+                                </header>
+
+                                <div className="flex items-end justify-start gap-2 md:gap-3">
+                                    <Suspense fallback={fallback}>
+                                        <ProductPricing product={product} />
+                                    </Suspense>
+                                </div>
                             </div>
-                        </Suspense>
-                    </section>
 
-                    <section className="flex flex-col gap-4 rounded-lg bg-gray-100 p-4">
-                        <h3 className="center text-lg font-semibold leading-none md:text-xl">{t('recommendations')}</h3>
+                            <Suspense fallback={fallback}>
+                                <ProductContent shop={shop} product={product} i18n={i18n}>
+                                    <InfoLines product={product} />
+                                </ProductContent>
+                            </Suspense>
 
-                        <Suspense fallback={<RecommendedProducts.skeleton />}>
-                            <RecommendedProducts shop={shop} locale={locale} product={product} />
-                        </Suspense>
+                            <Suspense fallback={fallback}>
+                                <Content
+                                    dangerouslySetInnerHTML={{
+                                        __html: content
+                                    }}
+                                />
+                            </Suspense>
+
+                            <Suspense fallback={fallback}>
+                                <ImportantProductDetails locale={locale} data={product} />
+                            </Suspense>
+
+                            <Suspense fallback={fallback}>
+                                <div className="flex flex-wrap gap-3 border-0 border-t-2 border-solid border-gray-300 pt-4 md:gap-4">
+                                    <ProductDetails locale={locale} data={product} />
+                                </div>
+                            </Suspense>
+                        </div>
                     </section>
                 </div>
+
+                <section className="flex flex-col gap-2 rounded-lg bg-gray-100 py-4 md:py-5">
+                    <h3 className="center px-4 text-lg font-semibold leading-none md:px-5 md:text-xl">
+                        {t('recommendations')}
+                    </h3>
+
+                    <Suspense fallback={<RecommendedProducts.skeleton />}>
+                        <RecommendedProducts shop={shop} locale={locale} product={product} className="px-4 md:px-5" />
+                    </Suspense>
+                </section>
 
                 {/* Metadata */}
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

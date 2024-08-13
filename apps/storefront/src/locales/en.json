@@ -45,10 +45,17 @@
         "phone-tooltip": "Call us"
     },
     "product": {
+        "add-to-wishlist": "Add to Wishlist",
+        "browse-all-products-by-brand": "Browse all products by {0}",
+        "by": "by",
+        "new": "New",
+        "percentage-off": "{0}% OFF",
         "recommendations": "People with similar taste as you also loved these",
         "skus": "SKUs",
-        "add-to-wishlist": "Add to Wishlist",
-        "by": "by",
-        "browse-all-products-by-brand": "Browse all products by {0}"
+        "this-product-is-vegan": "This product is vegan!",
+        "vegan": "Vegan",
+        "what-a-deal": "What a deal!",
+        "you-save": "You save",
+        "save-n-per-item": "Save {0} per item!"
     }
 }

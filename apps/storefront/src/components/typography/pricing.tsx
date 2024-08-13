@@ -33,7 +33,7 @@ const Pricing = ({ price, compareAtPrice, wrapperFallback = false }: PricingProp
                     data={compareAtPrice}
                     data-previous-pricing
                     as={'s'}
-                    className={`${styles.price} ${styles.previous} ${styles.dash}`}
+                    className={cn(styles.price, styles.previous, styles.dah)}
                     suppressHydrationWarning={true}
                 />
             ) : null}

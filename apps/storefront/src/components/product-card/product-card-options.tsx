@@ -36,7 +36,7 @@ const ProductCardOptions = ({
 
     // TODO: Use options rather than variants.
     return (
-        <div className={styles.variants}>
+        <div className={cn(styles.variants, 'mt-6 flex flex-wrap gap-2')}>
             {variants.map(({ node: variant }, index) => {
                 if (index >= 3) return null; //TODO: handle more than 3 variants on the card.
 
@@ -54,13 +54,19 @@ const ProductCardOptions = ({
                     });
                 }
 
+                const isSelected = selectedVariant && selectedVariant.id === variant.id;
+
                 return (
                     <button
                         key={variant.id}
                         title={variant.selectedOptions.map((i) => `${i.name}: ${i.value}`).join(', ')}
                         onClick={() => setSelectedVariant(variant)}
-                        className={cn(styles.variant, 'bg-white')}
-                        data-active={selectedVariant.id === variant.id}
+                        className={cn(
+                            styles.variant,
+                            'hover:text-primary-foreground hover:bg-primary rounded-lg bg-white px-3 py-1 text-sm font-medium text-gray-600 transition-all hover:shadow-lg',
+                            isSelected && 'font-bold'
+                        )}
+                        data-active={isSelected}
                     >
                         {title}
                     </button>

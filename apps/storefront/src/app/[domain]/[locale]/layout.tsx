@@ -14,7 +14,6 @@ import { CssVariablesProvider, getBrandingColors } from '@/utils/css-variables';
 import { primaryFont } from '@/utils/fonts';
 import { Locale } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
-import { VercelToolbar } from '@vercel/toolbar/next';
 import { notFound } from 'next/navigation';
 
 import { AnalyticsProvider } from '@/components/analytics-provider';
@@ -121,8 +120,6 @@ export default async function RootLayout({
     children: ReactNode;
     params: LayoutParams;
 }) {
-    const shouldInjectToolbar = process.env.NODE_ENV === 'development';
-
     const jsonLd: WithContext<WebPage> = {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
@@ -162,7 +159,12 @@ export default async function RootLayout({
                 </head>
 
                 <body suppressHydrationWarning={true} className="group/body overflow-x-hidden overscroll-x-none">
-                    <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
+                    <ProvidersRegistry
+                        shop={shop}
+                        currency={localization?.country.currency.isoCode}
+                        locale={locale}
+                        domain={domain}
+                    >
                         <AnalyticsProvider shop={shop}>
                             <HeaderProvider loaderColor={branding?.primary.color || ''}>
                                 <ShopLayout shop={shop} locale={locale} i18n={i18n}>
@@ -173,8 +175,6 @@ export default async function RootLayout({
                             </HeaderProvider>
                         </AnalyticsProvider>
                     </ProvidersRegistry>
-
-                    {shouldInjectToolbar ? <VercelToolbar /> : null}
 
                     {/* Metadata */}
                     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

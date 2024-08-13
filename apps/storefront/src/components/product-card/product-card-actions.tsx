@@ -47,14 +47,14 @@ const ProductCardActions = ({ i18n, data: product, selectedVariant }: ProductCar
         [linesUpdate, lines]
     );
 
-    const baseStyles = 'rounded-xl p-2 font-semibold overflow-hidden h-10';
+    const baseStyles = 'rounded-lg p-2 font-semibold overflow-clip h-10 mt-1';
 
     if (line) {
         return (
             <div
                 className={cn(
                     baseStyles,
-                    'border-primary flex border-2 border-solid bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors'
+                    'flex border-2 border-solid border-gray-300 bg-white p-0 font-bold *:appearance-none *:text-center *:transition-colors'
                 )}
             >
                 <button

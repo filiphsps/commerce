@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { TodoError, UnknownLocaleError } from '@nordcom/commerce-errors';
 
 import ConvertUnits from 'convert-units';
@@ -5,6 +7,7 @@ import ConvertUnits from 'convert-units';
 import type english from '@/i18n/en.json';
 import type { StoreModel } from '@/models/StoreModel';
 import type { CountryCode, CurrencyCode, LanguageCode, WeightUnit } from '@shopify/hydrogen-react/storefront-api-types';
+import type { ReactNode } from 'react';
 
 export type { CountryCode, CurrencyCode, LanguageCode };
 export type Code = `${Lowercase<LanguageCode>}-${CountryCode}` | Lowercase<LanguageCode>;
@@ -198,7 +201,7 @@ export type LocaleDictionary = typeof english;
 export type LocaleDictionaryScope = Lowercase<keyof LocaleDictionary>;
 export type LocaleDictionaryKey = Lowercase<DeepKeys<LocaleDictionary>>;
 
-type TranslationLiteral = string | number | boolean;
+type TranslationLiteral = string | number | boolean | ReactNode;
 /**
  * Returns a translation function for a given scope and dictionary.
  *
@@ -208,22 +211,34 @@ type TranslationLiteral = string | number | boolean;
  * @param {LocaleDictionary} dictionary - The dictionary to use for the translation.
  * @returns {({ t: (key: string, ...literals: TranslationLiteral[]) => string })} The translation function.
  */
-export const useTranslation = (scope: LocaleDictionaryScope, dictionary: LocaleDictionary) => {
+export const useTranslation = (scope: LocaleDictionaryScope, dictionary?: LocaleDictionary) => {
     return {
-        // Pure strings.
-        t: (key: LocaleDictionaryKey, ...literals: TranslationLiteral[]): string => {
+        // FIXME: Fix return type.
+        t: <T extends LocaleDictionaryKey, L extends TranslationLiteral[]>(key: T, ...literals: L): string => {
             const string: string = (dictionary as any)?.[scope]?.[key] || key;
-            if (literals.length === 0) {
-                return string;
+
+            if (!literals || literals.length === 0) {
+                return string as string;
             }
 
-            // Replace `{n}` with the literal at index `n`.
-            return literals
-                ? string.replace(/{(\d+)}/g, (match, number) => literals[number]?.toString() || match)
-                : string;
-        }
+            const placeholderRegex = /\{([^}]+)\}/g;
+            const parts: (string | ReactNode)[] = [];
 
-        // TODO: React component version of `t`.
+            let match;
+            let lastIndex = 0;
+            while ((match = placeholderRegex.exec(string)) !== null) {
+                parts.push(string.substring(lastIndex, match.index));
+                const index = parseInt(match[1], 10);
+                parts.push(literals[index]);
+                lastIndex = match.index + match[0].length;
+            }
+            parts.push(string.substring(lastIndex));
+
+            const partsWithKeys = parts.map((part, index) =>
+                React.isValidElement(part) ? { ...{ key: index }, ...part } : part
+            );
+            return partsWithKeys.some((part) => React.isValidElement(part)) ? partsWithKeys : (parts.join('') as any);
+        }
     };
 };
 

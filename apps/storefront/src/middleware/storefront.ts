@@ -20,13 +20,15 @@ export const getHostname = async (req: NextRequest): Promise<string> => {
         hostname.includes('vercel.app') ||
         hostname.includes('app.github.dev')
     ) {
-        return 'swedish-candy-store.com';
+        return 'staging.swedish-candy-store.com';
     }
 
     try {
         const shop = await findShopByDomainOverHttp(hostname);
         return shop.domain;
-    } catch {
+    } catch (error: unknown) {
+        console.error(error);
+
         return hostname;
     }
 };
@@ -41,23 +43,25 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     const params = newUrl.searchParams.toString();
     const search = params.length > 0 ? `?${params}` : '';
 
-    // API.
-    if (
+    const isSpecialPath =
         newUrl.pathname.match(FILE_TEST) ||
         newUrl.pathname.includes('/api') ||
         newUrl.pathname.includes('/slice-simulator') ||
-        newUrl.pathname.includes('/.well-known')
-    ) {
+        newUrl.pathname.includes('/.well-known') ||
+        false;
+
+    // API.
+    if (isSpecialPath) {
         // Do not mess with status or headers here.
-        let target = `${newUrl.origin}/${hostname}${newUrl.pathname}${search}`;
-        return NextResponse.rewrite(new URL(target, req.url));
+        newUrl.pathname = `${hostname}${newUrl.pathname}${search}`;
+        return NextResponse.rewrite(newUrl);
 
         // TODO: Handle Handle tenant-specific files/assets.
     }
 
     // Set the locale based on the user's accept-language header when no locale
     // is provided (e.g. we get a bare url/path like `/`).
-    if (!newUrl.pathname.match(LOCALE_TEST)) {
+    if (!newUrl.pathname.match(LOCALE_TEST) && !isSpecialPath) {
         let locale = req.cookies.get('localization')?.value || req.cookies.get('NEXT_LOCALE')?.value;
 
         if (!locale) {
@@ -90,10 +94,10 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
         newUrl.pathname = `/${locale}${newUrl.pathname || '/'}`;
     }
 
-    // TEMP: Redirect to english.
-    if (!newUrl.pathname.startsWith('/en-')) {
+    // FIXME: TEMP: Redirect to english.
+    if (!newUrl.pathname.startsWith('/en-') && !isSpecialPath) {
         const path = newUrl.pathname.split('-').at(-1);
-        newUrl.pathname = `/en-${path}`;
+        newUrl.pathname = `/en-${path || 'US'}`;
 
         if (newUrl.href !== req.nextUrl.href) {
             return NextResponse.redirect(newUrl, { status: 302 });
@@ -106,7 +110,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     // invalid back-links, a user manually messing up or another thousands
     // of possible reasons.
     const trailingLocales = newUrl.pathname.match(LOCALE_SLASH_TEST);
-    if (trailingLocales && trailingLocales.length > 1) {
+    if (trailingLocales && trailingLocales.length > 1 && !isSpecialPath) {
         for (const locale of trailingLocales.slice(1)) {
             newUrl.pathname = newUrl.pathname.replace(`${locale}`, '');
         }
@@ -119,7 +123,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
 
     // Make sure the path is lowercase, except for the locale of course.
     const withoutLocale = newUrl.pathname.split('/').slice(2).join('/');
-    if (withoutLocale.match(/[A-Z]/g)) {
+    if (withoutLocale.match(/[A-Z]/g) && !isSpecialPath) {
         newUrl.pathname = `/${newUrl.pathname.split('/')[1]}/${withoutLocale.toLowerCase()}/`;
     }
 
@@ -127,7 +131,7 @@ export const storefront = async (req: NextRequest): Promise<NextResponse> => {
     newUrl = commonValidations(newUrl);
 
     // Validations that doesn't apply to api routes.
-    if (!newUrl.pathname.includes('/api')) {
+    if (!isSpecialPath) {
         // Make sure the url ends with a trailing slash.
         if (!(newUrl.href.split('?')[0]!.endsWith('/') && newUrl.pathname.endsWith('/'))) {
             newUrl.href = newUrl.href = `${newUrl.href.split('?')[0]}/${newUrl.search}`;

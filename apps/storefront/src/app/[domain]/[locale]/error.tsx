@@ -8,6 +8,7 @@ import { Button } from '@/components/actionable/button';
 import PageContent from '@/components/page-content';
 import { Content } from '@/components/typography/content';
 import Heading from '@/components/typography/heading';
+import { Label } from '@/components/typography/label';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => console.error(error), [error]);
@@ -15,7 +16,12 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     return (
         <>
             <PageContent className={styles.header}>
-                <Heading title={`Oh no! Something went wrong`} subtitle={`Internal server error`} reverse bold />
+                <Heading
+                    title={`Oh no! Something went wrong`}
+                    subtitle={<Label>Internal server error</Label>}
+                    reverse
+                    bold
+                />
             </PageContent>
 
             <div className={styles.content}>

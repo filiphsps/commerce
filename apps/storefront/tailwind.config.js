@@ -27,11 +27,18 @@ export default {
             },
             aspectRatio: {
                 '3/2': '3 / 2'
+            },
+            backgroundImage: {
+                'sale-stripes':
+                    'repeating-linear-gradient(-45deg, #DC2626 0px, #DC2626 1rem, #CB2424 1rem, #CB2424 2rem)'
             }
         }
     },
     future: {
         hoverOnlyWhenSupported: true
     },
-    plugins: [import('@tailwindcss/typography')]
+    corePlugins: {
+        aspectRatio: false
+    },
+    plugins: [import('@tailwindcss/aspect-ratio'), import('@tailwindcss/typography')]
 };

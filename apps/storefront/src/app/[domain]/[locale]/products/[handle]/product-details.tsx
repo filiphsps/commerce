@@ -1,18 +1,22 @@
 import 'server-only';
 
-import styles from './product-details.module.scss';
-
 import { getDictionary } from '@/utils/dictionary';
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { parseMetafield } from '@shopify/hydrogen-react';
 
 import { Alert } from '@/components/informational/alert';
+import { AttributeIcon } from '@/components/products/attribute-icon';
 import { Label } from '@/components/typography/label';
 
 import type { Product } from '@/api/product';
 import type { Locale } from '@/utils/locale';
 import type { ParsedMetafields } from '@shopify/hydrogen-react';
+
+const COMMON_STYLES = 'md:gap3 flex grow flex-col items-start justify-between gap-2 rounded-lg bg-white p-4';
+const LABEL_STYLES = 'text-sm leading-none text-gray-800';
+const CONTENT_STYLES =
+    'flex items-start justify-center rounded-lg bg-gray-100 p-1 px-2 text-sm font-semibold leading-tight hyphens-auto h-min gap-1';
 
 export type ProductDetailsProps = {
     locale: Locale;
@@ -41,50 +45,40 @@ const ProductDetails = async ({
     return (
         <>
             {parsedFlavors ? (
-                <div
-                    className={cn(
-                        styles.block,
-                        'xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
-                    )}
-                >
-                    <Label className="xl:text-base xl:font-normal xl:normal-case xl:text-gray-600">
-                        Flavor Profile(s)
-                    </Label>
-                    <p className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
-                        {parsedFlavors.join(', ')}.
-                    </p>
+                <div className={cn(COMMON_STYLES, '')}>
+                    <Label className={cn(LABEL_STYLES)}>Flavor Profile(s)</Label>
+                    <div className="flex h-full flex-wrap items-start gap-1">
+                        {parsedFlavors.length > 0
+                            ? parsedFlavors.map((flavor) => (
+                                  <div key={flavor} className={cn(CONTENT_STYLES)}>
+                                      {/* TODO: Evolve `AttributeIcon` to `AttributeBadge`. */}
+                                      <AttributeIcon data={flavor} className="h-4 stroke-current text-xs" />
+
+                                      {flavor}
+                                  </div>
+                              ))
+                            : null}
+                    </div>
                 </div>
             ) : null}
 
             {variants.find(({ node: { sku, title } }) => !!sku && title !== 'Default Title') ? ( // TODO: Deal with the `Default Title` variant in a better way.
-                <div
-                    className={cn(
-                        styles.block,
-                        'xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
-                    )}
-                >
-                    <Label className="normal-case xl:text-base xl:font-normal xl:text-gray-600">{t('skus')}</Label>
-                    <div className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
+                <div className={cn(COMMON_STYLES, 'md:max-w-64')}>
+                    <Label className={cn(LABEL_STYLES, 'normal-case')}>{t('skus')}</Label>
+                    <div className="flex h-full flex-wrap items-start gap-1">
                         {variants.map(({ node: { sku, title } }) => (
-                            <p key={sku} className="xl:text-inherit">
-                                {title}: {sku}
-                            </p>
+                            <div key={sku} className={cn(CONTENT_STYLES, 'block')} title={`${sku} — ${title}`}>
+                                {sku}
+                            </div>
                         ))}
                     </div>
                 </div>
             ) : null}
 
             {parsedIngredients ? (
-                <div
-                    className={cn(
-                        styles.block,
-                        'col-span-2 xl:flex xl:flex-col-reverse xl:items-center xl:justify-between xl:gap-4 xl:rounded-lg xl:bg-white xl:p-4'
-                    )}
-                >
-                    <Label className="xl:text-base xl:font-normal xl:normal-case xl:text-gray-600">Ingredients</Label>
-                    <p className="flex-col leading-tight xl:flex xl:h-full xl:justify-center xl:font-medium">
-                        {parsedIngredients}
-                    </p>
+                <div className={cn(COMMON_STYLES, 'break-words')}>
+                    <Label className={cn(LABEL_STYLES)}>Ingredients</Label>
+                    <p className={cn('text-xs leading-tight')}>{parsedIngredients}</p>
                 </div>
             ) : null}
         </>

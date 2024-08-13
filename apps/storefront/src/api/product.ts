@@ -36,3 +36,11 @@ export const createProductSearchParams = ({ product: { trackingParameters } }: {
     const params = new URLSearchParams(trackingParameters || '');
     return params.toString();
 };
+
+export const isProductVegan = (product: Product): boolean => {
+    if (!product.tags) {
+        return false;
+    }
+
+    return product.tags.map((tag) => tag.toLowerCase()).includes('vegan');
+};

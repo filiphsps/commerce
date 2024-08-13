@@ -59,7 +59,12 @@ export default async function RootLayout({
                 <CssVariablesProvider domain={domain} />
             </head>
             <body suppressHydrationWarning={true} className="group/body">
-                <ProvidersRegistry shop={shop} currency={localization?.country.currency.isoCode} locale={locale}>
+                <ProvidersRegistry
+                    shop={shop}
+                    currency={localization?.country.currency.isoCode}
+                    locale={locale}
+                    domain={domain}
+                >
                     <AnalyticsProvider shop={shop}>
                         <HeaderProvider loaderColor="transparent">{children}</HeaderProvider>
                     </AnalyticsProvider>

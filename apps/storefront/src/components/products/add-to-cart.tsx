@@ -153,17 +153,19 @@ const AddToCart = ({ children, className, i18n, quantity = 0, type, data, varian
 
     return (
         <Button
-            aria-disabled={disabled}
+            aria-disabled={disabled || undefined}
             aria-label={tCart('add-n-to-your-cart', quantity)}
             {...props}
             className={cn(styles['add-to-cart'], className)}
-            disabled={disabled}
+            disabled={disabled || undefined}
             as="button"
             type={type || ('button' as const)}
-            data-ready={ready}
+            data-ready={ready || undefined}
             data-success={(animation && 'true') || undefined}
             onClick={add}
             title={tCart('add-n-to-your-cart', quantity)}
+            suppressHydrationWarning={true}
+            data-nosnippet={true}
         >
             {children || label}
         </Button>

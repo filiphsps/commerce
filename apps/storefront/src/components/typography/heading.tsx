@@ -46,7 +46,19 @@ export const SubTitle = ({ as, bold, className, key, ...props }: SubTitleProps) 
     const fallback: keyof JSX.IntrinsicElements = 'div';
     const AsComponent = as || fallback;
 
-    return <AsComponent key={key} {...props} className={cn('text-sm', bold && 'font-extrabold', className)} />;
+    return (
+        <AsComponent
+            key={key}
+            {...props}
+            className={cn(
+                'text-sm',
+                props.href && 'hover:text-primary focus:text-primary cursor-pointer',
+                bold && 'font-extrabold',
+                props.href && bold && 'hover:underline focus:underline',
+                className
+            )}
+        />
+    );
 };
 
 type HeadingProps = {

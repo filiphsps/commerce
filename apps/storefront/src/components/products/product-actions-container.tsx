@@ -4,8 +4,6 @@ import styles from '@/components/products/product-actions-container.module.scss'
 
 import { Suspense, useState } from 'react';
 
-import type { OnlineShop } from '@nordcom/commerce-db';
-
 import { useTranslation } from '@/utils/locale';
 import { cn } from '@/utils/tailwind';
 import { useProduct } from '@shopify/hydrogen-react';
@@ -19,11 +17,10 @@ import type { LocaleDictionary } from '@/utils/locale';
 import type { HTMLProps } from 'react';
 
 export type ProductActionsContainerProps = {
-    shop: OnlineShop;
     i18n: LocaleDictionary;
-} & Omit<HTMLProps<HTMLDivElement>, 'children'>;
+} & HTMLProps<HTMLDivElement>;
 
-export const ProductActionsContainer = ({ shop, className, i18n, ...props }: ProductActionsContainerProps) => {
+export const ProductActionsContainer = ({ className, i18n, children, ...props }: ProductActionsContainerProps) => {
     const { t } = useTranslation('common', i18n);
     const [quantity, setQuantity] = useState(1);
 
@@ -32,34 +29,37 @@ export const ProductActionsContainer = ({ shop, className, i18n, ...props }: Pro
 
     return (
         <>
-            <div {...props} className={cn(styles.options, className)}>
-                <Label className="text-gray-600" style={{ gridArea: 'quantity-label' }}>
-                    {t('quantity')}
-                </Label>
+            <div className="flex flex-col gap-2">
+                <div {...props} className={cn('flex flex-wrap gap-2', className)}>
+                    <div className="flex flex-col gap-1">
+                        <Label className="text-gray-600" style={{ gridArea: 'quantity-label' }}>
+                            {t('quantity')}
+                        </Label>
 
-                <QuantitySelector
-                    update={(value) => {
-                        if (value === quantity) return;
-                        setQuantity(value);
-                    }}
-                    value={quantity}
-                    i18n={i18n}
-                    style={{ gridArea: 'quantity' }}
-                    className="min-h-12 bg-white"
-                />
+                        <QuantitySelector
+                            update={(value) => {
+                                if (value === quantity) return;
+                                setQuantity(value);
+                            }}
+                            value={quantity}
+                            i18n={i18n}
+                            style={{ gridArea: 'quantity' }}
+                            className="h-12 bg-white"
+                        />
+                    </div>
 
-                <Suspense
-                    key={`${shop.id}.${product.id}.product-actions.options`}
-                    fallback={<ProductOptionsSkeleton />}
-                >
-                    <ProductOptions />
-                </Suspense>
+                    <Suspense fallback={<ProductOptionsSkeleton />}>
+                        <ProductOptions />
+                    </Suspense>
+                </div>
+
+                {/*<ProductQuantityBreaks />*/}
+
+                {children}
             </div>
 
-            {/*<ProductQuantityBreaks />*/}
-
-            <Suspense key={`${shop.id}.${product.id}.product-actions.add-to-cart`} fallback={<AddToCart.skeleton />}>
-                <AddToCart className={styles.button} quantity={quantity} i18n={i18n} />
+            <Suspense fallback={<AddToCart.skeleton />}>
+                <AddToCart className={cn(styles.button)} quantity={quantity} i18n={i18n} />
             </Suspense>
         </>
     );

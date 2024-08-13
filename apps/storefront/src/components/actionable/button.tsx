@@ -19,7 +19,12 @@ export const Button = <T extends As>({
     ...props
 }: ButtonProps<T>) => {
     return (
-        <Tag draggable={false} {...props} className={cn(styled && styles.container, className)}>
+        <Tag
+            draggable={false}
+            {...props}
+            className={cn(styled && styles.container, styled && 'hover:shadow-lg', className)}
+            suppressHydrationWarning={true}
+        >
             {children}
         </Tag>
     );

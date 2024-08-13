@@ -5,6 +5,7 @@ import styles from '@/components/products/quantity-selector.module.scss';
 import { type HTMLProps, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/utils/locale';
+import { cn } from '@/utils/tailwind';
 import { useCart } from '@shopify/hydrogen-react';
 
 import type { LocaleDictionary } from '@/utils/locale';
@@ -123,16 +124,24 @@ const QuantitySelector = ({
     const decreaseDisabled = disabled || (allowDecreaseToZero ? quantity <= 0 : quantity <= 1);
 
     return (
-        <section {...props} className={`${styles.container} ${className || ''}`}>
+        <section
+            {...props}
+            className={cn(
+                styles.container,
+                'hover:border-primary rounded-xl border-2 border-solid border-gray-300',
+                className
+            )}
+        >
             <button
                 aria-disabled={decreaseDisabled}
                 aria-label={t('decrease')}
                 type="button"
-                className={styles.button}
+                className={cn(styles.button, 'h-full')}
                 disabled={decreaseDisabled}
                 onClick={decrease}
                 title={t('decrease')}
                 data-quantity-decrease
+                data-nosnippet={true}
             >
                 {'−'}
             </button>
@@ -156,17 +165,19 @@ const QuantitySelector = ({
                 onChange={onChange}
                 suppressHydrationWarning={true}
                 data-quantity-input
+                data-nosnippet={true}
             />
 
             <button
                 aria-disabled={disabled}
                 aria-label={t('increase')}
                 type="button"
-                className={styles.button}
+                className={cn(styles.button, 'h-full')}
                 disabled={disabled}
                 onClick={increase}
                 title={t('increase')}
                 data-quantity-increase
+                data-nosnippet={true}
             >
                 {'+'}
             </button>

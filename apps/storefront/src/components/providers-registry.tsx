@@ -5,11 +5,13 @@ import { UnknownCommerceProviderError, UnknownContentProviderError } from '@nord
 
 import { CartFragment } from '@/api/shopify/cart';
 import { createClient } from '@/utils/prismic';
+import { PrismicToolbar } from '@prismicio/react';
 import { CartProvider, ShopifyProvider } from '@shopify/hydrogen-react';
 import { Toaster as ToasterProvider } from 'sonner';
 
 import { PrismicRegistry } from '@/components/prismic-registry';
 import { ShopProvider } from '@/components/shop/provider';
+import { Toolbars } from '@/components/toolbars';
 
 import type { CurrencyCode, Locale } from '@/utils/locale';
 import type { ReactNode } from 'react';
@@ -17,7 +19,9 @@ import type { ReactNode } from 'react';
 const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
     switch (shop.commerceProvider.type) {
         case 'shopify': {
-            if (!shop.commerceProvider.domain) throw new UnknownCommerceProviderError();
+            if (!shop.commerceProvider.domain) {
+                throw new UnknownCommerceProviderError();
+            }
 
             return (
                 <ShopifyProvider
@@ -38,14 +42,38 @@ const CommerceProvider = ({ shop, locale, children }: { shop: OnlineShop; locale
     }
 };
 
-const ContentProvider = ({ shop, locale, children }: { shop: OnlineShop; locale: Locale; children: ReactNode }) => {
+const ContentProvider = ({
+    shop,
+    domain,
+    locale,
+    children
+}: {
+    shop: OnlineShop;
+    domain: string;
+    locale: Locale;
+    children: ReactNode;
+}) => {
     switch (shop.contentProvider.type) {
         case 'prismic': {
-            return <PrismicRegistry client={createClient({ shop, locale })}>{children}</PrismicRegistry>;
+            return (
+                <PrismicRegistry client={createClient({ shop, locale })}>
+                    {children}
+
+                    <Toolbars domain={domain}>
+                        <PrismicToolbar repositoryName={shop.contentProvider.repositoryName} />
+                    </Toolbars>
+                </PrismicRegistry>
+            );
         }
         case 'shopify': {
             // TODO: Handle this.
-            return children;
+            return (
+                <>
+                    {children}
+
+                    <Toolbars domain={domain} />
+                </>
+            );
         }
         default: {
             throw new UnknownContentProviderError(shop.contentProvider);
@@ -56,10 +84,12 @@ const ContentProvider = ({ shop, locale, children }: { shop: OnlineShop; locale:
 const ProvidersRegistry = ({
     shop,
     currency = 'USD',
+    domain,
     locale,
     children
 }: {
     shop: OnlineShop;
+    domain: string;
     currency?: CurrencyCode;
     locale: Locale;
     children: ReactNode;
@@ -67,7 +97,7 @@ const ProvidersRegistry = ({
     return (
         <ShopProvider shop={shop} currency={currency} locale={locale}>
             <CommerceProvider shop={shop} locale={locale}>
-                <ContentProvider shop={shop} locale={locale}>
+                <ContentProvider shop={shop} locale={locale} domain={domain}>
                     <CartProvider
                         cartFragment={CartFragment}
                         languageCode={locale.language}

@@ -36,7 +36,11 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
     const phone = menu.phone?.replaceAll(' ', '').replaceAll('-', '').trim() || undefined;
 
     return (
-        <section className="flex w-full grow flex-col items-center justify-center bg-gray-100 text-black" {...props}>
+        <section
+            className="flex w-full grow flex-col items-center justify-center bg-gray-100 text-black"
+            data-nosnippet={true}
+            {...props}
+        >
             <section
                 {...props}
                 className={cn(
@@ -49,6 +53,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                         className="flex items-center justify-center gap-1"
                         href="/countries/"
                         title={t('language-and-region-settings')}
+                        data-nosnippet={true}
                     >
                         <LocaleFlag locale={locale} className="block h-3" withName={true} priority={true} />
                     </Link>
@@ -62,7 +67,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 href={`mailto:${email}`}
                                 className={LINK_STYLES}
                                 title={t('email-tooltip')}
-                                data-nosnippet
+                                data-nosnippet={true}
                             >
                                 <FiMail className="h-3" style={{ strokeWidth: 2.5 }} />
                                 {t('email')}
@@ -76,7 +81,7 @@ export async function InfoBar({ className, shop, locale, i18n, ...props }: InfoB
                                 href={`tel:${phone}`}
                                 className={LINK_STYLES}
                                 title={t('phone-tooltip')}
-                                data-nosnippet
+                                data-nosnippet={true}
                             >
                                 <FiPhone className="h-3" style={{ strokeWidth: 2.5 }} />
                                 {t('phone')}

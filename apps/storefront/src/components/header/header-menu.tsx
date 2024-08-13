@@ -5,7 +5,7 @@ import { cn } from '@/utils/tailwind';
 import { SliceZone } from '@prismicio/react';
 import { usePathname } from 'next/navigation';
 
-import { useHeaderMenu } from './header-provider';
+import { useHeaderMenu } from '@/components/header/header-provider';
 
 import type { MenuDocumentData } from '@/prismic/types';
 import type { HTMLProps } from 'react';

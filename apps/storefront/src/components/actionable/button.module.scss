@@ -17,7 +17,6 @@
     line-height: 1;
 
     border-radius: var(--block-border-radius);
-    box-shadow: 0 0 1rem -0.5rem var(--color-block-shadow);
     background-color: var(--accent-primary);
     color: var(--accent-primary-text);
 
@@ -62,7 +61,7 @@
         }
         &:is([data-ready='false']) {
             background-color: var(--color-accent-primary-dark);
-            opacity: 0.5;
+            filter: brightness(0.75) contrast(0.25);
         }
 
         svg {

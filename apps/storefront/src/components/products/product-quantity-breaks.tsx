@@ -2,7 +2,7 @@
 
 import styles from '@/components/products/product-quantity-breaks.module.scss';
 
-import { useQuantity } from './quantity-provider';
+import { useQuantity } from '@/components/products/quantity-provider';
 
 import type { HTMLProps } from 'react';
 
